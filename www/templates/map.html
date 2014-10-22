@@ -1,0 +1,11 @@
+<ion-view title="Strabo Mobile">
+  <ion-nav-buttons side="left">
+    <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+  </ion-nav-buttons>
+	<ion-nav-buttons side="right">
+		<button ng-click="getLocation();" class="button button-icon icon ion-pinpoint"></button>    
+  </ion-nav-buttons>
+		<ion-content data-tap-disabled="true" ng-controller="MapCtrl">					
+			<leaflet center="center" layers="layers" class="map"></leaflet>
+  </ion-content>
+</ion-view>
