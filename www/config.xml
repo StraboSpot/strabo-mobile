@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="com.ionicframework.strabomobile327690" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget 
+  id="com.ionicframework.strabomobile327690" 
+  version="0.0.1" 
+  xmlns="http://www.w3.org/ns/widgets" 
+  xmlns:cdv="http://cordova.apache.org/ns/1.0"
+  xmlns:gap = "http://phonegap.com/ns/1.0">
+	
   <name>Strabo Mobile</name>
   <description>
         Strabo Mobile is a cross-platform mobile application for geologic field data acquisition.
     </description>
   <author email="jessica.good@azgs.az.gov" href="https://github.com/StraboSpot/strabo-mobile">
       Jessica Good
-    </author>
+  </author>
+	
   <content src="index.html"/>
   <access origin="*"/>
   <preference name="webviewbounce" value="false"/>
@@ -17,10 +24,10 @@
   <preference name="android-targetSdkVersion" value="14"/>
 	
 	<!-- Plugins -->
-	<gap:plugin name="com.ionic.keyboard"/>
-	<gap:plugin name="org.apache.cordova.console"/>
-	<gap:plugin name="org.apache.cordova.device"/>
-	<gap:plugin name="org.apache.cordova.geolocation"/>
+  <gap:plugin name="com.ionic.keyboard"/>
+  <gap:plugin name="org.apache.cordova.console"/>
+  <gap:plugin name="org.apache.cordova.device"/>
+  <gap:plugin name="org.apache.cordova.geolocation"/>
 	
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
