@@ -20,19 +20,20 @@ Build Stack:
 ### Installation
 
     npm install -g cordova ionic
-    ionic start strabo-mobile blank
-    cd strabo-mobile
-    del config.xml
+    ionic start ionic-sample blank
 
-### Add Cordova Plugins
-
-    cordova plugin add org.apache.cordova.geolocation
-
-### Add Project Files
+### Get Project Files
 
     git clone https://github.com/StraboSpot/strabo-mobile.git
+    cd strabo-mobile
+    
+Move everything, **except `.gitignore`, `config.xml` and the `www` folder**, from the `ionic-sample` folder created above into the `strabo-mobile` folder. Delete the now mostly empty ionic-sample folder.
+    
+### Add Cordova Plugins
 
-Replace all of the contents of `strabo-mobile/www` with the files that were just downloaded from GitHub.
+In the `strabo-mobile` folder:
+
+    cordova plugin add org.apache.cordova.geolocation
     
 ###Run
 
@@ -40,7 +41,7 @@ In a web browser:
 
     ionic serve
     
-In a usb connected Android device:
+In a USB connected Android device:
 
     ionic platform add android
     ionic run

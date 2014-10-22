@@ -15,6 +15,13 @@
   <preference name="BackupWebStorage" value="none"/>
   <preference name="android-minSdkVersion" value="11" />
   <preference name="android-targetSdkVersion" value="14"/>
+	
+	<!-- Plugins -->
+	<gap:plugin name="com.ionic.keyboard"/>
+	<gap:plugin name="org.apache.cordova.console"/>
+	<gap:plugin name="org.apache.cordova.device"/>
+	<gap:plugin name="org.apache.cordova.geolocation"/>
+	
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
   </feature>
