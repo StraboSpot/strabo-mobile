@@ -1,4 +1,4 @@
-angular.module('app.controllers', ['ionic', 'leaflet-directive', 'ngCordova'])
+angular.module('app.controllers', [])
 
 .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
   // Form data for the login modal
@@ -31,23 +31,33 @@ angular.module('app.controllers', ['ionic', 'leaflet-directive', 'ngCordova'])
       $scope.closeLogin();
     }, 1000);
   };
+	
+	$scope.spots = [];
 })
 
 .controller('SpotsCtrl', function($scope) {
-  $scope.spots = [
-    { title: 'Spot1', id: 1 },
-    { title: 'Spot2', id: 2 },
-    { title: 'Spot3', id: 3 },
-    { title: 'Spot4', id: 4 },
-    { title: 'Spot5', id: 5 },
-    { title: 'Spot6', id: 6 }
-  ];
 })
 
-.controller('SpotCtrl', function($scope, $stateParams) {
+.controller('SpotCtrl', function($scope, $stateParams, $location) {
+	$scope.spotTypes = [
+			{ text: 'Type a', value: 'a' },
+			{ text: 'Type b', value: 'b' },
+			{ text: 'Type c', value: 'c' }
+		];
+		
+	$scope.spot = {};
+	$scope.submit = function() {
+		if(!$scope.spot.name) {
+			alert('Info required');
+			return;
+		}
+		
+	$scope.spots.push($scope.spot);
+	$location.path("/app/map");
+		};
 })
 
-.controller("MapCtrl", function($scope, leafletData, $cordovaGeolocation) {
+.controller("MapCtrl", function($scope, leafletData, $cordovaGeolocation, $location) {
 	angular.extend($scope, {
 		center: {
 			lat: 39.828127,
@@ -90,7 +100,8 @@ angular.module('app.controllers', ['ionic', 'leaflet-directive', 'ngCordova'])
 		},
 		defaults: {
 			scrollWheelZoom: false
-		}
+		},
+		id: 0
 	});
 	
 	// Get current position
@@ -110,8 +121,13 @@ angular.module('app.controllers', ['ionic', 'leaflet-directive', 'ngCordova'])
 	
 	leafletData.getMap().then(function(map) {
 		map.on('click', function (e) {
-			var marker = L.marker(e.latlng, {draggable:'true'}).addTo(map)
-			.bindPopup("<b>Spot</b><br />" + e.latlng.lat.toFixed(4) + ", " + e.latlng.lng.toFixed(4) + "<br /> More info here.");
+			$scope.id++;
+			var markerLocation = new L.LatLng(e.latlng.lat, e.latlng.lng);
+			var marker = new L.Marker(markerLocation, {draggable:'true'});
+			var form = "<b>Spot #"+$scope.id+"</b><br />" + e.latlng.lat.toFixed(4) + ", " + e.latlng.lng.toFixed(4) + "<br /> More info here."
+			marker.addTo(map);
+			marker.bindPopup(form)
+			$location.path("/app/spots/"+$scope.id+"");
 		});
 	});
 });
