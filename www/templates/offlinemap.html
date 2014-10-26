@@ -1,11 +1,14 @@
 <ion-view title="Strabo Mobile">
-  <ion-nav-buttons side="left">
-    <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
-  </ion-nav-buttons>
-	<ion-nav-buttons side="right">
-	
-  </ion-nav-buttons>
-	<ion-content data-tap-disabled="true">					
-			<div id="mapdiv" style="height:100%"></div>
-  </ion-content>
+    <ion-nav-buttons side="left">
+        <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+        <button ng-click="toggleAirplaneMode()" ng-class="{'button button-icon icon ion-earth': !airplaneMode,
+        'button button-icon icon ion-plane':airplaneMode}"></button>
+        <button ng-click="clearOfflineTile();" class="button button-icon icon ion-trash-b"></button>
+        {{numOfflineTiles}} tiles
+    </ion-nav-buttons>
+    <ion-content data-tap-disabled="true">
+        <div id="mapdiv" style="height:100%"></div>
+    </ion-content>
 </ion-view>
