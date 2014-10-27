@@ -63,18 +63,30 @@ angular.module('app.controllers', [])
 
 .controller("OfflineMapCtrl", function($scope, $localForage) {
 
+  var osmUrlPrefix = 'http://b.tile.openstreetmap.org/';
+
+  var map = L.map('mapdiv', {
+    center: {
+      lat: 32.221667,
+      lng: -110.92638
+    },
+    zoom: 14,
+    drawControl: true
+  });
+
   $scope.numOfflineTiles;
 
-  //TODO: need to redraw tiles upon existing load
-
-
-  $scope.airplaneMode = false;
+  $scope.airplaneMode = true;
 
   $scope.toggleAirplaneMode = function() {
     if ($scope.airplaneMode === false) {
       $scope.airplaneMode = true;
     } else {
       $scope.airplaneMode = false;
+      // we remove and then re-add the map layer because leaflet caches files.
+      // This becomes problematic when we have already loaded the offline tile image
+      map.removeLayer(offlineLayer);
+      map.addLayer(offlineLayer);
     }
   };
 
@@ -88,9 +100,19 @@ angular.module('app.controllers', [])
     });
   };
 
-
-  var osmUrlPrefix = 'http://b.tile.openstreetmap.org/';
-
+  $scope.clearOfflineTile = function() {
+    if (window.confirm("Do you want to delete ALL offline tiles?")) {
+      // ok, lets delete now because the user has confirmed ok
+      localforage.clear(function(err) {
+        $scope.updateOfflineTileCount();
+        alert('Offline tiles are now empty');
+        //reload the map layer because the offline tiles are empty
+        map.removeLayer(offlineLayer);
+        map.addLayer(offlineLayer);
+        //TODO: do we want to reset airplane mode?
+      });
+    }
+  };
 
   var writeTileToStorage = function(url, isAirplaneMode, callback) {
     // are we in airplane mode?
@@ -118,7 +140,6 @@ angular.module('app.controllers', [])
     }
   }
 
-
   // new layer for offline maps, as signaled by getTileUrl
   DatabaseTileServer = L.TileLayer.extend({
     getTileUrl: function(tilePoint, zoom, tile) {
@@ -128,7 +149,7 @@ angular.module('app.controllers', [])
 
       var id = z + "/" + x + "/" + y;
 
-      console.log("need ", id);
+      // console.log("need ", id);
 
       // test to see if we want to write the tile into the storage
       writeTileToStorage(id, $scope.airplaneMode, function() {
@@ -136,10 +157,9 @@ angular.module('app.controllers', [])
         $scope.updateOfflineTileCount();
 
         //now get the image back
-        localforage.getItem(id).then(function(qwe) {
-          if (qwe != null) {
-            // console.log(qwe);
-            var imageUrl = URL.createObjectURL(qwe);
+        localforage.getItem(id).then(function(blob) {
+          if (blob != null) {
+            var imageUrl = URL.createObjectURL(blob);
             tile.src = imageUrl;
             // console.log(imageUrl);
           } else {
@@ -160,31 +180,8 @@ angular.module('app.controllers', [])
 
   var offlineLayer = new DatabaseTileServer();
 
-  var map = L.map('mapdiv', {
-    center: {
-      lat: 32.221667,
-      lng: -110.92638
-    },
-    zoom: 14
-  });
-
   // add the offline layer
   map.addLayer(offlineLayer);
-
-
-  $scope.clearOfflineTile = function() {
-    if (window.confirm("Do you want to delete ALL offline tiles?")) {
-      // ok, lets delete now because the user has confirmed ok
-      localforage.clear(function(err) {
-        $scope.updateOfflineTileCount();
-        alert('Offline tiles are now empty');
-        //reload the map layer because the offline tiles are empty
-        map.removeLayer(offlineLayer);
-        map.addLayer(offlineLayer);
-        //TODO: do we want to reset airplane mode?
-      });
-    }
-  };
 })
 
 .controller("MapCtrl", function($scope, leafletData, $cordovaGeolocation, $location) {
