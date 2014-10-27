@@ -23,18 +23,18 @@ angular.module('app', ['ionic', 'app.controllers', 'leaflet-directive', 'ngCordo
       templateUrl: "templates/menu.html",
       controller: 'AppCtrl'
     })
-		
-		.state('app.map', {
+
+    .state('app.map', {
       url: "/map",
       views: {
         'menuContent' :{
           templateUrl: "templates/map.html",
-					controller: 'MapCtrl'
+          controller: 'MapCtrl'
         }
       }
     })
 
-		.state('app.search', {
+    .state('app.search', {
       url: "/search",
       views: {
         'menuContent' :{
@@ -62,8 +62,8 @@ angular.module('app', ['ionic', 'app.controllers', 'leaflet-directive', 'ngCordo
         }
       }
     })
-		
-		.state('app.about', {
+
+    .state('app.about', {
       url: "/about",
       views: {
         'menuContent' :{
@@ -75,4 +75,3 @@ angular.module('app', ['ionic', 'app.controllers', 'leaflet-directive', 'ngCordo
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/map');
 });
-
