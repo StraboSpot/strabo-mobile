@@ -5,31 +5,31 @@
   </ion-nav-back-button>
 </ion-nav-bar>
   <ion-content class="has-header">
-		<form class="list">
-			<label class="item item-input">
-				<input type="text" placeholder="Name" ng-model="spot.name">
-			</label>
-			<label class="item item-input">
-				<span class="input-label">Date</span>
-				<input type="date" ng-model="spot.date" value={{spot.date}}>
-			</label>
-			<div class="item item-divider">
-				Spot Type
-			</div>
-			<ion-radio ng-repeat="spotType in spotTypes"
-								 ng-value="spotType.value"
-								 ng-model="spot.spotType">
-				{{ spotType.text }}
-			</ion-radio>
-			<div class="item item-divider">
-				More Detail
-			</div>
-			<ion-toggle ng-model="spot.myValue">
-				True or False Input
-			</ion-toggle>
-			<div class="padding">
-				<button class="button button-block" ng-click="submit()">Submit</button>
-			</div>
-		</form>
+    <form class="list">
+      <label class="item item-input">
+        <input type="text" placeholder="Name" ng-model="spot.name">
+      </label>
+      <label class="item item-input">
+        <span class="input-label">Date</span>
+        <input type="date" ng-model="spot.date" value={{spot.date}}>
+      </label>
+      <div class="item item-divider">
+        Spot Type
+      </div>
+      <ion-radio ng-repeat="spotType in spotTypes"
+                 ng-value="spotType.value"
+                 ng-model="spot.spotType">
+        {{ spotType.text }}
+      </ion-radio>
+      <div class="item item-divider">
+        More Detail
+      </div>
+      <ion-toggle ng-model="spot.myValue">
+        True or False Input
+      </ion-toggle>
+      <div class="padding">
+        <button class="button button-block" ng-click="submit()">Submit</button>
+      </div>
+    </form>
   </ion-content>
 </ion-view>
