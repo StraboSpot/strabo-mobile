@@ -1,4 +1,4 @@
-angular.module('app', ['ionic', 'app.controllers', 'leaflet-directive', 'ngCordova'])
+angular.module('app', ['ionic', 'app.controllers', , 'app.services', 'leaflet-directive', 'ngCordova'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -55,6 +55,16 @@ angular.module('app', ['ionic', 'app.controllers', 'leaflet-directive', 'ngCordo
 
     .state('app.spot', {
       url: "/spots/:spotId",
+      views: {
+        'menuContent' :{
+          templateUrl: "templates/spot.html",
+          controller: 'SpotCtrl'
+        }
+      }
+    })
+    
+    .state('app.newspot', {
+      url: "/spots/newspot",
       views: {
         'menuContent' :{
           templateUrl: "templates/spot.html",

@@ -2,11 +2,14 @@
   <ion-nav-buttons side="left">
     <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
   </ion-nav-buttons>
-  <ion-content class="has-header">
-    <ion-list>
-      <ion-item ng-repeat="spot in spots" href="#/app/spots/{{spot.id}}">
-        {{spot.name}}
-      </ion-item>
-    </ion-list>
-  </ion-content>
+	<ion-nav-buttons side="right">
+    <button class="button button-icon ion-plus" ng-click="newSpot()"></button>
+  </ion-nav-buttons>
+    <ion-content class="has-header">
+      <ion-list>
+        <ion-item ng-repeat="spot in spots" href="#/app/spots/{{spot.id}}">
+          {{spot.name}} <small>Id: {{spot.id}}</small>
+        </ion-item>
+      </ion-list>
+    </ion-content>
 </ion-view>
