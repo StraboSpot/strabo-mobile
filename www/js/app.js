@@ -1,4 +1,4 @@
-angular.module('app', ['ionic', 'app.controllers', 'leaflet-directive', 'ngCordova', 'LocalForageModule'])
+angular.module('app', ['ionic', 'app.controllers', 'app.services', 'leaflet-directive', 'ngCordova', 'LocalForageModule'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -33,13 +33,13 @@ angular.module('app', ['ionic', 'app.controllers', 'leaflet-directive', 'ngCordo
       templateUrl: "templates/menu.html",
       controller: 'AppCtrl'
     })
-		
-		.state('app.map', {
+
+    .state('app.map', {
       url: "/map",
       views: {
         'menuContent' :{
           templateUrl: "templates/map.html",
-					controller: 'MapCtrl'
+          controller: 'MapCtrl'
         }
       }
     })
@@ -82,8 +82,18 @@ angular.module('app', ['ionic', 'app.controllers', 'leaflet-directive', 'ngCordo
         }
       }
     })
-		
-		.state('app.about', {
+    
+    .state('app.newspot', {
+      url: "/spots/newspot",
+      views: {
+        'menuContent' :{
+          templateUrl: "templates/spot.html",
+          controller: 'SpotCtrl'
+        }
+      }
+    })
+
+    .state('app.about', {
       url: "/about",
       views: {
         'menuContent' :{
@@ -95,4 +105,3 @@ angular.module('app', ['ionic', 'app.controllers', 'leaflet-directive', 'ngCordo
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/map');
 });
-

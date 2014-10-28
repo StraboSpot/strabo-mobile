@@ -31,33 +31,49 @@ angular.module('app.controllers', [])
       $scope.closeLogin();
     }, 1000);
   };
-
-  $scope.spots = [];
 })
 
-.controller('SpotsCtrl', function($scope) {})
+.controller('SpotsCtrl', function($scope, $location, Spots) {
+  // Load or initialize Spots
+  $scope.spots = Spots.all();
 
-.controller('SpotCtrl', function($scope, $stateParams, $location) {
-  $scope.spotTypes = [{
-    text: 'Type a',
-    value: 'a'
-  }, {
-    text: 'Type b',
-    value: 'b'
-  }, {
-    text: 'Type c',
-    value: 'c'
-  }];
+  // Create a new Spot
+  $scope.newSpot = function() {
+    $location.path("/app/spots/newspot");
+    //$location.path("/app/spots/"+$scope.spots.length);
+  };
+})
 
-  $scope.spot = {};
+.controller('SpotCtrl', function($scope, $stateParams, $location, $filter, Spots, $ionicViewService) {
+  // Load or initialize Spot
+  $scope.spots = Spots.all();
+  
+  // Load or initialize current Spot
+  $scope.spot = Spots.getSpot($scope.spots, $stateParams.spotId, $filter);
+  
+  // Define Spot parameters
+  $scope.spotTypes = [
+      { text: 'Type a', value: 'a' },
+      { text: 'Type b', value: 'b' },
+      { text: 'Type c', value: 'c' }
+    ];
+  
+  // Add or modify Spot
   $scope.submit = function() {
-    if (!$scope.spot.name) {
-      alert('Info required');
+    if(!$scope.spot.name) {
+      alert('Name required');
       return;
     }
 
-    $scope.spots.push($scope.spot);
-    $location.path("/app/map");
+    if (typeof $scope.spot.id == "undefined")
+      $scope.spot.id = $scope.spots.length;
+
+    $scope.spots[$scope.spot.id] = $scope.spot;
+    Spots.save($scope.spots);
+
+    // Go back one view in history
+    var backView = $ionicViewService.getBackView();
+    backView.go();
   };
 })
 
@@ -184,7 +200,7 @@ angular.module('app.controllers', [])
   map.addLayer(offlineLayer);
 })
 
-.controller("MapCtrl", function($scope, leafletData, $cordovaGeolocation, $location) {
+.controller("MapCtrl", function($scope, leafletData, $cordovaGeolocation, $location, $filter, Spots) {
   angular.extend($scope, {
     center: {
       lat: 39.828127,
@@ -227,37 +243,39 @@ angular.module('app.controllers', [])
     },
     defaults: {
       scrollWheelZoom: false
-    },
-    id: 0
+    }
   });
 
   // Get current position
-  $scope.getLocation = function() {
-    $cordovaGeolocation.getCurrentPosition().then(function(position) {
+  $scope.getLocation = function(){
+    $cordovaGeolocation.getCurrentPosition().then(function (position) {
       $scope.updateMap(position.coords.latitude, position.coords.longitude, 18);
-    }, function(err) {
-      alert("Unable to get location: " + err.message);
-    });
+      }, function(err) {
+        alert("Unable to get location: " + err.message);
+      });
   }
 
   // Redraw map with new center and zoom
   $scope.updateMap = function(lat, lng, zoom) {
     leafletData.getMap().then(function(map) {
-      map.setView(new L.LatLng(lat, lng), zoom);
-    });
+      map.setView(new L.LatLng(lat, lng), zoom);});
   }
 
   leafletData.getMap().then(function(map) {
-    map.on('click', function(e) {
-      $scope.id++;
+    map.on('click', function (e) {
+      // Load or initialize Spot
+      $scope.spots = Spots.all();
+  
+      // Load or initialize current Spot
+      $scope.spot = Spots.getSpot($scope.spots, "newspot", $filter);
+
       var markerLocation = new L.LatLng(e.latlng.lat, e.latlng.lng);
-      var marker = new L.Marker(markerLocation, {
-        draggable: 'true'
-      });
-      var form = "<b>Spot #" + $scope.id + "</b><br />" + e.latlng.lat.toFixed(4) + ", " + e.latlng.lng.toFixed(4) + "<br /> More info here."
+      var marker = new L.Marker(markerLocation, {draggable:'true'});
+      var form = "<b>Spot</b><br />" + e.latlng.lat.toFixed(4) + ", " + e.latlng.lng.toFixed(4) + "<br /> More info here."
       marker.addTo(map);
-      marker.bindPopup(form)
-      $location.path("/app/spots/" + $scope.id + "");
+      marker.bindPopup(form);
+
+      $location.path("/app/spots/newspot");
     });
   });
 });
