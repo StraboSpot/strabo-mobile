@@ -87,7 +87,7 @@ angular.module('app.controllers', [])
       lng: -110.92638
     },
     zoom: 14,
-    drawControl: true
+    drawControl: false
   });
 
   $scope.numOfflineTiles;
