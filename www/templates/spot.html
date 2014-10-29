@@ -15,6 +15,10 @@
       </label>
       <div class="item item-divider">
         Location
+        <ion-buttons side="right">
+          <button ng-click="getLocation();" class="button-icon icon ion-pinpoint"></button>
+          <button ng-click="openMap();" class="button-icon icon ion-map"></button>          
+        </ion-buttons>
       </div>
       <label class="item item-input">
         <span class="input-label">Longitude</span>
@@ -39,7 +43,7 @@
         True or False Input
       </ion-toggle>
       <div class="padding">
-        <button class="button button-block" ng-click="submit()">Submit</button>
+        <button class="button button-block" ng-click="submit()">Save</button>
       </div>
     </form>
   </ion-content>

@@ -1,6 +1,6 @@
 angular.module('app')
 
-  .controller("MapCtrl", function($scope, leafletData, $cordovaGeolocation, $location, $filter, Spots, NewSpot) {
+  .controller("MapCtrl", function($scope, leafletData, $cordovaGeolocation, $location, $filter, Spots, NewSpot, $ionicViewService) {
     angular.extend($scope, {
       center: {
         lat: 39.828127,
@@ -52,7 +52,7 @@ angular.module('app')
         $scope.updateMap(position.coords.latitude, position.coords.longitude, 18);
         }, function(err) {
           alert("Unable to get location: " + err.message);
-        });
+      });
     }
 
     // Redraw map with new center and zoom
@@ -70,13 +70,21 @@ angular.module('app')
         $scope.spot = Spots.getSpot($scope.spots, "newspot", $filter);
         NewSpot.setNewLocation(e.latlng.lat, e.latlng.lng);
 
-        var markerLocation = new L.LatLng(e.latlng.lat, e.latlng.lng);
-        var marker = new L.Marker(markerLocation, {draggable:'true'});
-        var form = "<b>Spot</b><br />" + e.latlng.lat.toFixed(4) + ", " + e.latlng.lng.toFixed(4) + "<br /> More info here."
-        marker.addTo(map);
-        marker.bindPopup(form);
+        // If we got to the map from the spot view go back to that view
+        var backView = $ionicViewService.getBackView();
+        if (backView) {
+          if (backView.stateName == "app.spot")
+            backView.go();
+        }
+        else {
+          var markerLocation = new L.LatLng(e.latlng.lat, e.latlng.lng);
+          var marker = new L.Marker(markerLocation, {draggable:'true'});
+          var form = "<b>Spot</b><br />" + e.latlng.lat.toFixed(4) + ", " + e.latlng.lng.toFixed(4) + "<br /> More info here."
+          marker.addTo(map);
+          marker.bindPopup(form);
 
-        $location.path("/app/spots/newspot");
+          $location.path("/app/spots/newspot");
+        }
       });
     });
   });
