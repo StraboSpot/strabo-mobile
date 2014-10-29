@@ -1,4 +1,9 @@
-angular.module('app', ['ionic', 'app.controllers', 'app.services', 'leaflet-directive', 'ngCordova', 'LocalForageModule'])
+angular.module('app', [
+  'ionic',
+  'leaflet-directive',
+  'ngCordova',
+  'LocalForageModule'
+])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -31,7 +36,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'leaflet-dire
       url: "/app",
       abstract: true,
       templateUrl: "templates/menu.html",
-      controller: 'AppCtrl'
+      controller: 'MenuCtrl'
     })
 
     .state('app.map', {

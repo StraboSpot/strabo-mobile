@@ -1,4 +1,4 @@
-angular.module('app.services', [])
+angular.module('app')
 
 /**
  * The Spots factory handles saving and loading spots
