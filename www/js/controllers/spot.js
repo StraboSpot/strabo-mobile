@@ -20,6 +20,16 @@ angular.module('app')
         alert('Name required');
         return;
       }
+      
+      if (isNaN($scope.spot.lat) || $scope.spot.lat < -180 || $scope.spot.lat > 180) {
+        alert('Invalid latitude');
+        return;
+      }
+      
+      if (isNaN($scope.spot.lng) || $scope.spot.lng < -180 || $scope.spot.lng > 180) {
+        alert('Invalid longitude');
+        return;
+      }
 
       if (typeof $scope.spot.id == "undefined")
         $scope.spot.id = $scope.spots.length;
