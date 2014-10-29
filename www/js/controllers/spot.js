@@ -1,11 +1,17 @@
 angular.module('app')
 
-  .controller('SpotCtrl', function($scope, $stateParams, $location, $filter, Spots, $ionicViewService) {
+  .controller('SpotCtrl', function($scope, $stateParams, $location, $filter, Spots, NewSpot, $ionicViewService) {
+  
     // Load or initialize Spot
     $scope.spots = Spots.all();
     
     // Load or initialize current Spot
     $scope.spot = Spots.getSpot($scope.spots, $stateParams.spotId, $filter);
+    if (!$scope.spot.lat)
+      $scope.spot.lat = NewSpot.getNewLocation().newSpotLat;
+    if (!$scope.spot.lng)
+      $scope.spot.lng = NewSpot.getNewLocation().newSpotLng;
+    NewSpot.clearNewLocation();
     
     // Define Spot parameters
     $scope.spotTypes = [

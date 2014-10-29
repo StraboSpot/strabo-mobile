@@ -1,6 +1,6 @@
 angular.module('app')
 
-  .controller("MapCtrl", function($scope, leafletData, $cordovaGeolocation, $location, $filter, Spots) {
+  .controller("MapCtrl", function($scope, leafletData, $cordovaGeolocation, $location, $filter, Spots, NewSpot) {
     angular.extend($scope, {
       center: {
         lat: 39.828127,
@@ -68,6 +68,7 @@ angular.module('app')
     
         // Load or initialize current Spot
         $scope.spot = Spots.getSpot($scope.spots, "newspot", $filter);
+        NewSpot.setNewLocation(e.latlng.lat, e.latlng.lng);
 
         var markerLocation = new L.LatLng(e.latlng.lat, e.latlng.lng);
         var marker = new L.Marker(markerLocation, {draggable:'true'});
