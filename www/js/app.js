@@ -1,4 +1,4 @@
-angular.module('app', ['ionic', 'app.controllers', , 'app.services', 'leaflet-directive', 'ngCordova'])
+angular.module('app', ['ionic', 'app.controllers', 'app.services', 'leaflet-directive', 'ngCordova', 'LocalForageModule'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -13,6 +13,16 @@ angular.module('app', ['ionic', 'app.controllers', , 'app.services', 'leaflet-di
     }
   });
 })
+
+.config(['$localForageProvider', function($localForageProvider){
+    $localForageProvider.config({
+        driver      : 'webSQLStorage', // if you want to force a driver
+        name        : 'offlineLeafletTiles', // name of the database and prefix for your data, it is "lf" by default
+        version     : 1.0, // version of the database, you shouldn't have to use this
+        storeName   : 'keyvaluepairs', // name of the table
+        description : 'offline leaflet tiles storage'
+    });
+}])
 
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
@@ -34,7 +44,17 @@ angular.module('app', ['ionic', 'app.controllers', , 'app.services', 'leaflet-di
       }
     })
 
-    .state('app.search', {
+    .state('app.offlinemap', {
+      url: "/offlinemap",
+      views: {
+        'menuContent' :{
+          templateUrl: "templates/offlinemap.html",
+          controller: 'OfflineMapCtrl'
+        }
+      }
+    })
+
+		.state('app.search', {
       url: "/search",
       views: {
         'menuContent' :{
