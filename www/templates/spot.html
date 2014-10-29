@@ -14,6 +14,21 @@
         <input type="date" ng-model="spot.date" value={{spot.date}}>
       </label>
       <div class="item item-divider">
+        Location
+        <ion-buttons side="right">
+          <button ng-click="getLocation();" class="button-icon icon ion-pinpoint"></button>
+          <button ng-click="openMap();" class="button-icon icon ion-map"></button>          
+        </ion-buttons>
+      </div>
+      <label class="item item-input">
+        <span class="input-label">Longitude</span>
+        <input type="number" ng-model="spot.lng" value={{spot.lng}}>
+      </label>
+      <label class="item item-input">
+        <span class="input-label">Latitude</span>
+        <input type="number" ng-model="spot.lat" value={{spot.lat}}>
+      </label>
+      <div class="item item-divider">
         Spot Type
       </div>
       <ion-radio ng-repeat="spotType in spotTypes"
@@ -28,7 +43,7 @@
         True or False Input
       </ion-toggle>
       <div class="padding">
-        <button class="button button-block" ng-click="submit()">Submit</button>
+        <button class="button button-block" ng-click="submit()">Save</button>
       </div>
     </form>
   </ion-content>

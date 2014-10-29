@@ -7,6 +7,5 @@ angular.module('app')
     // Create a new Spot
     $scope.newSpot = function() {
       $location.path("/app/spots/newspot");
-      //$location.path("/app/spots/"+$scope.spots.length);
     };
   });
