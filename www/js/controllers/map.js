@@ -89,18 +89,21 @@ angular.module('app')
     // Watch the Lat, Long and Zoom so we can return to that view if we need to
     $scope.$watch("center.zoom", function(zoom) {
       MapView.setZoom(zoom);
+      MapView.setRestoreView(true);
     });
     $scope.$watch("center.lat", function(lat) {
       MapView.setLat(lat);
+      MapView.setRestoreView(true);
     });
     $scope.$watch("center.lng", function(lng) {
       MapView.setLng(lng);
+      MapView.setRestoreView(true);
     });
     
     // Return to the previous map view
     if (MapView.getRestoreView() == true) {
       $scope.updateMap(MapView.getMapView().lat, MapView.getMapView().lng, MapView.getMapView().zoom);
-      MapView.setRestoreView(false);
+      //MapView.setRestoreView(false);
     }
     
     leafletData.getMap().then(function(map) {
