@@ -1,6 +1,6 @@
 angular.module('app')
 
-  .controller("MapCtrl", function($scope, leafletData, $cordovaGeolocation, $location, $filter, Spots, NewSpot, $ionicViewService) {
+  .controller("MapCtrl", function($scope, leafletData, $cordovaGeolocation, $location, $filter, $ionicViewService, Spots, NewSpot, MapView) {
     angular.extend($scope, {
       center: {
         lat: 39.828127,
@@ -68,6 +68,7 @@ angular.module('app')
       return markers;
     }
 
+    // Point markers
     $scope.markers = $scope.getMarkers();              
 
     // Get current position
@@ -84,7 +85,24 @@ angular.module('app')
       leafletData.getMap().then(function(map) {
         map.setView(new L.LatLng(lat, lng), zoom);});
     }
-
+    
+    // Watch the Lat, Long and Zoom so we can return to that view if we need to
+    $scope.$watch("center.zoom", function(zoom) {
+      MapView.setZoom(zoom);
+    });
+    $scope.$watch("center.lat", function(lat) {
+      MapView.setLat(lat);
+    });
+    $scope.$watch("center.lng", function(lng) {
+      MapView.setLng(lng);
+    });
+    
+    // Return to the previous map view
+    if (MapView.getRestoreView() == true) {
+      $scope.updateMap(MapView.getMapView().lat, MapView.getMapView().lng, MapView.getMapView().zoom);
+      MapView.setRestoreView(false);
+    }
+    
     leafletData.getMap().then(function(map) {
       map.on('click', function (e) {
         // Initialize new Spot
@@ -93,10 +111,12 @@ angular.module('app')
         // If we got to the map from the spot view go back to that view
         var backView = $ionicViewService.getBackView();
         if (backView) {
-          if (backView.stateName == "app.spot")
+          if (backView.stateName == "app.spot") {
             backView.go();
+          }
         }
         else {
+          MapView.setRestoreView(true);
           $location.path("/app/spots/newspot");
         }
       });
