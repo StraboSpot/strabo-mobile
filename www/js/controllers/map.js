@@ -1,6 +1,6 @@
 angular.module('app')
 
-  .controller("MapCtrl", function($scope, leafletData, $cordovaGeolocation, $location, $filter, Spots, NewSpot, $ionicViewService) {
+  .controller("MapCtrl", function($scope, leafletData, $cordovaGeolocation, $location, $filter, $ionicViewService, Spots, NewSpot, MapView) {
     angular.extend($scope, {
       center: {
         lat: 39.828127,
@@ -9,13 +9,13 @@ angular.module('app')
       },
       layers: {
         baselayers: {
-          osm: {
-            name: 'OpenStreetMap',
+          mq: {
+            name: 'MapQuest',
             type: 'xyz',
-            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            url: 'http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg',
             layerOptions: {
-              subdomains: ['a', 'b', 'c'],
-              attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+              subdomains: '1234',
+              attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">',
               continuousWorld: true
             }
           },
@@ -29,13 +29,13 @@ angular.module('app')
               continuousWorld: true
             }
           },
-          mq: {
-            name: 'MapQuest',
+          osm: {
+            name: 'OpenStreetMap',
             type: 'xyz',
-            url: 'http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg',
+            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             layerOptions: {
-              subdomains: '1234',
-              attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">',
+              subdomains: ['a', 'b', 'c'],
+              attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
               continuousWorld: true
             }
           }
@@ -45,6 +45,31 @@ angular.module('app')
         scrollWheelZoom: false
       }
     });
+    
+    // Load markers
+    $scope.getMarkers = function() {
+      $scope.spots = Spots.all();
+      var markers = [];
+      for (var i=0; i<$scope.spots.length; i++) {  
+        var lat = $scope.spots[i].lat;
+        var lng = $scope.spots[i].lng;
+        if (lat && lng) {
+          var message = "<b>"+$scope.spots[i].name+"</b><br />" + lat.toFixed(4) + ", " + lng.toFixed(4) + "<br /> More info here."
+          var marker = {
+              lat: lat,
+              lng: lng,
+              focus: false,
+              message: message,
+              draggable: false,
+          };
+          markers.push(marker);
+        }
+      }
+      return markers;
+    }
+
+    // Point markers
+    $scope.markers = $scope.getMarkers();              
 
     // Get current position
     $scope.getLocation = function(){
@@ -60,29 +85,41 @@ angular.module('app')
       leafletData.getMap().then(function(map) {
         map.setView(new L.LatLng(lat, lng), zoom);});
     }
-
+    
+    // Watch the Lat, Long and Zoom so we can return to that view if we need to
+    $scope.$watch("center.zoom", function(zoom) {
+      MapView.setZoom(zoom);
+      MapView.setRestoreView(true);
+    });
+    $scope.$watch("center.lat", function(lat) {
+      MapView.setLat(lat);
+      MapView.setRestoreView(true);
+    });
+    $scope.$watch("center.lng", function(lng) {
+      MapView.setLng(lng);
+      MapView.setRestoreView(true);
+    });
+    
+    // Return to the previous map view
+    if (MapView.getRestoreView() == true) {
+      $scope.updateMap(MapView.getMapView().lat, MapView.getMapView().lng, MapView.getMapView().zoom);
+      //MapView.setRestoreView(false);
+    }
+    
     leafletData.getMap().then(function(map) {
       map.on('click', function (e) {
-        // Load or initialize Spot
-        $scope.spots = Spots.all();
-    
-        // Load or initialize current Spot
-        $scope.spot = Spots.getSpot($scope.spots, "newspot", $filter);
+        // Initialize new Spot
         NewSpot.setNewLocation(e.latlng.lat, e.latlng.lng);
-
+        
         // If we got to the map from the spot view go back to that view
         var backView = $ionicViewService.getBackView();
         if (backView) {
-          if (backView.stateName == "app.spot")
+          if (backView.stateName == "app.spot") {
             backView.go();
+          }
         }
         else {
-          var markerLocation = new L.LatLng(e.latlng.lat, e.latlng.lng);
-          var marker = new L.Marker(markerLocation, {draggable:'true'});
-          var form = "<b>Spot</b><br />" + e.latlng.lat.toFixed(4) + ", " + e.latlng.lng.toFixed(4) + "<br /> More info here."
-          marker.addTo(map);
-          marker.bindPopup(form);
-
+          MapView.setRestoreView(true);
           $location.path("/app/spots/newspot");
         }
       });
