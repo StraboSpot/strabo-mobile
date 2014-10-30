@@ -9,13 +9,13 @@ angular.module('app')
       },
       layers: {
         baselayers: {
-          osm: {
-            name: 'OpenStreetMap',
+          mq: {
+            name: 'MapQuest',
             type: 'xyz',
-            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            url: 'http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg',
             layerOptions: {
-              subdomains: ['a', 'b', 'c'],
-              attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+              subdomains: '1234',
+              attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">',
               continuousWorld: true
             }
           },
@@ -29,13 +29,13 @@ angular.module('app')
               continuousWorld: true
             }
           },
-          mq: {
-            name: 'MapQuest',
+          osm: {
+            name: 'OpenStreetMap',
             type: 'xyz',
-            url: 'http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg',
+            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             layerOptions: {
-              subdomains: '1234',
-              attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">',
+              subdomains: ['a', 'b', 'c'],
+              attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
               continuousWorld: true
             }
           }
