@@ -45,6 +45,30 @@ angular.module('app')
         scrollWheelZoom: false
       }
     });
+    
+    // Load markers
+    $scope.getMarkers = function() {
+      $scope.spots = Spots.all();
+      var markers = [];
+      for (var i=0; i<$scope.spots.length; i++) {  
+        var lat = $scope.spots[i].lat;
+        var lng = $scope.spots[i].lng;
+        if (lat && lng) {
+          var message = "<b>"+$scope.spots[i].name+"</b><br />" + lat.toFixed(4) + ", " + lng.toFixed(4) + "<br /> More info here."
+          var marker = {
+              lat: lat,
+              lng: lng,
+              focus: false,
+              message: message,
+              draggable: false,
+          };
+          markers.push(marker);
+        }
+      }
+      return markers;
+    }
+
+    $scope.markers = $scope.getMarkers();              
 
     // Get current position
     $scope.getLocation = function(){
@@ -63,13 +87,9 @@ angular.module('app')
 
     leafletData.getMap().then(function(map) {
       map.on('click', function (e) {
-        // Load or initialize Spot
-        $scope.spots = Spots.all();
-    
-        // Load or initialize current Spot
-        $scope.spot = Spots.getSpot($scope.spots, "newspot", $filter);
+        // Initialize new Spot
         NewSpot.setNewLocation(e.latlng.lat, e.latlng.lng);
-
+        
         // If we got to the map from the spot view go back to that view
         var backView = $ionicViewService.getBackView();
         if (backView) {
@@ -77,12 +97,6 @@ angular.module('app')
             backView.go();
         }
         else {
-          var markerLocation = new L.LatLng(e.latlng.lat, e.latlng.lng);
-          var marker = new L.Marker(markerLocation, {draggable:'true'});
-          var form = "<b>Spot</b><br />" + e.latlng.lat.toFixed(4) + ", " + e.latlng.lng.toFixed(4) + "<br /> More info here."
-          marker.addTo(map);
-          marker.bindPopup(form);
-
           $location.path("/app/spots/newspot");
         }
       });
