@@ -33,6 +33,11 @@
 	<script src="lib/localforage.js"></script>
 	<script src="lib/angular-localForage.js"></script>
 
+    <!-- openlayers 3 -->
+    <link rel="stylesheet" href="lib/ol3/ol.css" />
+    <script src="lib/ol3/ol-debug.js"></script>
+
+
 	<!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
 
@@ -40,16 +45,19 @@
     <script src="js/app.js"></script>
 
     <!-- ng controllers -->
-    <script src="js/controllers/menu.js"></script>
+    <script src="js/controllers/menu.js"></script>    
     <script src="js/controllers/map.js"></script>
     <script src="js/controllers/spot.js"></script>
     <script src="js/controllers/spots.js"></script>
+    <script src="js/controllers/draw.js"></script>
     <script src="js/controllers/offlinemap.js"></script>
 
     <!-- ng services -->
     <script src="js/services/spots.js"></script>
     <script src="js/services/newspot.js"></script>
     <script src="js/services/mapview.js"></script>
+
+    
     
     </head>
     <body ng-app="app">

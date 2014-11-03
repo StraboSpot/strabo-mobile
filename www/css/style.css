@@ -1,3 +1,7 @@
 /* Empty. Add your own CSS if you like */
 
 .map { height: 100%; }
+
+.glyph-active {
+	border:1 solid #000;
+}

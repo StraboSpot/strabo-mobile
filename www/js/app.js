@@ -49,6 +49,16 @@ angular.module('app', [
       }
     })
 
+    .state('app.draw', {
+      url: "/draw",
+      views: {
+        'menuContent' :{
+          templateUrl: "templates/draw.html",
+          controller: 'DrawCtrl'
+        }
+      }
+    })
+
     .state('app.offlinemap', {
       url: "/offlinemap",
       views: {

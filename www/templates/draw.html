@@ -1,0 +1,28 @@
+<ion-view title="Strabo Mobile">
+    <ion-nav-buttons side="left">
+        <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+    </ion-nav-buttons>
+
+
+    <ion-content>
+        
+
+        <div id="mapdiv" style="height:100%"></div>
+
+        <button ng-class="{ 'button button-icon icon ion-mouse glyph-active': drawButtonActive === 'Point',
+                    'button button-icon icon ion-mouse': drawButtonActive !== 'Point'
+                      }" ng-click='startDraw("Point")' style='position: absolute; top:300px;'></button>
+
+        <button ng-class="{
+                    'button button-icon icon ion-wineglass glyph-active': drawButtonActive === 'LineString',
+                    'button button-icon icon ion-wineglass': drawButtonActive !== 'LineString'
+                      }" ng-click='startDraw("LineString")' style='position: absolute; top:350px;'></button>
+
+        <button ng-class="{
+                    'button button-icon icon ion-ios7-star-outline glyph-active': drawButtonActive === 'Polygon',
+                    'button button-icon icon ion-ios7-star-outline': drawButtonActive !== 'Polygon'
+                     }" ng-click='startDraw("Polygon")' style='position: absolute; top:400px;'></button>
+
+    </ion-content>
+
+</ion-view>
