@@ -1,127 +1,146 @@
 angular.module('app')
 
-  .controller("MapCtrl", function($scope, leafletData, $cordovaGeolocation, $location, $filter, $ionicViewService, Spots, NewSpot, MapView) {
-    angular.extend($scope, {
-      center: {
-        lat: 39.828127,
-        lng: -98.579404,
-        zoom: 4
-      },
-      layers: {
-        baselayers: {
-          mq: {
-            name: 'MapQuest',
-            type: 'xyz',
-            url: 'http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg',
-            layerOptions: {
-              subdomains: '1234',
-              attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">',
-              continuousWorld: true
-            }
-          },
-          mqAerial: {
-            name: 'MapQuestAerial',
-            type: 'xyz',
-            url: 'http://otile{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpeg',
-            layerOptions: {
-              subdomains: '1234',
-              attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">',
-              continuousWorld: true
-            }
-          },
-          osm: {
-            name: 'OpenStreetMap',
-            type: 'xyz',
-            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            layerOptions: {
-              subdomains: ['a', 'b', 'c'],
-              attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-              continuousWorld: true
-            }
-          }
+.controller("MapCtrl", function($scope, $rootScope, $cordovaGeolocation, $location, $filter, $ionicViewService, Spots, NewSpot, MapView) {
+
+    var map;
+    var drawLayer;
+
+    // drawButtonActive used to keep state of which selected drawing tool is active
+    $scope.drawButtonActive = null;
+
+    // draw is a ol3 drawing interaction
+    var draw;
+
+    $scope.startDraw = function(type) {
+
+        //if the type is already selected, we want to stop drawing
+        if ($scope.drawButtonActive === type) {
+            $scope.drawButtonActive = null;
+            $scope.cancelDraw();
+            return;
+        } else {
+            $scope.drawButtonActive = type;
         }
-      },
-      defaults: {
-        scrollWheelZoom: false
-      }
-    });
-    
-    // Load markers
-    $scope.getMarkers = function() {
-      $scope.spots = Spots.all();
-      var markers = [];
-      for (var i=0; i<$scope.spots.length; i++) {  
-        var lat = $scope.spots[i].lat;
-        var lng = $scope.spots[i].lng;
-        if (lat && lng) {
-          var message = "<b>"+$scope.spots[i].name+"</b><br />" + lat.toFixed(4) + ", " + lng.toFixed(4) + "<br /> More info here."
-          var marker = {
-              lat: lat,
-              lng: lng,
-              focus: false,
-              message: message,
-              draggable: false,
-          };
-          markers.push(marker);
+
+        // is draw already set?
+        if (draw != null) {
+            // yes, stop and remove the drawing interaction
+            $scope.cancelDraw();
         }
-      }
-      return markers;
+
+        draw = new ol.interaction.Draw({
+            source: drawLayer.getSource(),
+            type: type
+        });
+
+        draw.on("drawend", function(e) {
+
+            // we want a geojson object when the user finishes drawing
+            var geojson = new ol.format.GeoJSON;
+
+            // the actual geojson object
+            var geojsonObj = geojson.writeFeature(e.feature, {
+                featureProjection: "EPSG:3857"
+            });
+
+            // console.log(geojsonObj);
+
+
+            // Initialize new Spot
+            NewSpot.setGeoJson(geojsonObj);
+
+            // If we got to the map from the spot view go back to that view
+            var backView = $ionicViewService.getBackView();
+            if (backView) {
+                if (backView.stateName == "app.spot") {
+                    backView.go();
+                }
+            } else {
+                MapView.setRestoreView(true);
+
+                $rootScope.$apply(function() {
+                    $location.path("/app/spots/newspot");
+                });
+
+
+            }
+
+
+
+        });
+
+        map.addInteraction(draw);
     }
 
-    // Point markers
-    $scope.markers = $scope.getMarkers();              
+    $scope.cancelDraw = function() {
+        if (draw == null) return;
+
+        map.removeInteraction(draw);
+    }
+
+    // lets create a new map
+    map = new ol.Map({
+        target: 'mapdiv',
+        view: new ol.View({
+            center: [-11000000, 4600000],
+            zoom: 4
+        })
+    });
+
+    //OSM layer
+    var OsmLayer = new ol.layer.Tile({
+        source: new ol.source.OSM()
+    });
+
+    map.addLayer(OsmLayer);
+
+
+    //Zoom
+    var myZoom = new ol.control.Zoom();
+    map.addControl(myZoom);
+
+    // layer where the drawing will go to
+    drawLayer = new ol.layer.Vector({
+        source: new ol.source.Vector(),
+        style: new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: 'rgba(255, 255, 255, 0.2)'
+            }),
+            stroke: new ol.style.Stroke({
+                color: '#ffcc33',
+                width: 2
+            }),
+            image: new ol.style.Circle({
+                radius: 7,
+                fill: new ol.style.Fill({
+                    color: '#ffcc33'
+                })
+            })
+        })
+    });
+
+    map.addLayer(drawLayer);
+
 
     // Get current position
-    $scope.getLocation = function(){
-      $cordovaGeolocation.getCurrentPosition().then(function (position) {
-        $scope.updateMap(position.coords.latitude, position.coords.longitude, 18);
-        }, function(err) {
-          alert("Unable to get location: " + err.message);
-      });
+    $scope.getLocation = function() {
+        $cordovaGeolocation.getCurrentPosition()
+            .then(function(position) {
+
+                var lat = position.coords.latitude;
+                var lng = position.coords.longitude;
+
+                var newView = new ol.View({
+                    center: ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
+                    zoom: 18
+                });
+
+                map.setView(newView);
+
+            }, function(err) {
+                alert("Unable to get location: " + err.message);
+            });
     }
 
-    // Redraw map with new center and zoom
-    $scope.updateMap = function(lat, lng, zoom) {
-      leafletData.getMap().then(function(map) {
-        map.setView(new L.LatLng(lat, lng), zoom);});
-    }
-    
-    // Watch the Lat, Long and Zoom so we can return to that view if we need to
-    $scope.$watch("center.zoom", function(zoom) {
-      MapView.setZoom(zoom);
-      MapView.setRestoreView(true);
-    });
-    $scope.$watch("center.lat", function(lat) {
-      MapView.setLat(lat);
-      MapView.setRestoreView(true);
-    });
-    $scope.$watch("center.lng", function(lng) {
-      MapView.setLng(lng);
-      MapView.setRestoreView(true);
-    });
-    
-    // Return to the previous map view
-    if (MapView.getRestoreView() == true) {
-      $scope.updateMap(MapView.getMapView().lat, MapView.getMapView().lng, MapView.getMapView().zoom);
-      //MapView.setRestoreView(false);
-    }
-    
-    leafletData.getMap().then(function(map) {
-      map.on('click', function (e) {
-        // Initialize new Spot
-        NewSpot.setNewLocation(e.latlng.lat, e.latlng.lng);
-        
-        // If we got to the map from the spot view go back to that view
-        var backView = $ionicViewService.getBackView();
-        if (backView) {
-          if (backView.stateName == "app.spot") {
-            backView.go();
-          }
-        }
-        else {
-          MapView.setRestoreView(true);
-          $location.path("/app/spots/newspot");
-        }
-      });
-    });
-  });
+
+});

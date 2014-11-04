@@ -21,12 +21,8 @@
         </ion-buttons>
       </div>
       <label class="item item-input">
-        <span class="input-label">Longitude</span>
-        <input type="number" ng-model="spot.lng" value={{spot.lng}}>
-      </label>
-      <label class="item item-input">
-        <span class="input-label">Latitude</span>
-        <input type="number" ng-model="spot.lat" value={{spot.lat}}>
+        <span class="input-label">geojson</span>
+        <input type="string" ng-model="spot.geojson" value={{spot.geojson}} ng-disabled="true">
       </label>
       <div class="item item-divider">
         Spot Type

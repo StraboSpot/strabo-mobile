@@ -3,6 +3,10 @@ angular.module('app')
 // Set the lat and long when adding a spot by clicking on the map
 .service('NewSpot', function() {
   var newLocation = {};
+
+  var setGeoJson = function(geojson) {
+    newLocation.geojson = geojson;
+  }
   
   var setNewLocation = function(lat, lng) {
     newLocation.newSpotLat = lat;
@@ -18,6 +22,7 @@ angular.module('app')
   }
   
   return {
+    setGeoJson: setGeoJson,
     setNewLocation: setNewLocation,
     getNewLocation: getNewLocation,
     clearNewLocation: clearNewLocation

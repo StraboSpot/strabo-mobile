@@ -7,10 +7,10 @@ angular.module('app')
     
     // Load or initialize current Spot
     $scope.spot = Spots.getSpot($scope.spots, $stateParams.spotId, $filter);
-    if (NewSpot.getNewLocation().newSpotLat)
-      $scope.spot.lat = NewSpot.getNewLocation().newSpotLat;
-    if (NewSpot.getNewLocation().newSpotLng)
-      $scope.spot.lng = NewSpot.getNewLocation().newSpotLng;
+
+    if (NewSpot.getNewLocation().geojson)
+      $scope.spot.geojson = JSON.stringify(NewSpot.getNewLocation().geojson);
+
     NewSpot.clearNewLocation();
     
     // Define Spot parameters
@@ -38,16 +38,6 @@ angular.module('app')
     $scope.submit = function() {
       if(!$scope.spot.name) {
         alert('Name required');
-        return;
-      }
-      
-      if (isNaN($scope.spot.lat) || $scope.spot.lat < -180 || $scope.spot.lat > 180) {
-        alert('Invalid latitude');
-        return;
-      }
-      
-      if (isNaN($scope.spot.lng) || $scope.spot.lng < -180 || $scope.spot.lng > 180) {
-        alert('Invalid longitude');
         return;
       }
 

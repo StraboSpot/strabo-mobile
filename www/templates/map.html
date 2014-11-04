@@ -1,11 +1,27 @@
 <ion-view title="Strabo Mobile">
-  <ion-nav-buttons side="left">
-    <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
-  </ion-nav-buttons>
-  <ion-nav-buttons side="right">
-    <button ng-click="getLocation();" class="button button-icon icon ion-pinpoint"></button>    
-  </ion-nav-buttons>
-  <ion-content data-tap-disabled="true" ng-controller="MapCtrl">
-      <leaflet center="center" layers="layers" markers="markers" class="map"></leaflet>
-  </ion-content>
+    <ion-nav-buttons side="left">
+        <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+        <button ng-click="getLocation();" class="button button-icon icon ion-pinpoint"></button>
+    </ion-nav-buttons>
+    <ion-content data-tap-disabled="true">
+
+        <div id="mapdiv" style="height:100%"></div>
+
+        <button ng-class="{ 'button button-icon icon ion-more glyph-active': drawButtonActive === 'Point',
+                    'button button-icon icon ion-more': drawButtonActive !== 'Point'
+                      }" ng-click='startDraw("Point")' style='position: absolute; top:100px;'></button>
+
+        <button ng-class="{
+                    'button button-icon icon ion-arrow-graph-up-right glyph-active': drawButtonActive === 'LineString',
+                    'button button-icon icon ion-arrow-graph-up-right': drawButtonActive !== 'LineString'
+                      }" ng-click='startDraw("LineString")' style='position: absolute; top:150px;'></button>
+
+        <button ng-class="{
+                    'button button-icon icon ion-ios7-star-outline glyph-active': drawButtonActive === 'Polygon',
+                    'button button-icon icon ion-ios7-star-outline': drawButtonActive !== 'Polygon'
+                     }" ng-click='startDraw("Polygon")' style='position: absolute; top:200px;'></button>
+
+    </ion-content>
 </ion-view>
