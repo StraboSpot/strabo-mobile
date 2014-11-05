@@ -5,7 +5,8 @@ angular.module('app')
   var newLocation = {};
 
   var setGeoJson = function(geojson) {
-    newLocation.geojson = geojson;
+    //newLocation.geojson = geojson;
+    newLocation = geojson;
   }
   
   var setNewLocation = function(lat, lng) {

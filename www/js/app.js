@@ -1,6 +1,6 @@
 angular.module('app', [
   'ionic',
-  'leaflet-directive',
+ // 'openlayers-directive',
   'ngCordova',
   'LocalForageModule'
 ])

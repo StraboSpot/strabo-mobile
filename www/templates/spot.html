@@ -7,11 +7,11 @@
   <ion-content class="has-header">
     <form class="list">
       <label class="item item-input">
-        <input type="text" placeholder="Name" ng-model="spot.name">
+        <input type="text" placeholder="Name" ng-model="spot.properties.name">
       </label>
       <label class="item item-input">
         <span class="input-label">Date</span>
-        <input type="date" ng-model="spot.date" value={{spot.date}}>
+        <input type="date" ng-model="spot.properties.date" value={{spot.properties.date}}>
       </label>
       <div class="item item-divider">
         Location
@@ -22,20 +22,20 @@
       </div>
       <label class="item item-input">
         <span class="input-label">geojson</span>
-        <input type="string" ng-model="spot.geojson" value={{spot.geojson}} ng-disabled="true">
+        <input type="string" ng-model="spot.geometry" value={{spot.geometry.type}} ng-disabled="true">
       </label>
       <div class="item item-divider">
         Spot Type
       </div>
       <ion-radio ng-repeat="spotType in spotTypes"
                  ng-value="spotType.value"
-                 ng-model="spot.spotType">
+                 ng-model="spot.properties.spotType">
         {{ spotType.text }}
       </ion-radio>
       <div class="item item-divider">
         More Detail
       </div>
-      <ion-toggle ng-model="spot.myValue">
+      <ion-toggle ng-model="spot.properties.myValue">
         True or False Input
       </ion-toggle>
       <div class="padding">

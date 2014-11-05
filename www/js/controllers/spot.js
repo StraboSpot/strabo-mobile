@@ -8,8 +8,9 @@ angular.module('app')
     // Load or initialize current Spot
     $scope.spot = Spots.getSpot($scope.spots, $stateParams.spotId, $filter);
 
-    if (NewSpot.getNewLocation().geojson)
-      $scope.spot.geojson = JSON.stringify(NewSpot.getNewLocation().geojson);
+    if (NewSpot.getNewLocation())
+      $scope.spot = NewSpot.getNewLocation();
+      //$scope.spot.geojson = JSON.stringify(NewSpot.getNewLocation().geojson);
 
     NewSpot.clearNewLocation();
     
@@ -36,15 +37,15 @@ angular.module('app')
     
     // Add or modify Spot
     $scope.submit = function() {
-      if(!$scope.spot.name) {
+      if(!$scope.spot.properties.name) {
         alert('Name required');
         return;
       }
 
-      if (typeof $scope.spot.id == "undefined")
-        $scope.spot.id = $scope.spots.length;
+      if (typeof $scope.spot.properties.id == "undefined")
+        $scope.spot.properties.id = $scope.spots.length;
 
-      $scope.spots[$scope.spot.id] = $scope.spot;
+      $scope.spots[$scope.spot.properties.id] = $scope.spot;
       Spots.save($scope.spots);
 
       // Go back one view in history

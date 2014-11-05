@@ -21,10 +21,12 @@ angular.module('app')
         thisSpot = {};
       else
         thisSpot = spots[id];
-   
-      if(!thisSpot.date)
-        thisSpot.date = filter("date")(Date.now(), 'yyyy-MM-dd');
-      
+   /*
+      if(!thisSpot.properties) {
+        thisSport.properties = {};
+        if(!thisSport.properties)
+          thisSport.properties.date = filter("date")(Date.now(), 'yyyy-MM-dd');
+      }*/
       return thisSpot;
     },
     save: function(spots) {

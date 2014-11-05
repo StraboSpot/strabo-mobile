@@ -94,7 +94,26 @@ angular.module('app')
 
     map.addLayer(OsmLayer);
 
+    
+    // Sample geojson spot
+    var test = {
+        'type': 'Feature',
+        'geometry': {
+            'type': 'Point',
+            'coordinates': [-98.579404, 46]
+        }
+    };
 
+    // Vector layer from a geojson object
+    var gjsonObject = new ol.layer.Vector({
+        source: new ol.source.GeoJSON({
+            object: test,
+            projection: 'EPSG:3857'
+        })
+    });
+
+    map.addLayer(gjsonObject);
+  
     //Zoom
     var myZoom = new ol.control.Zoom();
     map.addControl(myZoom);
