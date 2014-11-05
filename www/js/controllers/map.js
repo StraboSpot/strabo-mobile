@@ -94,26 +94,25 @@ angular.module('app')
 
     map.addLayer(OsmLayer);
 
-    
-    // Sample geojson spot
-    var test = {
-        'type': 'Feature',
-        'geometry': {
-            'type': 'Point',
-            'coordinates': [-98.579404, 46]
-        }
-    };
+    // we want to load all the geojson markers from the persistence storage onto the map
 
-    // Vector layer from a geojson object
-    var gjsonObject = new ol.layer.Vector({
-        source: new ol.source.GeoJSON({
-            object: test,
-            projection: 'EPSG:3857'
-        })
+    // creates a ol vector layer for supplied geojson object
+    var geojsonToVectorLayer = function(geojson) {
+        return new ol.layer.Vector({
+            source: new ol.source.GeoJSON({
+                object: geojson,
+                projection: 'EPSG:3857'
+            })
+        });
+    }
+    
+    // loop through all spots and create ol vector layers
+    Spots.all().forEach(function(geojson, index){
+        // add each layer to the map
+        map.addLayer(geojsonToVectorLayer(geojson));
     });
 
-    map.addLayer(gjsonObject);
-  
+
     //Zoom
     var myZoom = new ol.control.Zoom();
     map.addControl(myZoom);
