@@ -1,18 +1,20 @@
 angular.module('app')
 
-  .controller('SpotCtrl', function($scope, $stateParams, $location, $filter, Spots, NewSpot, $ionicViewService, $cordovaGeolocation) {
+  .controller('SpotCtrl', function($scope, $stateParams, $location, Spots, NewSpot, $ionicViewService, $cordovaGeolocation) {
   
     // Load or initialize Spot
     $scope.spots = Spots.all();
-    
-    // Load or initialize current Spot
-    $scope.spot = Spots.getSpot($scope.spots, $stateParams.spotId, $filter);
 
-    if (NewSpot.getNewLocation())
-      $scope.spot = NewSpot.getNewLocation();
-      //$scope.spot.geojson = JSON.stringify(NewSpot.getNewLocation().geojson);
+    // Initialize new Spot
+    if (NewSpot.getNewSpot()) {
+      $scope.spot = NewSpot.getNewSpot();
+      NewSpot.clearNewSpot();
+    }
+    // Load current Spot
+    else
+      $scope.spot = $scope.spots[$stateParams.spotId];  
 
-    NewSpot.clearNewLocation();
+    $scope.friendlyGeom = JSON.stringify($scope.spot.geometry);
     
     // Define Spot parameters
     $scope.spotTypes = [
@@ -22,16 +24,21 @@ angular.module('app')
       ];
     
     // Get current location
-    $scope.getLocation = function(){
-      $cordovaGeolocation.getCurrentPosition().then(function (position) {
-        $scope.spot.lat = position.coords.latitude;
-        $scope.spot.lng = position.coords.longitude;
-        }, function(err) {
-          alert("Unable to get location: " + err.message);
+    $scope.getLocation = function() {
+      $cordovaGeolocation.getCurrentPosition().then(function(position) {
+        $scope.spot.geometry = {
+          type: "Point",
+          coordinates: [position.coords.longitude, position.coords.latitude]
+        }
+        $scope.friendlyGeom = JSON.stringify($scope.spot.geometry);
+      }, function(err) {
+        alert("Unable to get location: " + err.message);
       });
     }
     
     $scope.openMap = function(){
+      // Save current spot
+      NewSpot.setNewSpot($scope.spot);
       $location.path("/app/map");
     }
     

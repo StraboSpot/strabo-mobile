@@ -14,21 +14,6 @@ angular.module('app')
       }
       return [];
     },
-    getSpot: function(spots, id, filter) {
-      var thisSpot;
-      
-      if(id == "newspot")
-        thisSpot = {};
-      else
-        thisSpot = spots[id];
-   /*
-      if(!thisSpot.properties) {
-        thisSport.properties = {};
-        if(!thisSport.properties)
-          thisSport.properties.date = filter("date")(Date.now(), 'yyyy-MM-dd');
-      }*/
-      return thisSpot;
-    },
     save: function(spots) {
       window.localStorage['spots'] = angular.toJson(spots);
     }

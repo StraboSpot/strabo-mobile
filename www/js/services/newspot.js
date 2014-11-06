@@ -1,32 +1,51 @@
 angular.module('app')
 
-// Set the lat and long when adding a spot by clicking on the map
-.service('NewSpot', function() {
-  var newLocation = {};
+// Service for dealing with the creation of new spots and editing of existing spots
+.service('NewSpot', function($filter) {
+  var newSpot;
 
-  var setGeoJson = function(geojson) {
-    //newLocation.geojson = geojson;
-    newLocation = geojson;
+  // Initialize a new Spot
+  var setNewSpot = function(geojsonObj) {
+    if (!newSpot)
+      newSpot = {};
+      
+    // If Spot already exists or was created from map
+    // (Spot already has geometry and maybe properties too)
+    if (geojsonObj) {
+      if (geojsonObj.geometry)
+        newSpot.geometry = geojsonObj.geometry;
+      if (geojsonObj.type)
+        newSpot.type = geojsonObj.type
+      if (geojsonObj.properties)
+        newSpot.properties = geojsonObj.properties
+      else {
+        if (!newSpot.properties) {
+          newSpot.properties = {
+            date: $filter("date")(Date.now(), 'yyyy-MM-dd')
+          };
+        }
+      }
+    }
+    // If new Spot created from Spots menu (Spot has no geometry yet)
+    else {
+      newSpot.properties = {
+        date: $filter("date")(Date.now(), 'yyyy-MM-dd')
+      };
+    }
   }
   
-  var setNewLocation = function(lat, lng) {
-    newLocation.newSpotLat = lat;
-    newLocation.newSpotLng = lng;
+  var getNewSpot = function() {
+    return newSpot;
   }
   
-  var getNewLocation = function() {
-    return newLocation;
-  }
-  
-  var clearNewLocation = function() {
-    newLocation = {};
+  var clearNewSpot = function() {
+    newSpot = null;
   }
   
   return {
-    setGeoJson: setGeoJson,
-    setNewLocation: setNewLocation,
-    getNewLocation: getNewLocation,
-    clearNewLocation: clearNewLocation
+    setNewSpot: setNewSpot,
+    getNewSpot: getNewSpot,
+    clearNewSpot: clearNewSpot
   };
 })
   
