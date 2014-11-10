@@ -5,14 +5,28 @@ angular.module('app')
     // Load or initialize Spot
     $scope.spots = Spots.all();
 
+    $scope.point = {};
+
     // Initialize new Spot
     if (NewSpot.getNewSpot()) {
       $scope.spot = NewSpot.getNewSpot();
+      
+      // now clear the new spot from the service because we have the info in our current scope
       NewSpot.clearNewSpot();
     }
     // Load current Spot
     else
       $scope.spot = $scope.spots[$stateParams.spotId];  
+
+    // is the new spot a single point?
+    if ($scope.spot.geometry && $scope.spot.geometry.type === "Point") {
+      // toggles the Lat/Lng input boxes based on available Lat/Lng data
+      $scope.showLatLng = true;  
+
+      // pre-assign the lat/lng from the geometry
+      $scope.point.latitude = $scope.spot.geometry.coordinates[1];
+      $scope.point.longitude = $scope.spot.geometry.coordinates[0];
+    }
 
     $scope.friendlyGeom = JSON.stringify($scope.spot.geometry);
     
@@ -26,6 +40,11 @@ angular.module('app')
     // Get current location
     $scope.getLocation = function() {
       $cordovaGeolocation.getCurrentPosition().then(function(position) {
+
+        // assign the lat/lng upon getting location
+        $scope.point.latitude = position.coords.latitude;
+        $scope.point.longitude = position.coords.longitude;
+
         $scope.spot.geometry = {
           type: "Point",
           coordinates: [position.coords.longitude, position.coords.latitude]
@@ -44,9 +63,20 @@ angular.module('app')
     
     // Add or modify Spot
     $scope.submit = function() {
+
       if(!$scope.spot.properties.name) {
         alert('Name required');
         return;
+      }
+
+      // define the geojson feature type
+      $scope.spot.type = "Feature";
+
+      // is the new spot a single point?
+      if ($scope.spot.geometry.type === "Point") {
+        // yes, replace the geojson geometry with the lat/lng from the input fields
+        $scope.spot.geometry.coordinates[1] = $scope.point.latitude;
+        $scope.spot.geometry.coordinates[0] = $scope.point.longitude;
       }
 
       if (typeof $scope.spot.properties.id == "undefined")

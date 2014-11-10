@@ -22,6 +22,14 @@
       </div>
       <label class="item item-input">
         <input type="string" ng-model="friendlyGeom" value={{friendlyGeom}} ng-disabled="true">
+      </label>        
+      <label class="item item-input" ng-show="showLatLng">
+        <span class="input-label">Latitude</span>
+        <input type="number" ng-model="point.latitude" value={{point.latitude}}>
+      </label>
+      <label class="item item-input" ng-show="showLatLng">
+        <span class="input-label">Longitude</span>
+        <input type="number" ng-model="point.longitude" value={{point.longitude}}>
       </label>
       <div class="item item-divider">
         Spot Type
