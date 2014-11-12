@@ -1,15 +1,103 @@
 angular.module('app')
 
-.controller("MapCtrl", function($scope, $rootScope, $cordovaGeolocation, $location, $filter, $ionicViewService, Spots, NewSpot, MapView) {
+.controller("MapCtrl", function(
+  $scope,
+  $rootScope,
+  $cordovaGeolocation,
+  $location,
+  $filter,
+  $ionicViewService,
+  Spots,
+  NewSpot,
+  MapView,
+  $localForage) {
 
   var map;
   var drawLayer;
+
+  // number of tiles we have in offline storage
+  $scope.numOfflineTiles = 0;
+
+  $scope.airplaneMode = true;
+
+  // lets create a new map
+  map = new ol.Map({
+    target: 'mapdiv',
+    view: new ol.View({
+      center: [-11000000, 4600000],
+      zoom: 4
+    })
+  });
+
+  // toggles whether we are in airplane or internet mode
+  $scope.toggleAirplaneMode = function() {
+    if ($scope.airplaneMode === false) {
+      $scope.airplaneMode = true;
+    } else {
+      $scope.airplaneMode = false;
+      // clear the tiles, because we need to redraw with internet tiles
+      OfflineTileSource.tileCache.clear();
+      // re-render the map
+      map.render();
+    }
+  };
+
+  $scope.updateOfflineTileCount = function() {
+    // get the image count
+    localforage.length(function(err, numberOfKeys) {
+      $scope.$apply(function() {
+        // update the number of offline tiles to scope
+        $scope.numOfflineTiles = err || numberOfKeys;
+      });
+    });
+  };
+
+  $scope.clearOfflineTile = function() {
+    if (window.confirm("Do you want to delete ALL offline tiles?")) {
+      // ok, lets delete now because the user has confirmed ok
+      localforage.clear(function(err) {
+        $scope.updateOfflineTileCount();
+        alert('Offline tiles are now empty');
+        // reload the map layer because the offline tiles are empty
+        OfflineTileSource.tileCache.clear();
+        // re-render the map
+        map.render();
+        //TODO: do we want to reset airplane mode?
+      });
+    }
+  };
 
   // drawButtonActive used to keep state of which selected drawing tool is active
   $scope.drawButtonActive = null;
 
   // draw is a ol3 drawing interaction
   var draw;
+
+  var osmUrlPrefix = 'http://b.tile.openstreetmap.org/';
+
+  var writeTileToStorage = function(tileId, blob, callback) {
+    localforage.setItem(tileId, blob).then(function() {
+      // console.log("wrote localforage, ", tileId);
+      callback();
+    });
+  };
+
+  var downloadInternetMapTile = function(tileId, callback) {
+    //no, user wants to retrieve data from the internet
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', osmUrlPrefix + tileId + ".png", true);
+    xhr.responseType = 'arraybuffer';
+    xhr.onload = function(e) {
+      if (this.status == 200) {
+        // Note: .response instead of .responseText
+        var blob = new Blob([this.response], {
+          type: 'image/png'
+        });
+        callback(blob);
+      }
+    };
+    xhr.send();
+  };
 
   $scope.startDraw = function(type) {
     //if the type is already selected, we want to stop drawing
@@ -38,7 +126,7 @@ angular.module('app')
 
       // the actual geojson object
       var geojsonObj = geojson.writeFeature(e.feature, {
-          featureProjection: "EPSG:3857"
+        featureProjection: "EPSG:3857"
       });
       // console.log(geojsonObj);
 
@@ -55,7 +143,7 @@ angular.module('app')
         MapView.setRestoreView(true);
 
         $rootScope.$apply(function() {
-            $location.path("/app/spots/newspot");
+          $location.path("/app/spots/newspot");
         });
       }
     });
@@ -67,20 +155,75 @@ angular.module('app')
     map.removeInteraction(draw);
   }
 
-  // lets create a new map
-  map = new ol.Map({
-    target: 'mapdiv',
-    view: new ol.View({
-      center: [-11000000, 4600000],
-      zoom: 4
-    })
+  // converts blobs to base64
+  var blobToBase64 = function(blob, callback) {
+    var reader = new window.FileReader();
+    reader.readAsDataURL(blob);
+    reader.onloadend = function() {
+      base64data = reader.result;
+      callback(base64data);
+    }
+  }
+
+  var OfflineTileSource = new ol.source.OSM({
+    tileLoadFunction: function(imageTile, src) {
+
+      // the tile we will be loading
+      var imgElement = imageTile.getImage();
+
+      // the tile coordinates (x,y,z)
+      var imageCoords = imageTile.getTileCoord();
+
+      // y needs to be corrected using (-y - 1)
+      var y = (imageCoords[2] * -1) - 1;
+
+      var z = imageCoords[0];
+      var x = imageCoords[1];
+
+      var tileId = z + "/" + x + "/" + y;
+
+      // check to see if we have the tile in our offline storage
+      localforage.getItem(tileId).then(function(blob) {
+
+        // update how many tiles we have
+        $scope.updateOfflineTileCount();
+
+        // do we have the image already?
+        if (blob != null) {
+          // yes, lets load the tile into the map
+          blobToBase64(blob, function(base64data) {
+            imgElement.src = base64data;
+          });
+        } else {
+          // no, there is no such image in cache
+          // are we in airplane mode?
+          if ($scope.airplaneMode) {
+            // yes, show the user the tile is unavailable
+            imgElement.src = "img/offlineTiles/zoom" + z + ".png";
+          } else {
+            // nope, we are in internet mode!  Lets try to get it from the internet first
+            downloadInternetMapTile(tileId, function(blob) {
+              // load the blob into an image
+              blobToBase64(blob, function(base64data) {
+                imgElement.src = base64data;
+              });
+              // now try to write to offline storage
+              writeTileToStorage(tileId, blob, function(blob) {
+                // console.log("wrote ", tileId);
+              });
+            });
+          }
+        }
+      });
+    }
   });
 
-  //OSM layer
-  var OsmLayer = new ol.layer.Tile({
-    source: new ol.source.OSM()
+  var OfflineTileLayer = new ol.layer.Tile({
+    source: OfflineTileSource
   });
-  map.addLayer(OsmLayer);
+
+  // add the offline tile layer to the map
+  map.addLayer(OfflineTileLayer);
 
   // we want to load all the geojson markers from the persistence storage onto the map
 
@@ -88,19 +231,18 @@ angular.module('app')
   var geojsonToVectorLayer = function(geojson) {
     return new ol.layer.Vector({
       source: new ol.source.GeoJSON({
-          object: geojson,
-          projection: 'EPSG:3857'
+        object: geojson,
+        projection: 'EPSG:3857'
       })
     });
   }
-  
+
   // Loop through all spots and create ol vector layers
-  Spots.all().forEach(function(geojson, index){
+  Spots.all().forEach(function(geojson, index) {
     try {
       // add each layer to the map
       map.addLayer(geojsonToVectorLayer(geojson));
-    }
-    catch(err){
+    } catch (err) {
       // GeoJSON isn't properly formed
       console.log("Invalid GeoJSON: " + JSON.stringify(geojson));
     }
@@ -137,8 +279,8 @@ angular.module('app')
       var lat = position.coords.latitude;
       var lng = position.coords.longitude;
       var newView = new ol.View({
-          center: ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
-          zoom: 18
+        center: ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
+        zoom: 18
       });
       map.setView(newView);
     }, function(err) {
