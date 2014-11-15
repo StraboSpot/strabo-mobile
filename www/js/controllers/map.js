@@ -10,7 +10,7 @@ angular.module('app')
   Spots,
   NewSpot,
   MapView,
-  $localForage) {
+  OfflineTilesFactory) {
 
   var map;
   var drawLayer;
@@ -44,18 +44,19 @@ angular.module('app')
 
   $scope.updateOfflineTileCount = function() {
     // get the image count
-    localforage.length(function(err, numberOfKeys) {
+    OfflineTilesFactory.getOfflineTileCount(function(count) {
       $scope.$apply(function() {
         // update the number of offline tiles to scope
-        $scope.numOfflineTiles = err || numberOfKeys;
+        $scope.numOfflineTiles = count;
       });
+
     });
   };
 
   $scope.clearOfflineTile = function() {
     if (window.confirm("Do you want to delete ALL offline tiles?")) {
       // ok, lets delete now because the user has confirmed ok
-      localforage.clear(function(err) {
+      OfflineTilesFactory.clear(function(err) {
         $scope.updateOfflineTileCount();
         alert('Offline tiles are now empty');
         // reload the map layer because the offline tiles are empty
@@ -72,32 +73,6 @@ angular.module('app')
 
   // draw is a ol3 drawing interaction
   var draw;
-
-  var osmUrlPrefix = 'http://b.tile.openstreetmap.org/';
-
-  var writeTileToStorage = function(tileId, blob, callback) {
-    localforage.setItem(tileId, blob).then(function() {
-      // console.log("wrote localforage, ", tileId);
-      callback();
-    });
-  };
-
-  var downloadInternetMapTile = function(tileId, callback) {
-    //no, user wants to retrieve data from the internet
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', osmUrlPrefix + tileId + ".png", true);
-    xhr.responseType = 'arraybuffer';
-    xhr.onload = function(e) {
-      if (this.status == 200) {
-        // Note: .response instead of .responseText
-        var blob = new Blob([this.response], {
-          type: 'image/png'
-        });
-        callback(blob);
-      }
-    };
-    xhr.send();
-  };
 
   $scope.startDraw = function(type) {
     //if the type is already selected, we want to stop drawing
@@ -183,7 +158,7 @@ angular.module('app')
       var tileId = z + "/" + x + "/" + y;
 
       // check to see if we have the tile in our offline storage
-      localforage.getItem(tileId).then(function(blob) {
+      OfflineTilesFactory.read(tileId, function(blob) {
 
         // update how many tiles we have
         $scope.updateOfflineTileCount();
@@ -202,13 +177,13 @@ angular.module('app')
             imgElement.src = "img/offlineTiles/zoom" + z + ".png";
           } else {
             // nope, we are in internet mode!  Lets try to get it from the internet first
-            downloadInternetMapTile(tileId, function(blob) {
+            OfflineTilesFactory.downloadInternetMapTile(tileId, function(blob) {
               // load the blob into an image
               blobToBase64(blob, function(base64data) {
                 imgElement.src = base64data;
               });
               // now try to write to offline storage
-              writeTileToStorage(tileId, blob, function(blob) {
+              OfflineTilesFactory.write(tileId, blob, function(blob) {
                 // console.log("wrote ", tileId);
               });
             });
