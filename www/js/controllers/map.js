@@ -20,13 +20,78 @@ angular.module('app')
 
   $scope.airplaneMode = true;
 
+  // added draw controls
+  var drawControls = function(opt_options) {
+
+    var options = opt_options || {};
+
+    var drawPoint, drawLine, drawPoly;
+
+    drawPoint = document.createElement('a');
+    drawPoint.id = 'drawPointControl';
+    drawPoint.href = '#drawPointControl';
+    drawPoint.innerHTML = '&#183;'; // point, middle dot
+
+    drawLine = document.createElement('a');
+    drawLine.id = 'drawLineControl';
+    drawLine.href = '#drawLineControl';
+    drawLine.innerHTML = '/'; // line, slash
+
+    drawPoly = document.createElement('a');
+    drawPoly.id = 'drawPolyControl';
+    drawPoly.href = '#drawPolyControl';
+    drawPoly.style.fontSize = '30px';
+    drawPoly.innerHTML = '&squf;'; // poly, filled square
+
+    var handleDrawPoint = function(e) {
+      e.preventDefault();
+      $scope.startDraw("Point");
+    };
+    var handleDrawLine = function(e) {
+      e.preventDefault();
+      $scope.startDraw("LineString");
+    };
+    var handleDrawPoly = function(e) {
+      e.preventDefault();
+      $scope.startDraw("Polygon");
+    };
+
+    drawPoint.addEventListener('click', handleDrawPoint, false);
+    drawPoint.addEventListener('touchstart', handleDrawPoint, false);
+
+    drawLine.addEventListener('click', handleDrawLine, false);
+    drawLine.addEventListener('touchstart', handleDrawLine, false);
+
+    drawPoly.addEventListener('click', handleDrawPoly, false);
+    drawPoly.addEventListener('touchstart', handleDrawPoly, false);
+
+    var element = document.createElement('div');
+    element.className = 'draw-controls ol-unselectable';
+
+    element.appendChild(drawPoint);
+    element.appendChild(drawLine);
+    element.appendChild(drawPoly);
+
+    ol.control.Control.call(this, {
+      element: element,
+      target: options.target
+    });
+
+  };
+
+  ol.inherits(drawControls, ol.control.Control);
+
+
   // lets create a new map
   map = new ol.Map({
     target: 'mapdiv',
     view: new ol.View({
       center: [-11000000, 4600000],
       zoom: 4
-    })
+    }),
+    controls: ol.control.defaults().extend([
+      new drawControls()
+    ])
   });
 
   // toggles whether we are in airplane or internet mode
