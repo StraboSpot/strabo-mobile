@@ -18,7 +18,7 @@ angular.module('app')
   // number of tiles we have in offline storage
   $scope.numOfflineTiles = 0;
 
-  $scope.airplaneMode = true;
+  $scope.airplaneMode = false;
 
   // added draw controls
   var drawControls = function(opt_options) {
@@ -94,17 +94,41 @@ angular.module('app')
     ])
   });
 
+  // Watch whether we have internet access or not
+  // This will eventually have to be read directly from phone
+  $scope.$watch('airplaneMode', function(airplaneMode) {
+    if (airplaneMode == true) {
+      console.log("Offline");
+      map.removeLayer(layerOSM);
+      map.addLayer(OfflineTileLayer);
+      // clear the tiles, because we need to redraw with internet tiles
+     // OfflineTileSource.tileCache.clear();
+      // re-render the map
+  //    map.render();
+    }
+    else {
+      console.log("Online");
+      map.removeLayer(OfflineTileLayer);
+      map.addLayer(layerOSM);
+    }
+  });
+  
   // toggles whether we are in airplane or internet mode
   $scope.toggleAirplaneMode = function() {
-    if ($scope.airplaneMode === false) {
+    if ($scope.airplaneMode === false)
       $scope.airplaneMode = true;
-    } else {
+    else
       $scope.airplaneMode = false;
-      // clear the tiles, because we need to redraw with internet tiles
-      OfflineTileSource.tileCache.clear();
-      // re-render the map
-      map.render();
+  };
+  
+  // cache offline tiles if in internet mode
+  $scope.cacheOfflineTiles = function() {
+    if ($scope.airplaneMode === false) {
+      // cache the tiles in the current view but don't switch to the offline layer
+      console.log("new to cache tiles in current view");
     }
+    else
+      alert("Tiles can't be cached while offline.");
   };
 
   $scope.updateOfflineTileCount = function() {
@@ -258,13 +282,14 @@ angular.module('app')
     }
   });
 
+  var layerOSM = new ol.layer.Tile({
+    source: new ol.source.OSM()
+  });
+  
   var OfflineTileLayer = new ol.layer.Tile({
     source: OfflineTileSource
   });
-
-  // add the offline tile layer to the map
-  map.addLayer(OfflineTileLayer);
-
+  
   // we want to load all the geojson markers from the persistence storage onto the map
 
   // creates a ol vector layer for supplied geojson object
