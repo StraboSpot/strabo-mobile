@@ -1,6 +1,6 @@
 angular.module('app', [
   'ionic',
-  'leaflet-directive',
+ // 'openlayers-directive',
   'ngCordova',
   'LocalForageModule'
 ])
@@ -20,8 +20,9 @@ angular.module('app', [
 })
 
 .config(['$localForageProvider', function($localForageProvider){
+    // mobile chrome doesn't support blob storage in indexedDB very well, so we need to use WebSQL for now
     $localForageProvider.config({
-        driver      : 'webSQLStorage', // if you want to force a driver
+        driver      : 'webSQLStorage', // if you want to force a driver {asyncStorage,webSQLStorage,localStorageWrapper}
         name        : 'offlineLeafletTiles', // name of the database and prefix for your data, it is "lf" by default
         version     : 1.0, // version of the database, you shouldn't have to use this
         storeName   : 'keyvaluepairs', // name of the table
@@ -53,8 +54,7 @@ angular.module('app', [
       url: "/offlinemap",
       views: {
         'menuContent' :{
-          templateUrl: "templates/offlinemap.html",
-          controller: 'OfflineMapCtrl'
+          templateUrl: "templates/offlinemap.html"
         }
       }
     })

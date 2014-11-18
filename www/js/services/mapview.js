@@ -2,19 +2,11 @@ angular.module('app')
 
 // Save the current map view lat, long and zoom level
 .service('MapView', function() {
-  var mapView = {};
+  var mapView;
   var restoreView;
   
-  var setZoom = function(zoom) {
-    mapView.zoom = zoom;
-  }
-  
-  var setLat = function(lat) {
-    mapView.lat = lat;
-  }
-  
-  var setLng = function(lng) {
-    mapView.lng = lng;
+  var setMapView = function(view) {
+    mapView = view;
   }
   
   var getMapView = function() {
@@ -30,9 +22,7 @@ angular.module('app')
   }
   
   return {
-    setZoom: setZoom,
-    setLat: setLat,
-    setLng: setLng,
+    setMapView: setMapView,
     getMapView: getMapView,
     setRestoreView: setRestoreView,
     getRestoreView: getRestoreView

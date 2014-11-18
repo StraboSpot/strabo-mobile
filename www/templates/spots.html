@@ -7,8 +7,8 @@
   </ion-nav-buttons>
     <ion-content class="has-header">
       <ion-list>
-        <ion-item ng-repeat="spot in spots" href="#/app/spots/{{spot.id}}">
-          {{spot.name}} <small>Id: {{spot.id}}</small>
+        <ion-item ng-repeat="spot in spots" href="#/app/spots/{{spot.properties.id}}">
+          {{spot.properties.name}} <small>Id: {{spot.properties.id}}</small>
         </ion-item>
       </ion-list>
     </ion-content>
