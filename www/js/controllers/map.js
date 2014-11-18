@@ -10,7 +10,8 @@ angular.module('app')
   Spots,
   NewSpot,
   MapView,
-  OfflineTilesFactory) {
+  OfflineTilesFactory,
+  SlippyTileNamesFactory) {
 
   var map;
   var drawLayer;
@@ -102,17 +103,19 @@ angular.module('app')
       map.removeLayer(layerOSM);
       map.addLayer(OfflineTileLayer);
       // clear the tiles, because we need to redraw with internet tiles
-     // OfflineTileSource.tileCache.clear();
+      // OfflineTileSource.tileCache.clear();
       // re-render the map
-  //    map.render();
-    }
-    else {
+      //    map.render();
+    } else {
       console.log("Online");
       map.removeLayer(OfflineTileLayer);
       map.addLayer(layerOSM);
+
+
+
     }
   });
-  
+
   // toggles whether we are in airplane or internet mode
   $scope.toggleAirplaneMode = function() {
     if ($scope.airplaneMode === false)
@@ -120,14 +123,13 @@ angular.module('app')
     else
       $scope.airplaneMode = false;
   };
-  
+
   // cache offline tiles if in internet mode
   $scope.cacheOfflineTiles = function() {
     if ($scope.airplaneMode === false) {
       // cache the tiles in the current view but don't switch to the offline layer
       console.log("new to cache tiles in current view");
-    }
-    else
+    } else
       alert("Tiles can't be cached while offline.");
   };
 
@@ -229,6 +231,37 @@ angular.module('app')
     }
   }
 
+
+
+/*
+ * TODO!!!
+ *
+  var Point = function(lat, lng) {
+    this.lat = lat;
+    this.lng = lng;
+  }
+
+  var point1 = new Point(34.430953, -119.901344);
+  var point2 = new Point(34.427130, -119.889478);
+
+  var tileArray = SlippyTileNamesFactory.getTileIds(point1, point2, 17);
+
+  tileArray.forEach(function(tileId) {
+    // OfflineTilesFactory.downloadTileToStorage(tileId);
+  });
+
+
+  console.log(map.getView().getResolution());
+  console.log(map.getView().getProjection());
+  */
+
+
+
+
+
+
+
+
   var OfflineTileSource = new ol.source.OSM({
     tileLoadFunction: function(imageTile, src) {
 
@@ -285,11 +318,11 @@ angular.module('app')
   var layerOSM = new ol.layer.Tile({
     source: new ol.source.OSM()
   });
-  
+
   var OfflineTileLayer = new ol.layer.Tile({
     source: OfflineTileSource
   });
-  
+
   // we want to load all the geojson markers from the persistence storage onto the map
 
   // creates a ol vector layer for supplied geojson object

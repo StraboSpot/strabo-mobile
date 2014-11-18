@@ -57,6 +57,13 @@ angular.module('app')
       xhr.send();
     };
 
+    factory.downloadTileToStorage = function(tileId, callback) {
+      var self = this;
+      self.downloadInternetMapTile(tileId, function(blob) {
+        self.write(tileId, blob, function() {});
+      });
+    }
+
     // return factory
     return factory;
   });
