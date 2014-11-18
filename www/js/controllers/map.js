@@ -101,7 +101,8 @@ angular.module('app')
     if (airplaneMode == true) {
       console.log("Offline");
       map.removeLayer(layerOSM);
-      map.addLayer(OfflineTileLayer);
+      // Add tile layer on the bottom
+      map.getLayers().insertAt(0, OfflineTileLayer);
       // clear the tiles, because we need to redraw with internet tiles
       // OfflineTileSource.tileCache.clear();
       // re-render the map
@@ -109,10 +110,8 @@ angular.module('app')
     } else {
       console.log("Online");
       map.removeLayer(OfflineTileLayer);
-      map.addLayer(layerOSM);
-
-
-
+      // Add tile layer on the bottom
+      map.getLayers().insertAt(0, layerOSM);
     }
   });
 
@@ -128,7 +127,7 @@ angular.module('app')
   $scope.cacheOfflineTiles = function() {
     if ($scope.airplaneMode === false) {
       // cache the tiles in the current view but don't switch to the offline layer
-      console.log("new to cache tiles in current view");
+      console.log("need to cache tiles in current view");
     } else
       alert("Tiles can't be cached while offline.");
   };
@@ -207,7 +206,8 @@ angular.module('app')
         }
       } else {
         MapView.setRestoreView(true);
-
+        MapView.setMapView(map.getView());
+        
         $rootScope.$apply(function() {
           $location.path("/app/spots/newspot");
         });
@@ -216,6 +216,11 @@ angular.module('app')
     map.addInteraction(draw);
   }
 
+  // Return to the previous map view
+  if (MapView.getRestoreView() == true) {
+    map.setView(MapView.getMapView());
+  }
+  
   $scope.cancelDraw = function() {
     if (draw == null) return;
     map.removeInteraction(draw);

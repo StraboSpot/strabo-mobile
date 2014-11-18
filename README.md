@@ -7,8 +7,7 @@ Build Stack:
 - Core Technology - [Cordova/PhoneGap](http://cordova.apache.org/)
 - UI Framework (CSS & JS) - [Ionic](http://ionicframework.com/)
 - MVC - [Angular JS](https://angularjs.org/)
-- Map Library - [Leaflet](http://leafletjs.com/) 
-- AngularJS Directive for Leaflet - [Angular-Leaflet-Directive](https://github.com/tombatossals/angular-leaflet-directive)
+- Map Library - [OpenLayers 3](http://openlayers.org/)
 - AngularJS Extensions for Cordova API - [ngCordova](http://ngcordova.com/)
 
 ##Development Setup
