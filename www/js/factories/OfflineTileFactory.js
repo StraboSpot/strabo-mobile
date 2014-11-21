@@ -60,7 +60,9 @@ angular.module('app')
     factory.downloadTileToStorage = function(tileId, callback) {
       var self = this;
       self.downloadInternetMapTile(tileId, function(blob) {
-        self.write(tileId, blob, function() {});
+        self.write(tileId, blob, function() {
+          callback();
+        });
       });
     }
 

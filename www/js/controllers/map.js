@@ -103,10 +103,10 @@ angular.module('app')
       map.removeLayer(layerOSM);
       // Add tile layer on the bottom
       map.getLayers().insertAt(0, OfflineTileLayer);
-      // clear the tiles, because we need to redraw with internet tiles
-      // OfflineTileSource.tileCache.clear();
-      // re-render the map
-      //    map.render();
+      // clear the tiles, because we need to redraw if tiles have already been loaded to the screen
+      OfflineTileSource.tileCache.clear();
+      // re-render the map, grabs "new" tiles from storage
+      map.render();
     } else {
       console.log("Online");
       map.removeLayer(OfflineTileLayer);
@@ -127,7 +127,7 @@ angular.module('app')
   $scope.cacheOfflineTiles = function() {
     if ($scope.airplaneMode === false) {
       // cache the tiles in the current view but don't switch to the offline layer
-      console.log("need to cache tiles in current view");
+      archiveTiles();
     } else
       alert("Tiles can't be cached while offline.");
   };
@@ -142,6 +142,9 @@ angular.module('app')
 
     });
   };
+
+  // lets update the count right now
+  $scope.updateOfflineTileCount();
 
   $scope.clearOfflineTile = function() {
     if (window.confirm("Do you want to delete ALL offline tiles?")) {
@@ -207,7 +210,7 @@ angular.module('app')
       } else {
         MapView.setRestoreView(true);
         MapView.setMapView(map.getView());
-        
+
         $rootScope.$apply(function() {
           $location.path("/app/spots/newspot");
         });
@@ -220,7 +223,7 @@ angular.module('app')
   if (MapView.getRestoreView() == true) {
     map.setView(MapView.getMapView());
   }
-  
+
   $scope.cancelDraw = function() {
     if (draw == null) return;
     map.removeInteraction(draw);
@@ -236,33 +239,60 @@ angular.module('app')
     }
   }
 
-
-
-/*
- * TODO!!!
- *
+  // Point object
   var Point = function(lat, lng) {
     this.lat = lat;
     this.lng = lng;
   }
 
-  var point1 = new Point(34.430953, -119.901344);
-  var point2 = new Point(34.427130, -119.889478);
-
-  var tileArray = SlippyTileNamesFactory.getTileIds(point1, point2, 17);
-
-  tileArray.forEach(function(tileId) {
-    // OfflineTilesFactory.downloadTileToStorage(tileId);
-  });
-
-
-  console.log(map.getView().getResolution());
-  console.log(map.getView().getProjection());
-  */
 
 
 
 
+
+
+
+  var getMapViewExtent = function() {
+    var extent = map.getView().calculateExtent(map.getSize());
+    var zoom = map.getView().getZoom();
+    var bottomLeft = ol.proj.transform(ol.extent.getBottomLeft(extent),
+      'EPSG:3857', 'EPSG:4326');
+    var topRight = ol.proj.transform(ol.extent.getTopRight(extent),
+      'EPSG:3857', 'EPSG:4326');
+
+    return {
+      topRight: new Point(topRight[1], topRight[0]),
+      bottomLeft: new Point(bottomLeft[1], bottomLeft[0]),
+      zoom: zoom
+    };
+  }
+
+
+  var archiveTiles = function() {
+    var mapViewExtent = getMapViewExtent();
+
+    var maxZoomToDownload = 18;
+    var zoom = mapViewExtent.zoom;
+
+    // we shouldn't cache when the zoom is less than 17 due to possible usage restrictions
+    if (mapViewExtent.zoom >= 17) {
+
+      // lets download from the current zoom all the way to the maximum zoom
+      while (zoom <= maxZoomToDownload) {
+        var tileArray = SlippyTileNamesFactory.getTileIds(mapViewExtent.topRight, mapViewExtent.bottomLeft, zoom);
+        tileArray.forEach(function(tileId) {
+          OfflineTilesFactory.downloadTileToStorage(tileId, function() {
+            // update the tile count
+            $scope.updateOfflineTileCount();
+          });
+        });
+
+        zoom++;
+      }
+    } else {
+      alert("cannot cache smaller than 17 zoom due to possible usage restrictions");
+    }
+  }
 
 
 
