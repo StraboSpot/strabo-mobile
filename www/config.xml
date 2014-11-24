@@ -28,6 +28,7 @@
   <gap:plugin name="org.apache.cordova.console"/>
   <gap:plugin name="org.apache.cordova.device"/>
   <gap:plugin name="org.apache.cordova.geolocation"/>
+  <gap:plugin name="org.apache.cordova.dialogs"/>
 	
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
