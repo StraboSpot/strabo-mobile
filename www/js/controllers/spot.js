@@ -1,6 +1,6 @@
 angular.module('app')
 
-.controller('SpotCtrl', function($scope, $stateParams, $location, SpotsFactory, NewSpot, MapView, $ionicViewService, $cordovaGeolocation) {
+.controller('SpotCtrl', function($scope, $stateParams, $location, SpotsFactory, NewSpot, MapView, $ionicViewService, $cordovaGeolocation, $cordovaDialogs) {
 
   // all the spots available in offline
   $scope.spots;
@@ -103,6 +103,19 @@ angular.module('app')
     var backView = $ionicViewService.getBackView();
     backView.go();
   };
+  
+  // Delete the spot
+  $scope.deleteSpot = function() {
+  $cordovaDialogs.confirm('Delete this Spot?', 'Delete', ['OK','Cancel'])
+    .then(function(buttonIndex) {
+      // no button = 0, 'OK' = 1, 'Cancel' = 2
+      var btnIndex = buttonIndex;
+      if (btnIndex == 1) {
+        SpotsFactory.destroy($scope.spot.properties.id);
+        $location.path("/app/spots");
+      }
+    });
+  }
   
   // View the spot on the map
   $scope.goToSpot = function() {

@@ -32,6 +32,11 @@ angular.module('app')
         callback();
       });
     }
+    
+    // delete the spot
+    factory.destroy = function(key) {
+      spotsDb.removeItem(key);
+    }
 
     // gets the number of spots
     factory.getSpotCount = function(callback) {
