@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('app')
-  .factory('OfflineTilesFactory', function($localForage) {
+  .factory('OfflineTilesFactory', function() {
 
     var factory = {};
 
