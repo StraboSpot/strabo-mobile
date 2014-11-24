@@ -7,11 +7,11 @@ angular.module('app')
   $location,
   $filter,
   $ionicViewService,
-  Spots,
   NewSpot,
   MapView,
   OfflineTilesFactory,
-  SlippyTileNamesFactory) {
+  SlippyTileNamesFactory,
+  SpotsFactory) {
 
   var map;
   var drawLayer;
@@ -371,14 +371,16 @@ angular.module('app')
   }
 
   // Loop through all spots and create ol vector layers
-  Spots.all().forEach(function(geojson, index) {
-    try {
-      // add each layer to the map
-      map.addLayer(geojsonToVectorLayer(geojson));
-    } catch (err) {
-      // GeoJSON isn't properly formed
-      console.log("Invalid GeoJSON: " + JSON.stringify(geojson));
-    }
+  SpotsFactory.all().then(function(spots){
+    spots.forEach(function(geojson, index) {
+      try {
+        // add each layer to the map
+        map.addLayer(geojsonToVectorLayer(geojson));
+      } catch (err) {
+        // GeoJSON isn't properly formed
+        console.log("Invalid GeoJSON: " + JSON.stringify(geojson));
+      }
+    });
   });
 
   // Zoom

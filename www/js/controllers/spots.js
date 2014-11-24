@@ -1,8 +1,12 @@
 angular.module('app')
 
-.controller('SpotsCtrl', function($scope, $location, Spots, NewSpot) {
+.controller('SpotsCtrl', function($scope, $location, SpotsFactory, NewSpot) {
   // Load or initialize Spots
-  $scope.spots = Spots.all();
+  $scope.spots;
+
+  SpotsFactory.all().then(function(spots){
+     $scope.spots = spots;
+  });
 
   // a geojson template we pass in when creating a new spot from the spot menu
   var geojsonTemplate = {
