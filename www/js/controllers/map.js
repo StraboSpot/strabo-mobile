@@ -219,8 +219,8 @@ angular.module('app')
     map.addInteraction(draw);
   }
 
-  // Return to the previous map view
-  if (MapView.getRestoreView() == true) {
+  // Get saved map view
+  if (MapView.getMapView()) {
     map.setView(MapView.getMapView());
   }
 

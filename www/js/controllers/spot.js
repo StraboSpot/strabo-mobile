@@ -1,6 +1,6 @@
 angular.module('app')
 
-.controller('SpotCtrl', function($scope, $stateParams, $location, SpotsFactory, NewSpot, $ionicViewService, $cordovaGeolocation) {
+.controller('SpotCtrl', function($scope, $stateParams, $location, SpotsFactory, NewSpot, MapView, $ionicViewService, $cordovaGeolocation) {
 
   // all the spots available in offline
   $scope.spots;
@@ -103,4 +103,24 @@ angular.module('app')
     var backView = $ionicViewService.getBackView();
     backView.go();
   };
+  
+  // View the spot on the map
+  $scope.goToSpot = function() {
+    var coords = $scope.spot.geometry.coordinates;
+    var lon = coords[0]
+    var lat = coords[1];
+    // Get the center lat & lon of non-point features
+    if (isNaN(lon) || isNaN(lat)) {
+      if ($scope.spot.geometry.type == "Polygon")
+        coords = coords[0];
+      var lons = _.pluck(coords, 0);
+      var lats = _.pluck(coords, 1);
+      lon = (_.min(lons) + _.max(lons))/2;
+      lat = (_.min(lats) + _.max(lats))/2;
+    }
+    var spotCenter = ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857');
+    MapView.setRestoreView(true);
+    MapView.setMapView(new ol.View({center: spotCenter, zoom: 16}));
+    $location.path("/app/map");
+  }
 });
