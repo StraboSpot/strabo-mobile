@@ -14,8 +14,8 @@ angular.module('app')
       }
       return [];
     },
-    save: function(spots) {
-      window.localStorage['spots'] = angular.toJson(spots);
+    save: function(key, spots) {
+      window.localStorage[key] = angular.toJson(spots);
     }
   }
 })

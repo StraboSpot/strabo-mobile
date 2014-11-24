@@ -1,34 +1,34 @@
 angular.module('app', [
   'ionic',
- // 'openlayers-directive',
-  'ngCordova',
-  'LocalForageModule'
+  // 'openlayers-directive',
+  'ngCordova'
 ])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
-    if(window.cordova && window.cordova.plugins.Keyboard) {
+    if (window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
     }
-    if(window.StatusBar) {
+    if (window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
   });
-})
 
-.config(['$localForageProvider', function($localForageProvider){
-    // mobile chrome doesn't support blob storage in indexedDB very well, so we need to use WebSQL for now
-    $localForageProvider.config({
-        driver      : 'webSQLStorage', // if you want to force a driver {asyncStorage,webSQLStorage,localStorageWrapper}
-        name        : 'offlineLeafletTiles', // name of the database and prefix for your data, it is "lf" by default
-        version     : 1.0, // version of the database, you shouldn't have to use this
-        storeName   : 'keyvaluepairs', // name of the table
-        description : 'offline leaflet tiles storage'
-    });
-}])
+  // localforage is the global for offline map tiles
+  localforage.config({
+    driver: localforage.WEBSQL,
+    name: 'offlineLeafletTiles'
+  })
+
+  // global LF for spot data
+  spotsDb = localforage.createInstance({
+      driver: localforage.WEBSQL,
+      name: 'Spots'
+  });
+})
 
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
@@ -43,7 +43,7 @@ angular.module('app', [
     .state('app.map', {
       url: "/map",
       views: {
-        'menuContent' :{
+        'menuContent': {
           templateUrl: "templates/map.html",
           controller: 'MapCtrl'
         }
@@ -53,16 +53,16 @@ angular.module('app', [
     .state('app.offlinemap', {
       url: "/offlinemap",
       views: {
-        'menuContent' :{
+        'menuContent': {
           templateUrl: "templates/offlinemap.html"
         }
       }
     })
 
-		.state('app.search', {
+    .state('app.search', {
       url: "/search",
       views: {
-        'menuContent' :{
+        'menuContent': {
           templateUrl: "templates/search.html"
         }
       }
@@ -71,7 +71,7 @@ angular.module('app', [
     .state('app.spots', {
       url: "/spots",
       views: {
-        'menuContent' :{
+        'menuContent': {
           templateUrl: "templates/spots.html",
           controller: 'SpotsCtrl'
         }
@@ -81,17 +81,17 @@ angular.module('app', [
     .state('app.spot', {
       url: "/spots/:spotId",
       views: {
-        'menuContent' :{
+        'menuContent': {
           templateUrl: "templates/spot.html",
           controller: 'SpotCtrl'
         }
       }
     })
-    
+
     .state('app.newspot', {
       url: "/spots/newspot",
       views: {
-        'menuContent' :{
+        'menuContent': {
           templateUrl: "templates/spot.html",
           controller: 'SpotCtrl'
         }
@@ -101,11 +101,11 @@ angular.module('app', [
     .state('app.about', {
       url: "/about",
       views: {
-        'menuContent' :{
+        'menuContent': {
           templateUrl: "templates/about.html"
         }
       }
-    });
+  });
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/map');
