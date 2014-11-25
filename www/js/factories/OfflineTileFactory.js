@@ -8,6 +8,29 @@ angular.module('app')
     // the internet map tile source
     var osmUrlPrefix = 'http://b.tile.openstreetmap.org/';
 
+    // map providers
+    var mapProviders = [{
+      id: "osm",
+      name: "OSM Standard",
+      url: ['http://a.tile.openstreetmap.org/', 'http://b.tile.openstreetmap.org/', 'http://c.tile.openstreetmap.org/'],
+      imageType: ".png"
+    }, {
+      id: "ocm",
+      name: "OpenCycleMap",
+      url: [],
+      imageType: ""
+    }, {
+      id: "mq",
+      name: "MapQuest",
+      url: [],
+      imageType: ""
+    }, {
+      id: "mqoa",
+      name: "MapQuest Open Arial",
+      url: [],
+      imageType: ""
+    }];
+
     // gets the number of tiles from offline storage
     factory.getOfflineTileCount = function(callback) {
       localforage.length(function(err, numberOfKeys) {
