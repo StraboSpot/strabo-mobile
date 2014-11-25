@@ -96,8 +96,11 @@ angular.module('app')
       $scope.spot.geometry.coordinates[0] = $scope.point.longitude;
     }
 
-    // save the spot
-    SpotsFactory.save($scope.spot);
+
+    // save the spot -- if the id is defined, we overwrite existing id; otherwise create new id/spot
+    SpotsFactory.save($scope.spot, $scope.spot.properties.id, function(data){
+      console.log("wrote", data);
+    });
 
     // Go back one view in history
     var backView = $ionicViewService.getBackView();

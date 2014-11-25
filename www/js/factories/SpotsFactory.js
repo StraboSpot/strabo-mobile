@@ -19,17 +19,21 @@ angular.module('app')
       return deferred.promise;
     }
 
-    factory.save = function(value, callback) {
+    factory.save = function(value, key, callback) {
       var self = this;
 
-      // create a psuedo-random number as key
-      var key = new Date().getTime().toString();
+      // is the key undefined?
+      if (typeof key == 'undefined') {
+        // yes -- this means that the key doesn't exist and we want to create a new spot record
+        // create a psuedo-random number as key
+        key = new Date().getTime().toString();
+      }      
 
       // lets also put the key in the value.properties.id
       value.properties.id = key;
 
-      self.write(key, value, function() {
-        callback();
+      self.write(key, value, function(data) {
+        callback(data);
       });
     }
     
@@ -58,8 +62,8 @@ angular.module('app')
 
     // write to storage
     factory.write = function(key, value, callback) {
-      spotsDb.setItem(key, value).then(function() {
-        callback();
+      spotsDb.setItem(key, value).then(function(data) {
+        callback(data);
       });
     };
 
