@@ -33,6 +33,7 @@ Move everything, **except `.gitignore`, `config.xml` and the `www` folder**, fro
 In the `strabo-mobile` folder:
 
     cordova plugin add org.apache.cordova.geolocation
+    cordova plugin add org.apache.cordova.dialogs
     
 ###Run
 
