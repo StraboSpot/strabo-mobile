@@ -40,19 +40,44 @@ angular.module('app')
     $scope.friendlyGeom = JSON.stringify($scope.spot.geometry);
   });
 
-
-
-  // Define Spot parameters
-  $scope.spotTypes = [{
-    text: 'Type a',
-    value: 'a'
-  }, {
-    text: 'Type b',
-    value: 'b'
-  }, {
-    text: 'Type c',
-    value: 'c'
-  }];
+  // Define Spot attributes
+  $scope.attitude_type = [
+    { text: 'planar', value: 'planar' },
+    { text: 'linear', value: 'linear' },
+    { text: 'planar and linear', value: 'planar and linear' }
+  ];
+  
+  $scope.plane_type = [
+    { text: 'bedding', value: 'bedding' },
+    { text: 'flow layering', value: 'flow layering' },
+    { text: 'foliation', value: 'foliation' },
+    { text: 'joint', value: 'joint' },
+    { text: 'fracture', value: 'fracture' },
+    { text: 'fault plane', value: 'fault plane' },
+    { text: 'axial surface', value: 'axial surface' },
+    { text: 'stylolite', value: 'stylolite' }
+  ];
+  
+  $scope.plane_quality = [
+    { text: 'known', value: 'known' },
+    { text: 'approximate', value: 'approximate' },
+    { text: 'inferred', value: 'inferred' },
+    { text: 'approximate(?)', value: 'approximate(?)' },
+    { text: 'inferred(?)', value: 'inferred(?)' },
+    { text: 'unknown', value: 'unknown' }
+  ];
+  
+  $scope.plane_facing = [
+    { text: 'upright', value: 'upright' },
+    { text: 'overturned', value: 'overturned' },
+    { text: 'vertical', value: 'vertical' },
+    { text: 'approximate(?)', value: 'approximate(?)' },
+    { text: 'unknown', value: 'unknown' }
+  ];
+    
+  $scope.typeSelected = function() {
+    console.log($scope.spot.properties.attitude_type);
+  };
 
   // Get current location
   $scope.getLocation = function() {
@@ -95,7 +120,6 @@ angular.module('app')
       $scope.spot.geometry.coordinates[1] = $scope.point.latitude;
       $scope.spot.geometry.coordinates[0] = $scope.point.longitude;
     }
-
 
     // save the spot -- if the id is defined, we overwrite existing id; otherwise create new id/spot
     SpotsFactory.save($scope.spot, $scope.spot.properties.id, function(data){

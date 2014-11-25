@@ -3,16 +3,18 @@
     <button ng-click="deleteSpot();" class="button button-icon icon ion-trash-a"></button>
     <button ng-click="goToSpot();" class="button button-icon icon ion-eye"></button>
   </ion-nav-buttons>
-</ion-nav-bar>
   <ion-content class="has-header">
     <form class="list">
       <label class="item item-input">
-        <input type="text" placeholder="Name" ng-model="spot.properties.name">
+        <span class="input-label"><b>Spot Name</b></span>
+        <input type="text" placeholder="What do you want to call this Spot?" ng-model="spot.properties.name">
       </label>
       <label class="item item-input">
-        <span class="input-label">Date</span>
+        <span class="input-label"><b>Date</b></span>
         <input type="date" ng-model="spot.properties.date" value={{spot.properties.date}}>
       </label>
+      
+      <!-- Location -->
       <div class="item item-divider">
         Location
         <ion-buttons side="right">
@@ -31,22 +33,81 @@
         <span class="input-label">Longitude</span>
         <input type="number" ng-model="point.longitude" value={{point.longitude}}>
       </label>
-      <div class="item item-divider">
-        Spot Type
+      
+      <!-- Spot Type -->
+       <div class="item item-divider">
+        Attitude Type
       </div>
-      <ion-radio ng-repeat="spotType in spotTypes"
-                 ng-value="spotType.value"
-                 ng-model="spot.properties.spotType">
-        {{ spotType.text }}
+      <ion-radio ng-repeat="item in attitude_type"
+                 ng-value="item.value"
+                 ng-model="spot.properties.attitude_type"
+                 ng-change="typeSelected()">
+        {{ item.text }}
       </ion-radio>
+      
       <div class="item item-divider">
-        More Detail
+        Spot Detail
       </div>
-      <ion-toggle ng-model="spot.properties.myValue">
-        True or False Input
-      </ion-toggle>
+      
+      <label class="item item-input item-select">
+        <div class="input-label" >
+          Plane Type
+         </div>
+        {{spot.properties.plane_type}}
+        <select ng-model="spot.properties.plane_type"">
+          <option ng-repeat="item in plane_type" ng-value="item.value">
+            {{item.text}}
+          </option>
+        </select>
+      </label>
+      <label class="item item-input">
+        <span class="input-label">Strike</span>
+        <input type="text" placeholder="What is the strike?" ng-model="spot.properties.strike">
+      </label>
+      <label class="item item-input">
+        <span class="input-label">Dip</span>
+        <input type="text" placeholder="What is the dip?" ng-model="spot.properties.dip">
+      </label>
+            <label class="item item-input item-select">
+        <div class="input-label" >
+          Plane Quality
+         </div>
+        {{spot.properties.plane_quality}}
+        <select ng-model="spot.properties.plane_quality" ng-change="typeSelected()">
+          <option ng-repeat="item in plane_quality" ng-value="item.value">
+            {{item.text}}
+          </option>
+        </select>
+      </label>
+      <label class="item item-input item-select">
+        <div class="input-label" >
+          Plane Facing
+         </div>
+        {{spot.properties.plane_facing}}
+        <select ng-model="spot.properties.plane_facing" ng-change="typeSelected()">
+          <option ng-repeat="item in plane_facing" ng-value="item.value">
+            {{item.text}}
+          </option>
+        </select>
+      </label>
+      <label class="item item-input">
+        <span class="input-label">Unit Name</span>
+        <input type="text" placeholder="What is the unit name?" ng-model="spot.properties.unit_name">
+      </label>
+      <label class="item item-input">
+        <span class="input-label">Unit Label</span>
+        <input type="text" placeholder="What is the unit label?" ng-model="spot.properties.unit_label">
+      </label>
+      
+      <div class="item item-divider">
+        Notes
+      </div>
+      <label class="item item-input">
+        <textarea placeholder="Notes about this Spot" rows="4" ng-model="spot.properties.notes"></textarea>
+      </label>
+      
       <div class="padding">
-        <button class="button button-block" ng-click="submit()">Save</button>
+        <button class="button button-block button-positive" ng-click="submit()">Save</button>
       </div>
     </form>
   </ion-content>
