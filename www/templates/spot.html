@@ -68,15 +68,10 @@
       <div class="row responsive-md">
         <div class="col">
           <label class="item item-input item-select">
-            <div class="input-label" >
+            <div class="input-label">
               Plane Type
-             </div>
-            {{spot.properties.plane_type}}
-            <select ng-model="spot.properties.plane_type"">
-              <option ng-repeat="item in plane_type" ng-value="item.value">
-                {{item.text}}
-              </option>
-            </select>
+            </div>
+            <select ng-model="spot.properties.plane_type" ng-options="item.value as item.text for item in plane_type"></select>
           </label>
           <label class="item item-input">
             <span class="input-label">Strike</span>
@@ -89,26 +84,16 @@
           </div>
           <div class="col">
             <label class="item item-input item-select">
-            <div class="input-label" >
+            <div class="input-label">
               Plane Quality
-             </div>
-            {{spot.properties.plane_quality}}
-            <select ng-model="spot.properties.plane_quality" ng-change="typeSelected()">
-              <option ng-repeat="item in plane_quality" ng-value="item.value">
-                {{item.text}}
-              </option>
-            </select>
+            </div>
+            <select ng-model="spot.properties.plane_quality" ng-options="item.value as item.text for item in plane_quality" ng-change="typeSelected()"></select>
           </label>
           <label class="item item-input item-select">
-            <div class="input-label" >
+            <div class="input-label">
               Plane Facing
-             </div>
-            {{spot.properties.plane_facing}}
-            <select ng-model="spot.properties.plane_facing" ng-change="typeSelected()">
-              <option ng-repeat="item in plane_facing" ng-value="item.value">
-                {{item.text}}
-              </option>
-            </select>
+            </div>
+            <select ng-model="spot.properties.plane_facing" ng-options="item.value as item.text for item in plane_facing" ng-change="typeSelected()"></select>
           </label>
           <label class="item item-input">
             <span class="input-label">Unit Name</span>
