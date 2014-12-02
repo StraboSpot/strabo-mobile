@@ -9,13 +9,12 @@
         <div class="col">
           <label class="item item-input">
             <span class="input-label"><b>Spot Name</b></span>
-            <input type="text" placeholder="What do you want to call this Spot?" ng-model="spot.properties.name">
+            <input type="text" placeholder="Name this Spot" ng-model="spot.properties.name">
           </label>
           <label class="item item-input">
             <span class="input-label"><b>Date</b></span>
             <input type="date" ng-model="spot.properties.date" value={{spot.properties.date}}>
           </label>
-
       </div>
       
       <!-- Location -->
@@ -23,7 +22,8 @@
         <div class="item item-divider">
           Location & Geometry
         </div>
-        Feature Type: {{spot.geometry.type}}    <!--   <label class="item item-input">
+        Feature Type: {{spot.geometry.type}}    
+        <!--   <label class="item item-input">
           <input type="string" ng-model="friendlyGeom" value={{friendlyGeom}} ng-disabled="true">
         </label>    -->    
         <label class="item item-input" ng-show="showLatLng">
@@ -81,9 +81,9 @@
             <span class="input-label">Dip</span>
             <input type="number" placeholder="What is the dip?" ng-model="spot.properties.dip">
           </label>
-          </div>
-          <div class="col">
-            <label class="item item-input item-select">
+        </div>
+        <div class="col">
+          <label class="item item-input item-select">
             <div class="input-label">
               Plane Quality
             </div>
