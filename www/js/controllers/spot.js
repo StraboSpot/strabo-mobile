@@ -57,7 +57,7 @@ angular.module('app')
     { text: 'axial surface', value: 'axial surface' },
     { text: 'stylolite', value: 'stylolite' }
   ];
-      $scope.selected_plane_type = $scope.plane_type[2].value;
+
   $scope.plane_quality = [
     { text: 'known', value: 'known' },
     { text: 'approximate', value: 'approximate' },
