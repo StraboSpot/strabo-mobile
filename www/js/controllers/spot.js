@@ -159,7 +159,6 @@ angular.module('app')
       lat = (_.min(lats) + _.max(lats))/2;
     }
     var spotCenter = ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857');
-    MapView.setRestoreView(true);
     MapView.setMapView(new ol.View({center: spotCenter, zoom: 16}));
     $location.path("/app/map");
   }

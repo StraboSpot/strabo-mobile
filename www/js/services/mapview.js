@@ -13,19 +13,9 @@ angular.module('app')
     return mapView;
   }
   
-  var setRestoreView = function() {
-    restoreView = true;
-  }
-  
-  var getRestoreView = function() {
-    return restoreView;
-  }
-  
   return {
     setMapView: setMapView,
-    getMapView: getMapView,
-    setRestoreView: setRestoreView,
-    getRestoreView: getRestoreView
+    getMapView: getMapView
   };
 })
   

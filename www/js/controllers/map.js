@@ -20,7 +20,7 @@ angular.module('app')
   $scope.numOfflineTiles = 0;
 
   $scope.airplaneMode = false;
-
+  
   // added draw controls
   var drawControls = function(opt_options) {
 
@@ -204,20 +204,22 @@ angular.module('app')
       // If we got to the map from the spot view go back to that view
       var backView = $ionicViewService.getBackView();
       if (backView) {
-        if (backView.stateName == "app.spot") {
+        if (backView.stateName == "app.spot")
           backView.go();
-        }
-      } else {
-        MapView.setRestoreView(true);
-        MapView.setMapView(map.getView());
-
+      }
+      else {
         $rootScope.$apply(function() {
-          $location.path("/app/spots/newspot");
+        $location.path("/app/spots/newspot");
         });
       }
     });
     map.addInteraction(draw);
   }
+  
+  // If the map is moved save the view
+  map.on('moveend', function(evt){
+    MapView.setMapView(map.getView());
+  });
 
   // Get saved map view
   if (MapView.getMapView()) {
