@@ -13,7 +13,8 @@
   <author email="jessica.good@azgs.az.gov" href="https://github.com/StraboSpot/strabo-mobile">
       Jessica Good
   </author>
-	
+	<icon src="icon.png" />
+  
   <content src="index.html"/>
   <access origin="*"/>
   <preference name="webviewbounce" value="false"/>
