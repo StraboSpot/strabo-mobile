@@ -209,7 +209,7 @@ angular.module('app')
       }
       else {
         $rootScope.$apply(function() {
-        $location.path("/app/spots/newspot");
+          $location.path("/app/spots/newspot");
         });
       }
     });
