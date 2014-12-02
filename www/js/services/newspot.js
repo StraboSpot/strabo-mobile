@@ -9,8 +9,6 @@ angular.module('app')
     if (!newSpot)
       newSpot = {};
       
-    // If Spot already exists or was created from map
-    // (Spot already has geometry and maybe properties too)
     if (geojsonObj) {
       if (geojsonObj.geometry)
         newSpot.geometry = geojsonObj.geometry;
@@ -21,16 +19,11 @@ angular.module('app')
       else {
         if (!newSpot.properties) {
           newSpot.properties = {
-            date: $filter("date")(Date.now(), 'yyyy-MM-dd')
+            date: $filter("date")(Date.now(), 'yyyy-MM-dd'),
+            time: $filter("date")(Date.now(), 'HH:mm')
           };
         }
       }
-    }
-    // If new Spot created from Spots menu (Spot has no geometry yet)
-    else {
-      newSpot.properties = {
-        date: $filter("date")(Date.now(), 'yyyy-MM-dd')
-      };
     }
   }
   
