@@ -20,7 +20,7 @@ angular.module('app')
   $scope.numOfflineTiles = 0;
 
   $scope.airplaneMode = false;
-  
+
   // added draw controls
   var drawControls = function(opt_options) {
 
@@ -206,8 +206,7 @@ angular.module('app')
       if (backView) {
         if (backView.stateName == "app.spot")
           backView.go();
-      }
-      else {
+      } else {
         $rootScope.$apply(function() {
           $location.path("/app/spots/newspot");
         });
@@ -215,9 +214,9 @@ angular.module('app')
     });
     map.addInteraction(draw);
   }
-  
+
   // If the map is moved save the view
-  map.on('moveend', function(evt){
+  map.on('moveend', function(evt) {
     MapView.setMapView(map.getView());
   });
 
@@ -368,12 +367,27 @@ angular.module('app')
       source: new ol.source.GeoJSON({
         object: geojson,
         projection: 'EPSG:3857'
+      }),
+      style: new ol.style.Style({
+        fill: new ol.style.Fill({
+          color: 'rgba(255, 255, 255, 0.2)'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#035339',
+          width: 4
+        }),
+        image: new ol.style.Circle({
+          radius: 7,
+          fill: new ol.style.Fill({
+            color: '#035339'
+          })
+        })
       })
     });
   }
 
   // Loop through all spots and create ol vector layers
-  SpotsFactory.all().then(function(spots){
+  SpotsFactory.all().then(function(spots) {
     spots.forEach(function(geojson, index) {
       try {
         // add each layer to the map
@@ -409,6 +423,50 @@ angular.module('app')
     })
   });
   map.addLayer(drawLayer);
+
+  var element = document.getElementById('popup');
+
+  var popup = new ol.Overlay({
+    element: document.getElementById('popup'),
+    stopEvent: false
+  });
+  map.addOverlay(popup);
+
+  // display popup on click
+  map.on('click', function(evt) {
+
+    // are we in draw mode?  If so we dont want to display any popovers during draw mode
+    if (!draw) {
+
+      // where the user just clicked
+      var coordinate = evt.coordinate;
+
+      var element = popup.getElement();
+
+      // clear any existing popovers
+      $(element).popover('destroy');
+
+      var feature = map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+        return feature;
+      });
+
+      if (feature) {
+
+        // setup the popup position
+        popup.setPosition(coordinate);
+
+        $(element).popover({
+          'placement': 'top',
+          'html': true,
+          'content': 'content goes here',
+          'title': feature.get('name')
+        });
+
+        // show the popover
+        $(element).popover('show');
+      }
+    }
+  });
 
   // Get current position
   $scope.getLocation = function() {
