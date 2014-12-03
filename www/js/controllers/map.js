@@ -455,10 +455,13 @@ angular.module('app')
         // setup the popup position
         popup.setPosition(coordinate);
 
+        // popover content
+        var content = '<a href="#/app/spots/' + feature.get('id') + '">edit</a>';
+
         $(element).popover({
           'placement': 'top',
           'html': true,
-          'content': 'content goes here',
+          'content': content,
           'title': feature.get('name')
         });
 
