@@ -374,12 +374,24 @@ angular.module('app')
         }),
         stroke: new ol.style.Stroke({
           color: '#035339',
-          width: 4
+          width: 30
         }),
-        image: new ol.style.Circle({
-          radius: 7,
+        image: new ol.style.Icon({
+          anchorXUnits: 'pixels',
+          anchorYUnits: 'pixels',
+          opacity: 1,
+          rotation: 0,  // 2*pi = 360, pi = 180
+          src: 'img/strikedip-black-on-white.png'
+        }),
+        text: new ol.style.Text({
+          font: '12px Calibri,sans-serif',
+          text: geojson.properties.name,
           fill: new ol.style.Fill({
-            color: '#035339'
+            color: '#000'
+          }),
+          stroke: new ol.style.Stroke({
+            color: '#fff',
+            width: 3
           })
         })
       })
@@ -424,12 +436,7 @@ angular.module('app')
   });
   map.addLayer(drawLayer);
 
-  var element = document.getElementById('popup');
-
-  var popup = new ol.Overlay({
-    element: document.getElementById('popup'),
-    stopEvent: false
-  });
+  var popup = new ol.Overlay.Popup();
   map.addOverlay(popup);
 
   // display popup on click
@@ -441,10 +448,13 @@ angular.module('app')
       // where the user just clicked
       var coordinate = evt.coordinate;
 
-      var element = popup.getElement();
-
       // clear any existing popovers
-      $(element).popover('destroy');
+      popup.hide();
+
+      map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+        console.log("feature", feature);
+        console.log("layer", layer);
+      })
 
       var feature = map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
         return feature;
@@ -452,21 +462,17 @@ angular.module('app')
 
       if (feature) {
 
+        // popup content
+        var content = '';
+        content += '<div>';
+        content += '<h4>';
+        content += feature.get('name');
+        content += '</h4>';
+        content += '<a href="#/app/spots/' + feature.get('id') + '">edit</a>';
+        content += '</div>';
+
         // setup the popup position
-        popup.setPosition(coordinate);
-
-        // popover content
-        var content = '<a href="#/app/spots/' + feature.get('id') + '">edit</a>';
-
-        $(element).popover({
-          'placement': 'top',
-          'html': true,
-          'content': content,
-          'title': feature.get('name')
-        });
-
-        // show the popover
-        $(element).popover('show');
+        popup.show(evt.coordinate, content);
       }
     }
   });

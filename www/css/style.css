@@ -8,8 +8,8 @@
 
 .draw-controls {
     position: absolute;
-    top: 65px;
-    left: 8px;
+    top: 5em;
+    right: .5em;
     background: rgba(255, 255, 255, 0.4);
     border-radius: 4px;
     padding: 2px;

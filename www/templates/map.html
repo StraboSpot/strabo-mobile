@@ -1,9 +1,3 @@
-<style type="text/css">
-    .popover{
-        max-width:150px;
-        max-height:100px;
-    }
-</style>
 <ion-view title="Strabo Mobile">
     <ion-nav-buttons side="left">
       <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
@@ -16,8 +10,7 @@
       <button ng-click="clearOfflineTile();" class="button button-icon icon ion-trash-b"></button>
       {{numOfflineTiles}} tiles
     </ion-nav-buttons>
-    <ion-content data-tap-disabled="true">
+    <ion-pane data-tap-disabled="true">
       <div id="mapdiv" style="height:100%"></div>
-      <div id="popup"></div>
-    </ion-content>
+    </ion-pane>
 </ion-view>
