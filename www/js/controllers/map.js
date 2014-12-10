@@ -46,7 +46,7 @@ angular.module('app')
     drawPoly = document.createElement('a');
     drawPoly.id = 'drawPolyControl';
     drawPoly.href = '#drawPolyControl';
-    drawPoly.style.fontSize = '30px';
+    drawPoly.style.fontSize = '20px';
     drawPoly.innerHTML = '&squ;'; // poly, filled square
 
     var rotateToNorth;
