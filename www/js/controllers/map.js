@@ -44,6 +44,13 @@ angular.module('app')
     drawPoly.style.fontSize = '30px';
     drawPoly.innerHTML = '&squf;'; // poly, filled square
 
+    var rotateToNorth;
+
+    rotateToNorth = document.createElement('a');
+    rotateToNorth.id = 'rotateToNorth';
+    rotateToNorth.href = '#rotateToNorth';
+    rotateToNorth.innerHTML = 'N';
+
     var handleDrawPoint = function(e) {
       e.preventDefault();
       $scope.startDraw("Point");
@@ -56,6 +63,10 @@ angular.module('app')
       e.preventDefault();
       $scope.startDraw("Polygon");
     };
+    var handleRotateToNorth = function(e) {
+      e.preventDefault();
+      map.getView().setRotation(0);
+    }
 
     drawPoint.addEventListener('click', handleDrawPoint, false);
     drawPoint.addEventListener('touchstart', handleDrawPoint, false);
@@ -66,9 +77,13 @@ angular.module('app')
     drawPoly.addEventListener('click', handleDrawPoly, false);
     drawPoly.addEventListener('touchstart', handleDrawPoly, false);
 
+    rotateToNorth.addEventListener('click', handleRotateToNorth, false);
+    rotateToNorth.addEventListener('touchstart', handleRotateToNorth, false);
+
     var element = document.createElement('div');
     element.className = 'draw-controls ol-unselectable';
 
+    element.appendChild(rotateToNorth);
     element.appendChild(drawPoint);
     element.appendChild(drawLine);
     element.appendChild(drawPoly);
@@ -439,8 +454,16 @@ angular.module('app')
   var popup = new ol.Overlay.Popup();
   map.addOverlay(popup);
 
+
+  map.on('touchstart', function(event){
+    console.log("touch");
+    console.log(event);
+  });
+
   // display popup on click
   map.on('click', function(evt) {
+
+    console.log("map clicked");
 
     // are we in draw mode?  If so we dont want to display any popovers during draw mode
     if (!draw) {
