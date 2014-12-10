@@ -35,6 +35,7 @@ angular.module('app')
     drawPoint = document.createElement('a');
     drawPoint.id = 'drawPointControl';
     drawPoint.href = '#drawPointControl';
+    drawPoint.style.fontSize = '30px';
     drawPoint.innerHTML = '&#183;'; // point, middle dot
 
     drawLine = document.createElement('a');
@@ -46,7 +47,7 @@ angular.module('app')
     drawPoly.id = 'drawPolyControl';
     drawPoly.href = '#drawPolyControl';
     drawPoly.style.fontSize = '30px';
-    drawPoly.innerHTML = '&squf;'; // poly, filled square
+    drawPoly.innerHTML = '&squ;'; // poly, filled square
 
     var rotateToNorth;
 
@@ -56,14 +57,35 @@ angular.module('app')
     rotateToNorth.innerHTML = 'N';
 
     var handleDrawPoint = function(e) {
+      if (drawPoint.style.color == 'black')
+        drawPoint.style.color = 'white';
+      else
+        drawPoint.style.color = 'black';
+      drawLine.style.color = 'white';
+      drawPoly.style.color = 'white';
+      
       e.preventDefault();
       $scope.startDraw("Point");
     };
     var handleDrawLine = function(e) {
+      if (drawLine.style.color == 'black')
+        drawLine.style.color = 'white';
+      else
+        drawLine.style.color = 'black';
+      drawPoint.style.color = 'white';
+      drawPoly.style.color = 'white';
+      
       e.preventDefault();
       $scope.startDraw("LineString");
     };
     var handleDrawPoly = function(e) {
+      if (drawPoly.style.color == 'black')
+        drawPoly.style.color = 'white';
+      else
+        drawPoly.style.color = 'black';
+      drawPoint.style.color = 'white';
+      drawLine.style.color = 'white';
+      
       e.preventDefault();
       $scope.startDraw("Polygon");
     };
