@@ -400,7 +400,7 @@ angular.module('app')
       anchorYUnits: 'pixels',
       opacity: 1,
       rotation: Math.radians(geojson.properties.strike),
-      src: 'img/strikedip-black-on-white.png'
+      src: 'img/strikedip.png'
     });
 
     return new ol.layer.Vector({
