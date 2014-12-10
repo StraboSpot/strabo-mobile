@@ -1,3 +1,7 @@
+Math.radians = function(deg) {
+  return deg * (Math.PI / 180);
+}
+
 angular.module('app')
 
 .controller("MapCtrl", function(
@@ -378,38 +382,82 @@ angular.module('app')
 
   // creates a ol vector layer for supplied geojson object
   var geojsonToVectorLayer = function(geojson) {
+
+    var textStyle = new ol.style.Text({
+      font: '12px Calibri,sans-serif',
+      text: geojson.properties.name,
+      fill: new ol.style.Fill({
+        color: '#000'
+      }),
+      stroke: new ol.style.Stroke({
+        color: '#fff',
+        width: 3
+      })
+    });
+
+    var imageStyle = new ol.style.Icon({
+      anchorXUnits: 'pixels',
+      anchorYUnits: 'pixels',
+      opacity: 1,
+      rotation: Math.radians(geojson.properties.strike),
+      src: 'img/strikedip-black-on-white.png'
+    });
+
     return new ol.layer.Vector({
       source: new ol.source.GeoJSON({
         object: geojson,
         projection: 'EPSG:3857'
       }),
-      style: new ol.style.Style({
-        fill: new ol.style.Fill({
-          color: 'rgba(255, 255, 255, 0.2)'
-        }),
-        stroke: new ol.style.Stroke({
-          color: '#035339',
-          width: 30
-        }),
-        image: new ol.style.Icon({
-          anchorXUnits: 'pixels',
-          anchorYUnits: 'pixels',
-          opacity: 1,
-          rotation: 0,  // 2*pi = 360, pi = 180
-          src: 'img/strikedip-black-on-white.png'
-        }),
-        text: new ol.style.Text({
-          font: '12px Calibri,sans-serif',
-          text: geojson.properties.name,
-          fill: new ol.style.Fill({
-            color: '#000'
-          }),
-          stroke: new ol.style.Stroke({
-            color: '#fff',
-            width: 3
-          })
-        })
-      })
+      style: function(feature, resolution) {
+
+        var styles = {
+          'Point': [
+            new ol.style.Style({
+              image: imageStyle
+            }),
+            new ol.style.Style({
+              text: textStyle
+            })
+          ],
+
+          'LineString': [
+            new ol.style.Style({
+              stroke: new ol.style.Stroke({
+                color: "#000000",
+                width: 10
+              })
+            }),
+            new ol.style.Style({
+              stroke: new ol.style.Stroke({
+                color: "#ff0000",
+                width: 8
+              })
+            }),
+            new ol.style.Style({
+              text: textStyle
+            })
+          ],
+
+          'Polygon': [
+            new ol.style.Style({
+              stroke: new ol.style.Stroke({
+                color: "#000000",
+                width: 10
+              })
+            }),
+            new ol.style.Style({
+              stroke: new ol.style.Stroke({
+                color: "#035339",
+                width: 8
+              })
+            }),
+            new ol.style.Style({
+              text: textStyle
+            })
+          ]
+        }
+        return styles[feature.getGeometry().getType()];
+      }
     });
   }
 
@@ -455,7 +503,7 @@ angular.module('app')
   map.addOverlay(popup);
 
 
-  map.on('touchstart', function(event){
+  map.on('touchstart', function(event) {
     console.log("touch");
     console.log(event);
   });
