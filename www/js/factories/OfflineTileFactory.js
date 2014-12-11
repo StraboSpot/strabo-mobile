@@ -6,9 +6,9 @@ angular.module('app')
     var factory = {};
 
     // the internet map tile source
-    var osmUrlPrefix = 'http://b.tile.openstreetmap.org/';
+    var osmUrlPrefix = 'http://otile1.mqcdn.com/tiles/1.0.0/osm/';
 
-    // map providers
+    // map providers, still need to work on this
     var mapProviders = [{
       id: "osm",
       name: "OSM Standard",
@@ -23,7 +23,7 @@ angular.module('app')
       id: "mq",
       name: "MapQuest",
       url: [],
-      imageType: ""
+      imageType: ".jpg"
     }, {
       id: "mqoa",
       name: "MapQuest Open Arial",
@@ -66,7 +66,7 @@ angular.module('app')
     // download from internet
     factory.downloadInternetMapTile = function(tileId, callback) {
       var xhr = new XMLHttpRequest();
-      xhr.open('GET', osmUrlPrefix + tileId + ".png", true);
+      xhr.open('GET', osmUrlPrefix + tileId + ".jpg", true);
       xhr.responseType = 'arraybuffer';
       xhr.onload = function(e) {
         if (this.status == 200) {
