@@ -107,15 +107,15 @@ angular.module('app')
   $scope.submit = function() {
 
     if (!$scope.spot.properties.name) {
-      alert('Name required');
+      alert('Name required.');
       return;
     }
     if ($scope.spot.properties.strike < 0 || $scope.spot.properties.strike > 360 || $scope.spot.properties.strike == null) {
-      alert('Strike must be between 0-360');
+      alert('Strike must be between 0-360.');
       return;
     }
-    if ($scope.spot.properties.strike < 0 || $scope.spot.properties.strike > 90 || $scope.spot.properties.dip == null) {
-      alert('Strike must be between 0-90');
+    if ($scope.spot.properties.dip < 0 || $scope.spot.properties.dip > 90 || $scope.spot.properties.dip == null) {
+      alert('Dip must be between 0-90.');
       return;
     }
 
