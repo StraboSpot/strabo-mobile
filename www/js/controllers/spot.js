@@ -110,6 +110,14 @@ angular.module('app')
       alert('Name required');
       return;
     }
+    if ($scope.spot.properties.strike < 0 || $scope.spot.properties.strike > 360 || $scope.spot.properties.strike == null) {
+      alert('Strike must be between 0-360');
+      return;
+    }
+    if ($scope.spot.properties.strike < 0 || $scope.spot.properties.strike > 90 || $scope.spot.properties.dip == null) {
+      alert('Strike must be between 0-90');
+      return;
+    }
 
     // define the geojson feature type
     $scope.spot.type = "Feature";

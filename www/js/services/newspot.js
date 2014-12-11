@@ -20,7 +20,9 @@ angular.module('app')
         if (!newSpot.properties) {
           newSpot.properties = {
             date: $filter("date")(Date.now(), 'yyyy-MM-dd'),
-            time: $filter("date")(Date.now(), 'HH:mm')
+            time: $filter("date")(Date.now(), 'HH:mm'),
+            strike: 0,
+            dip: 0
           };
         }
       }

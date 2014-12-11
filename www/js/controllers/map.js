@@ -554,13 +554,20 @@ angular.module('app')
       });
 
       if (feature) {
-
+     /* 
+        var strike = feature.get('strike')
+        if (strike.type != undefined)
+          strike += '&deg;'
+        
+        var dip = feature.get('dip')
+        if (dip.type != undefined)
+          dip += '&deg;'
+*/
         // popup content
         var content = '';
         content += '<div>';
-        content += '<h4>';
-        content += feature.get('name');
-        content += '</h4>';
+        content += '<h4>' + feature.get('name') + '</h4>';
+        content += 'Strike/Dip: ' + feature.get('strike') + '&deg;/' + feature.get('dip') + '&deg;<br>';
         content += '<a href="#/app/spots/' + feature.get('id') + '">edit</a>';
         content += '</div>';
 
