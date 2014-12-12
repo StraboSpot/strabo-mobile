@@ -49,13 +49,6 @@ angular.module('app')
     drawPoly.style.fontSize = '20px';
     drawPoly.innerHTML = '&squ;'; // poly, filled square
 
-    var rotateToNorth;
-
-    rotateToNorth = document.createElement('a');
-    rotateToNorth.id = 'rotateToNorth';
-    rotateToNorth.href = '#rotateToNorth';
-    rotateToNorth.innerHTML = 'N';
-
     var handleDrawPoint = function(e) {
       if (drawPoint.style.color == 'black')
         drawPoint.style.color = 'white';
@@ -89,10 +82,6 @@ angular.module('app')
       e.preventDefault();
       $scope.startDraw("Polygon");
     };
-    var handleRotateToNorth = function(e) {
-      e.preventDefault();
-      map.getView().setRotation(0);
-    }
 
     drawPoint.addEventListener('click', handleDrawPoint, false);
     drawPoint.addEventListener('touchstart', handleDrawPoint, false);
@@ -103,13 +92,9 @@ angular.module('app')
     drawPoly.addEventListener('click', handleDrawPoly, false);
     drawPoly.addEventListener('touchstart', handleDrawPoly, false);
 
-    rotateToNorth.addEventListener('click', handleRotateToNorth, false);
-    rotateToNorth.addEventListener('touchstart', handleRotateToNorth, false);
-
     var element = document.createElement('div');
     element.className = 'draw-controls ol-unselectable';
 
-    element.appendChild(rotateToNorth);
     element.appendChild(drawPoint);
     element.appendChild(drawLine);
     element.appendChild(drawPoly);
@@ -122,7 +107,6 @@ angular.module('app')
   };
 
   ol.inherits(drawControls, ol.control.Control);
-
 
   // lets create a new map
   map = new ol.Map({
