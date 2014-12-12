@@ -540,23 +540,15 @@ angular.module('app')
       });
 
       if (feature) {
-     /* 
-        var strike = feature.get('strike')
-        if (strike.type != undefined)
-          strike += '&deg;'
-        
-        var dip = feature.get('dip')
-        if (dip.type != undefined)
-          dip += '&deg;'
-*/
         // popup content
         var content = '';
-        content += '<div>';
-        content += '<h4>' + feature.get('name') + '</h4>';
-        content += 'Strike/Dip: ' + feature.get('strike') + '&deg;/' + feature.get('dip') + '&deg;<br>';
-        content += '<a href="#/app/spots/' + feature.get('id') + '">edit</a>';
-        content += '</div>';
-
+        content += '<table id="popup-table"><tr><td>';
+        content += '<b>' + feature.get('name') + '</b>';
+        content += '<br><small>' + feature.get('strike') + '&deg; strike / ' + feature.get('dip') + '&deg; dip</small>';
+        content += '</td><td>';
+        content += '<a href="#/app/spots/' + feature.get('id') + '" class="button icon-right ion-chevron-right button-clear button-dark"></a>';
+        content += '</td></tr></table>';
+      
         // setup the popup position
         popup.show(evt.coordinate, content);
       }

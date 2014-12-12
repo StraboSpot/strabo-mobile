@@ -3,13 +3,6 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width"/>
     <title>Strabo Mobile</title>
-    <!-- Stylesheets -->
-    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-
-    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
-    <link href="css/ionic.app.css" rel="stylesheet">
-    -->
 
     <!-- underscore -->
     <script src="lib/underscore-1.7.0.js"></script>
@@ -31,7 +24,15 @@
     <!-- openlayers 3 popup (https://github.com/walkermatt/ol3-popup) -->
     <link rel="stylesheet" href="lib/ol3/ol3-popup.css" />
     <script src="lib/ol3/ol3-popup.js"></script>
+    
+    <!-- Stylesheets -->
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
 
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+    
     <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
 
@@ -54,15 +55,6 @@
     <script src="js/factories/OfflineTileFactory.js"></script>
     <script src="js/factories/SlippyTileNamesFactory.js"></script>
     <script src="js/factories/SpotsFactory.js"></script>
-	
-    <!-- override ol3 style -->
-    <style type="text/css">
-      .ol-rotate {
-        top: 4em;
-        right: .5em;
-        transition: opacity .25s
-      }
-    </style>
   </head>
   <body ng-app="app">
     <ion-nav-view></ion-nav-view>

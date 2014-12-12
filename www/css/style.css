@@ -42,3 +42,14 @@
 .draw-controls a:hover {
   background: rgba(0, 60, 136, 0.7);
 }
+.ol-rotate {
+  top: 4em;
+  right: .5em;
+  transition: opacity .25s
+}
+.ol-popup {
+  padding: 10px;
+}
+table#popup-table{
+  width: 100%;
+}
