@@ -12,24 +12,57 @@ angular.module('app')
     var mapProviders = [{
       id: "osm",
       name: "OSM Standard",
-      url: ['http://a.tile.openstreetmap.org/', 'http://b.tile.openstreetmap.org/', 'http://c.tile.openstreetmap.org/'],
+      url: [
+        'http://a.tile.openstreetmap.org/',
+        'http://b.tile.openstreetmap.org/',
+        'http://c.tile.openstreetmap.org/'
+      ],
       imageType: ".png"
     }, {
-      id: "ocm",
-      name: "OpenCycleMap",
-      url: [],
-      imageType: ""
-    }, {
-      id: "mq",
-      name: "MapQuest",
-      url: [],
+      id: "mqSat",
+      name: "MapQuest - Satellite",
+      url: [
+        'http://otile1-s.mqcdn.com/tiles/1.0.0/sat/',
+        'http://otile2-s.mqcdn.com/tiles/1.0.0/sat/',
+        'http://otile3-s.mqcdn.com/tiles/1.0.0/sat/',
+        'http://otile4-s.mqcdn.com/tiles/1.0.0/sat/'
+      ],
       imageType: ".jpg"
     }, {
-      id: "mqoa",
-      name: "MapQuest Open Arial",
-      url: [],
-      imageType: ""
+      id: "mqHybrid",
+      name: "MapQuest - Hybrid",
+      url: [
+        'http://otile1-s.mqcdn.com/tiles/1.0.0/hyb/',
+        'http://otile2-s.mqcdn.com/tiles/1.0.0/hyb/',
+        'http://otile3-s.mqcdn.com/tiles/1.0.0/hyb/',
+        'http://otile4-s.mqcdn.com/tiles/1.0.0/hyb/'
+      ],
+      imageType: ".jpg"
+    }, {
+      id: "mqOsm",
+      name: "MapQuest - OSM",
+      url: [
+        'http://otile1-s.mqcdn.com/tiles/1.0.0/osm/',
+        'http://otile2-s.mqcdn.com/tiles/1.0.0/osm/',
+        'http://otile3-s.mqcdn.com/tiles/1.0.0/osm/',
+        'http://otile4-s.mqcdn.com/tiles/1.0.0/osm/'
+      ],
+      imageType: ".jpg"
     }];
+
+
+    var getRandomElement = function(ary) {
+      var num = _.random(0, ary.length - 1);
+      return ary[num];
+    }
+
+    var getMapTileProvider = function(id) {
+      var provider = _.find(mapProviders, function(provider) {
+        return provider.id == id;
+      });
+      return provider;
+    }
+
 
     // gets the number of tiles from offline storage
     factory.getOfflineTileCount = function(callback) {

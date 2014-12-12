@@ -56,7 +56,7 @@ angular.module('app')
         drawPoint.style.color = 'black';
       drawLine.style.color = 'white';
       drawPoly.style.color = 'white';
-      
+
       e.preventDefault();
       $scope.startDraw("Point");
     };
@@ -67,7 +67,7 @@ angular.module('app')
         drawLine.style.color = 'black';
       drawPoint.style.color = 'white';
       drawPoly.style.color = 'white';
-      
+
       e.preventDefault();
       $scope.startDraw("LineString");
     };
@@ -78,7 +78,7 @@ angular.module('app')
         drawPoly.style.color = 'black';
       drawPoint.style.color = 'white';
       drawLine.style.color = 'white';
-      
+
       e.preventDefault();
       $scope.startDraw("Polygon");
     };
@@ -115,17 +115,75 @@ angular.module('app')
       center: [-11000000, 4600000],
       zoom: 4
     }),
+    layers: [
+      new ol.layer.Group({
+        'title': 'Base maps',
+        layers: [
+          new ol.layer.Tile({
+            title: 'OSM',
+            id: 'osm',
+            type: 'base',
+            visible: false,
+            source: new ol.source.OSM()
+          }),
+          new ol.layer.Tile({
+            title: 'MQ - Satellite',
+            id: 'mqSat',
+            type: 'base',
+            visible: false,
+            source: new ol.source.MapQuest({
+              layer: 'sat'
+            })
+          }),
+          new ol.layer.Tile({
+            title: 'MQ - hybrid',
+            id: 'mqHybrid',
+            type: 'base',
+            visible: false,
+            source: new ol.source.MapQuest({
+              layer: 'hyb'
+            })
+          }),
+          new ol.layer.Tile({
+            title: 'MQ - OSM',
+            id: 'mqOsm',
+            type: 'base',
+            visible: true,  // default visible layer
+            source: new ol.source.MapQuest({
+              layer: 'osm'
+            })
+          })
+        ]
+      })
+    ],
     controls: ol.control.defaults().extend([
       new drawControls()
     ])
   });
+
+  var layerSwitcher = new ol.control.LayerSwitcher();
+  map.addControl(layerSwitcher);
+
+
+  var getCurrentVisibleLayer = function() {
+
+    // the first element in the layers array is our ol.layer.group that contains all the map tile layers
+    var mapTileLayers = map.getLayers().getArray()[0].getLayers().getArray();
+
+    // loop through and get the first layer that is visible
+    var mapTileId = _.find(mapTileLayers, function(layer) {
+      return layer.getVisible();
+    });
+
+    return mapTileId.get('id');
+  }
 
   // Watch whether we have internet access or not
   // This will eventually have to be read directly from phone
   $scope.$watch('airplaneMode', function(airplaneMode) {
     if (airplaneMode == true) {
       console.log("Offline");
-      map.removeLayer(layerOSM);
+      // map.removeLayer(layerOSM);
       // Add tile layer on the bottom
       map.getLayers().insertAt(0, OfflineTileLayer);
       // clear the tiles, because we need to redraw if tiles have already been loaded to the screen
@@ -136,7 +194,7 @@ angular.module('app')
       console.log("Online");
       map.removeLayer(OfflineTileLayer);
       // Add tile layer on the bottom
-      map.getLayers().insertAt(0, layerOSM);
+      // map.getLayers().insertAt(0, layerOSM);
     }
   });
 
@@ -376,11 +434,11 @@ angular.module('app')
     }
   });
 
-  var layerOSM = new ol.layer.Tile({
-    source: new ol.source.MapQuest({
-      layer: "osm"
-    })
-  });
+  // var layerOSM = new ol.layer.Tile({
+  //   source: new ol.source.MapQuest({
+  //     layer: "osm"
+  //   })
+  // });
 
   var OfflineTileLayer = new ol.layer.Tile({
     source: OfflineTileSource
@@ -540,7 +598,7 @@ angular.module('app')
       });
 
       if (feature) {
-     /* 
+        /* 
         var strike = feature.get('strike')
         if (strike.type != undefined)
           strike += '&deg;'
