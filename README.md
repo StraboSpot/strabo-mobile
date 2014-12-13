@@ -14,7 +14,9 @@ Build Stack:
 
 ### Prerequisites
 
-- Install [node.js](http://nodejs.org/)
+- [node.js](http://nodejs.org/)
+- [git](http://git-scm.com/)
+- Java SDK, Apache Ant, Android SDK for Windows users developing for Android. See the [Ionic notes](http://ionicframework.com/docs/guide/installation.html).
 
 ### Installation
 
@@ -40,8 +42,9 @@ In the `strabo-mobile` folder:
 In a web browser:
 
     ionic serve
-    
-In a USB connected Android device:
+ 
+To test as a native app see the Ionic [guide](http://ionicframework.com/docs/guide/testing.html).
+For a USB connected Android device:
 
     ionic platform add android
     ionic run
