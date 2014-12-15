@@ -20,6 +20,9 @@ angular.module('app')
   var map;
   var drawLayer;
 
+  // this is the current visible layer from the layerswitcher
+  var currentVisibleLayer;
+
   // number of tiles we have in offline storage
   $scope.numOfflineTiles = 0;
 
@@ -115,86 +118,90 @@ angular.module('app')
       center: [-11000000, 4600000],
       zoom: 4
     }),
-    layers: [
-      new ol.layer.Group({
-        'title': 'Base maps',
-        layers: [
-          new ol.layer.Tile({
-            title: 'OSM',
-            id: 'osm',
-            type: 'base',
-            visible: false,
-            source: new ol.source.OSM()
-          }),
-          new ol.layer.Tile({
-            title: 'MQ - Satellite',
-            id: 'mqSat',
-            type: 'base',
-            visible: false,
-            source: new ol.source.MapQuest({
-              layer: 'sat'
-            })
-          }),
-          new ol.layer.Tile({
-            title: 'MQ - hybrid',
-            id: 'mqHybrid',
-            type: 'base',
-            visible: false,
-            source: new ol.source.MapQuest({
-              layer: 'hyb'
-            })
-          }),
-          new ol.layer.Tile({
-            title: 'MQ - OSM',
-            id: 'mqOsm',
-            type: 'base',
-            visible: true,  // default visible layer
-            source: new ol.source.MapQuest({
-              layer: 'osm'
-            })
-          })
-        ]
-      })
-    ],
     controls: ol.control.defaults().extend([
       new drawControls()
     ])
   });
 
+  // map layers of all possible map providers
+  var mapLayers = new ol.layer.Group({
+    'title': 'Base maps',
+    layers: [
+      new ol.layer.Tile({
+        title: 'OSM',
+        id: 'osm',
+        type: 'base',
+        visible: false,
+        source: new ol.source.OSM()
+      }),
+      new ol.layer.Tile({
+        title: 'MQ - Satellite',
+        id: 'mqSat',
+        type: 'base',
+        visible: false,
+        source: new ol.source.MapQuest({
+          layer: 'sat'
+        })
+      }),
+      new ol.layer.Tile({
+        title: 'MQ - OSM',
+        id: 'mqOsm',
+        type: 'base',
+        visible: true, // default visible layer
+        source: new ol.source.MapQuest({
+          layer: 'osm'
+        })
+      })
+    ]
+  });
+
+  // layer switcher
   var layerSwitcher = new ol.control.LayerSwitcher();
   map.addControl(layerSwitcher);
 
+  // update the current visible layer, there is no return type as it updates the scope variable directly
+  var updateCurrentVisibleLayer = function() {
 
-  var getCurrentVisibleLayer = function() {
-
-    // the first element in the layers array is our ol.layer.group that contains all the map tile layers
-    var mapTileLayers = map.getLayers().getArray()[0].getLayers().getArray();
+    // the second element in the layers array is our ol.layer.group that contains all the map tile layers
+    var mapTileLayers = map.getLayers().getArray()[1].getLayers().getArray();
 
     // loop through and get the first layer that is visible
     var mapTileId = _.find(mapTileLayers, function(layer) {
       return layer.getVisible();
     });
 
-    return mapTileId.get('id');
+    currentVisibleLayer = mapTileId.get('id');
   }
 
   // Watch whether we have internet access or not
   // This will eventually have to be read directly from phone
   $scope.$watch('airplaneMode', function(airplaneMode) {
+
     if (airplaneMode == true) {
       console.log("Offline");
-      // map.removeLayer(layerOSM);
-      // Add tile layer on the bottom
-      map.getLayers().insertAt(0, OfflineTileLayer);
+
+      // update the current visible layer (we need to capture this before we remove the online map layer)
+      updateCurrentVisibleLayer();
+
+      // remove the online maps
+      map.removeLayer(mapLayers);
+
+      // Add offline tile layer
+      map.addLayer(OfflineTileLayer);
+
       // clear the tiles, because we need to redraw if tiles have already been loaded to the screen
       OfflineTileSource.tileCache.clear();
+
       // re-render the map, grabs "new" tiles from storage
       map.render();
     } else {
       console.log("Online");
       map.removeLayer(OfflineTileLayer);
-      // Add tile layer on the bottom
-      // map.getLayers().insertAt(0, layerOSM);
+      // Add online map layer
+      map.addLayer(mapLayers);
+
+      // update the current visible layer
+      updateCurrentVisibleLayer();
     }
   });
 
@@ -329,13 +336,6 @@ angular.module('app')
     this.lng = lng;
   }
 
-
-
-
-
-
-
-
   var getMapViewExtent = function() {
     var extent = map.getView().calculateExtent(map.getSize());
     var zoom = map.getView().getZoom();
@@ -353,6 +353,8 @@ angular.module('app')
 
 
   var archiveTiles = function() {
+
+    updateCurrentVisibleLayer();
     var mapViewExtent = getMapViewExtent();
 
     var maxZoomToDownload = 18;
@@ -365,7 +367,7 @@ angular.module('app')
       while (zoom <= maxZoomToDownload) {
         var tileArray = SlippyTileNamesFactory.getTileIds(mapViewExtent.topRight, mapViewExtent.bottomLeft, zoom);
         tileArray.forEach(function(tileId) {
-          OfflineTilesFactory.downloadTileToStorage(tileId, function() {
+          OfflineTilesFactory.downloadTileToStorage(currentVisibleLayer, tileId, function() {
             // update the tile count
             $scope.updateOfflineTileCount();
           });
@@ -377,8 +379,6 @@ angular.module('app')
       alert("cannot cache smaller than 17 zoom due to possible usage restrictions");
     }
   }
-
-
 
 
   var OfflineTileSource = new ol.source.OSM({
@@ -399,7 +399,7 @@ angular.module('app')
       var tileId = z + "/" + x + "/" + y;
 
       // check to see if we have the tile in our offline storage
-      OfflineTilesFactory.read(tileId, function(blob) {
+      OfflineTilesFactory.read(currentVisibleLayer, tileId, function(blob) {
 
         // update how many tiles we have
         $scope.updateOfflineTileCount();
@@ -418,13 +418,13 @@ angular.module('app')
             imgElement.src = "img/offlineTiles/zoom" + z + ".png";
           } else {
             // nope, we are in internet mode!  Lets try to get it from the internet first
-            OfflineTilesFactory.downloadInternetMapTile(tileId, function(blob) {
+            OfflineTilesFactory.downloadInternetMapTile(currentVisibleLayer, tileId, function(blob) {
               // load the blob into an image
               blobToBase64(blob, function(base64data) {
                 imgElement.src = base64data;
               });
               // now try to write to offline storage
-              OfflineTilesFactory.write(tileId, blob, function(blob) {
+              OfflineTilesFactory.write(currentVisibleLayer, tileId, blob, function(blob) {
                 // console.log("wrote ", tileId);
               });
             });
@@ -433,12 +433,6 @@ angular.module('app')
       });
     }
   });
-
-  // var layerOSM = new ol.layer.Tile({
-  //   source: new ol.source.MapQuest({
-  //     layer: "osm"
-  //   })
-  // });
 
   var OfflineTileLayer = new ol.layer.Tile({
     source: OfflineTileSource
