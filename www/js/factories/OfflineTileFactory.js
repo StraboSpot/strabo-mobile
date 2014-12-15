@@ -5,31 +5,54 @@ angular.module('app')
 
     var factory = {};
 
-    // the internet map tile source
-    var osmUrlPrefix = 'http://otile1.mqcdn.com/tiles/1.0.0/osm/';
-
-    // map providers, still need to work on this
+    // map providers
     var mapProviders = [{
       id: "osm",
       name: "OSM Standard",
-      url: ['http://a.tile.openstreetmap.org/', 'http://b.tile.openstreetmap.org/', 'http://c.tile.openstreetmap.org/'],
-      imageType: ".png"
+      url: [
+        'http://a.tile.openstreetmap.org/',
+        'http://b.tile.openstreetmap.org/',
+        'http://c.tile.openstreetmap.org/'
+      ],
+      imageType: "png",
+      mime: "image/png"
     }, {
-      id: "ocm",
-      name: "OpenCycleMap",
-      url: [],
-      imageType: ""
+      id: "mqSat",
+      name: "MapQuest - Satellite",
+      url: [
+        'http://otile1-s.mqcdn.com/tiles/1.0.0/sat/',
+        'http://otile2-s.mqcdn.com/tiles/1.0.0/sat/',
+        'http://otile3-s.mqcdn.com/tiles/1.0.0/sat/',
+        'http://otile4-s.mqcdn.com/tiles/1.0.0/sat/'
+      ],
+      imageType: "jpg",
+      mime: "image/jpeg"
     }, {
-      id: "mq",
-      name: "MapQuest",
-      url: [],
-      imageType: ".jpg"
-    }, {
-      id: "mqoa",
-      name: "MapQuest Open Arial",
-      url: [],
-      imageType: ""
+      id: "mqOsm",
+      name: "MapQuest - OSM",
+      url: [
+        'http://otile1-s.mqcdn.com/tiles/1.0.0/osm/',
+        'http://otile2-s.mqcdn.com/tiles/1.0.0/osm/',
+        'http://otile3-s.mqcdn.com/tiles/1.0.0/osm/',
+        'http://otile4-s.mqcdn.com/tiles/1.0.0/osm/'
+      ],
+      imageType: "jpg",
+      mime: "image/jpeg"
     }];
+
+    // randomly selects an element from an array
+    var getRandomElement = function(ary) {
+      var num = _.random(0, ary.length - 1);
+      return ary[num];
+    }
+
+    var getMapTileProvider = function(id) {
+      var provider = _.find(mapProviders, function(provider) {
+        return provider.id == id;
+      });
+      return provider;
+    }
+
 
     // gets the number of tiles from offline storage
     factory.getOfflineTileCount = function(callback) {
@@ -50,29 +73,38 @@ angular.module('app')
     }
 
     // write to storage
-    factory.write = function(tileId, blob, callback) {
+    factory.write = function(mapProvider, tileId, blob, callback) {
+      tileId = mapProvider + "/" + tileId;
       localforage.setItem(tileId, blob).then(function() {
         callback();
       });
     };
 
     // read from storage
-    factory.read = function(tileId, callback) {
+    factory.read = function(mapProvider, tileId, callback) {
+      tileId = mapProvider + "/" + tileId;
       localforage.getItem(tileId).then(function(blob) {
         callback(blob);
       });
     };
 
     // download from internet
-    factory.downloadInternetMapTile = function(tileId, callback) {
+    factory.downloadInternetMapTile = function(mapProvider, tileId, callback) {
+
+      var mapTileProvider = getMapTileProvider(mapProvider);
+      var url = getRandomElement(mapTileProvider.url);
+      var mime = mapTileProvider.mime;
+
+      var imageUrl = url + tileId + "." + mapTileProvider.imageType;
+
       var xhr = new XMLHttpRequest();
-      xhr.open('GET', osmUrlPrefix + tileId + ".jpg", true);
+      xhr.open('GET', imageUrl, true);
       xhr.responseType = 'arraybuffer';
       xhr.onload = function(e) {
         if (this.status == 200) {
           // Note: .response instead of .responseText
           var blob = new Blob([this.response], {
-            type: 'image/png'
+            type: mime
           });
           callback(blob);
         }
@@ -80,10 +112,10 @@ angular.module('app')
       xhr.send();
     };
 
-    factory.downloadTileToStorage = function(tileId, callback) {
+    factory.downloadTileToStorage = function(mapProvider, tileId, callback) {
       var self = this;
-      self.downloadInternetMapTile(tileId, function(blob) {
-        self.write(tileId, blob, function() {
+      self.downloadInternetMapTile(mapProvider, tileId, function(blob) {
+        self.write(mapProvider, tileId, blob, function() {
           callback();
         });
       });
