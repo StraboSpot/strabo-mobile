@@ -1,5 +1,6 @@
 .layer-switcher {
     position: absolute;
+    margin-top: 4em;
     top: 3.5em;
     right: 0.5em;
     text-align: left;

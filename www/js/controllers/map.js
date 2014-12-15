@@ -128,14 +128,7 @@ angular.module('app')
     'title': 'Base maps',
     layers: [
       new ol.layer.Tile({
-        title: 'OSM',
-        id: 'osm',
-        type: 'base',
-        visible: false,
-        source: new ol.source.OSM()
-      }),
-      new ol.layer.Tile({
-        title: 'MQ - Satellite',
+        title: 'Satellite',
         id: 'mqSat',
         type: 'base',
         visible: false,
@@ -144,7 +137,7 @@ angular.module('app')
         })
       }),
       new ol.layer.Tile({
-        title: 'MQ - OSM',
+        title: 'Streets',
         id: 'mqOsm',
         type: 'base',
         visible: true, // default visible layer
@@ -162,8 +155,8 @@ angular.module('app')
   // update the current visible layer, there is no return type as it updates the scope variable directly
   var updateCurrentVisibleLayer = function() {
 
-    // the second element in the layers array is our ol.layer.group that contains all the map tile layers
-    var mapTileLayers = map.getLayers().getArray()[1].getLayers().getArray();
+    // the first element in the layers array is our ol.layer.group that contains all the map tile layers
+    var mapTileLayers = map.getLayers().getArray()[0].getLayers().getArray();
 
     // loop through and get the first layer that is visible
     var mapTileId = _.find(mapTileLayers, function(layer) {
@@ -187,7 +180,8 @@ angular.module('app')
       map.removeLayer(mapLayers);
 
       // Add offline tile layer
-      map.addLayer(OfflineTileLayer);
+      // map.addLayer(OfflineTileLayer);
+      map.getLayers().insertAt(0, OfflineTileLayer);
 
       // clear the tiles, because we need to redraw if tiles have already been loaded to the screen
       OfflineTileSource.tileCache.clear();
@@ -198,7 +192,8 @@ angular.module('app')
       console.log("Online");
       map.removeLayer(OfflineTileLayer);
       // Add online map layer
-      map.addLayer(mapLayers);
+      // map.addLayer(mapLayers);
+      map.getLayers().insertAt(0, mapLayers);
 
       // update the current visible layer
       updateCurrentVisibleLayer();
@@ -361,7 +356,7 @@ angular.module('app')
     var zoom = mapViewExtent.zoom;
 
     // we shouldn't cache when the zoom is less than 17 due to possible usage restrictions
-    if (mapViewExtent.zoom >= 17) {
+    if (mapViewExtent.zoom >= 15) {
 
       // lets download from the current zoom all the way to the maximum zoom
       while (zoom <= maxZoomToDownload) {
@@ -376,7 +371,7 @@ angular.module('app')
         zoom++;
       }
     } else {
-      alert("cannot cache smaller than 17 zoom due to possible usage restrictions");
+      alert("Zoom in closer to download tiles");
     }
   }
 
