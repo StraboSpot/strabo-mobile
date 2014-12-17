@@ -15,7 +15,8 @@ angular.module('app')
   MapView,
   OfflineTilesFactory,
   SlippyTileNamesFactory,
-  SpotsFactory) {
+  SpotsFactory,
+  ViewExtentFactory) {
 
   var map;
   var drawLayer;
@@ -210,11 +211,23 @@ angular.module('app')
 
   // cache offline tiles if in internet mode
   $scope.cacheOfflineTiles = function() {
-    if ($scope.airplaneMode === false) {
-      // cache the tiles in the current view but don't switch to the offline layer
-      archiveTiles();
-    } else
-      alert("Tiles can't be cached while offline.");
+
+
+
+    // if ($scope.airplaneMode === false) {
+    //   // cache the tiles in the current view but don't switch to the offline layer
+    //   archiveTiles();
+    // } else
+    //   alert("Tiles can't be cached while offline.");
+
+    
+    // get the map extent
+    var mapViewExtent = getMapViewExtent();
+
+    // set the extent into the ViewExtentFactory
+    ViewExtentFactory.setExtent(mapViewExtent.topRight, mapViewExtent.bottomLeft, mapViewExtent.zoom);
+
+    $location.path("/app/map/mapname");
   };
 
   $scope.updateOfflineTileCount = function() {

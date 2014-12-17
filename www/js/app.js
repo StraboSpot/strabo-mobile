@@ -20,8 +20,14 @@ angular.module('app', [
   // localforage is the global for offline map tiles
   localforage.config({
     driver: localforage.WEBSQL,
-    name: 'offlineLeafletTiles'
+    name: 'offlineMapTiles'
   })
+
+  // global LF for map names
+  mapNamesDb = localforage.createInstance({
+      driver: localforage.WEBSQL,
+      name: 'MapNames'
+  });
 
   // global LF for spot data
   spotsDb = localforage.createInstance({
@@ -94,6 +100,16 @@ angular.module('app', [
         'menuContent': {
           templateUrl: "templates/spot.html",
           controller: 'SpotCtrl'
+        }
+      }
+    })
+
+    .state('app.mapname', {
+      url: "/map/mapname",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/mapname.html",
+          controller: 'MapNameCtrl'
         }
       }
     })
