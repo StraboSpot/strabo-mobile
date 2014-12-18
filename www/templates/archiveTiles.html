@@ -9,19 +9,25 @@
           </label>          
       </div>
       
-      <div class="item item-divider">
+      <div class="item item-divider" ng-show="showDownload">
         Download Strategy
-      </div>
-
-      <ion-checkbox ng-model="downloadZooms.checked"
-      				ng-change="onChangeDownloadZooms()">
+        <ion-checkbox ng-model="downloadZooms.checked"
+              ng-change="onChangeDownloadZooms()">
         download inner zooms?
-  	  </ion-checkbox>
-
-      
-      <div class="padding">
-        <button class="button button-block button-positive" ng-click="submit()">Start Downloading</button>
+      </ion-checkbox>
       </div>
+
+
     </form>
+
+    <div>
+      <p></p>
+      <p>Estimated number of tiles to download: {{estimate.numberOfTiles}}</p>
+      <p>Estimated total download size: {{estimate.byteSize | number}} bytes</p>
+    </div>
+
+    <div class="padding">
+        <button class="button button-block button-positive" ng-click="submit()">Start Downloading</button>
+    </div>
   </ion-content>
 </ion-view>

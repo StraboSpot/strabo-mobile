@@ -7,8 +7,9 @@ angular.module('app')
 
   	var factory = {};
 
-  	factory.setExtent = function(topRight, bottomLeft, zoom) {
+  	factory.setExtent = function(mapProvider, topRight, bottomLeft, zoom) {
   		viewExtent = {
+  			mapProvider: mapProvider,
   			topRight: topRight,
   			bottomLeft: bottomLeft,
   			zoom: zoom

@@ -68,7 +68,7 @@ angular.module('app')
     };
 
     factory.getAvgTileBytes = function() {
-      return '15000'; // TODO: is this right?
+      return 15000; // TODO: is this right?
     }
 
 

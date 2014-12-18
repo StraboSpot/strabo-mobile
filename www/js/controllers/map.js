@@ -224,8 +224,10 @@ angular.module('app')
     // get the map extent
     var mapViewExtent = getMapViewExtent();
 
+    updateCurrentVisibleLayer();
+
     // set the extent into the ViewExtentFactory
-    ViewExtentFactory.setExtent(mapViewExtent.topRight, mapViewExtent.bottomLeft, mapViewExtent.zoom);
+    ViewExtentFactory.setExtent(currentVisibleLayer, mapViewExtent.topRight, mapViewExtent.bottomLeft, mapViewExtent.zoom);
 
     $location.path("/app/map/archiveTiles");
   };
@@ -360,33 +362,7 @@ angular.module('app')
   }
 
 
-  var archiveTiles = function() {
-
-    updateCurrentVisibleLayer();
-    var mapViewExtent = getMapViewExtent();
-
-    var maxZoomToDownload = 18;
-    var zoom = mapViewExtent.zoom;
-
-    // we shouldn't cache when the zoom is less than 17 due to possible usage restrictions
-    if (mapViewExtent.zoom >= 15) {
-
-      // lets download from the current zoom all the way to the maximum zoom
-      while (zoom <= maxZoomToDownload) {
-        var tileArray = SlippyTileNamesFactory.getTileIds(mapViewExtent.topRight, mapViewExtent.bottomLeft, zoom);
-        tileArray.forEach(function(tileId) {
-          OfflineTilesFactory.downloadTileToStorage(currentVisibleLayer, tileId, function() {
-            // update the tile count
-            $scope.updateOfflineTileCount();
-          });
-        });
-
-        zoom++;
-      }
-    } else {
-      alert("Zoom in closer to download tiles");
-    }
-  }
+  
 
 
   var OfflineTileSource = new ol.source.OSM({
