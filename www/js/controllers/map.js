@@ -227,7 +227,7 @@ angular.module('app')
     // set the extent into the ViewExtentFactory
     ViewExtentFactory.setExtent(mapViewExtent.topRight, mapViewExtent.bottomLeft, mapViewExtent.zoom);
 
-    $location.path("/app/map/mapname");
+    $location.path("/app/map/archiveTiles");
   };
 
   $scope.updateOfflineTileCount = function() {

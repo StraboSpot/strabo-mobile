@@ -104,12 +104,12 @@ angular.module('app', [
       }
     })
 
-    .state('app.mapname', {
-      url: "/map/mapname",
+    .state('app.archiveTiles', {
+      url: "/map/archiveTiles",
       views: {
         'menuContent': {
-          templateUrl: "templates/mapname.html",
-          controller: 'MapNameCtrl'
+          templateUrl: "templates/archiveTiles.html",
+          controller: 'ArchiveTilesCtrl'
         }
       }
     })

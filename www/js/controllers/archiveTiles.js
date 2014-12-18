@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('app')
-.controller('MapNameCtrl', function(
+.controller('ArchiveTilesCtrl', function(
   $scope,
   ViewExtentFactory) {
 
