@@ -24,8 +24,7 @@ angular.module('app')
   // this is the current visible layer from the layerswitcher
   var currentVisibleLayer;
 
-  // number of tiles we have in offline storage
-  $scope.numOfflineTiles = 0;
+
 
   $scope.airplaneMode = false;
 
@@ -181,7 +180,6 @@ angular.module('app')
       map.removeLayer(mapLayers);
 
       // Add offline tile layer
-      // map.addLayer(OfflineTileLayer);
       map.getLayers().insertAt(0, OfflineTileLayer);
 
       // clear the tiles, because we need to redraw if tiles have already been loaded to the screen
@@ -193,7 +191,6 @@ angular.module('app')
       console.log("Online");
       map.removeLayer(OfflineTileLayer);
       // Add online map layer
-      // map.addLayer(mapLayers);
       map.getLayers().insertAt(0, mapLayers);
 
       // update the current visible layer
@@ -211,54 +208,20 @@ angular.module('app')
 
   // cache offline tiles if in internet mode
   $scope.cacheOfflineTiles = function() {
+    if ($scope.airplaneMode === false) {
+      // cache the tiles in the current view but don't switch to the offline layer
 
+      // get the map extent
+      var mapViewExtent = getMapViewExtent();
 
+      updateCurrentVisibleLayer();
 
-    // if ($scope.airplaneMode === false) {
-    //   // cache the tiles in the current view but don't switch to the offline layer
-    //   archiveTiles();
-    // } else
-    //   alert("Tiles can't be cached while offline.");
+      // set the extent into the ViewExtentFactory
+      ViewExtentFactory.setExtent(currentVisibleLayer, mapViewExtent.topRight, mapViewExtent.bottomLeft, mapViewExtent.zoom);
 
-    
-    // get the map extent
-    var mapViewExtent = getMapViewExtent();
-
-    updateCurrentVisibleLayer();
-
-    // set the extent into the ViewExtentFactory
-    ViewExtentFactory.setExtent(currentVisibleLayer, mapViewExtent.topRight, mapViewExtent.bottomLeft, mapViewExtent.zoom);
-
-    $location.path("/app/map/archiveTiles");
-  };
-
-  $scope.updateOfflineTileCount = function() {
-    // get the image count
-    OfflineTilesFactory.getOfflineTileCount(function(count) {
-      $scope.$apply(function() {
-        // update the number of offline tiles to scope
-        $scope.numOfflineTiles = count;
-      });
-
-    });
-  };
-
-  // lets update the count right now
-  $scope.updateOfflineTileCount();
-
-  $scope.clearOfflineTile = function() {
-    if (window.confirm("Do you want to delete ALL offline tiles?")) {
-      // ok, lets delete now because the user has confirmed ok
-      OfflineTilesFactory.clear(function(err) {
-        $scope.updateOfflineTileCount();
-        alert('Offline tiles are now empty');
-        // reload the map layer because the offline tiles are empty
-        OfflineTileSource.tileCache.clear();
-        // re-render the map
-        map.render();
-        //TODO: do we want to reset airplane mode?
-      });
-    }
+      $location.path("/app/map/archiveTiles");
+    } else
+      alert("Tiles can't be cached while offline.");
   };
 
   // drawButtonActive used to keep state of which selected drawing tool is active
@@ -362,7 +325,7 @@ angular.module('app')
   }
 
 
-  
+
 
 
   var OfflineTileSource = new ol.source.OSM({
@@ -385,9 +348,6 @@ angular.module('app')
       // check to see if we have the tile in our offline storage
       OfflineTilesFactory.read(currentVisibleLayer, tileId, function(blob) {
 
-        // update how many tiles we have
-        $scope.updateOfflineTileCount();
-
         // do we have the image already?
         if (blob != null) {
           // yes, lets load the tile into the map
@@ -396,23 +356,8 @@ angular.module('app')
           });
         } else {
           // no, there is no such image in cache
-          // are we in airplane mode?
-          if ($scope.airplaneMode) {
-            // yes, show the user the tile is unavailable
-            imgElement.src = "img/offlineTiles/zoom" + z + ".png";
-          } else {
-            // nope, we are in internet mode!  Lets try to get it from the internet first
-            OfflineTilesFactory.downloadInternetMapTile(currentVisibleLayer, tileId, function(blob) {
-              // load the blob into an image
-              blobToBase64(blob, function(base64data) {
-                imgElement.src = base64data;
-              });
-              // now try to write to offline storage
-              OfflineTilesFactory.write(currentVisibleLayer, tileId, blob, function(blob) {
-                // console.log("wrote ", tileId);
-              });
-            });
-          }
+          // show the user the tile is unavailable
+          imgElement.src = "img/offlineTiles/zoom" + z + ".png";
         }
       });
     }
@@ -576,7 +521,7 @@ angular.module('app')
       });
 
       if (feature) {
-        
+
         // popup content
         var content = '';
         content += '<table id="popup-table"><tr><td>';
@@ -585,7 +530,7 @@ angular.module('app')
         content += '</td><td>';
         content += '<a href="#/app/spots/' + feature.get('id') + '" class="button icon-right ion-chevron-right button-clear button-dark"></a>';
         content += '</td></tr></table>';
-      
+
         // setup the popup position
         popup.show(evt.coordinate, content);
       }

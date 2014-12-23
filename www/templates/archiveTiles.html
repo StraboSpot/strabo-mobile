@@ -5,29 +5,29 @@
         <div class="col">
           <label class="item item-input">
             <span class="input-label"><b>Offline Map Name</b></span>
-            <input type="text" placeholder="some name" ng-model="mapName">
+            <input type="text" placeholder="map name" ng-model="map.name">
           </label>          
       </div>
       
-      <div class="item item-divider" ng-show="showDownload">
-        Download Strategy
-        <ion-checkbox ng-model="downloadZooms.checked"
-              ng-change="onChangeDownloadZooms()">
+      
+        
+        <ion-checkbox ng-model="map.downloadZooms"
+                      ng-show="showDownload"
+                      ng-change="onChangeDownloadZooms()">
         download inner zooms?
       </ion-checkbox>
-      </div>
-
-
+      
     </form>
 
     <div>
+      <p>Current number of offline tiles: {{numOfflineTiles}}</p>
       <p></p>
-      <p>Estimated number of tiles to download: {{estimate.numberOfTiles}}</p>
-      <p>Estimated total download size: {{estimate.byteSize | number}} bytes</p>
+      <p>Estimated number of tiles to download: {{map.tiles.length}}</p>
+      <p>Estimated total download size: {{map.tiles.length * avgTileBytes | number}} bytes</p>
     </div>
 
     <div class="padding">
-        <button class="button button-block button-positive" ng-click="submit()">Start Downloading</button>
+        <button class="button button-block button-positive" ng-click="submit($event)">Archive this map</button>
     </div>
   </ion-content>
 </ion-view>

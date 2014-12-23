@@ -3,9 +3,12 @@
 angular.module('app')
   .controller('ArchiveTilesCtrl', function(
     $scope,
+    $ionicViewService,
     ViewExtentFactory,
-    SlippyTileNamesFactory) {
+    SlippyTileNamesFactory,
+    OfflineTilesFactory) {
 
+    // get the mapExtent from its service upon entering this script
     var mapExtent = ViewExtentFactory.getExtent();
 
     // is the map zoom greater or equal to 15?
@@ -17,24 +20,23 @@ angular.module('app')
       $scope.showDownload = false;
     }
 
-    // name of the map
-    $scope.mapName;
-
-    // is the user choosing to download inner zooms?  default is false
-    $scope.downloadZooms = {
-      checked: false
+    // map variables
+    $scope.map = {
+      // name of the map
+      name: null,
+      // tiles array of the map region
+      tiles: null,
+      downloadZooms: false
     };
 
-    // an estimation of the cost to download tiles
-    $scope.estimate = {
-      numberOfTiles: null,
-      byteSize: null
-    };
+    // number of tiles we have in offline storage
+    $scope.numOfflineTiles = 0;
+
+    // get average tile byte size
+    $scope.avgTileBytes = SlippyTileNamesFactory.getAvgTileBytes();
 
     // the maximum allowable zoom download for any given map
     var maxZoomToDownload = 18;
-
-
 
     // estimates how many tiles would be downloaded
     var estimateArchiveTile = function() {
@@ -42,72 +44,72 @@ angular.module('app')
       var tileArray = [];
       var zoom = mapExtent.zoom;
 
-      if ($scope.downloadZooms.checked) {
-
+      // are we downloading inner zooms?
+      if ($scope.map.downloadZooms) {
+        // yes, then loop through all the zoom levels and build our tile array
         while (zoom <= maxZoomToDownload) {
           var currentZoomTileArray = SlippyTileNamesFactory.getTileIds(mapExtent.topRight, mapExtent.bottomLeft, zoom);
           tileArray.push(currentZoomTileArray)
-
           zoom++;
         }
 
       } else {
+        // no, get just this zoom level
         tileArray = SlippyTileNamesFactory.getTileIds(mapExtent.topRight, mapExtent.bottomLeft, zoom);
       }
 
-      $scope.estimate.numberOfTiles = _.flatten(tileArray).length;
-      $scope.estimate.byteSize = (_.flatten(tileArray).length) * SlippyTileNamesFactory.getAvgTileBytes();
-
+      // update the tile array to the scope
+      $scope.map.tiles = _.flatten(tileArray);
     }
 
+    // run the estimate right now
     estimateArchiveTile();
 
+    $scope.updateOfflineTileCount = function() {
+      // get the image count
+      OfflineTilesFactory.getOfflineTileCount(function(count) {
+        $scope.$apply(function() {
+          // update the number of offline tiles to scope
+          $scope.numOfflineTiles = count;
+        });
 
+      });
+    };
 
-    var archiveTiles = function() {
-
-      console.log(mapExtent);
-
-      // updateCurrentVisibleLayer();
-
-
-      // var zoom = mapViewExtent.zoom;
-
-      // // we shouldn't cache when the zoom is less than 17 due to possible usage restrictions
-      // if (mapViewExtent.zoom >= 15) {
-
-      //   // lets download from the current zoom all the way to the maximum zoom
-      //   while (zoom <= maxZoomToDownload) {
-      //     var tileArray = SlippyTileNamesFactory.getTileIds(mapViewExtent.topRight, mapViewExtent.bottomLeft, zoom);
-      //     tileArray.forEach(function(tileId) {
-      //       OfflineTilesFactory.downloadTileToStorage(currentVisibleLayer, tileId, function() {
-      //         // update the tile count
-      //         $scope.updateOfflineTileCount();
-      //       });
-      //     });
-
-      //     zoom++;
-      //   }
-      // } else {
-      //   alert("Zoom in closer to download tiles");
-      // }
-
-
-    }
-
-
-
+    // lets update the count right now
+    $scope.updateOfflineTileCount();
 
     $scope.onChangeDownloadZooms = function() {
-      // update the estimation
+      // update the estimation when the user toggles whether to download inner zooms
       estimateArchiveTile();
     }
 
+    $scope.submit = function(event) {
 
-    $scope.submit = function() {
-      console.log("submit");
+      // tell the user that we're downloading tiles
+      event.target.innerHTML = "Download tiles... please wait";
+      // disable the download button
+      event.target.disabled = true;
 
-      // TODO: do the actual download
+      if (!$scope.map.name) {
+        alert('Name required.');
+        return;
+      }
+
+      var options = {
+        mapName: $scope.map.name,
+        mapProvider: mapExtent.mapProvider,
+        tiles: $scope.map.tiles
+      }
+
+      // start the download
+      OfflineTilesFactory.downloadTileToStorage(options).then(function() {
+        console.log("archiving tiles all completed");
+
+        // Go back one view in history
+        var backView = $ionicViewService.getBackView();
+        backView.go();
+      });
     }
 
   });
