@@ -23,11 +23,12 @@
       <p>Current number of offline tiles: {{numOfflineTiles}}</p>
       <p></p>
       <p>Estimated number of tiles to download: {{map.tiles.length}}</p>
-      <p>Estimated total download size: {{map.tiles.length * avgTileBytes | number}} bytes</p>
+      <p>Estimated total download size: {{(map.tiles.length * avgTileBytes) / 1024 / 1024 | number:0}} MB</p>
     </div>
 
     <div class="padding">
         <button class="button button-block button-positive" ng-click="submit($event)">Archive this map</button>
+        <progress ng-value="map.percentDownload" max="100" ng-show="map.showProgressBar"></progress>
     </div>
   </ion-content>
 </ion-view>

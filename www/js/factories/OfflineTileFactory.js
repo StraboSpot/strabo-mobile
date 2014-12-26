@@ -88,7 +88,7 @@ angular.module('app')
       var tileId = mapProvider + "/" + tile;
 
       localforage.setItem(tileId, blob).then(function() {
-        console.log("wrote tileId ", tileId);
+        // console.log("wrote tileId ", tileId);
         deferred.resolve();
       });
 
@@ -122,14 +122,14 @@ angular.module('app')
       // test that the network is accessible
       xhr.onload = function(e) {
 
-        console.log("status is", this.status);
+        // console.log("status is", this.status);
 
         if (this.status == 200) {
           // Note: .response instead of .responseText
           var blob = new Blob([this.response], {
             type: mime
           });
-          console.log("downloaded tile ", tile);
+          // console.log("downloaded tile ", tile);
           deferred.resolve(blob);
         } else {
           // uh oh, we shouldn't even be here -- this should be captured by the onerror handler
@@ -143,6 +143,11 @@ angular.module('app')
       xhr.onerror = function(e) {
         console.log("on error triggered");
         deferred.reject("could not download due to 404 or other network error");
+      };
+
+      xhr.onprogress = function(e) {
+        // notify that we are downloading the tile
+        deferred.notify(tile);
       };
 
       xhr.send();
@@ -168,6 +173,9 @@ angular.module('app')
         // the download failed (network error), but we still want to resolve
         console.log(error);
         deferred.resolve();
+      }, function(tileId) {
+        // passing the notification up the promise chain
+        deferred.notify(tileId);
       });
 
       return deferred.promise;
@@ -180,6 +188,10 @@ angular.module('app')
       var mapProvider = options.mapProvider;
       var tiles = options.tiles;
 
+      // clone the tiles array, we use this to determine what tiles are left to download
+      // so we can notify back to the deferral
+      var tilesRemainingToBeDownload = tiles.slice();
+
       // array of promises
       var promises = [];
 
@@ -188,17 +200,42 @@ angular.module('app')
 
       // now save all the tiles -- loop through the tiles array
       tiles.forEach(function(tile, index, ary) {
+
         // stash each tile download as a promise
         var promise = downloadAndSave(mapProvider, tile);
-        // push the promise onto the promises array
+        promise.then(function() {
+          // nothing to do here because all this is deferred in our promises array
+        }, function(err) {
+          console.log("error: downloadTileToStorage-tiles", err);
+        }, function(tileId) {
+          // notify
+
+          // update the tilesRemainingToBeDownload based on what has just been downloaded
+          tilesRemainingToBeDownload = _.filter(tilesRemainingToBeDownload, function(elem) {
+            return elem != tileId;
+          });
+
+          // we notify what tile number has been completed, as well as the total num of tiles
+          deferred.notify([
+            tiles.length - tilesRemainingToBeDownload.length,
+            tiles.length
+          ]);
+        });
+
+        // our promise is now built -- push this promise onto the promises array
         promises.push(promise);
       });
 
       // check that all promises have been fulfilled
       $q.all(promises)
         .then(function() {
-          console.log("fully downloaded and saved");
+
+          // console.log("downloadTileToStorage-then: fully downloaded and saved");
+
+          // everything is fully downloaded
           deferred.resolve();
+        }, function(err) {
+          console.log("error: downloadTileToStorage-all", err);
         });
 
       return deferred.promise;
@@ -213,7 +250,7 @@ angular.module('app')
       });
 
       mapNamesDb.setItem(mapName, tileIdArray).then(function() {
-        console.log("saved map name ", mapName);
+        // console.log("saved map name ", mapName);
         deferred.resolve();
       });
 

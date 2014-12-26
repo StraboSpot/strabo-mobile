@@ -26,7 +26,9 @@ angular.module('app')
       name: null,
       // tiles array of the map region
       tiles: null,
-      downloadZooms: false
+      downloadZooms: false,
+      percentDownload: 0,
+      showProgressBar: false
     };
 
     // number of tiles we have in offline storage
@@ -91,6 +93,8 @@ angular.module('app')
       // disable the download button
       event.target.disabled = true;
 
+      $scope.map.showProgressBar = true;
+
       if (!$scope.map.name) {
         alert('Name required.');
         return;
@@ -104,11 +108,19 @@ angular.module('app')
 
       // start the download
       OfflineTilesFactory.downloadTileToStorage(options).then(function() {
-        console.log("archiving tiles all completed");
+        // console.log("***archiveTiles-done: archiving tiles all completed");
 
-        // Go back one view in history
+        // everything has been downloaded, so lets go back a screen
         var backView = $ionicViewService.getBackView();
         backView.go();
+      }, function(error) {
+        console.log("error at OfflineTilesFactory.downloadTileToStorage", error);
+      }, function(notify) {
+        // console.log("***archiveTiles-notify: ", notify);
+
+        // update the progress bar once we receive notifications
+        $scope.map.percentDownload = Math.ceil((notify[0] / notify[1]) * 100);
+
       });
     }
 
