@@ -60,7 +60,8 @@ angular.module('app', [
       url: "/offlinemap",
       views: {
         'menuContent': {
-          templateUrl: "templates/offlinemap.html"
+          templateUrl: "templates/offlinemap.html",
+          controller: "OfflineMapCtrl"
         }
       }
     })

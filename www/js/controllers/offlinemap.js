@@ -1,124 +1,105 @@
 angular.module('app')
 
-  .controller("OfflineMapCtrl", function($scope, $localForage) {
+.controller("OfflineMapCtrl", function(
+  $scope,
+  OfflineTilesFactory,
+  $ionicListDelegate,
+  $ionicPopup) {
 
-    var osmUrlPrefix = 'http://b.tile.openstreetmap.org/';
+  // number of tiles we have in offline storage
+  $scope.numOfflineTiles = 0;
 
-    var map = L.map('mapdiv', {
-      center: {
-        lat: 32.221667,
-        lng: -110.92638
-      },
-      zoom: 14,
-      drawControl: false
+  // a collection of maps
+  $scope.maps;
+
+  var refreshOfflineMapList = function() {
+    OfflineTilesFactory.getMaps().then(function(maps) {
+      $scope.maps = maps;
     });
+  }
 
-    $scope.numOfflineTiles;
-
-    $scope.airplaneMode = true;
-
-    $scope.toggleAirplaneMode = function() {
-      if ($scope.airplaneMode === false) {
-        $scope.airplaneMode = true;
-      } else {
-        $scope.airplaneMode = false;
-        // we remove and then re-add the map layer because leaflet caches files.
-        // This becomes problematic when we have already loaded the offline tile image
-        map.removeLayer(offlineLayer);
-        map.addLayer(offlineLayer);
-      }
-    };
-
-    $scope.updateOfflineTileCount = function() {
-      //update the image count
-      localforage.length(function(err, numberOfKeys) {
-        $scope.$apply(function() {
-          //update the number of offline tiles to scope
-          $scope.numOfflineTiles = err || numberOfKeys;
-        });
+  var updateOfflineTileCount = function() {
+    // get the image count
+    OfflineTilesFactory.getOfflineTileCount(function(count) {
+      // console.log(count);
+      $scope.$apply(function() {
+        // update the number of offline tiles to scope
+        $scope.numOfflineTiles = count;
       });
-    };
 
-    $scope.clearOfflineTile = function() {
-      if (window.confirm("Do you want to delete ALL offline tiles?")) {
-        // ok, lets delete now because the user has confirmed ok
-        localforage.clear(function(err) {
-          $scope.updateOfflineTileCount();
-          alert('Offline tiles are now empty');
-          //reload the map layer because the offline tiles are empty
-          map.removeLayer(offlineLayer);
-          map.addLayer(offlineLayer);
-          //TODO: do we want to reset airplane mode?
-        });
-      }
-    };
+    });
+  };
 
-    var writeTileToStorage = function(url, isAirplaneMode, callback) {
-      // are we in airplane mode?
-      if (isAirplaneMode) {
-        callback();
-      } else {
-        //no, user wants to retrieve data from the internet
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', osmUrlPrefix + url + ".png", true);
-        xhr.responseType = 'arraybuffer';
-        xhr.onload = function(e) {
-          if (this.status == 200) {
-            // Note: .response instead of .responseText
-            var blob = new Blob([this.response], {
-              type: 'image/png'
-            });
+  var refreshAndUpdateCount = function() {
+    refreshOfflineMapList();
+    updateOfflineTileCount();
+  }
 
-            localforage.setItem(url, blob).then(function() {
-              console.log("wrote localforage, ", url);
-              callback();
-            });
-          }
-        };
-        xhr.send();
-      }
+  // lets update the count right now
+  refreshAndUpdateCount();
+
+  $scope.clearOfflineTile = function() {
+    if (window.confirm("Do you want to delete ALL offline tiles?")) {
+      // ok, lets delete now because the user has confirmed ok
+      OfflineTilesFactory.clear(function(err) {
+        refreshAndUpdateCount();
+        alert('Offline tiles are now empty');
+      });
     }
+  };
 
-    // new layer for offline maps, as signaled by getTileUrl
-    DatabaseTileServer = L.TileLayer.extend({
-      getTileUrl: function(tilePoint, zoom, tile) {
-        var z = zoom;
-        var x = tilePoint.x;
-        var y = tilePoint.y;
+  $scope.edit = function(map) {
+    // console.log("edit");
 
-        var id = z + "/" + x + "/" + y;
+    showMapRenamePopup(map.name);
+  }
 
-        // console.log("need ", id);
+  $scope.delete = function(map) {
+    // console.log("delete");
 
-        // test to see if we want to write the tile into the storage
-        writeTileToStorage(id, $scope.airplaneMode, function() {
+    OfflineTilesFactory.deleteMap(map)
+      .then(function() {
+        // console.log("this map has been deleted");
+        refreshAndUpdateCount();
+      });
+  }
 
-          $scope.updateOfflineTileCount();
+  var showMapRenamePopup = function(mapName) {
+    $scope.mapDetail = {}
 
-          //now get the image back
-          localforage.getItem(id).then(function(blob) {
-            if (blob != null) {
-              var imageUrl = URL.createObjectURL(blob);
-              tile.src = imageUrl;
-              // console.log(imageUrl);
-            } else {
-              // we didn't get a file, so we need to display a blank tile base on zoom                  
-              tile.src = "img/offlineTiles/zoom" + z + ".png";
-            }
-          });
-        });
-
-      },
-      _loadTile: function(tile, tilePoint, zoom) {
-        tile._layer = this;
-        tile.onload = this._tileOnLoad;
-        tile.onerror = this._tileOnError;
-        this.getTileUrl(tilePoint, this._getZoomForUrl(), tile);
-      }
+    // rename popup
+    var myPopup = $ionicPopup.show({
+      template: '<input type="text" ng-model="mapDetail.newName">',
+      title: 'Enter new map name',
+      scope: $scope,
+      buttons: [{
+        text: 'Cancel'
+      }, {
+        text: '<b>Save</b>',
+        type: 'button-positive',
+        onTap: function(e) {
+          if (!$scope.mapDetail.newName) {
+            //don't allow the user to close unless he enters the new name
+            e.preventDefault();
+          } else {
+            return $scope.mapDetail.newName;
+          }
+        }
+      }]
     });
 
-    var offlineLayer = new DatabaseTileServer();
+    myPopup.then(function(name) {
+      if (name) {
+        // rename the map
+        OfflineTilesFactory.renameMap(mapName, $scope.mapDetail.newName)
+          .then(function() {
+            refreshAndUpdateCount();
+            // reset the swipe on the ion-list
+            $ionicListDelegate.closeOptionButtons();
+          });
+      }
+    });
+  };
 
-    // add the offline layer
-    map.addLayer(offlineLayer);
-  });
+
+});

@@ -241,6 +241,76 @@ angular.module('app')
       return deferred.promise;
     }
 
+    factory.getMaps = function() {
+      var deferred = $q.defer();
+
+      var maps = [];
+
+      mapNamesDb.iterate(function(value, key) {
+        maps.push({
+          name: key,
+          tileIds: value
+        });
+      }, function() {
+        deferred.resolve(maps);
+      });
+
+      return deferred.promise;
+    }
+
+    factory.deleteMap = function(map) {
+      var deferred = $q.defer();
+
+      // console.log("map: ", map);
+
+      // first get all the tileIds associated with this map name
+      var tileIds = map.tileIds;
+
+      // an array of promises
+      var promises = [];
+
+      // loop through the tiles and build an delete promise for each tile
+      tileIds.forEach(function(tileId) {
+        // console.log("removing... ", tileId);
+        var promise = localforage.removeItem(tileId);
+        promises.push(promise);
+      });
+
+      $q.all(promises).then(function() {
+        // all the tile associated with this map name has been deleted
+
+        // now delete the actual map name
+        mapNamesDb.removeItem(map.name)
+          .then(function() {
+            // map is deleted, and this is now fully resolved
+            deferred.resolve();
+          });
+      });
+
+      return deferred.promise;
+    };
+
+    factory.renameMap = function(mapName, newMapName) {
+      var deferred = $q.defer();
+
+      // the new map tileIds that we will copy into from the current map
+      var newMapTileIds;
+
+      // get the existing mapname
+      mapNamesDb.getItem(mapName).then(function(tileIds) {
+        // create a new map name, with the existing mapname contents
+        mapNamesDb.setItem(newMapName, tileIds).then(function() {
+          // now delete the actual map name
+          mapNamesDb.removeItem(mapName).then(function() {
+            // map is deleted, and this is now fully resolved
+            deferred.resolve();
+          });
+        });
+      });
+
+      return deferred.promise;
+    };
+
     var mapNameWrite = function(mapName, mapProvider, data) {
       var deferred = $q.defer(); //init promise
 
