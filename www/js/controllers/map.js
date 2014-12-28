@@ -123,9 +123,9 @@ angular.module('app')
     ])
   });
 
-  // map layers of all possible map providers
-  var mapLayers = new ol.layer.Group({
-    'title': 'Base maps',
+  // map layers of all possible online map providers
+  var onlineLayer = new ol.layer.Group({
+    'title': 'Online Maps',
     layers: [
       new ol.layer.Tile({
         title: 'Satellite',
@@ -147,6 +147,15 @@ angular.module('app')
       })
     ]
   });
+
+  // vector layer where we house all the geojson objects
+  var featureLayer = new ol.layer.Group({
+    'title': 'Features',
+    layers: []
+  });
+
+  // add the feature layer to the map first
+  map.addLayer(featureLayer);
 
   // layer switcher
   var layerSwitcher = new ol.control.LayerSwitcher();
@@ -177,7 +186,7 @@ angular.module('app')
       updateCurrentVisibleLayer();
 
       // remove the online maps
-      map.removeLayer(mapLayers);
+      map.removeLayer(onlineLayer);
 
       // Add offline tile layer
       map.getLayers().insertAt(0, OfflineTileLayer);
@@ -191,7 +200,7 @@ angular.module('app')
       console.log("Online");
       map.removeLayer(OfflineTileLayer);
       // Add online map layer
-      map.getLayers().insertAt(0, mapLayers);
+      map.getLayers().insertAt(0, onlineLayer);
 
       // update the current visible layer
       updateCurrentVisibleLayer();
@@ -324,10 +333,6 @@ angular.module('app')
     };
   }
 
-
-
-
-
   var OfflineTileSource = new ol.source.OSM({
     tileLoadFunction: function(imageTile, src) {
 
@@ -397,6 +402,7 @@ angular.module('app')
         object: geojson,
         projection: 'EPSG:3857'
       }),
+      title: geojson.properties.name,
       style: function(feature, resolution) {
 
         var styles = {
@@ -454,8 +460,9 @@ angular.module('app')
   SpotsFactory.all().then(function(spots) {
     spots.forEach(function(geojson, index) {
       try {
+        var vectorLayer = geojsonToVectorLayer(geojson)
         // add each layer to the map
-        map.addLayer(geojsonToVectorLayer(geojson));
+        featureLayer.getLayers().push(vectorLayer);
       } catch (err) {
         // GeoJSON isn't properly formed
         console.log("Invalid GeoJSON: " + JSON.stringify(geojson));
