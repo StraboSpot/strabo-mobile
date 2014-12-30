@@ -26,6 +26,7 @@ angular.module('app')
       name: null,
       // tiles array of the map region
       tiles: null,
+      tilesSizeString: null,
       downloadZooms: false,
       percentDownload: 0,
       showProgressBar: false
@@ -33,9 +34,6 @@ angular.module('app')
 
     // number of tiles we have in offline storage
     $scope.numOfflineTiles = 0;
-
-    // get average tile byte size
-    $scope.avgTileBytes = SlippyTileNamesFactory.getAvgTileBytes();
 
     // the maximum allowable zoom download for any given map
     var maxZoomToDownload = 18;
@@ -62,6 +60,9 @@ angular.module('app')
 
       // update the tile array to the scope
       $scope.map.tiles = _.flatten(tileArray);
+
+      // get average tile byte size
+      $scope.map.tilesSizeString = bytesToSize($scope.map.tiles.length * SlippyTileNamesFactory.getAvgTileBytes());
     }
 
     // run the estimate right now
