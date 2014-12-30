@@ -10,7 +10,7 @@
 
     <ion-list>
       <ion-item ng-repeat="map in maps" class="item-remove-animate">
-        {{map.name}}  (tile count: {{map.tileIds.length}})
+        {{map.name}}  (tile count: {{map.tileIds.length}}, size: {{map.size}})
         <ion-option-button class="button-calm" ng-click="edit(map)">
           Edit Name
         </ion-option-button>

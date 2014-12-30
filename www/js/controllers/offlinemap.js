@@ -14,6 +14,9 @@ angular.module('app')
 
   var refreshOfflineMapList = function() {
     OfflineTilesFactory.getMaps().then(function(maps) {
+
+      // console.log("offline map: ", maps);
+
       $scope.maps = maps;
     });
   }

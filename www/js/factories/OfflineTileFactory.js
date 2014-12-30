@@ -241,6 +241,27 @@ angular.module('app')
       return deferred.promise;
     }
 
+    // input an array of tileIds, get back an array of the blob size for those tileIds
+    var getTileIdsSizeDetail = function(tileIds) {
+      var deferred = $q.defer();
+
+      var promises = [];
+
+      tileIds.forEach(function(tileId) {
+        var promise = localforage.getItem(tileId)
+          .then(function(blob) {
+            return blob.size
+          });
+        promises.push(promise);
+      });
+
+      $q.all(promises).then(function(sizes) {
+        // console.log("getTileIdsSizeDetail: ", sizes);
+        deferred.resolve(sizes);
+      });
+      return deferred.promise;
+    }
+
     factory.getMaps = function() {
       var deferred = $q.defer();
 
@@ -252,9 +273,42 @@ angular.module('app')
           tileIds: value
         });
       }, function() {
-        deferred.resolve(maps);
-      });
+        // now go through all the maps and assign their tile sizes
 
+        var promises = [];
+
+        maps.forEach(function(map) {
+          var promise = getTileIdsSizeDetail(map.tileIds);
+          promises.push(promise);
+        });
+
+        $q.all(promises).then(function(mapSizes) {
+          // mapSizes is an array
+          // each element in this array is an array of sizes in the same order as
+          // the maps array
+
+          // console.log("maps:", maps);
+          // console.log("getMaps: ", mapSizes);
+
+          // an array of map sizes, e.g. [123234, 345678]
+          // the array indexes should correspond to the maps array index
+          var mapSizesReduced = _.map(mapSizes, function(mapSize) {
+            return _.reduce(mapSize, function(memo, num) {
+              return memo + num;
+            }, 0);
+          })
+
+          // console.log(mapSizesReduced);
+
+          // loop through each map and assign the size property
+          _.each(maps, function(value, key, list) {
+            value.size = bytesToSize(mapSizesReduced[key]);
+            return value;
+          });
+
+          deferred.resolve(maps);
+        });
+      });
       return deferred.promise;
     }
 
