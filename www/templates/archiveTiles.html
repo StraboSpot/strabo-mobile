@@ -6,17 +6,13 @@
           <label class="item item-input">
             <span class="input-label"><b>Offline Map Name</b></span>
             <input type="text" placeholder="map name" ng-model="map.name" autofocus>
-          </label>          
-      </div>
-      
-      
-        
-        <ion-checkbox ng-model="map.downloadZooms"
-                      ng-show="showDownload"
-                      ng-change="onChangeDownloadZooms()">
-        download inner zooms?
-      </ion-checkbox>
-      
+          </label>
+        </div>
+
+        <ion-checkbox ng-model="map.downloadZooms" ng-show="showDownload" ng-change="onChangeDownloadZooms()">
+          download inner zooms?
+        </ion-checkbox>
+
     </form>
 
     <div>
@@ -27,8 +23,8 @@
     </div>
 
     <div class="padding">
-        <button class="button button-block button-positive" ng-click="submit($event)">Archive this map</button>
-        <progress ng-value="map.percentDownload" max="100" ng-show="map.showProgressBar"></progress>
+      <button class="button button-block button-positive" ng-click="submit($event)">Archive this map</button>
+      <progress ng-value="map.percentDownload" max="100" ng-show="map.showProgressBar"></progress>
     </div>
   </ion-content>
 </ion-view>
