@@ -9,14 +9,11 @@
   <ion-content class="has-header">
 
     <ion-list>
-      <ion-item ng-repeat="map in maps" class="item-remove-animate">
-        {{map.name}}  (tile count: {{map.tileIds.length}}, size: {{map.size}})
-        <ion-option-button class="button-calm" ng-click="edit(map)">
-          Edit Name
-        </ion-option-button>
-        <ion-option-button class="button-assertive" ng-click="delete(map)">
-          Delete
-        </ion-option-button>
+      <ion-item ng-repeat="map in maps" class="item-button-right">
+        <span>
+          <button class="button button-small button-calm" ng-click="edit(map)">edit</button>
+          <button class="button button-small button-assertive" ng-click="delete(map)">delete</button>
+        </span> {{map.name}} (tile count: {{map.tileIds.length}}, size: {{map.size}})
       </ion-item>
     </ion-list>
 

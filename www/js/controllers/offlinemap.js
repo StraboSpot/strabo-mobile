@@ -58,13 +58,14 @@ angular.module('app')
   }
 
   $scope.delete = function(map) {
-    // console.log("delete");
-
-    OfflineTilesFactory.deleteMap(map)
-      .then(function() {
-        // console.log("this map has been deleted");
-        refreshAndUpdateCount();
-      });
+    var string = "Do you want to delete this map: " + map.name + "?";
+    if (window.confirm(string)) {
+      OfflineTilesFactory.deleteMap(map)
+        .then(function() {
+          // console.log("this map has been deleted");
+          refreshAndUpdateCount();
+        });
+    }
   }
 
   var showMapRenamePopup = function(mapName) {
