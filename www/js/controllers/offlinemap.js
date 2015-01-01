@@ -3,7 +3,6 @@ angular.module('app')
 .controller("OfflineMapCtrl", function(
   $scope,
   OfflineTilesFactory,
-  $ionicListDelegate,
   $ionicPopup) {
 
   // number of tiles we have in offline storage
@@ -98,8 +97,6 @@ angular.module('app')
         OfflineTilesFactory.renameMap(mapName, $scope.mapDetail.newName)
           .then(function() {
             refreshAndUpdateCount();
-            // reset the swipe on the ion-list
-            $ionicListDelegate.closeOptionButtons();
           });
       }
     });
