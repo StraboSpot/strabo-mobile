@@ -15,7 +15,8 @@ angular.module('app')
   MapView,
   OfflineTilesFactory,
   SlippyTileNamesFactory,
-  SpotsFactory) {
+  SpotsFactory,
+  ViewExtentFactory) {
 
   var map;
   var drawLayer;
@@ -23,8 +24,7 @@ angular.module('app')
   // this is the current visible layer from the layerswitcher
   var currentVisibleLayer;
 
-  // number of tiles we have in offline storage
-  $scope.numOfflineTiles = 0;
+
 
   $scope.airplaneMode = false;
 
@@ -123,9 +123,9 @@ angular.module('app')
     ])
   });
 
-  // map layers of all possible map providers
-  var mapLayers = new ol.layer.Group({
-    'title': 'Base maps',
+  // map layers of all possible online map providers
+  var onlineLayer = new ol.layer.Group({
+    'title': 'Online Maps',
     layers: [
       new ol.layer.Tile({
         title: 'Satellite',
@@ -147,6 +147,15 @@ angular.module('app')
       })
     ]
   });
+
+  // vector layer where we house all the geojson objects
+  var featureLayer = new ol.layer.Group({
+    'title': 'Features',
+    layers: []
+  });
+
+  // add the feature layer to the map first
+  map.addLayer(featureLayer);
 
   // layer switcher
   var layerSwitcher = new ol.control.LayerSwitcher();
@@ -177,10 +186,9 @@ angular.module('app')
       updateCurrentVisibleLayer();
 
       // remove the online maps
-      map.removeLayer(mapLayers);
+      map.removeLayer(onlineLayer);
 
       // Add offline tile layer
-      // map.addLayer(OfflineTileLayer);
       map.getLayers().insertAt(0, OfflineTileLayer);
 
       // clear the tiles, because we need to redraw if tiles have already been loaded to the screen
@@ -192,8 +200,7 @@ angular.module('app')
       console.log("Online");
       map.removeLayer(OfflineTileLayer);
       // Add online map layer
-      // map.addLayer(mapLayers);
-      map.getLayers().insertAt(0, mapLayers);
+      map.getLayers().insertAt(0, onlineLayer);
 
       // update the current visible layer
       updateCurrentVisibleLayer();
@@ -212,38 +219,18 @@ angular.module('app')
   $scope.cacheOfflineTiles = function() {
     if ($scope.airplaneMode === false) {
       // cache the tiles in the current view but don't switch to the offline layer
-      archiveTiles();
+
+      // get the map extent
+      var mapViewExtent = getMapViewExtent();
+
+      updateCurrentVisibleLayer();
+
+      // set the extent into the ViewExtentFactory
+      ViewExtentFactory.setExtent(currentVisibleLayer, mapViewExtent.topRight, mapViewExtent.bottomLeft, mapViewExtent.zoom);
+
+      $location.path("/app/map/archiveTiles");
     } else
       alert("Tiles can't be cached while offline.");
-  };
-
-  $scope.updateOfflineTileCount = function() {
-    // get the image count
-    OfflineTilesFactory.getOfflineTileCount(function(count) {
-      $scope.$apply(function() {
-        // update the number of offline tiles to scope
-        $scope.numOfflineTiles = count;
-      });
-
-    });
-  };
-
-  // lets update the count right now
-  $scope.updateOfflineTileCount();
-
-  $scope.clearOfflineTile = function() {
-    if (window.confirm("Do you want to delete ALL offline tiles?")) {
-      // ok, lets delete now because the user has confirmed ok
-      OfflineTilesFactory.clear(function(err) {
-        $scope.updateOfflineTileCount();
-        alert('Offline tiles are now empty');
-        // reload the map layer because the offline tiles are empty
-        OfflineTileSource.tileCache.clear();
-        // re-render the map
-        map.render();
-        //TODO: do we want to reset airplane mode?
-      });
-    }
   };
 
   // drawButtonActive used to keep state of which selected drawing tool is active
@@ -346,36 +333,6 @@ angular.module('app')
     };
   }
 
-
-  var archiveTiles = function() {
-
-    updateCurrentVisibleLayer();
-    var mapViewExtent = getMapViewExtent();
-
-    var maxZoomToDownload = 18;
-    var zoom = mapViewExtent.zoom;
-
-    // we shouldn't cache when the zoom is less than 17 due to possible usage restrictions
-    if (mapViewExtent.zoom >= 15) {
-
-      // lets download from the current zoom all the way to the maximum zoom
-      while (zoom <= maxZoomToDownload) {
-        var tileArray = SlippyTileNamesFactory.getTileIds(mapViewExtent.topRight, mapViewExtent.bottomLeft, zoom);
-        tileArray.forEach(function(tileId) {
-          OfflineTilesFactory.downloadTileToStorage(currentVisibleLayer, tileId, function() {
-            // update the tile count
-            $scope.updateOfflineTileCount();
-          });
-        });
-
-        zoom++;
-      }
-    } else {
-      alert("Zoom in closer to download tiles");
-    }
-  }
-
-
   var OfflineTileSource = new ol.source.OSM({
     tileLoadFunction: function(imageTile, src) {
 
@@ -396,9 +353,6 @@ angular.module('app')
       // check to see if we have the tile in our offline storage
       OfflineTilesFactory.read(currentVisibleLayer, tileId, function(blob) {
 
-        // update how many tiles we have
-        $scope.updateOfflineTileCount();
-
         // do we have the image already?
         if (blob != null) {
           // yes, lets load the tile into the map
@@ -407,23 +361,8 @@ angular.module('app')
           });
         } else {
           // no, there is no such image in cache
-          // are we in airplane mode?
-          if ($scope.airplaneMode) {
-            // yes, show the user the tile is unavailable
-            imgElement.src = "img/offlineTiles/zoom" + z + ".png";
-          } else {
-            // nope, we are in internet mode!  Lets try to get it from the internet first
-            OfflineTilesFactory.downloadInternetMapTile(currentVisibleLayer, tileId, function(blob) {
-              // load the blob into an image
-              blobToBase64(blob, function(base64data) {
-                imgElement.src = base64data;
-              });
-              // now try to write to offline storage
-              OfflineTilesFactory.write(currentVisibleLayer, tileId, blob, function(blob) {
-                // console.log("wrote ", tileId);
-              });
-            });
-          }
+          // show the user the tile is unavailable
+          imgElement.src = "img/offlineTiles/zoom" + z + ".png";
         }
       });
     }
@@ -463,6 +402,7 @@ angular.module('app')
         object: geojson,
         projection: 'EPSG:3857'
       }),
+      title: geojson.properties.name,
       style: function(feature, resolution) {
 
         var styles = {
@@ -520,8 +460,9 @@ angular.module('app')
   SpotsFactory.all().then(function(spots) {
     spots.forEach(function(geojson, index) {
       try {
+        var vectorLayer = geojsonToVectorLayer(geojson)
         // add each layer to the map
-        map.addLayer(geojsonToVectorLayer(geojson));
+        featureLayer.getLayers().push(vectorLayer);
       } catch (err) {
         // GeoJSON isn't properly formed
         console.log("Invalid GeoJSON: " + JSON.stringify(geojson));
@@ -587,7 +528,7 @@ angular.module('app')
       });
 
       if (feature) {
-        
+
         // popup content
         var content = '';
         content += '<table id="popup-table"><tr><td>';
@@ -596,7 +537,7 @@ angular.module('app')
         content += '</td><td>';
         content += '<a href="#/app/spots/' + feature.get('id') + '" class="button icon-right ion-chevron-right button-clear button-dark"></a>';
         content += '</td></tr></table>';
-      
+
         // setup the popup position
         popup.show(evt.coordinate, content);
       }

@@ -1,8 +1,21 @@
 <ion-view title="Offline Areas">
   <ion-nav-buttons side="left">
-    <button menu-toggle="left"class="button button-icon icon ion-navicon"></button>
+    <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side="right">
+    <button ng-click="clearOfflineTile();" class="button button-icon icon ion-trash-b"></button>
+    {{numOfflineTiles}} tiles
   </ion-nav-buttons>
   <ion-content class="has-header">
-    Manage offline tiles here.
+
+    <ion-list>
+      <ion-item ng-repeat="map in maps" class="item-button-right">
+        <span>
+          <button class="button button-small button-calm" ng-click="edit(map)">edit</button>
+          <button class="button button-small button-assertive" ng-click="delete(map)">delete</button>
+        </span> {{map.name}} (tile count: {{map.tileIds.length}}, size: {{map.size}})
+      </ion-item>
+    </ion-list>
+
   </ion-content>
 </ion-view>
