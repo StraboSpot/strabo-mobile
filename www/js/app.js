@@ -115,6 +115,16 @@ angular.module('app', [
       }
     })
 
+    .state('app.debug', {
+      url: "/debug",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/debug.html",
+          controller: 'DebugCtrl'
+        }
+      }
+    })
+
     .state('app.about', {
       url: "/about",
       views: {
