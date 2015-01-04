@@ -6,14 +6,14 @@ angular.module('app')
     var factory = {};
 
     factory.all = function() {
-      var deferred = $q.defer();  //init promise
+      var deferred = $q.defer(); //init promise
 
       var spots = [];
 
       spotsDb.iterate(function(value, key) {
         spots.push(value);
       }, function() {
-        deferred.resolve(spots);        
+        deferred.resolve(spots);
       });
 
       return deferred.promise;
@@ -21,22 +21,25 @@ angular.module('app')
 
     factory.save = function(value, key, callback) {
       var self = this;
+      var deferred = $q.defer(); //init promise
 
       // is the key undefined?
       if (typeof key == 'undefined') {
         // yes -- this means that the key doesn't exist and we want to create a new spot record
         // create a psuedo-random number as key
         key = new Date().getTime().toString();
-      }      
+      }
 
       // lets also put the key in the value.properties.id
       value.properties.id = key;
 
-      self.write(key, value, function(data) {
-        callback(data);
+      self.write(key, value).then(function(data) {
+        deferred.resolve(data);
       });
+
+      return deferred.promise;
     }
-    
+
     // delete the spot
     factory.destroy = function(key) {
       spotsDb.removeItem(key);
@@ -61,10 +64,8 @@ angular.module('app')
     }
 
     // write to storage
-    factory.write = function(key, value, callback) {
-      spotsDb.setItem(key, value).then(function(data) {
-        callback(data);
-      });
+    factory.write = function(key, value) {
+      return spotsDb.setItem(key, value);
     };
 
     // read from storage

@@ -130,7 +130,7 @@ angular.module('app')
     }
 
     // save the spot -- if the id is defined, we overwrite existing id; otherwise create new id/spot
-    SpotsFactory.save($scope.spot, $scope.spot.properties.id, function(data){
+    SpotsFactory.save($scope.spot, $scope.spot.properties.id).then(function(data){
       console.log("wrote", data);
     });
 
