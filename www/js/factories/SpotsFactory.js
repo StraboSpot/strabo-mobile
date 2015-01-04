@@ -19,7 +19,7 @@ angular.module('app')
       return deferred.promise;
     }
 
-    factory.save = function(value, key, callback) {
+    factory.save = function(value, key) {
       var self = this;
       var deferred = $q.defer(); //init promise
 
