@@ -4,18 +4,14 @@ angular.module('app')
   $scope,
   SpotsFactory) {
 
-
   $scope.data = {
     pointsToGenerate: null
   }
-
 
   $scope.submit = function() {
     console.log("submitted");
     generateRandomGeojsonPoint($scope.data.pointsToGenerate)
   }
-
-
 
   // Point object
   var Point = function(lat, lng) {
@@ -48,6 +44,8 @@ angular.module('app')
     for (var i = 0; i < num; i++) {
       var point = generateRandomPoint();
 
+      var key = "x" + i.toString();
+
       var geojsonPoint = {
         "geometry": {
           "type": "Point",
@@ -59,11 +57,11 @@ angular.module('app')
           "time": "11:20",
           "strike": _.random(0, 180),
           "dip": _.random(0, 180),
-          "name": "t" + i.toString()
+          "name": "x" + i.toString()
         }
       }
 
-      SpotsFactory.save(geojsonPoint, undefined, function(data) {
+      SpotsFactory.save(geojsonPoint, key).then(function(data) {
         console.log("wrote: ", data);
       });
 
