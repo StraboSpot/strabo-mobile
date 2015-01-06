@@ -1,9 +1,6 @@
 .map { 
   height: 100%; 
 }
-.bar.bar-calm {
-  background-color: #C6E4FE;
-}
 .glyph-active {
 	border:1 solid #000;
 }
