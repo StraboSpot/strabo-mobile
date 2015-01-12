@@ -74,6 +74,16 @@ angular.module('app', [
         }
       }
     })
+    
+    .state('app.sync', {
+      url: "/sync",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/sync.html",
+          controller: "SyncCtrl"
+        }
+      }
+    })
 
     .state('app.spots', {
       url: "/spots",

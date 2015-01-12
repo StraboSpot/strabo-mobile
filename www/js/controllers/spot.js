@@ -154,6 +154,7 @@ angular.module('app')
   
   // View the spot on the map
   $scope.goToSpot = function() {
+    console.log($scope.spot);
     var coords = $scope.spot.geometry.coordinates;
     var lon = coords[0]
     var lat = coords[1];

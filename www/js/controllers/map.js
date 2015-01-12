@@ -17,7 +17,15 @@ angular.module('app')
   SlippyTileNamesFactory,
   SpotsFactory,
   ViewExtentFactory) {
-
+/*
+  $scope.$watch('navigator.onLine', function(navigator.onLine) {
+    if (navigator.onLine)
+      alert("online");
+    else
+      alert("offline");
+  });
+*/
+  
   var map;
   var drawLayer;
 

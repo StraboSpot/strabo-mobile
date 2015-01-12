@@ -30,6 +30,7 @@
   <gap:plugin name="org.apache.cordova.device"/>
   <gap:plugin name="org.apache.cordova.geolocation"/>
   <gap:plugin name="org.apache.cordova.dialogs"/>
+  <gap:plugin name="org.apache.cordova.network-information"/>
 	
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
