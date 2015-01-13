@@ -8,5 +8,15 @@
   </ion-nav-buttons>
   <ion-content class="has-header">
     <h1>Database Sync</h1>
+    <label class="item item-input">
+      <span class="input-label"><b>Email</b></span>
+      <input type="text" ng-model="loginData.email" value={{loginData.email}}>
+    </label>
+    <label class="item item-input">
+      <span class="input-label"><b>Password</b></span>
+      <input type="text" ng-model="loginData.password" value={{loginData.password}}>
+    </label>
+    <button ng-click="doLogin();" class="button icon-left icon ion-log-in button-balanced">Login</button>
+    <button ng-click="doLogout();" class="button icon-left icon ion-log-out button-assertive">Logout</button>
   </ion-content>
 </ion-view>
