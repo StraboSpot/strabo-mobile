@@ -14,20 +14,25 @@ angular.module('app')
     // Encode the login string
     $scope.encodedLogin = Base64.encode($scope.loginData.email + ":" + $scope.loginData.password);
     
-    // Test login by downloading test spot
+    // Authenticate user login
     if (navigator.onLine) {
-      var id = "246";  // test spot
-      SyncService.downloadSpot(id, $scope.encodedLogin)
+      SyncService.authenticateUser($scope.loginData)
         .then(
-          function(spot) {
-            console.log("Logged in successfully");
+          function(response) {
+            if(response.valid == "true")
+              console.log("Logged in successfully.");
+            else {
+              $scope.encodedLogin = null;
+              alert("Login failure. Incorrect username or password.");
+            }
           },
           function(errorMessage) {
             $scope.encodedLogin = null;
             alert(errorMessage);
           }
         );
-    } else
+    } 
+    else
       alert("Can't login while offline."); 
    };
    

@@ -6,6 +6,7 @@ angular.module('app')
 
     // Return public API.
     return({
+      authenticateUser: authenticateUser,
       uploadSpots: uploadSpots,
       downloadSpot: downloadSpot,
       downloadSpots: downloadSpots
@@ -15,6 +16,20 @@ angular.module('app')
     // Public Methods
     // ---
 
+    // Authenticate the user
+    function authenticateUser(loginData) {
+      var request = $http({
+        method: "post",
+        url: "http://strabospot.org/userAuthenticate",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        data:
+          loginData
+      });
+      return(request.then(handleSuccess, handleError));
+    }   
+    
     // Upload a spot to the database
     function uploadSpots(spot, encodedLogin) {
       var request = $http({
@@ -60,10 +75,6 @@ angular.module('app')
 
     // Transform the error response, unwrapping the application data from the API response payload
     function handleError(response) {
-      if(response.status) {
-        if(response.status == "401")
-          return($q.reject("Login failure. Incorrect username or password."));
-      }
       if(!angular.isObject(response.data) || !response.data.Error) {
         return($q.reject("An unknown error occurred."));
       }
