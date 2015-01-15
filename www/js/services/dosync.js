@@ -7,7 +7,8 @@ angular.module('app')
     // Return public API.
     return({
       uploadSpots: uploadSpots,
-      downloadSpot: downloadSpot
+      downloadSpot: downloadSpot,
+      downloadSpots: downloadSpots
     });
 
     // ---
@@ -20,10 +21,11 @@ angular.module('app')
         method: "post",
         url: "http://strabospot.org/db/feature",
         headers: {
-         'Authorization': "Basic " + encodedLogin + "\""
+          'Authorization': "Basic " + encodedLogin + "\"",
+          'Content-Type': 'application/json'
         },
         data:
-            spot
+          spot
       });
       return(request.then(handleSuccess, handleError));
     }
@@ -33,6 +35,18 @@ angular.module('app')
       var request = $http({
         method: "get",
         url: "http://strabospot.org/db/feature/" + id,
+        headers: {
+          'Authorization': "Basic " + encodedLogin + "\""
+        },
+      });
+      return(request.then(handleSuccess, handleError));
+    }
+    
+    // Download all of a user's spots from the database
+    function downloadSpots(encodedLogin) {
+      var request = $http({
+        method: "get",
+        url: "http://strabospot.org/db/myFeatures",
         headers: {
           'Authorization': "Basic " + encodedLogin + "\""
         },

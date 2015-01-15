@@ -2,7 +2,6 @@ angular.module('app')
 
 .controller("SyncCtrl", function(
   $scope,
-  $ionicModal,
   SpotsFactory,
   SyncService) {
   
@@ -46,14 +45,13 @@ angular.module('app')
   $scope.downloadSpots = function() {
     if (navigator.onLine) {
       if ($scope.encodedLogin) {
-        var id = "246";  // test spot
-        SyncService.downloadSpot(id, $scope.encodedLogin)
+        SyncService.downloadSpots($scope.encodedLogin)
           .then(
-            function(spot) {
-              // save the spot -- if the id is defined, we overwrite existing id; otherwise create new id/spot
-              SpotsFactory.save(spot, spot.properties.id.toString()).then(function(data){
-                console.log("wrote", data);
-                alert("Downloaded spot " + data.properties.id);
+            function(spots) {
+              console.log("Downloaded", spots);
+              spots.features.forEach(function(spot){
+                // save the spot -- if the id is defined, we overwrite existing id; otherwise create new id/spot
+                SpotsFactory.save(spot, spot.properties.id.toString());
               });
             },
             function(errorMessage) {
@@ -75,7 +73,7 @@ angular.module('app')
         SpotsFactory.all().then(function(spots) {
             spots.forEach(function(spot, index) {
               try {
-                SyncService.uploadSpots(spot);
+                SyncService.uploadSpots(spot, $scope.encodedLogin);
                 console.log("Uploaded spot " + spot.properties.id);
               } catch (err) {
                 console.log("Upload Error");

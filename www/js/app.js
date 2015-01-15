@@ -1,6 +1,5 @@
 angular.module('app', [
   'ionic',
-  // 'openlayers-directive',
   'ngCordova'
 ])
 
