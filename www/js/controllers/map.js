@@ -17,15 +17,15 @@ angular.module('app')
   SlippyTileNamesFactory,
   SpotsFactory,
   ViewExtentFactory) {
-/*
-  $scope.$watch('navigator.onLine', function(navigator.onLine) {
-    if (navigator.onLine)
-      alert("online");
-    else
-      alert("offline");
-  });
-*/
-  
+  /*
+    $scope.$watch('navigator.onLine', function(navigator.onLine) {
+      if (navigator.onLine)
+        alert("online");
+      else
+        alert("offline");
+    });
+  */
+
   var map;
   var drawLayer;
 
@@ -397,13 +397,16 @@ angular.module('app')
       })
     });
 
-    var imageStyle = new ol.style.Icon({
-      anchorXUnits: 'pixels',
-      anchorYUnits: 'pixels',
-      opacity: 1,
-      rotation: Math.radians(geojson.properties.strike),
-      src: 'img/strikedip.png'
-    });
+    // imageStyle is a function because each point could have a different strike rotation
+    var imageStyle = function(strike) {
+      return new ol.style.Icon({
+        anchorXUnits: 'pixels',
+        anchorYUnits: 'pixels',
+        opacity: 1,
+        rotation: Math.radians(strike),
+        src: 'img/strikedip.png'
+      });
+    }
 
     return new ol.layer.Vector({
       source: new ol.source.GeoJSON({
@@ -416,7 +419,7 @@ angular.module('app')
         var styles = {
           'Point': [
             new ol.style.Style({
-              image: imageStyle
+              image: imageStyle(feature.values_.strike)
             }),
             new ol.style.Style({
               text: textStyle
@@ -466,16 +469,20 @@ angular.module('app')
 
   // Loop through all spots and create ol vector layers
   SpotsFactory.all().then(function(spots) {
-    spots.forEach(function(geojson, index) {
-      try {
-        var vectorLayer = geojsonToVectorLayer(geojson)
-        // add each layer to the map
-        featureLayer.getLayers().push(vectorLayer);
-      } catch (err) {
-        // GeoJSON isn't properly formed
-        console.log("Invalid GeoJSON: " + JSON.stringify(geojson));
+
+    // bunch all the spots into a geojson feature collection
+    var featureCollection = {
+      "type": "FeatureCollection",
+      "features": spots,
+      "properties": {
+        "name": "FC-1"
       }
-    });
+    };
+
+    var vectorLayer = geojsonToVectorLayer(featureCollection);
+    // add the feature collection layer to the map
+    featureLayer.getLayers().push(vectorLayer);
+
   });
 
   // Zoom
