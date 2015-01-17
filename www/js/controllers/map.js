@@ -406,17 +406,20 @@ angular.module('app')
   // creates a ol vector layer for supplied geojson object
   var geojsonToVectorLayer = function(geojson) {
 
-    var textStyle = new ol.style.Text({
-      font: '12px Calibri,sans-serif',
-      text: geojson.properties.name,
-      fill: new ol.style.Fill({
-        color: '#000'
-      }),
-      stroke: new ol.style.Stroke({
-        color: '#fff',
-        width: 3
-      })
-    });
+    // textStyle is a function because each point has a different text associated
+    var textStyle = function(text) {
+      return new ol.style.Text({
+        font: '12px Calibri,sans-serif',
+        text: text,
+        fill: new ol.style.Fill({
+          color: '#000'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#fff',
+          width: 3
+        })
+      });
+    }
 
     // imageStyle is a function because each point could have a different strike rotation
     var imageStyle = function(strike) {
@@ -443,7 +446,7 @@ angular.module('app')
               image: imageStyle(feature.values_.strike)
             }),
             new ol.style.Style({
-              text: textStyle
+              text: textStyle(feature.values_.name)
             })
           ],
 
@@ -461,7 +464,7 @@ angular.module('app')
               })
             }),
             new ol.style.Style({
-              text: textStyle
+              text: textStyle(feature.values_.name)
             })
           ],
 
@@ -479,7 +482,7 @@ angular.module('app')
               })
             }),
             new ol.style.Style({
-              text: textStyle
+              text: textStyle(feature.values_.name)
             })
           ]
         }
