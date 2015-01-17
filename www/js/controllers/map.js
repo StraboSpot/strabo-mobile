@@ -131,6 +131,27 @@ angular.module('app')
     ])
   });
 
+
+  // get the first spot from our database and set the map view with it as center
+  SpotsFactory.getFirstSpot()
+    .then(function(spot) {
+      var mapCenter;
+      // did we get a spot?
+      if (spot == undefined) {
+        // no -- then default the map to US center
+        mapCenter = [-11000000, 4600000];
+      } else {
+        mapCenter = ol.proj.transform(spot.geometry.coordinates, 'EPSG:4326', 'EPSG:3857');
+      }
+
+      // reset the view
+      map.setView(new ol.View({
+        center: mapCenter,
+        zoom: 4
+      }));
+    });
+
+
   // map layers of all possible online map providers
   var onlineLayer = new ol.layer.Group({
     'title': 'Online Maps',

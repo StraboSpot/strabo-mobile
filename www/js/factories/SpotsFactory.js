@@ -52,6 +52,21 @@ angular.module('app')
       });
     }
 
+    // gets the first spot in the db (if exists) -- used to set the map view
+    factory.getFirstSpot = function() {
+      var deferred = $q.defer(); //init promise
+
+      spotsDb.keys().then(function(keys, err) {
+        if (keys[0] == undefined) {
+          deferred.resolve(undefined);
+        } else {
+          deferred.resolve(spotsDb.getItem(keys[0]));
+        }
+      });
+
+      return deferred.promise;
+    }
+
     // wipes the spots database
     factory.clear = function(callback) {
       spotsDb.clear(function(err) {
