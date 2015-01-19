@@ -12,9 +12,6 @@ angular.module('app')
   $cordovaDialogs,
   $cordovaCamera) {
 
-  // camera images are stored here
-  $scope.cameraImages = [];
-
   $scope.camera = function() {
     // all plugins must be wrapped in a ready function
     document.addEventListener("deviceready", function () {
@@ -32,8 +29,13 @@ angular.module('app')
       };
 
       $cordovaCamera.getPicture(cameraOptions).then(function(imageURI) {
+        // create an images array if it doesn't exist -- camera images are stored here
+        if ($scope.spot.images == undefined) {
+          $scope.spot.images = [];
+        }
+
         // push the image data to our camera images array
-        $scope.cameraImages.push({
+        $scope.spot.images.push({
           src: "data:image/png;base64," + imageURI
         });
 
@@ -172,9 +174,6 @@ angular.module('app')
       $scope.spot.geometry.coordinates[1] = $scope.point.latitude;
       $scope.spot.geometry.coordinates[0] = $scope.point.longitude;
     }
-
-    // camera images should be saved too
-    $scope.spot.images = $scope.cameraImages;
 
     // save the spot -- if the id is defined, we overwrite existing id; otherwise create new id/spot
     SpotsFactory.save($scope.spot, $scope.spot.properties.id).then(function(data){
