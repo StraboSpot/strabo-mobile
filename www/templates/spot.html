@@ -1,6 +1,7 @@
 <ion-view title="Spot Detail">
   <ion-nav-buttons side="right">
     <button ng-click="deleteSpot();" class="button button-icon icon ion-trash-a"></button>
+    <button ng-click="camera()" class="button button-icon icon ion-camera"></button>
     <button ng-click="goToSpot();" class="button button-icon icon ion-eye"></button>
   </ion-nav-buttons>
   <ion-content class="has-header">
@@ -20,16 +21,26 @@
             <input type="time" ng-model="spot.properties.time" value={{spot.properties.time}}>
           </label>
       </div>
-      
+
+      <!-- Images -->
+      <div class="row responsive-md">
+        <ul>
+          <li ng-repeat="image in cameraImages" style="display: inline;">
+            <img ng-src="{{image.src}}" width="100" height="100"/>
+          </li>
+        </ul>
+      </div>
+
+
       <!-- Location -->
       <div class="col">
         <div class="item item-divider">
           Location & Geometry
         </div>
-        Feature Type: {{spot.geometry.type}}    
+        Feature Type: {{spot.geometry.type}}
         <!--   <label class="item item-input">
           <input type="string" ng-model="friendlyGeom" value={{friendlyGeom}} ng-disabled="true">
-        </label>    -->    
+        </label>    -->
         <label class="item item-input" ng-show="showLatLng">
           <span class="input-label">Latitude</span>
           <input type="number" ng-model="point.latitude" value={{point.latitude}}>
@@ -46,13 +57,13 @@
           </ion-buttons>
 
           <ion-buttons>
-            <button ng-click="openMap();" class="button icon-left icon ion-map">Map</button>          
+            <button ng-click="openMap();" class="button icon-left icon ion-map">Map</button>
           </ion-buttons>
         </div>
         </div>
       </div>
-    </div>  
-    
+    </div>
+
       <!-- Spot Type -->
       <div class="item item-divider">
         Attitude Type
@@ -63,12 +74,12 @@
                  ng-change="typeSelected()">
         {{ item.text }}
       </ion-radio>
-      
+
       <!-- More Detail -->
       <div class="item item-divider">
         More Detail
       </div>
-      
+
       <div class="row responsive-md">
         <div class="col">
           <label class="item item-input item-select">
@@ -109,14 +120,14 @@
           </label>
         </div>
       </div>
-      
+
       <div class="item item-divider">
         Notes
       </div>
       <label class="item item-input">
         <textarea placeholder="Notes about this Spot" rows="4" ng-model="spot.properties.notes"></textarea>
       </label>
-      
+
       <div class="padding">
         <button class="button button-block button-positive" ng-click="submit()">Save</button>
       </div>

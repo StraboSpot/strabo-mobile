@@ -1,6 +1,50 @@
 angular.module('app')
 
-.controller('SpotCtrl', function($scope, $stateParams, $location, SpotsFactory, NewSpot, MapView, $ionicViewService, $cordovaGeolocation, $cordovaDialogs) {
+.controller('SpotCtrl', function(
+  $scope,
+  $stateParams,
+  $location,
+  SpotsFactory,
+  NewSpot,
+  MapView,
+  $ionicViewService,
+  $cordovaGeolocation,
+  $cordovaDialogs,
+  $cordovaCamera) {
+
+  // camera images are stored here
+  $scope.cameraImages = [];
+
+  $scope.camera = function() {
+    // all plugins must be wrapped in a ready function
+    document.addEventListener("deviceready", function () {
+
+      var cameraOptions = {
+        quality: 75,
+        destinationType: Camera.DestinationType.DATA_URL,
+        sourceType: Camera.PictureSourceType.CAMERA,
+        allowEdit: true,
+        encodingType: Camera.EncodingType.PNG,
+        targetWidth: 100,
+        targetHeight: 100,
+        // popoverOptions: CameraPopoverOptions,
+        saveToPhotoAlbum: false
+      };
+
+      $cordovaCamera.getPicture(cameraOptions).then(function(imageURI) {
+        // push the image data to our camera images array
+        $scope.cameraImages.push({
+          src: "data:image/png;base64," + imageURI
+        });
+
+      }, function(err) {
+        console.log("error: ", err);
+      });
+    });
+  }
+
+
+
 
   // all the spots available in offline
   $scope.spots;
@@ -46,7 +90,7 @@ angular.module('app')
     { text: 'linear', value: 'linear' },
     { text: 'planar and linear', value: 'planar and linear' }
   ];
-  
+
   $scope.plane_type = [
     { text: 'bedding', value: 'bedding' },
     { text: 'flow layering', value: 'flow layering' },
@@ -66,7 +110,7 @@ angular.module('app')
     { text: 'inferred(?)', value: 'inferred(?)' },
     { text: 'unknown', value: 'unknown' }
   ];
-  
+
   $scope.plane_facing = [
     { text: 'upright', value: 'upright' },
     { text: 'overturned', value: 'overturned' },
@@ -74,7 +118,7 @@ angular.module('app')
     { text: 'approximate(?)', value: 'approximate(?)' },
     { text: 'unknown', value: 'unknown' }
   ];
-    
+
   $scope.typeSelected = function() {
     console.log($scope.spot.properties.attitude_type);
   };
@@ -129,6 +173,9 @@ angular.module('app')
       $scope.spot.geometry.coordinates[0] = $scope.point.longitude;
     }
 
+    // camera images should be saved too
+    $scope.spot.images = $scope.cameraImages;
+
     // save the spot -- if the id is defined, we overwrite existing id; otherwise create new id/spot
     SpotsFactory.save($scope.spot, $scope.spot.properties.id).then(function(data){
       console.log("wrote", data);
@@ -138,7 +185,7 @@ angular.module('app')
     var backView = $ionicViewService.getBackView();
     backView.go();
   };
-  
+
   // Delete the spot
   $scope.deleteSpot = function() {
   $cordovaDialogs.confirm('Delete this Spot?', 'Delete', ['OK','Cancel'])
@@ -151,7 +198,7 @@ angular.module('app')
       }
     });
   }
-  
+
   // View the spot on the map
   $scope.goToSpot = function() {
     console.log($scope.spot);
