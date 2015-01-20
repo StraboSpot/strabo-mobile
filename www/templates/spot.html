@@ -22,16 +22,6 @@
           </label>
       </div>
 
-      <!-- Images -->
-      <div class="row responsive-md">
-        <ul>
-          <li ng-repeat="image in spot.images" style="display: inline;">
-            <img ng-src="{{image.src}}" width="100" height="100"/>
-          </li>
-        </ul>
-      </div>
-
-
       <!-- Location -->
       <div class="col">
         <div class="item item-divider">
@@ -120,7 +110,16 @@
           </label>
         </div>
       </div>
-
+      
+      <!-- Images -->
+      <div class="row responsive-md">
+        <ul>
+          <li ng-repeat="image in spot.images" style="display: inline;">
+            <img ng-src="{{image.src}}" width="100" height="100"/>
+          </li>
+        </ul>
+      </div>
+      
       <div class="item item-divider">
         Notes
       </div>
