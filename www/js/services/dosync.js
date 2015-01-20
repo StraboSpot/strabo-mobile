@@ -7,7 +7,8 @@ angular.module('app')
     // Return public API.
     return({
       authenticateUser: authenticateUser,
-      uploadSpots: uploadSpots,
+      createFeature: createFeature,
+      updateFeature: updateFeature,
       downloadSpot: downloadSpot,
       downloadSpots: downloadSpots
     });
@@ -30,8 +31,8 @@ angular.module('app')
       return(request.then(handleSuccess, handleError));
     }   
     
-    // Upload a spot to the database
-    function uploadSpots(spot, encodedLogin) {
+    // Upload a new spot to the database
+    function createFeature(spot, encodedLogin) {
       var request = $http({
         method: "post",
         url: "http://strabospot.org/db/feature",
@@ -45,6 +46,21 @@ angular.module('app')
       return(request.then(handleSuccess, handleError));
     }
 
+    // Update an existing spot in the database
+    function updateFeature(spot, encodedLogin, selfURL) {
+      var request = $http({
+        method: "post",
+        url: selfURL,
+        headers: {
+          'Authorization': "Basic " + encodedLogin + "\"",
+          'Content-Type': 'application/json'
+        },
+        data:
+          spot
+      });
+      return(request.then(handleSuccess, handleError));
+    }
+    
     // Download a spot from the database
     function downloadSpot(id, encodedLogin) {
       var request = $http({

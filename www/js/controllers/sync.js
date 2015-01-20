@@ -53,11 +53,15 @@ angular.module('app')
         SyncService.downloadSpots($scope.encodedLogin)
           .then(
             function(spots) {
-              console.log("Downloaded", spots);
-              spots.features.forEach(function(spot){
-                // save the spot -- if the id is defined, we overwrite existing id; otherwise create new id/spot
-                SpotsFactory.save(spot, spot.properties.id.toString());
-              });
+              if (spots != "null") {
+                console.log("Downloaded", spots);
+                spots.features.forEach(function(spot){
+                  // save the spot -- if the id is defined, we overwrite existing id; otherwise create new id/spot
+                  SpotsFactory.save(spot, spot.properties.id);
+                });
+              }
+              else
+                alert("No spots linked to this account to download.");
             },
             function(errorMessage) {
               console.warn(errorMessage);
@@ -76,15 +80,41 @@ angular.module('app')
     if (navigator.onLine) {
       if ($scope.encodedLogin) {
         SpotsFactory.all().then(function(spots) {
-            spots.forEach(function(spot, index) {
-              try {
-                SyncService.uploadSpots(spot, $scope.encodedLogin);
-                console.log("Uploaded spot " + spot.properties.id);
-              } catch (err) {
-                console.log("Upload Error");
+          spots.forEach(function(spot, index) {
+            try {
+              $scope.curTempID = spot.properties.id;
+              
+              // If this is not a new spot 
+              // a self URL in spot.properties.self has already been defined
+              if (spot.properties.self){
+                SyncService.updateFeature(spot, $scope.encodedLogin, spot.properties.self)
+                  .then(
+                    function(spot) {
+                      // Replace local spot with spot in server response
+                      SpotsFactory.destroy($scope.curTempID);
+                      SpotsFactory.save(spot, spot.properties.id);
+                      console.log("Updated spot", spot);
+                    }
+                  );
               }
-            });
-            alert("Uploaded " + spots.length + " spots");
+              // If this is a new spot
+              // a self URL is spot.properties.self has not been defined
+              else {
+                SyncService.createFeature(spot, $scope.encodedLogin)
+                  .then(
+                    function(spot) {
+                      // Replace local spot with spot in server response
+                      SpotsFactory.destroy($scope.curTempID);
+                      SpotsFactory.save(spot, spot.properties.id);
+                      console.log("Created new spot", spot);
+                    }
+                  );
+              }
+              //console.log("Uploaded spot " + spot.properties.id);
+            } catch (err) {
+              console.log("Upload Error");
+            }
+          });
         });
       }
       else 

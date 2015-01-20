@@ -13,6 +13,10 @@
             <input type="text" placeholder="Name this Spot" ng-model="spot.properties.name" autofocus>
           </label>
           <label class="item item-input">
+            <span class="input-label"><b>ID</b></span>
+            <input type="text" disabled ng-model="spot.properties.id" autofocus>
+          </label>
+          <label class="item item-input">
             <span class="input-label"><b>Date</b></span>
             <input type="date" ng-model="spot.properties.date" value={{spot.properties.date}}>
           </label>
