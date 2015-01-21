@@ -8,18 +8,70 @@ angular.module('app')
   NewSpot,
   MapView,
   $ionicViewService,
+  $ionicPopup,
   $cordovaGeolocation,
   $cordovaDialogs,
   $cordovaCamera) {
 
-  $scope.camera = function() {
+
+  $scope.cameraSource = [
+    { text: 'Photo Library', value: 'PHOTOLIBRARY' },
+    { text: 'Camera', value: 'CAMERA' },
+    { text: 'Saved Photo Album', value: 'SAVEDPHOTOALBUM' }
+  ];
+
+  $scope.selectedCameraSource = {
+    // default is always camera
+    source: "CAMERA"
+  }
+
+  $scope.cameraModal = function(source) {
+
+    // camera modal popup
+    var myPopup = $ionicPopup.show({
+      template: '<ion-radio ng-repeat="source in cameraSource" ng-value="source.value" ng-model="selectedCameraSource.source">{{ source.text }}</ion-radio>',
+      title: 'Select an image source',
+      scope: $scope,
+      buttons: [{
+        text: 'Cancel'
+      }, {
+        text: '<b>Go</b>',
+        type: 'button-positive',
+        onTap: function(e) {
+          if (!$scope.selectedCameraSource.source) {
+            //don't allow the user to close unless a value is set
+            e.preventDefault();
+          } else {
+            return $scope.selectedCameraSource.source;
+          }
+        }
+      }]
+    });
+
+    myPopup.then(function(cameraSource) {
+      if (cameraSource) {
+        launchCamera(cameraSource);
+      }
+    });
+  };
+
+
+  var launchCamera = function(source) {
     // all plugins must be wrapped in a ready function
     document.addEventListener("deviceready", function () {
+
+      if (source == "PHOTOLIBRARY") {
+        source = Camera.PictureSourceType.PHOTOLIBRARY;
+      } else if (source == "CAMERA") {
+        source = Camera.PictureSourceType.CAMERA;
+      } else if (source == "SAVEDPHOTOALBUM") {
+        source = Camera.PictureSourceType.SAVEDPHOTOALBUM;
+      }
 
       var cameraOptions = {
         quality: 75,
         destinationType: Camera.DestinationType.DATA_URL,
-        sourceType: Camera.PictureSourceType.CAMERA,
+        sourceType: source,
         allowEdit: true,
         encodingType: Camera.EncodingType.PNG,
         targetWidth: 100,
