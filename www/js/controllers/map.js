@@ -26,8 +26,11 @@ angular.module('app')
     });
   */
 
+  // ol3 map
   var map;
-  var drawLayer;
+
+  // draw is a ol3 drawing interaction
+  var draw;
 
   // this is the current visible layer from the layerswitcher
   var currentVisibleLayer;
@@ -131,28 +134,19 @@ angular.module('app')
     ])
   });
 
+  // vector layer where we house all the geojson spot objects
+  var featureLayer = new ol.layer.Group({
+    'title': 'Spot Features',
+    layers: []
+  });
 
-  // get the first spot from our database and set the map view with it as center
-  SpotsFactory.getFirstSpot()
-    .then(function(spot) {
-      var mapCenter;
-      // did we get a spot?
-      if (spot == undefined) {
-        // no -- then default the map to US center
-        mapCenter = [-11000000, 4600000];
-      } else {
-        mapCenter = ol.proj.transform(spot.geometry.coordinates, 'EPSG:4326', 'EPSG:3857');
-      }
+  // add the feature layer to the map first
+  map.addLayer(featureLayer);
 
-      // reset the view
-      map.setView(new ol.View({
-        center: mapCenter,
-        zoom: 4
-      }));
-    });
+  // layer switcher
+  map.addControl(new ol.control.LayerSwitcher());
 
-
-  // map layers of all possible online map providers
+  // online map layer of all possible online map providers
   var onlineLayer = new ol.layer.Group({
     'title': 'Online Maps',
     layers: [
@@ -177,18 +171,99 @@ angular.module('app')
     ]
   });
 
-  // vector layer where we house all the geojson objects
-  var featureLayer = new ol.layer.Group({
-    'title': 'Features',
-    layers: []
+  // offline layer source
+  var OfflineTileSource = new ol.source.OSM({
+    tileLoadFunction: function(imageTile, src) {
+
+      // the tile we will be loading
+      var imgElement = imageTile.getImage();
+
+      // the tile coordinates (x,y,z)
+      var imageCoords = imageTile.getTileCoord();
+
+      // y needs to be corrected using (-y - 1)
+      var y = (imageCoords[2] * -1) - 1;
+
+      var z = imageCoords[0];
+      var x = imageCoords[1];
+
+      var tileId = z + "/" + x + "/" + y;
+
+      // check to see if we have the tile in our offline storage
+      OfflineTilesFactory.read(currentVisibleLayer, tileId, function(blob) {
+
+        // do we have the image already?
+        if (blob != null) {
+          // yes, lets load the tile into the map
+          blobToBase64(blob, function(base64data) {
+            imgElement.src = base64data;
+          });
+        } else {
+          // no, there is no such image in cache
+          // show the user the tile is unavailable
+          imgElement.src = "img/offlineTiles/zoom" + z + ".png";
+        }
+      });
+    }
   });
 
-  // add the feature layer to the map first
-  map.addLayer(featureLayer);
+  // offline map layer
+  var OfflineTileLayer = new ol.layer.Tile({
+    source: OfflineTileSource
+  });
 
-  // layer switcher
-  var layerSwitcher = new ol.control.LayerSwitcher();
-  map.addControl(layerSwitcher);
+  // layer where the drawing will go to
+  var drawLayer = new ol.layer.Vector({
+    source: new ol.source.Vector(),
+    style: new ol.style.Style({
+      fill: new ol.style.Fill({
+        color: 'rgba(255, 255, 255, 0.2)'
+      }),
+      stroke: new ol.style.Stroke({
+        color: '#ffcc33',
+        width: 2
+      }),
+      image: new ol.style.Circle({
+        radius: 7,
+        fill: new ol.style.Fill({
+          color: '#ffcc33'
+        })
+      })
+    })
+  });
+  map.addLayer(drawLayer);
+
+  // Popup
+  var popup = new ol.Overlay.Popup();
+  map.addOverlay(popup);
+
+  // Zoom
+  map.addControl(new ol.control.Zoom());
+
+  /////////////////
+  // END MAP LAYERS
+  /////////////////
+
+  // get the first spot from our database and set the map view with it as center
+  SpotsFactory.getFirstSpot()
+    .then(function(spot) {
+      var mapCenter;
+      // did we get a spot?
+      if (spot == undefined) {
+        // no -- then default the map to US center
+        mapCenter = [-11000000, 4600000];
+      } else {
+        mapCenter = ol.proj.transform(spot.geometry.coordinates, 'EPSG:4326', 'EPSG:3857');
+      }
+
+      // reset the view
+      map.setView(new ol.View({
+        center: mapCenter,
+        zoom: 4
+      }));
+    });
+
+
 
   // update the current visible layer, there is no return type as it updates the scope variable directly
   var updateCurrentVisibleLayer = function() {
@@ -265,8 +340,6 @@ angular.module('app')
   // drawButtonActive used to keep state of which selected drawing tool is active
   $scope.drawButtonActive = null;
 
-  // draw is a ol3 drawing interaction
-  var draw;
 
   $scope.startDraw = function(type) {
     //if the type is already selected, we want to stop drawing
@@ -362,47 +435,9 @@ angular.module('app')
     };
   }
 
-  var OfflineTileSource = new ol.source.OSM({
-    tileLoadFunction: function(imageTile, src) {
 
-      // the tile we will be loading
-      var imgElement = imageTile.getImage();
-
-      // the tile coordinates (x,y,z)
-      var imageCoords = imageTile.getTileCoord();
-
-      // y needs to be corrected using (-y - 1)
-      var y = (imageCoords[2] * -1) - 1;
-
-      var z = imageCoords[0];
-      var x = imageCoords[1];
-
-      var tileId = z + "/" + x + "/" + y;
-
-      // check to see if we have the tile in our offline storage
-      OfflineTilesFactory.read(currentVisibleLayer, tileId, function(blob) {
-
-        // do we have the image already?
-        if (blob != null) {
-          // yes, lets load the tile into the map
-          blobToBase64(blob, function(base64data) {
-            imgElement.src = base64data;
-          });
-        } else {
-          // no, there is no such image in cache
-          // show the user the tile is unavailable
-          imgElement.src = "img/offlineTiles/zoom" + z + ".png";
-        }
-      });
-    }
-  });
-
-  var OfflineTileLayer = new ol.layer.Tile({
-    source: OfflineTileSource
-  });
 
   // we want to load all the geojson markers from the persistence storage onto the map
-
   // creates a ol vector layer for supplied geojson object
   var geojsonToVectorLayer = function(geojson) {
 
@@ -509,33 +544,9 @@ angular.module('app')
 
   });
 
-  // Zoom
-  var myZoom = new ol.control.Zoom();
-  map.addControl(myZoom);
 
-  // layer where the drawing will go to
-  drawLayer = new ol.layer.Vector({
-    source: new ol.source.Vector(),
-    style: new ol.style.Style({
-      fill: new ol.style.Fill({
-        color: 'rgba(255, 255, 255, 0.2)'
-      }),
-      stroke: new ol.style.Stroke({
-        color: '#ffcc33',
-        width: 2
-      }),
-      image: new ol.style.Circle({
-        radius: 7,
-        fill: new ol.style.Fill({
-          color: '#ffcc33'
-        })
-      })
-    })
-  });
-  map.addLayer(drawLayer);
 
-  var popup = new ol.Overlay.Popup();
-  map.addOverlay(popup);
+
 
 
   map.on('touchstart', function(event) {
