@@ -244,27 +244,6 @@ angular.module('app')
   // END MAP LAYERS
   /////////////////
 
-  // get the first spot from our database and set the map view with it as center
-  SpotsFactory.getFirstSpot()
-    .then(function(spot) {
-      var mapCenter;
-      // did we get a spot?
-      if (spot == undefined) {
-        // no -- then default the map to US center
-        mapCenter = [-11000000, 4600000];
-      } else {
-        mapCenter = ol.proj.transform(spot.geometry.coordinates, 'EPSG:4326', 'EPSG:3857');
-      }
-
-      // reset the view
-      map.setView(new ol.View({
-        center: mapCenter,
-        zoom: 4
-      }));
-    });
-
-
-
   // update the current visible layer, there is no return type as it updates the scope variable directly
   var updateCurrentVisibleLayer = function() {
 
@@ -394,9 +373,28 @@ angular.module('app')
     MapView.setMapView(map.getView());
   });
 
-  // Get saved map view
+  //  do we currently have mapview set?  if so, we should reset the map view to that first
   if (MapView.getMapView()) {
     map.setView(MapView.getMapView());
+  } else {
+    // get the first spot from our database and set the map view with it as center
+    SpotsFactory.getFirstSpot()
+      .then(function(spot) {
+        var mapCenter;
+        // did we get a spot?
+        if (spot == undefined) {
+          // no -- then default the map to US center
+          mapCenter = [-11000000, 4600000];
+        } else {
+          mapCenter = ol.proj.transform(spot.geometry.coordinates, 'EPSG:4326', 'EPSG:3857');
+        }
+
+        // reset the view
+        map.setView(new ol.View({
+          center: mapCenter,
+          zoom: 4
+        }));
+      });
   }
 
   $scope.cancelDraw = function() {
