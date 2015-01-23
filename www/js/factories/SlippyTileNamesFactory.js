@@ -15,6 +15,16 @@ angular.module('app')
       return (Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, zoom)));
     }
 
+    // borrowed from http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+    factory.tile2long = function(x, z) {
+      return (x / Math.pow(2, z) * 360 - 180);
+    }
+      // borrowed from http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+    factory.tile2lat = function(y, z) {
+      var n = Math.PI - 2 * Math.PI * y / Math.pow(2, z);
+      return (180 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n))));
+    }
+
     // build an array of numbers from its number line endpoints
     var numberRangeArray = function(num1, num2) {
       var smallerNumber, largerNumber;

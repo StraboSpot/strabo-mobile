@@ -3,6 +3,7 @@ angular.module('app')
 .controller("OfflineMapCtrl", function(
   $scope,
   OfflineTilesFactory,
+  SlippyTileNamesFactory,
   $ionicPopup) {
 
   // number of tiles we have in offline storage
@@ -13,9 +14,36 @@ angular.module('app')
 
   var refreshOfflineMapList = function() {
     OfflineTilesFactory.getMaps().then(function(maps) {
+      maps.forEach(function(map) {
+        // update each map with its map provider
+        map.mapProvider = map.tileIds[0].split('/')[0];
 
-      // console.log("offline map: ", maps);
+        // get all the zooms for each map
+        var zooms = _.map(map.tileIds, function(tileId) {
+          // return just the zoom
+          return tileId.split('/')[1];
+        });
 
+        // assign min/max zooms for each map
+        map.minZoom = _.min(zooms);
+        map.maxZoom = _.max(zooms);
+
+        // get the tile that matches the minimum zoom
+        var mapViewTile = _.find(map.tileIds, function(tileId) {
+          return tileId.split('/')[1] == map.minZoom;
+        });
+
+        // convert the tile X/Y into coordinates
+        var mapViewTileSplitArray = mapViewTile.split('/');
+        mapViewTile = [
+          SlippyTileNamesFactory.tile2long(parseInt(mapViewTileSplitArray[2]), map.minZoom),
+          SlippyTileNamesFactory.tile2lat(parseInt(mapViewTileSplitArray[3]), map.minZoom),
+          parseInt(map.minZoom)
+        ];
+
+        // assign mapViewTile for each map
+        map.mapViewTile = mapViewTile;
+      });
       $scope.maps = maps;
     });
   }
