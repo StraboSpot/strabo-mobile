@@ -1,6 +1,10 @@
 angular.module('app')
 
-  .controller('MenuCtrl', function($scope, $ionicModal, $timeout) {
+  .controller('MenuCtrl', function(
+    $scope,
+    $ionicModal,
+    $timeout,
+    LoginFactory) {
     // Form data for the login modal
     $scope.loginData = {};
 
@@ -18,17 +22,27 @@ angular.module('app')
 
     // Open the login modal
     $scope.login = function() {
-      $scope.modal.show();
+      // do we already have a login set?
+      if(LoginFactory.getLogin()) {
+        // yes, then we should destroy the session because the user wants to log out
+        LoginFactory.destroyLogin();
+        $scope.loginData = {};
+        alert('you have just logged out');
+      } else {
+        // no -- we dont already have a login set
+        $scope.modal.show();
+      }
+
     };
 
     // Perform the login action when the user submits the login form
     $scope.doLogin = function() {
       console.log('Doing login', $scope.loginData);
 
-      // Simulate a login delay. Remove this and replace with your login
-      // code if using a login system
-      $timeout(function() {
-        $scope.closeLogin();
-      }, 1000);
+      LoginFactory.setLogin($scope.loginData);
+
+      $scope.closeLogin();
+
+
     };
   });

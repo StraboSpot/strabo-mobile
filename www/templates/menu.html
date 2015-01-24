@@ -14,7 +14,7 @@
     <ion-content class="has-header bar-dark">
       <ion-list>
         <ion-item nav-clear menu-close ng-click="login()">
-          Login
+          {{loginData.username ? 'Logout ' + loginData.username : 'Login'}}
         </ion-item>
         <ion-item nav-clear menu-close href="#/app/map">
           Map
