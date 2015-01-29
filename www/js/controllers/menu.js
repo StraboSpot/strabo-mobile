@@ -25,7 +25,7 @@ angular.module('app')
   LoginFactory.getLogin()
     .then(function(login) {
       if (login != null) {
-        // we dont have a login
+        // we do have a login -- lets set the authentication
         $scope.authenticated.email = login.email;
       }
     });
