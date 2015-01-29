@@ -33,6 +33,12 @@ angular.module('app', [
       driver: localforage.WEBSQL,
       name: 'Spots'
   });
+
+  // global LF for configuration data
+  configDb = localforage.createInstance({
+    driver: localforage.WEBSQL,
+    name: 'Config'
+  });
 })
 
 .config(function($stateProvider, $urlRouterProvider) {
@@ -73,7 +79,7 @@ angular.module('app', [
         }
       }
     })
-    
+
     .state('app.sync', {
       url: "/sync",
       views: {

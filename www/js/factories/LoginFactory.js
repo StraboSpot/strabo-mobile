@@ -5,27 +5,17 @@ angular.module('app')
 
     var factory = {};
 
-
-    var login;
-
-
     factory.setLogin = function(loginInfo) {
-      // attempt to call http and validate credentials
-      // TODO
-      
-      login = loginInfo;
+      return configDb.setItem('login', loginInfo);
     }
 
     factory.getLogin = function() {
-      return login;
+      return configDb.getItem('login')
     }
-
 
     factory.destroyLogin = function() {
-      login = undefined;
+      return configDb.removeItem('login');
     }
-
-
 
     return factory;
 

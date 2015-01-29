@@ -21,6 +21,15 @@ angular.module('app')
   // authenticated data (is only populated when the user has successfully logged in)
   $scope.authenticated = {};
 
+  // is the user logged in from before?
+  LoginFactory.getLogin()
+    .then(function(login) {
+      if (login != null) {
+        // we dont have a login
+        $scope.authenticated.email = login.email;
+      }
+    });
+
   // Create the login modal that we will use later
   $ionicModal.fromTemplateUrl('templates/login.html', {
     scope: $scope
@@ -33,19 +42,22 @@ angular.module('app')
     $scope.modal.hide();
   };
 
-  // Open the login modal
+  // login acts as both login and logout
   $scope.login = function() {
     // do we already have a login set?
-    if (LoginFactory.getLogin()) {
-      // yes, the user wants to log out so we should destroy the session
-      LoginFactory.destroyLogin();
-      $scope.loginData = {};
-      $scope.authenticated = {};
-      alert('you have just logged out');
-    } else {
-      // no -- we dont already have a login set
-      $scope.modal.show();
-    }
+    LoginFactory.getLogin()
+      .then(function(login) {
+        if (login == null) {
+          // we dont have a login, so lets show the login modal
+          $scope.modal.show();
+        } else {
+          // we do have a login so we should destroy the login because the user wants to logout
+          LoginFactory.destroyLogin();
+          $scope.loginData = {};
+          $scope.authenticated = {};
+          alert('you have just logged out');
+        }
+      });
   };
 
   // Perform the login action when the user submits the login form
@@ -57,19 +69,23 @@ angular.module('app')
       // did the server say it was valid?
       if (result.data.valid === "true") {
         // yes
-        LoginFactory.setLogin($scope.loginData);
-        // set the authentication to the user
-        $scope.authenticated.email = $scope.loginData.email;
-        $scope.closeLogin();
+        LoginFactory.setLogin($scope.loginData)
+          .then(function(login) {
+            // set the authentication to the user
+            $scope.authenticated.email = login.email;
+            $scope.closeLogin();
+          });
       } else {
         // no
         $scope.error.message = "Bad or improper login.  Please try again.";
+        // clear the form variables
+        delete $scope.loginData.email;
+        delete $scope.loginData.password
       }
     }
 
     StraboServerFactory
       .authenticate($scope.loginData)
       .then(reqSuccess, reqFail);
-
   };
 });
