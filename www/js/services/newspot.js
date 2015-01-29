@@ -8,7 +8,7 @@ angular.module('app')
   var setNewSpot = function(geojsonObj) {
     if (!newSpot)
       newSpot = {};
-      
+
     if (geojsonObj) {
       if (geojsonObj.geometry)
         newSpot.geometry = geojsonObj.geometry;
@@ -20,27 +20,24 @@ angular.module('app')
         if (!newSpot.properties) {
           newSpot.properties = {
             date: $filter("date")(Date.now(), 'yyyy-MM-dd'),
-            time: $filter("date")(Date.now(), 'HH:mm'),
-            strike: 0,
-            dip: 0
+            time: $filter("date")(Date.now(), 'HH:mm')
           };
         }
       }
     }
   }
-  
+
   var getNewSpot = function() {
     return newSpot;
   }
-  
+
   var clearNewSpot = function() {
     newSpot = null;
   }
-  
+
   return {
     setNewSpot: setNewSpot,
     getNewSpot: getNewSpot,
     clearNewSpot: clearNewSpot
   };
 })
-  
