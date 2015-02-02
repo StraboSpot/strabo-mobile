@@ -114,7 +114,8 @@ angular.module('app')
     // Initialize new Spot
     if (NewSpot.getNewSpot()) {
       $scope.spot = NewSpot.getNewSpot();
-
+      $scope.spot.properties.date = new Date($scope.spot.properties.date);
+      $scope.spot.properties.time = new Date($scope.spot.properties.time);
       // now clear the new spot from the service because we have the info in our current scope
       NewSpot.clearNewSpot();
     }
@@ -123,6 +124,8 @@ angular.module('app')
       $scope.spot = _.filter($scope.spots, function(spot) {
         return spot.properties.id === $stateParams.spotId;
       })[0];
+      $scope.spot.properties.date = new Date($scope.spot.properties.date);
+      $scope.spot.properties.time = new Date($scope.spot.properties.time);
     }
 
     // is the new spot a single point?

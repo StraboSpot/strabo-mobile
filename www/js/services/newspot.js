@@ -18,9 +18,12 @@ angular.module('app')
         newSpot.properties = geojsonObj.properties
       else {
         if (!newSpot.properties) {
+          var time = new Date(Date.now());
+          time.setSeconds(00);
+          time.setMilliseconds(00);
           newSpot.properties = {
-            date: $filter("date")(Date.now(), 'yyyy-MM-dd'),
-            time: $filter("date")(Date.now(), 'HH:mm')
+            date: new Date(Date.now()),
+            time: time
           };
         }
       }
