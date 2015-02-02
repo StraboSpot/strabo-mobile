@@ -127,7 +127,8 @@ angular.module('app')
     target: 'mapdiv',
     view: new ol.View({
       center: [-11000000, 4600000],
-      zoom: 4
+      zoom: 4,
+      minZoom: 4
     }),
     controls: ol.control.defaults().extend([
       new drawControls()
@@ -146,6 +147,9 @@ angular.module('app')
   // layer switcher
   map.addControl(new ol.control.LayerSwitcher());
 
+  // restricts the map constraint to these coordinates
+  var mapExtent = ol.proj.transformExtent([-180,80,180,-80], 'EPSG:4326', 'EPSG:3857');
+
   // online map layer of all possible online map providers
   var onlineLayer = new ol.layer.Group({
     'title': 'Online Maps',
@@ -157,7 +161,8 @@ angular.module('app')
         visible: false,
         source: new ol.source.MapQuest({
           layer: 'sat'
-        })
+        }),
+        extent: mapExtent
       }),
       new ol.layer.Tile({
         title: 'Streets',
@@ -166,7 +171,8 @@ angular.module('app')
         visible: true, // default visible layer
         source: new ol.source.MapQuest({
           layer: 'osm'
-        })
+        }),
+        extent: mapExtent
       })
     ]
   });
@@ -392,7 +398,8 @@ angular.module('app')
         // reset the view
         map.setView(new ol.View({
           center: mapCenter,
-          zoom: 4
+          zoom: 4,
+          minZoom: 4
         }));
       });
   }
@@ -599,7 +606,8 @@ angular.module('app')
       var lng = position.coords.longitude;
       var newView = new ol.View({
         center: ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
-        zoom: 18
+        zoom: 18,
+        minZoom: 4
       });
       map.setView(newView);
     }, function(err) {
