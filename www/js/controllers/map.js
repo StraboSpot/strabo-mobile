@@ -130,9 +130,12 @@ angular.module('app')
       zoom: 4,
       minZoom: 4
     }),
-    controls: ol.control.defaults().extend([
+    // remove rotate icon from controls and add drawing controls
+    controls: ol.control.defaults({rotate: false}).extend([
       new drawControls()
-    ])
+    ]),
+    // turn off ability to rotate map via keyboard+mouse and using fingers on a mobile device
+    interactions: ol.interaction.defaults({altShiftDragRotate:false, pinchRotate:false})
   });
 
   // vector layer where we house all the geojson spot objects
