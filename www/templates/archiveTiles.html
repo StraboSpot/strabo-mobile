@@ -8,11 +8,12 @@
             <input type="text" placeholder="map name" ng-model="map.name" autofocus>
           </label>
         </div>
-
-        <ion-checkbox ng-model="map.downloadZooms" ng-show="showDownload" ng-change="onChangeDownloadZooms()">
-          download inner zooms?
-        </ion-checkbox>
-
+        <div class="col">
+          <ion-checkbox ng-model="map.downloadZooms" ng-show="showDownload" ng-change="onChangeDownloadZooms()">
+            download inner zooms?
+          </ion-checkbox>
+        </div>
+      </div>
     </form>
 
     <div>
