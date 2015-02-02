@@ -52,6 +52,7 @@ angular.module('app', [
     })
 
     .state('app.map', {
+      cache: false,
       url: "/map",
       views: {
         'menuContent': {
@@ -91,6 +92,7 @@ angular.module('app', [
     })
 
     .state('app.spots', {
+      cache: false,
       url: "/spots",
       views: {
         'menuContent': {
