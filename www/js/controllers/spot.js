@@ -7,7 +7,7 @@ angular.module('app')
   SpotsFactory,
   NewSpot,
   MapView,
-  $ionicViewService,
+  $ionicHistory,
   $ionicPopup,
   $cordovaGeolocation,
   $cordovaDialogs,
@@ -233,7 +233,7 @@ angular.module('app')
     });
 
     // Go back one view in history
-    var backView = $ionicViewService.getBackView();
+    var backView = $ionicHistory.backView();
     backView.go();
   };
 

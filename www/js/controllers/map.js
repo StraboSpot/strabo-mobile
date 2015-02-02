@@ -10,7 +10,7 @@ angular.module('app')
   $cordovaGeolocation,
   $location,
   $filter,
-  $ionicViewService,
+  $ionicHistory,
   NewSpot,
   MapView,
   OfflineTilesFactory,
@@ -364,7 +364,7 @@ angular.module('app')
       NewSpot.setNewSpot(geojsonObj);
 
       // If we got to the map from the spot view go back to that view
-      var backView = $ionicViewService.getBackView();
+      var backView = $ionicHistory.backView();
       if (backView) {
         if (backView.stateName == "app.spot")
           backView.go();

@@ -3,7 +3,7 @@
 angular.module('app')
   .controller('ArchiveTilesCtrl', function(
     $scope,
-    $ionicViewService,
+    $ionicHistory,
     ViewExtentFactory,
     SlippyTileNamesFactory,
     OfflineTilesFactory) {
@@ -112,7 +112,7 @@ angular.module('app')
         // console.log("***archiveTiles-done: archiving tiles all completed");
 
         // everything has been downloaded, so lets go back a screen
-        var backView = $ionicViewService.getBackView();
+        var backView = $ionicHistory.backView();
         backView.go();
       }, function(error) {
         console.log("error at OfflineTilesFactory.downloadTileToStorage", error);
