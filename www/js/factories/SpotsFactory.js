@@ -32,6 +32,12 @@ angular.module('app')
 
       // lets also put the key in the value.properties.id
       value.properties.id = key;
+      
+      // Make sure strike and dip are numbers
+      if (value.properties.strike)
+        value.properties.strike = parseFloat(value.properties.strike)
+      if (value.properties.dip)
+        value.properties.dip = parseFloat(value.properties.dip)
 
       self.write(key, value).then(function(data) {
         deferred.resolve(data);
