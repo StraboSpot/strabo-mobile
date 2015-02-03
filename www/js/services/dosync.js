@@ -29,8 +29,8 @@ angular.module('app')
           loginData
       });
       return(request.then(handleSuccess, handleError));
-    }   
-    
+    }
+
     // Upload a new spot to the database
     function createFeature(spot, encodedLogin) {
       var request = $http({
@@ -60,7 +60,7 @@ angular.module('app')
       });
       return(request.then(handleSuccess, handleError));
     }
-    
+
     // Download a spot from the database
     function downloadSpot(id, encodedLogin) {
       var request = $http({
@@ -72,7 +72,7 @@ angular.module('app')
       });
       return(request.then(handleSuccess, handleError));
     }
-    
+
     // Download all of a user's spots from the database
     function downloadSpots(encodedLogin) {
       var request = $http({
@@ -92,7 +92,9 @@ angular.module('app')
     // Transform the error response, unwrapping the application data from the API response payload
     function handleError(response) {
       if(!angular.isObject(response.data) || !response.data.Error) {
-        return($q.reject("An unknown error occurred."));
+        var communicationError = "There was a failure communicating with the strabo server. " +
+          "You are likely working in offline mode and cannot reach the server or the server is currently down. ";
+        return($q.reject(communicationError));
       }
       // Otherwise, use expected error message.
       return($q.reject(response.data.Error));

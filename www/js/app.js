@@ -47,8 +47,7 @@ angular.module('app', [
     .state('app', {
       url: "/app",
       abstract: true,
-      templateUrl: "templates/menu.html",
-      controller: 'MenuCtrl'
+      templateUrl: "templates/menu.html"
     })
 
     .state('app.map', {
