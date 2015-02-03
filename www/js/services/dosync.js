@@ -10,7 +10,8 @@ angular.module('app')
       createFeature: createFeature,
       updateFeature: updateFeature,
       downloadSpot: downloadSpot,
-      downloadSpots: downloadSpots
+      downloadSpots: downloadSpots,
+      deleteMyFeatures: deleteMyFeatures,
     });
 
     // ---
@@ -77,6 +78,18 @@ angular.module('app')
     function downloadSpots(encodedLogin) {
       var request = $http({
         method: "get",
+        url: "http://strabospot.org/db/myFeatures",
+        headers: {
+          'Authorization': "Basic " + encodedLogin + "\""
+        },
+      });
+      return(request.then(handleSuccess, handleError));
+    }
+    
+    // Delete all of the features associated with the logged in user
+    function deleteMyFeatures(encodedLogin) {
+      var request = $http({
+        method: "delete",
         url: "http://strabospot.org/db/myFeatures",
         headers: {
           'Authorization': "Basic " + encodedLogin + "\""

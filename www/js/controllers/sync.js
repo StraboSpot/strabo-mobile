@@ -122,43 +122,35 @@ angular.module('app')
   $scope.uploadSpots = function() {
     if (navigator.onLine) {
       if ($scope.encodedLogin) {
-        SpotsFactory.all().then(function(spots) {
-          spots.forEach(function(spot, index) {
-            try {
-              $scope.curTempID = spot.properties.id;
-
-              // If this is not a new spot
-              // a self URL in spot.properties.self has already been defined
-              if (spot.properties.self) {
-                SyncService.updateFeature(spot, $scope.encodedLogin, spot.properties.self)
-                  .then(
-                    function(spot) {
-                      // Replace local spot with spot in server response
-                      SpotsFactory.destroy($scope.curTempID);
-                      SpotsFactory.save(spot, spot.properties.id);
-                      console.log("Updated spot", spot);
-                    }
-                  );
-              }
-              // If this is a new spot
-              // a self URL is spot.properties.self has not been defined
-              else {
+        if (!SpotsFactory.getSpotCount() || SpotsFactory.getSpotCount() == 0)
+          var response = confirm("No local spots. Deleting all your spots in the database.", "Warning!");
+        if (response == true) {
+          // Delete all spots associated with a login
+          SyncService.deleteMyFeatures($scope.encodedLogin);
+          SpotsFactory.all().then(function(spots) {
+            spots.forEach(function(spot, index) {
+              try {
+                // Assign a temporary Id to each spot
+                spot.properties.tempId = spot.properties.id;
                 SyncService.createFeature(spot, $scope.encodedLogin)
                   .then(
                     function(spot) {
-                      // Replace local spot with spot in server response
-                      SpotsFactory.destroy($scope.curTempID);
+                      // Delete the local spot
+                      SpotsFactory.destroy(spot.properties.tempId);
+                      // Delete the temporary Id
+                      if (spot.properties.tempId)
+                        delete spot.properties.tempId;
+                      // Save the response from the server as a new spot
                       SpotsFactory.save(spot, spot.properties.id);
                       console.log("Created new spot", spot);
                     }
                   );
+              } catch (err) {
+                console.log("Upload Error");
               }
-              //console.log("Uploaded spot " + spot.properties.id);
-            } catch (err) {
-              console.log("Upload Error");
-            }
+            });
           });
-        });
+        }
       } else
         alert("You must log in first.");
     } else
