@@ -32,7 +32,7 @@ angular.module('app')
 
       // lets also put the key in the value.properties.id
       value.properties.id = key;
-      
+
       // Make sure strike and dip are numbers
       if (value.properties.strike)
         value.properties.strike = parseFloat(value.properties.strike)
@@ -52,10 +52,8 @@ angular.module('app')
     }
 
     // gets the number of spots
-    factory.getSpotCount = function(callback) {
-      spotsDb.length(function(err, numberOfKeys) {
-        callback(err || numberOfKeys);
-      });
+    factory.getSpotCount = function() {
+      return spotsDb.length();
     }
 
     // gets the first spot in the db (if exists) -- used to set the map view
