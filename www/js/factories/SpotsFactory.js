@@ -48,7 +48,7 @@ angular.module('app')
 
     // delete the spot
     factory.destroy = function(key) {
-      spotsDb.removeItem(key);
+      return spotsDb.removeItem(key);
     }
 
     // gets the number of spots

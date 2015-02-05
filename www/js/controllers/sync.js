@@ -99,6 +99,7 @@ angular.module('app')
         SyncService.downloadSpots($scope.encodedLogin)
           .then(
             function(spots) {
+              console.log(spots);
               if (spots != "null") {
                 console.log("Downloaded", spots);
                 spots.features.forEach(function(spot) {
@@ -122,38 +123,110 @@ angular.module('app')
   $scope.uploadSpots = function() {
     if (navigator.onLine) {
       if ($scope.encodedLogin) {
-        SpotsFactory.getSpotCount().then(function(count) {
-          if (count == 0) {
-            var response = confirm("No local spots. Deleting all your spots in the online server/database.", "Warning!");
-            if (response == true) {
-              // Delete all spots associated with a login
-              SyncService.deleteMyFeatures($scope.encodedLogin);
-              SpotsFactory.all().then(function(spots) {
-                spots.forEach(function(spot, index) {
-                  try {
-                    // Assign a temporary Id to each spot
-                    spot.properties.tempId = spot.properties.id;
-                    SyncService.createFeature(spot, $scope.encodedLogin)
-                      .then(
-                        function(spot) {
-                          // Delete the local spot
-                          SpotsFactory.destroy(spot.properties.tempId);
-                          // Delete the temporary Id
-                          if (spot.properties.tempId)
-                            delete spot.properties.tempId;
-                          // Save the response from the server as a new spot
-                          SpotsFactory.save(spot, spot.properties.id);
-                          console.log("Created new spot", spot);
-                        }
-                      );
-                  } catch (err) {
-                    console.log("Upload Error");
-                  }
-                });
+
+
+        var deleteFeaturesFromServer = function() {
+          return SyncService.deleteMyFeatures($scope.encodedLogin);
+        };
+
+        var getAllLocalSpots = function(response) {
+          // console.log("getAllLocalSpots", response);
+          if (response.status === 204) {
+            return SpotsFactory.all();
+          }
+          throw new Error("bad http status code");
+        };
+
+        var uploadAllSpots = function(spots) {
+          console.log("spots", spots);
+          spots.forEach(function(spot) {
+            // Assign a temporary Id to each spot
+            spot.properties.tempId = spot.properties.id;
+
+            console.log(spot);
+
+            //upload the spot
+
+            // uploadSpot(spot)
+            //   .then(deleteLocalSpot);
+
+            // upload the spot
+            SyncService.createFeature(spot, $scope.encodedLogin)
+              .then(function(response) {
+                // we want to delete our local spot data
+                console.log(response);
+                if (response.status === 201) {
+                  return SpotsFactory.destroy(spot.properties.tempId);
+                } else {
+                  throw new Error("server could not create the feature");
+                }
+              })
+              .then(function() {
+                delete spot.properties.tempId;
+                // Save the response from the server as a new spot
+                return SpotsFactory.save(spot, spot.properties.id);
+              })
+              .then(function(spot){
+                console.log("Created new spot", spot);
               });
-            }
-          } //(count == 0)
-        });
+
+
+            //then delete the local spot
+
+          });
+        };
+
+        var reportProblems = function(fault) {
+          console.log(fault);
+        };
+
+        deleteFeaturesFromServer()
+          .then(getAllLocalSpots)
+          .then(uploadAllSpots)
+          .catch(reportProblems);
+
+        //
+        // SpotsFactory.getSpotCount().then(function(count) {
+        //   if (count == 0) {
+        //     var response = confirm("No local spots. Deleting all your spots in the online server/database.", "Warning!");
+        //     if (response == true) {
+        //       // Delete all spots associated with a login
+        //       SyncService.deleteMyFeatures($scope.encodedLogin);
+        //       SpotsFactory.all().then(function(spots) {
+        //         spots.forEach(function(spot, index) {
+        //           try {
+        //             // Assign a temporary Id to each spot
+        //             spot.properties.tempId = spot.properties.id;
+        //             SyncService.createFeature(spot, $scope.encodedLogin)
+        //               .then(
+        //                 function(spot) {
+        //                   // Delete the local spot
+        //                   SpotsFactory.destroy(spot.properties.tempId);
+        //                   // Delete the temporary Id
+        //                   if (spot.properties.tempId)
+        //                     delete spot.properties.tempId;
+        //                   // Save the response from the server as a new spot
+        //                   SpotsFactory.save(spot, spot.properties.id);
+        //                   console.log("Created new spot", spot);
+        //                 }
+        //               );
+        //           } catch (err) {
+        //             console.log("Upload Error");
+        //           }
+        //         });
+        //       });
+        //     }
+        //   } //(count == 0)
+        // });
+        //
+        //
+
+        // var qq = function(count) {
+        //   if (count === 0)
+        // };
+
+        // SpotsFactory.getSpotCount()
+        //   .then(doSomething)
 
         // if (!SpotsFactory.getSpotCount() || SpotsFactory.getSpotCount() == 0)
 
