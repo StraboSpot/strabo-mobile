@@ -40,6 +40,7 @@ angular.module('app')
         value.properties.dip = parseFloat(value.properties.dip)
 
       self.write(key, value).then(function(data) {
+        deferred.notify();
         deferred.resolve(data);
       });
 
