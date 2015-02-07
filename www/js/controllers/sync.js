@@ -12,29 +12,36 @@ angular.module('app')
   // base64 encoded login
   $scope.encodedLogin = null;
 
+  // upload progress
+  $scope.progress = {
+    showProgress: false,
+    current: null,
+    total: null
+  };
+
   $scope.hideActionButtons = {
     login: true,
     logout: true
-  }
+  };
 
   var hideLoginButton = function() {
     $scope.hideActionButtons = {
       login: true,
       logout: false
-    }
-  }
+    };
+  };
 
   var hideLogoutButton = function() {
     $scope.hideActionButtons = {
       login: false,
       logout: true
-    }
-  }
+    };
+  };
 
   // is the user logged in from before?
   LoginFactory.getLogin()
     .then(function(login) {
-      if (login != null) {
+      if (login !== null) {
         // we do have a login -- lets set the authentication
         console.log("we have a login!");
 
@@ -59,7 +66,7 @@ angular.module('app')
       SyncService.authenticateUser($scope.loginData)
         .then(
           function(response) {
-            if (response.valid == "true") {
+            if (response.status === 200 && response.data.valid == "true") {
               console.log("Logged in successfully.");
               hideLoginButton();
               LoginFactory.setLogin($scope.loginData)
@@ -90,7 +97,7 @@ angular.module('app')
       password: null
     };
     hideLogoutButton();
-  }
+  };
 
   // Download Spots from database if in Internet mode
   $scope.downloadSpots = function() {
@@ -98,10 +105,11 @@ angular.module('app')
       if ($scope.encodedLogin) {
         SyncService.downloadSpots($scope.encodedLogin)
           .then(
-            function(spots) {
-              if (spots != "null") {
-                console.log("Downloaded", spots);
-                spots.features.forEach(function(spot) {
+            function(response) {
+              console.log(response);
+              if (response.data !== null) {
+                console.log("Downloaded", response.data);
+                response.data.features.forEach(function(spot) {
                   // save the spot -- if the id is defined, we overwrite existing id; otherwise create new id/spot
                   SpotsFactory.save(spot, spot.properties.id);
                 });
@@ -122,38 +130,121 @@ angular.module('app')
   $scope.uploadSpots = function() {
     if (navigator.onLine) {
       if ($scope.encodedLogin) {
-        SpotsFactory.getSpotCount().then(function(count) {
-          if (count == 0) {
-            var response = confirm("No local spots. Deleting all your spots in the online server/database.", "Warning!");
-            if (response == true) {
-              // Delete all spots associated with a login
-              SyncService.deleteMyFeatures($scope.encodedLogin);
-              SpotsFactory.all().then(function(spots) {
-                spots.forEach(function(spot, index) {
-                  try {
-                    // Assign a temporary Id to each spot
-                    spot.properties.tempId = spot.properties.id;
-                    SyncService.createFeature(spot, $scope.encodedLogin)
-                      .then(
-                        function(spot) {
-                          // Delete the local spot
-                          SpotsFactory.destroy(spot.properties.tempId);
-                          // Delete the temporary Id
-                          if (spot.properties.tempId)
-                            delete spot.properties.tempId;
-                          // Save the response from the server as a new spot
-                          SpotsFactory.save(spot, spot.properties.id);
-                          console.log("Created new spot", spot);
-                        }
-                      );
-                  } catch (err) {
-                    console.log("Upload Error");
+
+        var deleteFeaturesFromServer = function() {
+          return SyncService.deleteMyFeatures($scope.encodedLogin);
+        };
+
+        var getAllLocalSpots = function(response) {
+          // console.log("getAllLocalSpots", response);
+          if (response.status === 204) {
+            return SpotsFactory.all();
+          }
+          throw new Error("bad http status code");
+        };
+
+        var uploadAllSpots = function(spots) {
+          var spotsCount = spots.length;
+          console.log("spots", spots);
+
+          var currentSpotIndex = 1;
+
+          $scope.progress.total = spotsCount;
+          $scope.progress.current = currentSpotIndex;
+
+          if (spotsCount > 0) {
+            $scope.progress.showProgress = true;
+          }
+
+          spots.forEach(function(spot) {
+            // Assign a temporary Id to each spot
+            spot.properties.tempId = spot.properties.id;
+
+            // upload the spot to the server
+            SyncService.createFeature(spot, $scope.encodedLogin)
+              // then delete our local spot data
+              .then(function(response) {
+                console.log(response);
+                if (response.status === 201) {
+                  return SpotsFactory.destroy(spot.properties.tempId);
+                } else {
+                  throw new Error("server could not create the feature");
+                }
+              })
+              // then save the response from the server as a new spot
+              .then(function() {
+                delete spot.properties.tempId;
+                return SpotsFactory.save(spot, spot.properties.id);
+              })
+              // cleanup and notification
+              .then(function(spot) {
+                  console.log("Created new spot", spot);
+                },
+                null,
+                // notification
+                function() {
+                  $scope.progress.current = currentSpotIndex;
+                  console.log(currentSpotIndex, " ", spotsCount);
+                  if (currentSpotIndex == spotsCount) {
+                    $scope.progress.showProgress = false;
                   }
+                  // increment the spot we just saved
+                  currentSpotIndex++;
                 });
-              });
-            }
-          } //(count == 0)
-        });
+          }); //spots.forEach
+        };
+
+        var reportProblems = function(fault) {
+          console.log(fault);
+        };
+
+        deleteFeaturesFromServer()
+          .then(getAllLocalSpots)
+          .then(uploadAllSpots)
+          .catch(reportProblems);
+
+        //
+        // SpotsFactory.getSpotCount().then(function(count) {
+        //   if (count == 0) {
+        //     var response = confirm("No local spots. Deleting all your spots in the online server/database.", "Warning!");
+        //     if (response == true) {
+        //       // Delete all spots associated with a login
+        //       SyncService.deleteMyFeatures($scope.encodedLogin);
+        //       SpotsFactory.all().then(function(spots) {
+        //         spots.forEach(function(spot, index) {
+        //           try {
+        //             // Assign a temporary Id to each spot
+        //             spot.properties.tempId = spot.properties.id;
+        //             SyncService.createFeature(spot, $scope.encodedLogin)
+        //               .then(
+        //                 function(spot) {
+        //                   // Delete the local spot
+        //                   SpotsFactory.destroy(spot.properties.tempId);
+        //                   // Delete the temporary Id
+        //                   if (spot.properties.tempId)
+        //                     delete spot.properties.tempId;
+        //                   // Save the response from the server as a new spot
+        //                   SpotsFactory.save(spot, spot.properties.id);
+        //                   console.log("Created new spot", spot);
+        //                 }
+        //               );
+        //           } catch (err) {
+        //             console.log("Upload Error");
+        //           }
+        //         });
+        //       });
+        //     }
+        //   } //(count == 0)
+        // });
+        //
+        //
+
+        // var qq = function(count) {
+        //   if (count === 0)
+        // };
+
+        // SpotsFactory.getSpotCount()
+        //   .then(doSomething)
 
         // if (!SpotsFactory.getSpotCount() || SpotsFactory.getSpotCount() == 0)
 

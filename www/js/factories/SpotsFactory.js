@@ -40,6 +40,7 @@ angular.module('app')
         value.properties.dip = parseFloat(value.properties.dip)
 
       self.write(key, value).then(function(data) {
+        deferred.notify();
         deferred.resolve(data);
       });
 
@@ -48,7 +49,7 @@ angular.module('app')
 
     // delete the spot
     factory.destroy = function(key) {
-      spotsDb.removeItem(key);
+      return spotsDb.removeItem(key);
     }
 
     // gets the number of spots

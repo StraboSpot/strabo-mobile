@@ -19,5 +19,6 @@
     </label>
     <button ng-click="doLogin();" ng-hide="hideActionButtons.login" class="button icon-left icon ion-log-in button-balanced">Login</button>
     <button ng-click="doLogout();" ng-hide="hideActionButtons.logout" class="button icon-left icon ion-log-out button-assertive">Logout</button>
+    <div ng-show="progress.showProgress">You are uploading spot {{progress.current}} of {{progress.total}}</div>
   </ion-content>
 </ion-view>

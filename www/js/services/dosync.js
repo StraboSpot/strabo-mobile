@@ -85,7 +85,7 @@ angular.module('app')
       });
       return(request.then(handleSuccess, handleError));
     }
-    
+
     // Delete all of the features associated with the logged in user
     function deleteMyFeatures(encodedLogin) {
       var request = $http({
@@ -115,7 +115,7 @@ angular.module('app')
 
     // Transform the successful response, unwrapping the application data from the API response payload
     function handleSuccess(response) {
-      return(response.data);
+      return(response);
     }
   }
 );
