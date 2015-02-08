@@ -108,6 +108,7 @@ angular.module('app')
             function(response) {
               console.log(response);
               if (response.data !== null) {
+                alert("finished downloading from server");
                 console.log("Downloaded", response.data);
                 response.data.features.forEach(function(spot) {
                   // save the spot -- if the id is defined, we overwrite existing id; otherwise create new id/spot
@@ -187,6 +188,7 @@ angular.module('app')
                   console.log(currentSpotIndex, " ", spotsCount);
                   if (currentSpotIndex == spotsCount) {
                     $scope.progress.showProgress = false;
+                    alert("finished uploading to server");
                   }
                   // increment the spot we just saved
                   currentSpotIndex++;
