@@ -1,15 +1,18 @@
 .layer-switcher {
     position: absolute;
     margin-top: 4em;
-    top: 12.5em;
+    top: 11em;
     left: 0.5em;
     text-align: left;
+    background: white;
+    border-radius: 0;
 }
 
 .layer-switcher .panel {
     padding-right: 50px;
-    border: 1px solid #cccccc;
     background-color: white;
+    background: white;
+    border-radius: 0;
 }
 
 .layer-switcher .panel {
