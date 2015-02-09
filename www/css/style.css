@@ -1,5 +1,5 @@
-.map { 
-  height: 100%; 
+.map {
+  height: 100%;
 }
 .glyph-active {
 	border:1 solid #000;
@@ -9,7 +9,7 @@
   margin-top: 4em;
   top: 6em;
   left: .5em;
-  background: rgba(255, 255, 255, 0.4);
+  background: white;
   border-radius: 4px;
   padding: 2px;
 }
@@ -18,7 +18,7 @@
 }
 .draw-controls a {
   display: block;
-  color: white;
+  color: black;
   font-size: 16px;
   font-family: 'Lucida Grande', Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif;
   font-weight: bold;
@@ -28,7 +28,21 @@
   border-radius: 2px;
   height: 22px;
   width: 22px;
-  background: #5c914f;
+}
+.draw-controls .point {
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAB1WlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS40LjAiPgogICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx0aWZmOkNvbXByZXNzaW9uPjE8L3RpZmY6Q29tcHJlc3Npb24+CiAgICAgICAgIDx0aWZmOk9yaWVudGF0aW9uPjE8L3RpZmY6T3JpZW50YXRpb24+CiAgICAgICAgIDx0aWZmOlBob3RvbWV0cmljSW50ZXJwcmV0YXRpb24+MjwvdGlmZjpQaG90b21ldHJpY0ludGVycHJldGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KAtiABQAAASFJREFUSA3tVMERgkAMBEf4ih3QgdoBPuCtlVgDHWgHdiB/HtKBloAV6BseuMuQmRsEc2+GzGQul0uySS53jjPT3IHJdsC1rSyKosDzvIPruiF9mqYp67rOiqL4cK+RFVAcx1sA3BAs7AUsAXjM8/zZ0/9sVSBW4vv+A54hmNlfwKQTOACXVVXttMqW9PhHbBfOQ9og+71kjyozVNkm0NlcaTNGi7ED0SPYRmQB4d6U5d7EbmhVgUwn3pXsTRm6lejHVrV1yPaFlrX+kO9Jkph3JPrXGIDobYfhLQ5DK4ZhrQ2D2rouQDoE0OlSDYR2KhCNkPEZS0m5RxxtnqlkBcSM+TAR7WNEbHU21dBHvSMjsGP8EHxTVj+C6T/Lcwcm2oEvnUho/e1WfCYAAAAASUVORK5CYII=');
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.draw-controls .line {
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAB1WlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS40LjAiPgogICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx0aWZmOkNvbXByZXNzaW9uPjE8L3RpZmY6Q29tcHJlc3Npb24+CiAgICAgICAgIDx0aWZmOk9yaWVudGF0aW9uPjE8L3RpZmY6T3JpZW50YXRpb24+CiAgICAgICAgIDx0aWZmOlBob3RvbWV0cmljSW50ZXJwcmV0YXRpb24+MjwvdGlmZjpQaG90b21ldHJpY0ludGVycHJldGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KAtiABQAAAKFJREFUSA3t0zEOgCAMBVB1YNabeARcODSLHMGb6Myi/KEJISIVdFFYiKTwaC1NU0etwGcr0JZmppTa6QytdfS8joJyZillj33W2iG1PxsCIoSYAbh5fQXykNEBCzK6KhsuEa1p7IYnyGSM2WLxtH4LykWAsaEShA2VIizoCSQJ+Y/RBaO7WD8eB4cj+Y6obUsQoEmIsuK0cJhF/a4V+EkFDparVeEEe1pMAAAAAElFTkSuQmCC');
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.draw-controls .poly {
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAB1WlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS40LjAiPgogICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx0aWZmOkNvbXByZXNzaW9uPjE8L3RpZmY6Q29tcHJlc3Npb24+CiAgICAgICAgIDx0aWZmOk9yaWVudGF0aW9uPjE8L3RpZmY6T3JpZW50YXRpb24+CiAgICAgICAgIDx0aWZmOlBob3RvbWV0cmljSW50ZXJwcmV0YXRpb24+MjwvdGlmZjpQaG90b21ldHJpY0ludGVycHJldGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KAtiABQAAAOVJREFUSA3tlMENwyAMRYFJukwyRzboCs0G7QTNCD3mSDfIBqUb9BhxIP2WghShYNMeI5CQIbb/AyNHqTpqBQ5bAV16s7ZtL4g9a60fmP04jq40l+KKQE3TdBC/b4WxH34BiqA9yD9As01K1xKE4pdl6UIIrzQ33WdBJZBUjNtnQembcCLwTYJfcaBBSo5+lO8T1znLgXokiQIkjNs/c4D4PQta++QWAzkLkHigLIiEvfdXGFEEoIk7CPlYkLWWINKtKMZhskNsWMrG74f65IRHt8YYB/uGtfM8T+thWEh11gocvAJfjIhGhbSjy6cAAAAASUVORK5CYII=');
+  background-position: center;
+  background-repeat: no-repeat;
 }
 .ol-touch .draw-controls a {
   font-size: 20px;
@@ -37,7 +51,7 @@
   line-height: 26px;
 }
 .draw-controls a:hover {
-  background: rgba(0, 60, 136, 0.7);
+  background-color: #DDDDDD;
 }
 .ol-rotate {
   top: 4em;

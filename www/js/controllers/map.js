@@ -49,49 +49,47 @@ angular.module('app')
     drawPoint = document.createElement('a');
     drawPoint.id = 'drawPointControl';
     drawPoint.href = '#drawPointControl';
-    drawPoint.style.fontSize = '30px';
-    drawPoint.innerHTML = '&#183;'; // point, middle dot
+    drawPoint.className = 'point';
 
     drawLine = document.createElement('a');
     drawLine.id = 'drawLineControl';
     drawLine.href = '#drawLineControl';
-    drawLine.innerHTML = '/'; // line, slash
+    drawLine.className = 'line';
 
     drawPoly = document.createElement('a');
     drawPoly.id = 'drawPolyControl';
     drawPoly.href = '#drawPolyControl';
-    drawPoly.style.fontSize = '20px';
-    drawPoly.innerHTML = '&squ;'; // poly, filled square
+    drawPoly.className = 'poly';
 
     var handleDrawPoint = function(e) {
-      if (drawPoint.style.color == 'black')
-        drawPoint.style.color = 'white';
+      if (drawPoint.style.backgroundColor === '')
+        drawPoint.style.backgroundColor = '#DDDDDD';
       else
-        drawPoint.style.color = 'black';
-      drawLine.style.color = 'white';
-      drawPoly.style.color = 'white';
+        drawPoint.style.backgroundColor = '';
+      drawLine.style.backgroundColor = '';
+      drawPoly.style.backgroundColor = '';
 
       e.preventDefault();
       $scope.startDraw("Point");
     };
     var handleDrawLine = function(e) {
-      if (drawLine.style.color == 'black')
-        drawLine.style.color = 'white';
+      if (drawLine.style.backgroundColor === '')
+        drawLine.style.backgroundColor = '#DDDDDD';
       else
-        drawLine.style.color = 'black';
-      drawPoint.style.color = 'white';
-      drawPoly.style.color = 'white';
+        drawLine.style.backgroundColor = '';
+      drawPoint.style.backgroundColor = '';
+      drawPoly.style.backgroundColor = '';
 
       e.preventDefault();
       $scope.startDraw("LineString");
     };
     var handleDrawPoly = function(e) {
-      if (drawPoly.style.color == 'black')
-        drawPoly.style.color = 'white';
+      if (drawPoly.style.backgroundColor === '')
+        drawPoly.style.backgroundColor = '#DDDDDD';
       else
-        drawPoly.style.color = 'black';
-      drawPoint.style.color = 'white';
-      drawLine.style.color = 'white';
+        drawPoly.style.backgroundColor = '';
+      drawPoint.style.backgroundColor = '';
+      drawLine.style.backgroundColor = '';
 
       e.preventDefault();
       $scope.startDraw("Polygon");
