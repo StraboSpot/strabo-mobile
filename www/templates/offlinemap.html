@@ -9,11 +9,12 @@
   <ion-content class="has-header">
 
     <ion-list>
-      <ion-item ng-repeat="map in maps" class="item-button-right">
+      <ion-item ng-repeat="map in maps.maps" class="item-button-right">
         <span>
           <button class="button button-small button-calm" ng-click="edit(map)">edit</button>
           <button class="button button-small button-assertive" ng-click="delete(map)">delete</button>
-        </span> {{map.name}} (tile count: {{map.tileIds.length}}, size: {{map.size}}), provider: {{map.mapProvider}})
+        </span>
+        <h2>{{map.name}} (tile count: {{map.tileArray.length}}, size: {{map.size}}), provider: {{map.mapProvider}})</h2>
       </ion-item>
     </ion-list>
 

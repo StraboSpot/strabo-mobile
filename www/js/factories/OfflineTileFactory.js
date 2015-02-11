@@ -88,8 +88,8 @@ angular.module('app')
       var tileId = mapProvider + "/" + tile;
 
       localforage.setItem(tileId, blob).then(function() {
-        // console.log("wrote tileId ", tileId);
-        deferred.resolve();
+        // console.log("wrote tileId ", tileId, blob.size);
+        deferred.resolve(blob.size);
       });
 
       return deferred.promise;
@@ -164,9 +164,9 @@ angular.module('app')
 
         // the download was successful, so we should save next
         var save = write(mapProvider, tile, blob);
-        save.then(function() {
+        save.then(function(size) {
 
-          deferred.resolve();
+          deferred.resolve(size);
         });
 
       }, function(error) {
@@ -192,19 +192,20 @@ angular.module('app')
       // so we can notify back to the deferral
       var tilesRemainingToBeDownload = tiles.slice();
 
+      // the size of our total tile download
+      var tileSize = 0;
+
       // array of promises
       var promises = [];
-
-      // save the map name first
-      promises.push(mapNameWrite(mapName, mapProvider, tiles));
 
       // now save all the tiles -- loop through the tiles array
       tiles.forEach(function(tile, index, ary) {
 
         // stash each tile download as a promise
         var promise = downloadAndSave(mapProvider, tile);
-        promise.then(function() {
-          // nothing to do here because all this is deferred in our promises array
+        promise.then(function(size) {
+          // console.log("downloadTileTostorage size:", size);
+          tileSize += size;
         }, function(err) {
           console.log("error: downloadTileToStorage-tiles", err);
         }, function(tileId) {
@@ -229,36 +230,16 @@ angular.module('app')
       // check that all promises have been fulfilled
       $q.all(promises)
         .then(function() {
-
-          // console.log("downloadTileToStorage-then: fully downloaded and saved");
-
-          // everything is fully downloaded
-          deferred.resolve();
+          // now save the map name, passing in the tileSize
+          mapNameWrite(mapName, mapProvider, tiles, tileSize)
+            .then(function() {
+              // everything is fully downloaded
+              deferred.resolve();
+            });
         }, function(err) {
           console.log("error: downloadTileToStorage-all", err);
         });
 
-      return deferred.promise;
-    }
-
-    // input an array of tileIds, get back an array of the blob size for those tileIds
-    var getTileIdsSizeDetail = function(tileIds) {
-      var deferred = $q.defer();
-
-      var promises = [];
-
-      tileIds.forEach(function(tileId) {
-        var promise = localforage.getItem(tileId)
-          .then(function(blob) {
-            return blob.size
-          });
-        promises.push(promise);
-      });
-
-      $q.all(promises).then(function(sizes) {
-        // console.log("getTileIdsSizeDetail: ", sizes);
-        deferred.resolve(sizes);
-      });
       return deferred.promise;
     }
 
@@ -270,44 +251,14 @@ angular.module('app')
       mapNamesDb.iterate(function(value, key) {
         maps.push({
           name: key,
-          tileIds: value
+          mapProvider: value.mapProvider,
+          tileArray: value.tileArray,
+          size: value.size
         });
       }, function() {
-        // now go through all the maps and assign their tile sizes
 
-        var promises = [];
+        deferred.resolve(maps);
 
-        maps.forEach(function(map) {
-          var promise = getTileIdsSizeDetail(map.tileIds);
-          promises.push(promise);
-        });
-
-        $q.all(promises).then(function(mapSizes) {
-          // mapSizes is an array
-          // each element in this array is an array of sizes in the same order as
-          // the maps array
-
-          // console.log("maps:", maps);
-          // console.log("getMaps: ", mapSizes);
-
-          // an array of map sizes, e.g. [123234, 345678]
-          // the array indexes should correspond to the maps array index
-          var mapSizesReduced = _.map(mapSizes, function(mapSize) {
-            return _.reduce(mapSize, function(memo, num) {
-              return memo + num;
-            }, 0);
-          })
-
-          // console.log(mapSizesReduced);
-
-          // loop through each map and assign the size property
-          _.each(maps, function(value, key, list) {
-            value.size = bytesToSize(mapSizesReduced[key]);
-            return value;
-          });
-
-          deferred.resolve(maps);
-        });
       });
       return deferred.promise;
     }
@@ -365,15 +316,16 @@ angular.module('app')
       return deferred.promise;
     };
 
-    var mapNameWrite = function(mapName, mapProvider, data) {
+    var mapNameWrite = function(mapName, mapProvider, data, size) {
       var deferred = $q.defer(); //init promise
 
-      // data is an array of tileIds with the mapProvider prefix so we need to add the mapProvider name to each tile
-      var tileIdArray = data.map(function(tile) {
-        return mapProvider + "/" + tile;
-      });
+      var mapNameData = {
+        mapProvider: mapProvider,
+        tileArray: data,
+        size: size
+      };
 
-      mapNamesDb.setItem(mapName, tileIdArray).then(function() {
+      mapNamesDb.setItem(mapName, mapNameData).then(function() {
         // console.log("saved map name ", mapName);
         deferred.resolve();
       });
