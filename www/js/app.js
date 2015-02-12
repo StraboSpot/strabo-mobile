@@ -62,6 +62,7 @@ angular.module('app', [
     })
 
     .state('app.offlinemap', {
+      cache: false,
       url: "/offlinemap",
       views: {
         'menuContent': {
