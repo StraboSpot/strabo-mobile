@@ -414,13 +414,14 @@ angular.module('app')
           // no -- then default the map to US center
           mapCenter = [-11000000, 4600000];
         } else {
-          mapCenter = ol.proj.transform(spot.geometry.coordinates, 'EPSG:4326', 'EPSG:3857');
+          var center = SpotsFactory.getCenter(spot);
+          mapCenter = ol.proj.transform([center.lon, center.lat], 'EPSG:4326', 'EPSG:3857');
         }
 
         // reset the view
         map.setView(new ol.View({
           center: mapCenter,
-          zoom: 4,
+          zoom: 10,
           minZoom: 4
         }));
       });

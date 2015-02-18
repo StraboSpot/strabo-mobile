@@ -95,6 +95,25 @@ angular.module('app')
       });
     };
 
+    // Get the center of a geoshape
+    factory.getCenter = function(spot) {
+      var coords = spot.geometry.coordinates;
+      var lon = coords[0]
+      var lat = coords[1];
+      // Get the center lat & lon of non-point features
+      if (isNaN(lon) || isNaN(lat)) {
+        if (spot.geometry.type == "Polygon")
+          coords = coords[0];
+        var lons = _.pluck(coords, 0);
+        var lats = _.pluck(coords, 1);
+        lon = (_.min(lons) + _.max(lons))/2;
+        lat = (_.min(lats) + _.max(lats))/2;
+      }
+      return {
+        "lon": lon,
+        "lat": lat
+      }
+    }
 
 
     // return factory
