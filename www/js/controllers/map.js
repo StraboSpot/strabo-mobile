@@ -124,6 +124,7 @@ angular.module('app')
   map = new ol.Map({
     target: 'mapdiv',
     view: new ol.View({
+      projection: 'EPSG:3857',
       center: [-11000000, 4600000],
       zoom: 4,
       minZoom: 4
@@ -145,11 +146,30 @@ angular.module('app')
   // add the feature layer to the map first
   map.addLayer(featureLayer);
 
+  // overlay layer
+  var overlayLayer = new ol.layer.Group({
+    'title': 'Overlays',
+    layers: [
+      new ol.layer.Tile({
+        title: "Geologic",
+        type: 'overlay',
+        opacity: 0.5,
+        visible: false,
+        source: new ol.source.XYZ({
+            url: "http://macrostrat.org/tiles/geologic/{z}/{x}/{y}.png"
+        })
+      })
+    ]
+  });
+
+  // 2nd, we add the overlay layer
+  map.addLayer(overlayLayer);
+
   // layer switcher
   map.addControl(new ol.control.LayerSwitcher());
 
   // restricts the map constraint to these coordinates
-  var mapExtent = ol.proj.transformExtent([-180,80,180,-80], 'EPSG:4326', 'EPSG:3857');
+  // var mapExtent = ol.proj.transformExtent([-180,80,180,-80], 'EPSG:4326', 'EPSG:3857');
 
   // online map layer of all possible online map providers
   var onlineLayer = new ol.layer.Group({
@@ -162,8 +182,8 @@ angular.module('app')
         visible: false,
         source: new ol.source.MapQuest({
           layer: 'sat'
-        }),
-        extent: mapExtent
+        })//,
+        //extent: mapExtent
       }),
       new ol.layer.Tile({
         title: 'Streets',
@@ -172,8 +192,9 @@ angular.module('app')
         visible: true, // default visible layer
         source: new ol.source.MapQuest({
           layer: 'osm'
-        }),
-        extent: mapExtent
+        })
+        //,
+        // extent: mapExtent
       })
     ]
   });
