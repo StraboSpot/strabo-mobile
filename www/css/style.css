@@ -50,6 +50,10 @@
   width: 30px;
   line-height: 26px;
 }
+.ol-zoom {
+  top: 60px;
+  left: .5em
+}
 .draw-controls a:hover {
   background-color: #DDDDDD;
 }
