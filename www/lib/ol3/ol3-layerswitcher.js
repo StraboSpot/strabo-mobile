@@ -1,12 +1,17 @@
 /**
  * OpenLayers 3 Layer Switcher Control.
+ * See [the examples](./examples) for usage.
  * @constructor
  * @extends {ol.control.Control}
- * @param {olx.control.ControlOptions} options Control options.
+ * @param {Object} opt_options Control options, extends olx.control.ControlOptions adding:
+ *                              **`tipLabel`** `String` - the button tooltip.
  */
 ol.control.LayerSwitcher = function(opt_options) {
 
     var options = opt_options || {};
+
+    var tipLabel = options.tipLabel ?
+      options.tipLabel : 'Legend';
 
     this.mapListeners = [];
 
@@ -17,6 +22,7 @@ ol.control.LayerSwitcher = function(opt_options) {
     element.className = this.hiddenClassName;
 
     var button = document.createElement('button');
+    button.setAttribute('title', tipLabel);
     element.appendChild(button);
 
     this.panel = document.createElement('div');
@@ -50,17 +56,17 @@ ol.control.LayerSwitcher = function(opt_options) {
 ol.inherits(ol.control.LayerSwitcher, ol.control.Control);
 
 /**
- * Show the layer panel
+ * Show the layer panel.
  */
 ol.control.LayerSwitcher.prototype.showPanel = function() {
     if (this.element.className != this.shownClassName) {
         this.element.className = this.shownClassName;
-        this.render();
+        this.renderPanel();
     }
 };
 
 /**
- * Hide the layer panel
+ * Hide the layer panel.
  */
 ol.control.LayerSwitcher.prototype.hidePanel = function() {
     if (this.element.className != this.hiddenClassName) {
@@ -69,9 +75,9 @@ ol.control.LayerSwitcher.prototype.hidePanel = function() {
 };
 
 /**
- * Cause the panel to be re-draw to represent the current layer state.
+ * Re-draw the layer panel to represent the current state of the layers.
  */
-ol.control.LayerSwitcher.prototype.render = function() {
+ol.control.LayerSwitcher.prototype.renderPanel = function() {
 
     this.ensureTopVisibleBaseLayerShown_();
 
@@ -97,15 +103,18 @@ ol.control.LayerSwitcher.prototype.setMap = function(map) {
     this.mapListeners.length = 0;
     // Wire up listeners etc. and store reference to new map
     ol.control.Control.prototype.setMap.call(this, map);
-    var this_ = this;
-    this.mapListeners.push(map.on('pointerdown', function() {
-        this_.hidePanel();
-    }));
-    this.render();
+    if (map) {
+        var this_ = this;
+        this.mapListeners.push(map.on('pointerdown', function() {
+            this_.hidePanel();
+        }));
+        this.renderPanel();
+    }
 };
 
 /**
- * Ensure only the top-most base layer is visible if more than one is visible
+ * Ensure only the top-most base layer is visible if more than one is visible.
+ * @private
  */
 ol.control.LayerSwitcher.prototype.ensureTopVisibleBaseLayerShown_ = function() {
     var lastVisibleBaseLyr;
@@ -207,11 +216,11 @@ ol.control.LayerSwitcher.prototype.renderLayers_ = function(lyr, elm) {
 };
 
 /**
- * Call the supplied function for each layer in the passed layer group
+ * **Static** Call the supplied function for each layer in the passed layer group
  * recursing nested groups.
  * @param {ol.layer.Group} lyr The layer group to start iterating from.
- * @param {Function} fn Callback which will be called for each ol.layer.Base
- * found under lyr. The signature for fn is the same as ol.Collection#forEach
+ * @param {Function} fn Callback which will be called for each `ol.layer.Base`
+ * found under `lyr`. The signature for `fn` is the same as `ol.Collection#forEach`
  */
 ol.control.LayerSwitcher.forEachRecursive = function(lyr, fn) {
     lyr.getLayers().forEach(function(lyr, idx, a) {
