@@ -374,10 +374,9 @@ angular.module('app')
       var geojson = new ol.format.GeoJSON;
 
       // the actual geojson object
-      var geojsonObj = geojson.writeFeature(e.feature, {
+      var geojsonObj = JSON.parse(geojson.writeFeature(e.feature, {
         featureProjection: "EPSG:3857"
-      });
-      // console.log(geojsonObj);
+      }));
 
       // Initialize new Spot
       NewSpot.setNewSpot(geojsonObj);
