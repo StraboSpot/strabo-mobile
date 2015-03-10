@@ -655,13 +655,15 @@ angular.module('app')
 
         // popup content
         var content = '';
-        content += '<table id="popup-table"><tr><td>';
-        content += '<b>' + feature.get('name') + '</b>';
-        content += '<br><small>' + feature.get('strike') + '&deg; strike / ' + feature.get('dip') + '&deg; dip</small>';
-        content += '</td><td>';
-        content += '<a href="#/app/spots/' + feature.get('id') + '" class="button icon-right ion-chevron-right button-clear button-dark"></a>';
-        content += '</td></tr></table>';
-
+        content += '<table id="popup-table">';
+        content += '<tr>';
+        content += '<th id="name">' + feature.get('name') + '</th>';
+        content += '<th rowspan="2"><a href="#/app/spots/' + feature.get('id') + '" class="button icon-right ion-chevron-right button-clear button-dark"></a></th>';
+        content += '</tr>';
+        content += '<tr>';
+        content += '<td><small>' + feature.get('strike') + '&deg; strike / ' + feature.get('dip') + '&deg; dip</small></td>';
+        content += '</tr></table>';
+        
         // setup the popup position
         popup.show(evt.coordinate, content);
       }
