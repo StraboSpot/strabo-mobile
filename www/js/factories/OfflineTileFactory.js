@@ -38,6 +38,14 @@ angular.module('app')
       ],
       imageType: "jpg",
       mime: "image/jpeg"
+    }, {
+      id: "macrostratGeologic",
+      name: "Macrostrat - Geologic",
+      url: [
+        'http://macrostrat.org/tiles/geologic/'
+      ],
+      imageType: "png",
+      mime: "image/png"
     }];
 
     // randomly selects an element from an array
@@ -99,6 +107,7 @@ angular.module('app')
     factory.read = function(mapProvider, tile, callback) {
       // note that tileId is prefixed with mapProvider, tile itself is not
       var tileId = mapProvider + "/" + tile;
+      console.log("factory, ", tileId);
 
       localforage.getItem(tileId).then(function(blob) {
         callback(blob);
