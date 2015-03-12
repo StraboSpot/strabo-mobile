@@ -108,9 +108,9 @@ angular.module('app')
 
     // a single spot
     $scope.spot;
-
     $scope.point = {};
-
+    $scope.related_spots_selection=[];
+    
     // Initialize new Spot
     if (NewSpot.getNewSpot()) {
       $scope.spot = NewSpot.getNewSpot();
@@ -126,6 +126,13 @@ angular.module('app')
       })[0];
       $scope.spot.properties.date = new Date($scope.spot.properties.date);
       $scope.spot.properties.time = new Date($scope.spot.properties.time);
+
+      // Load related spots into related spots selection
+      if ($scope.spot.properties.related_spots) {
+        for (var i = 0; i < $scope.spot.properties.related_spots.length; i++) {
+          $scope.related_spots_selection.push($scope.spot.properties.related_spots[i]);
+        }
+      }
     }
 
     // is the new spot a single point?
@@ -139,7 +146,30 @@ angular.module('app')
     }
 
     $scope.friendlyGeom = JSON.stringify($scope.spot.geometry);
+    
+    // Create checkbox list of other spots for selection as related spots
+    $scope.other_spots = [];
+    for (var i=0; i < spots.length; i++) {
+      if ($scope.spot.properties.id != spots[i].properties.id) {
+        $scope.other_spots.push({
+          text: spots[i].properties.name, value: spots[i].properties.id
+        });
+      }
+    }
   });
+
+  // Toggle selection for related spots
+  $scope.toggleSelection = function toggleSelection(other_spot_id) {
+    var idx = $scope.related_spots_selection.indexOf(other_spot_id);
+     // is currently selected
+    if (idx > -1) {
+      $scope.related_spots_selection.splice(idx, 1);
+    }
+     // is newly selected
+    else {
+      $scope.related_spots_selection.push(other_spot_id);
+    }
+   };
 
   // Define Spot attributes
   $scope.attitude_type = [
@@ -228,6 +258,15 @@ angular.module('app')
       // yes, replace the geojson geometry with the lat/lng from the input fields
       $scope.spot.geometry.coordinates[1] = $scope.point.latitude;
       $scope.spot.geometry.coordinates[0] = $scope.point.longitude;
+    }
+    
+    // Add ids for related spots
+    if ($scope.spot.properties.related_spots)
+      delete $scope.spot.properties.related_spots;
+    if ($scope.related_spots_selection.length > 0)
+      $scope.spot.properties.related_spots = [];
+    for (var i = 0; i < $scope.related_spots_selection.length; i++) {
+      $scope.spot.properties.related_spots.push($scope.related_spots_selection[i]);
     }
 
     // save the spot -- if the id is defined, we overwrite existing id; otherwise create new id/spot
