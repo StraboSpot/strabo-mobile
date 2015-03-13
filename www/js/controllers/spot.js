@@ -23,7 +23,7 @@ angular.module('app')
   $scope.selectedCameraSource = {
     // default is always camera
     source: "CAMERA"
-  }
+  };
 
   $scope.cameraModal = function(source) {
 
@@ -95,7 +95,7 @@ angular.module('app')
         console.log("error: ", err);
       });
     });
-  }
+  };
 
 
 
@@ -128,10 +128,11 @@ angular.module('app')
       $scope.spot.properties.time = new Date($scope.spot.properties.time);
 
       // Load related spots into related spots selection
+      $scope.related_spots_selection=[];
       if ($scope.spot.properties.related_spots) {
-        for (var i = 0; i < $scope.spot.properties.related_spots.length; i++) {
-          $scope.related_spots_selection.push($scope.spot.properties.related_spots[i]);
-        }
+        $scope.spot.properties.related_spots.forEach(function (obj, i) {
+          $scope.related_spots_selection.push(obj);
+        });
       }
     }
 
@@ -149,13 +150,13 @@ angular.module('app')
     
     // Create checkbox list of other spots for selection as related spots
     $scope.other_spots = [];
-    for (var i=0; i < spots.length; i++) {
-      if ($scope.spot.properties.id != spots[i].properties.id) {
+    spots.forEach(function (obj, i) {
+      if ($scope.spot.properties.id != obj.properties.id) {
         $scope.other_spots.push({
-          text: spots[i].properties.name, value: spots[i].properties.id
+          text: obj.properties.name, value: obj.properties.id
         });
       }
-    }
+    });
   });
 
   // Toggle selection for related spots
@@ -221,18 +222,18 @@ angular.module('app')
       $scope.spot.geometry = {
         type: "Point",
         coordinates: [position.coords.longitude, position.coords.latitude]
-      }
+      };
       $scope.friendlyGeom = JSON.stringify($scope.spot.geometry);
     }, function(err) {
       alert("Unable to get location: " + err.message);
     });
-  }
+  };
 
   $scope.openMap = function() {
     // Save current spot
     NewSpot.setNewSpot($scope.spot);
     $location.path("/app/map");
-  }
+  };
 
   // Add or modify Spot
   $scope.submit = function() {
@@ -261,13 +262,22 @@ angular.module('app')
     }
     
     // Add ids for related spots
-    if ($scope.spot.properties.related_spots)
-      delete $scope.spot.properties.related_spots;
+    delete $scope.spot.properties.related_spots;
     if ($scope.related_spots_selection.length > 0)
       $scope.spot.properties.related_spots = [];
-    for (var i = 0; i < $scope.related_spots_selection.length; i++) {
-      $scope.spot.properties.related_spots.push($scope.related_spots_selection[i]);
-    }
+
+    $scope.related_spots_selection.forEach(function (obj, i) {
+      $scope.spot.properties.related_spots.push(obj);
+
+      // Add id for this spot to related spot
+      var related_spot = _.filter($scope.spots, function(spot) {
+        return spot.properties.id === obj;
+      })[0];
+      if (!related_spot.properties.related_spots)
+        related_spot.properties.related_spots = [];
+      related_spot.properties.related_spots.push($scope.spot.properties.id);
+      // Need to save the related spot
+    });
 
     // save the spot -- if the id is defined, we overwrite existing id; otherwise create new id/spot
     SpotsFactory.save($scope.spot, $scope.spot.properties.id).then(function(data){
@@ -290,7 +300,7 @@ angular.module('app')
         $location.path("/app/spots");
       }
     });
-  }
+  };
 
   // View the spot on the map
   $scope.goToSpot = function() {
