@@ -55,7 +55,6 @@ angular.module('app')
     });
   };
 
-
   var launchCamera = function(source) {
     // all plugins must be wrapped in a ready function
     document.addEventListener("deviceready", function () {
@@ -97,9 +96,6 @@ angular.module('app')
     });
   };
 
-
-
-
   // all the spots available in offline
   $scope.spots;
 
@@ -110,6 +106,7 @@ angular.module('app')
     $scope.spot;
     $scope.point = {};
     $scope.related_spots_selection=[];
+    $scope.related_spots_unselected=[];
     
     // Initialize new Spot
     if (NewSpot.getNewSpot()) {
@@ -129,6 +126,7 @@ angular.module('app')
 
       // Load related spots into related spots selection
       $scope.related_spots_selection=[];
+      $scope.related_spots_unselected=[];
       if ($scope.spot.properties.related_spots) {
         $scope.spot.properties.related_spots.forEach(function (obj, i) {
           $scope.related_spots_selection.push(obj);
@@ -165,6 +163,7 @@ angular.module('app')
      // is currently selected
     if (idx > -1) {
       $scope.related_spots_selection.splice(idx, 1);
+      $scope.related_spots_unselected.push(other_spot_id);
     }
      // is newly selected
     else {
@@ -261,22 +260,50 @@ angular.module('app')
       $scope.spot.geometry.coordinates[0] = $scope.point.longitude;
     }
     
-    // Add ids for related spots
-    delete $scope.spot.properties.related_spots;
+    // Add or remove ids for related spots
+    if ($scope.spot.properties.related_spots)
+      delete $scope.spot.properties.related_spots;
     if ($scope.related_spots_selection.length > 0)
       $scope.spot.properties.related_spots = [];
 
-    $scope.related_spots_selection.forEach(function (obj, i) {
-      $scope.spot.properties.related_spots.push(obj);
+    // Get all selected and unselected related spots
+    var selAndUnSel = _.union($scope.related_spots_selection, $scope.related_spots_unselected);
+    selAndUnSel.forEach(function (obj, i) {
 
-      // Add id for this spot to related spot
-      var related_spot = _.filter($scope.spots, function(spot) {
+      // Get the related spot
+      var related_spot = _.filter($scope.spots, function (spot) {
         return spot.properties.id === obj;
       })[0];
-      if (!related_spot.properties.related_spots)
-        related_spot.properties.related_spots = [];
-      related_spot.properties.related_spots.push($scope.spot.properties.id);
-      // Need to save the related spot
+
+      // If obj in selected related spots array
+      var idx = $scope.related_spots_selection.indexOf(obj);
+      if (idx > -1) {
+        // Add id for related spot to this spot
+        if ($scope.spot.properties.related_spots.indexOf(obj) == -1)
+          $scope.spot.properties.related_spots.push(obj);
+
+        // Add id for this spot to related spot
+        if (!related_spot.properties.related_spots)
+          related_spot.properties.related_spots = [];
+        if (related_spot.properties.related_spots.indexOf($scope.spot.properties.id) == -1)
+          related_spot.properties.related_spots.push($scope.spot.properties.id);
+      }
+      // If obj is in unselected related spots array
+      idx = $scope.related_spots_unselected.indexOf(obj);
+      if (idx > -1) {
+        // Remove id for this spot from related spot
+        if (related_spot.properties.related_spots)
+          if (related_spot.properties.related_spots.indexOf($scope.spot.properties.id) > -1) {
+            related_spot.properties.related_spots.splice(related_spot.properties.related_spots.indexOf($scope.spot.properties.id), 1);
+            if (related_spot.properties.related_spots.length == 0)
+              delete related_spot.properties.related_spots;
+          }
+      }
+
+      // Save the related spot
+      SpotsFactory.save(related_spot, related_spot.properties.id).then(function(data){
+        console.log("updated", data);
+      });
     });
 
     // save the spot -- if the id is defined, we overwrite existing id; otherwise create new id/spot
