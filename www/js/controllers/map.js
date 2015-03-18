@@ -1,6 +1,6 @@
 Math.radians = function(deg) {
   return deg * (Math.PI / 180);
-}
+};
 
 angular.module('app')
 
@@ -31,10 +31,6 @@ angular.module('app')
 
   // draw is a ol3 drawing interaction
   var draw;
-
-  // this is the current visible layer from the layerswitcher
-  var currentVisibleLayer;
-
 
 
   $scope.airplaneMode = false;
@@ -130,11 +126,16 @@ angular.module('app')
       minZoom: 4
     }),
     // remove rotate icon from controls and add drawing controls
-    controls: ol.control.defaults({rotate: false}).extend([
+    controls: ol.control.defaults({
+      rotate: false
+    }).extend([
       new drawControls()
     ]),
     // turn off ability to rotate map via keyboard+mouse and using fingers on a mobile device
-    interactions: ol.interaction.defaults({altShiftDragRotate:false, pinchRotate:false})
+    interactions: ol.interaction.defaults({
+      altShiftDragRotate: false,
+      pinchRotate: false
+    })
   });
 
   // vector layer where we house all the geojson spot objects
@@ -143,65 +144,14 @@ angular.module('app')
     layers: []
   });
 
-  // add the feature layer to the map first
-  map.addLayer(featureLayer);
 
-  // overlay layer
-  var overlayLayer = new ol.layer.Group({
-    'title': 'Overlays',
-    layers: [
-      new ol.layer.Tile({
-        title: "Geologic",
-        type: 'overlay',
-        opacity: 0.5,
-        visible: false,
-        source: new ol.source.XYZ({
-            url: "http://macrostrat.org/tiles/geologic/{z}/{x}/{y}.png"
-        })
-      })
-    ]
-  });
+  // tileLoadFunction is used for offline access mode, required by OL3 for specifying how tiles are retrieved
+  var tileLoadFunction = function(mapProvider, isOverlay) {
+    return function(imageTile, src) {
 
-  // 2nd, we add the overlay layer
-  map.addLayer(overlayLayer);
-
-  // layer switcher
-  map.addControl(new ol.control.LayerSwitcher());
-
-  // restricts the map constraint to these coordinates
-  // var mapExtent = ol.proj.transformExtent([-180,80,180,-80], 'EPSG:4326', 'EPSG:3857');
-
-  // online map layer of all possible online map providers
-  var onlineLayer = new ol.layer.Group({
-    'title': 'Online Maps',
-    layers: [
-      new ol.layer.Tile({
-        title: 'Satellite',
-        id: 'mqSat',
-        type: 'base',
-        visible: false,
-        source: new ol.source.MapQuest({
-          layer: 'sat'
-        })//,
-        //extent: mapExtent
-      }),
-      new ol.layer.Tile({
-        title: 'Streets',
-        id: 'mqOsm',
-        type: 'base',
-        visible: true, // default visible layer
-        source: new ol.source.MapQuest({
-          layer: 'osm'
-        })
-        //,
-        // extent: mapExtent
-      })
-    ]
-  });
-
-  // offline layer source
-  var OfflineTileSource = new ol.source.OSM({
-    tileLoadFunction: function(imageTile, src) {
+      // console.log(mapProvider, isOverlay);
+      // console.log(imageTile);
+      // console.log(src);
 
       // the tile we will be loading
       var imgElement = imageTile.getImage();
@@ -218,26 +168,117 @@ angular.module('app')
       var tileId = z + "/" + x + "/" + y;
 
       // check to see if we have the tile in our offline storage
-      OfflineTilesFactory.read(currentVisibleLayer, tileId, function(blob) {
+      OfflineTilesFactory.read(mapProvider, tileId, function(blob) {
 
         // do we have the image already?
-        if (blob != null) {
+        if (blob !== null) {
           // yes, lets load the tile into the map
           blobToBase64(blob, function(base64data) {
             imgElement.src = base64data;
           });
         } else {
           // no, there is no such image in cache
-          // show the user the tile is unavailable
-          imgElement.src = "img/offlineTiles/zoom" + z + ".png";
+
+          // is this a non-overlay tile?  we only show the unavailable tile image for non overlay tiles
+          if (!isOverlay) {
+            // not an overlay so show the user that the tile is unavailable
+            imgElement.src = "img/offlineTiles/zoom" + z + ".png";
+          }
         }
       });
-    }
+    };
+  };
+
+  // overlay layer
+  var onlineOverlayLayer = new ol.layer.Group({
+    'title': 'Overlays (online)',
+    layers: [
+      new ol.layer.Tile({
+        title: "Geologic (z4-12)",
+        id: "macrostratGeologic",
+        type: 'overlay',
+        opacity: 0.5,
+        visible: false,
+        source: new ol.source.XYZ({
+          url: "http://macrostrat.org/tiles/geologic/{z}/{x}/{y}.png"
+        })
+      })
+    ]
   });
 
-  // offline map layer
-  var OfflineTileLayer = new ol.layer.Tile({
-    source: OfflineTileSource
+  var offlineOverlayLayer = new ol.layer.Group({
+    'title': 'Overlays (offline)',
+    layers: [
+      new ol.layer.Tile({
+        title: "Geologic (z4-12)",
+        id: "macrostratGeologic",
+        type: 'overlay',
+        opacity: 0.5,
+        visible: false,
+        source: new ol.source.OSM({
+          tileLoadFunction: tileLoadFunction('macrostratGeologic', true)
+        })
+      })
+    ]
+  });
+
+  // restricts the map constraint to these coordinates
+  // var mapExtent = ol.proj.transformExtent([-180,80,180,-80], 'EPSG:4326', 'EPSG:3857');
+
+
+  // online map layer of all possible online map providers
+  var onlineLayer = new ol.layer.Group({
+    'title': 'Online Maps',
+    layers: [
+      new ol.layer.Tile({
+        title: 'Satellite',
+        id: 'mqSat',
+        type: 'base',
+        visible: false,
+        source: new ol.source.MapQuest({
+            layer: 'sat'
+          }) //,
+          //extent: mapExtent
+      }),
+      new ol.layer.Tile({
+        title: 'Streets',
+        id: 'mqOsm',
+        type: 'base',
+        visible: true, // default visible layer
+        source: new ol.source.MapQuest({
+            layer: 'osm'
+          })
+          //,
+          // extent: mapExtent
+      })
+    ]
+  });
+
+  // offline layer using tileLoadFunction source
+  var offlineLayer = new ol.layer.Group({
+    'title': 'Offline Maps',
+    layers: [
+      new ol.layer.Tile({
+        title: 'Satellite',
+        id: 'mqSat',
+        type: 'base',
+        visible: false,
+        source: new ol.source.OSM({
+            tileLoadFunction: tileLoadFunction('mqSat', false)
+          }) //,
+          //extent: mapExtent
+      }),
+      new ol.layer.Tile({
+        title: 'Streets',
+        id: 'mqOsm',
+        type: 'base',
+        visible: true, // default visible layer
+        source: new ol.source.OSM({
+            tileLoadFunction: tileLoadFunction('mqOsm', false)
+          }) //,
+          // extent: mapExtent
+      })
+    ]
   });
 
   // layer where the drawing will go to
@@ -259,7 +300,16 @@ angular.module('app')
       })
     })
   });
+
+
+  // add the feature layer to the map first
+  map.addLayer(featureLayer);
+
+  // add draw layer
   map.addLayer(drawLayer);
+
+  // layer switcher
+  map.addControl(new ol.control.LayerSwitcher());
 
   // Popup
   var popup = new ol.Overlay.Popup();
@@ -273,7 +323,7 @@ angular.module('app')
   /////////////////
 
   // update the current visible layer, there is no return type as it updates the scope variable directly
-  var updateCurrentVisibleLayer = function() {
+  var getCurrentVisibleLayer = function() {
 
     // the first element in the layers array is our ol.layer.group that contains all the map tile layers
     var mapTileLayers = map.getLayers().getArray()[0].getLayers().getArray();
@@ -283,38 +333,42 @@ angular.module('app')
       return layer.getVisible();
     });
 
-    currentVisibleLayer = mapTileId.get('id');
-  }
+    return mapTileId.get('id');
+  };
 
   // Watch whether we have internet access or not
   // This will eventually have to be read directly from phone
   $scope.$watch('airplaneMode', function(airplaneMode) {
 
-    if (airplaneMode == true) {
+    if (airplaneMode === true) {
       console.log("Offline");
-
-      // update the current visible layer (we need to capture this before we remove the online map layer)
-      updateCurrentVisibleLayer();
 
       // remove the online maps
       map.removeLayer(onlineLayer);
+      map.removeLayer(onlineOverlayLayer);
 
       // Add offline tile layer
-      map.getLayers().insertAt(0, OfflineTileLayer);
+      map.getLayers().insertAt(0, offlineLayer);
+      map.getLayers().insertAt(1, offlineOverlayLayer);
 
       // clear the tiles, because we need to redraw if tiles have already been loaded to the screen
-      OfflineTileSource.tileCache.clear();
+      map.getLayers().getArray()[0].getLayers().item(0).getSource().tileCache.clear();
+      map.getLayers().getArray()[0].getLayers().item(1).getSource().tileCache.clear();
+      map.getLayers().getArray()[1].getLayers().item(0).getSource().tileCache.clear();
 
       // re-render the map, grabs "new" tiles from storage
       map.render();
+
     } else {
       console.log("Online");
-      map.removeLayer(OfflineTileLayer);
+
+      // remove the offline layers
+      map.removeLayer(offlineLayer);
+      map.removeLayer(offlineOverlayLayer);
+
       // Add online map layer
       map.getLayers().insertAt(0, onlineLayer);
-
-      // update the current visible layer
-      updateCurrentVisibleLayer();
+      map.getLayers().insertAt(1, onlineOverlayLayer);
     }
   });
 
@@ -334,10 +388,8 @@ angular.module('app')
       // get the map extent
       var mapViewExtent = getMapViewExtent();
 
-      updateCurrentVisibleLayer();
-
       // set the extent into the ViewExtentFactory
-      ViewExtentFactory.setExtent(currentVisibleLayer, mapViewExtent.topRight, mapViewExtent.bottomLeft, mapViewExtent.zoom);
+      ViewExtentFactory.setExtent(getCurrentVisibleLayer(), mapViewExtent.topRight, mapViewExtent.bottomLeft, mapViewExtent.zoom);
 
       $location.path("/app/map/archiveTiles");
     } else
@@ -359,7 +411,7 @@ angular.module('app')
     }
 
     // is draw already set?
-    if (draw != null) {
+    if (draw !== null) {
       // yes, stop and remove the drawing interaction
       $scope.cancelDraw();
     }
@@ -393,7 +445,7 @@ angular.module('app')
       }
     });
     map.addInteraction(draw);
-  }
+  };
 
   // If the map is moved save the view
   map.on('moveend', function(evt) {
@@ -409,7 +461,7 @@ angular.module('app')
       .then(function(spot) {
         var mapCenter;
         // did we get a spot?
-        if (spot == undefined) {
+        if (spot === undefined) {
           // no -- then default the map to US center
           mapCenter = [-11000000, 4600000];
         } else {
@@ -427,9 +479,9 @@ angular.module('app')
   }
 
   $scope.cancelDraw = function() {
-    if (draw == null) return;
+    if (draw === null) return;
     map.removeInteraction(draw);
-  }
+  };
 
   // converts blobs to base64
   var blobToBase64 = function(blob, callback) {
@@ -438,14 +490,14 @@ angular.module('app')
     reader.onloadend = function() {
       base64data = reader.result;
       callback(base64data);
-    }
-  }
+    };
+  };
 
   // Point object
   var Point = function(lat, lng) {
     this.lat = lat;
     this.lng = lng;
-  }
+  };
 
   var getMapViewExtent = function() {
     var extent = map.getView().calculateExtent(map.getSize());
@@ -460,7 +512,7 @@ angular.module('app')
       bottomLeft: new Point(bottomLeft[1], bottomLeft[0]),
       zoom: zoom
     };
-  }
+  };
 
 
 
@@ -481,7 +533,7 @@ angular.module('app')
           width: 3
         })
       });
-    }
+    };
 
     // imageStyle is a function because each point could have a different strike rotation
     var imageStyle = function(strike) {
@@ -492,7 +544,7 @@ angular.module('app')
         rotation: Math.radians(strike),
         src: 'img/strikedip.png'
       });
-    }
+    };
 
     return new ol.layer.Vector({
       source: new ol.source.GeoJSON({
@@ -547,11 +599,11 @@ angular.module('app')
               text: textStyle(feature.values_.name)
             })
           ]
-        }
+        };
         return styles[feature.getGeometry().getType()];
       }
     });
-  }
+  };
 
   // Loop through all spots and create ol vector layers
   SpotsFactory.all().then(function(spots) {
@@ -570,11 +622,6 @@ angular.module('app')
     featureLayer.getLayers().push(vectorLayer);
 
   });
-
-
-
-
-
 
   map.on('touchstart', function(event) {
     console.log("touch");
@@ -598,7 +645,7 @@ angular.module('app')
       map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
         console.log("feature", feature);
         console.log("layer", layer);
-      })
+      });
 
       var feature = map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
         return feature;
@@ -608,13 +655,15 @@ angular.module('app')
 
         // popup content
         var content = '';
-        content += '<table id="popup-table"><tr><td>';
-        content += '<b>' + feature.get('name') + '</b>';
-        content += '<br><small>' + feature.get('strike') + '&deg; strike / ' + feature.get('dip') + '&deg; dip</small>';
-        content += '</td><td>';
-        content += '<a href="#/app/spots/' + feature.get('id') + '" class="button icon-right ion-chevron-right button-clear button-dark"></a>';
-        content += '</td></tr></table>';
-
+        content += '<table id="popup-table">';
+        content += '<tr>';
+        content += '<th id="name">' + feature.get('name') + '</th>';
+        content += '<th rowspan="2"><a href="#/app/spots/' + feature.get('id') + '" class="button icon-right ion-chevron-right button-clear button-dark"></a></th>';
+        content += '</tr>';
+        content += '<tr>';
+        content += '<td><small>' + feature.get('strike') + '&deg; strike / ' + feature.get('dip') + '&deg; dip</small></td>';
+        content += '</tr></table>';
+        
         // setup the popup position
         popup.show(evt.coordinate, content);
       }
@@ -635,5 +684,5 @@ angular.module('app')
     }, function(err) {
       alert("Unable to get location: " + err.message);
     });
-  }
+  };
 });

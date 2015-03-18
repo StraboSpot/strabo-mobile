@@ -28,7 +28,7 @@ angular.module('app')
   $scope.selectedCameraSource = {
     // default is always camera
     source: "CAMERA"
-  }
+  };
 
   $scope.cameraModal = function(source) {
 
@@ -59,7 +59,6 @@ angular.module('app')
       }
     });
   };
-
 
   var launchCamera = function(source) {
     // all plugins must be wrapped in a ready function
@@ -100,10 +99,7 @@ angular.module('app')
         console.log("error: ", err);
       });
     });
-  }
-
-
-
+  };
 
   // all the spots available in offline
   $scope.spots;
@@ -113,9 +109,10 @@ angular.module('app')
 
     // a single spot
     $scope.spot;
-
     $scope.point = {};
-
+    $scope.related_spots_selection=[];
+    $scope.related_spots_unselected=[];
+    
     // Initialize new Spot
     if (NewSpot.getNewSpot()) {
       $scope.spot = NewSpot.getNewSpot();
@@ -131,6 +128,15 @@ angular.module('app')
       })[0];
       $scope.spot.properties.date = new Date($scope.spot.properties.date);
       $scope.spot.properties.time = new Date($scope.spot.properties.time);
+
+      // Load related spots into related spots selection
+      $scope.related_spots_selection=[];
+      $scope.related_spots_unselected=[];
+      if ($scope.spot.properties.related_spots) {
+        $scope.spot.properties.related_spots.forEach(function (obj, i) {
+          $scope.related_spots_selection.push(obj);
+        });
+      }
     }
 
     // is the new spot a single point?
@@ -162,10 +168,58 @@ angular.module('app')
       vergence: ($scope.spot.properties.vergence) ? true : false
     };
 
+    
+    // Create checkbox list of other spots for selection as related spots
+    $scope.other_spots = [];
+    spots.forEach(function (obj, i) {
+      if ($scope.spot.properties.id != obj.properties.id) {
+        $scope.other_spots.push({
+          text: obj.properties.name, value: obj.properties.id
+        });
+      }
+    });
   });
 
+  // Toggle selection for related spots
+  $scope.toggleSelection = function toggleSelection(other_spot_id) {
+    var idx = $scope.related_spots_selection.indexOf(other_spot_id);
+     // is currently selected
+    if (idx > -1) {
+      $scope.related_spots_selection.splice(idx, 1);
+      $scope.related_spots_unselected.push(other_spot_id);
+    }
+     // is newly selected
+    else {
+      $scope.related_spots_selection.push(other_spot_id);
+    }
+   };
 
+  // Define Spot attributes
+  $scope.attitude_type = [
+    { text: 'planar', value: 'planar' },
+    { text: 'linear', value: 'linear' },
+    { text: 'planar and linear', value: 'planar and linear' }
+  ];
 
+  $scope.plane_type = [
+    { text: 'bedding', value: 'bedding' },
+    { text: 'flow layering', value: 'flow layering' },
+    { text: 'foliation', value: 'foliation' },
+    { text: 'joint', value: 'joint' },
+    { text: 'fracture', value: 'fracture' },
+    { text: 'fault plane', value: 'fault plane' },
+    { text: 'axial surface', value: 'axial surface' },
+    { text: 'stylolite', value: 'stylolite' }
+  ];
+
+  $scope.plane_quality = [
+    { text: 'known', value: 'known' },
+    { text: 'approximate', value: 'approximate' },
+    { text: 'inferred', value: 'inferred' },
+    { text: 'approximate(?)', value: 'approximate(?)' },
+    { text: 'inferred(?)', value: 'inferred(?)' },
+    { text: 'unknown', value: 'unknown' }
+  ];
 
   // generic yes or no value collection to be used in forms
   var yesNo = [{
@@ -354,9 +408,7 @@ angular.module('app')
       $scope.spot.properties.vergence = undefined;
     }
   };
-
-
-
+    
   $scope.onChange = {
     feature: function() {
       console.log("feature, ", $scope.spot.properties.feature_type);
@@ -456,14 +508,6 @@ angular.module('app')
     }
   };
 
-
-
-
-
-
-
-
-
   // Define Spot attributes
   $scope.attitude_type = [{
     text: 'planar',
@@ -551,18 +595,18 @@ angular.module('app')
       $scope.spot.geometry = {
         type: "Point",
         coordinates: [position.coords.longitude, position.coords.latitude]
-      }
+      };
       $scope.friendlyGeom = JSON.stringify($scope.spot.geometry);
     }, function(err) {
       alert("Unable to get location: " + err.message);
     });
-  }
+  };
 
   $scope.openMap = function() {
     // Save current spot
     NewSpot.setNewSpot($scope.spot);
     $location.path("/app/map");
-  }
+  };
 
   // Add or modify Spot
   $scope.submit = function() {
@@ -622,14 +666,6 @@ angular.module('app')
       return;
     }
 
-
-
-
-
-
-
-
-
     // define the geojson feature type
     $scope.spot.type = "Feature";
 
@@ -639,6 +675,52 @@ angular.module('app')
       $scope.spot.geometry.coordinates[1] = $scope.point.latitude;
       $scope.spot.geometry.coordinates[0] = $scope.point.longitude;
     }
+    
+    // Add or remove ids for related spots
+    if ($scope.spot.properties.related_spots)
+      delete $scope.spot.properties.related_spots;
+    if ($scope.related_spots_selection.length > 0)
+      $scope.spot.properties.related_spots = [];
+
+    // Get all selected and unselected related spots
+    var selAndUnSel = _.union($scope.related_spots_selection, $scope.related_spots_unselected);
+    selAndUnSel.forEach(function (obj, i) {
+
+      // Get the related spot
+      var related_spot = _.filter($scope.spots, function (spot) {
+        return spot.properties.id === obj;
+      })[0];
+
+      // If obj in selected related spots array
+      var idx = $scope.related_spots_selection.indexOf(obj);
+      if (idx > -1) {
+        // Add id for related spot to this spot
+        if ($scope.spot.properties.related_spots.indexOf(obj) == -1)
+          $scope.spot.properties.related_spots.push(obj);
+
+        // Add id for this spot to related spot
+        if (!related_spot.properties.related_spots)
+          related_spot.properties.related_spots = [];
+        if (related_spot.properties.related_spots.indexOf($scope.spot.properties.id) == -1)
+          related_spot.properties.related_spots.push($scope.spot.properties.id);
+      }
+      // If obj is in unselected related spots array
+      idx = $scope.related_spots_unselected.indexOf(obj);
+      if (idx > -1) {
+        // Remove id for this spot from related spot
+        if (related_spot.properties.related_spots)
+          if (related_spot.properties.related_spots.indexOf($scope.spot.properties.id) > -1) {
+            related_spot.properties.related_spots.splice(related_spot.properties.related_spots.indexOf($scope.spot.properties.id), 1);
+            if (related_spot.properties.related_spots.length == 0)
+              delete related_spot.properties.related_spots;
+          }
+      }
+
+      // Save the related spot
+      SpotsFactory.save(related_spot, related_spot.properties.id).then(function(data){
+        console.log("updated", data);
+      });
+    });
 
     // save the spot -- if the id is defined, we overwrite existing id; otherwise create new id/spot
     SpotsFactory.save($scope.spot, $scope.spot.properties.id).then(function(data) {
@@ -661,7 +743,7 @@ angular.module('app')
           $location.path("/app/spots");
         }
       });
-  }
+  };
 
   // View the spot on the map
   $scope.goToSpot = function() {

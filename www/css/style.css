@@ -63,15 +63,20 @@
   transition: opacity .25s
 }
 .ol-popup {
-  padding: 10px;
+  padding: 5px;
 }
+
 table#popup-table{
-  width: 100%;
+  margin: 5px;
+}
+th#name{
+  text-align: left;
+  font-weight: bold;
 }
 
 .layer-switcher {
     margin-top: 4em;
-    top: 12.5em;
+    top: 175px;
     left: 0.5em;
     right: auto;
     background: white;

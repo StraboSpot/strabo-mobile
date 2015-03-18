@@ -49,7 +49,7 @@
 }
 
 .ol-popup-closer:after {
-    content: "x";
+    content: "✖";
 }
 
 .ol-popup div.infoResult {

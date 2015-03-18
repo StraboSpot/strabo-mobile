@@ -181,6 +181,17 @@
       <label class="item item-input">
         <textarea placeholder="Notes about this Spot" rows="4" ng-model="spot.properties.notes"></textarea>
       </label>
+      
+      <!-- Related Spots -->
+      <div class="item item-divider">
+        Related Spots
+      </div>
+      <ion-checkbox ng-repeat="item in other_spots"
+                    ng-value="item.value"
+                    ng-checked="spot.properties.related_spots.indexOf(item.value) > -1"
+                    ng-click="toggleSelection(item.value)">
+        {{ item.text }}
+      </ion-checkbox>
 
       <div class="padding">
         <button class="button button-block button-positive" ng-click="submit()">Save</button>
