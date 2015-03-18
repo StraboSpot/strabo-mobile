@@ -9,101 +9,152 @@
       <div class="row responsive-md">
         <div class="col">
           <label class="item item-input">
-            <span class="input-label"><b>Spot Name</b></span>
+            <span class="input-label"><b>Spot Name</b>
+            </span>
             <input type="text" placeholder="Name this Spot" ng-model="spot.properties.name" autofocus>
           </label>
           <label class="item item-input">
-            <span class="input-label"><b>ID</b></span>
+            <span class="input-label"><b>ID</b>
+            </span>
             <input type="text" disabled ng-model="spot.properties.id" autofocus>
           </label>
           <label class="item item-input">
-            <span class="input-label"><b>Date</b></span>
+            <span class="input-label"><b>Date</b>
+            </span>
             <input type="date" ng-model="spot.properties.date">
           </label>
           <label class="item item-input">
-            <span class="input-label"><b>Time</b></span>
+            <span class="input-label"><b>Time</b>
+            </span>
             <input type="time" ng-model="spot.properties.time">
           </label>
-      </div>
-
-      <!-- Location -->
-      <div class="col">
-        <div class="item item-divider">
-          Location & Geometry
         </div>
-        Feature Type: {{spot.geometry.type}}
-        <!--   <label class="item item-input">
+
+        <!-- Location -->
+        <div class="col">
+          <div class="item item-divider">
+            Location & Geometry
+          </div>
+          Feature Type: {{spot.geometry.type}}
+            <label class="item item-input">
           <input type="string" ng-model="friendlyGeom" value={{friendlyGeom}} ng-disabled="true">
-        </label>    -->
-        <label class="item item-input" ng-show="showLatLng">
-          <span class="input-label">Latitude</span>
-          <input type="number" ng-model="point.latitude" value={{point.latitude}}>
-        </label>
-        <label class="item item-input" ng-show="showLatLng">
-          <span class="input-label">Longitude</span>
-          <input type="number" ng-model="point.longitude" value={{point.longitude}}>
-        </label>
-        <div>
-        Update Location From
-        <div>
-          <ion-buttons>
-            <button ng-click="getLocation();" class="button icon-left ion-pinpoint">My Location</button>
-          </ion-buttons>
+            </label>
+          <label class="item item-input" ng-show="showLatLng">
+            <span class="input-label">Latitude</span>
+            <input type="number" ng-model="point.latitude" value={{point.latitude}}>
+          </label>
+          <label class="item item-input" ng-show="showLatLng">
+            <span class="input-label">Longitude</span>
+            <input type="number" ng-model="point.longitude" value={{point.longitude}}>
+          </label>
+          <div>
+            Update Location From
+            <div>
+              <ion-buttons>
+                <button ng-click="getLocation();" class="button icon-left ion-pinpoint">My Location</button>
+              </ion-buttons>
 
-          <ion-buttons>
-            <button ng-click="openMap();" class="button icon-left icon ion-map">Map</button>
-          </ion-buttons>
-        </div>
+              <ion-buttons>
+                <button ng-click="openMap();" class="button icon-left icon ion-map">Map</button>
+              </ion-buttons>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
 
       <!-- Spot Type -->
-      <div class="item item-divider">
+      <!-- <div class="item item-divider" ng-show="false">
         Attitude Type
       </div>
-      <ion-radio ng-repeat="item in attitude_type"
-                 ng-value="item.value"
-                 ng-model="spot.properties.attitude_type"
-                 ng-change="typeSelected()">
+      <ion-radio ng-show="false" ng-repeat="item in attitude_type" ng-value="item.value" ng-model="spot.properties.attitude_type" ng-change="typeSelected()">
         {{ item.text }}
-      </ion-radio>
+      </ion-radio> -->
 
       <!-- More Detail -->
-      <div class="item item-divider">
+      <!-- <div class="item item-divider">
         More Detail
-      </div>
+      </div> -->
 
       <div class="row responsive-md">
         <div class="col">
+
+          <!-- Feature Type -->
           <label class="item item-input item-select">
-            <div class="input-label">
-              Plane Type
-            </div>
-            <select ng-model="spot.properties.plane_type" ng-options="item.value as item.text for item in plane_type | orderBy:'text'"></select>
+            <span class="input-label">Feature Type</span>
+            <select ng-model="spot.properties.feature_type" ng-options="item.value as item.text for item in feature_type | orderBy:'text'" ng-change="onChange.feature()"></select>
           </label>
-          <label class="item item-input">
+
+          <!-- Strike -->
+          <label class="item item-input" ng-show="show.strike">
             <span class="input-label">Strike</span>
-            <input type="number" placeholder="What is the strike?" ng-model="spot.properties.strike">
+            <input type="number" placeholder="strike? (0-360)" ng-model="spot.properties.strike">
           </label>
-          <label class="item item-input">
+
+          <!-- Dip -->
+          <label class="item item-input" ng-show="show.dip">
             <span class="input-label">Dip</span>
-            <input type="number" placeholder="What is the dip?" ng-model="spot.properties.dip">
+            <input type="number" placeholder="dip? (0-90)" ng-model="spot.properties.dip">
+          </label>
+
+          <!-- Trend -->
+          <label class="item item-input" ng-show="show.trend">
+            <span class="input-label">Trend</span>
+            <input type="number" placeholder="trend? (0-90)" ng-model="spot.properties.trend">
+          </label>
+
+          <!-- Plunge -->
+          <label class="item item-input" ng-show="show.plunge">
+            <span class="input-label">Plunge</span>
+            <input type="number" placeholder="plunge? (0-90)" ng-model="spot.properties.plunge">
           </label>
         </div>
+
         <div class="col">
-          <label class="item item-input item-select">
-            <div class="input-label">
-              Plane Quality
-            </div>
-            <select ng-model="spot.properties.plane_quality" ng-options="item.value as item.text for item in plane_quality | orderBy:'text'" ng-change="typeSelected()"></select>
+
+          <!-- Plane Facing -->
+          <label class="item item-input item-select" ng-show="show.plane_facing">
+            <div class="input-label">Plane Facing</div>
+            <select ng-model="spot.properties.plane_facing" ng-options="item.value as item.text for item in plane_facing | orderBy:'text'" ng-change="onChange.plane_facing()"></select>
           </label>
-          <label class="item item-input item-select">
-            <div class="input-label">
-              Plane Facing
-            </div>
-            <select ng-model="spot.properties.plane_facing" ng-options="item.value as item.text for item in plane_facing | orderBy:'text'" ng-change="typeSelected()"></select>
+
+          <!-- Facing Direction -->
+          <label class="item item-input" ng-show="show.facing_direction">
+            <div class="input-label">Facing Direction</div>
+            <input type="text" placeholder="Facing Direction?" ng-model="spot.properties.facing_direction">
           </label>
+
+          <!-- Fold Type -->
+          <label class="item item-input item-select" ng-show="show.fold_type">
+            <div class="input-label">Fold Type</div>
+            <select ng-model="spot.properties.fold_type" ng-options="item.value as item.text for item in fold_type | orderBy:'text'" ng-change="onChange.fold_type()"></select>
+          </label>
+
+          <!-- Fold Detail -->
+          <label class="item item-input item-select" ng-show="show.fold_detail">
+            <div class="input-label">Fold Detail</div>
+            <select ng-model="spot.properties.fold_detail" ng-options="item.value as item.text for item in fold_detail | orderBy:'text'" ng-change="onChange.fold_detail()"></select>
+          </label>
+
+          <!-- Directed -->
+          <label class="item item-input item-select" ng-show="show.directed">
+            <div class="input-label">Directed?</div>
+            <select ng-model="spot.properties.directed" ng-options="item.value as item.text for item in directed | orderBy:'text'" ng-change="onChange.directed()"></select>
+          </label>
+
+          <!-- Vergence -->
+          <label class="item item-input" ng-show="show.vergence">
+            <div class="input-label">Vergence</div>
+            <input type="text" placeholder="Vergence" ng-model="spot.properties.vergence">
+          </label>
+        </div>
+
+        <div class="col">
+          <!-- Orientation Quality -->
+          <label class="item item-input item-select">
+            <div class="input-label">Orientation Quality</div>
+            <select ng-model="spot.properties.orientation_quality" ng-options="item.value as item.text for item in orientation_quality | orderBy:'text'" ng-change="onChange.orientation()"></select>
+          </label>
+
           <label class="item item-input">
             <span class="input-label">Unit Name</span>
             <input type="text" placeholder="What is the unit name?" ng-model="spot.properties.unit_name">
@@ -119,7 +170,7 @@
       <div class="row responsive-md">
         <ul>
           <li ng-repeat="image in spot.images" style="display: inline;">
-            <img ng-src="{{image.src}}" width="100" height="100"/>
+            <img ng-src="{{image.src}}" width="100" height="100" />
           </li>
         </ul>
       </div>
