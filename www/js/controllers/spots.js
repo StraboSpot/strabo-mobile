@@ -3,8 +3,8 @@ angular.module('app')
 .controller('SpotsCtrl', function(
   $scope,
   $location,
-  SpotsFactory,
-  NewSpot) {
+  $ionicModal,
+  SpotsFactory) {
 
   // Load or initialize Spots
   $scope.spots;
@@ -12,14 +12,6 @@ angular.module('app')
   SpotsFactory.all().then(function(spots) {
     $scope.spots = spots;
   });
-
-  // a geojson template we pass in when creating a new spot from the spot menu
-  var geojsonTemplate = {
-    "geometry": {
-      "type": "Point",
-      "coordinates": [0, 0]
-    }
-  };
 
   // clears all spots
   $scope.clearAllSpots = function() {
@@ -32,12 +24,35 @@ angular.module('app')
         });
       });
     }
-  }
+  };
 
   // Create a new Spot
   $scope.newSpot = function() {
-    // we create a new spot and pass in the template because a new spot created in this manner is always a single point
-    NewSpot.setNewSpot(geojsonTemplate);
-    $location.path("/app/spots/newspot");
+    $scope.openModal();
   };
+
+  /////////////////
+  // MODAL
+  /////////////////
+
+  $ionicModal.fromTemplateUrl('templates/modals/allModal.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.allModal = modal;
+  });
+
+  $scope.openModal = function() {
+    $scope.allModal.show();
+  };
+
+  $scope.closeModal = function() {
+    $scope.allModal.hide();
+  };
+
+  //Cleanup the modal when we're done with it!
+  // Execute action on hide modal
+  $scope.$on('allModal.hidden', function() {
+    $scope.allModal.remove();
+  });
 });

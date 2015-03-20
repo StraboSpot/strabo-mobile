@@ -11,6 +11,7 @@ angular.module('app')
   $location,
   $filter,
   $ionicHistory,
+  $ionicModal,
   NewSpot,
   MapView,
   OfflineTilesFactory,
@@ -399,7 +400,6 @@ angular.module('app')
   // drawButtonActive used to keep state of which selected drawing tool is active
   $scope.drawButtonActive = null;
 
-
   $scope.startDraw = function(type) {
     //if the type is already selected, we want to stop drawing
     if ($scope.drawButtonActive === type) {
@@ -439,9 +439,21 @@ angular.module('app')
         if (backView.stateName == "app.spot")
           backView.go();
       } else {
+        switch ($scope.drawButtonActive) {
+          case "Point":
+            $scope.openModal("pointModal");
+            break;
+          case "LineString":
+            $scope.openModal("lineModal");
+            break;
+          case "Polygon":
+            $scope.openModal("polyModal");
+            break;
+        }
+/*
         $rootScope.$apply(function() {
           $location.path("/app/spots/newspot");
-        });
+        });*/
       }
     });
     map.addInteraction(draw);
@@ -663,7 +675,7 @@ angular.module('app')
         content += '<tr>';
         content += '<td><small>' + feature.get('strike') + '&deg; strike / ' + feature.get('dip') + '&deg; dip</small></td>';
         content += '</tr></table>';
-        
+
         // setup the popup position
         popup.show(evt.coordinate, content);
       }
@@ -685,4 +697,52 @@ angular.module('app')
       alert("Unable to get location: " + err.message);
     });
   };
+
+
+  /////////////////
+  // MODALS
+  /////////////////
+
+  $ionicModal.fromTemplateUrl('templates/modals/pointModal.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.pointModal = modal;
+  });
+
+  $ionicModal.fromTemplateUrl('templates/modals/lineModal.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.lineModal = modal;
+  });
+
+  $ionicModal.fromTemplateUrl('templates/modals/polyModal.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.polyModal = modal;
+  });
+
+  $scope.openModal = function(modal) {
+    $scope[modal].show();
+  };
+
+  $scope.closeModal = function() {
+    $scope.pointModal.hide();
+    $scope.lineModal.hide();
+    $scope.polyModal.hide();
+  };
+
+  //Cleanup the modal when we're done with it!
+  // Execute action on hide modal
+  $scope.$on('pointModal.hidden', function() {
+    $scope.pointModal.remove();
+  });
+  $scope.$on('lineModal.hidden', function() {
+    $scope.lineModal.remove();
+  });
+  $scope.$on('polyModal.hidden', function() {
+    $scope.polyModal.remove();
+  });
 });

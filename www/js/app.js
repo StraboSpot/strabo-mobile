@@ -20,7 +20,7 @@ angular.module('app', [
   localforage.config({
     driver: localforage.WEBSQL,
     name: 'offlineMapTiles'
-  })
+  });
 
   // global LF for map names
   mapNamesDb = localforage.createInstance({
@@ -102,8 +102,18 @@ angular.module('app', [
       }
     })
 
-    .state('app.spot', {
-      url: "/spots/:spotId",
+    .state('app.commonfields', {
+      url: "/spots/commonfields",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/commonFieldsForm.html",
+          controller: 'SpotCtrl'
+        }
+      }
+    })
+
+    .state('app.newspot', {
+      url: "/spots/newspot",
       views: {
         'menuContent': {
           templateUrl: "templates/spot.html",
@@ -112,8 +122,8 @@ angular.module('app', [
       }
     })
 
-    .state('app.newspot', {
-      url: "/spots/newspot",
+    .state('app.spot', {
+      url: "/spots/:spotId",
       views: {
         'menuContent': {
           templateUrl: "templates/spot.html",

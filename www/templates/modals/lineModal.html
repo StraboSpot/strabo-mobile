@@ -1,0 +1,13 @@
+<ion-modal-view>
+  <ion-header-bar>
+    <h1 class="title">Select a Line Spot Type</h1>
+    <div class="button button-clear" ng-click="closeModal()"><span class="icon ion-close"></span></div>
+  </ion-header-bar>
+  <ion-content>
+    <ion-list ng-controller="ModalCtrl">
+      <ion-item ng-repeat="item in lineTypes" href="#/app/spots/{{item.template}}" ng-click="closeModal();setSpotType(item.type)">
+        {{item.type}}
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-modal-view>

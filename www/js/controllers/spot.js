@@ -139,6 +139,13 @@ angular.module('app')
       }
     }
 
+    if ($scope.spot.properties.spottype == "Orientation") {
+      $scope.showFeatureType = true;
+      $scope.showOrientation_quality = true;
+      $scope.showUnit_name = true;
+      $scope.showUnit_label = true;
+    }
+
     // is the new spot a single point?
     if ($scope.spot.geometry && $scope.spot.geometry.type === "Point") {
       // toggles the Lat/Lng input boxes based on available Lat/Lng data
@@ -148,6 +155,9 @@ angular.module('app')
       $scope.point.latitude = $scope.spot.geometry.coordinates[1];
       $scope.point.longitude = $scope.spot.geometry.coordinates[0];
     }
+
+    if ($scope.spot.properties.id)
+      $scope.showRelatedSpots = true;
 
     $scope.friendlyGeom = JSON.stringify($scope.spot.geometry);
 
@@ -408,7 +418,7 @@ angular.module('app')
       $scope.spot.properties.vergence = undefined;
     }
   };
-    
+
   $scope.onChange = {
     feature: function() {
       console.log("feature, ", $scope.spot.properties.feature_type);
@@ -451,7 +461,6 @@ angular.module('app')
         'foliation with lineation',
         'slicken side striae'
       ];
-
 
       var shouldShowStrikeDip = _.find(strikeAndDip, function(feature) {
         return feature == $scope.spot.properties.feature_type;
@@ -617,10 +626,11 @@ angular.module('app')
       alert('Name required.');
       return;
     }
-    if (!$scope.spot.properties.feature_type) {
+    // For the time being make this not required
+    /*if (!$scope.spot.properties.feature_type) {
       alert('Feature required.');
       return;
-    }
+    }*/
 
     // console.log($scope.show.strike);
     // console.log($scope.spot.properties.strike);

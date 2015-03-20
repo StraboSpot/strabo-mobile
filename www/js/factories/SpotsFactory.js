@@ -17,7 +17,7 @@ angular.module('app')
       });
 
       return deferred.promise;
-    }
+    };
 
     factory.save = function(value, key) {
       var self = this;
@@ -33,11 +33,17 @@ angular.module('app')
       // lets also put the key in the value.properties.id
       value.properties.id = key;
 
+      // The following should be removed once uploading and then download
+      // from the database preserves the data type
       // Make sure strike and dip are numbers
       if (value.properties.strike)
-        value.properties.strike = parseFloat(value.properties.strike)
+        value.properties.strike = parseFloat(value.properties.strike);
       if (value.properties.dip)
-        value.properties.dip = parseFloat(value.properties.dip)
+        value.properties.dip = parseFloat(value.properties.dip);
+      if (value.properties.trend)
+        value.properties.trend = parseFloat(value.properties.trend);
+      if (value.properties.plunge)
+        value.properties.plunge = parseFloat(value.properties.plunge);
 
       self.write(key, value).then(function(data) {
         deferred.notify();
@@ -45,17 +51,17 @@ angular.module('app')
       });
 
       return deferred.promise;
-    }
+    };
 
     // delete the spot
     factory.destroy = function(key) {
       return spotsDb.removeItem(key);
-    }
+    };
 
     // gets the number of spots
     factory.getSpotCount = function() {
       return spotsDb.length();
-    }
+    };
 
     // gets the first spot in the db (if exists) -- used to set the map view
     factory.getFirstSpot = function() {
@@ -70,7 +76,7 @@ angular.module('app')
       });
 
       return deferred.promise;
-    }
+    };
 
     // wipes the spots database
     factory.clear = function(callback) {
@@ -81,7 +87,7 @@ angular.module('app')
           callback();
         }
       });
-    }
+    };
 
     // write to storage
     factory.write = function(key, value) {
@@ -98,7 +104,7 @@ angular.module('app')
     // Get the center of a geoshape
     factory.getCenter = function(spot) {
       var coords = spot.geometry.coordinates;
-      var lon = coords[0]
+      var lon = coords[0];
       var lat = coords[1];
       // Get the center lat & lon of non-point features
       if (isNaN(lon) || isNaN(lat)) {
@@ -113,8 +119,7 @@ angular.module('app')
         "lon": lon,
         "lat": lat
       }
-    }
-
+    };
 
     // return factory
     return factory;

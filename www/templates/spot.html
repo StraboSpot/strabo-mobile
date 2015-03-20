@@ -9,6 +9,11 @@
       <div class="row responsive-md">
         <div class="col">
           <label class="item item-input">
+            <span class="input-label"><b>Spot Type</b>
+            </span>
+            <input type="text" disabled ng-model="spot.properties.spottype">
+          </label>
+          <label class="item item-input">
             <span class="input-label"><b>Spot Name</b>
             </span>
             <input type="text" placeholder="Name this Spot" ng-model="spot.properties.name" autofocus>
@@ -16,7 +21,7 @@
           <label class="item item-input">
             <span class="input-label"><b>ID</b>
             </span>
-            <input type="text" disabled ng-model="spot.properties.id" autofocus>
+            <input type="text" disabled ng-model="spot.properties.id">
           </label>
           <label class="item item-input">
             <span class="input-label"><b>Date</b>
@@ -79,7 +84,7 @@
         <div class="col">
 
           <!-- Feature Type -->
-          <label class="item item-input item-select">
+          <label class="item item-input item-select" ng-show="showFeatureType">
             <span class="input-label">Feature Type</span>
             <select ng-model="spot.properties.feature_type" ng-options="item.value as item.text for item in feature_type | orderBy:'text'" ng-change="onChange.feature()"></select>
           </label>
@@ -147,19 +152,21 @@
             <input type="text" placeholder="Vergence" ng-model="spot.properties.vergence">
           </label>
         </div>
-
+      </div>
+      <div class="row responsive-md">
         <div class="col">
           <!-- Orientation Quality -->
-          <label class="item item-input item-select">
+          <label class="item item-input item-select" ng-show="showOrientation_quality">
             <div class="input-label">Orientation Quality</div>
             <select ng-model="spot.properties.orientation_quality" ng-options="item.value as item.text for item in orientation_quality | orderBy:'text'" ng-change="onChange.orientation()"></select>
           </label>
-
-          <label class="item item-input">
+        </div>
+        <div class="col">
+          <label class="item item-input" ng-show="showUnit_name">
             <span class="input-label">Unit Name</span>
             <input type="text" placeholder="What is the unit name?" ng-model="spot.properties.unit_name">
           </label>
-          <label class="item item-input">
+          <label class="item item-input" ng-show="showUnit_label">
             <span class="input-label">Unit Label</span>
             <input type="text" placeholder="What is the unit label?" ng-model="spot.properties.unit_label">
           </label>
@@ -183,15 +190,17 @@
       </label>
       
       <!-- Related Spots -->
-      <div class="item item-divider">
-        Related Spots
+      <div ng-show="showRelatedSpots">
+        <div class="item item-divider">
+          Related Spots
+        </div>
+        <ion-checkbox ng-repeat="item in other_spots"
+                      ng-value="item.value"
+                      ng-checked="spot.properties.related_spots.indexOf(item.value) > -1"
+                      ng-click="toggleSelection(item.value)">
+          {{ item.text }}
+        </ion-checkbox>
       </div>
-      <ion-checkbox ng-repeat="item in other_spots"
-                    ng-value="item.value"
-                    ng-checked="spot.properties.related_spots.indexOf(item.value) > -1"
-                    ng-click="toggleSelection(item.value)">
-        {{ item.text }}
-      </ion-checkbox>
 
       <div class="padding">
         <button class="button button-block button-positive" ng-click="submit()">Save</button>

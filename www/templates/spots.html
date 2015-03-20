@@ -9,7 +9,7 @@
     <ion-content class="has-header">
       <ion-list>
         <ion-item ng-repeat="spot in spots" href="#/app/spots/{{spot.properties.id}}">
-          {{spot.properties.name}}          
+          {{spot.properties.name}} <small>({{spot.properties.spottype}})</small>
         </ion-item>
       </ion-list>
     </ion-content>
