@@ -132,7 +132,7 @@ angular.module('app')
       // Load related spots into related spots selection
       $scope.related_spots_selection=[];
       $scope.related_spots_unselected=[];
-      if ($scope.spot.properties.related_spots) {
+      if ($scope.spot.properties.related_spots && typeof($scope.spot.properties.related_spots) == "object") {
         $scope.spot.properties.related_spots.forEach(function (obj, i) {
           $scope.related_spots_selection.push(obj);
         });
@@ -144,6 +144,10 @@ angular.module('app')
       $scope.showOrientation_quality = true;
       $scope.showUnit_name = true;
       $scope.showUnit_label = true;
+    }
+
+    if ($scope.spot.geometry.type == "Point") {
+      $scope.showMyLocationButton = true
     }
 
     // is the new spot a single point?
