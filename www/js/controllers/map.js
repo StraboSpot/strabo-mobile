@@ -672,9 +672,13 @@ angular.module('app')
         content += '<th id="name">' + feature.get('name') + '</th>';
         content += '<th rowspan="2"><a href="#/app/spots/' + feature.get('id') + '" class="button icon-right ion-chevron-right button-clear button-dark"></a></th>';
         content += '</tr>';
-        content += '<tr>';
-        content += '<td><small>' + feature.get('strike') + '&deg; strike / ' + feature.get('dip') + '&deg; dip</small></td>';
-        content += '</tr></table>';
+
+        if (feature.get('strike') && feature.get('dip')) {
+          content += '<tr>';
+          content += '<td><small>' + feature.get('strike') + '&deg; strike / ' + feature.get('dip') + '&deg; dip</small></td>';
+          content += '</tr>';
+        }
+        content += '</table>';
 
         // setup the popup position
         popup.show(evt.coordinate, content);
