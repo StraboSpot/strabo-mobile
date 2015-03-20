@@ -1,4 +1,4 @@
-<ion-view title="Common Spot Detail">
+<ion-view title="Spot Detail">
   <ion-nav-buttons side="right">
     <button ng-click="deleteSpot();" class="button button-icon icon ion-trash-a"></button>
     <button ng-click="cameraModal()" class="button button-icon icon ion-camera"></button>
@@ -9,6 +9,11 @@
       <div class="row responsive-md">
         <div class="col">
           <label class="item item-input">
+            <span class="input-label"><b>Spot Type</b>
+            </span>
+            <input type="text" disabled ng-model="spot.properties.spottype">
+          </label>
+          <label class="item item-input">
             <span class="input-label"><b>Spot Name</b>
             </span>
             <input type="text" placeholder="Name this Spot" ng-model="spot.properties.name" autofocus>
@@ -16,7 +21,7 @@
           <label class="item item-input">
             <span class="input-label"><b>ID</b>
             </span>
-            <input type="text" disabled ng-model="spot.properties.id" autofocus>
+            <input type="text" disabled ng-model="spot.properties.id">
           </label>
           <label class="item item-input">
             <span class="input-label"><b>Date</b>
@@ -36,9 +41,9 @@
             Location & Geometry
           </div>
           Feature Type: {{spot.geometry.type}}
-            <label class="item item-input">
-          <input type="string" ng-model="friendlyGeom" value={{friendlyGeom}} ng-disabled="true">
-            </label>
+          <label class="item item-input">
+            <input type="string" ng-model="friendlyGeom" value={{friendlyGeom}} ng-disabled="true">
+          </label>
           <label class="item item-input" ng-show="showLatLng">
             <span class="input-label">Latitude</span>
             <input type="number" ng-model="point.latitude" value={{point.latitude}}>
@@ -60,7 +65,6 @@
             </div>
           </div>
         </div>
-      </div>
       </div>
 
       <!-- Images -->
