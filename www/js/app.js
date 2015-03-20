@@ -82,6 +82,7 @@ angular.module('app', [
     })
 
     .state('app.sync', {
+      cache: false,
       url: "/sync",
       views: {
         'menuContent': {
@@ -106,7 +107,7 @@ angular.module('app', [
       url: "/spots/commonfields",
       views: {
         'menuContent': {
-          templateUrl: "templates/commonFieldsForm.html",
+          templateUrl: "templates/spot.html",
           controller: 'SpotCtrl'
         }
       }

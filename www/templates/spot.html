@@ -1,36 +1,29 @@
 <ion-view title="Spot Detail">
   <ion-nav-buttons side="right">
     <button ng-click="deleteSpot();" class="button button-icon icon ion-trash-b"></button>
-    <button ng-click="cameraModal()" class="button button-icon icon ion-camera"></button>
-    <button ng-click="goToSpot();" class="button button-icon icon ion-eye"></button>
+    <button ng-click="submit();" class="button button-icon icon ion-checkmark-circled"></button>
   </ion-nav-buttons>
   <ion-content class="has-header">
     <form class="list">
       <div class="row responsive-md">
         <div class="col">
+          <div class="item item-divider">
+            {{spot.properties.spottype}}
+          </div>
           <label class="item item-input">
-            <span class="input-label"><b>Spot Name</b>
-            </span>
+            <span class="input-label">Spot Name</span>
             <input type="text" placeholder="Name this Spot" ng-model="spot.properties.name" autofocus>
           </label>
           <label class="item item-input">
-            <span class="input-label"><b>Spot Type</b>
-            </span>
-            <input type="text" disabled ng-model="spot.properties.spottype">
-          </label>
-          <label class="item item-input">
-            <span class="input-label"><b>ID</b>
-            </span>
+            <span class="input-label">ID</span>
             <input type="text" disabled ng-model="spot.properties.id">
           </label>
           <label class="item item-input">
-            <span class="input-label"><b>Date</b>
-            </span>
+            <span class="input-label">Date</span>
             <input type="date" ng-model="spot.properties.date">
           </label>
           <label class="item item-input">
-            <span class="input-label"><b>Time</b>
-            </span>
+            <span class="input-label">Time</span>
             <input type="time" ng-model="spot.properties.time">
           </label>
         </div>
@@ -38,16 +31,12 @@
         <!-- Location -->
         <div class="col">
           <div class="item item-divider">
-            Location & Geometry
+            Map Representation
           </div>
           <label class="item item-input">
-            <span class="input-label"><b>Map Representation</b>
-            </span>
+            <span class="input-label">Geometry</span>
             <input type="text" disabled ng-model="spot.geometry.type">
           </label>
-          <!--<label class="item item-input">
-                <input type="string" ng-model="friendlyGeom" value={{friendlyGeom}} ng-disabled="true">
-          </label>-->
           <label class="item item-input" ng-show="showLatLng">
             <span class="input-label">Latitude</span>
             <input type="number" ng-model="point.latitude" value={{point.latitude}}>
@@ -57,32 +46,16 @@
             <input type="number" ng-model="point.longitude" value={{point.longitude}}>
           </label>
           <div>
-           <!-- Modify Location or Shape -->
+           <!-- Map Interaction -->
             <div>
-              <ion-buttons ng-show="showMyLocationButton">
-                <button ng-click="getLocation();" class="button icon-left ion-pinpoint">My Location</button>
-              </ion-buttons>
-
-              <ion-buttons>
-                <button ng-click="openMap();" class="button icon-left icon ion-map">Map</button>
-              </ion-buttons>
+              <br>
+              <button ng-click="goToSpot();" class="button button-small icon-left icon ion-eye">View on Map</button>
+              <button ng-click="getLocation();" ng-show="showMyLocationButton" class="button button-small icon-left ion-pinpoint">Set to My Location</button>
+              <button ng-click="openMap();" class="button button-small icon-left icon ion-map">Set From Map</button>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- Spot Type -->
-      <!-- <div class="item item-divider" ng-show="false">
-        Attitude Type
-      </div>
-      <ion-radio ng-show="false" ng-repeat="item in attitude_type" ng-value="item.value" ng-model="spot.properties.attitude_type" ng-change="typeSelected()">
-        {{ item.text }}
-      </ion-radio> -->
-
-      <!-- More Detail -->
-      <!-- <div class="item item-divider">
-        More Detail
-      </div> -->
 
       <div class="row responsive-md">
         <div class="col">
@@ -90,7 +63,9 @@
           <!-- Feature Type -->
           <label class="item item-input item-select" ng-show="showFeatureType">
             <span class="input-label">Feature Type</span>
-            <select ng-model="spot.properties.feature_type" ng-options="item.value as item.text for item in feature_type | orderBy:'text'" ng-change="onChange.feature()"></select>
+            <select ng-model="spot.properties.feature_type"
+                    ng-options="item.value as item.text for item in feature_type | orderBy:'text'"
+                    ng-change="onChange.feature()"></select>
           </label>
 
           <!-- Strike -->
@@ -122,37 +97,37 @@
 
           <!-- Plane Facing -->
           <label class="item item-input item-select" ng-show="show.plane_facing">
-            <div class="input-label">Plane Facing</div>
+            <span class="input-label">Plane Facing</span>
             <select ng-model="spot.properties.plane_facing" ng-options="item.value as item.text for item in plane_facing | orderBy:'text'" ng-change="onChange.plane_facing()"></select>
           </label>
 
           <!-- Facing Direction -->
           <label class="item item-input" ng-show="show.facing_direction">
-            <div class="input-label">Facing Direction</div>
+            <span class="input-label">Facing Direction</span>
             <input type="text" placeholder="Facing Direction?" ng-model="spot.properties.facing_direction">
           </label>
 
           <!-- Fold Type -->
           <label class="item item-input item-select" ng-show="show.fold_type">
-            <div class="input-label">Fold Type</div>
+            <span class="input-label">Fold Type</span>
             <select ng-model="spot.properties.fold_type" ng-options="item.value as item.text for item in fold_type | orderBy:'text'" ng-change="onChange.fold_type()"></select>
           </label>
 
           <!-- Fold Detail -->
           <label class="item item-input item-select" ng-show="show.fold_detail">
-            <div class="input-label">Fold Detail</div>
+            <span class="input-label">Fold Detail</span>
             <select ng-model="spot.properties.fold_detail" ng-options="item.value as item.text for item in fold_detail | orderBy:'text'" ng-change="onChange.fold_detail()"></select>
           </label>
 
           <!-- Directed -->
           <label class="item item-input item-select" ng-show="show.directed">
-            <div class="input-label">Directed?</div>
+            <span class="input-label">Directed?</span>
             <select ng-model="spot.properties.directed" ng-options="item.value as item.text for item in directed | orderBy:'text'" ng-change="onChange.directed()"></select>
           </label>
 
           <!-- Vergence -->
           <label class="item item-input" ng-show="show.vergence">
-            <div class="input-label">Vergence</div>
+            <span class="input-label">Vergence</span>
             <input type="text" placeholder="Vergence" ng-model="spot.properties.vergence">
           </label>
         </div>
@@ -161,7 +136,7 @@
         <div class="col">
           <!-- Orientation Quality -->
           <label class="item item-input item-select" ng-show="showOrientation_quality">
-            <div class="input-label">Orientation Quality</div>
+            <span class="input-label">Orientation Quality</span>
             <select ng-model="spot.properties.orientation_quality" ng-options="item.value as item.text for item in orientation_quality | orderBy:'text'" ng-change="onChange.orientation()"></select>
           </label>
         </div>
@@ -178,13 +153,19 @@
       </div>
 
       <!-- Images -->
-      <div class="row responsive-md">
-        <ul>
-          <li ng-repeat="image in spot.images" style="display: inline;">
-            <img ng-src="{{image.src}}" width="100" height="100" />
-          </li>
-        </ul>
+      <div class="item item-divider">
+        Photos
       </div>
+      <div class="row responsive-md">
+        <div>
+          <ul>
+            <li ng-repeat="image in spot.images" style="display: inline;">
+              <img ng-src="{{image.src}}" width="100" height="100" />
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button ng-click="cameraModal()" class="button button-small icon-left ion-camera">Add Photo</button>
 
       <div class="item item-divider">
         Notes
@@ -204,10 +185,6 @@
                       ng-click="toggleSelection(item.value)">
           {{ item.text }}
         </ion-checkbox>
-      </div>
-
-      <div class="padding">
-        <button class="button button-block button-positive" ng-click="submit()">Save</button>
       </div>
     </form>
   </ion-content>
