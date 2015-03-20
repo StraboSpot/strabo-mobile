@@ -678,6 +678,13 @@ angular.module('app')
           content += '<td><small>' + feature.get('strike') + '&deg; strike / ' + feature.get('dip') + '&deg; dip</small></td>';
           content += '</tr>';
         }
+
+        if (feature.get('trend') && feature.get('plunge')) {
+          content += '<tr>';
+          content += '<td><small>' + feature.get('trend') + '&deg; trend / ' + feature.get('plunge') + '&deg; plunge</small></td>';
+          content += '</tr>';
+        }
+
         content += '</table>';
 
         // setup the popup position
