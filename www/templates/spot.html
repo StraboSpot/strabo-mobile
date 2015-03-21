@@ -64,7 +64,7 @@
           <label class="item item-input item-select" ng-show="showFeatureType">
             <span class="input-label">Feature Type</span>
             <select ng-model="spot.properties.feature_type"
-                    ng-options="item.value as item.text for item in feature_type | orderBy:'text'"
+                    ng-options="item.value as item.text for item in feature_type.choices | orderBy:'text'"
                     ng-change="onChange.feature()"></select>
           </label>
 
@@ -98,7 +98,7 @@
           <!-- Plane Facing -->
           <label class="item item-input item-select" ng-show="show.plane_facing">
             <span class="input-label">Plane Facing</span>
-            <select ng-model="spot.properties.plane_facing" ng-options="item.value as item.text for item in plane_facing | orderBy:'text'" ng-change="onChange.plane_facing()"></select>
+            <select ng-model="spot.properties.plane_facing" ng-options="item.value as item.text for item in plane_facing.choices | orderBy:'text'" ng-change="onChange.plane_facing()"></select>
           </label>
 
           <!-- Facing Direction -->
@@ -110,19 +110,19 @@
           <!-- Fold Type -->
           <label class="item item-input item-select" ng-show="show.fold_type">
             <span class="input-label">Fold Type</span>
-            <select ng-model="spot.properties.fold_type" ng-options="item.value as item.text for item in fold_type | orderBy:'text'" ng-change="onChange.fold_type()"></select>
+            <select ng-model="spot.properties.fold_type" ng-options="item.value as item.text for item in fold_type.choices | orderBy:'text'" ng-change="onChange.fold_type()"></select>
           </label>
 
           <!-- Fold Detail -->
           <label class="item item-input item-select" ng-show="show.fold_detail">
             <span class="input-label">Fold Detail</span>
-            <select ng-model="spot.properties.fold_detail" ng-options="item.value as item.text for item in fold_detail | orderBy:'text'" ng-change="onChange.fold_detail()"></select>
+            <select ng-model="spot.properties.fold_detail" ng-options="item.value as item.text for item in fold_detail.choices | orderBy:'text'" ng-change="onChange.fold_detail()"></select>
           </label>
 
           <!-- Directed -->
           <label class="item item-input item-select" ng-show="show.directed">
             <span class="input-label">Directed?</span>
-            <select ng-model="spot.properties.directed" ng-options="item.value as item.text for item in directed | orderBy:'text'" ng-change="onChange.directed()"></select>
+            <select ng-model="spot.properties.directed" ng-options="item.value as item.text for item in directed.choices | orderBy:'text'" ng-change="onChange.directed()"></select>
           </label>
 
           <!-- Vergence -->
@@ -137,7 +137,9 @@
           <!-- Orientation Quality -->
           <label class="item item-input item-select" ng-show="showOrientation_quality">
             <span class="input-label">Orientation Quality</span>
-            <select ng-model="spot.properties.orientation_quality" ng-options="item.value as item.text for item in orientation_quality | orderBy:'text'" ng-change="onChange.orientation()"></select>
+            <select ng-model="spot.properties.orientation_quality"
+                    ng-options="item.value as item.text for item in orientation_quality.choices | orderBy:'text'"
+                    ng-change="onChange.orientation()"></select>
           </label>
         </div>
         <div class="col">
