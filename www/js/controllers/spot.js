@@ -83,7 +83,7 @@ angular.module('app')
 
         $cordovaCamera.getPicture(cameraOptions).then(function(imageURI) {
           // create an images array if it doesn't exist -- camera images are stored here
-          if ($scope.spot.images == undefined) {
+          if ($scope.spot.images === undefined) {
             $scope.spot.images = [];
           }
 
@@ -398,39 +398,15 @@ angular.module('app')
         $scope.show.vergence = false;
       }
 
-      // ********************
-      // * reset values
-      // ********************
-
-      if (!$scope.show.strike) {
-        $scope.spot.properties.strike = undefined;
-      }
-      if (!$scope.show.dip) {
-        $scope.spot.properties.dip = undefined;
-      }
-      if (!$scope.show.trend) {
-        $scope.spot.properties.trend = undefined;
-      }
-      if (!$scope.show.plunge) {
-        $scope.spot.properties.plunge = undefined;
-      }
-      if (!$scope.show.fold_type) {
-        $scope.spot.properties.fold_type = undefined;
-      }
-      if (!$scope.show.fold_detail) {
-        $scope.spot.properties.fold_detail = undefined;
-      }
-      if (!$scope.show.plane_facing) {
-        $scope.spot.properties.plane_facing = undefined;
-      }
-      if (!$scope.show.facing_direction) {
-        $scope.spot.properties.facing_direction = undefined;
-      }
-      if (!$scope.show.directed) {
-        $scope.spot.properties.directed = undefined;
-      }
-      if (!$scope.show.vergence) {
-        $scope.spot.properties.vergence = undefined;
+      // loop through $scope.show to see if they are set to hidden or visible
+      for (var property in $scope.show) {
+        if ($scope.show.hasOwnProperty(property)) {
+          // is it hidden?
+          if ($scope.show[property] === false) {
+            // yes, the nullify the property value
+            $scope.spot.properties[property] = undefined;
+          }
+        }
       }
     };
 
