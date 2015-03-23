@@ -165,6 +165,14 @@ angular.module('app')
         vergence: ($scope.spot.properties.vergence) ? true : false
       };
 
+      if ($scope.spot.properties.spottype == "Contact Outcrop" ||
+        $scope.spot.properties.spottype == "Fault Outcrop" ||
+        $scope.spot.properties.spottype == "Rock Description" ||
+        $scope.spot.properties.spottype == "Sample")
+        $scope.showLinkToNewOrientation = true;
+      else
+        $scope.showLinkToNewOrientation = false;
+
       // Create checkbox list of other spots for selection as related spots
       SpotsFactory.all().then(function (spots) {
         $scope.spots = spots;
@@ -654,5 +662,14 @@ angular.module('app')
         zoom: 16
       }));
       $location.path("/app/map");
-    }
+    };
+
+    $scope.newOrientation = function() {
+      NewSpot.setNewSpot({"geometry": $scope.spot.geometry});
+      $scope.newOrientation = NewSpot.getNewSpot();
+      $scope.newOrientation.properties.name = $scope.spot.properties.name;
+      $scope.newOrientation.properties.spottype = "Orientation";
+      NewSpot.setNewSpot($scope.newOrientation);
+      $location.path(href="/app/spots/newspot");
+    };
   });
