@@ -277,15 +277,15 @@ angular.module('app')
 
       // console.log("map: ", map);
 
-      // first get all the tileIds associated with this map name
-      var tileIds = map.tileIds;
+      // first get all the tiles associated with this map name
+      var tiles = map.tileArray;
 
       // an array of promises
       var promises = [];
 
       // loop through the tiles and build an delete promise for each tile
-      tileIds.forEach(function(tileId) {
-        // console.log("removing... ", tileId);
+      tiles.forEach(function(tile) {
+        var tileId = map.mapProvider + "/" + tile;
         var promise = localforage.removeItem(tileId);
         promises.push(promise);
       });
