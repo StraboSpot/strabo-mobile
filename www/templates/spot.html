@@ -168,7 +168,7 @@
         </div>
       </div>
       <button ng-click="cameraModal()" class="button button-small icon-left ion-camera">Add Photo</button>
-
+      <br><br>
       <div class="item item-divider">
         Notes
       </div>
@@ -178,21 +178,35 @@
 
       <div ng-show="showLinkToNewOrientation">
         <br>
-        <button ng-click="newOrientation();" class="button button-small icon-left icon ion-link">Link to New Orientation</button>
+        <button ng-click="newOrientation();" class="button button-small icon-left icon ion-link">Add New Orientation</button>
         <br><br>
       </div>
 
       <!-- Related Spots -->
       <div ng-show="showRelatedSpots">
         <div class="item item-divider">
-          Related Spots
+          Links
         </div>
-        <ion-checkbox ng-repeat="item in other_spots"
-                      ng-value="item.value"
-                      ng-checked="spot.properties.related_spots.indexOf(item.value) > -1"
-                      ng-click="toggleSelection(item.value)">
-          {{ item.text }}
-        </ion-checkbox>
+        <div>
+          <br>
+          <button ng-click="linkSpot();" class="button button-small icon-left icon ion-link">Add or Edit Links to Spots</button>
+          <br><br>
+        </div>
+        <ion-list>
+          <ion-item ng-repeat="item in related_spots_selection" href="#/app/spots/{{item.id}}">
+            {{item.name}}
+          </ion-item>
+        </ion-list>
+      </div>
+      <div ng-show="showRelatedSpots">
+        <div class="item item-divider">
+          Groups
+        </div>
+        <div>
+          <br>
+          <button ng-click="linkGroup();" class="button button-small icon-left icon ion-plus-round">Add to a Group</button>
+          <br><br>
+        </div>
       </div>
     </form>
   </ion-content>

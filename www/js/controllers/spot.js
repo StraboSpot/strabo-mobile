@@ -8,6 +8,7 @@ angular.module('app')
     MapView,
     $ionicHistory,
     $ionicPopup,
+    $ionicModal,
     $cordovaGeolocation,
     $cordovaDialogs,
     $cordovaCamera) {
@@ -144,10 +145,6 @@ angular.module('app')
         $scope.point.longitude = 0;
       }
 
-      // Don't show related spots until spot has been saved and id assigned -- Need to fix this
-      if ($scope.spot.properties.id)
-        $scope.showRelatedSpots = true;
-
       // Initially the fields or not
       $scope.show = {
         strike: $scope.spot.properties.spottype == 'Orientation',
@@ -165,13 +162,11 @@ angular.module('app')
         vergence: ($scope.spot.properties.vergence) ? true : false
       };
 
-      if ($scope.spot.properties.spottype == "Contact Outcrop" ||
-        $scope.spot.properties.spottype == "Fault Outcrop" ||
-        $scope.spot.properties.spottype == "Rock Description" ||
-        $scope.spot.properties.spottype == "Sample")
-        $scope.showLinkToNewOrientation = true;
-      else
-        $scope.showLinkToNewOrientation = false;
+      $scope.showLinkToNewOrientation =
+          $scope.spot.properties.spottype == "Contact Outcrop" ||
+          $scope.spot.properties.spottype == "Fault Outcrop" ||
+          $scope.spot.properties.spottype == "Rock Description" ||
+          $scope.spot.properties.spottype == "Sample";
 
       // Create checkbox list of other spots for selection as related spots
       SpotsFactory.all().then(function (spots) {
@@ -180,10 +175,12 @@ angular.module('app')
         spots.forEach(function (obj, i) {
           if ($scope.spot.properties.id != obj.properties.id) {
             $scope.other_spots.push({
-              text: obj.properties.name, value: obj.properties.id
+              name: obj.properties.name, id: obj.properties.id
             });
           }
         });
+        // Don't show related spots until spot has been saved and id assigned -- Need to fix this
+        $scope.showRelatedSpots = $scope.other_spots.length > 0 && $scope.spot.properties.id;
       });
     };
 
@@ -204,16 +201,19 @@ angular.module('app')
     }
 
     // Toggle selection for related spots
-    $scope.toggleSelection = function toggleSelection(other_spot_id) {
-      var idx = $scope.related_spots_selection.indexOf(other_spot_id);
-       // is currently selected
-      if (idx > -1) {
-        $scope.related_spots_selection.splice(idx, 1);
-        $scope.related_spots_unselected.push(other_spot_id);
+    $scope.toggleSelection = function toggleSelection(other_spot) {
+      var selectedSpot = _.find($scope.related_spots_selection, function (sel_spot) {
+        return sel_spot.id === other_spot.id;
+      });
+
+      // If selected spot is not already in the related_spots_selection object
+      if (!selectedSpot) {
+        $scope.related_spots_selection.push(other_spot);
       }
-       // is newly selected
+      // This spot has been unselected so remove it
       else {
-        $scope.related_spots_selection.push(other_spot_id);
+        $scope.related_spots_selection = _.reject($scope.related_spots_selection, function (spot) { return spot.id == other_spot.id });
+        $scope.related_spots_unselected.push(other_spot);
       }
     };
 
@@ -581,33 +581,45 @@ angular.module('app')
       selAndUnSel.forEach(function (obj, i) {
 
         // Get the related spot
-        var related_spot = _.filter($scope.spots, function (spot) {
-          return spot.properties.id === obj;
-        })[0];
+         var related_spot = _.find($scope.spots, function (spot) {
+           return spot.properties.id === obj.id;
+         });
 
-        // If obj in selected related spots array
-        var idx = $scope.related_spots_selection.indexOf(obj);
-        if (idx > -1) {
+        // If obj in selected related spots object
+        var inSelected = _.find($scope.related_spots_selection, function (selected) {
+          return selected.id === obj.id;
+        });
+        if (inSelected) {
           // Add id for related spot to this spot
-          if ($scope.spot.properties.related_spots.indexOf(obj) == -1)
+          var inRelated = _.find($scope.spot.properties.related_spots, function (rel_spot) {
+            return rel_spot.id === obj.id;
+          });
+          if (!inRelated)
             $scope.spot.properties.related_spots.push(obj);
 
           // Add id for this spot to related spot
           if (!related_spot.properties.related_spots)
             related_spot.properties.related_spots = [];
-          if (related_spot.properties.related_spots.indexOf($scope.spot.properties.id) == -1)
-            related_spot.properties.related_spots.push($scope.spot.properties.id);
+          var inverseRelated = _.find(related_spot.properties.related_spots, function (rel_spot) {
+            return rel_spot.id === $scope.spot.properties.id;
+          });
+          if (!inverseRelated)
+            related_spot.properties.related_spots.push({name: $scope.spot.properties.name, id: $scope.spot.properties.id});
         }
-        // If obj is in unselected related spots array
-        idx = $scope.related_spots_unselected.indexOf(obj);
-        if (idx > -1) {
+        // If obj is in unselected related spots object
+        else {
           // Remove id for this spot from related spot
-          if (related_spot.properties.related_spots)
-            if (related_spot.properties.related_spots.indexOf($scope.spot.properties.id) > -1) {
-              related_spot.properties.related_spots.splice(related_spot.properties.related_spots.indexOf($scope.spot.properties.id), 1);
+          if (related_spot.properties.related_spots) {
+            var inverseRelated = _.find(related_spot.properties.related_spots, function (rel_spot) {
+              return rel_spot.id === $scope.spot.properties.id;
+            });
+            if (inverseRelated) {
+              related_spot.properties.related_spots = _.reject(related_spot.properties.related_spots, function (spot) {
+                return spot.id === $scope.spot.properties.id; });
               if (related_spot.properties.related_spots.length == 0)
                 delete related_spot.properties.related_spots;
             }
+          }
         }
 
         // Save the related spot
@@ -657,4 +669,57 @@ angular.module('app')
       NewSpot.setNewSpot($scope.newOrientation);
       $location.path(href="/app/spots/newspot");
     };
+
+    // Is the other_spot is this spots related_spots list?
+    $scope.isChecked = function (id) {
+      var isRelated = _.find($scope.spot.properties.related_spots, function (rel_spot) {
+        return rel_spot.id === id;
+      });
+      return isRelated;
+    };
+
+    $scope.linkSpot = function() {
+      NewSpot.setNewSpot($scope.spot);
+      $scope.openModal("linkModal");
+    };
+
+    $scope.linkGroup = function() {
+      NewSpot.setNewSpot($scope.spot);
+      $scope.openModal("groupModal");
+    };
+
+    /////////////////
+    // MODALS
+    /////////////////
+
+    $ionicModal.fromTemplateUrl('templates/modals/linkModal.html', {
+      scope: $scope,
+      animation: 'slide-in-up'
+    }).then(function(modal) {
+      $scope.linkModal = modal;
+    });
+
+    $ionicModal.fromTemplateUrl('templates/modals/groupModal.html', {
+      scope: $scope,
+      animation: 'slide-in-up'
+    }).then(function(modal) {
+      $scope.groupModal = modal;
+    });
+
+    $scope.openModal = function(modal) {
+      $scope[modal].show();
+    };
+
+    $scope.closeModal = function(modal) {
+      $scope[modal].hide();
+    };
+
+    //Cleanup the modal when we're done with it!
+    // Execute action on hide modal
+    $scope.$on('linkModal.hidden', function() {
+      $scope.linkModal.remove();
+    });
+    $scope.$on('groupModal.hidden', function() {
+      $scope.groupModal.remove();
+    });
   });
