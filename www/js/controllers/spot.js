@@ -411,60 +411,45 @@ angular.module('app')
         if ($scope.show.hasOwnProperty(property)) {
           // is it hidden?
           if ($scope.show[property] === false) {
-            // yes, the nullify the property value
+            // yes, then nullify the property value
             $scope.spot.properties[property] = undefined;
           }
         }
       }
     };
 
+    // finds the property in the scope[property].relevant to see if the value exists
+    var wasPropertyFound = function(property) {
+      var thePropertyFound = _.find(_.pluck($scope[property].relevant, 'value'), function(feature) {
+        return feature == $scope.spot.properties.feature_type;
+      });
+
+      if (thePropertyFound)
+        return true;
+      else
+        return false;
+    };
+
     $scope.onChange = {
       feature: function() {
         console.log("feature, ", $scope.spot.properties.feature_type);
 
-        var shouldShowStrike = _.find(_.pluck($scope.strike.relevant, 'value'), function(feature) {
-          return feature == $scope.spot.properties.feature_type;
-        });
-        $scope.show.strike = (shouldShowStrike) ? true : false;
+        $scope.show.strike = wasPropertyFound('strike');
+        $scope.show.dip = wasPropertyFound('dip');
+        $scope.show.trend = wasPropertyFound('trend');
+        $scope.show.plunge = wasPropertyFound('plunge');
+        $scope.show.fold_type = wasPropertyFound('fold_type');
 
-        var shouldShowDip = _.find(_.pluck($scope.dip.relevant, 'value'), function(feature) {
-          return feature == $scope.spot.properties.feature_type;
-        });
-        $scope.show.dip = (shouldShowDip) ? true : false;
-
-        var shouldShowTrend = _.find(_.pluck($scope.trend.relevant, 'value'), function(feature) {
-          return feature == $scope.spot.properties.feature_type;
-        });
-        $scope.show.trend = (shouldShowTrend) ? true : false;
-
-        var shouldShowPlunge = _.find(_.pluck($scope.plunge.relevant, 'value'), function(feature) {
-          return feature == $scope.spot.properties.feature_type;
-        });
-        $scope.show.plunge = (shouldShowPlunge) ? true : false;
-
-        var shouldShowFoldType = _.find(_.pluck($scope.fold_type.relevant, 'value'), function(feature) {
-          return feature == $scope.spot.properties.feature_type;
-        });
-        $scope.show.fold_type = (shouldShowFoldType) ? true : false;
         if ($scope.show.fold_type && !$scope.spot.properties.fold_type)
           $scope.spot.properties.fold_type = $scope.fold_type.default;
 
-        var shouldShowFoldDetail = _.find(_.pluck($scope.fold_detail.relevant, 'value'), function(feature) {
-          return feature == $scope.spot.properties.feature_type;
-        });
-        $scope.show.fold_detail = (shouldShowFoldDetail) ? true : false;
+        $scope.show.fold_detail = wasPropertyFound('fold_detail');
+
         if ($scope.show.fold_detail && !$scope.spot.properties.fold_detail)
           $scope.spot.properties.fold_detail = $scope.fold_detail.default;
 
-        var shouldShowPlaneFacing = _.find(_.pluck($scope.plane_facing.relevant, 'value'), function(feature) {
-          return feature == $scope.spot.properties.feature_type;
-        });
-        $scope.show.plane_facing = (shouldShowPlaneFacing) ? true : false;
-
-        var shouldShowDirected = _.find(_.pluck($scope.directed.relevant, 'value'), function(feature) {
-          return feature == $scope.spot.properties.feature_type;
-        });
-        $scope.show.directed = (shouldShowDirected) ? true : false;
+        $scope.show.plane_facing = wasPropertyFound('plane_facing');
+        $scope.show.directed = wasPropertyFound('directed');
 
         resetValues();
       },
