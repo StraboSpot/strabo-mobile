@@ -62,7 +62,7 @@
 
           <!-- Feature Type -->
           <label class="item item-input item-select" ng-show="showFeatureType">
-            <span class="input-label">Feature Type</span>
+            <span class="input-label">{{feature_type.label}}</span>
             <select ng-model="spot.properties.feature_type"
                     ng-options="item.value as item.text for item in feature_type.choices | orderBy:'text'"
                     ng-change="onChange.feature()"></select>
@@ -154,6 +154,50 @@
         </div>
       </div>
 
+      <!-- GROUPING -->
+      <div ng-show="showGroupFields">
+        <!-- Group Relationship Condition -->
+        <label class="item item-input item-select">
+          <span class="input-label">{{group_relationship.label}}<small>{{group_relationship.hint}}</small></span>
+          <select ng-model="spot.properties.group_relationship"
+                  ng-options="item.value as item.text for item in group_relationship.choices | orderBy:'text'"></select>
+        </label>
+        <div class="row responsive-md">
+          <div class="col">
+            <label class="item item-input">
+              <span class="input-label">Group Label</span>
+              <input type="text" placeholder="What is the group label?" ng-model="spot.properties.group_label">
+            </label>
+            <!-- Larger Structure is A -->
+            <label class="item item-input item-select">
+              <span class="input-label">{{larger_structure.label}}</small></span>
+              <select ng-model="spot.properties.larger_structure"
+                      ng-options="item.value as item.text for item in larger_structure.choices | orderBy:'text'"></select>
+            </label>
+          </div>
+          <div class="col">
+            <label class="item item-input">
+              <span class="input-label">Age</span>
+              <input type="text" placeholder="Do you know the age?" ng-model="spot.properties.group_age">
+            </label>
+
+            <label class="item item-input">
+              <span class="input-label">Grouping Custom Condition</span>
+              <input type="text" placeholder="Define a new condition for grouping." ng-model="spot.properties.group_custom_condition">
+            </label>
+          </div>
+        </div>
+        <div ng-show="showGroupMembers">
+          <div class="item item-divider">
+            Group Members
+          </div>
+          <ion-list>
+            <ion-item ng-repeat="item in groups_selection" href="#/app/spots/{{item.id}}">
+              {{item.name}}
+            </ion-item>
+          </ion-list>
+        </div>
+      </div>
       <!-- Images -->
       <div class="item item-divider">
         Photos
@@ -183,30 +227,40 @@
       </div>
 
       <!-- Related Spots -->
-      <div ng-show="showRelatedSpots">
+      <div ng-show="showLinks">
         <div class="item item-divider">
           Links
         </div>
         <div>
           <br>
-          <button ng-click="linkSpot();" class="button button-small icon-left icon ion-link">Add or Edit Links to Spots</button>
+          <button ng-click="linkSpot();" class="button button-small icon-left icon ion-link">Add or Edit Links to Other Spots</button>
           <br><br>
         </div>
         <ion-list>
-          <ion-item ng-repeat="item in related_spots_selection" href="#/app/spots/{{item.id}}">
-            {{item.name}}
+          <ion-item ng-repeat="item in related_spots_selection">
+            <a href="#/app/spots/{{item.id}}"> {{item.name}} </a>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <select ng-model="link_condition"
+                    ng-options="condition.text for condition in link_relationship.choices"
+                    ng-change="setLinkRelationship(item, link_condition)"></select>
+            &nbsp;&nbsp; {{ spot.properties.name }}
           </ion-item>
         </ion-list>
       </div>
-      <div ng-show="showRelatedSpots">
+      <div ng-show="showGroups">
         <div class="item item-divider">
           Groups
         </div>
         <div>
           <br>
-          <button ng-click="linkGroup();" class="button button-small icon-left icon ion-plus-round">Add to a Group</button>
+          <button ng-click="linkGroup();" class="button button-small icon-left icon ion-plus-round">Add or Edit Membership in Groups</button>
           <br><br>
         </div>
+        <ion-list>
+          <ion-item ng-repeat="item in groups_selection" href="#/app/spots/{{item.id}}">
+            {{item.name}}
+          </ion-item>
+        </ion-list>
       </div>
     </form>
   </ion-content>

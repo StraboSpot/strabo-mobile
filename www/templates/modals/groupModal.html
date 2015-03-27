@@ -4,6 +4,11 @@
     <div class="button button-clear" ng-click="closeModal('groupModal')"><span class="icon ion-close"></span></div>
   </ion-header-bar>
   <ion-content>
-    Checkbox list with only spots which have spotttype "Group"
+    <ion-checkbox ng-repeat="item in groups"
+                  ng-value="item"
+                  ng-checked="isGroupChecked(item.id)"
+                  ng-click="toggleGroupSelection(item)">
+      {{ item.name }}
+    </ion-checkbox>
   </ion-content>
 </ion-modal-view>

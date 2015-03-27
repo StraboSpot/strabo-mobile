@@ -31,7 +31,8 @@ angular.module('app')
     { type: "Hinge Surface Trace", template: "commonfields" },
     { type: "Notes", template: "commonfields" },
     { type: "Orientation", template: "newspot" },
-    { type: "Rock Description", template: "commonfields" }
+    { type: "Rock Description", template: "commonfields" },
+    { type: "Grouping", template: "commonfields" }
   ];
 
   // a geojson template we pass in when creating a new spot from the spot menu

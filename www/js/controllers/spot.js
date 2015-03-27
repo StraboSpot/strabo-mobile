@@ -114,6 +114,14 @@ angular.module('app')
         });
       }
 
+      $scope.groups_selection = [];
+      $scope.groups_unselected = [];
+      if ($scope.spot.properties.groups && typeof($scope.spot.properties.groups) == "object") {
+        $scope.spot.properties.groups.forEach(function (obj, i) {
+          $scope.groups_selection.push(obj);
+        });
+      }
+
       if ($scope.spot.properties.spottype == "Orientation") {
         $scope.showFeatureType = true;
         $scope.showOrientation_quality = true;
@@ -126,6 +134,11 @@ angular.module('app')
         }
         if (!$scope.spot.properties.orientation_quality)
           $scope.spot.properties.orientation_quality = "accurate";
+      }
+      else if ($scope.spot.properties.spottype == "Grouping") {
+        $scope.showGroupFields = true;
+        if ($scope.spot.properties.groups)
+          $scope.showGroupMembers = true;
       }
 
       // If current spot is a point
@@ -172,15 +185,22 @@ angular.module('app')
       SpotsFactory.all().then(function (spots) {
         $scope.spots = spots;
         $scope.other_spots = [];
+        $scope.groups = [];
         spots.forEach(function (obj, i) {
           if ($scope.spot.properties.id != obj.properties.id) {
             $scope.other_spots.push({
               name: obj.properties.name, id: obj.properties.id
             });
+            if (obj.properties.spottype == "Grouping") {
+              $scope.groups.push({
+                name: obj.properties.name, id: obj.properties.id
+              });
+            }
           }
         });
         // Don't show related spots until spot has been saved and id assigned -- Need to fix this
-        $scope.showRelatedSpots = $scope.other_spots.length > 0 && $scope.spot.properties.id;
+        $scope.showLinks = $scope.other_spots.length > 0 && $scope.spot.properties.id;
+        $scope.showGroups = $scope.groups.length > 0 && $scope.spot.properties.id;
       });
     };
 
@@ -217,11 +237,29 @@ angular.module('app')
       }
     };
 
+    // Toggle selection for groups
+    $scope.toggleGroupSelection = function toggleSelection(group) {
+      var selectedSpot = _.find($scope.groups_selection, function (sel_spot) {
+        return sel_spot.id === group.id;
+      });
+
+      // If selected spot is not already in the related_spots_selection object
+      if (!selectedSpot) {
+        $scope.groups_selection.push(group);
+      }
+      // This spot has been unselected so remove it
+      else {
+        $scope.groups_selection = _.reject($scope.groups_selection, function (spot) { return spot.id == group.id });
+        $scope.groups_unselected.push(group);
+      }
+    };
+
     // ********************
     // * Data Fields
     // ********************
 
     $scope.feature_type = {
+      label: "Feature Type",
       choices: [
         { text: 'bedding', value: 'bedding' },
         { text: 'flow layering', value: 'flow_layering' },
@@ -387,6 +425,54 @@ angular.module('app')
         { field: 'feature_type', value: 'fold_hinge' },
         { field: 'feature_type', value: 'fault_plane' },
         { field: 'feature_type', value: 'axial_surface' }
+      ]
+    };
+
+    /////////////////
+    // SPOT GROUPING
+    /////////////////
+
+    $scope.group_relationship = {
+      label: "What do the elements of this group have in common?",
+      choices: [
+        { text: 'other', value: 'other' },
+        { text: 'feature type', value: 'feature_type' },
+        { text: 'part of larger structure', value: 'larger_structure' },
+        { text: 'age', value: 'age' },
+        { text: 'location', value: 'location' },
+        { text: 'part of the same process or event', value: 'process' }
+      ],
+      required: true,
+      hint: "(How are these data similar?)"
+    };
+
+    $scope.larger_structure = {
+      label: "Larger structure is a:",
+      choices: [
+        { text: 'fault', value: 'fault' },
+        { text: 'fold', value: 'fold' },
+        { text: 'shear zone', value: 'shear_zone' },
+        { text: 'intrusive body', value: 'intrusive_body' },
+        { text: 'other', value: 'other' }
+      ],
+      required: true
+    };
+
+    /////////////////
+    // LINK
+    /////////////////
+
+    $scope.link_relationship = {
+      choices: [
+        { text: 'cross-cuts', relationship: 'cross_cuts', inverse: 'is_cross_cut_by' },
+        { text: 'is cross-cut by', relationship: 'is_cross_cut_by', inverse: 'cross_cuts' },
+        { text: 'is younger than', relationship: 'is_younger_than', inverse: 'is_older_than' },
+        { text: 'is older than', relationship: 'is_older_than', inverse: 'is_younger_than' },
+        { text: 'is a lower metamorphic grade than', relationship: 'is_a_lower_metamorphic_grade_than', inverse: 'is_a_higher_metamorphic_grade_than' },
+        { text: 'is a higher metamorphic grade than', relationship: 'is_a_higher_metamorphic_grade_than', inverse: 'is_a_lower_metamorphic_grade_tha' },
+        { text: 'is included within', relationship: 'is_included_within', inverse: 'includes' },
+        { text: 'includes', relationship: 'is_included_within', inverse: 'is_included_within' },
+        { text: 'is otherwise related to', relationship: 'is_otherwise_related_to', inverse: 'is otherwise related to' }
       ]
     };
 
@@ -621,6 +707,64 @@ angular.module('app')
             }
           }
         }
+        // Save the related spot
+        SpotsFactory.save(related_spot, related_spot.properties.id).then(function(data){
+          console.log("updated", data);
+        });
+      });
+
+      // Add or remove ids for related spots
+      if ($scope.spot.properties.groups)
+        delete $scope.spot.properties.groups;
+      if ($scope.groups_selection.length > 0)
+        $scope.spot.properties.groups = [];
+
+      // Get all selected and unselected groups
+      var selAndUnSelGroups = _.union($scope.groups_selection, $scope.groups_unselected);
+      selAndUnSelGroups.forEach(function (obj, i) {
+
+        // Get the group
+        var related_spot = _.find($scope.spots, function (spot) {
+          return spot.properties.id === obj.id;
+        });
+
+        // If obj in selected related spots object
+        var inSelected = _.find($scope.groups_selection, function (selected) {
+          return selected.id === obj.id;
+        });
+        if (inSelected) {
+          // Add id for related spot to this spot
+          var inRelated = _.find($scope.spot.properties.groups, function (rel_spot) {
+            return rel_spot.id === obj.id;
+          });
+          if (!inRelated)
+            $scope.spot.properties.groups.push(obj);
+
+          // Add id for this spot to related spot
+          if (!related_spot.properties.groups)
+            related_spot.properties.groups = [];
+          var inverseRelated = _.find(related_spot.properties.groups, function (rel_spot) {
+            return rel_spot.id === $scope.spot.properties.id;
+          });
+          if (!inverseRelated)
+            related_spot.properties.groups.push({name: $scope.spot.properties.name, id: $scope.spot.properties.id});
+        }
+        // If obj is in unselected related spots object
+        else {
+          // Remove id for this spot from related spot
+          if (related_spot.properties.groups) {
+            var inverseRelated = _.find(related_spot.properties.groups, function (rel_spot) {
+              return rel_spot.id === $scope.spot.properties.id;
+            });
+            if (inverseRelated) {
+              related_spot.properties.groups = _.reject(related_spot.properties.groups, function (spot) {
+                return spot.id === $scope.spot.properties.id;
+              });
+              if (related_spot.properties.groups.length == 0)
+                delete related_spot.properties.groups;
+            }
+          }
+        }
 
         // Save the related spot
         SpotsFactory.save(related_spot, related_spot.properties.id).then(function(data){
@@ -672,15 +816,24 @@ angular.module('app')
 
     // Is the other_spot is this spots related_spots list?
     $scope.isChecked = function (id) {
-      var isRelated = _.find($scope.spot.properties.related_spots, function (rel_spot) {
+      return _.find($scope.spot.properties.related_spots, function (rel_spot) {
         return rel_spot.id === id;
       });
-      return isRelated;
+    };
+
+    $scope.isGroupChecked = function (id) {
+      return _.find($scope.spot.properties.groups, function (rel_spot) {
+        return rel_spot.id === id;
+      });
     };
 
     $scope.linkSpot = function() {
       NewSpot.setNewSpot($scope.spot);
       $scope.openModal("linkModal");
+    };
+
+    $scope.setLinkRelationship = function(item, condition) {
+      // need to save relationship and inverse to this related spot
     };
 
     $scope.linkGroup = function() {
