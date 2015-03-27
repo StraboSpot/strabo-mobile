@@ -833,12 +833,16 @@ angular.module('app')
     };
 
     $scope.setLinkRelationship = function(item, condition) {
-      // need to save relationship and inverse to this related spot
+      alert("This doesn't do anything yet.")
     };
 
     $scope.linkGroup = function() {
       NewSpot.setNewSpot($scope.spot);
       $scope.openModal("groupModal");
+    };
+
+    $scope.addGroupMember = function () {
+      alert("This doesn't do anything yet.")
     };
 
     /////////////////
