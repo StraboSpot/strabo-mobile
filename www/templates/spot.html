@@ -250,12 +250,15 @@
         </div>
         <ion-list>
           <ion-item ng-repeat="item in related_spots_selection">
-            <a href="#/app/spots/{{item.id}}"> {{item.name}} </a>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ item.relationship }}&nbsp;<b>{{ spot.properties.name }}</b>
-            &nbsp;&nbsp; -- &nbsp;&nbsp; Edit relationship:
+            <a href="#/app/spots/{{item.id}}" style="text-decoration:none"> <b>{{item.name}}</b> </a>
+            &nbsp;&nbsp;&nbsp;&nbsp;{{ item.relationship }}
+            &nbsp;&nbsp;&nbsp;&nbsp;<b>{{ spot.properties.name }}</b>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <select ng-model="relationship"
-                    ng-options="link_relationships.text for link_relationships in link_relationship.choices"
-                    ng-change="setLinkRelationship(item, relationship)"></select>
+                    ng-options="link_relationships.type for link_relationships in link_relationship.choices"
+                    ng-change="setLinkRelationship(item, relationship)">
+              <option value="">-- select a relationship --</option>
+            </select>
           </ion-item>
         </ion-list>
       </div>

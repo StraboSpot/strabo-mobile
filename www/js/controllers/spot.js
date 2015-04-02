@@ -461,7 +461,7 @@ angular.module('app')
     /////////////////
     // LINK
     /////////////////
-
+/*
     $scope.link_relationship = {
       choices: [
         { text: 'cross-cuts', value: 'cross_cuts', inverse: 'is_cross_cut_by' },
@@ -473,6 +473,20 @@ angular.module('app')
         { text: 'is included within', value: 'is_included_within', inverse: 'includes' },
         { text: 'includes', value: 'includes', inverse: 'is_included_within' },
         { text: 'is otherwise related to', value: 'is_otherwise_related_to', inverse: 'is_otherwise_related_to' }
+      ]
+    };*/
+
+    $scope.link_relationship = {
+      choices: [
+        { type: 'cross-cuts', inverse: 'is cross cut by' },
+        { type: 'is cross-cut by', inverse: 'cross cuts' },
+        { type: 'is younger than', inverse: 'is older than' },
+        { type: 'is older than', inverse: 'is younger than' },
+        { type: 'is a lower metamorphic grade than', inverse: 'is a higher metamorphic grade than' },
+        { type: 'is a higher metamorphic grade than', inverse: 'is a lower metamorphic grade than' },
+        { type: 'is included within',inverse: 'includes' },
+        { type: 'includes', inverse: 'is included within' },
+        { type: 'is otherwise related to', inverse: 'is otherwise related to' }
       ]
     };
 
@@ -659,8 +673,8 @@ angular.module('app')
       // Add or update related spots from checked spots
       $scope.related_spots_selection.forEach(function (obj, i) {
 
-        // If a link relationship was not selected mark as "is_otherwise_related_to"
-        obj["relationship"] = obj.relationship ? obj.relationship : "is_otherwise_related_to";
+        // If a link relationship was not selected mark as "is otherwise related to"
+        obj["relationship"] = obj.relationship ? obj.relationship : "is otherwise related to";
 
         // Remove the link reference from the link references for this spot, if it exists
         $scope.spot.properties.related_spots = _.reject($scope.spot.properties.related_spots, function (ref) {
@@ -670,7 +684,7 @@ angular.module('app')
         $scope.spot.properties.related_spots.push(obj);
 
         var link_relationship_inverse = _.findWhere($scope.link_relationship.choices,
-          { value: obj.relationship }).inverse;
+          { type: obj.relationship }).inverse;
 
         // Get the linked spot
         var linked_spot = _.filter($scope.spots, function(item) {
@@ -841,7 +855,7 @@ angular.module('app')
       var related_spot = _.find($scope.related_spots_selection, function (rel_spot) {
         return rel_spot.id === item.id;
       });
-      related_spot['relationship'] = relationship.value;
+      related_spot['relationship'] = relationship.type;
     };
 
     $scope.linkGroup = function() {
