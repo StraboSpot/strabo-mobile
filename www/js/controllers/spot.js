@@ -105,20 +105,20 @@ angular.module('app')
       $scope.spot.properties.date = new Date($scope.spot.properties.date);
       $scope.spot.properties.time = new Date($scope.spot.properties.time);
 
-      // Push spots from related_spots into selected and unselected arrays so we know which checkboxes to turn on
-      $scope.related_spots_selection = [];
-      $scope.related_spots_unselected = [];
-      if ($scope.spot.properties.related_spots && typeof($scope.spot.properties.related_spots) == "object") {
-        $scope.spot.properties.related_spots.forEach(function (obj, i) {
-          $scope.related_spots_selection.push(obj);
+      // Push spots from linked spots list into selected and unselected arrays so we know which checkboxes to turn on
+      $scope.links_selected = [];
+      $scope.links_unselected = [];
+      if ($scope.spot.properties.links && typeof($scope.spot.properties.links) == "object") {
+        $scope.spot.properties.links.forEach(function (obj, i) {
+          $scope.links_selected.push(obj);
         });
       }
 
-      $scope.groups_selection = [];
+      $scope.groups_selected = [];
       $scope.groups_unselected = [];
       if ($scope.spot.properties.groups && typeof($scope.spot.properties.groups) == "object") {
         $scope.spot.properties.groups.forEach(function (obj, i) {
-          $scope.groups_selection.push(obj);
+          $scope.groups_selected.push(obj);
         });
       }
 
@@ -181,7 +181,7 @@ angular.module('app')
           $scope.spot.properties.spottype == "Rock Description" ||
           $scope.spot.properties.spottype == "Sample";
 
-      // Create checkbox list of other spots for selection as related spots
+      // Create checkbox list of other spots for selected as related spots
       SpotsFactory.all().then(function (spots) {
         $scope.spots = spots;
         $scope.other_spots = [];
@@ -220,37 +220,21 @@ angular.module('app')
       });
     }
 
-    // Toggle selection for related spots
-    $scope.toggleSelection = function toggleSelection(other_spot) {
-      var selectedSpot = _.find($scope.related_spots_selection, function (sel_spot) {
-        return sel_spot.id === other_spot.id;
-      });
-
-      // If selected spot is not already in the related_spots_selection object
-      if (!selectedSpot) {
-        $scope.related_spots_selection.push(other_spot);
+    // Toggle selected for links or groups selected
+    $scope.toggleSelection = function toggleSelection(ref_spot, type_selected, type_unselected) {
+   /*   var selected_spot = _.find($scope.links_selected, function (sel_spot) {
+    return sel_spot.id === linked_spot.id;
+    });
+*/
+      var selected_spot = _.findWhere($scope[type_selected], { id: ref_spot.id });
+      // If selected spot is not already in the links_selected object
+      if (!selected_spot) {
+        $scope[type_selected].push(ref_spot);
       }
       // This spot has been unselected so remove it
       else {
-        $scope.related_spots_selection = _.reject($scope.related_spots_selection, function (spot) { return spot.id == other_spot.id });
-        $scope.related_spots_unselected.push(other_spot);
-      }
-    };
-
-    // Toggle selection for groups
-    $scope.toggleGroupSelection = function toggleSelection(group) {
-      var selectedSpot = _.find($scope.groups_selection, function (sel_spot) {
-        return sel_spot.id === group.id;
-      });
-
-      // If selected spot is not already in the related_spots_selection object
-      if (!selectedSpot) {
-        $scope.groups_selection.push(group);
-      }
-      // This spot has been unselected so remove it
-      else {
-        $scope.groups_selection = _.reject($scope.groups_selection, function (spot) { return spot.id == group.id });
-        $scope.groups_unselected.push(group);
+        $scope[type_selected] = _.reject($scope[type_selected], function (spot) { return spot.id == ref_spot.id });
+        $scope[type_unselected].push(ref_spot);
       }
     };
 
@@ -459,22 +443,8 @@ angular.module('app')
     };
 
     /////////////////
-    // LINK
+    // LINKS
     /////////////////
-/*
-    $scope.link_relationship = {
-      choices: [
-        { text: 'cross-cuts', value: 'cross_cuts', inverse: 'is_cross_cut_by' },
-        { text: 'is cross-cut by', value: 'is_cross_cut_by', inverse: 'cross_cuts' },
-        { text: 'is younger than', value: 'is_younger_than', inverse: 'is_older_than' },
-        { text: 'is older than', value: 'is_older_than', inverse: 'is_younger_than' },
-        { text: 'is a lower metamorphic grade than', value: 'is_a_lower_metamorphic_grade_than', inverse: 'is_a_higher_metamorphic_grade_than' },
-        { text: 'is a higher metamorphic grade than', value: 'is_a_higher_metamorphic_grade_than', inverse: 'is_a_lower_metamorphic_grade_tha' },
-        { text: 'is included within', value: 'is_included_within', inverse: 'includes' },
-        { text: 'includes', value: 'includes', inverse: 'is_included_within' },
-        { text: 'is otherwise related to', value: 'is_otherwise_related_to', inverse: 'is_otherwise_related_to' }
-      ]
-    };*/
 
     $scope.link_relationship = {
       choices: [
@@ -523,11 +493,7 @@ angular.module('app')
       var thePropertyFound = _.find(_.pluck($scope[property].relevant, 'value'), function(feature) {
         return feature == $scope.spot.properties.feature_type;
       });
-
-      if (thePropertyFound)
-        return true;
-      else
-        return false;
+      return thePropertyFound;
     };
 
     $scope.onChange = {
@@ -670,33 +636,41 @@ angular.module('app')
         $scope.spot.geometry.coordinates[0] = $scope.point.longitude;
       }
 
-      // Add or update related spots from checked spots
-      $scope.related_spots_selection.forEach(function (obj, i) {
+      // Remove references from links or groups
+      var cleanRefs = function (ref_type, id) {
+        // Remove the link reference from the link references for this spot, if it exists
+        $scope.spot.properties[ref_type] = _.reject($scope.spot.properties[ref_type], function (ref) {
+          return ref.id == id;
+        });
+
+        // Get the linked spot or group
+        var reference = _.filter($scope.spots, function(item) {
+          return _.findWhere(item, { id: id });
+        })[0];
+
+        // Remove the link reference to this spot from the link spot, if it exists
+        reference.properties[ref_type] = _.reject(reference.properties[ref_type], function (ref) {
+          return ref.id == $scope.spot.properties.id;
+        });
+        return reference;
+      };
+
+      // Add or update linked spots from checked spots
+      $scope.links_selected.forEach(function (obj, i) {
+        // Remove link references for this obj from this spot and the linked spot
+        var linked_spot = cleanRefs("links", obj.id);
 
         // If a link relationship was not selected mark as "is otherwise related to"
         obj["relationship"] = obj.relationship ? obj.relationship : "is otherwise related to";
 
-        // Remove the link reference from the link references for this spot, if it exists
-        $scope.spot.properties.related_spots = _.reject($scope.spot.properties.related_spots, function (ref) {
-          return ref.id == obj.id;
-        });
-        //Add the new/updated link reference to the link references for this spot
-        $scope.spot.properties.related_spots.push(obj);
+        // Add the new/updated link reference to the link references for this spot
+        $scope.spot.properties.links.push(obj);
 
         var link_relationship_inverse = _.findWhere($scope.link_relationship.choices,
           { type: obj.relationship }).inverse;
 
-        // Get the linked spot
-        var linked_spot = _.filter($scope.spots, function(item) {
-          return _.findWhere(item, { id: obj.id });
-        })[0];
-
-        // Remove the link reference to this spot from the link spot, if it exists
-        linked_spot.properties.related_spots = _.reject(linked_spot.properties.related_spots, function (ref) {
-          return ref.id == $scope.spot.properties.id;
-        });
-        //Add the new/updated link reference to the link references for the linked spot
-        linked_spot.properties.related_spots.push({
+        // Add the new/updated link reference to the link references for the linked spot
+        linked_spot.properties.links.push({
           name: $scope.spot.properties.name,
           id: $scope.spot.properties.id,
           relationship: link_relationship_inverse
@@ -708,23 +682,10 @@ angular.module('app')
         });
       });
 
-      // Remove unchecked spots from related spots
-      $scope.related_spots_unselected.forEach(function (obj, i) {
-
-        // Remove the link reference from the link references for this spot, if it exists
-        $scope.spot.properties.related_spots = _.reject($scope.spot.properties.related_spots, function (ref) {
-          return ref.id == obj.id;
-        });
-
-        // Get the linked spot
-        var linked_spot = _.filter($scope.spots, function(item) {
-          return _.findWhere(item, { id: obj.id });
-        })[0];
-
-        // Remove the link reference to this spot from the link spot, if it exists
-        linked_spot.properties.related_spots = _.reject(linked_spot.properties.related_spots, function (ref) {
-          return ref.id == $scope.spot.properties.id;
-        });
+      // Remove unchecked spots from linked spots
+      $scope.links_unselected.forEach(function (obj, i) {
+        // Remove link references for this obj from this spot and the linked spot
+        var linked_spot = cleanRefs("links", obj.id);
 
         // Save the linked spot
         SpotsFactory.save(linked_spot, linked_spot.properties.id).then(function(data){
@@ -732,66 +693,38 @@ angular.module('app')
         });
       });
 
-      // Add or remove ids for related spots
-      if ($scope.spot.properties.groups)
-        delete $scope.spot.properties.groups;
-      if ($scope.groups_selection.length > 0)
-        $scope.spot.properties.groups = [];
+      // Add or update the groups for this spot
+      $scope.groups_selected.forEach(function (obj, i) {
+        // Remove this obj from the group
+        var group = cleanRefs("groups", obj.id);
 
-      // Get all selected and unselected groups
-      var selAndUnSelGroups = _.union($scope.groups_selection, $scope.groups_unselected);
-      selAndUnSelGroups.forEach(function (obj, i) {
+        // Add the new/updated group reference to the group references for this spot
+        $scope.spot.properties.groups.push(obj);
 
-        // Get the group
-        var related_spot = _.find($scope.spots, function (spot) {
-          return spot.properties.id === obj.id;
+        // Add the new/updated spot reference to the group references for this group
+        group.properties.groups.push({
+          name: $scope.spot.properties.name,
+          id: $scope.spot.properties.id
         });
 
-        // If obj in selected related spots object
-        var inSelected = _.find($scope.groups_selection, function (selected) {
-          return selected.id === obj.id;
-        });
-        if (inSelected) {
-          // Add id for related spot to this spot
-          var inRelated = _.find($scope.spot.properties.groups, function (rel_spot) {
-            return rel_spot.id === obj.id;
-          });
-          if (!inRelated)
-            $scope.spot.properties.groups.push(obj);
-
-          // Add id for this spot to related spot
-          if (!related_spot.properties.groups)
-            related_spot.properties.groups = [];
-          var inverseRelated = _.find(related_spot.properties.groups, function (rel_spot) {
-            return rel_spot.id === $scope.spot.properties.id;
-          });
-          if (!inverseRelated)
-            related_spot.properties.groups.push({name: $scope.spot.properties.name, id: $scope.spot.properties.id});
-        }
-        // If obj is in unselected related spots object
-        else {
-          // Remove id for this spot from related spot
-          if (related_spot.properties.groups) {
-            var inverseRelated = _.find(related_spot.properties.groups, function (rel_spot) {
-              return rel_spot.id === $scope.spot.properties.id;
-            });
-            if (inverseRelated) {
-              related_spot.properties.groups = _.reject(related_spot.properties.groups, function (spot) {
-                return spot.id === $scope.spot.properties.id;
-              });
-              if (related_spot.properties.groups.length == 0)
-                delete related_spot.properties.groups;
-            }
-          }
-        }
-
-        // Save the related spot
-        SpotsFactory.save(related_spot, related_spot.properties.id).then(function(data){
-          console.log("updated", data);
+        // Save the group
+        SpotsFactory.save(group, group.properties.id).then(function(data){
+          console.log("updated inverse group spot", data);
         });
       });
 
-      // save the spot -- if the id is defined, we overwrite existing id; otherwise create new id/spot
+      // Remove unchecked spots from group
+      $scope.groups_unselected.forEach(function (obj, i) {
+        // Remove group references for this obj from this spot and the group
+        var group = cleanRefs("groups", obj.id);
+
+        // Save the group
+        SpotsFactory.save(group, group.properties.id).then(function(data){
+          console.log("updated inverse group spot", data);
+        });
+      });
+
+      // Save the spot -- if the id is defined, we overwrite existing id; otherwise create new id/spot
       SpotsFactory.save($scope.spot, $scope.spot.properties.id).then(function(data) {
         console.log("wrote", data);
       });
@@ -833,9 +766,9 @@ angular.module('app')
       $location.path(href="/app/spots/newspot");
     };
 
-    // Is the other_spot is this spots related_spots list?
+    // Is the other_spot is this spot's links list?
     $scope.isChecked = function (id) {
-      return _.find($scope.spot.properties.related_spots, function (rel_spot) {
+      return _.find($scope.spot.properties.links, function (rel_spot) {
         return rel_spot.id === id;
       });
     };
@@ -852,7 +785,7 @@ angular.module('app')
     };
 
     $scope.setLinkRelationship = function(item, relationship) {
-      var related_spot = _.find($scope.related_spots_selection, function (rel_spot) {
+      var related_spot = _.find($scope.links_selected, function (rel_spot) {
         return rel_spot.id === item.id;
       });
       related_spot['relationship'] = relationship.type;

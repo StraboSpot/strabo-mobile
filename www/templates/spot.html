@@ -229,7 +229,7 @@
             <br><br>
           </div>
           <ion-list>
-            <ion-item ng-repeat="item in groups_selection" href="#/app/spots/{{item.id}}">
+            <ion-item ng-repeat="item in groups_selected" href="#/app/spots/{{item.id}}">
               {{item.name}}
             </ion-item>
           </ion-list>
@@ -238,7 +238,7 @@
 
       <h4> Things below here need to be moved to the Relations tab.</h4>
 
-      <!-- Related Spots -->
+      <!-- Linked Spots -->
       <div ng-show="showLinks">
         <div class="item item-divider">
           Links
@@ -249,7 +249,7 @@
           <br><br>
         </div>
         <ion-list>
-          <ion-item ng-repeat="item in related_spots_selection">
+          <ion-item ng-repeat="item in links_selected">
             <a href="#/app/spots/{{item.id}}" style="text-decoration:none"> <b>{{item.name}}</b> </a>
             &nbsp;&nbsp;&nbsp;&nbsp;{{ item.relationship }}
             &nbsp;&nbsp;&nbsp;&nbsp;<b>{{ spot.properties.name }}</b>
@@ -272,7 +272,7 @@
           <br><br>
         </div>
         <ion-list>
-          <ion-item ng-repeat="item in groups_selection" href="#/app/spots/{{item.id}}">
+          <ion-item ng-repeat="item in groups_selected" href="#/app/spots/{{item.id}}">
             {{item.name}}
           </ion-item>
         </ion-list>

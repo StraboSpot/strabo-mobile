@@ -7,7 +7,7 @@
     <ion-checkbox ng-repeat="item in groups"
                   ng-value="item"
                   ng-checked="isGroupChecked(item.id)"
-                  ng-click="toggleGroupSelection(item)">
+                  ng-click="toggleSelection(item, 'groups_selected', 'groups_unselected')">
       {{ item.name }}
     </ion-checkbox>
   </ion-content>
