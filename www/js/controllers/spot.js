@@ -464,15 +464,15 @@ angular.module('app')
 
     $scope.link_relationship = {
       choices: [
-        { text: 'cross-cuts', relationship: 'cross_cuts', inverse: 'is_cross_cut_by' },
-        { text: 'is cross-cut by', relationship: 'is_cross_cut_by', inverse: 'cross_cuts' },
-        { text: 'is younger than', relationship: 'is_younger_than', inverse: 'is_older_than' },
-        { text: 'is older than', relationship: 'is_older_than', inverse: 'is_younger_than' },
-        { text: 'is a lower metamorphic grade than', relationship: 'is_a_lower_metamorphic_grade_than', inverse: 'is_a_higher_metamorphic_grade_than' },
-        { text: 'is a higher metamorphic grade than', relationship: 'is_a_higher_metamorphic_grade_than', inverse: 'is_a_lower_metamorphic_grade_tha' },
-        { text: 'is included within', relationship: 'is_included_within', inverse: 'includes' },
-        { text: 'includes', relationship: 'is_included_within', inverse: 'is_included_within' },
-        { text: 'is otherwise related to', relationship: 'is_otherwise_related_to', inverse: 'is otherwise related to' }
+        { text: 'cross-cuts', value: 'cross_cuts', inverse: 'is_cross_cut_by' },
+        { text: 'is cross-cut by', value: 'is_cross_cut_by', inverse: 'cross_cuts' },
+        { text: 'is younger than', value: 'is_younger_than', inverse: 'is_older_than' },
+        { text: 'is older than', value: 'is_older_than', inverse: 'is_younger_than' },
+        { text: 'is a lower metamorphic grade than', value: 'is_a_lower_metamorphic_grade_than', inverse: 'is_a_higher_metamorphic_grade_than' },
+        { text: 'is a higher metamorphic grade than', value: 'is_a_higher_metamorphic_grade_than', inverse: 'is_a_lower_metamorphic_grade_tha' },
+        { text: 'is included within', value: 'is_included_within', inverse: 'includes' },
+        { text: 'includes', value: 'includes', inverse: 'is_included_within' },
+        { text: 'is otherwise related to', value: 'is_otherwise_related_to', inverse: 'is_otherwise_related_to' }
       ]
     };
 
@@ -656,60 +656,65 @@ angular.module('app')
         $scope.spot.geometry.coordinates[0] = $scope.point.longitude;
       }
 
-      // Add or remove ids for related spots
-      if ($scope.spot.properties.related_spots)
-        delete $scope.spot.properties.related_spots;
-      if ($scope.related_spots_selection.length > 0)
-        $scope.spot.properties.related_spots = [];
+      // Add or update related spots from checked spots
+      $scope.related_spots_selection.forEach(function (obj, i) {
 
-      // Get all selected and unselected related spots
-      var selAndUnSel = _.union($scope.related_spots_selection, $scope.related_spots_unselected);
-      selAndUnSel.forEach(function (obj, i) {
+        // If a link relationship was not selected mark as "is_otherwise_related_to"
+        obj["relationship"] = obj.relationship ? obj.relationship : "is_otherwise_related_to";
 
-        // Get the related spot
-         var related_spot = _.find($scope.spots, function (spot) {
-           return spot.properties.id === obj.id;
-         });
-
-        // If obj in selected related spots object
-        var inSelected = _.find($scope.related_spots_selection, function (selected) {
-          return selected.id === obj.id;
+        // Remove the link reference from the link references for this spot, if it exists
+        $scope.spot.properties.related_spots = _.reject($scope.spot.properties.related_spots, function (ref) {
+          return ref.id == obj.id;
         });
-        if (inSelected) {
-          // Add id for related spot to this spot
-          var inRelated = _.find($scope.spot.properties.related_spots, function (rel_spot) {
-            return rel_spot.id === obj.id;
-          });
-          if (!inRelated)
-            $scope.spot.properties.related_spots.push(obj);
+        //Add the new/updated link reference to the link references for this spot
+        $scope.spot.properties.related_spots.push(obj);
 
-          // Add id for this spot to related spot
-          if (!related_spot.properties.related_spots)
-            related_spot.properties.related_spots = [];
-          var inverseRelated = _.find(related_spot.properties.related_spots, function (rel_spot) {
-            return rel_spot.id === $scope.spot.properties.id;
-          });
-          if (!inverseRelated)
-            related_spot.properties.related_spots.push({name: $scope.spot.properties.name, id: $scope.spot.properties.id});
-        }
-        // If obj is in unselected related spots object
-        else {
-          // Remove id for this spot from related spot
-          if (related_spot.properties.related_spots) {
-            var inverseRelated = _.find(related_spot.properties.related_spots, function (rel_spot) {
-              return rel_spot.id === $scope.spot.properties.id;
-            });
-            if (inverseRelated) {
-              related_spot.properties.related_spots = _.reject(related_spot.properties.related_spots, function (spot) {
-                return spot.id === $scope.spot.properties.id; });
-              if (related_spot.properties.related_spots.length == 0)
-                delete related_spot.properties.related_spots;
-            }
-          }
-        }
-        // Save the related spot
-        SpotsFactory.save(related_spot, related_spot.properties.id).then(function(data){
-          console.log("updated", data);
+        var link_relationship_inverse = _.findWhere($scope.link_relationship.choices,
+          { value: obj.relationship }).inverse;
+
+        // Get the linked spot
+        var linked_spot = _.filter($scope.spots, function(item) {
+          return _.findWhere(item, { id: obj.id });
+        })[0];
+
+        // Remove the link reference to this spot from the link spot, if it exists
+        linked_spot.properties.related_spots = _.reject(linked_spot.properties.related_spots, function (ref) {
+          return ref.id == $scope.spot.properties.id;
+        });
+        //Add the new/updated link reference to the link references for the linked spot
+        linked_spot.properties.related_spots.push({
+          name: $scope.spot.properties.name,
+          id: $scope.spot.properties.id,
+          relationship: link_relationship_inverse
+        });
+
+        // Save the linked spot
+        SpotsFactory.save(linked_spot, linked_spot.properties.id).then(function(data){
+          console.log("updated inverse spot", data);
+        });
+      });
+
+      // Remove unchecked spots from related spots
+      $scope.related_spots_unselected.forEach(function (obj, i) {
+
+        // Remove the link reference from the link references for this spot, if it exists
+        $scope.spot.properties.related_spots = _.reject($scope.spot.properties.related_spots, function (ref) {
+          return ref.id == obj.id;
+        });
+
+        // Get the linked spot
+        var linked_spot = _.filter($scope.spots, function(item) {
+          return _.findWhere(item, { id: obj.id });
+        })[0];
+
+        // Remove the link reference to this spot from the link spot, if it exists
+        linked_spot.properties.related_spots = _.reject(linked_spot.properties.related_spots, function (ref) {
+          return ref.id == $scope.spot.properties.id;
+        });
+
+        // Save the linked spot
+        SpotsFactory.save(linked_spot, linked_spot.properties.id).then(function(data){
+          console.log("updated inverse spot", data);
         });
       });
 
@@ -832,8 +837,11 @@ angular.module('app')
       $scope.openModal("linkModal");
     };
 
-    $scope.setLinkRelationship = function(item, condition) {
-      alert("This doesn't do anything yet.")
+    $scope.setLinkRelationship = function(item, relationship) {
+      var related_spot = _.find($scope.related_spots_selection, function (rel_spot) {
+        return rel_spot.id === item.id;
+      });
+      related_spot['relationship'] = relationship.value;
     };
 
     $scope.linkGroup = function() {
