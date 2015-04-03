@@ -41,7 +41,7 @@ angular.module('app', [
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
   $stateProvider
 
     .state('app', {
@@ -160,8 +160,10 @@ angular.module('app', [
           templateUrl: "templates/about.html"
         }
       }
-  });
+    });
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/map');
+
+  $ionicConfigProvider.tabs.position('top');
 });
