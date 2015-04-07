@@ -4,238 +4,290 @@
     <button ng-click="submit();" class="button button-icon icon ion-checkmark-circled"></button>
   </ion-nav-buttons>
 
-  <ion-tabs class="tabs-positive">
-    <ion-tab title="Main" ng-click="selectTab(1)"></ion-tab>
-    <ion-tab title="Data" ng-click="selectTab(2)"></ion-tab>
-    <ion-tab title="Relations" ng-click="selectTab(3)"></ion-tab>
-  </ion-tabs>
+  <ion-tabs class="tabs-top has-header tabs-striped has-tabs-top">
 
-
-  <ion-content class="has-header">
-    <form class="list">
-
-      <!-- tab 1 contents -->
-      <div ng-show="showTab1">
-        <div class="row responsive-md">
-          <div class="col">
-            <div class="item item-divider">
-              {{spot.properties.spottype}}
+    <!--------------
+      Tab 1: Main
+    ---------------->
+    <ion-tab title="1. Main">
+      <ion-nav-view name="main-tab">
+        <ion-content>
+          <div class="row responsive-md">
+            <div class="col">
+              <div class="item item-divider">
+                {{spot.properties.spottype}}
+              </div>
+              <label class="item item-input">
+                <span class="input-label">Spot Name</span>
+                <input type="text" placeholder="Name this Spot" ng-model="spot.properties.name" autofocus>
+              </label>
+              <label class="item item-input">
+                <span class="input-label">ID</span>
+                <input type="text" disabled ng-model="spot.properties.id">
+              </label>
+              <label class="item item-input">
+                <span class="input-label">Date</span>
+                <input type="date" ng-model="spot.properties.date">
+              </label>
+              <label class="item item-input">
+                <span class="input-label">Time</span>
+                <input type="time" ng-model="spot.properties.time">
+              </label>
             </div>
-            <label class="item item-input">
-              <span class="input-label">Spot Name</span>
-              <input type="text" placeholder="Name this Spot" ng-model="spot.properties.name" autofocus>
-            </label>
-            <label class="item item-input">
-              <span class="input-label">ID</span>
-              <input type="text" disabled ng-model="spot.properties.id">
-            </label>
-            <label class="item item-input">
-              <span class="input-label">Date</span>
-              <input type="date" ng-model="spot.properties.date">
-            </label>
-            <label class="item item-input">
-              <span class="input-label">Time</span>
-              <input type="time" ng-model="spot.properties.time">
-            </label>
-          </div>
 
-          <!-- Location -->
-          <div class="col">
-            <div class="item item-divider">
-              Map Representation
-            </div>
-            <label class="item item-input">
-              <span class="input-label">Geometry</span>
-              <input type="text" disabled ng-model="spot.geometry.type">
-            </label>
-            <label class="item item-input" ng-show="showLatLng">
-              <span class="input-label">Latitude</span>
-              <input type="number" ng-model="point.latitude" value={{point.latitude}}>
-            </label>
-            <label class="item item-input" ng-show="showLatLng">
-              <span class="input-label">Longitude</span>
-              <input type="number" ng-model="point.longitude" value={{point.longitude}}>
-            </label>
-            <div>
-             <!-- Map Interaction -->
+            <!-- Location -->
+            <div class="col">
+              <div class="item item-divider">
+                Map Representation
+              </div>
+              <label class="item item-input">
+                <span class="input-label">Geometry</span>
+                <input type="text" disabled ng-model="spot.geometry.type">
+              </label>
+              <label class="item item-input" ng-show="showLatLng">
+                <span class="input-label">Latitude</span>
+                <input type="number" ng-model="point.latitude" value={{point.latitude}}>
+              </label>
+              <label class="item item-input" ng-show="showLatLng">
+                <span class="input-label">Longitude</span>
+                <input type="number" ng-model="point.longitude" value={{point.longitude}}>
+              </label>
               <div>
-                <br>
-                <button ng-click="goToSpot();" class="button button-small icon-left icon ion-eye">View on Map</button>
-                <button ng-click="getLocation();" ng-show="showMyLocationButton" class="button button-small icon-left ion-pinpoint">Set to My Location</button>
-                <button ng-click="openMap();" class="button button-small icon-left icon ion-map">Set From Map</button>
+                <!-- Map Interaction -->
+                <div>
+                  <br>
+                  <button ng-click="goToSpot();" class="button button-small icon-left icon ion-eye">View on Map</button>
+                  <button ng-click="getLocation();" ng-show="showMyLocationButton" class="button button-small icon-left ion-pinpoint">Set to My Location</button>
+                  <button ng-click="openMap();" class="button button-small icon-left icon ion-map">Set From Map</button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Images -->
-        <div class="item item-divider">
-          Photos
-        </div>
-        <div class="row responsive-md">
-          <div>
-            <ul>
-              <li ng-repeat="image in spot.images" style="display: inline;">
-                <img ng-src="{{image.src}}" width="100" height="100" />
-              </li>
-            </ul>
+          <!-- Images -->
+          <div class="item item-divider">
+            Photos
           </div>
-        </div>
-        <button ng-click="cameraModal()" class="button button-small icon-left ion-camera">Add Photo</button>
-        <br><br>
-        <div class="item item-divider">
-          Notes
-        </div>
-        <label class="item item-input">
-          <textarea placeholder="Notes about this Spot" rows="4" ng-model="spot.properties.notes"></textarea>
-        </label>
-      </div>
-
-      <!-- tab 2 contents -->
-      <div ng-show="showTab2">
-        <div class="row responsive-md">
-          <div class="col">
-
-            <!-- Feature Type -->
-            <label class="item item-input item-select" ng-show="showFeatureType">
-              <span class="input-label">{{feature_type.label}}</span>
-              <select ng-model="spot.properties.feature_type"
-                      ng-options="item.value as item.text for item in feature_type.choices | orderBy:'text'"
-                      ng-change="onChange.feature()"></select>
-            </label>
-
-            <!-- Strike -->
-            <label class="item item-input" ng-show="show.strike">
-              <span class="input-label">Strike</span>
-              <input type="number" placeholder="strike? (0-360)" ng-model="spot.properties.strike">
-            </label>
-
-            <!-- Dip -->
-            <label class="item item-input" ng-show="show.dip">
-              <span class="input-label">Dip</span>
-              <input type="number" placeholder="dip? (0-90)" ng-model="spot.properties.dip">
-            </label>
-
-            <!-- Trend -->
-            <label class="item item-input" ng-show="show.trend">
-              <span class="input-label">Trend</span>
-              <input type="number" placeholder="trend? (0-90)" ng-model="spot.properties.trend">
-            </label>
-
-            <!-- Plunge -->
-            <label class="item item-input" ng-show="show.plunge">
-              <span class="input-label">Plunge</span>
-              <input type="number" placeholder="plunge? (0-90)" ng-model="spot.properties.plunge">
-            </label>
+          <div class="row responsive-md">
+            <div>
+              <ul>
+                <li ng-repeat="image in spot.images" style="display: inline;">
+                  <img ng-src="{{image.src}}" width="100" height="100" />
+                </li>
+              </ul>
+            </div>
           </div>
-
-          <div class="col">
-
-            <!-- Plane Facing -->
-            <label class="item item-input item-select" ng-show="show.plane_facing">
-              <span class="input-label">Plane Facing</span>
-              <select ng-model="spot.properties.plane_facing" ng-options="item.value as item.text for item in plane_facing.choices | orderBy:'text'" ng-change="onChange.plane_facing()"></select>
-            </label>
-
-            <!-- Facing Direction -->
-            <label class="item item-input" ng-show="show.facing_direction">
-              <span class="input-label">Facing Direction</span>
-              <input type="text" placeholder="Facing Direction?" ng-model="spot.properties.facing_direction">
-            </label>
-
-            <!-- Fold Type -->
-            <label class="item item-input item-select" ng-show="show.fold_type">
-              <span class="input-label">Fold Type</span>
-              <select ng-model="spot.properties.fold_type" ng-options="item.value as item.text for item in fold_type.choices | orderBy:'text'" ng-change="onChange.fold_type()"></select>
-            </label>
-
-            <!-- Fold Detail -->
-            <label class="item item-input item-select" ng-show="show.fold_detail">
-              <span class="input-label">Fold Detail</span>
-              <select ng-model="spot.properties.fold_detail" ng-options="item.value as item.text for item in fold_detail.choices | orderBy:'text'" ng-change="onChange.fold_detail()"></select>
-            </label>
-
-            <!-- Directed -->
-            <label class="item item-input item-select" ng-show="show.directed">
-              <span class="input-label">Directed?</span>
-              <select ng-model="spot.properties.directed" ng-options="item.value as item.text for item in directed.choices | orderBy:'text'" ng-change="onChange.directed()"></select>
-            </label>
-
-            <!-- Vergence -->
-            <label class="item item-input" ng-show="show.vergence">
-              <span class="input-label">Vergence</span>
-              <input type="text" placeholder="Vergence" ng-model="spot.properties.vergence">
-            </label>
-          </div>
-        </div>
-        <div class="row responsive-md">
-          <div class="col">
-            <!-- Orientation Quality -->
-            <label class="item item-input item-select" ng-show="showOrientation_quality">
-              <span class="input-label">Orientation Quality</span>
-              <select ng-model="spot.properties.orientation_quality"
-                      ng-options="item.value as item.text for item in orientation_quality.choices | orderBy:'text'"
-                      ng-change="onChange.orientation()"></select>
-            </label>
-          </div>
-          <div class="col">
-            <label class="item item-input" ng-show="showUnit_name">
-              <span class="input-label">Unit Name</span>
-              <input type="text" placeholder="What is the unit name?" ng-model="spot.properties.unit_name">
-            </label>
-            <label class="item item-input" ng-show="showUnit_label">
-              <span class="input-label">Unit Label</span>
-              <input type="text" placeholder="What is the unit label?" ng-model="spot.properties.unit_label">
-            </label>
-          </div>
-        </div>
-
-        <div ng-show="showLinkToNewOrientation">
-          <br>
-          <button ng-click="newOrientation();" class="button button-small icon-left icon ion-link">Add New Orientation</button>
+          <button ng-click="cameraModal()" class="button button-small icon-left ion-camera">Add Photo</button>
           <br><br>
-        </div>
-
-        <!-- GROUPING -->
-        <div ng-show="showGroupFields">
-          <!-- Group Relationship Condition -->
-          <label class="item item-input item-select">
-            <span class="input-label">{{group_relationship.label}}<small>{{group_relationship.hint}}</small></span>
-            <select ng-model="spot.properties.group_relationship"
-                    ng-options="item.value as item.text for item in group_relationship.choices | orderBy:'text'"></select>
+          <div class="item item-divider">
+            Notes
+          </div>
+          <label class="item item-input">
+            <textarea placeholder="Notes about this Spot" rows="4" ng-model="spot.properties.notes"></textarea>
           </label>
+        </ion-content>
+      </ion-nav-view>
+    </ion-tab>
+
+    <!--------------
+      Tab 2: Data
+    ---------------->
+    <ion-tab title="2. Data">
+      <ion-nav-view name="data-tab">
+        <ion-content>
           <div class="row responsive-md">
             <div class="col">
-              <label class="item item-input">
-                <span class="input-label">Group Label</span>
-                <input type="text" placeholder="What is the group label?" ng-model="spot.properties.group_label">
-              </label>
-              <!-- Larger Structure is A -->
-              <label class="item item-input item-select">
-                <span class="input-label">{{larger_structure.label}}</small></span>
-                <select ng-model="spot.properties.larger_structure"
-                        ng-options="item.value as item.text for item in larger_structure.choices | orderBy:'text'"></select>
-              </label>
-            </div>
-            <div class="col">
-              <label class="item item-input">
-                <span class="input-label">Age</span>
-                <input type="text" placeholder="Do you know the age?" ng-model="spot.properties.group_age">
+
+              <!-- Feature Type -->
+              <label class="item item-input item-select" ng-show="showFeatureType">
+                <span class="input-label">{{feature_type.label}}</span>
+                <select ng-model="spot.properties.feature_type"
+                        ng-options="item.value as item.text for item in feature_type.choices | orderBy:'text'"
+                        ng-change="onChange.feature()"></select>
               </label>
 
-              <label class="item item-input">
-                <span class="input-label">Grouping Custom Condition</span>
-                <input type="text" placeholder="Define a new condition for grouping." ng-model="spot.properties.group_custom_condition">
+              <!-- Strike -->
+              <label class="item item-input" ng-show="show.strike">
+                <span class="input-label">Strike</span>
+                <input type="number" placeholder="strike? (0-360)" ng-model="spot.properties.strike">
+              </label>
+
+              <!-- Dip -->
+              <label class="item item-input" ng-show="show.dip">
+                <span class="input-label">Dip</span>
+                <input type="number" placeholder="dip? (0-90)" ng-model="spot.properties.dip">
+              </label>
+
+              <!-- Trend -->
+              <label class="item item-input" ng-show="show.trend">
+                <span class="input-label">Trend</span>
+                <input type="number" placeholder="trend? (0-90)" ng-model="spot.properties.trend">
+              </label>
+
+              <!-- Plunge -->
+              <label class="item item-input" ng-show="show.plunge">
+                <span class="input-label">Plunge</span>
+                <input type="number" placeholder="plunge? (0-90)" ng-model="spot.properties.plunge">
+              </label>
+            </div>
+
+            <div class="col">
+
+              <!-- Plane Facing -->
+              <label class="item item-input item-select" ng-show="show.plane_facing">
+                <span class="input-label">Plane Facing</span>
+                <select ng-model="spot.properties.plane_facing" ng-options="item.value as item.text for item in plane_facing.choices | orderBy:'text'" ng-change="onChange.plane_facing()"></select>
+              </label>
+
+              <!-- Facing Direction -->
+              <label class="item item-input" ng-show="show.facing_direction">
+                <span class="input-label">Facing Direction</span>
+                <input type="text" placeholder="Facing Direction?" ng-model="spot.properties.facing_direction">
+              </label>
+
+              <!-- Fold Type -->
+              <label class="item item-input item-select" ng-show="show.fold_type">
+                <span class="input-label">Fold Type</span>
+                <select ng-model="spot.properties.fold_type" ng-options="item.value as item.text for item in fold_type.choices | orderBy:'text'" ng-change="onChange.fold_type()"></select>
+              </label>
+
+              <!-- Fold Detail -->
+              <label class="item item-input item-select" ng-show="show.fold_detail">
+                <span class="input-label">Fold Detail</span>
+                <select ng-model="spot.properties.fold_detail" ng-options="item.value as item.text for item in fold_detail.choices | orderBy:'text'" ng-change="onChange.fold_detail()"></select>
+              </label>
+
+              <!-- Directed -->
+              <label class="item item-input item-select" ng-show="show.directed">
+                <span class="input-label">Directed?</span>
+                <select ng-model="spot.properties.directed" ng-options="item.value as item.text for item in directed.choices | orderBy:'text'" ng-change="onChange.directed()"></select>
+              </label>
+
+              <!-- Vergence -->
+              <label class="item item-input" ng-show="show.vergence">
+                <span class="input-label">Vergence</span>
+                <input type="text" placeholder="Vergence" ng-model="spot.properties.vergence">
               </label>
             </div>
           </div>
-          <div ng-show="showGroupMembers">
+          <div class="row responsive-md">
+            <div class="col">
+              <!-- Orientation Quality -->
+              <label class="item item-input item-select" ng-show="showOrientation_quality">
+                <span class="input-label">Orientation Quality</span>
+                <select ng-model="spot.properties.orientation_quality"
+                        ng-options="item.value as item.text for item in orientation_quality.choices | orderBy:'text'"
+                        ng-change="onChange.orientation()"></select>
+              </label>
+            </div>
+            <div class="col">
+              <label class="item item-input" ng-show="showUnit_name">
+                <span class="input-label">Unit Name</span>
+                <input type="text" placeholder="What is the unit name?" ng-model="spot.properties.unit_name">
+              </label>
+              <label class="item item-input" ng-show="showUnit_label">
+                <span class="input-label">Unit Label</span>
+                <input type="text" placeholder="What is the unit label?" ng-model="spot.properties.unit_label">
+              </label>
+            </div>
+          </div>
+
+          <div ng-show="showLinkToNewOrientation">
+            <br>
+            <button ng-click="newOrientation();" class="button button-small icon-left icon ion-link">Add New Orientation</button>
+            <br><br>
+          </div>
+
+          <!-- GROUPING -->
+          <div ng-show="showGroupFields">
+            <!-- Group Relationship Condition -->
+            <label class="item item-input item-select">
+              <span class="input-label">{{group_relationship.label}}<small>{{group_relationship.hint}}</small></span>
+              <select ng-model="spot.properties.group_relationship"
+                      ng-options="item.value as item.text for item in group_relationship.choices | orderBy:'text'"></select>
+            </label>
+            <div class="row responsive-md">
+              <div class="col">
+                <label class="item item-input">
+                  <span class="input-label">Group Label</span>
+                  <input type="text" placeholder="What is the group label?" ng-model="spot.properties.group_label">
+                </label>
+                <!-- Larger Structure is A -->
+                <label class="item item-input item-select">
+                  <span class="input-label">{{larger_structure.label}}</small></span>
+                  <select ng-model="spot.properties.larger_structure"
+                          ng-options="item.value as item.text for item in larger_structure.choices | orderBy:'text'"></select>
+                </label>
+              </div>
+              <div class="col">
+                <label class="item item-input">
+                  <span class="input-label">Age</span>
+                  <input type="text" placeholder="Do you know the age?" ng-model="spot.properties.group_age">
+                </label>
+
+                <label class="item item-input">
+                  <span class="input-label">Grouping Custom Condition</span>
+                  <input type="text" placeholder="Define a new condition for grouping." ng-model="spot.properties.group_custom_condition">
+                </label>
+              </div>
+            </div>
+            <div ng-show="showGroupMembers">
+              <div class="item item-divider">
+                Group Members
+              </div>
+              <div>
+                <br>
+                <button ng-click="addGroupMember();" class="button button-small icon-left icon ion-plus-round">Add a Member to this Group</button>
+                <br><br>
+              </div>
+              <ion-list>
+                <ion-item ng-repeat="item in groups_selected" href="#/app/spots/{{item.id}}">
+                  {{item.name}}
+                </ion-item>
+              </ion-list>
+            </div>
+          </div>
+        </ion-content>
+      </ion-nav-view>
+    </ion-tab>
+
+    <!--------------
+      Tab 3: Connections
+    ---------------->
+    <ion-tab title="3. Connections">
+      <ion-nav-view name="connections-tab">
+        <ion-content>
+          <!-- Linked Spots -->
+          <div ng-show="showLinks">
             <div class="item item-divider">
-              Group Members
+              Links
             </div>
             <div>
               <br>
-              <button ng-click="addGroupMember();" class="button button-small icon-left icon ion-plus-round">Add a Member to this Group</button>
+              <button ng-click="linkSpot();" class="button button-small icon-left icon ion-link">Add or Edit Links to Other Spots</button>
+              <br><br>
+            </div>
+            <ion-list>
+              <ion-item ng-repeat="item in links_selected">
+                <a href="#/app/spots/{{item.id}}" style="text-decoration:none"> <b>{{item.name}}</b> </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;{{ item.relationship }}
+                &nbsp;&nbsp;&nbsp;&nbsp;<b>{{ spot.properties.name }}</b>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <select ng-model="relationship"
+                        ng-options="link_relationships.type for link_relationships in link_relationship.choices"
+                        ng-change="setLinkRelationship(item, relationship)">
+                  <option value="">-- select a relationship --</option>
+                </select>
+              </ion-item>
+            </ion-list>
+          </div>
+          <div ng-show="showGroups">
+            <div class="item item-divider">
+              Groups
+            </div>
+            <div>
+              <br>
+              <button ng-click="linkGroup();" class="button button-small icon-left icon ion-plus-round">Add or Edit Membership in Groups</button>
               <br><br>
             </div>
             <ion-list>
@@ -244,54 +296,10 @@
               </ion-item>
             </ion-list>
           </div>
-        </div>
-      </div>
+        </ion-content>
+      </ion-nav-view>
+    </ion-tab>
 
-      <!-- tab 3 contents -->
-      <div ng-show="showTab3">
-        <!-- Linked Spots -->
-        <div ng-show="showLinks">
-          <div class="item item-divider">
-            Links
-          </div>
-          <div>
-            <br>
-            <button ng-click="linkSpot();" class="button button-small icon-left icon ion-link">Add or Edit Links to Other Spots</button>
-            <br><br>
-          </div>
-          <ion-list>
-            <ion-item ng-repeat="item in links_selected">
-              <a href="#/app/spots/{{item.id}}" style="text-decoration:none"> <b>{{item.name}}</b> </a>
-              &nbsp;&nbsp;&nbsp;&nbsp;{{ item.relationship }}
-              &nbsp;&nbsp;&nbsp;&nbsp;<b>{{ spot.properties.name }}</b>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              <select ng-model="relationship"
-                      ng-options="link_relationships.type for link_relationships in link_relationship.choices"
-                      ng-change="setLinkRelationship(item, relationship)">
-                <option value="">-- select a relationship --</option>
-              </select>
-            </ion-item>
-          </ion-list>
-        </div>
-        <div ng-show="showGroups">
-          <div class="item item-divider">
-            Groups
-          </div>
-          <div>
-            <br>
-            <button ng-click="linkGroup();" class="button button-small icon-left icon ion-plus-round">Add or Edit Membership in Groups</button>
-            <br><br>
-          </div>
-          <ion-list>
-            <ion-item ng-repeat="item in groups_selected" href="#/app/spots/{{item.id}}">
-              {{item.name}}
-            </ion-item>
-          </ion-list>
-        </div>
-      </div>
+  </ion-tabs>
 
-      <!-- end tabs -->
-
-    </form>
-  </ion-content>
 </ion-view>

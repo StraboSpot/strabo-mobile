@@ -99,35 +99,6 @@ angular.module('app')
       });
     };
 
-    $scope.showTab1 = true;
-    $scope.showTab2 = false;
-    $scope.showTab3 = false;
-
-    $scope.selectTab = function(tab) {
-      switch (tab) {
-        case 1:
-          $scope.showTab1 = true;
-          $scope.showTab2 = false;
-          $scope.showTab3 = false;
-          break;
-        case 2:
-          $scope.showTab1 = false;
-          $scope.showTab2 = true;
-          $scope.showTab3 = false;
-          break;
-        case 3:
-          $scope.showTab1 = false;
-          $scope.showTab2 = false;
-          $scope.showTab3 = true;
-          break;
-        default:
-          $scope.showTab1 = true;
-          $scope.showTab2 = false;
-          $scope.showTab3 = false;
-          break;
-      }
-    };
-
     // Set or cleanup some of the properties of the $scope
     var setProperties = function() {
       // Convert date string to Date type
