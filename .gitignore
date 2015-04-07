@@ -5,6 +5,7 @@ node_modules/
 hooks/
 platforms/
 plugins/
+resources/
 
 plugins/
 scss/
