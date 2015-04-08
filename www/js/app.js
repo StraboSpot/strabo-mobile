@@ -103,16 +103,6 @@ angular.module('app', [
       }
     })
 
-    .state('app.commonfields', {
-      url: "/spots/commonfields",
-      views: {
-        'menuContent': {
-          templateUrl: "templates/spot.html",
-          controller: 'SpotCtrl'
-        }
-      }
-    })
-
     .state('app.newspot', {
       url: "/spots/newspot",
       views: {

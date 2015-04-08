@@ -3,39 +3,39 @@ angular.module('app')
 .controller("ModalCtrl", function($scope, NewSpot) {
 
   $scope.pointTypes = [
-    { type: "Contact Outcrop", template: "commonfields" },
-    { type: "Fault Outcrop", template: "commonfields" },
-    { type: "Notes", template: "commonfields" },
-    { type: "Orientation", template: "newspot" },
-    { type: "Rock Description", template: "commonfields" },
-    { type: "Sample", template: "commonfields" },
-    { type: "Spot Grouping", template: "commonfields" }
+    { type: "Contact Outcrop" },
+    { type: "Fault Outcrop" },
+    { type: "Notes" },
+    { type: "Orientation" },
+    { type: "Rock Description" },
+    { type: "Sample" },
+    { type: "Spot Grouping" }
   ];
 
   $scope.lineTypes = [
-    { type: "Contact Trace", template: "commonfields" },
-    { type: "Fault Trace", template: "commonfields" },
-    { type: "Hinge Surface Trace", template: "commonfields" },
-    { type: "Notes", template: "commonfields" },
-    { type: "Spot Grouping", template: "commonfields" }
+    { type: "Contact Trace" },
+    { type: "Fault Trace" },
+    { type: "Hinge Surface Trace" },
+    { type: "Notes" },
+    { type: "Spot Grouping" }
   ];
 
   $scope.polyTypes = [
-    { type: "Notes", template: "commonfields" },
-    { type: "Rock Description", template: "commonfields" },
-    { type: "Spot Grouping", template: "commonfields" }
+    { type: "Notes" },
+    { type: "Rock Description" },
+    { type: "Spot Grouping" }
   ];
 
   $scope.allTypes = [
-    { type: "Contact Outcrop", template: "commonfields" },
-    { type: "Contact Trace", template: "commonfields" },
-    { type: "Fault Outcrop", template: "commonfields" },
-    { type: "Fault Trace", template: "commonfields" },
-    { type: "Hinge Surface Trace", template: "commonfields" },
-    { type: "Notes", template: "commonfields" },
-    { type: "Orientation", template: "newspot" },
-    { type: "Rock Description", template: "commonfields" },
-    { type: "Spot Grouping", template: "commonfields" }
+    { type: "Contact Outcrop" },
+    { type: "Contact Trace" },
+    { type: "Fault Outcrop" },
+    { type: "Fault Trace" },
+    { type: "Hinge Surface Trace" },
+    { type: "Notes" },
+    { type: "Orientation" },
+    { type: "Rock Description" },
+    { type: "Spot Grouping" }
   ];
 
   // a geojson template we pass in when creating a new spot from the spot menu
