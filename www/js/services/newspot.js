@@ -13,9 +13,9 @@ angular.module('app')
       if (geojsonObj.geometry)
         newSpot.geometry = geojsonObj.geometry;
       if (geojsonObj.type)
-        newSpot.type = geojsonObj.type
+        newSpot.type = geojsonObj.type;
       if (geojsonObj.properties)
-        newSpot.properties = geojsonObj.properties
+        newSpot.properties = geojsonObj.properties;
       else {
         if (!newSpot.properties) {
           var time = new Date(Date.now());
@@ -23,24 +23,25 @@ angular.module('app')
           time.setMilliseconds(00);
           newSpot.properties = {
             date: new Date(Date.now()),
-            time: time
+            time: time,
+            id: new Date().getTime().toString()
           };
         }
       }
     }
-  }
+  };
 
   var getNewSpot = function() {
     return newSpot;
-  }
+  };
 
   var clearNewSpot = function() {
     newSpot = null;
-  }
+  };
 
   return {
     setNewSpot: setNewSpot,
     getNewSpot: getNewSpot,
     clearNewSpot: clearNewSpot
   };
-})
+});

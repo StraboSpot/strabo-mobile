@@ -57,11 +57,12 @@ angular.module('app')
           "time": "11:20",
           "strike": _.random(0, 180),
           "dip": _.random(0, 180),
-          "name": "x" + i.toString()
+          "name": "x" + i.toString(),
+          "id": new Date().getTime().toString()
         }
-      }
+      };
 
-      SpotsFactory.save(geojsonPoint, key).then(function(data) {
+      SpotsFactory.save(geojsonPoint).then(function(data) {
         console.log("wrote: ", data);
       });
 

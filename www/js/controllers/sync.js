@@ -111,8 +111,7 @@ angular.module('app')
                 alert("finished downloading from server");
                 console.log("Downloaded", response.data);
                 response.data.features.forEach(function(spot) {
-                  // save the spot -- if the id is defined, we overwrite existing id; otherwise create new id/spot
-                  SpotsFactory.save(spot, spot.properties.id);
+                  SpotsFactory.save(spot);
                 });
               } else
                 alert("No spots linked to this account to download.");
@@ -175,7 +174,7 @@ angular.module('app')
               // then save the response from the server as a new spot
               .then(function() {
                 delete spot.properties.tempId;
-                return SpotsFactory.save(spot, spot.properties.id);
+                return SpotsFactory.save(spot);
               })
               // cleanup and notification
               .then(function(spot) {

@@ -19,19 +19,9 @@ angular.module('app')
       return deferred.promise;
     };
 
-    factory.save = function(value, key) {
+    factory.save = function(value) {
       var self = this;
       var deferred = $q.defer(); //init promise
-
-      // is the key undefined?
-      if (typeof key == 'undefined') {
-        // yes -- this means that the key doesn't exist and we want to create a new spot record
-        // create a psuedo-random number as key
-        key = new Date().getTime().toString();
-      }
-
-      // lets also put the key in the value.properties.id
-      value.properties.id = key;
 
       // The following should be removed once uploading and then download
       // from the database preserves the data type
@@ -45,7 +35,7 @@ angular.module('app')
       if (value.properties.plunge)
         value.properties.plunge = parseFloat(value.properties.plunge);
 
-      self.write(key, value).then(function(data) {
+      self.write(value.properties.id, value).then(function(data) {
         deferred.notify();
         deferred.resolve(data);
       });

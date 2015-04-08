@@ -691,7 +691,7 @@ angular.module('app')
         });
 
         // Save the linked spot
-        SpotsFactory.save(linked_spot, linked_spot.properties.id).then(function(data){
+        SpotsFactory.save(linked_spot).then(function(data){
           console.log("updated inverse spot", data);
         });
       });
@@ -702,7 +702,7 @@ angular.module('app')
         var linked_spot = cleanRefs("links", obj.id);
 
         // Save the linked spot
-        SpotsFactory.save(linked_spot, linked_spot.properties.id).then(function(data){
+        SpotsFactory.save(linked_spot).then(function(data){
           console.log("updated inverse spot", data);
         });
       });
@@ -722,7 +722,7 @@ angular.module('app')
         });
 
         // Save the group
-        SpotsFactory.save(group, group.properties.id).then(function(data){
+        SpotsFactory.save(group).then(function(data){
           console.log("added group member", data);
         });
       });
@@ -733,7 +733,7 @@ angular.module('app')
         var group = cleanRefs("groups", obj.id);
 
         // Save the group
-        SpotsFactory.save(group, group.properties.id).then(function(data){
+        SpotsFactory.save(group).then(function(data){
           console.log("removed group member", data);
         });
       });
@@ -753,7 +753,7 @@ angular.module('app')
         });
 
         // Save the group
-        SpotsFactory.save(group, group.properties.id).then(function(data){
+        SpotsFactory.save(group).then(function(data){
           console.log("added group", data);
         });
       });
@@ -764,13 +764,13 @@ angular.module('app')
         var group = cleanRefs("group_members", obj.id);
 
         // Save the group
-        SpotsFactory.save(group, group.properties.id).then(function(data){
+        SpotsFactory.save(group).then(function(data){
           console.log("removed group", data);
         });
       });
 
-      // Save the spot -- if the id is defined, we overwrite existing id; otherwise create new id/spot
-      SpotsFactory.save($scope.spot, $scope.spot.properties.id).then(function(data) {
+      // Save the spot
+      SpotsFactory.save($scope.spot).then(function(data) {
         console.log("wrote", data);
       });
 
