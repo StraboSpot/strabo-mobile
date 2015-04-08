@@ -181,11 +181,7 @@ angular.module('app')
         vergence: ($scope.spot.properties.vergence) ? true : false
       };
 
-      $scope.showLinkToNewOrientation =
-          $scope.spot.properties.spottype == "Contact Outcrop" ||
-          $scope.spot.properties.spottype == "Fault Outcrop" ||
-          $scope.spot.properties.spottype == "Rock Description" ||
-          $scope.spot.properties.spottype == "Sample";
+      $scope.showLinkToNewOrientation = $scope.spot.properties.spottype != "Orientation";
 
       // Create checkbox list of other spots for selected as related spots
       SpotsFactory.all().then(function (spots) {
@@ -204,9 +200,9 @@ angular.module('app')
             }
           }
         });
-        // Don't show related spots until spot has been saved and id assigned -- Need to fix this
-        $scope.showLinks = $scope.other_spots.length > 0 && $scope.spot.properties.id;
-        $scope.showGroups = $scope.groups.length > 0 && $scope.spot.properties.id;
+        // Don't show links or groups until there are other spots to link to or groups to join
+        $scope.showLinks = $scope.other_spots.length;
+        $scope.showGroups = $scope.groups.length;
       });
     };
 
@@ -777,6 +773,10 @@ angular.module('app')
       // Go back one view in history
       var backView = $ionicHistory.backView();
       backView.go();
+    };
+
+    $scope.copySpot = function() {
+      console.log("hi");
     };
 
     // Delete the spot

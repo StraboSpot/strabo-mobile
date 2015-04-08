@@ -1,5 +1,6 @@
 <ion-view title="Spot Detail">
   <ion-nav-buttons side="right">
+    <button ng-click="newOrientation();" ng-show="showLinkToNewOrientation" class="button button-icon icon ion-compass"></button>
     <button ng-click="deleteSpot();" class="button button-icon icon ion-trash-b"></button>
     <button ng-click="submit();" class="button button-icon icon ion-checkmark-circled"></button>
   </ion-nav-buttons>
@@ -190,12 +191,6 @@
                 <input type="text" placeholder="What is the unit label?" ng-model="spot.properties.unit_label">
               </label>
             </div>
-          </div>
-
-          <div ng-show="showLinkToNewOrientation">
-            <br>
-            <button ng-click="newOrientation();" class="button button-small icon-left icon ion-link">Add New Orientation</button>
-            <br><br>
           </div>
 
           <!-- SPOT GROUPING -->
