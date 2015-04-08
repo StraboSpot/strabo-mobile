@@ -144,8 +144,17 @@ angular.module('app')
           if (!$scope.spot.properties.orientation_quality)
             $scope.spot.properties.orientation_quality = "accurate";
           break;
-        case "Contact Outcrop" || "Contact Trace":
+        case "Contact Outcrop":
           $scope.showContactFields = true;
+          break;
+        case "Contact Trace":
+          $scope.showContactFields = true;
+          break;
+        case "Fault Outcrop":
+          $scope.showFaultFields = true;
+          break;
+        case "Fault Trace":
+          $scope.showFaultFields = true;
           break;
         case "Spot Grouping":
           $scope.showGroupFields = true;
@@ -855,8 +864,8 @@ angular.module('app')
     };
 
     /*************************************
-    /* Contact
-    /************************************/
+     /* Contact
+     /************************************/
 
     $scope.contact_type = {
       label: "Contact Type",
@@ -868,6 +877,21 @@ angular.module('app')
         'unknown',
         'edge of mapping',
         'other'
+      ],
+      required: true
+    };
+
+    /*************************************
+     /* Fault
+     /************************************/
+
+    $scope.fault_type = {
+      label: "Fault Type",
+      choices: [
+        'strike-slip',
+        'unknown',
+        'dip-slip',
+        'not specified'
       ],
       required: true
     };

@@ -201,7 +201,18 @@
                       ng-options="item for item in contact_type.choices"></select>
             </label>
             <br>
-            Need to add the rest of the Contact fields here.
+            Add the rest of the Contact fields here.
+          </div>
+
+          <!-- Fault -->
+          <div ng-show="showFaultFields">
+            <label class="item item-input item-select">
+              <span class="input-label">{{fault_type.label}}</span>
+              <select ng-model="spot.properties.fault_type"
+                      ng-options="item for item in fault_type.choices"></select>
+            </label>
+            <br>
+            Add the rest of the Fault fields here.
           </div>
 
           <!-- SPOT GROUPING -->
