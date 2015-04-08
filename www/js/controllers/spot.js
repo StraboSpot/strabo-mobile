@@ -130,21 +130,26 @@ angular.module('app')
         });
       }
 
-      if ($scope.spot.properties.spottype == "Orientation") {
-        $scope.showFeatureType = true;
-        $scope.showOrientation_quality = true;
-        $scope.showUnit_name = true;
-        $scope.showUnit_label = true;
+      switch ($scope.spot.properties.spottype) {
+        case "Orientation":
+          $scope.showFeatureType = true;
+          $scope.showOrientation_quality = true;
+          $scope.showUnit_name = true;
+          $scope.showUnit_label = true;
 
-        // Set default values for Orientation Spot Type
-        if (!$scope.spot.properties.feature_type) {
-          $scope.spot.properties.feature_type = "bedding";
-        }
-        if (!$scope.spot.properties.orientation_quality)
-          $scope.spot.properties.orientation_quality = "accurate";
-      }
-      else if ($scope.spot.properties.spottype == "Spot Grouping") {
-        $scope.showGroupFields = true;
+          // Set default values for Orientation Spot Type
+          if (!$scope.spot.properties.feature_type) {
+            $scope.spot.properties.feature_type = "bedding";
+          }
+          if (!$scope.spot.properties.orientation_quality)
+            $scope.spot.properties.orientation_quality = "accurate";
+          break;
+        case "Contact Outcrop" || "Contact Trace":
+          $scope.showContactFields = true;
+          break;
+        case "Spot Grouping":
+          $scope.showGroupFields = true;
+          break;
       }
 
       // If current spot is a point
@@ -234,228 +239,6 @@ angular.module('app')
         $scope[type_selected] = _.reject($scope[type_selected], function (spot) { return spot.id == ref_spot.id });
         $scope[type_unselected].push(ref_spot);
       }
-    };
-
-    // ********************
-    // * Data Fields
-    // ********************
-
-    $scope.feature_type = {
-      label: "Feature Type",
-      choices: [
-        { text: 'bedding', value: 'bedding' },
-        { text: 'flow layering', value: 'flow_layering' },
-        { text: 'foliation', value: 'foliation' },
-        { text: 'joint', value: 'joint' },
-        { text: 'fracture', value: 'fracture' },
-        { text: 'fault plane', value: 'fault_plane' },
-        { text: 'axial surface', value: 'axial_surface' },
-        { text: 'stylolite', value: 'stylolite' },
-        { text: 'fold hinge', value: 'fold_hinge' },
-        { text: 'stretching lineation', value: 'stretching_lineation' },
-        { text: 'slicken side striae', value: 'slicken_side_striae' },
-        { text: 'foliation with lineation', value: 'foliation_with_lineation' },
-        { text: 'bedding with cleavage', value: 'bedding_with_cleavage' },
-        { text: 'shear zone', value: 'shear_zone' },
-        { text: 'movement direction', value: 'movement_direction' }
-      ],
-      required: true,
-      default: "bedding"
-    };
-
-    $scope.strike = {
-      relevant: [
-        { field: 'feature_type', value: 'bedding' },
-        { field: 'feature_type', value: 'flow_layering' },
-        { field: 'feature_type', value: 'foliation' },
-        { field: 'feature_type', value: 'joint' },
-        { field: 'feature_type', value: 'fracture' },
-        { field: 'feature_type', value: 'fault_plane' },
-        { field: 'feature_type', value: 'axial_surface' },
-        { field: 'feature_type', value: 'stylolite' },
-        { field: 'feature_type', value: 'foliation_with_lineation' },
-        { field: 'feature_type', value: 'bedding_with_cleavage' },
-        { field: 'feature_type', value: 'shear_zone' }
-      ],
-      required: true
-    };
-
-    $scope.dip = {
-      relevant: [
-        { field: 'feature_type', value: 'bedding' },
-        { field: 'feature_type', value: 'flow_layering' },
-        { field: 'feature_type', value: 'foliation' },
-        { field: 'feature_type', value: 'joint' },
-        { field: 'feature_type', value: 'fracture' },
-        { field: 'feature_type', value: 'fault_plane' },
-        { field: 'feature_type', value: 'axial_surface' },
-        { field: 'feature_type', value: 'stylolite' },
-        { field: 'feature_type', value: 'foliation_with_lineation' },
-        { field: 'feature_type', value: 'bedding_with_cleavage' },
-        { field: 'feature_type', value: 'shear_zone' }
-      ],
-      required: true
-    };
-
-    $scope.trend = {
-      relevant: [
-        { field: 'feature_type', value: 'fold_hinge' },
-        { field: 'feature_type', value: 'stretching_lineation' },
-        { field: 'feature_type', value: 'slicken_side_striae' },
-        { field: 'feature_type', value: 'foliation_with_lineation' },
-        { field: 'feature_type', value: 'movement_direction' }
-      ],
-      required: true
-    };
-
-    $scope.plunge = {
-      relevant: [
-        { field: 'feature_type', value: 'fold_hinge' },
-        { field: 'feature_type', value: 'stretching_lineation' },
-        { field: 'feature_type', value: 'slicken_side_striae' },
-        { field: 'feature_type', value: 'foliation_with_lineation' },
-        { field: 'feature_type', value: 'movement_direction' }
-      ],
-      required: true
-    };
-
-    $scope.orientation_quality = {
-      choices: [
-        { text: 'accurate', value: 'accurate' },
-        { text: 'approximate', value: 'approximate' },
-        { text: 'irregular', value: 'irregular' }
-      ],
-      required: true,
-      default: "accurate"
-    };
-
-    $scope.plane_facing = {
-      choices: [
-        {text: 'upright', value: 'upright'},
-        {text: 'overturned', value: 'overturned'},
-        {text: 'vertical', value: 'vertical'},
-        {text: 'unknown', value: 'unknown'}
-      ],
-      required: true,
-      default: 'upright',
-      relevant: [
-        { field: 'feature_type', value: 'bedding' },
-        { field: 'feature_type', value: 'axial_surface' }
-      ]
-    };
-
-    $scope.facing_direction = {
-      required: false,
-      relevant: [
-        { field: 'plane_facing', value: 'vertical' }
-      ]
-    };
-
-    $scope.directed = {
-      choices: [
-        { text: 'yes', value: 'yes'},
-        { text: 'no', value: 'no'}
-      ],
-      required: false,
-      relevant: [
-        { field: 'feature_type', value: 'fold_hinge' },
-        { field: 'feature_type', value: 'foliation_with_lineation' },
-        { field: 'feature_type', value: 'slicken_side_striae' }
-      ]
-    };
-
-    $scope.vergence = {
-      required: false,
-      relevant: [
-        { field: 'directed', value: 'yes' }
-      ]
-    };
-
-    $scope.fold_type = {
-      choices: [
-        {text: 'anticline', value: 'anticline'},
-        {text: 'monocline', value: 'monocline'},
-        {text: 'antiformal syncline', value: 'antiformal syncline'},
-        {text: 'synformal anticline', value: 'synformal anticline'},
-        {text: 'antiform', value: 'antiform'},
-        {text: 'synform', value: 'synform'},
-        {text: 's-fold', value: 's-fold'},
-        {text: 'z-fold', value: 'z-fold'},
-        {text: 'm-fold', value: 'm-fold'}
-      ],
-      required: false,
-      default: 'antiform',
-      relevant: [
-        { field: 'feature_type', value: 'fold_hinge' },
-        { field: 'feature_type', value: 'fault_plane' },
-        { field: 'feature_type', value: 'axial_surface' }
-      ]
-    };
-
-    $scope.fold_detail = {
-      choices: [
-        { text: 'overturned', value: 'overturned' },
-        { text: 'vertical', value: 'vertical' },
-        { text: 'horizontal', value: 'horizontal' },
-        { text: 'recumbent', value: 'recumbent' },
-        { text: 'inclined', value: 'inclined' },
-        { text: 'upright', value: 'upright' }
-      ],
-      required: false,
-      default: 'upright',
-      relevant: [
-        { field: 'feature_type', value: 'fold_hinge' },
-        { field: 'feature_type', value: 'fault_plane' },
-        { field: 'feature_type', value: 'axial_surface' }
-      ]
-    };
-
-    /////////////////
-    // SPOT GROUPING
-    /////////////////
-
-    $scope.group_relationship = {
-      label: "What do the elements of this group have in common?",
-      choices: [
-        { text: 'other', value: 'other' },
-        { text: 'feature type', value: 'feature_type' },
-        { text: 'part of larger structure', value: 'larger_structure' },
-        { text: 'age', value: 'age' },
-        { text: 'location', value: 'location' },
-        { text: 'part of the same process or event', value: 'process' }
-      ],
-      required: true,
-      hint: "(How are these data similar?)"
-    };
-
-    $scope.larger_structure = {
-      label: "Larger structure is a:",
-      choices: [
-        { text: 'fault', value: 'fault' },
-        { text: 'fold', value: 'fold' },
-        { text: 'shear zone', value: 'shear_zone' },
-        { text: 'intrusive body', value: 'intrusive_body' },
-        { text: 'other', value: 'other' }
-      ],
-      required: true
-    };
-
-    /////////////////
-    // LINKS
-    /////////////////
-
-    $scope.link_relationship = {
-      choices: [
-        { type: 'cross-cuts', inverse: 'is cross cut by' },
-        { type: 'is cross-cut by', inverse: 'cross cuts' },
-        { type: 'is younger than', inverse: 'is older than' },
-        { type: 'is older than', inverse: 'is younger than' },
-        { type: 'is a lower metamorphic grade than', inverse: 'is a higher metamorphic grade than' },
-        { type: 'is a higher metamorphic grade than', inverse: 'is a lower metamorphic grade than' },
-        { type: 'is included within',inverse: 'includes' },
-        { type: 'includes', inverse: 'is included within' },
-        { type: 'is otherwise related to', inverse: 'is otherwise related to' }
-      ]
     };
 
     var resetValues = function() {
@@ -896,4 +679,244 @@ angular.module('app')
     $scope.$on('groupMembersModal.hidden', function() {
       $scope.groupMembersModal.remove();
     });
+
+    /*************************************
+    /* Orientation
+    /************************************/
+
+    $scope.feature_type = {
+      label: "Feature Type",
+      choices: [
+        { text: 'bedding', value: 'bedding' },
+        { text: 'flow layering', value: 'flow_layering' },
+        { text: 'foliation', value: 'foliation' },
+        { text: 'joint', value: 'joint' },
+        { text: 'fracture', value: 'fracture' },
+        { text: 'fault plane', value: 'fault_plane' },
+        { text: 'axial surface', value: 'axial_surface' },
+        { text: 'stylolite', value: 'stylolite' },
+        { text: 'fold hinge', value: 'fold_hinge' },
+        { text: 'stretching lineation', value: 'stretching_lineation' },
+        { text: 'slicken side striae', value: 'slicken_side_striae' },
+        { text: 'foliation with lineation', value: 'foliation_with_lineation' },
+        { text: 'bedding with cleavage', value: 'bedding_with_cleavage' },
+        { text: 'shear zone', value: 'shear_zone' },
+        { text: 'movement direction', value: 'movement_direction' }
+      ],
+      required: true,
+      default: "bedding"
+    };
+
+    $scope.strike = {
+      relevant: [
+        { field: 'feature_type', value: 'bedding' },
+        { field: 'feature_type', value: 'flow_layering' },
+        { field: 'feature_type', value: 'foliation' },
+        { field: 'feature_type', value: 'joint' },
+        { field: 'feature_type', value: 'fracture' },
+        { field: 'feature_type', value: 'fault_plane' },
+        { field: 'feature_type', value: 'axial_surface' },
+        { field: 'feature_type', value: 'stylolite' },
+        { field: 'feature_type', value: 'foliation_with_lineation' },
+        { field: 'feature_type', value: 'bedding_with_cleavage' },
+        { field: 'feature_type', value: 'shear_zone' }
+      ],
+      required: true
+    };
+
+    $scope.dip = {
+      relevant: [
+        { field: 'feature_type', value: 'bedding' },
+        { field: 'feature_type', value: 'flow_layering' },
+        { field: 'feature_type', value: 'foliation' },
+        { field: 'feature_type', value: 'joint' },
+        { field: 'feature_type', value: 'fracture' },
+        { field: 'feature_type', value: 'fault_plane' },
+        { field: 'feature_type', value: 'axial_surface' },
+        { field: 'feature_type', value: 'stylolite' },
+        { field: 'feature_type', value: 'foliation_with_lineation' },
+        { field: 'feature_type', value: 'bedding_with_cleavage' },
+        { field: 'feature_type', value: 'shear_zone' }
+      ],
+      required: true
+    };
+
+    $scope.trend = {
+      relevant: [
+        { field: 'feature_type', value: 'fold_hinge' },
+        { field: 'feature_type', value: 'stretching_lineation' },
+        { field: 'feature_type', value: 'slicken_side_striae' },
+        { field: 'feature_type', value: 'foliation_with_lineation' },
+        { field: 'feature_type', value: 'movement_direction' }
+      ],
+      required: true
+    };
+
+    $scope.plunge = {
+      relevant: [
+        { field: 'feature_type', value: 'fold_hinge' },
+        { field: 'feature_type', value: 'stretching_lineation' },
+        { field: 'feature_type', value: 'slicken_side_striae' },
+        { field: 'feature_type', value: 'foliation_with_lineation' },
+        { field: 'feature_type', value: 'movement_direction' }
+      ],
+      required: true
+    };
+
+    $scope.orientation_quality = {
+      choices: [
+        { text: 'accurate', value: 'accurate' },
+        { text: 'approximate', value: 'approximate' },
+        { text: 'irregular', value: 'irregular' }
+      ],
+      required: true,
+      default: "accurate"
+    };
+
+    $scope.plane_facing = {
+      choices: [
+        {text: 'upright', value: 'upright'},
+        {text: 'overturned', value: 'overturned'},
+        {text: 'vertical', value: 'vertical'},
+        {text: 'unknown', value: 'unknown'}
+      ],
+      required: true,
+      default: 'upright',
+      relevant: [
+        { field: 'feature_type', value: 'bedding' },
+        { field: 'feature_type', value: 'axial_surface' }
+      ]
+    };
+
+    $scope.facing_direction = {
+      required: false,
+      relevant: [
+        { field: 'plane_facing', value: 'vertical' }
+      ]
+    };
+
+    $scope.directed = {
+      choices: [
+        { text: 'yes', value: 'yes'},
+        { text: 'no', value: 'no'}
+      ],
+      required: false,
+      relevant: [
+        { field: 'feature_type', value: 'fold_hinge' },
+        { field: 'feature_type', value: 'foliation_with_lineation' },
+        { field: 'feature_type', value: 'slicken_side_striae' }
+      ]
+    };
+
+    $scope.vergence = {
+      required: false,
+      relevant: [
+        { field: 'directed', value: 'yes' }
+      ]
+    };
+
+    $scope.fold_type = {
+      choices: [
+        {text: 'anticline', value: 'anticline'},
+        {text: 'monocline', value: 'monocline'},
+        {text: 'antiformal syncline', value: 'antiformal syncline'},
+        {text: 'synformal anticline', value: 'synformal anticline'},
+        {text: 'antiform', value: 'antiform'},
+        {text: 'synform', value: 'synform'},
+        {text: 's-fold', value: 's-fold'},
+        {text: 'z-fold', value: 'z-fold'},
+        {text: 'm-fold', value: 'm-fold'}
+      ],
+      required: false,
+      default: 'antiform',
+      relevant: [
+        { field: 'feature_type', value: 'fold_hinge' },
+        { field: 'feature_type', value: 'fault_plane' },
+        { field: 'feature_type', value: 'axial_surface' }
+      ]
+    };
+
+    $scope.fold_detail = {
+      choices: [
+        { text: 'overturned', value: 'overturned' },
+        { text: 'vertical', value: 'vertical' },
+        { text: 'horizontal', value: 'horizontal' },
+        { text: 'recumbent', value: 'recumbent' },
+        { text: 'inclined', value: 'inclined' },
+        { text: 'upright', value: 'upright' }
+      ],
+      required: false,
+      default: 'upright',
+      relevant: [
+        { field: 'feature_type', value: 'fold_hinge' },
+        { field: 'feature_type', value: 'fault_plane' },
+        { field: 'feature_type', value: 'axial_surface' }
+      ]
+    };
+
+    /*************************************
+    /* Contact
+    /************************************/
+
+    $scope.contact_type = {
+      label: "Contact Type",
+      choices: [
+        'depositional',
+        'intrusive',
+        'metamorphic',
+        'marker layer',
+        'unknown',
+        'edge of mapping',
+        'other'
+      ],
+      required: true
+    };
+
+    /*************************************
+    /* Spot Grouping
+    /************************************/
+
+    $scope.group_relationship = {
+      label: "What do the elements of this group have in common?",
+      choices: [
+        { text: 'other', value: 'other' },
+        { text: 'feature type', value: 'feature_type' },
+        { text: 'part of larger structure', value: 'larger_structure' },
+        { text: 'age', value: 'age' },
+        { text: 'location', value: 'location' },
+        { text: 'part of the same process or event', value: 'process' }
+      ],
+      required: true,
+      hint: "(How are these data similar?)"
+    };
+
+    $scope.larger_structure = {
+      label: "Larger structure is a:",
+      choices: [
+        { text: 'fault', value: 'fault' },
+        { text: 'fold', value: 'fold' },
+        { text: 'shear zone', value: 'shear_zone' },
+        { text: 'intrusive body', value: 'intrusive_body' },
+        { text: 'other', value: 'other' }
+      ],
+      required: true
+    };
+
+    /*************************************
+    /* Links
+    /************************************/
+
+    $scope.link_relationship = {
+      choices: [
+        { type: 'cross-cuts', inverse: 'is cross cut by' },
+        { type: 'is cross-cut by', inverse: 'cross cuts' },
+        { type: 'is younger than', inverse: 'is older than' },
+        { type: 'is older than', inverse: 'is younger than' },
+        { type: 'is a lower metamorphic grade than', inverse: 'is a higher metamorphic grade than' },
+        { type: 'is a higher metamorphic grade than', inverse: 'is a lower metamorphic grade than' },
+        { type: 'is included within',inverse: 'includes' },
+        { type: 'includes', inverse: 'is included within' },
+        { type: 'is otherwise related to', inverse: 'is otherwise related to' }
+      ]
+    };
   });

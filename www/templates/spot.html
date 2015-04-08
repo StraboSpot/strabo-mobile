@@ -193,6 +193,17 @@
             </div>
           </div>
 
+          <!-- Contact -->
+          <div ng-show="showContactFields">
+            <label class="item item-input item-select">
+              <span class="input-label">{{contact_type.label}}</span>
+              <select ng-model="spot.properties.contact_type"
+                      ng-options="item for item in contact_type.choices"></select>
+            </label>
+            <br>
+            Need to add the rest of the Contact fields here.
+          </div>
+
           <!-- SPOT GROUPING -->
           <div ng-show="showGroupFields">
             <!-- Group Relationship Condition -->
@@ -209,7 +220,7 @@
                 </label>
                 <!-- Larger Structure is A -->
                 <label class="item item-input item-select">
-                  <span class="input-label">{{larger_structure.label}}</small></span>
+                  <span class="input-label">{{larger_structure.label}}</span>
                   <select ng-model="spot.properties.larger_structure"
                           ng-options="item.value as item.text for item in larger_structure.choices | orderBy:'text'"></select>
                 </label>
@@ -242,6 +253,7 @@
               </ion-list>
             </div>
           </div>
+
         </ion-content>
       </ion-nav-view>
     </ion-tab>
