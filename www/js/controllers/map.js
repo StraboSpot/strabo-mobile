@@ -598,7 +598,18 @@ angular.module('app')
           src: ImagesFactory.getImagePath('sample'),
           scale: 0.08
         });
-      }
+      },
+      group: function(rotation) {
+        return new ol.style.Icon({
+          anchorXUnits: 'pixels',
+          anchorYUnits: 'pixels',
+          opacity: 1,
+          rotation: Math.radians(rotation),
+          src: ImagesFactory.getImagePath('group'),
+          scale: 0.4
+        });
+      },
+
     };
 
 
@@ -632,6 +643,9 @@ angular.module('app')
           return icon.notes(rotation);
         case "Sample":
           return icon.sample(rotation);
+
+        case "Spot Grouping":
+          return icon.group(rotation);
         default:
           // TODO: do we want to put a default image when everything fails?
           break;

@@ -3,6 +3,11 @@
 angular.module('app')
   .factory('ImagesFactory', function() {
     var images = {
+
+      // custom
+      group: 'img/group.png',
+
+      // zach geology
       bedding_horizontal: 'img/geology/bedding_horizontal.png',
       bedding_inclined: 'img/geology/bedding_inclined.png',
       bedding_vertical: 'img/geology/bedding_vertical.png',
@@ -35,6 +40,12 @@ angular.module('app')
       // TODO: rotation for those images that require it
 
       switch (contentModel) {
+
+        // custom
+        case 'group':
+          return images.group;
+
+        // zach geology
         case 'contact_outcrop':
           return images.contact_NO_ORIENTATION;
         case 'fault_outcrop':
