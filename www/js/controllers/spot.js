@@ -143,7 +143,7 @@ angular.module('app')
         if (!$scope.spot.properties.orientation_quality)
           $scope.spot.properties.orientation_quality = "accurate";
       }
-      else if ($scope.spot.properties.spottype == "Grouping") {
+      else if ($scope.spot.properties.spottype == "Spot Grouping") {
         $scope.showGroupFields = true;
       }
 
@@ -197,7 +197,7 @@ angular.module('app')
             $scope.other_spots.push({
               name: obj.properties.name, id: obj.properties.id
             });
-            if (obj.properties.spottype == "Grouping") {
+            if (obj.properties.spottype == "Spot Grouping") {
               $scope.groups.push({
                 name: obj.properties.name, id: obj.properties.id
               });

@@ -8,19 +8,22 @@ angular.module('app')
     { type: "Notes", template: "commonfields" },
     { type: "Orientation", template: "newspot" },
     { type: "Rock Description", template: "commonfields" },
-    { type: "Sample", template: "commonfields" }
+    { type: "Sample", template: "commonfields" },
+    { type: "Spot Grouping", template: "commonfields" }
   ];
 
   $scope.lineTypes = [
     { type: "Contact Trace", template: "commonfields" },
     { type: "Fault Trace", template: "commonfields" },
     { type: "Hinge Surface Trace", template: "commonfields" },
-    { type: "Notes", template: "commonfields" }
+    { type: "Notes", template: "commonfields" },
+    { type: "Spot Grouping", template: "commonfields" }
   ];
 
   $scope.polyTypes = [
     { type: "Notes", template: "commonfields" },
-    { type: "Rock Description", template: "commonfields" }
+    { type: "Rock Description", template: "commonfields" },
+    { type: "Spot Grouping", template: "commonfields" }
   ];
 
   $scope.allTypes = [
@@ -32,7 +35,7 @@ angular.module('app')
     { type: "Notes", template: "commonfields" },
     { type: "Orientation", template: "newspot" },
     { type: "Rock Description", template: "commonfields" },
-    { type: "Grouping", template: "commonfields" }
+    { type: "Spot Grouping", template: "commonfields" }
   ];
 
   // a geojson template we pass in when creating a new spot from the spot menu
