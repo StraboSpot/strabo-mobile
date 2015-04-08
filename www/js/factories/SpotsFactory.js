@@ -121,6 +121,10 @@ angular.module('app')
       }
     };
 
+    factory.getSpotId = function(spotId) {
+      return spotsDb.getItem(spotId);
+    };
+
     // return factory
     return factory;
   });

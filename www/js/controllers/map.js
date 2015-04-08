@@ -17,7 +17,8 @@ angular.module('app')
   OfflineTilesFactory,
   SlippyTileNamesFactory,
   SpotsFactory,
-  ViewExtentFactory) {
+  ViewExtentFactory,
+  ImagesFactory) {
   /*
     $scope.$watch('navigator.onLine', function(navigator.onLine) {
       if (navigator.onLine)
@@ -547,15 +548,149 @@ angular.module('app')
       });
     };
 
-    // imageStyle is a function because each point could have a different strike rotation
-    var imageStyle = function(strike) {
-      return new ol.style.Icon({
-        anchorXUnits: 'pixels',
-        anchorYUnits: 'pixels',
-        opacity: 1,
-        rotation: Math.radians(strike),
-        src: 'img/strikedip.png'
-      });
+    var icon = {
+      contact_outcrop: function(rotation) {
+        return new ol.style.Icon({
+          anchorXUnits: 'pixels',
+          anchorYUnits: 'pixels',
+          opacity: 1,
+          rotation: Math.radians(rotation),
+          src: ImagesFactory.getImagePath('contact_outcrop'),
+          scale: 0.05
+        });
+      },
+      fault_outcrop: function(rotation) {
+        return new ol.style.Icon({
+          anchorXUnits: 'pixels',
+          anchorYUnits: 'pixels',
+          opacity: 1,
+          rotation: Math.radians(rotation),
+          src: ImagesFactory.getImagePath('fault_outcrop'),
+          scale: 0.05
+        });
+      },
+      notes: function(rotation) {
+        return new ol.style.Icon({
+          anchorXUnits: 'pixels',
+          anchorYUnits: 'pixels',
+          opacity: 1,
+          rotation: Math.radians(rotation),
+          src: ImagesFactory.getImagePath('notes'),
+          scale: 0.06
+        });
+      },
+      orientation: function(rotation) {
+        return new ol.style.Icon({
+          anchorXUnits: 'pixels',
+          anchorYUnits: 'pixels',
+          opacity: 1,
+          rotation: Math.radians(rotation),
+          src: ImagesFactory.getImagePath('orientation'),
+          scale: 0.08
+        });
+      },
+      sample: function(rotation) {
+        return new ol.style.Icon({
+          anchorXUnits: 'pixels',
+          anchorYUnits: 'pixels',
+          opacity: 1,
+          rotation: Math.radians(rotation),
+          src: ImagesFactory.getImagePath('sample'),
+          scale: 0.08
+        });
+      }
+    };
+
+
+    var getIconForFeature = function(feature) {
+      var contentModel = feature.get('spottype');
+      var dip = null;
+      var plunge = null;
+
+      // do we have a dip?
+      if (typeof feature.get('dip') !== 'undefined') {
+        dip = feature.get('dip');
+      }
+
+      // do we have a plunge?
+      if (typeof feature.get('plunge') !== 'undefined') {
+        plunge = feature.get('plunge');
+      }
+
+      var rotation = (dip || plunge) ? dip || plunge : 0;
+
+      switch(contentModel) {
+        case "Contact Outcrop":
+          return icon.contact_outcrop(rotation);
+        case "Fault Outcrop":
+          return icon.fault_outcrop(rotation);
+        case "Notes":
+          return icon.notes(rotation);
+        case "Orientation":
+          return icon.orientation(rotation);
+        case "Rock Description":
+          return icon.notes(rotation);
+        case "Sample":
+          return icon.sample(rotation);
+        default:
+          // TODO: do we want to put a default image when everything fails?
+          break;
+      }
+
+      // if (contentModel == "Orientation") {
+      //   // we do something else with orientation content models
+      // } else {
+      //   // get the links
+      //   // TODO: what if there's more than one relationship?  What do we use then?
+      //
+      //   if (feature.get('links') === undefined) {
+      //     // TODO: what if there's NO relationship?
+      //     return;
+      //   } else {
+      //     var linkedRelationshipId = feature.get('links')[0].id;
+      //     console.log("aaa", linkedRelationshipId);
+      //
+      //     // get the actual spot
+      //     return SpotsFactory.getSpotId(linkedRelationshipId).then(function(spot) {
+      //
+      //       // we only care about orientations linkages at this point
+      //       if (spot.properties.spottype == "Orientation") {
+      //
+      //         console.log("the spot is", spot);
+      //
+      //         var dip = null;
+      //         var plunge = null;
+      //
+      //         // do we have a dip?
+      //         if (typeof spot.properties.dip !== 'undefined') {
+      //           dip = spot.properties.dip;
+      //         }
+      //
+      //         // do we have a plunge?
+      //         if (typeof spot.properties.plunge !== 'undefined') {
+      //           plunge = spot.properties.plunge;
+      //         }
+      //
+      //         var rotation = (dip || plunge) ? dip || plunge : 0;
+      //
+      //         switch(contentModel) {
+      //           case "Contact Outcrop":
+      //             return icon.contact_outcrop(rotation);
+      //           case "Fault Outcrop":
+      //             return icon.fault_outcrop(rotation);
+      //           default:
+      //             // TODO: do we want to put a default image when everything fails?
+      //             break;
+      //         }
+      //
+      //
+      //       }
+      //
+      //
+      //
+      //
+      //     });
+      //   }
     };
 
     return new ol.layer.Vector({
@@ -569,7 +704,7 @@ angular.module('app')
         var styles = {
           'Point': [
             new ol.style.Style({
-              image: imageStyle(feature.values_.strike)
+              image: getIconForFeature(feature)
             }),
             new ol.style.Style({
               text: textStyle(feature.values_.name)
