@@ -231,17 +231,17 @@
                 </label>
               </div>
             </div>
-            <div ng-show="showGroupMembers">
+            <div>
               <div class="item item-divider">
                 Group Members
               </div>
               <div>
                 <br>
-                <button ng-click="addGroupMember();" class="button button-small icon-left icon ion-plus-round">Add a Member to this Group</button>
+                <button ng-click="addGroupMember();" class="button button-small icon-left icon ion-plus-round">Add or Edit Members of this Group</button>
                 <br><br>
               </div>
               <ion-list>
-                <ion-item ng-repeat="item in groups_selected" href="#/app/spots/{{item.id}}">
+                <ion-item ng-repeat="item in group_members_selected" href="#/app/spots/{{item.id}}">
                   {{item.name}}
                 </ion-item>
               </ion-list>

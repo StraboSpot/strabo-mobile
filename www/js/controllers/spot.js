@@ -122,6 +122,14 @@ angular.module('app')
         });
       }
 
+      $scope.group_members_selected = [];
+      $scope.group_members_unselected = [];
+      if ($scope.spot.properties.group_members && typeof($scope.spot.properties.group_members) == "object") {
+        $scope.spot.properties.group_members.forEach(function (obj, i) {
+          $scope.group_members_selected.push(obj);
+        });
+      }
+
       if ($scope.spot.properties.spottype == "Orientation") {
         $scope.showFeatureType = true;
         $scope.showOrientation_quality = true;
@@ -137,8 +145,6 @@ angular.module('app')
       }
       else if ($scope.spot.properties.spottype == "Grouping") {
         $scope.showGroupFields = true;
-        if ($scope.spot.properties.groups)
-          $scope.showGroupMembers = true;
       }
 
       // If current spot is a point
@@ -220,12 +226,8 @@ angular.module('app')
       });
     }
 
-    // Toggle selected for links or groups selected
+    // Toggle selected for links or groups or group members selected
     $scope.toggleSelection = function toggleSelection(ref_spot, type_selected, type_unselected) {
-   /*   var selected_spot = _.find($scope.links_selected, function (sel_spot) {
-    return sel_spot.id === linked_spot.id;
-    });
-*/
       var selected_spot = _.findWhere($scope[type_selected], { id: ref_spot.id });
       // If selected spot is not already in the links_selected object
       if (!selected_spot) {
@@ -636,7 +638,7 @@ angular.module('app')
         $scope.spot.geometry.coordinates[0] = $scope.point.longitude;
       }
 
-      // Remove references from links or groups
+      // Remove references from links or groups or group members
       var cleanRefs = function (ref_type, id) {
         // Remove the link reference from the link references for this spot, if it exists
         $scope.spot.properties[ref_type] = _.reject($scope.spot.properties[ref_type], function (ref) {
@@ -648,8 +650,20 @@ angular.module('app')
           return _.findWhere(item, { id: id });
         })[0];
 
+        switch (ref_type) {
+          case "links":
+            var inverse_ref = "links";
+            break;
+          case "groups":
+            var inverse_ref = "group_members";
+            break;
+          case "group_members":
+            var inverse_ref = "groups";
+            break;
+        }
+
         // Remove the link reference to this spot from the link spot, if it exists
-        reference.properties[ref_type] = _.reject(reference.properties[ref_type], function (ref) {
+        reference.properties[inverse_ref] = _.reject(reference.properties[inverse_ref], function (ref) {
           return ref.id == $scope.spot.properties.id;
         });
         return reference;
@@ -702,14 +716,14 @@ angular.module('app')
         $scope.spot.properties.groups.push(obj);
 
         // Add the new/updated spot reference to the group references for this group
-        group.properties.groups.push({
+        group.properties.group_members.push({
           name: $scope.spot.properties.name,
           id: $scope.spot.properties.id
         });
 
         // Save the group
         SpotsFactory.save(group, group.properties.id).then(function(data){
-          console.log("updated inverse group spot", data);
+          console.log("added group member", data);
         });
       });
 
@@ -720,7 +734,38 @@ angular.module('app')
 
         // Save the group
         SpotsFactory.save(group, group.properties.id).then(function(data){
-          console.log("updated inverse group spot", data);
+          console.log("removed group member", data);
+        });
+      });
+
+      // Add or update the group members for this spot
+      $scope.group_members_selected.forEach(function (obj, i) {
+        // Remove this obj from the group
+        var group = cleanRefs("group_members", obj.id);
+
+        // Add the new/updated group reference to the group references for this spot
+        $scope.spot.properties.group_members.push(obj);
+
+        // Add the new/updated spot reference to the group references for this group
+        group.properties.groups.push({
+          name: $scope.spot.properties.name,
+          id: $scope.spot.properties.id
+        });
+
+        // Save the group
+        SpotsFactory.save(group, group.properties.id).then(function(data){
+          console.log("added group", data);
+        });
+      });
+
+      // Remove unchecked spots from group memberships
+      $scope.group_members_unselected.forEach(function (obj, i) {
+        // Remove group references for this obj from this spot and the group
+        var group = cleanRefs("group_members", obj.id);
+
+        // Save the group
+        SpotsFactory.save(group, group.properties.id).then(function(data){
+          console.log("removed group", data);
         });
       });
 
@@ -779,6 +824,12 @@ angular.module('app')
       });
     };
 
+    $scope.isMemberChecked = function (id) {
+      return _.find($scope.spot.properties.group_members, function (rel_spot) {
+        return rel_spot.id === id;
+      });
+    };
+
     $scope.linkSpot = function() {
       NewSpot.setNewSpot($scope.spot);
       $scope.openModal("linkModal");
@@ -797,7 +848,8 @@ angular.module('app')
     };
 
     $scope.addGroupMember = function () {
-      alert("This doesn't do anything yet.")
+      NewSpot.setNewSpot($scope.spot);
+      $scope.openModal("groupMembersModal");
     };
 
     /////////////////
@@ -818,6 +870,13 @@ angular.module('app')
       $scope.groupModal = modal;
     });
 
+    $ionicModal.fromTemplateUrl('templates/modals/groupMembersModal.html', {
+      scope: $scope,
+      animation: 'slide-in-up'
+    }).then(function(modal) {
+      $scope.groupMembersModal = modal;
+    });
+
     $scope.openModal = function(modal) {
       $scope[modal].show();
     };
@@ -833,5 +892,8 @@ angular.module('app')
     });
     $scope.$on('groupModal.hidden', function() {
       $scope.groupModal.remove();
+    });
+    $scope.$on('groupMembersModal.hidden', function() {
+      $scope.groupMembersModal.remove();
     });
   });
