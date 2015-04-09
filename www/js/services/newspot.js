@@ -24,7 +24,8 @@ angular.module('app')
           newSpot.properties = {
             date: new Date(Date.now()),
             time: time,
-            id: new Date().getTime().toString()
+            id: new Date().getTime().toString(),
+            name: new Date().getTime().toString()
           };
         }
       }
