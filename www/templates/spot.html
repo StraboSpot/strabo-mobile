@@ -1,4 +1,4 @@
-<ion-view title="Spot Detail">
+<ion-view title="Spot Info">
   <ion-nav-buttons side="right">
     <button ng-click="newOrientation();" ng-show="showLinkToNewOrientation" class="button button-icon icon ion-compass"></button>
     <button ng-click="deleteSpot();" class="button button-icon icon ion-trash-b"></button>
@@ -8,92 +8,9 @@
   <ion-tabs class="tabs-top has-header tabs-striped has-tabs-top">
 
     <!--------------
-      Tab 1: Main
+      Tab 1: Detail
     ---------------->
-    <ion-tab title="1. Main">
-      <ion-nav-view name="main-tab">
-        <ion-content>
-          <div class="row responsive-md">
-            <div class="col">
-              <div class="item item-divider">
-                {{spot.properties.spottype}}
-              </div>
-              <label class="item item-input">
-                <span class="input-label">Spot Name</span>
-                <input type="text" placeholder="Name this Spot" ng-model="spot.properties.name" autofocus>
-              </label>
-              <label class="item item-input">
-                <span class="input-label">ID</span>
-                <input type="text" disabled ng-model="spot.properties.id">
-              </label>
-              <label class="item item-input">
-                <span class="input-label">Date</span>
-                <input type="date" ng-model="spot.properties.date">
-              </label>
-              <label class="item item-input">
-                <span class="input-label">Time</span>
-                <input type="time" ng-model="spot.properties.time">
-              </label>
-            </div>
-
-            <!-- Location -->
-            <div class="col">
-              <div class="item item-divider">
-                Map Representation
-              </div>
-              <label class="item item-input">
-                <span class="input-label">Geometry</span>
-                <input type="text" disabled ng-model="spot.geometry.type">
-              </label>
-              <label class="item item-input" ng-show="showLatLng">
-                <span class="input-label">Latitude</span>
-                <input type="number" ng-model="point.latitude" value={{point.latitude}}>
-              </label>
-              <label class="item item-input" ng-show="showLatLng">
-                <span class="input-label">Longitude</span>
-                <input type="number" ng-model="point.longitude" value={{point.longitude}}>
-              </label>
-              <div>
-                <!-- Map Interaction -->
-                <div>
-                  <br>
-                  <button ng-click="goToSpot();" class="button button-small icon-left icon ion-eye">View on Map</button>
-                  <button ng-click="getLocation();" ng-show="showMyLocationButton" class="button button-small icon-left ion-pinpoint">Set to My Location</button>
-                  <button ng-click="openMap();" class="button button-small icon-left icon ion-map">Set From Map</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Images -->
-          <div class="item item-divider">
-            Photos
-          </div>
-          <div class="row responsive-md">
-            <div>
-              <ul>
-                <li ng-repeat="image in spot.images" style="display: inline;">
-                  <img ng-src="{{image.src}}" width="100" height="100" />
-                </li>
-              </ul>
-            </div>
-          </div>
-          <button ng-click="cameraModal()" class="button button-small icon-left ion-camera">Add Photo</button>
-          <br><br>
-          <div class="item item-divider">
-            Notes
-          </div>
-          <label class="item item-input">
-            <textarea placeholder="Notes about this Spot" rows="4" ng-model="spot.properties.notes"></textarea>
-          </label>
-        </ion-content>
-      </ion-nav-view>
-    </ion-tab>
-
-    <!--------------
-      Tab 2: Data
-    ---------------->
-    <ion-tab title="2. Data">
+    <ion-tab title="1. Detail">
       <ion-nav-view name="data-tab">
         <ion-content>
           <div class="row responsive-md">
@@ -201,7 +118,7 @@
                       ng-options="item for item in contact_type.choices"></select>
             </label>
             <br>
-            Add the rest of the Contact fields here.
+            Add the rest of the Contact detail fields here.
           </div>
 
           <!-- Fault -->
@@ -212,7 +129,27 @@
                       ng-options="item for item in fault_type.choices"></select>
             </label>
             <br>
-            Add the rest of the Fault fields here.
+            Add the rest of the Fault detail fields here.
+          </div>
+
+          <!-- Hinge Surface Trace -->
+          <div ng-show="showHingeSurfaceTraceFields">
+            Add the Hinge Surface Trace detail fields here.
+          </div>
+
+          <!-- Notes -->
+          <div ng-show="showNotesFields">
+            Add the Notes detail fields here.
+          </div>
+
+          <!-- Rock Description -->
+          <div ng-show="showRockDescriptionFields">
+            Add the Rock Description detail fields here.
+          </div>
+
+          <!-- Sample -->
+          <div ng-show="showSampleFields">
+            Add the Sample detail fields here.
           </div>
 
           <!-- SPOT GROUPING -->
@@ -265,6 +202,89 @@
             </div>
           </div>
 
+        </ion-content>
+      </ion-nav-view>
+    </ion-tab>
+
+    <!--------------
+      Tab 2: General
+    ---------------->
+    <ion-tab title="2. General">
+      <ion-nav-view name="main-tab">
+        <ion-content>
+          <div class="row responsive-md">
+            <div class="col">
+              <div class="item item-divider">
+                {{spot.properties.spottype}}
+              </div>
+              <label class="item item-input">
+                <span class="input-label">Spot Name</span>
+                <input type="text" placeholder="Name this Spot" ng-model="spot.properties.name" autofocus>
+              </label>
+              <label class="item item-input">
+                <span class="input-label">ID</span>
+                <input type="text" disabled ng-model="spot.properties.id">
+              </label>
+              <label class="item item-input">
+                <span class="input-label">Date</span>
+                <input type="date" ng-model="spot.properties.date">
+              </label>
+              <label class="item item-input">
+                <span class="input-label">Time</span>
+                <input type="time" ng-model="spot.properties.time">
+              </label>
+            </div>
+
+            <!-- Location -->
+            <div class="col">
+              <div class="item item-divider">
+                Map Representation
+              </div>
+              <label class="item item-input">
+                <span class="input-label">Geometry</span>
+                <input type="text" disabled ng-model="spot.geometry.type">
+              </label>
+              <label class="item item-input" ng-show="showLatLng">
+                <span class="input-label">Latitude</span>
+                <input type="number" ng-model="point.latitude" value={{point.latitude}}>
+              </label>
+              <label class="item item-input" ng-show="showLatLng">
+                <span class="input-label">Longitude</span>
+                <input type="number" ng-model="point.longitude" value={{point.longitude}}>
+              </label>
+              <div>
+                <!-- Map Interaction -->
+                <div>
+                  <br>
+                  <button ng-click="goToSpot();" class="button button-small icon-left icon ion-eye">View on Map</button>
+                  <button ng-click="getLocation();" ng-show="showMyLocationButton" class="button button-small icon-left ion-pinpoint">Set to My Location</button>
+                  <button ng-click="openMap();" class="button button-small icon-left icon ion-map">Set From Map</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Images -->
+          <div class="item item-divider">
+            Photos
+          </div>
+          <div class="row responsive-md">
+            <div>
+              <ul>
+                <li ng-repeat="image in spot.images" style="display: inline;">
+                  <img ng-src="{{image.src}}" width="100" height="100" />
+                </li>
+              </ul>
+            </div>
+          </div>
+          <button ng-click="cameraModal()" class="button button-small icon-left ion-camera">Add Photo</button>
+          <br><br>
+          <div class="item item-divider">
+            Notes
+          </div>
+          <label class="item item-input">
+            <textarea placeholder="Notes about this Spot" rows="4" ng-model="spot.properties.notes"></textarea>
+          </label>
         </ion-content>
       </ion-nav-view>
     </ion-tab>

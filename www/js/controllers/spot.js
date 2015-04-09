@@ -156,6 +156,18 @@ angular.module('app')
         case "Fault Trace":
           $scope.showFaultFields = true;
           break;
+        case "Hinge Surface Trace":
+          $scope.showHingeSurfaceTraceFields = true;
+          break;
+        case "Notes":
+          $scope.showNotesFields = true;
+          break;
+        case "Rock Description":
+          $scope.showRockDescriptionFields = true;
+          break;
+        case "Sample":
+          $scope.showSampleFields = true;
+          break;
         case "Spot Grouping":
           $scope.showGroupFields = true;
           break;

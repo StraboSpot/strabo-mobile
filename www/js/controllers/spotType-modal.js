@@ -35,6 +35,7 @@ angular.module('app')
     { type: "Notes" },
     { type: "Orientation" },
     { type: "Rock Description" },
+    { type: "Sample" },
     { type: "Spot Grouping" }
   ];
 
