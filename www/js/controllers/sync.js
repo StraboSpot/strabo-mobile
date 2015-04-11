@@ -20,22 +20,18 @@ angular.module('app')
   };
 
   $scope.hideActionButtons = {
-    login: true,
+    login: false,
     logout: true
   };
 
   var hideLoginButton = function() {
-    $scope.hideActionButtons = {
-      login: true,
-      logout: false
-    };
+    $scope.hideActionButtons.login = true;
+    $scope.hideActionButtons.logout = false;
   };
 
   var hideLogoutButton = function() {
-    $scope.hideActionButtons = {
-      login: false,
-      logout: true
-    };
+    $scope.hideActionButtons.login = false;
+    $scope.hideActionButtons.logout = true;
   };
 
   // is the user logged in from before?
@@ -43,18 +39,28 @@ angular.module('app')
     .then(function(login) {
       if (login !== null) {
         // we do have a login -- lets set the authentication
-        console.log("we have a login!");
+        console.log("we have a login!", login);
 
         // Encode the login string
         $scope.encodedLogin = Base64.encode(login.email + ":" + login.password);
 
         // set the email to the login email
         $scope.loginData.email = login.email;
-        hideLoginButton();
+
+        $scope.$apply(function(){
+          hideLoginButton();
+        });
+
+        console.log($scope.hideActionButtons);
       } else {
         // nope, dont have a login
         console.log("no login!");
-        hideLogoutButton();
+
+        $scope.$apply(function() {
+          hideLogoutButton();
+        });
+
+
       }
     });
 
