@@ -27,9 +27,9 @@ Build Stack:
 
     git clone https://github.com/StraboSpot/strabo-mobile.git
     cd strabo-mobile
-    
+
 Move everything, **except `.gitignore`, `config.xml` and the `www` folder**, from the `ionic-sample` folder created above into the `strabo-mobile` folder. Delete the now mostly empty ionic-sample folder.
-    
+
 ### Add Cordova Plugins
 
 In the `strabo-mobile` folder:
@@ -38,13 +38,14 @@ In the `strabo-mobile` folder:
     cordova plugin add org.apache.cordova.dialogs
     cordova plugin add org.apache.cordova.network-information
     cordova plugin add org.apache.cordova.camera
-    
+    cordova plugin add org.apache.cordova.file
+
 ###Run
 
 In a web browser:
 
     ionic serve
- 
+
 To test as a native app see the Ionic [guide](http://ionicframework.com/docs/guide/testing.html).
 For a USB connected Android device:
 

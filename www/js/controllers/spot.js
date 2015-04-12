@@ -13,6 +13,22 @@ angular.module('app')
     $cordovaDialogs,
     $cordovaCamera) {
 
+    $scope.showImages = function(index) {
+      $scope.activeSlide = index;
+      $ionicModal.fromTemplateUrl('templates/modals/imageModal.html', {
+        scope: $scope,
+        animation: 'slide-in-up'
+      }).then(function(modal) {
+        $scope.imageModal = modal;
+        $scope.imageModal.show();
+      });
+    };
+
+    $scope.closeImageModal = function() {
+      $scope.imageModal.hide();
+      $scope.imageModal.remove();
+    };
+
     $scope.cameraSource = [{
       text: 'Photo Library',
       value: 'PHOTOLIBRARY'
@@ -72,26 +88,77 @@ angular.module('app')
 
         var cameraOptions = {
           quality: 75,
-          destinationType: Camera.DestinationType.DATA_URL,
+          destinationType: Camera.DestinationType.FILE_URI,
           sourceType: source,
           allowEdit: true,
           encodingType: Camera.EncodingType.PNG,
-          targetWidth: 100,
-          targetHeight: 100,
           // popoverOptions: CameraPopoverOptions,
-          saveToPhotoAlbum: false
+          saveToPhotoAlbum: true
         };
 
         $cordovaCamera.getPicture(cameraOptions).then(function(imageURI) {
+
+          // the image has been written to mobile device.  It is written in two places:
+          // 1) the local strabo-mobile cache, aka "/storage/emulated/0/Android/data/com.ionicframework.strabomobile327690/cache/filename.jpg"
+          // 2) the Photo Album folder, on Android, this is: /Pictures
+
+          console.log(imageURI);
+
+          // now we read the image from the filesystem and save the image to the spot
+
           // create an images array if it doesn't exist -- camera images are stored here
           if ($scope.spot.images === undefined) {
             $scope.spot.images = [];
           }
 
-          // push the image data to our camera images array
-          $scope.spot.images.push({
-            src: "data:image/png;base64," + imageURI
-          });
+          // does the imageURI include the file:// schema?
+          if (imageURI.substring(0, 7) === 'file://') {
+            // yes -- strip this out
+            imageURI = imageURI.substring(imageURI.length - (imageURI.length - 7));
+          }
+
+          var gotFileEntry = function(fileEntry) {
+            // console.log("inside gotFileEntry");
+            fileEntry.file(gotFile, fail);
+          };
+
+          var gotFile = function(file){
+            // console.log("inside gotFile");
+            readDataUrl(file);
+          };
+
+          var readDataUrl = function(file) {
+            // console.log("inside readDataUrl");
+            var reader = new FileReader();
+            reader.onloadend = function(evt) {
+              // console.log("Read as data URL");
+              // console.log(evt.target.result);
+              var base64Image = evt.target.result;
+              // console.log(base64Image);
+
+              // push the image data to our camera images array
+              $scope.$apply(function(){
+                $scope.spot.images.push({
+                  src: base64Image
+                });
+              });
+            };
+
+            reader.readAsDataURL(file);
+          };
+
+          var fail = function(evt) {
+            // console.log("inside fail");
+            console.log(evt);
+          };
+
+          var gotFS = function(fileSystem) {
+            // console.log("inside gotFS");
+            fileSystem.root.getFile(imageURI, null, gotFileEntry, fail);
+          };
+
+          // invoke the reading of the image file from the local filesystem
+          window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
 
         }, function(err) {
           console.log("error: ", err);

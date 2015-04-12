@@ -102,3 +102,42 @@ th#name{
 .has-tabs-top {
   top: 73px;
 }
+
+
+/*
+--------------------
+image modal style: used for image active-slider when choosing spot images
+--------------------
+*/
+.image-list-thumb {
+    padding: 2px 2px 2px 2px;
+    height: 100px;
+}
+
+.image-modal {
+    width: 100% !important;
+    height: 100%;
+    top: 0 !important;
+    left: 0 !important;
+}
+
+.transparent {
+    background: transparent !important;
+}
+
+.fullscreen-image {
+    max-width: 100%;
+    max-height: 100%;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    overflow: auto;
+    position: fixed;
+    right: 0;
+    top: 0;
+}
+
+.slider {
+    width: 100%;
+    height: 100%;
+}
