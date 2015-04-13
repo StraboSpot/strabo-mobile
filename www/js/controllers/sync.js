@@ -151,7 +151,7 @@ angular.module('app')
 
         var uploadAllSpots = function(spots) {
           var spotsCount = spots.length;
-          console.log("spots", spots);
+          console.log("Spots to upload:", spotsCount, spots);
 
           var currentSpotIndex = 1;
 
@@ -170,7 +170,7 @@ angular.module('app')
             SyncService.createFeature(spot, $scope.encodedLogin)
               // then delete our local spot data
               .then(function(response) {
-                console.log(response);
+                console.log("Uploaded spot. Server response:", response);
                 if (response.status === 201) {
                   return SpotsFactory.destroy(spot.properties.tempId);
                 } else {
@@ -190,7 +190,7 @@ angular.module('app')
                 // notification
                 function() {
                   $scope.progress.current = currentSpotIndex;
-                  console.log(currentSpotIndex, " ", spotsCount);
+                  console.log("Spot ", currentSpotIndex, "/", spotsCount, " uploaded");
                   if (currentSpotIndex == spotsCount) {
                     $scope.progress.showProgress = false;
                     alert("finished uploading to server");

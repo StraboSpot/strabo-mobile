@@ -11,7 +11,7 @@ angular.module('app')
       updateFeature: updateFeature,
       downloadSpot: downloadSpot,
       downloadSpots: downloadSpots,
-      deleteMyFeatures: deleteMyFeatures,
+      deleteMyFeatures: deleteMyFeatures
     });
 
     // ---
