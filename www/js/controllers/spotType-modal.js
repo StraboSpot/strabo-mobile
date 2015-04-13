@@ -9,6 +9,7 @@ angular.module('app')
     { type: "Orientation" },
     { type: "Rock Description" },
     { type: "Sample" },
+    { type: "Shear Zone" },
     { type: "Spot Grouping" }
   ];
 
@@ -17,6 +18,7 @@ angular.module('app')
     { type: "Fault Trace" },
     { type: "Hinge Surface Trace" },
     { type: "Notes" },
+    { type: "Shear Zone" },
     { type: "Spot Grouping" }
   ];
 
@@ -36,6 +38,7 @@ angular.module('app')
     { type: "Orientation" },
     { type: "Rock Description" },
     { type: "Sample" },
+    { type: "Shear Zone" },
     { type: "Spot Grouping" }
   ];
 

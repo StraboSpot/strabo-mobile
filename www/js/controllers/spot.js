@@ -235,6 +235,9 @@ angular.module('app')
         case "Sample":
           $scope.showSampleFields = true;
           break;
+        case "Shear Zone":
+          $scope.showShearZoneFields = true;
+          break;
         case "Spot Grouping":
           $scope.showGroupFields = true;
           break;
@@ -682,6 +685,35 @@ angular.module('app')
       $location.path(href="/app/spots/newspot");
     };
 
+    $scope.toggleChecked = function (field, choice) {
+      var i = -1;
+      if ($scope.spot.properties[field])
+        i = $scope.spot.properties[field].indexOf(choice);
+      else
+        $scope.spot.properties[field] = [];
+
+      // If choice not already selected
+      if (i == -1) {
+        $scope.spot.properties[field].push(choice);
+      }
+      // Choice has been unselected so remove it and delete if empty
+      else {
+        $scope.spot.properties[field].splice(i, 1);
+        if ($scope.spot.properties[field].length == 0)
+          delete $scope.spot.properties[field];
+      }
+    };
+
+    // Is the other_spot is this spot's links list?
+    $scope.isOptionChecked = function (field, choice) {
+      if ($scope.spot) {
+        if ($scope.spot.properties[field])
+          return $scope.spot.properties[field].indexOf(choice) == -1 ? false : true;
+      }
+      else
+        return false;
+    };
+
     // Is the other_spot is this spot's links list?
     $scope.isChecked = function (id) {
       return _.find($scope.spot.properties.links, function (rel_spot) {
@@ -771,6 +803,8 @@ angular.module('app')
     /*************************************
     /* Orientation
     /************************************/
+
+    //$scope.orientation_survey = orientation_survey;
 
     $scope.feature_type = {
       label: "Feature Type",
@@ -1022,4 +1056,9 @@ angular.module('app')
         { type: 'is otherwise related to', inverse: 'is otherwise related to' }
       ]
     };
+
+    angular.module('app').addOrientationSurvey($scope);
+    angular.module('app').addOrientationChoices($scope);
+    angular.module('app').addShearZoneSurvey($scope);
+    angular.module('app').addShearZoneChoices($scope);
   });

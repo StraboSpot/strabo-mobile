@@ -24,6 +24,14 @@
                         ng-change="onChange.feature()"></select>
               </label>
 
+              <!-- Feature Type -->
+              <label class="item item-input item-select" ng-show="showFeatureType">
+                <span class="input-label">{{feature_type.label}}</span>
+                <select ng-model="spot.properties.feature_type"
+                        ng-options="item.name for item in orientation_survey"
+                        ng-change="onChange.feature()"></select>
+              </label>
+
               <!-- Strike -->
               <label class="item item-input" ng-show="show.strike">
                 <span class="input-label">Strike</span>
@@ -150,6 +158,45 @@
           <!-- Sample -->
           <div ng-show="showSampleFields">
             Add the Sample detail fields here.
+          </div>
+
+          <!-- Shear Zone -->
+          <div ng-show="showShearZoneFields">
+            <div ng-repeat="field in shear_zone_survey">
+              <div data-ng-switch on="field.type.split(' ')[0]">
+                <div ng-switch-when="integer">
+                  <label class="item item-input">
+                    <span class="input-label">{{field.label}}</span>
+                    <input type="number" placeholder="{{field.hint}}" ng-model="spot.properties[field.name]">
+                  </label>
+                </div>
+                <div ng-switch-when="text">
+                  <label class="item item-input">
+                    <span class="input-label">{{field.label}}</span>
+                    <input type="text" placeholder="{{field.hint}}" ng-model="spot.properties[field.name]">
+                  </label>
+                </div>
+                <div ng-switch-when="select_one">
+                  <label class="item item-input item-select">
+                    <span class="input-label">{{field.label}}</span>
+                    <select ng-model="spot.properties[field.name]"
+                          ng-options="choice.name as choice.label for choice in shear_zone_choices
+                           | orderBy: 'label'
+                           | filter: { 'list name': field.type.split(' ')[1] }"></select>
+                  </label>
+                </div>
+                <div ng-switch-when="select_multiple">
+                  <label>
+                    <span class="input-label">{{field.label}}</span>
+                    <ion-checkbox ng-repeat="choice in shear_zone_choices | orderBy: 'label' | filter: { 'list name': field.type.split(' ')[1] }"
+                                  ng-checked="isOptionChecked(field.name, choice.name)"
+                                  ng-click="toggleChecked(field.name, choice.name)">
+                      {{ choice.label }}
+                    </ion-checkbox>
+                  </label>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- SPOT GROUPING -->
