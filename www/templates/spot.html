@@ -24,14 +24,6 @@
                         ng-change="onChange.feature()"></select>
               </label>
 
-              <!-- Feature Type -->
-              <label class="item item-input item-select" ng-show="showFeatureType">
-                <span class="input-label">{{feature_type.label}}</span>
-                <select ng-model="spot.properties.feature_type"
-                        ng-options="item.name for item in orientation_survey"
-                        ng-change="onChange.feature()"></select>
-              </label>
-
               <!-- Strike -->
               <label class="item item-input" ng-show="show.strike">
                 <span class="input-label">Strike</span>
