@@ -154,6 +154,7 @@ angular.module('app')
 
           var gotFS = function(fileSystem) {
             console.log("inside gotFS");
+            console.log("fileSystem ", fileSystem);
             fileSystem.root.getFile(imageURI, null, gotFileEntry, fail);
           };
 
