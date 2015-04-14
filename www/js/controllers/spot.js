@@ -118,20 +118,20 @@ angular.module('app')
           }
 
           var gotFileEntry = function(fileEntry) {
-            // console.log("inside gotFileEntry");
+            console.log("inside gotFileEntry");
             fileEntry.file(gotFile, fail);
           };
 
           var gotFile = function(file){
-            // console.log("inside gotFile");
+            console.log("inside gotFile");
             readDataUrl(file);
           };
 
           var readDataUrl = function(file) {
-            // console.log("inside readDataUrl");
+            console.log("inside readDataUrl");
             var reader = new FileReader();
             reader.onloadend = function(evt) {
-              // console.log("Read as data URL");
+              console.log("Read as data URL");
               // console.log(evt.target.result);
               var base64Image = evt.target.result;
               // console.log(base64Image);
@@ -148,12 +148,12 @@ angular.module('app')
           };
 
           var fail = function(evt) {
-            // console.log("inside fail");
+            console.log("inside fail");
             console.log(evt);
           };
 
           var gotFS = function(fileSystem) {
-            // console.log("inside gotFS");
+            console.log("inside gotFS");
             fileSystem.root.getFile(imageURI, null, gotFileEntry, fail);
           };
 
