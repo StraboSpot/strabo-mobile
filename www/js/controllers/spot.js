@@ -112,10 +112,10 @@ angular.module('app')
           }
 
           // does the imageURI include the file:// schema?
-          if (imageURI.substring(0, 7) === 'file://') {
-            // yes -- strip this out
-            imageURI = imageURI.substring(imageURI.length - (imageURI.length - 7));
-          }
+          // if (imageURI.substring(0, 7) === 'file://') {
+          //   // yes -- strip this out
+          //   imageURI = imageURI.substring(imageURI.length - (imageURI.length - 7));
+          // }
 
           var gotFileEntry = function(fileEntry) {
             console.log("inside gotFileEntry");
