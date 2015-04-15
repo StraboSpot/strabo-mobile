@@ -1,6 +1,7 @@
 angular.module('app', [
   'ionic',
-  'ngCordova'
+  'ngCordova',
+  'ngMessages'
 ])
 
 .run(function($ionicPlatform) {
