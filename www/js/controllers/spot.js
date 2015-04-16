@@ -101,6 +101,7 @@ angular.module('app')
           // the image has been written to mobile device.  It is written in two places:
           // 1) the local strabo-mobile cache, aka "/storage/emulated/0/Android/data/com.ionicframework.strabomobile327690/cache/filename.jpg"
           // 2) the Photo Album folder, on Android, this is: /Pictures
+          // 3) in iOS, this is in the Photos Gallery
 
           console.log(imageURI);
 
@@ -111,33 +112,26 @@ angular.module('app')
             $scope.spot.images = [];
           }
 
-          // does the imageURI include the file:// schema?
-          // if (imageURI.substring(0, 7) === 'file://') {
-          //   // yes -- strip this out
-          //   imageURI = imageURI.substring(imageURI.length - (imageURI.length - 7));
-          // }
-
           var gotFileEntry = function(fileEntry) {
-            console.log("inside gotFileEntry");
+            // console.log("inside gotFileEntry");
             fileEntry.file(gotFile, fail);
           };
 
-          var gotFile = function(file){
-            console.log("inside gotFile");
+          var gotFile = function(file) {
+            // console.log("inside gotFile");
             readDataUrl(file);
           };
 
           var readDataUrl = function(file) {
-            console.log("inside readDataUrl");
+            // console.log("inside readDataUrl");
             var reader = new FileReader();
             reader.onloadend = function(evt) {
-              console.log("Read as data URL");
+              // console.log("Read as data URL");
               // console.log(evt.target.result);
               var base64Image = evt.target.result;
-              // console.log(base64Image);
 
               // push the image data to our camera images array
-              $scope.$apply(function(){
+              $scope.$apply(function() {
                 $scope.spot.images.push({
                   src: base64Image
                 });
@@ -148,18 +142,11 @@ angular.module('app')
           };
 
           var fail = function(evt) {
-            console.log("inside fail");
+            // console.log("inside fail");
             console.log(evt);
           };
 
-          // var gotFS = function(fileSystem) {
-          //   console.log("inside gotFS");
-          //   console.log("fileSystem ", fileSystem);
-          //   fileSystem.root.getFile(imageURI, null, gotFileEntry, fail);
-          // };
-
           // invoke the reading of the image file from the local filesystem
-          // window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
           window.resolveLocalFileSystemURL(imageURI, gotFileEntry, fail);
 
 
