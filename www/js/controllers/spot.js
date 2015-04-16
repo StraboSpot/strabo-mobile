@@ -160,7 +160,7 @@ angular.module('app')
 
           // invoke the reading of the image file from the local filesystem
           // window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
-          window.resolveLocalFileSystemURL(imageURI, onSuccess, fail);
+          window.resolveLocalFileSystemURL(imageURI, gotFileEntry, fail);
 
 
         }, function(err) {
