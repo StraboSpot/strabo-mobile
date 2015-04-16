@@ -152,14 +152,16 @@ angular.module('app')
             console.log(evt);
           };
 
-          var gotFS = function(fileSystem) {
-            console.log("inside gotFS");
-            console.log("fileSystem ", fileSystem);
-            fileSystem.root.getFile(imageURI, null, gotFileEntry, fail);
-          };
+          // var gotFS = function(fileSystem) {
+          //   console.log("inside gotFS");
+          //   console.log("fileSystem ", fileSystem);
+          //   fileSystem.root.getFile(imageURI, null, gotFileEntry, fail);
+          // };
 
           // invoke the reading of the image file from the local filesystem
-          window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
+          // window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
+          window.resolveLocalFileSystemURL(imageURI, onSuccess, fail);
+
 
         }, function(err) {
           console.log("error: ", err);
