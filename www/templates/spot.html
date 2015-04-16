@@ -1,19 +1,19 @@
-<ion-view title="Spot Info">
-  <ion-nav-buttons side="right">
-    <button ng-click="newOrientation();" ng-show="showLinkToNewOrientation" class="button button-icon icon ion-compass"></button>
-    <button ng-click="deleteSpot();" class="button button-icon icon ion-trash-b"></button>
-    <button ng-click="submit();" class="button button-icon icon ion-checkmark-circled"></button>
-  </ion-nav-buttons>
+<form name="straboForm" novalidate="">
+  <ion-view title="Spot Info">
+    <ion-nav-buttons side="right">
+      <button ng-click="newOrientation();" ng-show="showLinkToNewOrientation" class="button button-icon icon ion-compass"></button>
+      <button ng-click="deleteSpot();" class="button button-icon icon ion-trash-b"></button>
+      <button ng-click="submit();" class="button button-icon icon ion-checkmark-circled"></button>
+    </ion-nav-buttons>
 
-  <ion-tabs class="tabs-top has-header tabs-striped has-tabs-top">
+    <ion-tabs class="tabs-top has-header tabs-striped has-tabs-top">
 
-    <!--------------
-      Tab 1: Detail
-    ---------------->
-    <ion-tab title="1. Detail">
-      <ion-nav-view name="detail-tab">
-        <ion-content class="padding">
-          <form name="detailForm" novalidate="">
+      <!--------------
+        Tab 1: Detail
+      ---------------->
+      <ion-tab title="1. Detail">
+        <ion-nav-view name="detail-tab">
+          <ion-content class="padding">
             <div class="row responsive-md">
               <div class="col">
 
@@ -158,19 +158,35 @@
               <div ng-repeat="field in shear_zone_survey">
                 <div data-ng-switch on="field.type.split(' ')[0]">
                   <div ng-switch-when="integer">
-                    <label class="item item-input" ng-class="{ 'has-errors' : detailForm[field.name].$invalid, 'no-errors' : detailForm[field.name].$valid}" ng-messages-include="templates/error-messages.html">
+                    <label class="item item-input"
+                           ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid}"
+                           ng-messages-include="templates/error-messages.html">
                       <span class="input-label">{{field.label}}</span>
-                      <input type="number" name="{{field.name}}" placeholder="{{field.hint}}" ng-model="spot.properties[field.name]" ng-required="{{field.required}}">
+                      <input type="number"
+                             name="{{field.name}}"
+                             placeholder="{{field.hint}}"
+                             ng-model="spot.properties[field.name]"
+                             ng-required="{{field.required}}"
+                             ng-min="getMin(field.constraint)"
+                             ng-max="getMax(field.constraint)">
                     </label>
                   </div>
                   <div ng-switch-when="text">
-                    <label class="item item-input" ng-class="{ 'has-errors' : detailForm[field.name].$invalid, 'no-errors' : detailForm[field.name].$valid}" ng-messages-include="templates/error-messages.html">
+                    <label class="item item-input"
+                           ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid}"
+                           ng-messages-include="templates/error-messages.html">
                       <span class="input-label">{{field.label}}</span>
-                      <input type="text" name="{{field.name}}" placeholder="{{field.hint}}" ng-model="spot.properties[field.name]" ng-required="{{field.required}}">
+                      <input type="text"
+                             name="{{field.name}}"
+                             placeholder="{{field.hint}}"
+                             ng-model="spot.properties[field.name]"
+                             ng-required="{{field.required}}">
                     </label>
                   </div>
                   <div ng-switch-when="select_one">
-                    <label class="item item-input item-select" ng-class="{ 'has-errors' : detailForm[field.name].$invalid, 'no-errors' : detailForm[field.name].$valid}" ng-messages-include="templates/error-messages.html">
+                    <label class="item item-input item-select"
+                           ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid}"
+                           ng-messages-include="templates/error-messages.html">
                       <span class="input-label">{{field.label}}</span>
                       <select ng-model="spot.properties[field.name]"
                               ng-options="choice.name as choice.label for choice in shear_zone_choices
@@ -181,7 +197,9 @@
                     </label>
                   </div>
                   <div ng-switch-when="select_multiple">
-                    <label class="item" ng-class="{ 'has-errors' : detailForm[field.name].$invalid, 'no-errors' : detailForm[field.name].$valid}" ng-messages-include="templates/error-messages.html">
+                    <label class="item"
+                           ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid}"
+                           ng-messages-include="templates/error-messages.html">
                       <span class="input-label">{{field.label}}</span>
                       <ion-checkbox ng-repeat="choice in shear_zone_choices | orderBy: 'label' | filter: { 'list name': field.type.split(' ')[1] }"
                                     ng-checked="isOptionChecked(field.name, choice.name)"
@@ -191,7 +209,8 @@
                       </ion-checkbox>
                     </label>
                   </div>
-                  <div class="error-container" ng-if="detailForm[field.name].$touched" ng-messages="detailForm[field.name].$error" ng-messages-include="templates/error-messages.html">
+                  <div class="error-container" ng-if="straboForm[field.name].$touched"
+                       ng-messages="straboForm[field.name].$error" ng-messages-include="templates/error-messages.html">
                   </div>
                 </div>
               </div>
@@ -246,141 +265,141 @@
                 </ion-list>
               </div>
             </div>
-          </form>
-        </ion-content>
-      </ion-nav-view>
-    </ion-tab>
+          </ion-content>
+        </ion-nav-view>
+      </ion-tab>
 
-    <!--------------
-      Tab 2: General
-    ---------------->
-    <ion-tab title="2. General">
-      <ion-nav-view name="general-tab">
-        <ion-content class="padding">
-          <div class="row responsive-md">
-            <div class="col">
-              <div class="item item-divider">
-                {{spot.properties.spottype}}
+      <!--------------
+        Tab 2: General
+      ---------------->
+      <ion-tab title="2. General">
+        <ion-nav-view name="general-tab">
+          <ion-content class="padding">
+            <div class="row responsive-md">
+              <div class="col">
+                <div class="item item-divider">
+                  {{spot.properties.spottype}}
+                </div>
+                <label class="item item-input">
+                  <span class="input-label">Spot Name</span>
+                  <input type="text" placeholder="Name this Spot" ng-model="spot.properties.name" autofocus>
+                </label>
+                <label class="item item-input">
+                  <span class="input-label">ID</span>
+                  <input type="text" disabled ng-model="spot.properties.id">
+                </label>
+                <label class="item item-input">
+                  <span class="input-label">Date</span>
+                  <input type="date" ng-model="spot.properties.date">
+                </label>
+                <label class="item item-input">
+                  <span class="input-label">Time</span>
+                  <input type="time" ng-model="spot.properties.time">
+                </label>
               </div>
-              <label class="item item-input">
-                <span class="input-label">Spot Name</span>
-                <input type="text" placeholder="Name this Spot" ng-model="spot.properties.name" autofocus>
-              </label>
-              <label class="item item-input">
-                <span class="input-label">ID</span>
-                <input type="text" disabled ng-model="spot.properties.id">
-              </label>
-              <label class="item item-input">
-                <span class="input-label">Date</span>
-                <input type="date" ng-model="spot.properties.date">
-              </label>
-              <label class="item item-input">
-                <span class="input-label">Time</span>
-                <input type="time" ng-model="spot.properties.time">
-              </label>
-            </div>
 
-            <!-- Location -->
-            <div class="col">
-              <div class="item item-divider">
-                Map Representation
-              </div>
-              <label class="item item-input">
-                <span class="input-label">Geometry</span>
-                <input type="text" disabled ng-model="spot.geometry.type">
-              </label>
-              <label class="item item-input" ng-show="showLatLng">
-                <span class="input-label">Latitude</span>
-                <input type="number" ng-model="point.latitude" value={{point.latitude}}>
-              </label>
-              <label class="item item-input" ng-show="showLatLng">
-                <span class="input-label">Longitude</span>
-                <input type="number" ng-model="point.longitude" value={{point.longitude}}>
-              </label>
-              <div>
-                <!-- Map Interaction -->
+              <!-- Location -->
+              <div class="col">
+                <div class="item item-divider">
+                  Map Representation
+                </div>
+                <label class="item item-input">
+                  <span class="input-label">Geometry</span>
+                  <input type="text" disabled ng-model="spot.geometry.type">
+                </label>
+                <label class="item item-input" ng-show="showLatLng">
+                  <span class="input-label">Latitude</span>
+                  <input type="number" ng-model="point.latitude" value={{point.latitude}}>
+                </label>
+                <label class="item item-input" ng-show="showLatLng">
+                  <span class="input-label">Longitude</span>
+                  <input type="number" ng-model="point.longitude" value={{point.longitude}}>
+                </label>
                 <div>
-                  <br>
-                  <button ng-click="goToSpot();" class="button button-small icon-left icon ion-eye">View on Map</button>
-                  <button ng-click="getLocation();" ng-show="showMyLocationButton" class="button button-small icon-left ion-pinpoint">Set to My Location</button>
-                  <button ng-click="openMap();" class="button button-small icon-left icon ion-map">Set From Map</button>
+                  <!-- Map Interaction -->
+                  <div>
+                    <br>
+                    <button ng-click="goToSpot();" class="button button-small icon-left icon ion-eye">View on Map</button>
+                    <button ng-click="getLocation();" ng-show="showMyLocationButton" class="button button-small icon-left ion-pinpoint">Set to My Location</button>
+                    <button ng-click="openMap();" class="button button-small icon-left icon ion-map">Set From Map</button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Images -->
-          <div class="item item-divider">
-            Photos
-          </div>
-          <div class="row responsive-md">
-            <div>
-              <ul>
-                <li ng-repeat="image in spot.images" style="display: inline;">
-                  <a><img ng-src="{{image.src}}" width="100" height="100" ng-click="showImages($index)"  /></a>
-                </li>
-              </ul>
+            <!-- Images -->
+            <div class="item item-divider">
+              Photos
             </div>
-          </div>
-          <button ng-click="cameraModal()" class="button button-small icon-left ion-camera">Add Photo</button>
-          <br><br>
-          <div class="item item-divider">
-            Notes
-          </div>
-          <label class="item item-input">
-            <textarea placeholder="Notes about this Spot" rows="4" ng-model="spot.properties.notes"></textarea>
-          </label>
-        </ion-content>
-      </ion-nav-view>
-    </ion-tab>
+            <div class="row responsive-md">
+              <div>
+                <ul>
+                  <li ng-repeat="image in spot.images" style="display: inline;">
+                    <a><img ng-src="{{image.src}}" width="100" height="100" ng-click="showImages($index)"  /></a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <button ng-click="cameraModal()" class="button button-small icon-left ion-camera">Add Photo</button>
+            <br><br>
+            <div class="item item-divider">
+              Notes
+            </div>
+            <label class="item item-input">
+              <textarea placeholder="Notes about this Spot" rows="4" ng-model="spot.properties.notes"></textarea>
+            </label>
+          </ion-content>
+        </ion-nav-view>
+      </ion-tab>
 
-    <!--------------
-      Tab 3: Connections
-    ---------------->
-    <ion-tab title="3. Connections">
-      <ion-nav-view name="connections-tab">
-        <ion-content class="padding">
-          <!-- Linked Spots -->
-          <div ng-show="showLinks">
-            <div class="item item-divider">
-              Links
+      <!--------------
+        Tab 3: Connections
+      ---------------->
+      <ion-tab title="3. Connections">
+        <ion-nav-view name="connections-tab">
+          <ion-content class="padding">
+            <!-- Linked Spots -->
+            <div ng-show="showLinks">
+              <div class="item item-divider">
+                Links
+              </div>
+              <div>
+                <br>
+                <button ng-click="linkSpot();" class="button button-small icon-left icon ion-link">Add or Edit Links to Other Spots</button>
+                <br><br>
+              </div>
+              <ion-list>
+                <ion-item ng-repeat="item in links_selected">
+                  <a href="#/app/spots/{{item.id}}" style="text-decoration:none"> <b>{{item.name}}</b> </a>
+                  &nbsp;&nbsp;&nbsp;&nbsp;{{ item.relationship }}
+                  &nbsp;&nbsp;&nbsp;&nbsp;<b>{{ spot.properties.name }}</b>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <select ng-model="relationship"
+                          ng-options="link_relationships.type for link_relationships in link_relationship.choices"
+                          ng-change="setLinkRelationship(item, relationship)">
+                    <option value="">-- select a relationship --</option>
+                  </select>
+                </ion-item>
+              </ion-list>
             </div>
-            <div>
-              <br>
-              <button ng-click="linkSpot();" class="button button-small icon-left icon ion-link">Add or Edit Links to Other Spots</button>
-              <br><br>
+            <div ng-show="showGroups">
+              <div class="item item-divider">
+                Groups
+              </div>
+              <div>
+                <br>
+                <button ng-click="linkGroup();" class="button button-small icon-left icon ion-plus-round">Add or Edit Membership in Groups</button>
+                <br><br>
+              </div>
+              <ion-list>
+                <ion-item ng-repeat="item in groups_selected" href="#/app/spots/{{item.id}}">
+                  {{item.name}}
+                </ion-item>
+              </ion-list>
             </div>
-            <ion-list>
-              <ion-item ng-repeat="item in links_selected">
-                <a href="#/app/spots/{{item.id}}" style="text-decoration:none"> <b>{{item.name}}</b> </a>
-                &nbsp;&nbsp;&nbsp;&nbsp;{{ item.relationship }}
-                &nbsp;&nbsp;&nbsp;&nbsp;<b>{{ spot.properties.name }}</b>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <select ng-model="relationship"
-                        ng-options="link_relationships.type for link_relationships in link_relationship.choices"
-                        ng-change="setLinkRelationship(item, relationship)">
-                  <option value="">-- select a relationship --</option>
-                </select>
-              </ion-item>
-            </ion-list>
-          </div>
-          <div ng-show="showGroups">
-            <div class="item item-divider">
-              Groups
-            </div>
-            <div>
-              <br>
-              <button ng-click="linkGroup();" class="button button-small icon-left icon ion-plus-round">Add or Edit Membership in Groups</button>
-              <br><br>
-            </div>
-            <ion-list>
-              <ion-item ng-repeat="item in groups_selected" href="#/app/spots/{{item.id}}">
-                {{item.name}}
-              </ion-item>
-            </ion-list>
-          </div>
-        </ion-content>
-      </ion-nav-view>
-    </ion-tab>
-  </ion-tabs>
-</ion-view>
+          </ion-content>
+        </ion-nav-view>
+      </ion-tab>
+    </ion-tabs>
+  </ion-view>
+</form>

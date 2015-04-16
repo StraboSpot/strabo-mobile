@@ -434,6 +434,21 @@ angular.module('app')
 
       console.log("spot, ", $scope.spot);
 
+      // Get all the keys whose value is undefined
+      var keys = [];
+      _.each($scope.spot.properties, function (val, key) {
+        if (val == undefined)
+          keys.push(key);
+      });
+
+      // If the form is being generated dynamically, undefined values mean the value
+      // typed in this field is not valid so don't let the user save the form yet
+      // For right now only run this validation check on the forms that are generated dynamically
+      if (keys.length > 0 && $scope.spot.properties.spottype == "Shear Zone") {
+      alert("Fix all errors before saving.");
+      return 0;
+    }
+
       if (!$scope.spot.properties.name) {
         alert('Name required.');
         return;
@@ -673,6 +688,32 @@ angular.module('app')
       $scope.newOrientation.properties.spottype = "Orientation";
       NewSpot.setNewSpot($scope.newOrientation);
       $location.path(href="/app/spots/newspot");
+    };
+
+    // Get the min value allowed for a number field
+    $scope.getMin = function(constraint) {
+      try{
+        // Look for >= in constraint, followed by a space and any number of digits
+        var regexMin = />=\s(\d*)/i;
+        // Return just the number
+        return regexMin.exec(constraint)[1];
+      }
+      catch(e) {
+        return undefined;
+      }
+    };
+
+    // Get the max value allowed for a number field
+    $scope.getMax = function(constraint) {
+      try{
+        // Look for <= in constraint, followed by a space and then a number
+        var regexMax = /<=\s(\d*)/i;
+        // Return just the number
+        return regexMax.exec(constraint)[1];
+      }
+      catch(e) {
+        return undefined;
+      }
     };
 
     $scope.toggleChecked = function (field, choice) {
