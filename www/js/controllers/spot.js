@@ -195,46 +195,27 @@ angular.module('app')
       }
 
       switch ($scope.spot.properties.spottype) {
-        case "Orientation":
-          $scope.showFeatureType = true;
-          $scope.showOrientation_quality = true;
-          $scope.showUnit_name = true;
-          $scope.showUnit_label = true;
-
-          // Set default values for Orientation Spot Type
-          if (!$scope.spot.properties.feature_type) {
-            $scope.spot.properties.feature_type = "bedding";
-          }
-          if (!$scope.spot.properties.orientation_quality)
-            $scope.spot.properties.orientation_quality = "accurate";
-          break;
         case "Contact":
           $scope.showDynamicFields = true;
           $scope.survey = $scope.contact_survey;
           $scope.choices = $scope.contact_choices;
           break;
         case "Fault Outcrop":
-          $scope.showFaultFields = true;
           break;
         case "Fault Trace":
-          $scope.showFaultFields = true;
           break;
         case "Hinge Surface Trace":
-          $scope.showHingeSurfaceTraceFields = true;
           break;
         case "Notes":
-          $scope.showNotesFields = true;
           break;
-        case "Orientation New":
+        case "Orientation":
           $scope.showDynamicFields = true;
           $scope.survey = $scope.orientation_survey;
           $scope.choices = $scope.orientation_choices;
           break;
         case "Rock Description":
-          $scope.showRockDescriptionFields = true;
           break;
         case "Sample":
-          $scope.showSampleFields = true;
           break;
         case "Shear Zone":
           $scope.showDynamicFields = true;
@@ -283,25 +264,6 @@ angular.module('app')
       else {
         $scope.point.latitude = 0;
         $scope.point.longitude = 0;
-      }
-
-      if ($scope.spot.properties.spottype == 'Orientation') {
-        // Initially the fields or not
-        $scope.show = {
-          strike: $scope.spot.properties.spottype == 'Orientation',
-          dip: $scope.spot.properties.spottype == 'Orientation',
-          trend: ($scope.spot.properties.trend) ? true : false,
-          plunge: ($scope.spot.properties.plunge) ? true : false,
-
-          plane_facing: $scope.spot.properties.spottype == 'Orientation',
-          facing_direction: ($scope.spot.properties.facing_direction) ? true : false,
-
-          fold_type: ($scope.spot.properties.fold_type) ? true : false,
-          fold_detail: ($scope.spot.properties.fold_detail) ? true : false,
-
-          directed: ($scope.spot.properties.directed) ? true : false,
-          vergence: ($scope.spot.properties.vergence) ? true : false
-        };
       }
 
       $scope.showLinkToNewOrientation = $scope.spot.properties.spottype != "Orientation";
@@ -359,90 +321,6 @@ angular.module('app')
       }
     };
 
-    var resetValues = function() {
-
-      // ********************
-      // * reset show/hide
-      // ********************
-
-      if (!$scope.show.fold_type) {
-        $scope.show.fold_detail = false;
-      }
-      if (!$scope.show.plane_facing) {
-        $scope.show.facing_direction = false;
-      }
-      if (!$scope.show.directed) {
-        $scope.show.vergence = false;
-      }
-
-      // loop through $scope.show to see if they are set to hidden or visible
-      for (var property in $scope.show) {
-        if ($scope.show.hasOwnProperty(property)) {
-          // is it hidden?
-          if ($scope.show[property] === false) {
-            // yes, then nullify the property value
-            $scope.spot.properties[property] = undefined;
-          }
-        }
-      }
-    };
-
-    // finds the property in the scope[property].relevant to see if the value exists
-    var wasPropertyFound = function(property) {
-      var thePropertyFound = _.find(_.pluck($scope[property].relevant, 'value'), function(feature) {
-        return feature == $scope.spot.properties.feature_type;
-      });
-      return thePropertyFound;
-    };
-
-    $scope.onChange = {
-      feature: function() {
-        console.log("feature, ", $scope.spot.properties.feature_type);
-
-        $scope.show.strike = wasPropertyFound('strike');
-        $scope.show.dip = wasPropertyFound('dip');
-        $scope.show.trend = wasPropertyFound('trend');
-        $scope.show.plunge = wasPropertyFound('plunge');
-        $scope.show.fold_type = wasPropertyFound('fold_type');
-
-        if ($scope.show.fold_type && !$scope.spot.properties.fold_type)
-          $scope.spot.properties.fold_type = $scope.fold_type.default;
-
-        $scope.show.fold_detail = wasPropertyFound('fold_detail');
-
-        if ($scope.show.fold_detail && !$scope.spot.properties.fold_detail)
-          $scope.spot.properties.fold_detail = $scope.fold_detail.default;
-
-        $scope.show.plane_facing = wasPropertyFound('plane_facing');
-        $scope.show.directed = wasPropertyFound('directed');
-
-        resetValues();
-      },
-      orientation: function() {
-        console.log("orientation, ", $scope.spot.properties.orientation);
-      },
-      plane_facing: function() {
-        console.log("plane_facing, ", $scope.spot.properties.plane_facing);
-
-        // show facing direction if plane facing is vertical
-        $scope.show.facing_direction = ($scope.spot.properties.plane_facing === "vertical");
-        resetValues();
-      },
-      fold_type: function() {
-        console.log("fold_type, ", $scope.spot.properties.fold_type);
-      },
-      fold_detail: function() {
-        console.log("fold_detail, ", $scope.spot.properties.fold_detail);
-      },
-      directed: function() {
-        console.log("directed, ", $scope.spot.properties.directed);
-
-        $scope.show.vergence = ($scope.spot.properties.directed === 'yes');
-
-        resetValues();
-      }
-    };
-
     // Get current location
     $scope.getLocation = function() {
       $cordovaGeolocation.getCurrentPosition().then(function(position) {
@@ -496,55 +374,6 @@ angular.module('app')
 
       if (!$scope.spot.properties.name) {
         alert('Name required.');
-        return;
-      }
-      // For the time being make this not required
-      /*if (!$scope.spot.properties.feature_type) {
-        alert('Feature required.');
-        return;
-      }*/
-
-      // console.log($scope.show.strike);
-      // console.log($scope.spot.properties.strike);
-
-      if ($scope.show.strike && ($scope.spot.properties.strike < 0 || $scope.spot.properties.strike > 360 || $scope.spot.properties.strike === undefined || $scope.spot.properties.strike === null)) {
-        alert('Strike must be between 0-360.');
-        return;
-      }
-      if ($scope.show.dip && ($scope.spot.properties.dip < 0 || $scope.spot.properties.dip > 90 || $scope.spot.properties.dip === undefined || $scope.spot.properties.dip === null)) {
-        alert('Dip must be between 0-90.');
-        return;
-      }
-      if ($scope.show.trend && ($scope.spot.properties.trend < 0 || $scope.spot.properties.trend > 90 || $scope.spot.properties.trend === undefined || $scope.spot.properties.trend === null)) {
-        alert('Trend must be between 0-90.');
-        return;
-      }
-      if ($scope.show.plunge && ($scope.spot.properties.plunge < 0 || $scope.spot.properties.plunge > 90 || $scope.spot.properties.plunge === undefined || $scope.spot.properties.plunge === null)) {
-        alert('Plunge must be between 0-90.');
-        return;
-      }
-      if ($scope.show.plane_facing && ($scope.spot.properties.plane_facing === undefined || $scope.spot.properties.plane_facing === null)) {
-        alert('plane facing required');
-        return;
-      }
-      if ($scope.show.facing_direction && ($scope.spot.properties.facing_direction === undefined || $scope.spot.properties.facing_direction === null)) {
-        alert('facing direction required');
-        return;
-      }
-      if ($scope.show.fold_type && ($scope.spot.properties.fold_type === undefined || $scope.spot.properties.fold_type === null)) {
-        alert('fold type required');
-        return;
-      }
-      if ($scope.show.fold_detail && ($scope.spot.properties.fold_detail === undefined || $scope.spot.properties.fold_detail === null)) {
-        alert('fold detail required');
-        return;
-      }
-      if ($scope.show.directed && ($scope.spot.properties.directed === undefined || $scope.spot.properties.directed === null)) {
-        alert('directed required');
-        return;
-      }
-      if ($scope.show.vergence && ($scope.spot.properties.vergence === undefined || $scope.spot.properties.vergence === null)) {
-        alert('vergence require');
         return;
       }
 
@@ -896,215 +725,6 @@ angular.module('app')
     $scope.$on('groupMembersModal.hidden', function() {
       $scope.groupMembersModal.remove();
     });
-
-    /*************************************
-    /* Orientation
-    /************************************/
-
-    //$scope.orientation_survey = orientation_survey;
-
-    $scope.feature_type = {
-      label: "Feature Type",
-      choices: [
-        { text: 'bedding', value: 'bedding' },
-        { text: 'flow layering', value: 'flow_layering' },
-        { text: 'foliation', value: 'foliation' },
-        { text: 'joint', value: 'joint' },
-        { text: 'fracture', value: 'fracture' },
-        { text: 'fault plane', value: 'fault_plane' },
-        { text: 'axial surface', value: 'axial_surface' },
-        { text: 'stylolite', value: 'stylolite' },
-        { text: 'fold hinge', value: 'fold_hinge' },
-        { text: 'stretching lineation', value: 'stretching_lineation' },
-        { text: 'slicken side striae', value: 'slicken_side_striae' },
-        { text: 'foliation with lineation', value: 'foliation_with_lineation' },
-        { text: 'bedding with cleavage', value: 'bedding_with_cleavage' },
-        { text: 'shear zone', value: 'shear_zone' },
-        { text: 'movement direction', value: 'movement_direction' }
-      ],
-      required: true,
-      default: "bedding"
-    };
-
-    $scope.strike = {
-      relevant: [
-        { field: 'feature_type', value: 'bedding' },
-        { field: 'feature_type', value: 'flow_layering' },
-        { field: 'feature_type', value: 'foliation' },
-        { field: 'feature_type', value: 'joint' },
-        { field: 'feature_type', value: 'fracture' },
-        { field: 'feature_type', value: 'fault_plane' },
-        { field: 'feature_type', value: 'axial_surface' },
-        { field: 'feature_type', value: 'stylolite' },
-        { field: 'feature_type', value: 'foliation_with_lineation' },
-        { field: 'feature_type', value: 'bedding_with_cleavage' },
-        { field: 'feature_type', value: 'shear_zone' }
-      ],
-      required: true
-    };
-
-    $scope.dip = {
-      relevant: [
-        { field: 'feature_type', value: 'bedding' },
-        { field: 'feature_type', value: 'flow_layering' },
-        { field: 'feature_type', value: 'foliation' },
-        { field: 'feature_type', value: 'joint' },
-        { field: 'feature_type', value: 'fracture' },
-        { field: 'feature_type', value: 'fault_plane' },
-        { field: 'feature_type', value: 'axial_surface' },
-        { field: 'feature_type', value: 'stylolite' },
-        { field: 'feature_type', value: 'foliation_with_lineation' },
-        { field: 'feature_type', value: 'bedding_with_cleavage' },
-        { field: 'feature_type', value: 'shear_zone' }
-      ],
-      required: true
-    };
-
-    $scope.trend = {
-      relevant: [
-        { field: 'feature_type', value: 'fold_hinge' },
-        { field: 'feature_type', value: 'stretching_lineation' },
-        { field: 'feature_type', value: 'slicken_side_striae' },
-        { field: 'feature_type', value: 'foliation_with_lineation' },
-        { field: 'feature_type', value: 'movement_direction' }
-      ],
-      required: true
-    };
-
-    $scope.plunge = {
-      relevant: [
-        { field: 'feature_type', value: 'fold_hinge' },
-        { field: 'feature_type', value: 'stretching_lineation' },
-        { field: 'feature_type', value: 'slicken_side_striae' },
-        { field: 'feature_type', value: 'foliation_with_lineation' },
-        { field: 'feature_type', value: 'movement_direction' }
-      ],
-      required: true
-    };
-
-    $scope.orientation_quality = {
-      choices: [
-        { text: 'accurate', value: 'accurate' },
-        { text: 'approximate', value: 'approximate' },
-        { text: 'irregular', value: 'irregular' }
-      ],
-      required: true,
-      default: "accurate"
-    };
-
-    $scope.plane_facing = {
-      choices: [
-        {text: 'upright', value: 'upright'},
-        {text: 'overturned', value: 'overturned'},
-        {text: 'vertical', value: 'vertical'},
-        {text: 'unknown', value: 'unknown'}
-      ],
-      required: true,
-      default: 'upright',
-      relevant: [
-        { field: 'feature_type', value: 'bedding' },
-        { field: 'feature_type', value: 'axial_surface' }
-      ]
-    };
-
-    $scope.facing_direction = {
-      required: false,
-      relevant: [
-        { field: 'plane_facing', value: 'vertical' }
-      ]
-    };
-
-    $scope.directed = {
-      choices: [
-        { text: 'yes', value: 'yes'},
-        { text: 'no', value: 'no'}
-      ],
-      required: false,
-      relevant: [
-        { field: 'feature_type', value: 'fold_hinge' },
-        { field: 'feature_type', value: 'foliation_with_lineation' },
-        { field: 'feature_type', value: 'slicken_side_striae' }
-      ]
-    };
-
-    $scope.vergence = {
-      required: false,
-      relevant: [
-        { field: 'directed', value: 'yes' }
-      ]
-    };
-
-    $scope.fold_type = {
-      choices: [
-        {text: 'anticline', value: 'anticline'},
-        {text: 'monocline', value: 'monocline'},
-        {text: 'antiformal syncline', value: 'antiformal syncline'},
-        {text: 'synformal anticline', value: 'synformal anticline'},
-        {text: 'antiform', value: 'antiform'},
-        {text: 'synform', value: 'synform'},
-        {text: 's-fold', value: 's-fold'},
-        {text: 'z-fold', value: 'z-fold'},
-        {text: 'm-fold', value: 'm-fold'}
-      ],
-      required: false,
-      default: 'antiform',
-      relevant: [
-        { field: 'feature_type', value: 'fold_hinge' },
-        { field: 'feature_type', value: 'fault_plane' },
-        { field: 'feature_type', value: 'axial_surface' }
-      ]
-    };
-
-    $scope.fold_detail = {
-      choices: [
-        { text: 'overturned', value: 'overturned' },
-        { text: 'vertical', value: 'vertical' },
-        { text: 'horizontal', value: 'horizontal' },
-        { text: 'recumbent', value: 'recumbent' },
-        { text: 'inclined', value: 'inclined' },
-        { text: 'upright', value: 'upright' }
-      ],
-      required: false,
-      default: 'upright',
-      relevant: [
-        { field: 'feature_type', value: 'fold_hinge' },
-        { field: 'feature_type', value: 'fault_plane' },
-        { field: 'feature_type', value: 'axial_surface' }
-      ]
-    };
-
-    /*************************************
-     /* Contact
-     /************************************/
-
-    $scope.contact_type = {
-      label: "Contact Type",
-      choices: [
-        'depositional',
-        'intrusive',
-        'metamorphic',
-        'marker layer',
-        'unknown',
-        'edge of mapping',
-        'other'
-      ],
-      required: true
-    };
-
-    /*************************************
-     /* Fault
-     /************************************/
-
-    $scope.fault_type = {
-      label: "Fault Type",
-      choices: [
-        'strike-slip',
-        'unknown',
-        'dip-slip',
-        'not specified'
-      ],
-      required: true
-    };
 
     /*************************************
     /* Spot Grouping

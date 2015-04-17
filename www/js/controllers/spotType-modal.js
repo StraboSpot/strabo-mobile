@@ -7,7 +7,6 @@ angular.module('app')
     { type: "Fault Outcrop" },
     { type: "Notes" },
     { type: "Orientation" },
-    { type: "Rock Description" },
     { type: "Sample" },
     { type: "Shear Zone" },
     { type: "Spot Grouping" }
@@ -35,7 +34,6 @@ angular.module('app')
     { type: "Hinge Surface Trace" },
     { type: "Notes" },
     { type: "Orientation" },
-    { type: "Orientation New" },
     { type: "Rock Description" },
     { type: "Sample" },
     { type: "Shear Zone" },
