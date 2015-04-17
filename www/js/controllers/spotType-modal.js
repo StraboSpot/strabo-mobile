@@ -8,7 +8,7 @@ angular.module('app')
     { type: "Fold" },
     { type: "Notes" },
     { type: "Orientation" },
-    { type: "Sample" },
+    { type: "Sample Locality" },
     { type: "Shear Zone" },
     { type: "Spot Grouping" }
   ];
@@ -37,7 +37,7 @@ angular.module('app')
     { type: "Notes" },
     { type: "Orientation" },
     { type: "Rock Description" },
-    { type: "Sample" },
+    { type: "Sample Locality" },
     { type: "Shear Zone" },
     { type: "Spot Grouping" }
   ];

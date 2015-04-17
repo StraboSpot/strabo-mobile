@@ -23,6 +23,8 @@ angular.module('app')
     angular.module('app').addOrientationChoices($scope);
     angular.module('app').addRockDescriptionSurvey($scope);
     angular.module('app').addRockDescriptionChoices($scope);
+    angular.module('app').addSampleLocalitySurvey($scope);
+    angular.module('app').addSampleLocalityChoices($scope);
     angular.module('app').addShearZoneSurvey($scope);
     angular.module('app').addShearZoneChoices($scope);
 
@@ -230,7 +232,10 @@ angular.module('app')
           $scope.survey = $scope.rock_description_survey;
           $scope.choices = $scope.rock_description_choices;
           break;
-        case "Sample":
+        case "Sample Locality":
+          $scope.showDynamicFields = true;
+          $scope.survey = $scope.sample_locality_survey;
+          $scope.choices = $scope.sample_locality_choices;
           break;
         case "Shear Zone":
           $scope.showDynamicFields = true;
