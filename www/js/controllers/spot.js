@@ -249,6 +249,14 @@ angular.module('app')
         return (field.type == "start" || field.type == "end")
       });
 
+      // Set default values for the spot
+      if ($scope.survey) {
+        _.each($scope.survey, function (field) {
+          if (!$scope.spot.properties[field.name] && field.default)
+            $scope.spot.properties[field.name] = field.default;
+        });
+      }
+
       // If current spot is a point
       $scope.point = {};
       if ($scope.spot.geometry && $scope.spot.geometry.type === "Point") {
@@ -266,22 +274,24 @@ angular.module('app')
         $scope.point.longitude = 0;
       }
 
-      // Initially the fields or not
-      $scope.show = {
-        strike: $scope.spot.properties.spottype == 'Orientation',
-        dip: $scope.spot.properties.spottype == 'Orientation',
-        trend: ($scope.spot.properties.trend) ? true : false,
-        plunge: ($scope.spot.properties.plunge) ? true : false,
+      if ($scope.spot.properties.spottype == 'Orientation') {
+        // Initially the fields or not
+        $scope.show = {
+          strike: $scope.spot.properties.spottype == 'Orientation',
+          dip: $scope.spot.properties.spottype == 'Orientation',
+          trend: ($scope.spot.properties.trend) ? true : false,
+          plunge: ($scope.spot.properties.plunge) ? true : false,
 
-        plane_facing: $scope.spot.properties.spottype == 'Orientation',
-        facing_direction: ($scope.spot.properties.facing_direction) ? true : false,
+          plane_facing: $scope.spot.properties.spottype == 'Orientation',
+          facing_direction: ($scope.spot.properties.facing_direction) ? true : false,
 
-        fold_type: ($scope.spot.properties.fold_type) ? true : false,
-        fold_detail: ($scope.spot.properties.fold_detail) ? true : false,
+          fold_type: ($scope.spot.properties.fold_type) ? true : false,
+          fold_detail: ($scope.spot.properties.fold_detail) ? true : false,
 
-        directed: ($scope.spot.properties.directed) ? true : false,
-        vergence: ($scope.spot.properties.vergence) ? true : false
-      };
+          directed: ($scope.spot.properties.directed) ? true : false,
+          vergence: ($scope.spot.properties.vergence) ? true : false
+        };
+      }
 
       $scope.showLinkToNewOrientation = $scope.spot.properties.spottype != "Orientation";
 
