@@ -5,6 +5,7 @@ angular.module('app')
   $scope.pointTypes = [
     { type: "Contact" },
     { type: "Fault" },
+    { type: "Fold" },
     { type: "Notes" },
     { type: "Orientation" },
     { type: "Sample" },
@@ -15,6 +16,7 @@ angular.module('app')
   $scope.lineTypes = [
     { type: "Contact" },
     { type: "Fault" },
+    { type: "Fold" },
     { type: "Hinge Surface Trace" },
     { type: "Notes" },
     { type: "Shear Zone" },
@@ -30,6 +32,7 @@ angular.module('app')
   $scope.allTypes = [
     { type: "Contact" },
     { type: "Fault" },
+    { type: "Fold" },
     { type: "Hinge Surface Trace" },
     { type: "Notes" },
     { type: "Orientation" },

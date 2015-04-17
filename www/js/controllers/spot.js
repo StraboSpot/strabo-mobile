@@ -17,6 +17,8 @@ angular.module('app')
     angular.module('app').addContactChoices($scope);
     angular.module('app').addFaultSurvey($scope);
     angular.module('app').addFaultChoices($scope);
+    angular.module('app').addFoldSurvey($scope);
+    angular.module('app').addFoldChoices($scope);
     angular.module('app').addOrientationSurvey($scope);
     angular.module('app').addOrientationChoices($scope);
     angular.module('app').addShearZoneSurvey($scope);
@@ -206,6 +208,11 @@ angular.module('app')
           $scope.showDynamicFields = true;
           $scope.survey = $scope.fault_survey;
           $scope.choices = $scope.fault_choices;
+          break;
+        case "Fold":
+          $scope.showDynamicFields = true;
+          $scope.survey = $scope.fold_survey;
+          $scope.choices = $scope.fold_choices;
           break;
         case "Hinge Surface Trace":
           break;
