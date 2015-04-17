@@ -13,6 +13,11 @@ angular.module('app')
     $cordovaDialogs,
     $cordovaCamera) {
 
+    angular.module('app').addOrientationSurvey($scope);
+    angular.module('app').addOrientationChoices($scope);
+    angular.module('app').addShearZoneSurvey($scope);
+    angular.module('app').addShearZoneChoices($scope);
+
     $scope.showImages = function(index) {
       $scope.activeSlide = index;
       $ionicModal.fromTemplateUrl('templates/modals/imageModal.html', {
@@ -219,6 +224,11 @@ angular.module('app')
         case "Notes":
           $scope.showNotesFields = true;
           break;
+        case "Orientation New":
+          $scope.showDynamicFields = true;
+          $scope.survey = $scope.orientation_survey;
+          $scope.choices = $scope.orientation_choices;
+          break;
         case "Rock Description":
           $scope.showRockDescriptionFields = true;
           break;
@@ -226,12 +236,18 @@ angular.module('app')
           $scope.showSampleFields = true;
           break;
         case "Shear Zone":
-          $scope.showShearZoneFields = true;
+          $scope.showDynamicFields = true;
+          $scope.survey = $scope.shear_zone_survey;
+          $scope.choices = $scope.shear_zone_choices;
           break;
         case "Spot Grouping":
           $scope.showGroupFields = true;
           break;
       }
+
+      $scope.survey = _.reject($scope.survey, function (field) {
+        return (field.type == "start" || field.type == "end")
+      });
 
       // If current spot is a point
       $scope.point = {};
@@ -433,21 +449,29 @@ angular.module('app')
     $scope.submit = function() {
 
       console.log("spot, ", $scope.spot);
+      var errorMessages = "";
 
-      // Get all the keys whose value is undefined
-      var keys = [];
-      _.each($scope.spot.properties, function (val, key) {
-        if (val == undefined)
-          keys.push(key);
-      });
+      // Run validation check on the forms that are generated dynamically
+      if ($scope.survey) {
+        // If a field is visible and required but empty give the user an error message and return to the form
+        _.each($scope.survey, function (field) {
+          var ele = document.getElementById(field.name);
+          if (getComputedStyle(ele).display != "none" && !$scope.spot.properties[field.name]) {
+            if (field.required == "true")
+              errorMessages += field.label + " Required!\n";
+            else
+              if (field.name in $scope.spot.properties)
+                errorMessages += field.label + " " + field.constraint_message + "\n";
+          }
+          else if (getComputedStyle(ele).display == "none")
+            delete $scope.spot.properties[field.name];
+        });
 
-      // If the form is being generated dynamically, undefined values mean the value
-      // typed in this field is not valid so don't let the user save the form yet
-      // For right now only run this validation check on the forms that are generated dynamically
-      if (keys.length > 0 && $scope.spot.properties.spottype == "Shear Zone") {
-      alert("Fix all errors before saving.");
-      return 0;
-    }
+        if (errorMessages) {
+          alert("Fix the following errors before saving:\n" + errorMessages);
+          return 0;
+        }
+      }
 
       if (!$scope.spot.properties.name) {
         alert('Name required.');
@@ -688,6 +712,27 @@ angular.module('app')
       $scope.newOrientation.properties.spottype = "Orientation";
       NewSpot.setNewSpot($scope.newOrientation);
       $location.path(href="/app/spots/newspot");
+    };
+
+    // Determine if the field should be shown or not by looking at the relevant key-value pair
+    $scope.showField = function(relevant) {
+      if (!relevant)
+        return true;
+
+      relevant = relevant.replace(/\$/g,"");
+      relevant = relevant.replace(/{/g,"$scope.spot.properties.");
+      relevant = relevant.replace(/}/g,"");
+      relevant = relevant.replace(/''/g,"undefined");
+      relevant = relevant.replace(/ = /g," == ");
+      relevant = relevant.replace(/ or /g," || ");
+      relevant = relevant.replace(/ and /g," && ");
+
+      try {
+        return eval(relevant);
+      }
+      catch (e) {
+        return false;
+      }
     };
 
     // Get the min value allowed for a number field
@@ -1087,9 +1132,4 @@ angular.module('app')
         { type: 'is otherwise related to', inverse: 'is otherwise related to' }
       ]
     };
-
-    angular.module('app').addOrientationSurvey($scope);
-    angular.module('app').addOrientationChoices($scope);
-    angular.module('app').addShearZoneSurvey($scope);
-    angular.module('app').addShearZoneChoices($scope);
   });

@@ -1,9 +1,9 @@
 angular.module('app')
-  .addShearZoneSurvey = function($scope) {
+  .addShearZoneSurvey = function ($scope) {
 
   $scope.shear_zone_survey = [
     {
-      "name": "thickness__m",
+      "name": "thickness_m",
       "type": "integer",
       "label": "Thickness (m)",
       "hint": "What is the thickness of this shear zone in meters?",
@@ -14,7 +14,7 @@ angular.module('app')
       "relevant": ""
     },
     {
-      "name": "Strike_of_shear_zone_boundary",
+      "name": "strike_of_shear_zone_boundary",
       "type": "integer",
       "label": "Strike of shear zone boundary:",
       "hint": "",
@@ -25,7 +25,7 @@ angular.module('app')
       "relevant": ""
     },
     {
-      "name": "Dip_of_shear_zone_boundary",
+      "name": "dip_of_shear_zone_boundary",
       "type": "integer",
       "label": "Dip of shear zone boundary",
       "hint": "",
@@ -36,7 +36,7 @@ angular.module('app')
       "relevant": ""
     },
     {
-      "name": "Fault_Geometry",
+      "name": "fault_geometry",
       "type": "select_one ku2gk10",
       "label": "Shear zone movement type:",
       "hint": "",
@@ -55,10 +55,10 @@ angular.module('app')
       "default": "not_specified",
       "constraint": "",
       "constraint_message": "",
-      "relevant": "${Fault_Geometry} = 'strike_slip'"
+      "relevant": "${fault_geometry} = 'strike_slip'"
     },
     {
-      "name": "Dip_Slip_Movement",
+      "name": "dip_slip_movement",
       "type": "select_one dr9xt23",
       "label": "Dip-Slip Movement:",
       "hint": "",
@@ -66,10 +66,10 @@ angular.module('app')
       "default": "not_specified",
       "constraint": "",
       "constraint_message": "",
-      "relevant": "${Fault_Geometry} = 'dip_slip'"
+      "relevant": "${fault_geometry} = 'dip_slip'"
     },
     {
-      "name": "Oblique_Movement",
+      "name": "oblique_movement",
       "type": "select_one os1df47",
       "label": "Oblique Movement:",
       "hint": "",
@@ -77,10 +77,10 @@ angular.module('app')
       "default": "not_specified",
       "constraint": "",
       "constraint_message": "",
-      "relevant": "${Fault_Geometry} = 'oblique'"
+      "relevant": "${fault_geometry} = 'oblique'"
     },
     {
-      "name": "Movement_Justification",
+      "name": "movement_justification",
       "type": "select_one kt81l04",
       "label": "Movement Justification:",
       "hint": "",
@@ -88,10 +88,10 @@ angular.module('app')
       "default": "not_specified",
       "constraint": "",
       "constraint_message": "",
-      "relevant": "${Fault_Geometry} != ''"
+      "relevant": "${fault_geometry} != ''"
     },
     {
-      "name": "Offset_Markers",
+      "name": "offset_markers",
       "type": "select_multiple uh1mv47",
       "label": "Offset Markers:",
       "hint": "",
@@ -99,10 +99,10 @@ angular.module('app')
       "default": "not_specified",
       "constraint": "",
       "constraint_message": "",
-      "relevant": "${Movement_Justification} = 'offset'"
+      "relevant": "${movement_justification} = 'offset'"
     },
     {
-      "name": "Piercing_Point_Detail",
+      "name": "piercing_point_detail",
       "type": "text",
       "label": "Piercing Point Description:",
       "hint": "Specify piercing point.",
@@ -110,10 +110,10 @@ angular.module('app')
       "default": "not_specified",
       "constraint": "",
       "constraint_message": "",
-      "relevant": "selected(${Offset_Markers}, 'piercing_point')"
+      "relevant": "selected(${offset_markers}, 'piercing_point')"
     },
     {
-      "name": "Marker_Detail",
+      "name": "marker_detail",
       "type": "text",
       "label": "Marker type:",
       "hint": "",
@@ -121,10 +121,10 @@ angular.module('app')
       "default": "not_specified",
       "constraint": "",
       "constraint_message": "",
-      "relevant": "selected(${Offset_Markers}, 'other_marker')"
+      "relevant": "selected(${offset_markers}, 'other_marker')"
     },
     {
-      "name": "Directional_Indicators",
+      "name": "directional_indicators",
       "type": "select_multiple xd2fb20",
       "label": "Directional Indicators:",
       "hint": "",
@@ -132,10 +132,10 @@ angular.module('app')
       "default": "not_specified",
       "constraint": "",
       "constraint_message": "",
-      "relevant": "${Movement_Justification} = 'directional_indicator'"
+      "relevant": "${movement_justification} = 'directional_indicator'"
     },
     {
-      "name": "Feature_Asymmetry_Detail",
+      "name": "feature_asymmetry_detail",
       "type": "text",
       "label": "Asymmetry Details:",
       "hint": "porphyroblast/clast, folds, mica fish, etc",
@@ -143,10 +143,10 @@ angular.module('app')
       "default": "not_specified",
       "constraint": "",
       "constraint_message": "",
-      "relevant": "selected(${Directional_Indicators}, 'shear_sense')"
+      "relevant": "selected(${directional_indicators}, 'shear_sense')"
     },
     {
-      "name": "Mineral_Lineation_Detail",
+      "name": "mineral_lineation_detail",
       "type": "text",
       "label": "Mineral Lineation Detail:",
       "hint": "What is the mineral?",
@@ -154,10 +154,10 @@ angular.module('app')
       "default": "",
       "constraint": "",
       "constraint_message": "",
-      "relevant": "selected(${Directional_Indicators}, 'mineral_lineat')"
+      "relevant": "selected(${directional_indicators}, 'mineral_lineat')"
     },
     {
-      "name": "Juxtaposes_rocks",
+      "name": "juxtaposes_rocks",
       "type": "select_multiple fq8rt60",
       "label": "Juxtaposes __________ rocks....",
       "hint": "",
@@ -168,7 +168,7 @@ angular.module('app')
       "relevant": ""
     },
     {
-      "name": "__against_rocks",
+      "name": "against_rocks",
       "type": "select_multiple kw6tp41",
       "label": "... against ________ rocks.",
       "hint": "",
@@ -179,7 +179,7 @@ angular.module('app')
       "relevant": ""
     },
     {
-      "name": "Inferred_age_of_shear_zone__Ma",
+      "name": "inferred_age_of_shear_zone_ma",
       "type": "integer",
       "label": "Inferred age (Ma) of shear zone activity:",
       "hint": "Do you know when the shear zone was active?",

@@ -106,7 +106,7 @@ angular.module('app')
     },
     {
       "label": "other / new",
-      "name": "other___new",
+      "name": "other_new",
       "order": "",
       "list name": "ll25x57"
     },
@@ -339,6 +339,36 @@ angular.module('app')
       "list name": "gl2mf38"
     },
     {
+      "label": "1",
+      "name": "one",
+      "order": "",
+      "list name": "xn9nf56"
+    },
+    {
+      "label": "2",
+      "name": "two",
+      "order": "",
+      "list name": "xn9nf56"
+    },
+    {
+      "label": "3",
+      "name": "three",
+      "order": "",
+      "list name": "xn9nf56"
+    },
+    {
+      "label": "4",
+      "name": "four",
+      "order": "",
+      "list name": "xn9nf56"
+    },
+    {
+      "label": "5",
+      "name": "five",
+      "order": "",
+      "list name": "xn9nf56"
+    },
+    {
       "label": "solid-state",
       "name": "solid_state",
       "order": "0",
@@ -406,7 +436,7 @@ angular.module('app')
     },
     {
       "label": "other / new",
-      "name": "other___new",
+      "name": "other_new",
       "order": "",
       "list name": "dr5ab45"
     },
@@ -519,8 +549,20 @@ angular.module('app')
       "list name": "gs9eo09"
     },
     {
+      "label": "No",
+      "name": "no",
+      "order": "",
+      "list name": "gs9eo09"
+    },
+    {
       "label": "Yes",
       "name": "yes",
+      "order": "",
+      "list name": "on2yb53"
+    },
+    {
+      "label": "No",
+      "name": "no",
       "order": "",
       "list name": "on2yb53"
     }

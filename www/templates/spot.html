@@ -153,64 +153,62 @@
               Add the Sample detail fields here.
             </div>
 
-            <!-- Shear Zone -->
-            <div ng-show="showShearZoneFields">
-              <div ng-repeat="field in shear_zone_survey">
-                <div data-ng-switch on="field.type.split(' ')[0]">
-                  <div ng-switch-when="integer">
-                    <label class="item item-input"
-                           ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid}"
-                           ng-messages-include="templates/error-messages.html">
-                      <span class="input-label">{{field.label}}</span>
-                      <input type="number"
-                             name="{{field.name}}"
-                             placeholder="{{field.hint}}"
-                             ng-model="spot.properties[field.name]"
-                             ng-required="{{field.required}}"
-                             ng-min="getMin(field.constraint)"
-                             ng-max="getMax(field.constraint)">
-                    </label>
-                  </div>
-                  <div ng-switch-when="text">
-                    <label class="item item-input"
-                           ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid}"
-                           ng-messages-include="templates/error-messages.html">
-                      <span class="input-label">{{field.label}}</span>
-                      <input type="text"
-                             name="{{field.name}}"
-                             placeholder="{{field.hint}}"
-                             ng-model="spot.properties[field.name]"
-                             ng-required="{{field.required}}">
-                    </label>
-                  </div>
-                  <div ng-switch-when="select_one">
-                    <label class="item item-input item-select"
-                           ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid}"
-                           ng-messages-include="templates/error-messages.html">
-                      <span class="input-label">{{field.label}}</span>
-                      <select ng-model="spot.properties[field.name]"
-                              ng-options="choice.name as choice.label for choice in shear_zone_choices
-                              | orderBy: 'label'
-                              | filter: { 'list name': field.type.split(' ')[1] }"
-                              ng-required="{{field.required}}">
-                      </select>
-                    </label>
-                  </div>
-                  <div ng-switch-when="select_multiple">
-                    <label class="item"
-                           ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid}"
-                           ng-messages-include="templates/error-messages.html">
-                      <span class="input-label">{{field.label}}</span>
-                      <ion-checkbox ng-repeat="choice in shear_zone_choices | orderBy: 'label' | filter: { 'list name': field.type.split(' ')[1] }"
-                                    ng-checked="isOptionChecked(field.name, choice.name)"
-                                    ng-click="toggleChecked(field.name, choice.name)"
-                                    ng-required="{{field.required}}">
-                        {{ choice.label }}
-                      </ion-checkbox>
-                    </label>
-                  </div>
-                  <div class="error-container" ng-if="straboForm[field.name].$touched"
-                       ng-messages="straboForm[field.name].$error" ng-messages-include="templates/error-messages.html">
+            <!-- Orientation (New) and Shear Zone for now -->
+            <div ng-show="showDynamicFields">
+              <div ng-repeat="field in survey">
+                <div id="{{field.name}}" ng-show="showField(field.relevant)">
+                  <div data-ng-switch on="field.type.split(' ')[0]">
+                    <div ng-switch-when="integer">
+                      <label class="item item-input"
+                             ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid}"
+                             ng-messages-include="templates/error-messages.html">
+                        <span class="input-label">{{field.label}}</span>
+                        <input type="number"
+                               name="{{field.name}}"
+                               placeholder="{{field.hint}}"
+                               ng-model="spot.properties[field.name]"
+                               ng-required="{{field.required}}"
+                               ng-min="getMin(field.constraint)"
+                               ng-max="getMax(field.constraint)">
+                      </label>
+                    </div>
+                    <div ng-switch-when="text">
+                      <label class="item item-input"
+                             ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid}"
+                             ng-messages-include="templates/error-messages.html">
+                        <span class="input-label">{{field.label}}</span>
+                        <input type="text"
+                               name="{{field.name}}"
+                               placeholder="{{field.hint}}"
+                               ng-model="spot.properties[field.name]"
+                               ng-required="{{field.required}}">
+                      </label>
+                    </div>
+                    <div ng-switch-when="select_one">
+                      <label class="item item-input item-select">
+                        <span class="input-label">{{field.label}}</span>
+                        <select ng-model="spot.properties[field.name]"
+                                ng-options="choice.name as choice.label for choice in choices
+                                | orderBy: 'label'
+                                | filter: { 'list name': field.type.split(' ')[1] }"
+                                ng-required="{{field.required}}">
+                        </select>
+                      </label>
+                    </div>
+                    <div ng-switch-when="select_multiple">
+                      <label class="item">
+                        <span class="input-label">{{field.label}}</span>
+                        <ion-checkbox ng-repeat="choice in choices | orderBy: 'label' | filter: { 'list name': field.type.split(' ')[1] }"
+                                      ng-checked="isOptionChecked(field.name, choice.name)"
+                                      ng-click="toggleChecked(field.name, choice.name)"
+                                      ng-required="{{field.required}}">
+                          {{ choice.label }}
+                        </ion-checkbox>
+                      </label>
+                    </div>
+                    <div class="error-container" ng-if="straboForm[field.name].$touched"
+                         ng-messages="straboForm[field.name].$error" ng-messages-include="templates/error-messages.html">
+                    </div>
                   </div>
                 </div>
               </div>
