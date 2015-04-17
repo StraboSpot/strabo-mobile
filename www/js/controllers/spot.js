@@ -21,6 +21,8 @@ angular.module('app')
     angular.module('app').addFoldChoices($scope);
     angular.module('app').addOrientationSurvey($scope);
     angular.module('app').addOrientationChoices($scope);
+    angular.module('app').addRockDescriptionSurvey($scope);
+    angular.module('app').addRockDescriptionChoices($scope);
     angular.module('app').addShearZoneSurvey($scope);
     angular.module('app').addShearZoneChoices($scope);
 
@@ -224,6 +226,9 @@ angular.module('app')
           $scope.choices = $scope.orientation_choices;
           break;
         case "Rock Description":
+          $scope.showDynamicFields = true;
+          $scope.survey = $scope.rock_description_survey;
+          $scope.choices = $scope.rock_description_choices;
           break;
         case "Sample":
           break;
