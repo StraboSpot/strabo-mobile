@@ -15,6 +15,8 @@ angular.module('app')
 
     angular.module('app').addContactSurvey($scope);
     angular.module('app').addContactChoices($scope);
+    angular.module('app').addFaultSurvey($scope);
+    angular.module('app').addFaultChoices($scope);
     angular.module('app').addOrientationSurvey($scope);
     angular.module('app').addOrientationChoices($scope);
     angular.module('app').addShearZoneSurvey($scope);
@@ -200,9 +202,10 @@ angular.module('app')
           $scope.survey = $scope.contact_survey;
           $scope.choices = $scope.contact_choices;
           break;
-        case "Fault Outcrop":
-          break;
-        case "Fault Trace":
+        case "Fault":
+          $scope.showDynamicFields = true;
+          $scope.survey = $scope.fault_survey;
+          $scope.choices = $scope.fault_choices;
           break;
         case "Hinge Surface Trace":
           break;
