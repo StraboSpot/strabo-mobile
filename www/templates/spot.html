@@ -184,6 +184,19 @@
                                ng-required="{{field.required}}">
                       </label>
                     </div>
+                    <div ng-switch-when="note">
+                      <label class="item item-input"
+                             ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid}"
+                             ng-messages-include="templates/error-messages.html">
+                        <span class="input-label">{{field.label}}</span>
+                        <textarea name="{{field.name}}"
+                                  rows="4"
+                                  placeholder="{{field.hint}}"
+                                  ng-model="spot.properties[field.name]"
+                                  ng-required="{{field.required}}">
+                        </textarea>
+                      </label>
+                    </div>
                     <div ng-switch-when="select_one">
                       <label class="item item-input item-select">
                         <span class="input-label">{{field.label}}</span>

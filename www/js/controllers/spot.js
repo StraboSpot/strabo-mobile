@@ -13,6 +13,8 @@ angular.module('app')
     $cordovaDialogs,
     $cordovaCamera) {
 
+    angular.module('app').addContactSurvey($scope);
+    angular.module('app').addContactChoices($scope);
     angular.module('app').addOrientationSurvey($scope);
     angular.module('app').addOrientationChoices($scope);
     angular.module('app').addShearZoneSurvey($scope);
@@ -206,11 +208,10 @@ angular.module('app')
           if (!$scope.spot.properties.orientation_quality)
             $scope.spot.properties.orientation_quality = "accurate";
           break;
-        case "Contact Outcrop":
-          $scope.showContactFields = true;
-          break;
-        case "Contact Trace":
-          $scope.showContactFields = true;
+        case "Contact":
+          $scope.showDynamicFields = true;
+          $scope.survey = $scope.contact_survey;
+          $scope.choices = $scope.contact_choices;
           break;
         case "Fault Outcrop":
           $scope.showFaultFields = true;
@@ -253,7 +254,17 @@ angular.module('app')
       if ($scope.survey) {
         _.each($scope.survey, function (field) {
           if (!$scope.spot.properties[field.name] && field.default)
-            $scope.spot.properties[field.name] = field.default;
+            // Check that default is in the list of choices for field
+            if (field.type.split(' ')[0] == "select_one" || field.type.split(' ')[0] == "select_mulitple"){
+              var curChoices = _.filter($scope.choices, function (choice) {
+                return choice["list name"] == field.type.split(' ')[1] }
+              );
+              if (_.findWhere(curChoices, { name: field.default }))
+                $scope.spot.properties[field.name] = field.default;
+            }
+            // Leave the field blank instead of writing not specified
+            else if (field.default != "not specified")
+              $scope.spot.properties[field.name] = field.default;
         });
       }
 

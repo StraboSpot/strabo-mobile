@@ -3,7 +3,7 @@ angular.module('app')
 .controller("ModalCtrl", function($scope, NewSpot) {
 
   $scope.pointTypes = [
-    { type: "Contact Outcrop" },
+    { type: "Contact" },
     { type: "Fault Outcrop" },
     { type: "Notes" },
     { type: "Orientation" },
@@ -14,7 +14,7 @@ angular.module('app')
   ];
 
   $scope.lineTypes = [
-    { type: "Contact Trace" },
+    { type: "Contact" },
     { type: "Fault Trace" },
     { type: "Hinge Surface Trace" },
     { type: "Notes" },
@@ -29,8 +29,7 @@ angular.module('app')
   ];
 
   $scope.allTypes = [
-    { type: "Contact Outcrop" },
-    { type: "Contact Trace" },
+    { type: "Contact" },
     { type: "Fault Outcrop" },
     { type: "Fault Trace" },
     { type: "Hinge Surface Trace" },
