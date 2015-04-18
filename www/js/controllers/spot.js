@@ -27,6 +27,8 @@ angular.module('app')
     angular.module('app').addSampleLocalityChoices($scope);
     angular.module('app').addShearZoneSurvey($scope);
     angular.module('app').addShearZoneChoices($scope);
+    angular.module('app').addSpotGroupingSurvey($scope);
+    angular.module('app').addSpotGroupingChoices($scope);
 
     $scope.showImages = function(index) {
       $scope.activeSlide = index;
@@ -243,7 +245,10 @@ angular.module('app')
           $scope.choices = $scope.shear_zone_choices;
           break;
         case "Spot Grouping":
-          $scope.showGroupFields = true;
+          $scope.showGroupButtons = true;
+          $scope.showDynamicFields = true;
+          $scope.survey = $scope.spot_grouping_survey;
+          $scope.choices = $scope.spot_grouping_choices;
           break;
       }
 
