@@ -17,7 +17,6 @@ angular.module('app')
     { type: "Contact" },
     { type: "Fault" },
     { type: "Fold" },
-    { type: "Hinge Surface Trace" },
     { type: "Notes" },
     { type: "Shear Zone" },
     { type: "Spot Grouping" }
@@ -33,7 +32,6 @@ angular.module('app')
     { type: "Contact" },
     { type: "Fault" },
     { type: "Fold" },
-    { type: "Hinge Surface Trace" },
     { type: "Notes" },
     { type: "Orientation" },
     { type: "Rock Description" },

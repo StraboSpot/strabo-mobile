@@ -220,8 +220,6 @@ angular.module('app')
           $scope.survey = $scope.fold_survey;
           $scope.choices = $scope.fold_choices;
           break;
-        case "Hinge Surface Trace":
-          break;
         case "Notes":
           break;
         case "Orientation":
