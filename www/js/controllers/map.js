@@ -631,9 +631,9 @@ angular.module('app')
       var rotation = (dip || plunge) ? dip || plunge : 0;
 
       switch(contentModel) {
-        case "Contact Outcrop":
+        case "Contact":
           return icon.contact_outcrop(rotation);
-        case "Fault Outcrop":
+        case "Fault":
           return icon.fault_outcrop(rotation);
         case "Notes":
           return icon.notes(rotation);
@@ -641,7 +641,7 @@ angular.module('app')
           return icon.orientation(rotation);
         case "Rock Description":
           return icon.notes(rotation);
-        case "Sample":
+        case "Sample Locality":
           return icon.sample(rotation);
 
         case "Spot Grouping":
