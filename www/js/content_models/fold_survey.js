@@ -54,7 +54,7 @@ angular.module('app')
       "name": "button_to_link_to_existing_ori",
       "type": "text",
       "label": "Button to link to existing orientation",
-      "required": "true",
+      "required": "false",
       "default": "",
       "hint": ""
     },
@@ -62,7 +62,7 @@ angular.module('app')
       "name": "button_to_link_to_new_orientat",
       "type": "text",
       "label": "Button to link to new orientatoin",
-      "required": "true",
+      "required": "false",
       "default": "",
       "hint": ""
     },

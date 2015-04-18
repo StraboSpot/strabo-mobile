@@ -167,7 +167,7 @@ angular.module('app')
       "type": "text",
       "label": "Button to link to existing orientation",
       "hint": "",
-      "required": "true",
+      "required": "false",
       "default": "",
       "constraint": "",
       "relevant": ""
@@ -177,7 +177,7 @@ angular.module('app')
       "type": "text",
       "label": "Button to link to new orientatoin",
       "hint": "",
-      "required": "true",
+      "required": "false",
       "default": "",
       "constraint": "",
       "relevant": ""

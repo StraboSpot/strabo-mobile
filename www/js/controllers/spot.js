@@ -750,36 +750,6 @@ angular.module('app')
     });
 
     /*************************************
-    /* Spot Grouping
-    /************************************/
-
-    $scope.group_relationship = {
-      label: "What do the elements of this group have in common?",
-      choices: [
-        { text: 'other', value: 'other' },
-        { text: 'feature type', value: 'feature_type' },
-        { text: 'part of larger structure', value: 'larger_structure' },
-        { text: 'age', value: 'age' },
-        { text: 'location', value: 'location' },
-        { text: 'part of the same process or event', value: 'process' }
-      ],
-      required: true,
-      hint: "(How are these data similar?)"
-    };
-
-    $scope.larger_structure = {
-      label: "Larger structure is a:",
-      choices: [
-        { text: 'fault', value: 'fault' },
-        { text: 'fold', value: 'fold' },
-        { text: 'shear zone', value: 'shear_zone' },
-        { text: 'intrusive body', value: 'intrusive_body' },
-        { text: 'other', value: 'other' }
-      ],
-      required: true
-    };
-
-    /*************************************
     /* Links
     /************************************/
 

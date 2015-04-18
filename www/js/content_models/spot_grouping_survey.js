@@ -65,7 +65,23 @@ angular.module('app')
       "default": "",
       "relevant": ""
     },
-    {"name": "start", "type": "start", "label": "", "required": "", "hint": "", "default": "", "relevant": ""},
-    {"name": "end", "type": "end", "label": "", "required": "", "hint": "", "default": "", "relevant": ""}
+    {
+      "name": "start",
+      "type": "start",
+      "label": "",
+      "required": "",
+      "hint": "",
+      "default": "",
+      "relevant": ""
+    },
+    {
+      "name": "end",
+      "type": "end",
+      "label": "",
+      "required": "",
+      "hint": "",
+      "default": "",
+      "relevant": ""
+    }
   ]
 };
