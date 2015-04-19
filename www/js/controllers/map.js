@@ -142,7 +142,7 @@ angular.module('app')
 
   // vector layer where we house all the geojson spot objects
   var featureLayer = new ol.layer.Group({
-    'title': 'Spot Features',
+    'title': 'Spot Types',
     layers: []
   });
 
@@ -556,7 +556,7 @@ angular.module('app')
           opacity: 1,
           rotation: Math.radians(rotation),
           src: ImagesFactory.getImagePath('contact_outcrop'),
-          scale: 0.05
+          scale: 0.07
         });
       },
       fault_outcrop: function(rotation) {
@@ -768,20 +768,27 @@ angular.module('app')
 
   // Loop through all spots and create ol vector layers
   SpotsFactory.all().then(function(spots) {
+    // get distinct groups and aggregate spots by group type
+    var spotGroup = _.groupBy(spots, function(spot) {
+      return spot.properties.spottype;
+    });
 
-    // bunch all the spots into a geojson feature collection
-    var featureCollection = {
-      "type": "FeatureCollection",
-      "features": spots,
-      "properties": {
-        "name": "FC-1"
+    // go through each group and assign all the aggregates to the geojson feature
+    for (var key in spotGroup) {
+      if (spotGroup.hasOwnProperty(key)) {
+        // create a geojson to hold all the spots that fit the same spot type
+        var spotTypeLayer = {
+          type: 'FeatureCollection',
+          features: spotGroup[key],
+          properties: {
+            name: key + ' (' + spotGroup[key].length + ')'
+          }
+        };
+
+        // add the feature collection layer to the map
+        featureLayer.getLayers().push(geojsonToVectorLayer(spotTypeLayer));
       }
-    };
-
-    var vectorLayer = geojsonToVectorLayer(featureCollection);
-    // add the feature collection layer to the map
-    featureLayer.getLayers().push(vectorLayer);
-
+    }
   });
 
   map.on('touchstart', function(event) {
