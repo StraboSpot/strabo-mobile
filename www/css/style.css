@@ -142,14 +142,6 @@ image modal style: used for image active-slider when choosing spot images
   height: 100%;
 }
 
-.error-container {
-  margin: 5px 0;
-}
-
-.error-container:last-child {
-  margin: 5px 0 0;
-}
-
 .error {
   padding: 10px 16px;
   font-family: "Arial Black", Gadget, sans-serif;
