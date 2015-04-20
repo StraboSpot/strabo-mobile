@@ -135,31 +135,31 @@ angular.module('app')
       "order": ""
     },
     {
-      "label": "gentle   (180º–120º)",
+      "label": "gentle   (180\xB0-120\xB0)",
       "name": "gentle",
       "list name": "ao3ks66",
       "order": ""
     },
     {
-      "label": "open   (120º–70º)",
+      "label": "open   (120\xB0-70\xB0)",
       "name": "open",
       "list name": "ao3ks66",
       "order": ""
     },
     {
-      "label": "close   (70º–30º)",
+      "label": "close   (70\xB0-30\xB0)",
       "name": "close",
       "list name": "ao3ks66",
       "order": ""
     },
     {
-      "label": "tight   (30º–10º)",
+      "label": "tight   (30\xB0-10\xB0)",
       "name": "tight",
       "list name": "ao3ks66",
       "order": ""
     },
     {
-      "label": "isoclinal   (10º–0º)",
+      "label": "isoclinal   (10\xB0-0\xB0)",
       "name": "isoclinal",
       "list name": "ao3ks66",
       "order": ""
