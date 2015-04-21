@@ -20,7 +20,7 @@
                   <div data-ng-switch on="field.type.split(' ')[0]">
                     <div ng-switch-when="integer">
                       <label class="item item-input"
-                             ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid}"
+                             ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid }"
                              ng-messages-include="templates/error-messages.html">
                         <span class="input-label">{{field.label}}</span>
                         <input type="number"
@@ -34,7 +34,7 @@
                     </div>
                     <div ng-switch-when="text">
                       <label class="item item-input"
-                             ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid}"
+                             ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid }"
                              ng-messages-include="templates/error-messages.html">
                         <span class="input-label">{{field.label}}</span>
                         <input type="text"
@@ -46,7 +46,7 @@
                     </div>
                     <div ng-switch-when="note">
                       <label class="item item-input"
-                             ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid}"
+                             ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid }"
                              ng-messages-include="templates/error-messages.html">
                         <span class="input-label">{{field.label}}</span>
                         <textarea name="{{field.name}}"
@@ -58,9 +58,11 @@
                       </label>
                     </div>
                     <div ng-switch-when="select_one">
-                      <label class="item item-input item-select">
+                      <label class="item item-input item-select"
+                             ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid }">
                         <span class="input-label">{{field.label}}</span>
-                        <select ng-model="spot.properties[field.name]"
+                        <select name="{{field.name}}"
+                                ng-model="spot.properties[field.name]"
                                 ng-options="choice.name as choice.label for choice in choices
                                 | orderBy: 'label'
                                 | filter: { 'list name': field.type.split(' ')[1] }"
@@ -69,9 +71,12 @@
                       </label>
                     </div>
                     <div ng-switch-when="select_multiple">
-                      <label class="item">
-                        <span class="input-label">{{field.label}}</span>
-                        <ion-checkbox ng-repeat="choice in choices | orderBy: 'label' | filter: { 'list name': field.type.split(' ')[1] }"
+                      <label class="item" ng-class="setSelMultClass(field)">
+                        <span class="input-label">
+                          {{field.label}}
+                        </span>
+                        <ion-checkbox name="{{field.name}}"
+                                      ng-repeat="choice in choices | orderBy: 'label' | filter: { 'list name': field.type.split(' ')[1] }"
                                       ng-checked="isOptionChecked(field.name, choice.name)"
                                       ng-click="toggleChecked(field.name, choice.name)"
                                       ng-required="{{field.required}}">
@@ -79,8 +84,9 @@
                         </ion-checkbox>
                       </label>
                     </div>
-                    <div class="error-container" ng-if="straboForm[field.name].$touched"
-                         ng-messages="straboForm[field.name].$error" ng-messages-include="templates/error-messages.html">
+                    <div ng-if="straboForm[field.name].$touched"
+                         ng-messages="straboForm[field.name].$error"
+                         ng-messages-include="templates/error-messages.html">
                     </div>
                   </div>
                 </div>

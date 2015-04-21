@@ -258,17 +258,24 @@ angular.module('app')
       if ($scope.survey) {
         _.each($scope.survey, function (field) {
           if (!$scope.spot.properties[field.name] && field.default)
-            // Check that default is in the list of choices for field
-            if (field.type.split(' ')[0] == "select_one" || field.type.split(' ')[0] == "select_mulitple"){
+            if (field.type == "text" || field.type == "note")
+              $scope.spot.properties[field.name] = field.default;
+            else if (field.type == "integer" && !isNaN(parseInt(field.default)))
+              $scope.spot.properties[field.name] = parseInt(field.default);
+            else if (field.type.split(' ')[0] == "select_one" || field.type.split(' ')[0] == "select_multiple"){
               var curChoices = _.filter($scope.choices, function (choice) {
                 return choice["list name"] == field.type.split(' ')[1] }
               );
-              if (_.findWhere(curChoices, { name: field.default }))
-                $scope.spot.properties[field.name] = field.default;
+              // Check that default is in the list of choices for field
+              if (_.findWhere(curChoices, { name: field.default })) {
+                if (field.type.split(' ')[0] == "select_one")
+                  $scope.spot.properties[field.name] = field.default;
+                else {
+                  $scope.spot.properties[field.name] = [];
+                  $scope.spot.properties[field.name].push(field.default);
+                }
+              }
             }
-            // Leave the field blank instead of writing not specified
-            else if (field.default != "not specified")
-              $scope.spot.properties[field.name] = field.default;
         });
       }
 
@@ -632,6 +639,20 @@ angular.module('app')
       catch(e) {
         return undefined;
       }
+    };
+
+    // Set the class for the select_multiple fields here because it is not working
+    // to set the class in the html the same way as for the other fields
+    $scope.setSelMultClass = function(field) {
+      if (field.required){
+        if ($scope.spot.properties[field.name]){
+          if ($scope.spot.properties[field.name].length > 0)
+            return 'no-errors';
+        }
+        else
+          return 'has-errors';
+      }
+      return 'no-errors';
     };
 
     $scope.toggleChecked = function (field, choice) {
