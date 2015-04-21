@@ -303,12 +303,100 @@ angular.module('app')
     })
   });
 
+  //////////////////
+  // geolocation layers and styles
+  //////////////////
+
+  var geolocationCenterIconStyle = new ol.style.Style({
+    image: new ol.style.Icon({
+      anchor: [0.5, 0.5],
+      anchorOrigin: 'top-left',
+      anchorXUnits: 'fraction',
+      anchorYUnits: 'fraction',
+      opacity: 0.75,
+      src: 'img/geolocate-center.png',
+      scale: 0.25
+    })
+  });
+
+  var geolocationHeadingIconStyle = function(heading) {
+    return new ol.style.Style({
+      image: new ol.style.Icon({
+        anchor: [0.5, 2.1],
+        anchorOrigin: 'top-left',
+        anchorXUnits: 'fraction',
+        anchorYUnits: 'fraction',
+        opacity: 0.75,
+        src: 'img/geolocate-heading.png',
+        rotation: Math.radians(heading),
+        scale: (heading === null) ? 0 : 0.1
+      })
+    });
+  };
+
+  var geolocationAccuracyTextStyle = function(text) {
+    return new ol.style.Style({
+      text: new ol.style.Text({
+        font: '10px Calibri,sans-serif',
+        text: (text === null) ? '?' : text + 'm',
+        fill: new ol.style.Fill({
+          color: '#000'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#fff',
+          width: 3
+        })
+      })
+    });
+  };
+
+  var geolocationSpeedTextStyle = function(speed) {
+    return new ol.style.Style({
+      text: new ol.style.Text({
+        font: '10px Calibri,sans-serif',
+        offsetY: 30,
+        text: (speed === null) ? '' : speed + 'm/s',
+        fill: new ol.style.Fill({
+          color: '#000'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#fff',
+          width: 3
+        })
+      })
+    });
+  };
+
+  // geolocation layer
+  var geolocationLayer = new ol.layer.Vector({
+    style: function(feature, resolution) {
+      return [
+        geolocationCenterIconStyle,
+        geolocationHeadingIconStyle(feature.get('heading')),
+        geolocationAccuracyTextStyle(feature.get('accuracy')),
+        geolocationSpeedTextStyle(feature.get('speed'))
+      ];
+    }
+  });
+
+  // give the geolocation layer a name so we can reference this later
+  geolocationLayer.set('name', 'geolocationLayer');
+
+  ///////////////////////////
+  // map adding layers
+  ///////////////////////////
 
   // add the feature layer to the map first
   map.addLayer(featureLayer);
 
   // add draw layer
   map.addLayer(drawLayer);
+
+  // add map layer
+  // map layers are added when airplaneMode is toggled on or off
+
+  // add geolocation layer
+  map.addLayer(geolocationLayer);
 
   // layer switcher
   map.addControl(new ol.control.LayerSwitcher());
@@ -451,10 +539,10 @@ angular.module('app')
             $scope.openModal("polyModal");
             break;
         }
-/*
-        $rootScope.$apply(function() {
-          $location.path("/app/spots/newspot");
-        });*/
+        /*
+                $rootScope.$apply(function() {
+                  $location.path("/app/spots/newspot");
+                });*/
       }
     });
     map.addInteraction(draw);
@@ -630,7 +718,7 @@ angular.module('app')
 
       var rotation = (dip || plunge) ? dip || plunge : 0;
 
-      switch(contentModel) {
+      switch (contentModel) {
         case "Contact":
           return icon.contact_outcrop(rotation);
         case "Fault":
@@ -819,7 +907,12 @@ angular.module('app')
         return feature;
       });
 
-      if (feature) {
+      var layer = map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+        return layer;
+      });
+
+      // we need to check that we're not clicking on the geolocation layer
+      if (feature && layer.get('name') != 'geolocationLayer') {
 
         // popup content
         var content = '';
@@ -851,20 +944,75 @@ angular.module('app')
 
   // Get current position
   $scope.getLocation = function() {
-    $cordovaGeolocation.getCurrentPosition().then(function(position) {
-      var lat = position.coords.latitude;
-      var lng = position.coords.longitude;
-      var newView = new ol.View({
-        center: ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
-        zoom: 18,
-        minZoom: 4
-      });
-      map.setView(newView);
-    }, function(err) {
-      alert("Unable to get location: " + err.message);
-    });
-  };
 
+    console.log("clicked getLocation");
+
+    $cordovaGeolocation.getCurrentPosition({
+        maximumAge: 0,
+        timeout: 10000,
+        enableHighAccuracy: true
+      })
+      .then(function(position) {
+        var lat = position.coords.latitude;
+        var lng = position.coords.longitude;
+        var altitude =  position.coords.altitude;
+        var accuracy = position.coords.accuracy;
+        var heading = position.coords.heading;
+        var speed = position.coords.speed;
+
+        console.log("getLocation ", [lat, lng], "(accuracy: " + accuracy + ") (altitude: " + altitude + ") (heading: " + heading + ") (speed: " + speed + ")");
+
+        var newView = new ol.View({
+          center: ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
+          zoom: 18,
+          minZoom: 4
+        });
+        map.setView(newView);
+      }, function(err) {
+        alert("Unable to get location: " + err.message);
+      });
+
+    $cordovaGeolocation.watchPosition({
+        frequency: 1000,
+        timeout: 10000,
+        enableHighAccuracy: true // may cause errors if true
+      })
+      .then(
+        null,
+        function(err) {
+          alert("Unable to get location: " + err.message);
+          // TODO: what do we do here?
+        },
+        function(position) {
+          var lat = position.coords.latitude;
+          var lng = position.coords.longitude;
+          var altitude =  position.coords.altitude;
+          var accuracy = position.coords.accuracy;
+          var altitudeAccuracy = position.coords.altitudeAccuracy;
+          var heading = position.coords.heading;
+          var speed = position.coords.speed;
+
+          console.log("getLocation-watch ", [lat, lng], "(accuracy: " + accuracy + ") (altitude: " + altitude + ") (heading: " + heading + ") (speed: " + speed + ")");
+
+          // create a point feature and assign the lat/long to its geometry
+          var iconFeature = new ol.Feature({
+            geometry: new ol.geom.Point(ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'))
+          });
+
+          // add addition geolocation data to the feature so we can recall it later
+          iconFeature.set('altitude', altitude);
+          iconFeature.set('accuracy', (accuracy === null) ? null : Math.floor(accuracy));
+          iconFeature.set('altitudeAccuracy', altitudeAccuracy);
+          iconFeature.set('heading', heading);
+          iconFeature.set('speed', (speed === null) ? null : Math.floor(speed));
+
+          var vectorSource = new ol.source.Vector({
+            features: [iconFeature]
+          });
+
+          geolocationLayer.setSource(vectorSource);
+        });
+  };
 
   /////////////////
   // MODALS
