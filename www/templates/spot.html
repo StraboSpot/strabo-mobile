@@ -29,7 +29,8 @@
                                ng-model="spot.properties[field.name]"
                                ng-required="{{field.required}}"
                                ng-min="getMin(field.constraint)"
-                               ng-max="getMax(field.constraint)">
+                               ng-max="getMax(field.constraint)"
+                               class="fieldsRight">
                       </label>
                     </div>
                     <div ng-switch-when="text">
@@ -41,7 +42,8 @@
                                name="{{field.name}}"
                                placeholder="{{field.hint}}"
                                ng-model="spot.properties[field.name]"
-                               ng-required="{{field.required}}">
+                               ng-required="{{field.required}}"
+                               class="fieldsRight">
                       </label>
                     </div>
                     <div ng-switch-when="note">
@@ -53,7 +55,8 @@
                                   rows="4"
                                   placeholder="{{field.hint}}"
                                   ng-model="spot.properties[field.name]"
-                                  ng-required="{{field.required}}">
+                                  ng-required="{{field.required}}"
+                                  class="fieldsRight">
                         </textarea>
                       </label>
                     </div>
@@ -71,7 +74,7 @@
                       </label>
                     </div>
                     <div ng-switch-when="select_multiple">
-                      <label class="item" ng-class="setSelMultClass(field)">
+                      <label class="item formCheckboxes" ng-class="setSelMultClass(field)">
                         <span class="input-label">
                           {{field.label}}
                         </span>

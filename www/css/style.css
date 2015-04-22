@@ -2,8 +2,12 @@
   height: 100%;
 }
 .glyph-active {
-	border:1 solid #000;
+	border: 1 solid #000;
 }
+
+/*--------------------
+Map Draw Controls Style
+--------------------*/
 .draw-controls {
   position: absolute;
   margin-top: 4em;
@@ -62,6 +66,10 @@
   right: .5em;
   transition: opacity .25s
 }
+
+/*--------------------
+Map Popups Style
+--------------------*/
 .ol-popup {
   padding: 5px;
 }
@@ -73,6 +81,10 @@ th#name{
   text-align: left;
   font-weight: bold;
 }
+
+/*--------------------
+Map Layer Switcher Style
+--------------------*/
 .layer-switcher {
   margin-top: 4em;
   top: 175px;
@@ -95,6 +107,10 @@ th#name{
   background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABE0lEQVQ4T6WTMVICUQyGpcAjCGPhQWj0HFRiwRmQaivlDBRC5Tmg8SAWDnIEbfy/nfxMePtgmHFnMmGT/F+Sx9ve1T+f3hn9tXJPkX+T/6nV1gAWPktwE6K9/KusA8qAUriUYBGAmfxU1gEByMKB3i38Kka+1btB354IAKM2AcK/yH5PnE1f8XnUcyaNV7iLxESezuy7SiCE5GjGJORo9AkA8Vj2Hl3pQPEuiggTGyYhsVYDgOKmUmAQxe5omBscVsgHWXaKwdopLDz8pUzwIHuUrWUfMi4PuxoEoBSOrDGAFe5l21gngwC4I8Kj2nyRmKQGAtARKrYhUbvKJYi6PF0r9HPuYzKIWiY7El4CyI1O/v4DHGtLj9GYZrgAAAAASUVORK5CYII=');
   background-position: center;
 }
+
+/*--------------------
+Tabs Style
+--------------------*/
 .tabs {
   height: 29px;
   line-height: 29px;
@@ -103,12 +119,9 @@ th#name{
   top: 73px;
 }
 
-
-/*
---------------------
-image modal style: used for image active-slider when choosing spot images
---------------------
-*/
+/*--------------------
+Image Modal Style: used for image active-slider when choosing spot images
+--------------------*/
 .image-list-thumb {
   padding: 2px 2px 2px 2px;
   height: 100px;
@@ -142,6 +155,31 @@ image modal style: used for image active-slider when choosing spot images
   height: 100%;
 }
 
+/*--------------------
+Input Fields Style
+--------------------*/
+.item {
+  white-space: normal;
+}
+.item-input {
+  padding: 6px 6px 5px 16px;
+}
+.item-input input {
+  padding-right: 12px;
+}
+.item-input textarea {
+  padding-right: 24px;
+}
+.fieldsRight {
+  text-align: right;
+}
+.formCheckboxes {
+  white-space: nowrap;
+}
+
+/*--------------------
+Style fields for input errors and no-errors
+--------------------*/
 .error {
   padding: 10px 16px;
   font-family: "Arial Black", Gadget, sans-serif;
