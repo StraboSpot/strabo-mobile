@@ -1,7 +1,6 @@
 <form name="straboForm" novalidate="">
   <ion-view title="Spot Info">
     <ion-nav-buttons side="right">
-      <button ng-click="newOrientation();" ng-show="showLinkToNewOrientation" class="button button-icon icon ion-compass"></button>
       <button ng-click="deleteSpot();" class="button button-icon icon ion-trash-b"></button>
       <button ng-click="submit();" class="button button-icon icon ion-checkmark-circled"></button>
     </ion-nav-buttons>
@@ -22,7 +21,7 @@
                       <label class="item item-input"
                              ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid }"
                              ng-messages-include="templates/error-messages.html">
-                        <span class="input-label">{{field.label}}</span>
+                        <span class="input-label">{{field.label}}:</span>
                         <input type="number"
                                name="{{field.name}}"
                                placeholder="{{field.hint}}"
@@ -37,7 +36,7 @@
                       <label class="item item-input"
                              ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid }"
                              ng-messages-include="templates/error-messages.html">
-                        <span class="input-label">{{field.label}}</span>
+                        <span class="input-label">{{field.label}}:</span>
                         <input type="text"
                                name="{{field.name}}"
                                placeholder="{{field.hint}}"
@@ -50,7 +49,7 @@
                       <label class="item item-input"
                              ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid }"
                              ng-messages-include="templates/error-messages.html">
-                        <span class="input-label">{{field.label}}</span>
+                        <span class="input-label">{{field.label}}:</span>
                         <textarea name="{{field.name}}"
                                   rows="4"
                                   placeholder="{{field.hint}}"
@@ -63,7 +62,7 @@
                     <div ng-switch-when="select_one">
                       <label class="item item-input item-select"
                              ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid }">
-                        <span class="input-label">{{field.label}}</span>
+                        <span class="input-label">{{field.label}}:</span>
                         <select name="{{field.name}}"
                                 ng-model="spot.properties[field.name]"
                                 ng-options="choice.name as choice.label for choice in choices
@@ -75,9 +74,7 @@
                     </div>
                     <div ng-switch-when="select_multiple">
                       <label class="item formCheckboxes" ng-class="setSelMultClass(field)">
-                        <span class="input-label">
-                          {{field.label}}
-                        </span>
+                        <span class="input-label">{{field.label}}:</span>
                         <ion-checkbox name="{{field.name}}"
                                       ng-repeat="choice in choices | orderBy: 'label' | filter: { 'list name': field.type.split(' ')[1] }"
                                       ng-checked="isOptionChecked(field.name, choice.name)"
@@ -94,6 +91,41 @@
                   </div>
                 </div>
               </div>
+            </div>
+
+            <div ng-show="showContactButtons()">
+              <br>
+              <button ng-click="newSpot('contact');" class="button button-small icon-left icon ion-compass">Enter New Contact Description</button>
+              <br><br>
+              <button ng-click="noFunction();" class="button button-small icon-left icon ion-compass">Link to Existing Contact Description</button>
+            </div>
+
+            <div ng-show="showFaultButtons()">
+              <br>
+              <button ng-click="newSpot('fault');" class="button button-small icon-left icon ion-compass">Enter New Fault Description</button>
+              <br><br>
+              <button ng-click="noFunction();" class="button button-small icon-left icon ion-compass">Link to Existing Fault Description</button>
+            </div>
+
+            <div ng-show="showFoldButtons()">
+              <br>
+              <button ng-click="newSpot('fold');" class="button button-small icon-left icon ion-compass">Enter New Fold Description</button>
+              <br><br>
+              <button ng-click="noFunction();" class="button button-small icon-left icon ion-compass">Link to Existing Fold Description</button>
+            </div>
+
+            <div ng-show="showOrientationButtons">
+              <br>
+              <button ng-click="newSpot('orientation');" class="button button-small icon-left icon ion-compass">Enter New Orientation</button>
+              <br><br>
+              <button ng-click="noFunction();" class="button button-small icon-left icon ion-compass">Link to Existing Orientation</button>
+            </div>
+
+            <div ng-show="showShearZoneButtons()">
+              <br>
+              <button ng-click="newSpot('shear_zone');" class="button button-small icon-left icon ion-compass">Enter New Shear Zone Description</button>
+              <br><br>
+              <button ng-click="noFunction();" class="button button-small icon-left icon ion-compass">Link to Existing Shear Zone Description</button>
             </div>
 
             <div ng-show="showGroupButtons">

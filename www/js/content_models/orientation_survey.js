@@ -129,7 +129,7 @@ angular.module('app')
       "label": "Enter fold description?",
       "required": "",
       "default": "",
-      "relevant": "${feature_type} = 'fold_limb' and ${feature_type} = 'axial_surface' and ${feature_type} = 'fold_hinge'",
+      "relevant": "${feature_type} = 'fold_limb' or ${feature_type} = 'axial_surface' or ${feature_type} = 'fold_hinge'",
       "hint": "",
       "constraint": "",
       "constraint_message": ""

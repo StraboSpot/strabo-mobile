@@ -1,6 +1,7 @@
 angular.module('app')
   .controller('SpotCtrl', function(
     $scope,
+    $state,
     $stateParams,
     $location,
     SpotsFactory,
@@ -209,16 +210,19 @@ angular.module('app')
           $scope.showDynamicFields = true;
           $scope.survey = $scope.contact_survey;
           $scope.choices = $scope.contact_choices;
+          $scope.showOrientationButtons = true;
           break;
         case "Fault":
           $scope.showDynamicFields = true;
           $scope.survey = $scope.fault_survey;
           $scope.choices = $scope.fault_choices;
+          $scope.showOrientationButtons = true;
           break;
         case "Fold":
           $scope.showDynamicFields = true;
           $scope.survey = $scope.fold_survey;
           $scope.choices = $scope.fold_choices;
+          $scope.showOrientationButtons = true;
           break;
         case "Notes":
           break;
@@ -243,10 +247,10 @@ angular.module('app')
           $scope.choices = $scope.shear_zone_choices;
           break;
         case "Spot Grouping":
-          $scope.showGroupButtons = true;
           $scope.showDynamicFields = true;
           $scope.survey = $scope.spot_grouping_survey;
           $scope.choices = $scope.spot_grouping_choices;
+          $scope.showGroupButtons = true;
           break;
       }
 
@@ -296,8 +300,6 @@ angular.module('app')
         $scope.point.longitude = 0;
       }
 
-      $scope.showLinkToNewOrientation = $scope.spot.properties.spottype != "Orientation";
-
       // Create checkbox list of other spots for selected as related spots
       SpotsFactory.all().then(function (spots) {
         $scope.spots = spots;
@@ -319,6 +321,43 @@ angular.module('app')
         $scope.showLinks = $scope.other_spots.length;
         $scope.showGroups = $scope.groups.length;
       });
+    };
+    $scope.showContactButtons = function () {
+      try {
+        return $scope.spot.properties.feature_type == 'contact';
+      }
+      catch (e) {
+        return false;
+      }
+    };
+
+    $scope.showFaultButtons = function () {
+      try {
+        return $scope.spot.properties.feature_type == 'fault_plane';
+      }
+      catch (e) {
+        return false;
+      }
+    };
+
+    $scope.showFoldButtons = function () {
+      try {
+        return $scope.spot.properties.feature_type == 'fold_limb'
+          || $scope.spot.properties.feature_type == 'axial_surface'
+          || $scope.spot.properties.feature_type == 'fold_hinge';
+      }
+      catch (e) {
+        return false;
+      }
+    };
+
+    $scope.showShearZoneButtons = function () {
+      try {
+        return $scope.spot.properties.feature_type == 'shear_zone';
+      }
+      catch (e) {
+        return false;
+      }
     };
 
     // Get the current spot
@@ -377,7 +416,7 @@ angular.module('app')
     // Add or modify Spot
     $scope.submit = function() {
 
-      console.log("spot, ", $scope.spot);
+      console.log("spot to save: ", $scope.spot);
       var errorMessages = "";
 
       // Run validation check on the forms that are generated dynamically
@@ -550,12 +589,10 @@ angular.module('app')
 
       // Save the spot
       SpotsFactory.save($scope.spot).then(function(data) {
-        console.log("wrote", data);
+        console.log("spot saved: ", data);
       });
 
-      // Go back one view in history
-      var backView = $ionicHistory.backView();
-      backView.go();
+      $ionicHistory.goBack();
     };
 
     $scope.copySpot = function() {
@@ -585,13 +622,36 @@ angular.module('app')
       $location.path("/app/map");
     };
 
-    $scope.newOrientation = function() {
+    $scope.newSpot = function(spot_type) {
+      alert("This button is not working correctly yet, unless current spot has been saved already.");
       NewSpot.setNewSpot({"geometry": $scope.spot.geometry});
-      $scope.newOrientation = NewSpot.getNewSpot();
-      $scope.newOrientation.properties.name = $scope.spot.properties.name;
-      $scope.newOrientation.properties.spottype = "Orientation";
-      NewSpot.setNewSpot($scope.newOrientation);
-      $location.path(href="/app/spots/newspot");
+      var newSpot = NewSpot.getNewSpot();
+      newSpot.properties.name = $scope.spot.properties.name;
+
+      switch (spot_type) {
+        case 'contact':
+          newSpot.properties.spottype = "Contact";
+          break;
+        case 'fault':
+          newSpot.properties.spottype = "Fault";
+          break;
+        case 'fold':
+          newSpot.properties.spottype = "Fold";
+          break;
+        case 'orientation':
+          newSpot.properties.spottype = "Orientation";
+          break;
+        case 'shear_zone':
+          newSpot.properties.spottype = "Shear Zone";
+          break;
+      }
+      NewSpot.setNewSpot(newSpot);
+      $location.path("/app/spots/newspot");
+
+    };
+
+    $scope.noFunction = function() {
+      alert("This doesn't do anything yet.");
     };
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair
