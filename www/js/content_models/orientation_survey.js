@@ -14,23 +14,23 @@ angular.module('app')
       "constraint_message": ""
     },
     {
-      "name": "feature_type_name",
+      "name": "other_feature_type",
       "type": "text",
-      "label": "Feature type / name:",
+      "label": "Other Feature Type",
       "required": "true",
       "default": "",
-      "relevant": "${feature_type} = 'other_new'",
+      "relevant": "${feature_type} = 'other'",
       "hint": "",
       "constraint": "",
       "constraint_message": ""
     },
     {
-      "name": "new_orientation_feature_geomet",
+      "name": "feature_geometry",
       "type": "select_one du3mh76",
-      "label": "New orientation feature geometry:",
+      "label": "Feature Geometry",
       "required": "true",
       "default": "",
-      "relevant": "${feature_type_name} != ''",
+      "relevant": "${other_feature_type} != ''",
       "hint": "",
       "constraint": "",
       "constraint_message": ""
@@ -38,32 +38,32 @@ angular.module('app')
     {
       "name": "strike",
       "type": "integer",
-      "label": "Strike?",
+      "label": "Strike",
       "required": "true",
       "default": "",
-      "relevant": "${feature_type} = 'bedding' or ${feature_type} = 'flow_layering' or ${feature_type} = 'foliation' or ${feature_type} = 'joint' or ${feature_type} = 'fracture' or ${feature_type} = 'fault_plane' or ${feature_type} = 'axial_surface' or ${feature_type} = 'stylolite' or ${feature_type} = 'bedding' or ${feature_type} = 'shear_zone' or ${feature_type} = 'cleavage' or ${feature_type} = 'striated_surface' or ${feature_type} = 'fold_limb' or ${new_orientation_feature_geomet} = 'plane' or ${feature_type} = 'contact'",
+      "relevant": "${feature_type} = 'bedding' or ${feature_type} = 'flow_layering' or ${feature_type} = 'foliation' or ${feature_type} = 'joint' or ${feature_type} = 'fracture' or ${feature_type} = 'fault_plane' or ${feature_type} = 'axial_surface' or ${feature_type} = 'stylolite' or ${feature_type} = 'bedding' or ${feature_type} = 'shear_zone' or ${feature_type} = 'cleavage' or ${feature_type} = 'striated_surface' or ${feature_type} = 'fold_limb' or ${feature_geometry} = 'plane' or ${feature_type} = 'contact'",
       "hint": "Azimuth in degrees",
       "constraint": ". >= 0 and . <= 360",
-      "constraint_message": ""
+      "constraint_message": "Strike must be between 0-360."
     },
     {
       "name": "dip",
       "type": "integer",
-      "label": "Dip?",
+      "label": "Dip",
       "required": "true",
       "default": "",
-      "relevant": "${feature_type} = 'bedding' or ${feature_type} = 'flow_layering' or ${feature_type} = 'foliation' or ${feature_type} = 'joint' or ${feature_type} = 'fracture' or ${feature_type} = 'axial_surface' or ${feature_type} = 'stylolite' or ${feature_type} = 'fault_plane' or ${feature_type} = 'cleavage' or ${feature_type} = 'shear_zone' or ${feature_type} = 'striated_surface' or ${feature_type} = 'fold_limb' or ${new_orientation_feature_geomet} = 'plane' or ${feature_type} = 'contact'",
+      "relevant": "${feature_type} = 'bedding' or ${feature_type} = 'flow_layering' or ${feature_type} = 'foliation' or ${feature_type} = 'joint' or ${feature_type} = 'fracture' or ${feature_type} = 'axial_surface' or ${feature_type} = 'stylolite' or ${feature_type} = 'fault_plane' or ${feature_type} = 'cleavage' or ${feature_type} = 'shear_zone' or ${feature_type} = 'striated_surface' or ${feature_type} = 'fold_limb' or ${feature_geometry} = 'plane' or ${feature_type} = 'contact'",
       "hint": "",
       "constraint": ". >= 0 and . <= 90",
-      "constraint_message": ""
+      "constraint_message": "Dip must be between 0-90."
     },
     {
       "name": "trend",
       "type": "integer",
-      "label": "Trend?",
+      "label": "Trend",
       "required": "true",
       "default": "",
-      "relevant": "${feature_type} = 'fold_hinge' or ${feature_type} = 'lineation' or ${feature_type} = 'striation' or ${feature_type} = 'direction' or ${feature_type} = 'vector' or ${new_orientation_feature_geomet} = 'line'",
+      "relevant": "${feature_type} = 'fold_hinge' or ${feature_type} = 'lineation' or ${feature_type} = 'striation' or ${feature_type} = 'direction' or ${feature_type} = 'vector' or ${feature_geometry} = 'line'",
       "hint": "Azimuth in degrees",
       "constraint": ". >= 0 and . <= 360",
       "constraint_message": "Trend must be between 0-360."
@@ -71,13 +71,13 @@ angular.module('app')
     {
       "name": "plunge",
       "type": "integer",
-      "label": "Plunge?",
+      "label": "Plunge",
       "required": "true",
       "default": "",
-      "relevant": "${feature_type} = 'fold_hinge' or ${feature_type} = 'lineation' or ${feature_type} = 'striation' or ${feature_type} = 'direction' or ${feature_type} = 'vector' or ${new_orientation_feature_geomet} = 'line'",
+      "relevant": "${feature_type} = 'fold_hinge' or ${feature_type} = 'lineation' or ${feature_type} = 'striation' or ${feature_type} = 'direction' or ${feature_type} = 'vector' or ${feature_geometry} = 'line'",
       "hint": "",
       "constraint": ". >= 0 and . <= 90",
-      "constraint_message": ""
+      "constraint_message": "Plunge must be between 0-90."
     },
     {
       "name": "vector_magnitude",
@@ -88,7 +88,7 @@ angular.module('app')
       "relevant": "${feature_type} = 'vector'",
       "hint": "",
       "constraint": ". > 0",
-      "constraint_message": ""
+      "constraint_message": "Vector Magnitude must be greater than 0."
     },
     {
       "name": "vector_magnitude_units",
@@ -102,97 +102,9 @@ angular.module('app')
       "constraint_message": ""
     },
     {
-      "name": "enter_fault_description",
-      "type": "select_one pk6nu99",
-      "label": "Enter fault description?",
-      "required": "false",
-      "default": "",
-      "relevant": "${feature_type} = 'fault_plane'",
-      "hint": "",
-      "constraint": "",
-      "constraint_message": ""
-    },
-    {
-      "name": "enter_contact_description",
-      "type": "select_one jt5sj80",
-      "label": "Enter contact description?",
-      "required": "",
-      "default": "",
-      "relevant": "${feature_type} = 'contact'",
-      "hint": "",
-      "constraint": "",
-      "constraint_message": ""
-    },
-    {
-      "name": "enter_fold_description",
-      "type": "select_one qe5jp53",
-      "label": "Enter fold description?",
-      "required": "",
-      "default": "",
-      "relevant": "${feature_type} = 'fold_limb' or ${feature_type} = 'axial_surface' or ${feature_type} = 'fold_hinge'",
-      "hint": "",
-      "constraint": "",
-      "constraint_message": ""
-    },
-    {
-      "name": "enter_shear_zone_description",
-      "type": "select_one wa8up41",
-      "label": "Enter shear zone description?",
-      "required": "",
-      "default": "",
-      "relevant": "${feature_type} = 'shear_zone'",
-      "hint": "",
-      "constraint": "",
-      "constraint_message": ""
-    },
-    {
-      "name": "opens_fault_description_form",
-      "type": "select_one oe1jo33",
-      "label": "Opens fault description form....",
-      "required": "false",
-      "default": "",
-      "relevant": "${enter_fault_description} = 'yes'",
-      "hint": "",
-      "constraint": "",
-      "constraint_message": ""
-    },
-    {
-      "name": "opens_contact_description_form",
-      "type": "select_one yf8xk95",
-      "label": "Opens contact description form....",
-      "required": "",
-      "default": "",
-      "relevant": "${enter_contact_description} = 'yes'",
-      "hint": "",
-      "constraint": "",
-      "constraint_message": ""
-    },
-    {
-      "name": "opens_fold_description_form",
-      "type": "select_one ai64o12",
-      "label": "Opens fold description form....",
-      "required": "",
-      "default": "",
-      "relevant": "${enter_fold_description} = 'yes'",
-      "hint": "",
-      "constraint": "",
-      "constraint_message": ""
-    },
-    {
-      "name": "opens_shear_zone_description",
-      "type": "select_one bs7tp75",
-      "label": "Opens shear zone description form....",
-      "required": "",
-      "default": "",
-      "relevant": "${enter_shear_zone_description} = 'yes'",
-      "hint": "",
-      "constraint": "",
-      "constraint_message": ""
-    },
-    {
-      "name": "plane_Facing",
+      "name": "plane_facing",
       "type": "select_one to1en66",
-      "label": "Plane Facing ?",
+      "label": "Plane Facing",
       "required": "false",
       "default": "not_specified",
       "relevant": "${feature_type} = 'bedding' or ${feature_type} = 'axial_surface' or ${feature_type} = 'fold_limb'",
@@ -203,10 +115,10 @@ angular.module('app')
     {
       "name": "facing_direction",
       "type": "text",
-      "label": "Facing Direction?",
+      "label": "Facing Direction",
       "required": "false",
       "default": "",
-      "relevant": "${plane_Facing} = 'vertical'",
+      "relevant": "${plane_facing} = 'vertical'",
       "hint": "",
       "constraint": "",
       "constraint_message": ""
@@ -214,7 +126,7 @@ angular.module('app')
     {
       "name": "directed",
       "type": "select_one kn36u14",
-      "label": "Directed?",
+      "label": "Directed",
       "required": "false",
       "default": "",
       "relevant": "${feature_type} = 'fold_hinge' or ${feature_type} = 'lineation' or ${feature_type} = 'striation'",
@@ -236,7 +148,7 @@ angular.module('app')
     {
       "name": "fold_type",
       "type": "select_one oa9ot58",
-      "label": "Fold Type?",
+      "label": "Fold Type",
       "required": "false",
       "default": "not_specified",
       "relevant": "${feature_type} = 'fold_hinge' or ${feature_type} = 'axial_surface'",
@@ -247,7 +159,7 @@ angular.module('app')
     {
       "name": "fold_detail",
       "type": "select_one eu4ay01",
-      "label": "Fold Attitude:",
+      "label": "Fold Attitude",
       "required": "false",
       "default": "not_specified",
       "relevant": "${feature_type} = 'fold_hinge' or ${feature_type} = 'axial_surface'",
@@ -258,7 +170,7 @@ angular.module('app')
     {
       "name": "orientation_quality",
       "type": "select_one gl2mf38",
-      "label": "Orientation Quality?",
+      "label": "Orientation Quality",
       "required": "true",
       "default": "accurate",
       "relevant": "",
@@ -269,7 +181,7 @@ angular.module('app')
     {
       "name": "measurement_quality",
       "type": "select_one xn9nf56",
-      "label": "Measurement Quality:",
+      "label": "Measurement Quality",
       "required": "false",
       "default": "",
       "relevant": "${strike} != '' or ${trend} != '' or ${dip} != '' or ${plunge} != ''",
@@ -280,7 +192,7 @@ angular.module('app')
     {
       "name": "foliation_type",
       "type": "select_one vn7df87",
-      "label": "Foliation type:",
+      "label": "Foliation Type",
       "required": "false",
       "default": "not_specified",
       "relevant": "${feature_type} = 'foliation'",
@@ -291,7 +203,7 @@ angular.module('app')
     {
       "name": "cleavage_type",
       "type": "select_one dr5ab45",
-      "label": "Cleavage type:",
+      "label": "Cleavage Type",
       "required": "false",
       "default": "not_specified",
       "relevant": "${foliation_type} = 'cleavage'",
@@ -302,7 +214,7 @@ angular.module('app')
     {
       "name": "solid_state_foliation_type",
       "type": "select_one lz7no78",
-      "label": "Solid-state foliation type:",
+      "label": "Solid-state Foliation Type",
       "required": "false",
       "default": "not_specified",
       "relevant": "${foliation_type} = 'solid_state'",
@@ -313,7 +225,7 @@ angular.module('app')
     {
       "name": "spacing_of_gneissic_bands_cm",
       "type": "integer",
-      "label": "Spacing of gneissic bands (cm):",
+      "label": "Spacing of Gneissic Bands (cm)",
       "required": "false",
       "default": "",
       "relevant": "${solid_state_foliation_type} = 'gneissic_banding'",
@@ -324,7 +236,7 @@ angular.module('app')
     {
       "name": "average_grain_size_mm_in_gne",
       "type": "integer",
-      "label": "Average grain size (mm) in gneissic bands:",
+      "label": "Average Grain Size (mm) in Gneissic Bands",
       "required": "false",
       "default": "",
       "relevant": "${solid_state_foliation_type} = 'gneissic_banding'",
@@ -333,9 +245,9 @@ angular.module('app')
       "constraint_message": ""
     },
     {
-      "name": "specific_foliation_element_bei",
+      "name": "specific_foliation_element",
       "type": "select_one of53v22",
-      "label": "Specific foliation element being measured:",
+      "label": "Specific Foliation Element being Measured",
       "required": "false",
       "default": "not_specified",
       "relevant": "${solid_state_foliation_type} = 'mylonitic' or ${solid_state_foliation_type} = 'cataclastic' or ${solid_state_foliation_type} = 'schistosity'",
@@ -346,7 +258,7 @@ angular.module('app')
     {
       "name": "tectonite_label",
       "type": "select_one su3eo23",
-      "label": "Tectonite Label:",
+      "label": "Tectonite Label",
       "required": "false",
       "default": "not_specified",
       "relevant": "${feature_type} = 'foliation'",
@@ -355,70 +267,70 @@ angular.module('app')
       "constraint_message": ""
     },
     {
-      "name": "is_there_an_associated_lineati",
+      "name": "assoc_linear_feature",
       "type": "select_one gs9eo09",
       "label": "Is there an associated linear feature (e.g., lineation, striation, flow direction)?",
       "required": "false",
       "default": "no",
-      "relevant": "${feature_type} = 'foliation' or ${feature_type} = 'flow_layering' or ${feature_type} = 'bedding' or ${feature_type} = 'joint' or ${feature_type} = 'fracture' or ${feature_type} = 'fault_plane' or ${feature_type} = 'axial_surface' or ${feature_type} = 'cleavage' or ${feature_type} = 'shear_zone' or ${feature_type} = 'striated_surface' or ${feature_type} = 'fold_limb' or ${new_orientation_feature_geomet} = 'plane'",
+      "relevant": "${feature_type} = 'foliation' or ${feature_type} = 'flow_layering' or ${feature_type} = 'bedding' or ${feature_type} = 'joint' or ${feature_type} = 'fracture' or ${feature_type} = 'fault_plane' or ${feature_type} = 'axial_surface' or ${feature_type} = 'cleavage' or ${feature_type} = 'shear_zone' or ${feature_type} = 'striated_surface' or ${feature_type} = 'fold_limb' or ${feature_geometry} = 'plane'",
       "hint": "",
       "constraint": "",
       "constraint_message": ""
     },
     {
-      "name": "trend_assoc_lin",
+      "name": "assoc_linear_feature_trend",
       "type": "integer",
-      "label": "Trend?",
+      "label": "Associated Linear Feature Trend",
       "required": "true",
       "default": "",
-      "relevant": "${is_there_an_associated_lineati} = 'yes'",
+      "relevant": "${assoc_linear_feature} = 'yes'",
       "hint": "Azimuth in degrees",
       "constraint": ". >= 0 and . <= 360",
       "constraint_message": "Trend must be between 0-360."
     },
     {
-      "name": "plunge_assoc_lin",
+      "name": "assoc_linear_feature_plunge",
       "type": "integer",
-      "label": "Plunge?",
+      "label": "Associated Linear Feature Plunge",
       "required": "true",
       "default": "",
-      "relevant": "${is_there_an_associated_lineati} = 'yes'",
+      "relevant": "${assoc_linear_feature} = 'yes'",
       "hint": "",
       "constraint": ". >= 0 and . <= 90",
-      "constraint_message": ""
+      "constraint_message": "Plunge must be between 0-90."
     },
     {
-      "name": "Is_there_an_associated_planar_",
+      "name": "assoc_planar_feature",
       "type": "select_one on2yb53",
       "label": "Is there an associated planar feature (e.g., foliation or axial surface, striated surface)?",
       "required": "false",
       "default": "no",
-      "relevant": "${feature_type} = 'lineation' or ${feature_type} = 'fold_hinge' or ${feature_type} = 'striation' or ${feature_type} = 'direction' or ${new_orientation_feature_geomet} = 'line'",
+      "relevant": "${feature_type} = 'lineation' or ${feature_type} = 'fold_hinge' or ${feature_type} = 'striation' or ${feature_type} = 'direction' or ${feature_geometry} = 'line'",
       "hint": "",
       "constraint": "",
       "constraint_message": ""
     },
     {
-      "name": "strike2",
+      "name": "assoc_planar_feature_strike",
       "type": "integer",
-      "label": "Strike:",
+      "label": "Associated Linear Feature Strike",
       "required": "true",
       "default": "",
-      "relevant": "${Is_there_an_associated_planar_} = 'yes'",
+      "relevant": "${assoc_planar_feature} = 'yes'",
       "hint": "",
       "constraint": ". <= 360 and . >= 0",
-      "constraint_message": ""
+      "constraint_message": "Strike must be between 0-360."
     },
     {
-      "name": "dip2",
+      "name": "assoc_linear_feature_dip",
       "type": "integer",
-      "label": "Dip:",
+      "label": "Associated Linear Feature Dip",
       "required": "true",
       "default": "",
-      "relevant": "${Is_there_an_associated_planar_} = 'yes'",
+      "relevant": "${assoc_planar_feature} = 'yes'",
       "hint": "",
       "constraint": ". <= 90 and . >= 0",
-      "constraint_message": ""
+      "constraint_message": "Dip must be between 0-90."
     },
     {
       "name": "start",

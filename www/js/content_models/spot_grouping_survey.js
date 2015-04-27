@@ -5,11 +5,11 @@ angular.module('app')
     {
       "name": "group_name",
       "type": "text",
-      "label": "Group Label:",
+      "label": "Group Label",
       "required": "true",
       "hint": "",
-      "default": "",
-      "relevant": ""
+      "relevant": "",
+      "default": ""
     },
     {
       "name": "group_relationship",
@@ -17,53 +17,44 @@ angular.module('app')
       "label": "What do elements of this group have in common?",
       "required": "true",
       "hint": "How are these data similar?",
-      "default": "not specified",
-      "relevant": ""
+      "relevant": "",
+      "default": ""
     },
     {
       "name": "larger_structure_is_a",
       "type": "select_one lr0jp76",
-      "label": "Larger structure is a:",
+      "label": "Larger Structure is a",
       "required": "true",
       "hint": "(e.g., fold, fault, shear zone, intrusive body, etc.)",
-      "default": "not specified",
-      "relevant": ""
-    },
-    {
-      "name": "link_this_specific_feature",
-      "type": "select_one so9zn66",
-      "label": "Link this group to a specific feature?",
-      "required": "false",
-      "hint": "Is there an existing spot for the larger feature?",
-      "default": "not specified",
-      "relevant": "selected(${group_relationship}, 'larger_structu')"
+      "relevant": "",
+      "default": ""
     },
     {
       "name": "age_details",
       "type": "text",
-      "label": "Age details:",
+      "label": "Age Details",
       "required": "true",
       "hint": "Do you know the age?",
-      "default": "not specified",
-      "relevant": "selected(${group_relationship}, 'age')"
+      "relevant": "selected(${group_relationship}, 'age')",
+      "default": "not specified"
     },
     {
       "name": "new_similarity_for_grouping",
       "type": "text",
-      "label": "Define new similarity for grouping:",
+      "label": "Define New Similarity for Grouping",
       "required": "true",
       "hint": "How are these data similar that they belong in a group together?",
-      "default": "not specified",
-      "relevant": "selected(${group_relationship}, 'new')"
+      "relevant": "selected(${group_relationship}, 'new')",
+      "default": "not specified"
     },
     {
-      "name": "notes_comments_about_the_gro",
+      "name": "group_notes",
       "type": "note",
-      "label": "Notes / Comments about the group:",
+      "label": "Notes / Comments About the Group",
       "required": "false",
       "hint": "",
-      "default": "",
-      "relevant": ""
+      "relevant": "",
+      "default": ""
     },
     {
       "name": "start",
@@ -71,8 +62,8 @@ angular.module('app')
       "label": "",
       "required": "",
       "hint": "",
-      "default": "",
-      "relevant": ""
+      "relevant": "",
+      "default": ""
     },
     {
       "name": "end",
@@ -80,8 +71,8 @@ angular.module('app')
       "label": "",
       "required": "",
       "hint": "",
-      "default": "",
-      "relevant": ""
+      "relevant": "",
+      "default": ""
     }
   ]
 };

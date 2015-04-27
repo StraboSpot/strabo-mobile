@@ -5,110 +5,92 @@ angular.module('app')
     {
       "name": "contact_type",
       "type": "select_one lx9ax28",
-      "label": "Contact Type:",
+      "label": "Contact Type",
       "required": "true",
-      "default": "not specified",
       "relevant": "",
-      "hint": ""
+      "hint": "",
+      "default": ""
     },
     {
       "name": "depositional_contact_type",
       "type": "select_one bi4sw60",
-      "label": "Depositional Contact Type:",
+      "label": "Depositional Contact Type",
       "required": "true",
-      "default": "not specified",
       "relevant": "${contact_type} = 'depositional'",
-      "hint": ""
+      "hint": "",
+      "default": ""
     },
     {
       "name": "unconformity_type",
       "type": "select_one dq27t21",
-      "label": "Unconformity Type:",
+      "label": "Unconformity Type",
       "required": "true",
-      "default": "not specified",
       "relevant": "${depositional_contact_type} = 'unconformity'",
-      "hint": ""
+      "hint": "",
+      "default": ""
     },
     {
-      "name": "intruding_feature_is",
+      "name": "intruding_feature",
       "type": "select_one cj4zw02",
-      "label": "intruding feature is:",
+      "label": "Intruding Feature",
       "required": "true",
-      "default": "not specified",
       "relevant": "${contact_type} = 'intrusive'",
-      "hint": "What type of feature is intruding?"
+      "hint": "What type of feature is intruding?",
+      "default": ""
     },
     {
       "name": "metamorphic_contact_type",
       "type": "select_one pb5wo52",
-      "label": "Metamorphic Contact Type:",
+      "label": "Metamorphic Contact Type",
       "required": "true",
-      "default": "not specified",
       "relevant": "${contact_type} = 'metamorphic'",
-      "hint": ""
+      "hint": "",
+      "default": ""
     },
     {
       "name": "metamorphic_contact_other_det",
       "type": "note",
       "label": "Metamorphic Contact (other detail)",
       "required": "false",
-      "default": "",
       "relevant": "${metamorphic_contact_type} = 'other'",
-      "hint": ""
+      "hint": "",
+      "default": ""
     },
     {
       "name": "marker_layer_details",
       "type": "note",
-      "label": "Marker Layer details:",
+      "label": "Marker Layer Details",
       "required": "true",
-      "default": "no details specified.",
       "relevant": "${contact_type} = 'marker_layer'",
-      "hint": "Notes about the marker layer"
+      "hint": "Notes about the marker layer",
+      "default": "No details specified."
     },
     {
       "name": "contact_character",
       "type": "select_one vv9tu90",
-      "label": "Contact Character:",
+      "label": "Contact Character",
       "required": "true",
-      "default": "",
       "relevant": "",
-      "hint": ""
-    },
-    {
-      "name": "button_to_link_to_existing_ori",
-      "type": "text",
-      "label": "Button to link to existing orientation",
-      "required": "false",
-      "default": "",
-      "relevant": "",
-      "hint": ""
-    },
-    {
-      "name": "button_to_link_to_new_orientat",
-      "type": "text",
-      "label": "Button to link to new orientatoin",
-      "required": "false",
-      "default": "",
-      "relevant": "",
-      "hint": ""
+      "hint": "",
+      "default": ""
     },
     {
       "name": "start",
       "type": "start",
       "label": "",
       "required": "",
-      "default": "",
       "relevant": "",
-      "hint": ""
+      "hint": "",
+      "default": ""
     },
     {
       "name": "end",
       "type": "end",
       "label": "",
       "required": "",
-      "default": "",
       "relevant": "",
-      "hint": ""
+      "hint": "",
+      "default": ""
     }
   ]
 };

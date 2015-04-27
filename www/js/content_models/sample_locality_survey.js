@@ -5,32 +5,35 @@ angular.module('app')
     {
       "name": "sample_id_name",
       "type": "text",
-      "label": "Sample specific ID / name:",
+      "label": "Sample specific ID / Name",
       "required": "true",
-      "default": "not specified",
+      "default": "",
       "hint": "",
       "relevant": "",
-      "constraint": ""
+      "constraint": "",
+      "constraint_message": ""
     },
     {
       "name": "oriented_sample",
       "type": "select_one hz9zw76",
-      "label": "Oriented sample?",
+      "label": "Oriented Sample",
       "required": "true",
       "default": "",
       "hint": "",
       "relevant": "",
-      "constraint": ""
+      "constraint": "",
+      "constraint_message": ""
     },
     {
       "name": "sample_orientation_strike",
       "type": "integer",
-      "label": "Sample Orientation Strike:",
-      "required": "false",
+      "label": "Sample Orientation Strike",
+      "required": "true",
       "default": "",
       "hint": "What's the strike of orientation mark / surface?",
       "relevant": "${oriented_sample} = 'yes'",
-      "constraint": ". <= 360 and . >= 0"
+      "constraint": ". <= 360 and . >= 0",
+      "constraint_message": "Strike must be between 0-360."
     },
     {
       "name": "sample_orientation_dip",
@@ -40,77 +43,85 @@ angular.module('app')
       "default": "",
       "hint": "What's the dip of orientation mark / surface?",
       "relevant": "${oriented_sample} = 'yes'",
-      "constraint": ". >= 0 and . <= 90"
+      "constraint": ". >= 0 and . <= 90",
+      "constraint_message": "Dip must be between 0-90."
     },
     {
       "name": "material_type",
       "type": "select_one jq8qd30",
-      "label": "material type:",
+      "label": "Material Type",
       "required": "true",
-      "default": "not specified",
+      "default": "",
       "hint": "",
       "relevant": "",
-      "constraint": ""
+      "constraint": "",
+      "constraint_message": ""
     },
     {
       "name": "material_details",
       "type": "note",
-      "label": "material details:",
+      "label": "Material Details",
       "required": "false",
       "default": "",
       "hint": "",
       "relevant": "${material_type} != ''",
-      "constraint": ""
+      "constraint": "",
+      "constraint_message": ""
     },
     {
       "name": "approx_size_cm",
       "type": "integer",
-      "label": "approximate size / diameter (cm)",
+      "label": "Approximate Size / Diameter (cm)",
       "required": "true",
       "default": "",
       "hint": "",
       "relevant": "",
-      "constraint": ""
+      "constraint": "",
+      "constraint_message": ""
     },
     {
       "name": "main_sampling_purpose",
       "type": "select_one to0mv13",
-      "label": "main sampling purpose:",
+      "label": "Main Sampling Purpose",
       "required": "true",
       "default": "",
       "hint": "",
       "relevant": "",
-      "constraint": ""
+      "constraint": "",
+      "constraint_message": ""
     },
     {
       "name": "sample_description",
       "type": "note",
-      "label": "Sample Description:",
+      "label": "Sample Description",
       "required": "false",
       "default": "",
       "hint": "",
       "relevant": "",
-      "constraint": ""
+      "constraint": "",
+      "constraint_message": ""
     },
     {
       "name": "other_comments_about_sampling",
       "type": "note",
-      "label": "Other comments about sampling:",
+      "label": "Other Comments About Sampling",
       "required": "false",
       "default": "",
       "hint": "",
       "relevant": "",
-      "constraint": ""
+      "constraint": "",
+      "constraint_message": ""
     },
     {
       "name": "inferred_age_ma",
       "type": "integer",
-      "label": "inferred age (Ma)?",
+      "label": "Inferred Age (Ma)",
       "required": "false",
       "default": "",
       "hint": "",
       "relevant": "",
-      "constraint": ""
+      "constraint": "",
+      "constraint_message": ""
     },
     {
       "name": "start",
@@ -120,7 +131,8 @@ angular.module('app')
       "default": "",
       "hint": "",
       "relevant": "",
-      "constraint": ""
+      "constraint": "",
+      "constraint_message": ""
     },
     {
       "name": "end",
@@ -130,7 +142,8 @@ angular.module('app')
       "default": "",
       "hint": "",
       "relevant": "",
-      "constraint": ""
+      "constraint": "",
+      "constraint_message": ""
     }
   ]
 };

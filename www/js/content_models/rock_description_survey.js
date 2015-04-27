@@ -5,7 +5,7 @@ angular.module('app')
     {
       "name": "unit_name",
       "type": "text",
-      "label": "Map Unit Name:",
+      "label": "Map Unit Name",
       "required": "false",
       "default": "N/A"
     },
@@ -19,21 +19,21 @@ angular.module('app')
     {
       "name": "rock_type",
       "type": "select_one rm0pv08",
-      "label": "Rock Type:",
+      "label": "Rock Type",
       "required": "false",
-      "default": "not specified"
+      "default": ""
     },
     {
       "name": "description",
       "type": "note",
-      "label": "Description / Lithology:",
+      "label": "Description / Lithology",
       "required": "false",
       "default": ""
     },
     {
       "name": "age_ma",
       "type": "integer",
-      "label": "Age (Ma):",
+      "label": "Age (Ma)",
       "required": "false",
       "default": ""
     },

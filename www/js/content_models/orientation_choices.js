@@ -105,8 +105,8 @@ angular.module('app')
       "list name": "ll25x57"
     },
     {
-      "label": "other / new",
-      "name": "other_new",
+      "label": "other",
+      "name": "other",
       "order": "",
       "list name": "ll25x57"
     },
@@ -127,54 +127,6 @@ angular.module('app')
       "name": "line",
       "order": "",
       "list name": "du3mh76"
-    },
-    {
-      "label": "Yes",
-      "name": "yes",
-      "order": "",
-      "list name": "pk6nu99"
-    },
-    {
-      "label": "Yes",
-      "name": "yes",
-      "order": "",
-      "list name": "jt5sj80"
-    },
-    {
-      "label": "Yes",
-      "name": "yes",
-      "order": "",
-      "list name": "qe5jp53"
-    },
-    {
-      "label": "Yes",
-      "name": "yes",
-      "order": "",
-      "list name": "wa8up41"
-    },
-    {
-      "label": "the fault description/form should open",
-      "name": "fault_desc",
-      "order": "",
-      "list name": "oe1jo33"
-    },
-    {
-      "label": "the contact description/form should open",
-      "name": "contact_desc",
-      "order": "",
-      "list name": "yf8xk95"
-    },
-    {
-      "label": "the fold description/form should open",
-      "name": "fold_desc",
-      "order": "",
-      "list name": "ai64o12"
-    },
-    {
-      "label": "the shear zone description/form should open",
-      "name": "shear_zone_des",
-      "order": "",
-      "list name": "bs7tp75"
     },
     {
       "label": "upright",
@@ -209,6 +161,12 @@ angular.module('app')
     {
       "label": "Yes",
       "name": "yes",
+      "order": "",
+      "list name": "kn36u14"
+    },
+    {
+      "label": "No",
+      "name": "no",
       "order": "",
       "list name": "kn36u14"
     },
@@ -340,31 +298,31 @@ angular.module('app')
     },
     {
       "label": "1",
-      "name": "one",
+      "name": "1",
       "order": "",
       "list name": "xn9nf56"
     },
     {
       "label": "2",
-      "name": "two",
+      "name": "2",
       "order": "",
       "list name": "xn9nf56"
     },
     {
       "label": "3",
-      "name": "three",
+      "name": "3",
       "order": "",
       "list name": "xn9nf56"
     },
     {
       "label": "4",
-      "name": "four",
+      "name": "4",
       "order": "",
       "list name": "xn9nf56"
     },
     {
       "label": "5",
-      "name": "five",
+      "name": "5",
       "order": "",
       "list name": "xn9nf56"
     },

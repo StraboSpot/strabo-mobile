@@ -67,36 +67,6 @@ angular.module('app')
       "name": "other",
       "order": "",
       "list name": "lr0jp76"
-    },
-    {
-      "label": "this is a list of spots / features",
-      "name": "this_is_a_list",
-      "order": "",
-      "list name": "so9zn66"
-    },
-    {
-      "label": "this is a list of spots / features",
-      "name": "this_is_a_list_1",
-      "order": "",
-      "list name": "so9zn66"
-    },
-    {
-      "label": "Spot 1",
-      "name": "spot_1",
-      "order": "",
-      "list name": "ab1lh90"
-    },
-    {
-      "label": "Spot 2",
-      "name": "spot_2",
-      "order": "",
-      "list name": "ab1lh90"
-    },
-    {
-      "label": "Etc",
-      "name": "etc",
-      "order": "",
-      "list name": "ab1lh90"
     }
   ]
 };
