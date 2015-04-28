@@ -308,11 +308,11 @@ angular.module('app')
         spots.forEach(function (obj, i) {
           if ($scope.spot.properties.id != obj.properties.id) {
             $scope.other_spots.push({
-              name: obj.properties.name, id: obj.properties.id
+              name: obj.properties.name, id: obj.properties.id, type: obj.properties.type
             });
             if (obj.properties.type == "Spot Grouping") {
               $scope.groups.push({
-                name: obj.properties.name, id: obj.properties.id
+                name: obj.properties.name, id: obj.properties.id, type: obj.properties.type
               });
             }
           }
@@ -505,6 +505,7 @@ angular.module('app')
         linked_spot.properties.links.push({
           name: $scope.spot.properties.name,
           id: $scope.spot.properties.id,
+          type: $scope.spot.properties.type,
           relationship: link_relationship_inverse
         });
 
@@ -536,7 +537,8 @@ angular.module('app')
         // Add the new/updated spot reference to the group references for this group
         group.properties.group_members.push({
           name: $scope.spot.properties.name,
-          id: $scope.spot.properties.id
+          id: $scope.spot.properties.id,
+          type: $scope.spot.properties.type
         });
 
         // Save the group
@@ -567,7 +569,8 @@ angular.module('app')
         // Add the new/updated spot reference to the group references for this group
         group.properties.groups.push({
           name: $scope.spot.properties.name,
-          id: $scope.spot.properties.id
+          id: $scope.spot.properties.id,
+          type: $scope.spot.properties.type
         });
 
         // Save the group
@@ -593,10 +596,6 @@ angular.module('app')
       });
 
       $ionicHistory.goBack();
-    };
-
-    $scope.copySpot = function() {
-      console.log("hi");
     };
 
     // Delete the spot
@@ -697,13 +696,6 @@ angular.module('app')
           return 'has-errors';
       }
       return 'no-errors';
-    };
-
-    $scope.getType = function (id) {
-      return SpotsFactory.getFirstSpot()
-        .then(function(spot) {
-          return spot.properties.type;
-        });
     };
 
     $scope.toggleChecked = function (field, choice) {

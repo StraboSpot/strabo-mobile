@@ -15,10 +15,10 @@
           <ion-content class="padding">
             <div ng-show="showDynamicFields">
               <div class="item item-divider">
-                {{spot.properties.type}}
+                {{ spot.properties.type }}
               </div>
               <div ng-repeat="field in survey">
-                <div id="{{field.name}}" ng-show="showField(field.relevant)">
+                <div id="{{ field.name }}" ng-show="showField(field.relevant)">
                   <div data-ng-switch on="field.type.split(' ')[0]">
                     <div ng-switch-when="integer">
                       <label class="item item-input"
@@ -26,10 +26,10 @@
                              ng-messages-include="templates/error-messages.html">
                         <span class="input-label">{{field.label}}:</span>
                         <input type="number"
-                               name="{{field.name}}"
-                               placeholder="{{field.hint}}"
+                               name="{{ field.name }}"
+                               placeholder="{{ field.hint }}"
                                ng-model="spot.properties[field.name]"
-                               ng-required="{{field.required}}"
+                               ng-required="{{ field.required }}"
                                ng-min="getMin(field.constraint)"
                                ng-max="getMax(field.constraint)"
                                class="fieldsRight">
@@ -41,10 +41,10 @@
                              ng-messages-include="templates/error-messages.html">
                         <span class="input-label">{{field.label}}:</span>
                         <input type="text"
-                               name="{{field.name}}"
-                               placeholder="{{field.hint}}"
+                               name="{{ field.name }}"
+                               placeholder="{{ field.hint }}"
                                ng-model="spot.properties[field.name]"
-                               ng-required="{{field.required}}"
+                               ng-required="{{ field.required }}"
                                class="fieldsRight">
                       </label>
                     </div>
@@ -52,12 +52,12 @@
                       <label class="item item-input"
                              ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid }"
                              ng-messages-include="templates/error-messages.html">
-                        <span class="input-label">{{field.label}}:</span>
-                        <textarea name="{{field.name}}"
+                        <span class="input-label">{{ field.label }}:</span>
+                        <textarea name="{{ field.name }}"
                                   rows="4"
                                   placeholder="{{field.hint}}"
                                   ng-model="spot.properties[field.name]"
-                                  ng-required="{{field.required}}"
+                                  ng-required="{{ field.required }}"
                                   class="fieldsRight">
                         </textarea>
                       </label>
@@ -65,24 +65,24 @@
                     <div ng-switch-when="select_one">
                       <label class="item item-input item-select"
                              ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid }">
-                        <span class="input-label">{{field.label}}:</span>
-                        <select name="{{field.name}}"
+                        <span class="input-label">{{ field.label }}:</span>
+                        <select name="{{ field.name }}"
                                 ng-model="spot.properties[field.name]"
                                 ng-options="choice.name as choice.label for choice in choices
                                 | orderBy: 'label'
                                 | filter: { 'list name': field.type.split(' ')[1] }"
-                                ng-required="{{field.required}}">
+                                ng-required="{{ field.required }}">
                         </select>
                       </label>
                     </div>
                     <div ng-switch-when="select_multiple">
                       <label class="item formCheckboxes" ng-class="setSelMultClass(field)">
                         <span class="input-label">{{field.label}}:</span>
-                        <ion-checkbox name="{{field.name}}"
+                        <ion-checkbox name="{{ field.name }}"
                                       ng-repeat="choice in choices | orderBy: 'label' | filter: { 'list name': field.type.split(' ')[1] }"
                                       ng-checked="isOptionChecked(field.name, choice.name)"
                                       ng-click="toggleChecked(field.name, choice.name)"
-                                      ng-required="{{field.required}}">
+                                      ng-required="{{ field.required }}">
                           {{ choice.label }}
                         </ion-checkbox>
                       </label>
@@ -142,7 +142,7 @@
               </div>
               <ion-list>
                 <ion-item ng-repeat="item in group_members_selected" href="#/app/spots/{{item.id}}">
-                  {{item.name}}
+                  {{ item.name }} <small>({{ item.type }})</small>
                 </ion-item>
               </ion-list>
             </div>
@@ -251,7 +251,7 @@
               </div>
               <ion-list>
                 <ion-item ng-repeat="item in links_selected">
-                  <a href="#/app/spots/{{item.id}}" style="text-decoration:none">{{item.name}}</a>
+                  <a href="#/app/spots/{{item.id}}" style="text-decoration:none">{{item.name}}</a> <small>({{ item.type }})</small>
                   &nbsp;&nbsp;&nbsp;&nbsp;<b>{{ item.relationship }}</b> this spot
                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                   <select ng-model="relationship"
@@ -274,7 +274,7 @@
               </div>
               <ion-list>
                 <ion-item ng-repeat="item in groups_selected" href="#/app/spots/{{item.id}}">
-                  {{item.name}}
+                  {{item.name}} <small>({{ item.type }})</small>
                 </ion-item>
               </ion-list>
             </div>
