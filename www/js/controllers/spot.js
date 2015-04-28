@@ -205,7 +205,7 @@ angular.module('app')
         });
       }
 
-      switch ($scope.spot.properties.spottype) {
+      switch ($scope.spot.properties.type) {
         case "Contact":
           $scope.showDynamicFields = true;
           $scope.survey = $scope.contact_survey;
@@ -310,7 +310,7 @@ angular.module('app')
             $scope.other_spots.push({
               name: obj.properties.name, id: obj.properties.id
             });
-            if (obj.properties.spottype == "Spot Grouping") {
+            if (obj.properties.type == "Spot Grouping") {
               $scope.groups.push({
                 name: obj.properties.name, id: obj.properties.id
               });
@@ -627,24 +627,7 @@ angular.module('app')
       NewSpot.setNewSpot({"geometry": $scope.spot.geometry});
       var newSpot = NewSpot.getNewSpot();
       newSpot.properties.name = $scope.spot.properties.name;
-
-      switch (spot_type) {
-        case 'contact':
-          newSpot.properties.spottype = "Contact";
-          break;
-        case 'fault':
-          newSpot.properties.spottype = "Fault";
-          break;
-        case 'fold':
-          newSpot.properties.spottype = "Fold";
-          break;
-        case 'orientation':
-          newSpot.properties.spottype = "Orientation";
-          break;
-        case 'shear_zone':
-          newSpot.properties.spottype = "Shear Zone";
-          break;
-      }
+      newSpot.properties.type = spot_type;
       NewSpot.setNewSpot(newSpot);
       $location.path("/app/spots/newspot");
 

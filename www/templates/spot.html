@@ -14,6 +14,9 @@
         <ion-nav-view name="detail-tab">
           <ion-content class="padding">
             <div ng-show="showDynamicFields">
+              <div class="item item-divider">
+                {{spot.properties.type}}
+              </div>
               <div ng-repeat="field in survey">
                 <div id="{{field.name}}" ng-show="showField(field.relevant)">
                   <div data-ng-switch on="field.type.split(' ')[0]">
@@ -95,35 +98,35 @@
 
             <div ng-show="showContactButtons()">
               <br>
-              <button ng-click="newSpot('contact');" class="button button-small icon-left icon ion-compass">Enter New Contact Description</button>
+              <button ng-click="newSpot('Contact');" class="button button-small icon-left icon ion-compass">Enter New Contact Description</button>
               <br><br>
               <button ng-click="noFunction();" class="button button-small icon-left icon ion-compass">Link to Existing Contact Description</button>
             </div>
 
             <div ng-show="showFaultButtons()">
               <br>
-              <button ng-click="newSpot('fault');" class="button button-small icon-left icon ion-compass">Enter New Fault Description</button>
+              <button ng-click="newSpot('Fault');" class="button button-small icon-left icon ion-compass">Enter New Fault Description</button>
               <br><br>
               <button ng-click="noFunction();" class="button button-small icon-left icon ion-compass">Link to Existing Fault Description</button>
             </div>
 
             <div ng-show="showFoldButtons()">
               <br>
-              <button ng-click="newSpot('fold');" class="button button-small icon-left icon ion-compass">Enter New Fold Description</button>
+              <button ng-click="newSpot('Fold');" class="button button-small icon-left icon ion-compass">Enter New Fold Description</button>
               <br><br>
               <button ng-click="noFunction();" class="button button-small icon-left icon ion-compass">Link to Existing Fold Description</button>
             </div>
 
             <div ng-show="showOrientationButtons">
               <br>
-              <button ng-click="newSpot('orientation');" class="button button-small icon-left icon ion-compass">Enter New Orientation</button>
+              <button ng-click="newSpot('Orientation');" class="button button-small icon-left icon ion-compass">Enter New Orientation</button>
               <br><br>
               <button ng-click="noFunction();" class="button button-small icon-left icon ion-compass">Link to Existing Orientation</button>
             </div>
 
             <div ng-show="showShearZoneButtons()">
               <br>
-              <button ng-click="newSpot('shear_zone');" class="button button-small icon-left icon ion-compass">Enter New Shear Zone Description</button>
+              <button ng-click="newSpot('Shear Zone');" class="button button-small icon-left icon ion-compass">Enter New Shear Zone Description</button>
               <br><br>
               <button ng-click="noFunction();" class="button button-small icon-left icon ion-compass">Link to Existing Shear Zone Description</button>
             </div>
@@ -156,7 +159,7 @@
             <div class="row responsive-md">
               <div class="col">
                 <div class="item item-divider">
-                  {{spot.properties.spottype}}
+                  {{spot.properties.type}}
                 </div>
                 <label class="item item-input">
                   <span class="input-label">Spot Name</span>

@@ -702,7 +702,7 @@ angular.module('app')
 
 
     var getIconForFeature = function(feature) {
-      var contentModel = feature.get('spottype');
+      var contentModel = feature.get('type');
       var dip = null;
       var plunge = null;
 
@@ -756,7 +756,7 @@ angular.module('app')
       //     return SpotsFactory.getSpotId(linkedRelationshipId).then(function(spot) {
       //
       //       // we only care about orientations linkages at this point
-      //       if (spot.properties.spottype == "Orientation") {
+      //       if (spot.properties.type == "Orientation") {
       //
       //         console.log("the spot is", spot);
       //
@@ -858,7 +858,7 @@ angular.module('app')
   SpotsFactory.all().then(function(spots) {
     // get distinct groups and aggregate spots by group type
     var spotGroup = _.groupBy(spots, function(spot) {
-      return spot.properties.spottype;
+      return spot.properties.type;
     });
 
     // go through each group and assign all the aggregates to the geojson feature
