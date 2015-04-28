@@ -659,6 +659,7 @@ angular.module('app')
       if (!relevant)
         return true;
 
+      relevant = relevant.replace(/selected\(\$/g,"_.contains(");
       relevant = relevant.replace(/\$/g,"");
       relevant = relevant.replace(/{/g,"$scope.spot.properties.");
       relevant = relevant.replace(/}/g,"");

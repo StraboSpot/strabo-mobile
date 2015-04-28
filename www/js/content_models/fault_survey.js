@@ -1,17 +1,18 @@
 angular.module('app')
   .addFaultSurvey = function ($scope) {
 
-  $scope.fault_survey = [{
-    "name": "thickness_m",
-    "type": "integer",
-    "label": "Thickness (m)",
-    "hint": "What is the thickness of this fault in meters?",
-    "required": "true",
-    "default": "not_specified",
-    "constraint": ". >= 0",
-    "constraint_message": "Thickness must be greater than 0.",
-    "relevant": ""
-  },
+  $scope.fault_survey = [
+    {
+      "name": "thickness_m",
+      "type": "integer",
+      "label": "Thickness (m)",
+      "hint": "What is the thickness of this fault in meters?",
+      "required": "true",
+      "default": "not_specified",
+      "constraint": ". >= 0",
+      "constraint_message": "Thickness must be greater than 0.",
+      "relevant": ""
+    },
     {
       "name": "strike_of_fault",
       "type": "integer",
