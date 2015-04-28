@@ -115,6 +115,14 @@ angular.module('app')
       return spotsDb.getItem(spotId);
     };
 
+    factory.getType = function(id, callback) {
+      var deferred = $q.defer(); //init promise
+      spotsDb.getItem(id).then(function(value) {
+        deferred.resolve(value.properties.type);
+      });
+      return deferred.promise;
+    };
+
     // return factory
     return factory;
   });

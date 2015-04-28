@@ -251,9 +251,8 @@
               </div>
               <ion-list>
                 <ion-item ng-repeat="item in links_selected">
-                  <a href="#/app/spots/{{item.id}}" style="text-decoration:none"> <b>{{item.name}}</b> </a>
-                  &nbsp;&nbsp;&nbsp;&nbsp;{{ item.relationship }}
-                  &nbsp;&nbsp;&nbsp;&nbsp;<b>{{ spot.properties.name }}</b>
+                  <a href="#/app/spots/{{item.id}}" style="text-decoration:none">{{item.name}}</a>
+                  &nbsp;&nbsp;&nbsp;&nbsp;<b>{{ item.relationship }}</b> this spot
                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                   <select ng-model="relationship"
                           ng-options="link_relationships.type for link_relationships in link_relationship.choices"
@@ -262,6 +261,7 @@
                   </select>
                 </ion-item>
               </ion-list>
+              <br>
             </div>
             <div ng-show="showGroups">
               <div class="item item-divider">

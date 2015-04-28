@@ -699,6 +699,13 @@ angular.module('app')
       return 'no-errors';
     };
 
+    $scope.getType = function (id) {
+      return SpotsFactory.getFirstSpot()
+        .then(function(spot) {
+          return spot.properties.type;
+        });
+    };
+
     $scope.toggleChecked = function (field, choice) {
       var i = -1;
       if ($scope.spot.properties[field])
