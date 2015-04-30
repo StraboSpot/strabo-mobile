@@ -7,11 +7,12 @@ angular.module('app')
     // Return public API.
     return({
       authenticateUser: authenticateUser,
-      createFeature: createFeature,
-      updateFeature: updateFeature,
-      downloadSpot: downloadSpot,
-      downloadSpots: downloadSpots,
-      deleteMyFeatures: deleteMyFeatures
+      getProjects: getProjects,
+      createProject: createProject,
+      deleteProject: deleteProject,
+      deleteProjectSpots: deleteProjectSpots,
+      addProjectSpot: addProjectSpot,
+      getProjectSpots: getProjectSpots
     });
 
     // ---
@@ -32,68 +33,82 @@ angular.module('app')
       return(request.then(handleSuccess, handleError));
     }
 
-    // Upload a new spot to the database
-    function createFeature(spot, encodedLogin) {
+    // Get all projects for a user
+    function getProjects(encodedLogin) {
+      var request = $http({
+        method: "get",
+        url: "http://strabospot.org/db/myProjects",
+        headers: {
+          'Authorization': "Basic " + encodedLogin + "\""
+        }
+      });
+      return(request.then(handleSuccess, handleError));
+    }
+
+    // Create a new project for a user
+    function createProject(name, encodedLogin) {
       var request = $http({
         method: "post",
-        url: "http://strabospot.org/db/feature",
+        url: "http://strabospot.org/db/project",
         headers: {
           'Authorization': "Basic " + encodedLogin + "\"",
           'Content-Type': 'application/json'
         },
         data:
-          spot
+          name
       });
       return(request.then(handleSuccess, handleError));
     }
 
-    // Update an existing spot in the database
-    function updateFeature(spot, encodedLogin, selfURL) {
-      var request = $http({
-        method: "post",
-        url: selfURL,
-        headers: {
-          'Authorization': "Basic " + encodedLogin + "\"",
-          'Content-Type': 'application/json'
-        },
-        data:
-          spot
-      });
-      return(request.then(handleSuccess, handleError));
-    }
-
-    // Download a spot from the database
-    function downloadSpot(id, encodedLogin) {
-      var request = $http({
-        method: "get",
-        url: "http://strabospot.org/db/feature/" + id,
-        headers: {
-          'Authorization': "Basic " + encodedLogin + "\""
-        },
-      });
-      return(request.then(handleSuccess, handleError));
-    }
-
-    // Download all of a user's spots from the database
-    function downloadSpots(encodedLogin) {
-      var request = $http({
-        method: "get",
-        url: "http://strabospot.org/db/myFeatures",
-        headers: {
-          'Authorization': "Basic " + encodedLogin + "\""
-        },
-      });
-      return(request.then(handleSuccess, handleError));
-    }
-
-    // Delete all of the features associated with the logged in user
-    function deleteMyFeatures(encodedLogin) {
+    // Delete a project
+    function deleteProject(self_url, encodedLogin) {
       var request = $http({
         method: "delete",
-        url: "http://strabospot.org/db/myFeatures",
+        url: self_url,
+        headers: {
+          'Authorization': "Basic " + encodedLogin + "\"",
+          'Content-Type': 'application/json'
+        }
+      });
+      return(request.then(handleSuccess, handleError));
+    }
+
+    // Delete all spots in a project
+    function deleteProjectSpots(project_id, encodedLogin) {
+      var request = $http({
+        method: "delete",
+        url: "http://strabospot.org/db/projectSpots/" + project_id,
+        headers: {
+          'Authorization': "Basic " + encodedLogin + "\"",
+          'Content-Type': 'application/json'
+        }
+      });
+      return(request.then(handleSuccess, handleError));
+    }
+
+    // Add a spot to a project
+    function addProjectSpot(spot, project_id, encodedLogin) {
+      var request = $http({
+        method: "post",
+        url: "http://strabospot.org/db/projectSpots/" + project_id,
+        headers: {
+          'Authorization': "Basic " + encodedLogin + "\"",
+          'Content-Type': 'application/json'
+        },
+        data:
+          spot
+      });
+      return(request.then(handleSuccess, handleError));
+    }
+
+    // Get all spots for a project
+    function getProjectSpots(project_id, encodedLogin) {
+      var request = $http({
+        method: "get",
+        url: "http://www.strabospot.org/db/projectSpots/" + project_id,
         headers: {
           'Authorization': "Basic " + encodedLogin + "\""
-        },
+        }
       });
       return(request.then(handleSuccess, handleError));
     }

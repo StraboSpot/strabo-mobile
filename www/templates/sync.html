@@ -2,10 +2,6 @@
   <ion-nav-buttons side="left">
     <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
   </ion-nav-buttons>
-  <ion-nav-buttons side="right">
-    <button ng-click="downloadSpots();" class="button button-icon icon ion-android-download"></button>
-    <button ng-click="uploadSpots();" class="button button-icon icon ion-upload"></button>
-  </ion-nav-buttons>
   <ion-content class="has-header">
     <h6 ng-hide="hideActionButtons.logout">You are currently logged in as: {{loginData.email}}</h6>
     <label class="item item-input" ng-hide="hideActionButtons.login">
@@ -18,6 +14,59 @@
     </label>
     <button ng-click="doLogin();" ng-hide="hideActionButtons.login" class="button icon-left icon ion-log-in button-balanced">Login</button>
     <button ng-click="doLogout();" ng-hide="hideActionButtons.logout" class="button icon-left icon ion-log-out button-assertive">Logout</button>
-    <div ng-show="progress.showProgress">You are uploading spot {{progress.current}} of {{progress.total}}</div>
+    <div ng-show="showProjectOpts()">
+      <br>
+      <div class="list">
+
+
+        <div ng-show="projects.length > 0">
+          <div class="item item-divider">
+            Project Operations
+          </div>
+
+          <!-- List Current Projects -->
+          <label class="item item-input item-select">
+            <div class="input-label">
+              Select a Project
+            </div>
+            <select ng-model="project"
+                    ng-options="item.name for item in projects">
+            </select>
+          </label>
+
+          <!-- Upload, Download or Delete Selected Project -->
+          <div class="row">
+            <div class="col">
+              <button ng-click="getProjectSpots()" ng-disabled="!project" class="button button-block icon-left icon ion-android-download">Download</button>
+            </div>
+            <div class="col">
+              <button ng-click="addProjectSpots()" ng-disabled="!project" class="button button-block icon-left icon ion-upload">Upload</button>
+            </div>
+            <div class="col">
+              <button ng-click="deleteProject()" ng-disabled="!project" class="button button-block icon-left icon ion-trash-b">Delete</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Create Project -->
+        <div class="item item-divider">
+          Create a New Project
+        </div>
+        <div class="item item-input-inset">
+          <label class="item-input-wrapper">
+            <span class="input-label">Project Name:</span>
+            <input type="text"
+                   ng-model="project_name">
+          </label>
+          <button ng-click="createProject()" ng-disabled="!project_name" class="button button-small">
+            Create Project
+          </button>
+        </div>
+
+      </div>
+    </div>
+    <div ng-show="progress.showProgress">You are uploading spot {{ progress.current }} of {{ progress.total }}</div>
+    <div ng-show="progress.showUploadDone">Finished uploading spots to Project <b>{{ project.name }}</b> on the server.</div>
+    <div ng-show="progress.showDownloadDone">Finished downloading spots from Project <b>{{ project.name }}</b> on the server.</div>
   </ion-content>
 </ion-view>
