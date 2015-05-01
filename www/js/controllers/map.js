@@ -557,25 +557,46 @@ angular.module('app')
   if (MapView.getMapView()) {
     map.setView(MapView.getMapView());
   } else {
-    // get the first spot from our database and set the map view with it as center
-    SpotsFactory.getFirstSpot()
-      .then(function(spot) {
-        var mapCenter;
-        // did we get a spot?
-        if (spot === undefined) {
-          // no -- then default the map to US center
-          mapCenter = [-11000000, 4600000];
-        } else {
-          var center = SpotsFactory.getCenter(spot);
-          mapCenter = ol.proj.transform([center.lon, center.lat], 'EPSG:4326', 'EPSG:3857');
-        }
+    // attempt to geolocate instead
+    $cordovaGeolocation.getCurrentPosition({
+        maximumAge: 0,
+        timeout: 10000,
+        enableHighAccuracy: true
+      })
+      .then(function(position) {
+        var lat = position.coords.latitude;
+        var lng = position.coords.longitude;
 
-        // reset the view
-        map.setView(new ol.View({
-          center: mapCenter,
-          zoom: 10,
+        console.log("initial getLocation ", [lat, lng]);
+
+        var newView = new ol.View({
+          center: ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
+          zoom: 17,
           minZoom: 4
-        }));
+        });
+        map.setView(newView);
+      }, function(err) {
+        // cannot geolocate so we should load from the first spot as a last resort
+        // get the first spot from our database and set the map view with it as center
+        SpotsFactory.getFirstSpot()
+          .then(function(spot) {
+            var mapCenter;
+            // did we get a spot?
+            if (spot === undefined) {
+              // no -- then default the map to US center
+              mapCenter = [-11000000, 4600000];
+            } else {
+              var center = SpotsFactory.getCenter(spot);
+              mapCenter = ol.proj.transform([center.lon, center.lat], 'EPSG:4326', 'EPSG:3857');
+            }
+
+            // reset the view
+            map.setView(new ol.View({
+              center: mapCenter,
+              zoom: 10,
+              minZoom: 4
+            }));
+          });
       });
   }
 
