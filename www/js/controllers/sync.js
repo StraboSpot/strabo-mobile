@@ -118,6 +118,8 @@ angular.module('app')
       SyncService.getProjects($scope.encodedLogin)
         .then(function(response) {
           $scope.projects = response.data.projects;
+          if ($scope.projects.length > 0)
+            $scope.project = $scope.projects[0];
         }
       );
     };
