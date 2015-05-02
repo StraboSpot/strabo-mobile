@@ -362,6 +362,9 @@ angular.module('app')
 
     // Get the current spot
     if (NewSpot.getNewSpot()){
+      // hide map view/set controls if new spot
+      $scope.hideViewOnMapButton = true;
+      $scope.hideSetFromMapButton = true;
       // Load spot stored in the NewSpot service
       $scope.spot = NewSpot.getNewSpot();
       // now clear the new spot from the service because we have the info in our current scope

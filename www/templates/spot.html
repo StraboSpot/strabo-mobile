@@ -200,9 +200,9 @@
                   <!-- Map Interaction -->
                   <div>
                     <br>
-                    <button ng-click="goToSpot();" class="button button-small icon-left icon ion-eye">View on Map</button>
+                    <button ng-click="goToSpot();" ng-hide="hideViewOnMapButton" class="button button-small icon-left icon ion-eye">View on Map</button>
                     <button ng-click="getLocation();" ng-show="showMyLocationButton" class="button button-small icon-left ion-pinpoint">Set to My Location</button>
-                    <button ng-click="openMap();" class="button button-small icon-left icon ion-map">Set From Map</button>
+                    <button ng-click="openMap();" ng-hide="hideSetFromMapButton" class="button button-small icon-left icon ion-map">Set From Map</button>
                   </div>
                 </div>
               </div>
