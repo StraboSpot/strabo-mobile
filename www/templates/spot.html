@@ -138,9 +138,7 @@
                 Group Members
               </div>
               <div>
-                <br>
-                <button ng-click="addGroupMember();" class="button button-small icon-left icon ion-plus-round">Add or Edit Members of this Group</button>
-                <br><br>
+                <button ng-click="addGroupMember();" class="button button-block icon-left icon ion-plus-round">Add or Edit Members of this Group</button>
               </div>
               <ion-list>
                 <ion-item ng-repeat="item in group_members_selected" href="#/app/spots/{{item.id}}">
@@ -247,9 +245,7 @@
                 Links
               </div>
               <div>
-                <br>
-                <button ng-click="linkSpot();" class="button button-small icon-left icon ion-link">Add or Edit Links to Other Spots</button>
-                <br><br>
+                <button ng-click="linkSpot();" class="button button-block icon-left icon ion-link">Add or Edit Links to Other Spots</button>
               </div>
               <ion-list>
                 <ion-item ng-repeat="item in links_selected">
@@ -270,9 +266,7 @@
                 Groups
               </div>
               <div>
-                <br>
-                <button ng-click="linkGroup();" class="button button-small icon-left icon ion-plus-round">Add or Edit Membership in Groups</button>
-                <br><br>
+                <button ng-click="linkGroup();" class="button button-block icon-left icon ion-plus-round">Add or Edit Membership in Groups</button>
               </div>
               <ion-list>
                 <ion-item ng-repeat="item in groups_selected" href="#/app/spots/{{item.id}}">
