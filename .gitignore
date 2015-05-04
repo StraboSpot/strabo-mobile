@@ -16,3 +16,6 @@ ionic.project
 package.json
 
 .idea
+
+# Ignore Mac DS_Store files
+.DS_Store
