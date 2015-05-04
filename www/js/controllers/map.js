@@ -555,49 +555,56 @@ angular.module('app')
 
   //  do we currently have mapview set?  if so, we should reset the map view to that first
   if (MapView.getMapView()) {
+    console.log("have mapview set, changing map view to that");
     map.setView(MapView.getMapView());
   } else {
-    // attempt to geolocate instead
-    $cordovaGeolocation.getCurrentPosition({
-        maximumAge: 0,
-        timeout: 10000,
-        enableHighAccuracy: true
-      })
-      .then(function(position) {
-        var lat = position.coords.latitude;
-        var lng = position.coords.longitude;
+    // nope, we have NO mapview set, so...
 
-        console.log("initial getLocation ", [lat, lng]);
+    // Loop through all spots and create ol vector layers
+    SpotsFactory.all().then(function(spots) {
 
+      // do we even have any spots?
+      if (spots.length > 0) {
+        console.log("found spots, attempting to get the center of all spots and change the map view to that");
+        var cr = new CoordinateRange(spots);
+        var newExtent = ol.extent.boundingExtent(cr._getAllCoordinates());
+        var newExtentCenter = ol.extent.getCenter(newExtent);
+
+        // create the new view with the new center
         var newView = new ol.View({
-          center: ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
-          zoom: 17,
-          minZoom: 4
+          center: ol.proj.transform([newExtentCenter[0], newExtentCenter[1]], 'EPSG:4326', 'EPSG:3857')
         });
-        map.setView(newView);
-      }, function(err) {
-        // cannot geolocate so we should load from the first spot as a last resort
-        // get the first spot from our database and set the map view with it as center
-        SpotsFactory.getFirstSpot()
-          .then(function(spot) {
-            var mapCenter;
-            // did we get a spot?
-            if (spot === undefined) {
-              // no -- then default the map to US center
-              mapCenter = [-11000000, 4600000];
-            } else {
-              var center = SpotsFactory.getCenter(spot);
-              mapCenter = ol.proj.transform([center.lon, center.lat], 'EPSG:4326', 'EPSG:3857');
-            }
 
-            // reset the view
-            map.setView(new ol.View({
-              center: mapCenter,
-              zoom: 10,
+        map.setView(newView);
+        map.getView().fitExtent(ol.proj.transformExtent(newExtent, 'EPSG:4326', 'EPSG:3857'), map.getSize());
+      }
+      // no spots either, then attempt to geolocate the user
+      else {
+        console.log("no spots found, attempting to geolocate");
+        // attempt to geolocate instead
+        $cordovaGeolocation.getCurrentPosition({
+            maximumAge: 0,
+            timeout: 10000,
+            enableHighAccuracy: true
+          })
+          .then(function(position) {
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+
+            console.log("initial getLocation ", [lat, lng]);
+
+            var newView = new ol.View({
+              center: ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
+              zoom: 17,
               minZoom: 4
-            }));
+            });
+            map.setView(newView);
+          }, function(err) {
+            // uh oh, cannot geolocate, nor have any spots
+            alert('Could not geolocate your position');
           });
-      });
+      }
+    });
   }
 
   $scope.cancelDraw = function() {
