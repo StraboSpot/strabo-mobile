@@ -1,0 +1,14 @@
+<ion-modal-view>
+  <ion-header-bar class="bar-dark nav-title-slide-ios7">
+    <h1 class="title">Link to Existing Fold</h1>
+    <div class="button button-clear" ng-click="closeModal('linkFoldModal')"><span class="icon ion-close"></span></div>
+  </ion-header-bar>
+  <ion-content>
+    <ion-checkbox ng-repeat="item in other_spots | filter: { 'type': 'Fold' }"
+                  ng-value="item"
+                  ng-checked="isChecked(item.id)"
+                  ng-click="toggleSelection(item, 'links_selected', 'links_unselected')">
+      {{ item.name }} <small>({{ item.type }})</small>
+    </ion-checkbox>
+  </ion-content>
+</ion-modal-view>

@@ -245,6 +245,7 @@ angular.module('app')
           $scope.showDynamicFields = true;
           $scope.survey = $scope.shear_zone_survey;
           $scope.choices = $scope.shear_zone_choices;
+          $scope.showOrientationButtons = true;
           break;
         case "Spot Grouping":
           $scope.showDynamicFields = true;
@@ -320,6 +321,11 @@ angular.module('app')
         // Don't show links or groups until there are other spots to link to or groups to join
         $scope.showLinks = $scope.other_spots.length;
         $scope.showGroups = $scope.groups.length;
+        $scope.enableLinkContact = !_.findWhere($scope.other_spots, {type: 'Contact'});
+        $scope.enableLinkFault = !_.findWhere($scope.other_spots, {type: 'Fault'});
+        $scope.enableLinkFold = !_.findWhere($scope.other_spots, {type: 'Fold'});
+        $scope.enableLinkOrientation = !_.findWhere($scope.other_spots, {type: 'Orientation'});
+        $scope.enableLinkShearZone = !_.findWhere($scope.other_spots, {type: 'Shear Zone'});
       });
     };
     $scope.showContactButtons = function () {
@@ -382,8 +388,19 @@ angular.module('app')
     // Toggle selected for links or groups or group members selected
     $scope.toggleSelection = function toggleSelection(ref_spot, type_selected, type_unselected) {
       var selected_spot = _.findWhere($scope[type_selected], { id: ref_spot.id });
-      // If selected spot is not already in the links_selected object
+
+      // Set a few default relationships
       if (!selected_spot) {
+        if (ref_spot.type == "Orientation")
+          if ($scope.spot.properties.type == "Contact" || $scope.spot.properties.type == "Fault"
+            || $scope.spot.properties.type == "Fold" || $scope.spot.properties.type == "Shear Zone")
+            ref_spot["relationship"] = "describes";
+        if ($scope.spot.properties.type == "Orientation")
+          if (ref_spot.type == "Contact" || ref_spot.type == "Fault"
+            || ref_spot.type == "Fold" || ref_spot.type == "Shear Zone")
+              ref_spot["relationship"] = "has";
+
+        // If selected spot is not already in the links_selected object
         $scope[type_selected].push(ref_spot);
       }
       // This spot has been unselected so remove it
@@ -632,7 +649,6 @@ angular.module('app')
       newSpot.properties.type = spot_type;
       NewSpot.setNewSpot(newSpot);
       $location.path("/app/spots/newspot");
-
     };
 
     $scope.noFunction = function() {
@@ -754,6 +770,31 @@ angular.module('app')
       $scope.openModal("linkModal");
     };
 
+    $scope.linkContact = function() {
+      NewSpot.setNewSpot($scope.spot);
+      $scope.openModal("linkContactModal");
+    };
+
+    $scope.linkFault = function() {
+      NewSpot.setNewSpot($scope.spot);
+      $scope.openModal("linkFaultModal");
+    };
+
+    $scope.linkFold = function() {
+      NewSpot.setNewSpot($scope.spot);
+      $scope.openModal("linkFoldModal");
+    };
+
+    $scope.linkOrientation = function() {
+      NewSpot.setNewSpot($scope.spot);
+      $scope.openModal("linkOrientationModal");
+    };
+
+    $scope.linkShearZone = function() {
+      NewSpot.setNewSpot($scope.spot);
+      $scope.openModal("linkShearZoneModal");
+    };
+
     $scope.setLinkRelationship = function(item, relationship) {
       var related_spot = _.find($scope.links_selected, function (rel_spot) {
         return rel_spot.id === item.id;
@@ -780,6 +821,41 @@ angular.module('app')
       animation: 'slide-in-up'
     }).then(function(modal) {
       $scope.linkModal = modal;
+    });
+
+    $ionicModal.fromTemplateUrl('templates/modals/linkContactModal.html', {
+      scope: $scope,
+      animation: 'slide-in-up'
+    }).then(function(modal) {
+      $scope.linkContactModal = modal;
+    });
+
+    $ionicModal.fromTemplateUrl('templates/modals/linkFaultModal.html', {
+      scope: $scope,
+      animation: 'slide-in-up'
+    }).then(function(modal) {
+      $scope.linkFaultModal = modal;
+    });
+
+    $ionicModal.fromTemplateUrl('templates/modals/linkFoldModal.html', {
+      scope: $scope,
+      animation: 'slide-in-up'
+    }).then(function(modal) {
+      $scope.linkFoldModal = modal;
+    });
+
+    $ionicModal.fromTemplateUrl('templates/modals/linkOrientationModal.html', {
+      scope: $scope,
+      animation: 'slide-in-up'
+    }).then(function(modal) {
+      $scope.linkOrientationModal = modal;
+    });
+
+    $ionicModal.fromTemplateUrl('templates/modals/linkShearZoneModal.html', {
+      scope: $scope,
+      animation: 'slide-in-up'
+    }).then(function(modal) {
+      $scope.linkShearZoneModal = modal;
     });
 
     $ionicModal.fromTemplateUrl('templates/modals/groupModal.html', {
@@ -822,6 +898,8 @@ angular.module('app')
 
     $scope.link_relationship = {
       choices: [
+        { type: 'has', inverse: 'describes'},
+        { type: 'describes', inverse: 'has'},
         { type: 'cross-cuts', inverse: 'is cross cut by' },
         { type: 'is cross-cut by', inverse: 'cross cuts' },
         { type: 'is younger than', inverse: 'is older than' },

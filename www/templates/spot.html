@@ -96,39 +96,41 @@
               </div>
             </div>
 
-            <div ng-show="showContactButtons()">
-              <br>
-              <button ng-click="newSpot('Contact');" class="button button-small icon-left icon ion-compass">Enter New Contact Description</button>
-              <br><br>
-              <button ng-click="noFunction();" class="button button-small icon-left icon ion-compass">Link to Existing Contact Description</button>
-            </div>
+            <div class="row responsive-sm">
+              <div class="col" ng-show="showContactButtons()">
+                <button ng-click="newSpot('Contact');" class="button button-block icon-left icon ion-compass">Link to New Contact Description</button>
+              </div>
+              <div class="col" ng-show="showContactButtons()">
+                <button ng-click="linkContact();" ng-disabled="enableLinkContact" class="button button-block icon-left icon ion-compass">Link to Existing Contact Description</button>
+              </div>
 
-            <div ng-show="showFaultButtons()">
-              <br>
-              <button ng-click="newSpot('Fault');" class="button button-small icon-left icon ion-compass">Enter New Fault Description</button>
-              <br><br>
-              <button ng-click="noFunction();" class="button button-small icon-left icon ion-compass">Link to Existing Fault Description</button>
-            </div>
+              <div class="col" ng-show="showFaultButtons()">
+                <button ng-click="newSpot('Fault');" class="button button-block icon-left icon ion-compass">Link to New Fault Description</button>
+              </div>
+              <div class="col" ng-show="showFaultButtons()">
+                <button ng-click="linkFault();" ng-disabled="enableLinkFault" class="button button-block icon-left icon ion-compass">Link to Existing Fault Description</button>
+              </div>
 
-            <div ng-show="showFoldButtons()">
-              <br>
-              <button ng-click="newSpot('Fold');" class="button button-small icon-left icon ion-compass">Enter New Fold Description</button>
-              <br><br>
-              <button ng-click="noFunction();" class="button button-small icon-left icon ion-compass">Link to Existing Fold Description</button>
-            </div>
+              <div class="col" ng-show="showFoldButtons()">
+                <button ng-click="newSpot('Fold');" class="button button-block icon-left icon ion-compass">Link to New Fold Description</button>
+              </div>
+              <div class="col" ng-show="showFoldButtons()">
+                <button ng-click="linkFold();" ng-disabled="enableLinkFold" class="button button-block icon-left icon ion-compass">Link to Existing Fold Description</button>
+              </div>
 
-            <div ng-show="showOrientationButtons">
-              <br>
-              <button ng-click="newSpot('Orientation');" class="button button-small icon-left icon ion-compass">Enter New Orientation</button>
-              <br><br>
-              <button ng-click="noFunction();" class="button button-small icon-left icon ion-compass">Link to Existing Orientation</button>
-            </div>
+              <div class="col" ng-show="showOrientationButtons">
+                <button ng-click="newSpot('Orientation');" class="button button-block icon-left icon ion-compass">Link to New Orientation</button>
+              </div>
+              <div class="col" ng-show="showOrientationButtons">
+                <button ng-click="linkOrientation();" ng-disabled="enableLinkOrientation" class="button button-block icon-left icon ion-compass">Link to Existing Orientation</button>
+              </div>
 
-            <div ng-show="showShearZoneButtons()">
-              <br>
-              <button ng-click="newSpot('Shear Zone');" class="button button-small icon-left icon ion-compass">Enter New Shear Zone Description</button>
-              <br><br>
-              <button ng-click="noFunction();" class="button button-small icon-left icon ion-compass">Link to Existing Shear Zone Description</button>
+              <div class="col" ng-show="showShearZoneButtons()">
+                <button ng-click="newSpot('Shear Zone');" class="button button-block icon-left icon ion-compass">Link to New Shear Zone Description</button>
+              </div>
+              <div class="col" ng-show="showShearZoneButtons()">
+                <button ng-click="linkShearZone();" ng-disabled="enableLinkShearZone" class="button button-block icon-left icon ion-compass">Link to Existing Shear Zone Description</button>
+              </div>
             </div>
 
             <div ng-show="showGroupButtons">
@@ -252,7 +254,7 @@
               <ion-list>
                 <ion-item ng-repeat="item in links_selected">
                   <a href="#/app/spots/{{item.id}}" style="text-decoration:none">{{item.name}}</a> <small>({{ item.type }})</small>
-                  &nbsp;&nbsp;&nbsp;&nbsp;<b>{{ item.relationship }}</b> this spot
+                  &nbsp;&nbsp;&nbsp;&nbsp;<b>{{ item.relationship }}</b> this {{ spot.properties.type }}
                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                   <select ng-model="relationship"
                           ng-options="link_relationships.type for link_relationships in link_relationship.choices"
