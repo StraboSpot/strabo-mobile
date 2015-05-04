@@ -51,3 +51,15 @@ For a USB connected Android device:
 
     ionic platform add android
     ionic run
+
+###Testing
+
+Prerequisites:
+
+    npm install -g jasmine
+    npm install -g karma
+    npm install -g karma-cli
+
+To run tests:
+
+    karma start
