@@ -641,12 +641,31 @@ angular.module('app')
       $location.path("/app/map");
     };
 
+    // Create a new spot from within a spot
     $scope.newSpot = function(spot_type) {
       alert("This button is not working correctly yet, unless current spot has been saved already.");
       NewSpot.setNewSpot({"geometry": $scope.spot.geometry});
       var newSpot = NewSpot.getNewSpot();
       newSpot.properties.name = $scope.spot.properties.name;
       newSpot.properties.type = spot_type;
+
+      // Set up link for new spot
+      var rel;
+      if (spot_type == "Orientation")
+        if ($scope.spot.properties.type == "Contact" || $scope.spot.properties.type == "Fault"
+          || $scope.spot.properties.type == "Fold" || $scope.spot.properties.type == "Shear Zone")
+          rel = "describes";
+      if ($scope.spot.properties.type == "Orientation")
+        if (spot_type == "Contact" || spot_type == "Fault"
+          || spot_type == "Fold" || spot_type == "Shear Zone")
+          rel = "has";
+      newSpot.properties.links = [];
+      newSpot.properties.links.push({
+        'id': $scope.spot.properties.id,
+        'name': $scope.spot.properties.name,
+        'type': $scope.spot.properties.type,
+        'relationship': rel
+      });
       NewSpot.setNewSpot(newSpot);
       $location.path("/app/spots/newspot");
     };
