@@ -1,32 +1,26 @@
-<ion-view title="Archive Tiles">
-  <ion-content class="has-header">
-    <form class="list">
-      <div class="row responsive-md">
-        <div class="col">
-          <label class="item item-input">
-            <span class="input-label"><b>Offline Map Name</b></span>
-            <input type="text" placeholder="map name" ng-model="map.name" autofocus>
-          </label>
-        </div>
-        <div class="col">
-          <ion-checkbox ng-model="map.downloadZooms" ng-show="showDownload" ng-change="onChangeDownloadZooms()">
-            download inner zooms?
-          </ion-checkbox>
-        </div>
-      </div>
-    </form>
+<ion-view title="Save Offline Map">
+  <ion-content class="padding has-header">
 
-    <div>
-      <p>Current number of offline tiles: {{numOfflineTiles}}</p>
-      <p></p>
-      <p>Estimated number of tiles to download: {{map.tiles.length}}</p>
-      <p>Estimated total download size: {{map.tilesSizeString}}</p>
-    </div>
+    <label class="item item-input">
+      <span class="input-label"><b>Map Name:</b></span>
+      <input type="text" ng-model="map.name" autofocus>
+    </label>
 
-    <div class="padding">
-      <button class="button button-block button-positive" ng-click="submit($event)">Archive this map</button>
-      <progress ng-value="map.percentDownload" max="100" ng-show="map.showProgressBar"></progress>
-      <progress ng-value="map.overLayPercentDownload" max="100" ng-show="map.showProgressBar"></progress>
-    </div>
+    <ion-checkbox ng-model="map.downloadZooms" ng-show="showDownload" ng-change="onChangeDownloadZooms()">
+      Download inner zooms?
+    </ion-checkbox>
+
+    <br>
+    <p>Current number of offline tiles: {{numOfflineTiles}}</p>
+    <p>Estimated number of tiles to download: {{map.tiles.length}}</p>
+    <p>Estimated total download size: {{map.tilesSizeString}}</p>
+
+    <button class="button button-block button-positive" ng-disabled="!map.name" ng-click="submit($event)">Save</button>
+
+    *Offline Maps are loaded automatically when offline. Edit and delete options for Saved Maps will be available under the Offline Maps menu item.
+
+    <progress ng-value="map.percentDownload" max="100" ng-show="map.showProgressBar"></progress>
+    <progress ng-value="map.overLayPercentDownload" max="100" ng-show="map.showProgressBar"></progress>
+
   </ion-content>
 </ion-view>

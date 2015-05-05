@@ -11,21 +11,14 @@ angular.module('app')
     // get the mapExtent from its service upon entering this script
     var mapExtent = ViewExtentFactory.getExtent();
 
-    // is the map zoom greater or equal to 15?
-    if (mapExtent.zoom >= 15) {
-      // yes, then we can allow the user to download inner zoomed tiles
-      $scope.showDownload = true;
-    } else {
-      // no, because the download would be too much to handle
-      $scope.showDownload = false;
-    }
+    // Only allow the user to download inner zoom tiles if the map zoom is greater than or equal to 15,
+    // otherwise the download would be too much to handle
+    $scope.showDownload = mapExtent.zoom >= 15;
 
     // map variables
     $scope.map = {
-      // name of the map
-      name: null,
-      // tiles array of the map region
-      tiles: null,
+      name: null,             // name of the map
+      tiles: null,            // tiles array of the map region
       tilesSizeString: null,
       downloadZooms: false,
       percentDownload: 0,
@@ -50,7 +43,7 @@ angular.module('app')
         // yes, then loop through all the zoom levels and build our tile array
         while (zoom <= maxZoomToDownload) {
           var currentZoomTileArray = SlippyTileNamesFactory.getTileIds(mapExtent.topRight, mapExtent.bottomLeft, zoom);
-          tileArray.push(currentZoomTileArray)
+          tileArray.push(currentZoomTileArray);
           zoom++;
         }
 
@@ -64,7 +57,7 @@ angular.module('app')
 
       // get average tile byte size
       $scope.map.tilesSizeString = bytesToSize($scope.map.tiles.length * SlippyTileNamesFactory.getAvgTileBytes());
-    }
+    };
 
     // run the estimate right now
     estimateArchiveTile();
@@ -96,11 +89,6 @@ angular.module('app')
       event.target.disabled = true;
 
       $scope.map.showProgressBar = true;
-
-      if (!$scope.map.name) {
-        alert('Name required.');
-        return;
-      }
 
       var downloadTileOptions = {
         mapName: $scope.map.name,
@@ -158,14 +146,5 @@ angular.module('app')
             $scope.map.overLayPercentDownload = Math.ceil((notify2[0] / notify2[1]) * 100);
           }
         });
-
-
-
-
-
-
-
-
     };
-
   });
