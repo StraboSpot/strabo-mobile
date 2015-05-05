@@ -6,7 +6,7 @@
       <button ng-click="getLocation();" class="button button-icon icon ion-pinpoint"></button>
       <button ng-click="toggleAirplaneMode()" ng-class="{'button button-icon icon ion-earth': !airplaneMode,
       'button button-icon icon ion-plane':airplaneMode}"></button>
-      <button ng-click="cacheOfflineTiles();" class="button button-icon icon ion-archive"></button>
+      <button ng-click="cacheOfflineTiles();" ng-disabled="navigator.onLine" class="button button-icon icon ion-archive"></button>
     </ion-nav-buttons>
     <ion-pane data-tap-disabled="true">
       <div id="mapdiv" style="height:100%"></div>

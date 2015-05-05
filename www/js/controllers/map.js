@@ -470,20 +470,15 @@ angular.module('app')
       $scope.airplaneMode = false;
   };
 
-  // cache offline tiles if in internet mode
+    // cache the tiles in the current view but don't switch to the offline layer
   $scope.cacheOfflineTiles = function() {
-    if ($scope.airplaneMode === false) {
-      // cache the tiles in the current view but don't switch to the offline layer
+    // get the map extent
+    var mapViewExtent = getMapViewExtent();
 
-      // get the map extent
-      var mapViewExtent = getMapViewExtent();
+    // set the extent into the ViewExtentFactory
+    ViewExtentFactory.setExtent(getCurrentVisibleLayer(), mapViewExtent.topRight, mapViewExtent.bottomLeft, mapViewExtent.zoom);
 
-      // set the extent into the ViewExtentFactory
-      ViewExtentFactory.setExtent(getCurrentVisibleLayer(), mapViewExtent.topRight, mapViewExtent.bottomLeft, mapViewExtent.zoom);
-
-      $location.path("/app/map/archiveTiles");
-    } else
-      alert("Tiles can't be cached while offline.");
+    $location.path("/app/map/archiveTiles");
   };
 
   // drawButtonActive used to keep state of which selected drawing tool is active
