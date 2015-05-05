@@ -670,10 +670,6 @@ angular.module('app')
       $location.path("/app/spots/newspot");
     };
 
-    $scope.noFunction = function() {
-      alert("This doesn't do anything yet.");
-    };
-
     // Determine if the field should be shown or not by looking at the relevant key-value pair
     $scope.showField = function(relevant) {
       if (!relevant)

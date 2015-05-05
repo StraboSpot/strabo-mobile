@@ -525,9 +525,15 @@ angular.module('app')
       // If we got to the map from the spot view go back to that view
       var backView = $ionicHistory.backView();
       if (backView) {
-        if (backView.stateName == "app.spot")
-          backView.go();
-      } else {
+        if (backView.stateName == "app.spot") {
+          $rootScope.$apply(function() {
+            $location.path("/app/spots/newspot");
+          });
+        }
+      }
+      else {
+        // Initialize new Spot
+        NewSpot.setNewSpot(geojsonObj);
         switch ($scope.drawButtonActive) {
           case "Point":
             $scope.openModal("pointModal");
@@ -539,10 +545,6 @@ angular.module('app')
             $scope.openModal("polyModal");
             break;
         }
-        /*
-                $rootScope.$apply(function() {
-                  $location.path("/app/spots/newspot");
-                });*/
       }
     });
     map.addInteraction(draw);
