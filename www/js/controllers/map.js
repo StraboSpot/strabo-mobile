@@ -470,6 +470,10 @@ angular.module('app')
       $scope.airplaneMode = false;
   };
 
+    $scope.disableArchiveTiles = function() {
+      return !navigator.onLine;
+    };
+
     // cache the tiles in the current view but don't switch to the offline layer
   $scope.cacheOfflineTiles = function() {
     // get the map extent
