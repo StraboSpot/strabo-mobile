@@ -118,15 +118,18 @@ angular.module('app')
 
   ol.inherits(drawControls, ol.control.Control);
 
+  // initial map view, used for setting the view upon map creation
+  var initialMapView = new ol.View({
+    projection: 'EPSG:3857',
+    center: [-11000000, 4600000],
+    zoom: 4,
+    minZoom: 4
+  })
+
   // lets create a new map
   map = new ol.Map({
     target: 'mapdiv',
-    view: new ol.View({
-      projection: 'EPSG:3857',
-      center: [-11000000, 4600000],
-      zoom: 4,
-      minZoom: 4
-    }),
+    view: initialMapView,
     // remove rotate icon from controls and add drawing controls
     controls: ol.control.defaults({
       rotate: false
@@ -385,7 +388,7 @@ angular.module('app')
       ];
     }
   });
-  
+
   ///////////////////////////
   // map adding layers
   ///////////////////////////
@@ -574,6 +577,21 @@ angular.module('app')
         var cr = new CoordinateRange(spots);
         var newExtent = ol.extent.boundingExtent(cr._getAllCoordinates());
         var newExtentCenter = ol.extent.getCenter(newExtent);
+
+        // fly-by map animation
+        var duration = 2000;
+        var start = +new Date();
+        var pan = ol.animation.pan({
+          duration: duration,
+          source: initialMapView.getCenter(),
+          start: start
+        });
+        var bounce = ol.animation.bounce({
+          duration: duration,
+          resolution: initialMapView.getResolution(),
+          start: start
+        });
+        map.beforeRender(pan, bounce);
 
         // create the new view with the new center
         var newView = new ol.View({
