@@ -3,9 +3,8 @@
       <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
     </ion-nav-buttons>
     <ion-nav-buttons side="right">
-      <button ng-click="getLocation();" class="button button-icon icon ion-pinpoint"></button>
-      <button ng-click="zoomToSpotsExtent();" class="button button-icon icon ion-map"></button>
-      <button ng-click="cacheOfflineTiles();" class="button button-icon icon ion-archive"></button>
+      <button ng-click="getLocation()" class="button button-icon icon ion-pinpoint"></button>
+      <button ng-click="showActionsheet()" class="button button-icon icon ion-grid"></button>
       <div ng-class="{'online': isOnline(), 'offline': !isOnline()}"></div>
     </ion-nav-buttons>
     <ion-pane data-tap-disabled="true">

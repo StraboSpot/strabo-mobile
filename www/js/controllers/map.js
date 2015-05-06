@@ -12,6 +12,7 @@ angular.module('app')
     $ionicHistory,
     $ionicModal,
     $ionicPopup,
+    $ionicActionSheet,
     NewSpot,
     MapView,
     OfflineTilesFactory,
@@ -1062,6 +1063,37 @@ angular.module('app')
 
             geolocationLayer.setSource(vectorSource);
           });
+    };
+
+    /////////////////
+    // ACTIONSHEET
+    /////////////////
+
+    $scope.showActionsheet = function() {
+
+      $ionicActionSheet.show({
+        titleText: 'Map Actions',
+        buttons: [
+          {text: '<i class="icon ion-map"></i> Zoom to Extent of Spots'},
+          {text: '<i class="icon ion-archive"></i>Save Map for Offline Use'},
+        ],
+        cancelText: 'Cancel',
+        cancel: function () {
+          console.log('CANCELLED');
+        },
+        buttonClicked: function (index) {
+          console.log('BUTTON CLICKED', index);
+          switch(index) {
+            case 0:
+              $scope.zoomToSpotsExtent();
+              break;
+            case 1:
+              $scope.cacheOfflineTiles();
+              break;
+          }
+          return true;
+        }
+      });
     };
 
     /////////////////
