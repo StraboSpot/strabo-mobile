@@ -11,7 +11,6 @@ angular.module('app')
     $ionicPopup,
     $ionicModal,
     $cordovaGeolocation,
-    $cordovaDialogs,
     $cordovaCamera) {
 
     angular.module('app').addContactSurvey($scope);
@@ -423,7 +422,10 @@ angular.module('app')
           coordinates: [position.coords.longitude, position.coords.latitude]
         };
       }, function(err) {
-        alert("Unable to get location: " + err.message);
+        $ionicPopup.alert({
+          title: 'Alert!',
+          template: "Unable to get location: " + err.message
+        });
       });
     };
 
@@ -446,23 +448,29 @@ angular.module('app')
           var ele = document.getElementById(field.name);
           if (getComputedStyle(ele).display != "none" && !$scope.spot.properties[field.name]) {
             if (field.required == "true")
-              errorMessages += field.label + " Required!\n";
+              errorMessages += "<b>" + field.label + "</b>: Required!<br>";
             else
               if (field.name in $scope.spot.properties)
-                errorMessages += field.label + " " + field.constraint_message + "\n";
+                errorMessages += "<b>" + field.label + "</b>: " + field.constraint_message + "<br>";
           }
           else if (getComputedStyle(ele).display == "none")
             delete $scope.spot.properties[field.name];
         });
 
         if (errorMessages) {
-          alert("Fix the following errors before saving:\n" + errorMessages);
+          alertPopup = $ionicPopup.alert({
+            title: 'Error Saving!',
+            template: "Fix the following errors before saving:<br>" + errorMessages
+          });
           return 0;
         }
       }
 
       if (!$scope.spot.properties.name) {
-        alert('Name required.');
+        $ionicPopup.alert({
+          title: 'Error Saving!',
+          template: '<b>Spot Name</b> is required.'
+        });
         return;
       }
 
@@ -620,14 +628,16 @@ angular.module('app')
 
     // Delete the spot
     $scope.deleteSpot = function() {
-      $cordovaDialogs.confirm('Delete this Spot?', 'Delete', ['OK', 'Cancel'])
-        .then(function(buttonIndex) {
-          // no button = 0, 'OK' = 1, 'Cancel' = 2
-          if (buttonIndex == 1) {
-            SpotsFactory.destroy($scope.spot.properties.id);
-            $location.path("/app/spots");
-          }
-        });
+      var confirmPopup = $ionicPopup.confirm({
+        title: 'Delete Spot',
+        template: 'Are you sure you want to delete this spot?'
+      });
+      confirmPopup.then(function(res) {
+        if(res) {
+          SpotsFactory.destroy($scope.spot.properties.id);
+          $location.path("/app/spots");
+        }
+      });
     };
 
     // View the spot on the map
@@ -643,7 +653,10 @@ angular.module('app')
 
     // Create a new spot from within a spot
     $scope.newSpot = function(spot_type) {
-      alert("This button is not working correctly yet, unless current spot has been saved already.");
+      alertPopup = $ionicPopup.alert({
+        title: 'Bug Fix Needed!',
+        template: 'Unless this spot has been saved previously this button is not yet working correctly.'
+      });
       NewSpot.setNewSpot({"geometry": $scope.spot.geometry});
       var newSpot = NewSpot.getNewSpot();
       newSpot.properties.name = $scope.spot.properties.name;

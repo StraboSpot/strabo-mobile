@@ -12,6 +12,7 @@ angular.module('app')
   $filter,
   $ionicHistory,
   $ionicModal,
+  $ionicPopup,
   NewSpot,
   MapView,
   OfflineTilesFactory,
@@ -624,7 +625,10 @@ angular.module('app')
             map.setView(newView);
           }, function(err) {
             // uh oh, cannot geolocate, nor have any spots
-            alert('Could not geolocate your position');
+            $ionicPopup.alert({
+              title: 'Alert!',
+              template: 'Could not geolocate your position'
+            });
           });
       }
     });
@@ -1020,7 +1024,10 @@ angular.module('app')
         });
         map.setView(newView);
       }, function(err) {
-        alert("Unable to get location: " + err.message);
+        $ionicPopup.alert({
+          title: 'Alert!',
+          template: "Unable to get location: " + err.message
+        });
       });
 
     $cordovaGeolocation.watchPosition({
@@ -1031,7 +1038,10 @@ angular.module('app')
       .then(
         null,
         function(err) {
-          alert("Unable to get location: " + err.message);
+          $ionicPopup.alert({
+            title: 'Alert!',
+            template: "Unable to get location: " + err.message
+          });
           // TODO: what do we do here?
         },
         function(position) {

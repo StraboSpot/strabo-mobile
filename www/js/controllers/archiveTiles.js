@@ -84,7 +84,7 @@ angular.module('app')
     $scope.submit = function(event) {
 
       // tell the user that we're downloading tiles
-      event.target.innerHTML = "Download tiles... please wait";
+      event.target.innerHTML = "Downloading tiles . . . please wait.";
       // disable the download button
       event.target.disabled = true;
 

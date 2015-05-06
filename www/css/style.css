@@ -109,6 +109,13 @@ Map Layer Switcher Style
 }
 
 /*--------------------
+Right buttons in a list
+--------------------*/
+.button-second{
+  right:95px !important;
+}
+
+/*--------------------
 Tabs Style
 --------------------*/
 .tabs {

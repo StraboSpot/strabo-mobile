@@ -19,8 +19,13 @@
 
     *Offline Maps are loaded automatically when offline. Edit and delete options for Saved Maps will be available under the Offline Maps menu item.
 
-    <progress ng-value="map.percentDownload" max="100" ng-show="map.showProgressBar"></progress>
-    <progress ng-value="map.overLayPercentDownload" max="100" ng-show="map.showProgressBar"></progress>
+    <div ng-show="map.showProgressBar">
+      <br><br>
+      Downloading basemap tiles:
+      <progress ng-value="map.percentDownload" max="100"></progress>
+      Downloading geologic map overlay tiles:
+      <progress ng-value="map.overLayPercentDownload" max="100"></progress>
+    </div>
 
   </ion-content>
 </ion-view>

@@ -2,12 +2,13 @@ angular.module('app')
 
   .controller("SyncCtrl", function(
     $scope,
+    $ionicPopup,
     SpotsFactory,
     SyncService,
     LoginFactory) {
 
     // Form data for the login modal
-    $scope.loginData = { };
+    $scope.loginData = {};
 
     // base64 encoded login
     $scope.encodedLogin = null;
@@ -89,15 +90,24 @@ angular.module('app')
                   $scope.getProjects($scope.encodedLogin);
                 });
             } else {
-              alert("Login failure. Incorrect username or password.");
+              $ionicPopup.alert({
+                title: 'Login Failure!',
+                template: 'Incorrect username or password.'
+              });
             }
           },
           function(errorMessage) {
-            alert(errorMessage);
+            $ionicPopup.alert({
+              title: 'Alert!',
+              template: errorMessage
+            });
           }
         );
       } else
-        alert("Can't login while offline.");
+        $ionicPopup.alert({
+          title: 'Offline!',
+          template: 'Can\'t login while offline.'
+        });
     };
 
     // Perform the logout action when the user presses the logout icon
@@ -214,7 +224,6 @@ angular.module('app')
               if (currentSpotIndex == spotsCount) {
                 $scope.progress.showProgress = false;
                 $scope.progress.showUploadDone = true;
-                fixIds(changedIds);
               }
               // increment the spot we just saved
               currentSpotIndex++;
@@ -265,7 +274,10 @@ angular.module('app')
               SpotsFactory.save(spot);
             });
           } else
-            alert("No spots linked to this account to download.");
+            $ionicPopup.alert({
+              title: 'Empty Dataset!',
+              template: 'There are no spots in this dataset.'
+            });
         },
         function(errorMessage) {
           console.warn(errorMessage);

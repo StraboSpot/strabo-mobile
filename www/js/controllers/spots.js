@@ -4,6 +4,7 @@ angular.module('app')
   $scope,
   $location,
   $ionicModal,
+  $ionicPopup,
   SpotsFactory) {
 
   // Load or initialize Spots
@@ -15,15 +16,20 @@ angular.module('app')
 
   // clears all spots
   $scope.clearAllSpots = function() {
-    if (window.confirm("Do you want to delete ALL the spots?")) {
-      SpotsFactory.clear(function() {
-        alert("all spots have been cleared");
-        // update the spots list
-        SpotsFactory.all().then(function(spots) {
-          $scope.spots = spots;
+    var confirmPopup = $ionicPopup.confirm({
+      title: 'Delete Spots',
+      template: 'Are you sure you want to delete <b>ALL</b> spots?'
+    });
+    confirmPopup.then(function(res) {
+      if(res) {
+        SpotsFactory.clear(function () {
+          // update the spots list
+          SpotsFactory.all().then(function (spots) {
+            $scope.spots = spots;
+          });
         });
-      });
-    }
+      }
+    });
   };
 
   // Create a new Spot

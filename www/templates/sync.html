@@ -12,7 +12,7 @@
       <span class="input-label"><b>Password</b></span>
       <input type="text" ng-model="loginData.password" value={{loginData.password}}>
     </label>
-    <button ng-click="doLogin();" ng-hide="hideActionButtons.login" class="button icon-left icon ion-log-in button-balanced">Login</button>
+    <button ng-click="doLogin();" ng-hide="hideActionButtons.login" ng-disabled="!(loginData.email && loginData.password)" class="button icon-left icon ion-log-in button-balanced">Login</button>
     <button ng-click="doLogout();" ng-hide="hideActionButtons.logout" class="button icon-left icon ion-log-out button-assertive">Logout</button>
     <div ng-show="showProjectOpts()">
       <br>
