@@ -115,6 +115,24 @@ Right buttons in a list
   right:95px !important;
 }
 
+
+/*--------------------
+Online & Offline Notification Circles
+--------------------*/
+.online{
+  width:15px;
+  height:15px;
+  border-radius:7.5px;
+  background:linear-gradient(to bottom, #33FF00, #006600)
+}
+
+.offline{
+  width:15px;
+  height:15px;
+  border-radius:7.5px;
+  background:linear-gradient(to bottom, #FF3333, #990000)
+}
+
 /*--------------------
 Tabs Style
 --------------------*/
