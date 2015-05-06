@@ -142,7 +142,8 @@ angular.module('app')
 
   // vector layer where we house all the geojson spot objects
   var featureLayer = new ol.layer.Group({
-    'title': 'Spot Types',
+    name: 'featureLayer',
+    title: 'Spot Types',
     layers: []
   });
 
@@ -193,7 +194,8 @@ angular.module('app')
 
   // overlay layer
   var onlineOverlayLayer = new ol.layer.Group({
-    'title': 'Overlays (online)',
+    name: 'onlineOverlayLayer',
+    title: 'Overlays (online)',
     layers: [
       new ol.layer.Tile({
         title: "Geologic (z4-12)",
@@ -209,7 +211,8 @@ angular.module('app')
   });
 
   var offlineOverlayLayer = new ol.layer.Group({
-    'title': 'Overlays (offline)',
+    name: 'offlineOverlayLayer',
+    title: 'Overlays (offline)',
     layers: [
       new ol.layer.Tile({
         title: "Geologic (z4-12)",
@@ -230,7 +233,8 @@ angular.module('app')
 
   // online map layer of all possible online map providers
   var onlineLayer = new ol.layer.Group({
-    'title': 'Online Maps',
+    name: 'onlineLayer',
+    title: 'Online Maps',
     layers: [
       new ol.layer.Tile({
         title: 'Satellite',
@@ -258,7 +262,8 @@ angular.module('app')
 
   // offline layer using tileLoadFunction source
   var offlineLayer = new ol.layer.Group({
-    'title': 'Offline Maps',
+    name: 'offlineLayer',
+    title: 'Offline Maps',
     layers: [
       new ol.layer.Tile({
         title: 'Satellite',
@@ -285,6 +290,7 @@ angular.module('app')
 
   // layer where the drawing will go to
   var drawLayer = new ol.layer.Vector({
+    name: 'drawLayer',
     source: new ol.source.Vector(),
     style: new ol.style.Style({
       fill: new ol.style.Fill({
@@ -369,6 +375,7 @@ angular.module('app')
 
   // geolocation layer
   var geolocationLayer = new ol.layer.Vector({
+    name: 'geolocationLayer',
     style: function(feature, resolution) {
       return [
         geolocationCenterIconStyle,
@@ -378,10 +385,7 @@ angular.module('app')
       ];
     }
   });
-
-  // give the geolocation layer a name so we can reference this later
-  geolocationLayer.set('name', 'geolocationLayer');
-
+  
   ///////////////////////////
   // map adding layers
   ///////////////////////////
