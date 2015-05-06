@@ -4,6 +4,7 @@
     </ion-nav-buttons>
     <ion-nav-buttons side="right">
       <button ng-click="getLocation();" class="button button-icon icon ion-pinpoint"></button>
+      <button ng-click="zoomToSpotsExtent();" class="button button-icon icon ion-map"></button>
       <button ng-click="cacheOfflineTiles();" class="button button-icon icon ion-archive"></button>
       <div ng-class="{'online': isOnline(), 'offline': !isOnline()}"></div>
     </ion-nav-buttons>

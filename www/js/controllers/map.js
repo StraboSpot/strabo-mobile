@@ -545,11 +545,8 @@ angular.module('app')
       MapView.setMapView(map.getView());
     });
 
-    //  do we currently have mapview set?  if so, we should reset the map view to that first
-    if (MapView.getMapView()) {
-      console.log("have mapview set, changing map view to that");
-      map.setView(MapView.getMapView());
-    } else {
+    // Zoom to the extent of the spots, if that fails geolocate the user
+    $scope.zoomToSpotsExtent = function() {
       // nope, we have NO mapview set, so...
 
       // Loop through all spots and create ol vector layers
@@ -615,6 +612,15 @@ angular.module('app')
             });
         }
       });
+    };
+
+
+    //  do we currently have mapview set?  if so, we should reset the map view to that first
+    if (MapView.getMapView()) {
+      console.log("have mapview set, changing map view to that");
+      map.setView(MapView.getMapView());
+    } else {
+      $scope.zoomToSpotsExtent();
     }
 
     $scope.cancelDraw = function() {
