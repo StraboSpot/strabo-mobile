@@ -961,25 +961,33 @@ angular.module('app')
 
           // popup content
           var content = '';
-          content += '<table id="popup-table">';
-          content += '<tr>';
-          content += '<th id="name">' + feature.get('name') + '</th>';
-          content += '<th rowspan="2"><a href="#/app/spots/' + feature.get('id') + '" class="button icon-right ion-chevron-right button-clear button-dark"></a></th>';
-          content += '</tr>';
+          content = '<div class="row">';
+          content += '<div class="col">';
+          content += '<b>' + feature.get('name') + '</b>';
+          content += '</div>';
+          content += '</div>';
+
+          content += '<div class="row row-top">';
+          content += '<div class="col col-75">';
+          content += '<small>' + feature.get('type') + '</small>';
+          content += '<br>';
+          content += '<small>' + feature.getGeometry().getType() + '</small>';
 
           if (feature.get('strike') && feature.get('dip')) {
-            content += '<tr>';
-            content += '<td><small>' + feature.get('strike') + '&deg; strike / ' + feature.get('dip') + '&deg; dip</small></td>';
-            content += '</tr>';
+            content += '<br>';
+            content += '<small>' + feature.get('strike') + '&deg; strike / ' + feature.get('dip') + '&deg; dip</small>';
           }
 
           if (feature.get('trend') && feature.get('plunge')) {
-            content += '<tr>';
-            content += '<td><small>' + feature.get('trend') + '&deg; trend / ' + feature.get('plunge') + '&deg; plunge</small></td>';
-            content += '</tr>';
+            content += '<br>';
+            content += '<small>' + feature.get('trend') + '&deg; trend / ' + feature.get('plunge') + '&deg; plunge</small>';
           }
 
-          content += '</table>';
+          content += '</div>';
+          content += '<div class="col">';
+          content += '<a href="#/app/spots/' + feature.get('id') + '" class="button icon-left ion-chevron-right button-clear button-dark"></a>';
+          content += '</div>';
+          content += '</div>';
 
           // setup the popup position
           popup.show(evt.coordinate, content);
