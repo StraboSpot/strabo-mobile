@@ -565,12 +565,12 @@ angular.module('app')
           var start = +new Date();
           var pan = ol.animation.pan({
             duration: duration,
-            source: initialMapView.getCenter(),
+            source: map.getView().getCenter(),
             start: start
           });
           var bounce = ol.animation.bounce({
             duration: duration,
-            resolution: initialMapView.getResolution(),
+            resolution: map.getView().getResolution(),
             start: start
           });
           map.beforeRender(pan, bounce);
