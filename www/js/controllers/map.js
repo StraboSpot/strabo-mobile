@@ -575,13 +575,21 @@ angular.module('app')
           });
           map.beforeRender(pan, bounce);
 
-          // create the new view with the new center
-          var newView = new ol.View({
-            center: ol.proj.transform([newExtentCenter[0], newExtentCenter[1]], 'EPSG:4326', 'EPSG:3857')
-          });
+          if (spots.length === 1) {
+            // we just have a single spot, so we should fixate the resolution manually
+            initialMapView.setCenter(ol.proj.transform([newExtentCenter[0], newExtentCenter[1]], 'EPSG:4326', 'EPSG:3857'));
 
-          map.setView(newView);
-          map.getView().fitExtent(ol.proj.transformExtent(newExtent, 'EPSG:4326', 'EPSG:3857'), map.getSize());
+            // set the resolution to 5 meter per pixel
+            initialMapView.setResolution(5);
+          } else {
+            // we have multiple spots -- need to create the new view with the new center
+            var newView = new ol.View({
+              center: ol.proj.transform([newExtentCenter[0], newExtentCenter[1]], 'EPSG:4326', 'EPSG:3857')
+            });
+
+            map.setView(newView);
+            map.getView().fitExtent(ol.proj.transformExtent(newExtent, 'EPSG:4326', 'EPSG:3857'), map.getSize());
+          }
         }
         // no spots either, then attempt to geolocate the user
         else {
