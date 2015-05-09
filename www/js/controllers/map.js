@@ -578,9 +578,7 @@ angular.module('app')
           if (spots.length === 1) {
             // we just have a single spot, so we should fixate the resolution manually
             initialMapView.setCenter(ol.proj.transform([newExtentCenter[0], newExtentCenter[1]], 'EPSG:4326', 'EPSG:3857'));
-
-            // set the resolution to 5 meter per pixel
-            initialMapView.setResolution(5);
+            initialMapView.setZoom(15);
           } else {
             // we have multiple spots -- need to create the new view with the new center
             var newView = new ol.View({
