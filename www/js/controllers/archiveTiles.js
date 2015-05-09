@@ -20,10 +20,12 @@ angular.module('app')
       name: null,             // name of the map
       tiles: null,            // tiles array of the map region
       tilesSizeString: null,
+      downloadMacrostrat: false,
       downloadZooms: false,
       percentDownload: 0,
       overLayPercentDownload: 0,
-      showProgressBar: false
+      showProgressBar: false,
+      showOverlayProgressBar: false
     };
 
     // number of tiles we have in offline storage
@@ -90,6 +92,10 @@ angular.module('app')
 
       $scope.map.showProgressBar = true;
 
+      if ($scope.map.downloadMacrostrat) {
+        $scope.map.showOverlayProgressBar = true;
+      }
+
       var downloadTileOptions = {
         mapName: $scope.map.name,
         mapProvider: mapExtent.mapProvider,
@@ -127,24 +133,41 @@ angular.module('app')
         return OfflineTilesFactory.downloadTileToStorage(downloadMacrostratGeologicOptions);
       };
 
-      downloadMapTile()
-        .then(downloadMacrostratGeologic, null, function(notify1) {
-          // console.log("notify1 ", notify1);
-          // console.log("***archiveTiles-notify: ", notify);
-          // update the progress bar once we receive notifications
-          $scope.map.percentDownload = Math.ceil((notify1[0] / notify1[1]) * 100);
-        })
-        .then(function() {
-          // everything has been downloaded, so lets go back a screen
-          var backView = $ionicHistory.backView();
-          backView.go();
-        }, null, function(notify2) {
-          // console.log("***archiveTiles-notify: ", notify);
-          // has the second notification kicked in yet?
-          if (notify2) {
+      // are we downloading macrostrat tiles?
+      if ($scope.map.downloadMacrostrat) {
+        // yes
+        downloadMapTile()
+          .then(downloadMacrostratGeologic, null, function(notify1) {
+            // console.log("notify1 ", notify1);
+            // console.log("***archiveTiles-notify: ", notify);
             // update the progress bar once we receive notifications
-            $scope.map.overLayPercentDownload = Math.ceil((notify2[0] / notify2[1]) * 100);
-          }
-        });
+            $scope.map.percentDownload = Math.ceil((notify1[0] / notify1[1]) * 100);
+          })
+          .then(function() {
+            // everything has been downloaded, so lets go back a screen
+            var backView = $ionicHistory.backView();
+            backView.go();
+          }, null, function(notify2) {
+            // console.log("***archiveTiles-notify: ", notify);
+            // has the second notification kicked in yet?
+            if (notify2) {
+              // update the progress bar once we receive notifications
+              $scope.map.overLayPercentDownload = Math.ceil((notify2[0] / notify2[1]) * 100);
+            }
+          });
+      } else {
+        // no -- are not downloading macrostrat tiles
+        downloadMapTile()
+          .then(function() {
+            // everything has been downloaded, so lets go back a screen
+            var backView = $ionicHistory.backView();
+            backView.go();
+          }, function(error) {
+            console.log("error at downloadMapTile", error);
+          }, function(notify) {
+            // update the progress bar once we receive notifications
+            $scope.map.percentDownload = Math.ceil((notify[0] / notify[1]) * 100);
+          });
+      }
     };
   });
