@@ -616,8 +616,14 @@ angular.module('app')
               // uh oh, cannot geolocate, nor have any spots
               $ionicPopup.alert({
                 title: 'Alert!',
-                template: 'Could not geolocate your position'
+                template: 'Could not geolocate your position.  Defaulting you to 0,0'
               });
+              var newView = new ol.View({
+                center: ol.proj.transform([0, 0], 'EPSG:4326', 'EPSG:3857'),
+                zoom: 4,
+                minZoom: 4
+              });
+              map.setView(newView);
             });
         }
       });
