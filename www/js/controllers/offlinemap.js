@@ -52,7 +52,7 @@ angular.module('app')
           refreshAndUpdateCount();
           $ionicPopup.alert({
             title: 'Alert!',
-            template: "Offline tiles are now empty." + err.message
+            template: "Offline tiles are now empty."
           });
         });
       }
