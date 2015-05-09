@@ -20,6 +20,7 @@ angular.module('app')
       name: null,             // name of the map
       tiles: null,            // tiles array of the map region
       tilesSizeString: null,
+      showDownloadMacrostrat: (mapExtent.zoom >= 4 && mapExtent.zoom <= 12) ? true : false,
       downloadMacrostrat: false,
       downloadZooms: false,
       percentDownload: 0,
