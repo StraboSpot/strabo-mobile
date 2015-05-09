@@ -14,58 +14,67 @@
     </label>
     <button ng-click="doLogin();" ng-hide="hideActionButtons.login" ng-disabled="!(loginData.email && loginData.password)" class="button icon-left icon ion-log-in button-balanced">Login</button>
     <button ng-click="doLogout();" ng-hide="hideActionButtons.logout" class="button icon-left icon ion-log-out button-assertive">Logout</button>
-    <div ng-show="showProjectOpts()">
+    <div ng-show="showDatasetOpts()">
       <br>
       <div class="list">
 
-        <div ng-show="projects.length > 0">
+        <div ng-show="datasets.length > 0">
           <div class="item item-divider">
-            Project Operations
+            Dataset Operations
           </div>
 
-          <!-- List Current Projects -->
+          <!-- List Current Datasets -->
           <label class="item item-input item-select">
             <div class="input-label">
-              Select a Project
+              Select a Dataset
             </div>
-            <select ng-model="project"
-                    ng-options="item.name for item in projects">
+            <select ng-model="dataset"
+                    ng-options="item.name for item in datasets">
             </select>
           </label>
 
-          <!-- Upload, Download or Delete Selected Project -->
+          <!-- Upload, Download or Delete Selected Dataset -->
           <div class="row responsive-sm">
             <div class="col">
-              <button ng-click="getProjectSpots()" ng-disabled="!project" class="button button-block icon-left icon ion-android-download">Download</button>
+              <button ng-click="getDatasetSpots()" ng-disabled="!dataset" class="button button-positive button-block icon-left icon ion-android-download">Download</button>
             </div>
             <div class="col">
-              <button ng-click="addProjectSpots()" ng-disabled="!project" class="button button-block icon-left icon ion-upload">Upload</button>
+              <button ng-click="addDatasetSpots()" ng-disabled="!dataset" class="button button-positive button-block icon-left icon ion-upload">Upload</button>
             </div>
             <div class="col">
-              <button ng-click="deleteProject()" ng-disabled="!project" class="button button-block icon-left icon ion-trash-b">Delete</button>
+              <button ng-click="deleteDataset()" ng-disabled="!dataset" class="button button-positive button-block icon-left icon ion-trash-b">Delete</button>
             </div>
           </div>
         </div>
 
-        <!-- Create Project -->
+        <!-- Create Dataset -->
         <div class="item item-divider">
-          Create a New Project
+          Create a New Dataset
         </div>
         <div class="item item-input-inset">
           <label class="item-input-wrapper">
-            <span class="input-label">Project Name:</span>
+            <span class="input-label">Dataset Name:</span>
             <input type="text"
-                   ng-model="project_name">
+                   ng-model="dataset_name">
           </label>
-          <button ng-click="createProject()" ng-disabled="!project_name" class="button button-small">
-            Create Project
+          <button ng-click="createDataset()" ng-disabled="!dataset_name" class="button button-positive button-small">
+            Create Dataset
           </button>
+        </div>
+
+        <!-- Delete All Spots -->
+        <div class="item item-divider">
+          Delete Spots
+        </div>
+        <div>
+        <button ng-click="deleteSpots()" class="button button-dark icon-left icon ion-trash-b">Delete <b>ALL</b> Spots for this user on the server.</button>
+        </div>
         </div>
 
       </div>
     </div>
     <div ng-show="progress.showProgress">You are uploading spot {{ progress.current }} of {{ progress.total }}</div>
-    <div ng-show="progress.showUploadDone">Finished uploading spots to Project <b>{{ project.name }}</b> on the server.</div>
-    <div ng-show="progress.showDownloadDone">Finished downloading spots from Project <b>{{ project.name }}</b> on the server.</div>
+    <div ng-show="progress.showUploadDone">Finished uploading spots to Dataset <b>{{ dataset.name }}</b> on the server.</div>
+    <div ng-show="progress.showDownloadDone">Finished downloading spots from Dataset <b>{{ dataset.name }}</b> on the server.</div>
   </ion-content>
 </ion-view>

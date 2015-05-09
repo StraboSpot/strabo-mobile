@@ -24,7 +24,7 @@ angular.module('app')
           newSpot.properties = {
             date: new Date(Date.now()),
             time: time,
-            id: new Date().getTime().toString(),
+            id: Math.floor((new Date().getTime() + (Math.random() * 9000 + 1000) * .0001) * 10000), // datetime with random 4 digit number appended
             name: new Date().getTime().toString()
           };
         }

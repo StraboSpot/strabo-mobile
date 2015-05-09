@@ -37,7 +37,7 @@ angular.module('app')
       $scope.hideActionButtons.logout = true;
     };
 
-    $scope.showProjectOpts = function() {
+    $scope.showDatasetOpts = function() {
       return navigator.onLine && $scope.encodedLogin;
     };
 
@@ -60,7 +60,7 @@ angular.module('app')
 
           console.log($scope.hideActionButtons);
 
-          $scope.getProjects();
+          $scope.getDatasets();
 
         } else {
           // nope, dont have a login
@@ -71,7 +71,6 @@ angular.module('app')
           });
         }
       });
-
 
     // Perform the login action when the user presses the login icon
     $scope.doLogin = function() {
@@ -86,8 +85,8 @@ angular.module('app')
                 .then(function(login) {
                   // Encode the login string
                   $scope.encodedLogin = Base64.encode($scope.loginData.email + ":" + $scope.loginData.password);
-                  // Get the list of projects for this user
-                  $scope.getProjects($scope.encodedLogin);
+                  // Get the list of datasets for this user
+                  $scope.getDatasets($scope.encodedLogin);
                 });
             } else {
               $ionicPopup.alert({
@@ -123,129 +122,166 @@ angular.module('app')
       hideLogoutButton();
     };
 
-    // Get all of the projects for a user
-    $scope.getProjects = function() {
-      SyncService.getProjects($scope.encodedLogin)
+    // Get all of the datasets for a user
+    $scope.getDatasets = function() {
+      SyncService.getDatasets($scope.encodedLogin)
         .then(function(response) {
-          $scope.projects = response.data.projects;
-          if ($scope.projects.length > 0)
-            $scope.project = $scope.projects[0];
+          if (response.data) {
+            $scope.datasets = response.data.datasets;
+            if ($scope.datasets.length > 0)
+              $scope.dataset = $scope.datasets[0];
+          }
+          else
+            $scope.datasets = null;
         }
       );
     };
 
-    // Create a new project
-    $scope.createProject = function() {
-      SyncService.createProject({"name": this.project_name}, $scope.encodedLogin)
+    // Create a new dataset
+    $scope.createDataset = function() {
+      SyncService.createDataset({"name": this.dataset_name}, $scope.encodedLogin)
         .then(function(response) {
-          $scope.getProjects();
+          $scope.dataset_name = "";
+          $scope.getDatasets();
         }
       );
     };
 
-    // Delete a project
-    $scope.deleteProject = function() {
-      SyncService.deleteProject(this.project.self, $scope.encodedLogin)
+    // Delete a dataset
+    $scope.deleteDataset = function() {
+      SyncService.deleteDataset(this.dataset.self, $scope.encodedLogin)
         .then(function(response) {
           console.log("deleted: ", response);
-          $scope.getProjects();
+          $scope.getDatasets();
         }
       );
     };
 
-    // Upload all spots to a project
-    $scope.addProjectSpots = function() {
-      // Get the project id
-      var url_parts = this.project.self.split("/");
-      var project_id = url_parts.pop();
+    // Upload all spots to a dataset
+    $scope.addDatasetSpots = function() {
 
-      // Delete all spots already in this project on server
-      var deleteProjectSpots = function() {
-        return SyncService.deleteProjectSpots(project_id, $scope.encodedLogin);
+      // Get the dataset id
+      var url_parts = this.dataset.self.split("/");
+      var dataset_id = url_parts.pop();
+
+      var deleteAllDatasetSpots = function() {
+        return SyncService.deleteAllDatasetSpots(dataset_id, $scope.encodedLogin);
       };
 
-      var getAllLocalSpots = function(response) {
-        // console.log("getAllLocalSpots", response);
-        if (response.status === 204) {
-          return SpotsFactory.all();
-        }
-        throw new Error("bad http status code");
+      var getAllLocalSpots = function() {
+        return SpotsFactory.all();
       };
 
-      var uploadProjectSpots = function(spots) {
+      var updateDataset = function(id) {
+        console.log(id);
+      };
+
+      var uploadSpots = function(spots) {
+        if (!spots)
+          return;
+
         var spotsCount = spots.length;
         console.log("Spots to upload:", spotsCount, spots);
 
-        var currentSpotIndex = 1;
+        var i = 1;
 
         $scope.progress.total = spotsCount;
-        $scope.progress.current = currentSpotIndex;
+        $scope.progress.current = i;
 
-        if (spotsCount > 0) {
+        if (spotsCount > 0)
           $scope.progress.showProgress = true;
-        }
 
-        var changedIds = [];
-
-        spots.forEach(function(spot) {
-          // Assign a temporary Id to each spot
-          //spot.properties.tempId = spot.properties.id;
-          var oldId = spot.properties.id;
-
-          // upload the spot to the server
-          SyncService.addProjectSpot(spot, project_id, $scope.encodedLogin)
-            // then delete our local spot data
-            .then(function(response) {
-              console.log("Uploaded spot. Server response:", response);
+        spots.forEach(function (spot) {
+          if (spot.properties.self) {
+            // Try to update the spot first
+            console.log("Attempting to update the spot: ", spot);
+            SyncService.updateFeature(spot, $scope.encodedLogin).then(function (response) {
+              console.log("Update Feature server response: ", response);
               if (response.status === 201) {
-                newId = response.data.properties.id;
-                if (oldId != newId)
-                  changedIds.push({"oldId": oldId, "newId": newId});
-                SpotsFactory.destroy(oldId);
-                return response.data;
-              } else {
-                throw new Error("server could not create the feature");
+                console.log("Updated spot ", i, "/", spotsCount);
+
+                // Add spot to dataset
+                SyncService.addSpotToDataset(spot.properties.id, dataset_id, $scope.encodedLogin).then(function(response) {
+                  if (response.status === 201) {
+                    console.log("Spot", spot, "added to Dataset", dataset_id, "Server response:", response);
+                  }
+                  else
+                    console.log("Error adding spot", spot, "added to Dataset", dataset_id, "Server response:", response);
+                });
+
+                // Update the progress
+                $scope.progress.current = i;
+                if (i == spotsCount) {
+                  $scope.progress.showProgress = false;
+                  $scope.progress.showUploadDone = true;
+                }
+                i++;
               }
-            })
-            // then save the response from the server as a new spot
-            .then(function(spot) {
-              //delete spot.properties.tempId;
-              return SpotsFactory.save(spot);
-            })
-            // cleanup and notification
-            .then(function(spot) {
-              console.log("Created new spot", spot);
-            },
-            null,
-            // notification
-            function() {
-              $scope.progress.current = currentSpotIndex;
-              console.log("Spot ", currentSpotIndex, "/", spotsCount, " uploaded");
-              if (currentSpotIndex == spotsCount) {
+              else {
+                // Maybe this is a new spot, try to create the spot
+                delete spot.properties.self;
+                console.log("Unable to update spot ", i, "/", spotsCount, " - Maybe this is a new spot.");
+                console.log("Attempting to create the spot: ", spot);
+                SyncService.createFeature(spot, $scope.encodedLogin).then(function (response) {
+                  console.log("Create Feature server response: ", response);
+                  if (response.status === 201) {
+                    spot.properties.self = response.data.properties.self;
+                    SpotsFactory.save(spot);
+                    console.log("Created spot ", i, "/", spotsCount);
+
+                    // Add spot to dataset
+                    SyncService.addSpotToDataset(spot.properties.id, dataset_id, $scope.encodedLogin).then(function(response) {
+                      if (response.status === 201) {
+                        console.log("Spot", spot, "added to Dataset", dataset_id, "Server response:", response);
+                      }
+                      else
+                        console.log("Error adding spot", spot, "to Dataset", dataset_id, "Server response:", response);
+                    });
+                  }
+                  else
+                    throw new Error("Unable to create spot " + i + "/" + spotsCount);
+
+                  // Update the progress
+                  $scope.progress.current = i;
+                  if (i == spotsCount) {
+                    $scope.progress.showProgress = false;
+                    $scope.progress.showUploadDone = true;
+                  }
+                  i++;
+                });
+              }
+            });
+          }
+          else {
+            console.log("Attempting to create the spot: ", spot);
+            SyncService.createFeature(spot, $scope.encodedLogin).then(function (response) {
+              console.log("Create Feature server response: ", response);
+              if (response.status === 201) {
+                spot.properties.self = response.data.properties.self;
+                SpotsFactory.save(spot);
+                console.log("Created spot ", i, "/", spotsCount);
+
+                // Add spot to dataset
+                SyncService.addSpotToDataset(spot.properties.id, dataset_id, $scope.encodedLogin).then(function(response) {
+                  if (response.status === 201) {
+                    console.log("Spot", spot, "added to Dataset", dataset_id, "Server response:", response);
+                  }
+                  else
+                    console.log("Error adding spot", spot, "to Dataset", dataset_id, "Server response:", response);
+                });
+            }
+              else
+                throw new Error("Unable to create spot " + i + "/" + spotsCount);
+
+              // Update the progress
+              $scope.progress.current = i;
+              if (i == spotsCount) {
                 $scope.progress.showProgress = false;
                 $scope.progress.showUploadDone = true;
               }
-              // increment the spot we just saved
-              currentSpotIndex++;
+              i++;
             });
-        });
-      };
-
-      // Update the ids for all the links, groups and group members
-      var fixIds = function(changedIds) {
-        SpotsFactory.all().then(function (spots) {
-          console.log(changedIds);
-          spots.forEach(function (obj, i) {
-            if (obj.properties.links) {
-              console.log("fix link ids")
-            }
-            if (obj.properties.groups) {
-              console.log("fix group ids")
-            }
-            if (obj.properties.group_members) {
-              console.log("fix group memeber ids")
-            }
-          });
+          }
         });
       };
 
@@ -253,18 +289,18 @@ angular.module('app')
         console.log(fault);
       };
 
-      deleteProjectSpots()
+      deleteAllDatasetSpots()
         .then(getAllLocalSpots)
-        .then(uploadProjectSpots)
+        .then(uploadSpots)
         .catch(reportProblems);
     };
 
-    // Download all spots from a project
-    $scope.getProjectSpots = function() {
-      // Get the project id
-      var url_parts = this.project.self.split("/");
-      var project_id = url_parts.pop();
-      SyncService.getProjectSpots(project_id, $scope.encodedLogin)
+    // Download all spots from a dataset
+    $scope.getDatasetSpots = function() {
+      // Get the dataset id
+      var url_parts = this.dataset.self.split("/");
+      var dataset_id = url_parts.pop();
+      SyncService.getDatasetSpots(dataset_id, $scope.encodedLogin)
         .then(function(response) {
           console.log(response);
           if (response.data !== null) {
@@ -283,6 +319,21 @@ angular.module('app')
           console.warn(errorMessage);
         }
       );
+    };
+
+    // Delete ALL spots for a user on the server
+    $scope.deleteSpots = function() {
+      var confirmPopup = $ionicPopup.confirm({
+        title: 'Delete Spots',
+        template: 'Are you sure you want to delete <b>ALL</b> spots for this user from ther server?'
+      });
+      confirmPopup.then(function(res) {
+        if (res) {
+          SyncService.deleteSpots($scope.encodedLogin).then(function (response) {
+            console.log("ALL spots deleted. Server response: ", response);
+          });
+        }
+      });
     };
 
     // Create Base64 Object
