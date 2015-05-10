@@ -406,6 +406,22 @@ angular.module('app')
     // END MAP LAYERS
     /////////////////
 
+    // did we come back from a map provider?
+    if (OfflineTilesFactory.getCurrentMapProvider()) {
+      // yes -- then we need to change the current visible layer
+      console.log("back at map, ", OfflineTilesFactory.getCurrentMapProvider());
+
+      var onlineLayerCollection = onlineLayer.getLayers().getArray();
+
+      _.each(onlineLayerCollection, function(layer) {
+        if (layer.get('id') == OfflineTilesFactory.getCurrentMapProvider()) {
+          layer.setVisible(true);
+        } else {
+          layer.setVisible(false);
+        }
+      });
+    }
+
     // update the current visible layer, there is no return type as it updates the scope variable directly
     var getCurrentVisibleLayer = function() {
 
@@ -467,6 +483,9 @@ angular.module('app')
 
         // set the extent into the ViewExtentFactory
         ViewExtentFactory.setExtent(getCurrentVisibleLayer(), mapViewExtent.topRight, mapViewExtent.bottomLeft, mapViewExtent.zoom);
+
+        // we set the current map provider so if we ever come back, we should try to use that map provider instead of the default provider
+        OfflineTilesFactory.setCurrentMapProvider(getCurrentVisibleLayer());
 
         $location.path("/app/map/archiveTiles");
       }

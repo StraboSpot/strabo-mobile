@@ -3,6 +3,9 @@
 angular.module('app')
   .factory('OfflineTilesFactory', function($q) {
 
+    // used to determine what the map provider is before we archive a tileset
+    var currentMapProvider = null;
+
     var factory = {};
 
     // map providers
@@ -340,7 +343,15 @@ angular.module('app')
       });
 
       return deferred.promise;
-    }
+    };
+
+    factory.setCurrentMapProvider = function(mapProvider) {
+      currentMapProvider = mapProvider;
+    };
+
+    factory.getCurrentMapProvider = function() {
+      return currentMapProvider;
+    };
 
     // return factory
     return factory;
