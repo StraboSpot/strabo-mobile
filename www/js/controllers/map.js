@@ -742,6 +742,9 @@ angular.module('app')
             }
           };
 
+          // wipe the array because we want to avoid duplicating the feature in the ol.Collection
+          featureLayer.getLayers().clear();
+
           // add the feature collection layer to the map
           featureLayer.getLayers().push(geojsonToVectorLayer(spotTypeLayer));
         }
