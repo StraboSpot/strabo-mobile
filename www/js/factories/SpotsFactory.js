@@ -20,20 +20,10 @@ angular.module('app')
     };
 
     factory.save = function(value) {
+      value.properties["modified_timestamp"] = new Date().getTime();
+
       var self = this;
       var deferred = $q.defer(); //init promise
-
-      // The following should be removed once uploading and then download
-      // from the database preserves the data type
-      // Make sure strike and dip are numbers
-      if (value.properties.strike)
-        value.properties.strike = parseFloat(value.properties.strike);
-      if (value.properties.dip)
-        value.properties.dip = parseFloat(value.properties.dip);
-      if (value.properties.trend)
-        value.properties.trend = parseFloat(value.properties.trend);
-      if (value.properties.plunge)
-        value.properties.plunge = parseFloat(value.properties.plunge);
 
       self.write(value.properties.id, value).then(function(data) {
         deferred.notify();
