@@ -788,17 +788,10 @@ angular.module('app')
 
           // popup content
           var content = '';
-          content = '<div class="row">';
-          content += '<div class="col">';
-          content += '<b>' + feature.get('name') + '</b>';
-          content += '</div>';
-          content += '</div>';
-
-          content += '<div class="row row-top">';
-          content += '<div class="col col-75">';
-          content += '<small>' + feature.get('type') + '</small>';
+          content += '<a href="#/app/spots/' + feature.get('id') + '"><b>' + feature.get('name') + '</b></a>';
           content += '<br>';
-          content += '<small>' + feature.getGeometry().getType() + '</small>';
+          content += '<small>' + feature.get('type') + '</small>';
+          content += '<small> (' + feature.getGeometry().getType() + ')</small>';
 
           if (feature.get('strike') && feature.get('dip')) {
             content += '<br>';
@@ -809,12 +802,6 @@ angular.module('app')
             content += '<br>';
             content += '<small>' + feature.get('trend') + '&deg; trend / ' + feature.get('plunge') + '&deg; plunge</small>';
           }
-
-          content += '</div>';
-          content += '<div class="col">';
-          content += '<a href="#/app/spots/' + feature.get('id') + '" class="button icon-left ion-chevron-right button-clear button-dark"></a>';
-          content += '</div>';
-          content += '</div>';
 
           // setup the popup position
           popup.show(evt.coordinate, content);
