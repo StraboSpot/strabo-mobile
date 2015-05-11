@@ -204,6 +204,9 @@ angular.module('app')
         });
       }
 
+      if (!$scope.spot.properties.type)
+        $scope.spot.properties.type = "Custom";
+
       switch ($scope.spot.properties.type) {
         case "Contact":
           $scope.showDynamicFields = true;
@@ -252,14 +255,16 @@ angular.module('app')
           $scope.choices = $scope.spot_grouping_choices;
           $scope.showGroupButtons = true;
           break;
+        default:
+          $scope.showCustomFields = true;
       }
-
-      $scope.survey = _.reject($scope.survey, function (field) {
-        return (field.type == "start" || field.type == "end")
-      });
 
       // Set default values for the spot
       if ($scope.survey) {
+        $scope.survey = _.reject($scope.survey, function (field) {
+          return (field.type == "start" || field.type == "end")
+        });
+
         _.each($scope.survey, function (field) {
           if (!$scope.spot.properties[field.name] && field.default)
             if (field.type == "text" || field.type == "note")

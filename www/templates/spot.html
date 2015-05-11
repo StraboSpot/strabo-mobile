@@ -96,6 +96,16 @@
               </div>
             </div>
 
+            <div ng-show="showCustomFields">
+              <div ng-repeat="(key, value) in spot.properties">
+                <label class="item item-input item-stacked-label item-text-wrap">
+                  <span class="input-label">{{ key }}</span>
+                  <input type="text" ng-model="spot.properties[key]">
+                </label>
+              </div>
+            </div>
+
+
             <div class="row responsive-sm">
               <div class="col" ng-show="showContactButtons()">
                 <button ng-click="newSpot('Contact');" class="button button-block icon-left icon ion-compass">Link to New Contact Description</button>
