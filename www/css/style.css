@@ -74,14 +74,6 @@ Map Popups Style
   padding: 5px;
 }
 
-table#popup-table{
-  margin: 5px;
-}
-th#name{
-  text-align: left;
-  font-weight: bold;
-}
-
 /*--------------------
 Map Layer Switcher Style
 --------------------*/
@@ -114,7 +106,6 @@ Right buttons in a list
 .button-second{
   right:95px !important;
 }
-
 
 /*--------------------
 Online & Offline Notification Circles
@@ -194,28 +185,36 @@ Image Modal Style: used for image active-slider when choosing spot images
 /*--------------------
 Input Fields Style
 --------------------*/
-
-.item {
-  white-space: normal;
-}
-.item-input {
-  padding: 6px 6px 5px 16px;
-}
-.item-input input {
-  padding-right: 12px;
-}
-.item-input textarea {
-  padding-right: 24px;
-}
-.fieldsRight {
-  text-align: right;
-}
-.formCheckboxes {
-  white-space: nowrap;
-}
-
 .input-label {
-  width: 100%;
+  max-width: 100% !important;
+  width: 100% !important;
+  font-weight: bold;
+}
+
+.item-input {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.item-select select {
+  position: relative !important;
+  direction: ltr;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: 0px;
+}
+
+.item-checkbox {
+  border-top: 0px;
+  border-left: 0px;
+  border-right: 0px;
+  border-bottom: 0px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.item-checkbox .checkbox {
+  left: 0px;
 }
 
 /*--------------------
