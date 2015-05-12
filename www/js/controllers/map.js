@@ -725,6 +725,10 @@ angular.module('app')
 
     // Loop through all spots and create ol vector layers
     SpotsFactory.all().then(function(spots) {
+
+      // wipe the array because we want to avoid duplicating the feature in the ol.Collection
+      featureLayer.getLayers().clear();
+
       // get distinct groups and aggregate spots by group type
       var spotGroup = _.groupBy(spots, function(spot) {
         return spot.properties.type;
@@ -741,9 +745,6 @@ angular.module('app')
               name: key + ' (' + spotGroup[key].length + ')'
             }
           };
-
-          // wipe the array because we want to avoid duplicating the feature in the ol.Collection
-          featureLayer.getLayers().clear();
 
           // add the feature collection layer to the map
           featureLayer.getLayers().push(geojsonToVectorLayer(spotTypeLayer));
