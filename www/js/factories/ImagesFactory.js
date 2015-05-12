@@ -6,6 +6,7 @@ angular.module('app')
 
       // custom
       group: 'img/group.png',
+      default: 'img/point.png',
 
       // zach geology
       bedding_horizontal: 'img/geology/bedding_horizontal.png',
@@ -17,7 +18,7 @@ angular.module('app')
       contact_NO_ORIENTATION: 'img/geology/contact_NO_ORIENTATION.png',
       contact_vertical: 'img/geology/contact_vertical.png',
       fault_location_NO_ORIENTATION: 'img/geology/fault_location_NO_ORIENTATION.png',
-      fault_surface_inclined: 'img/geology/fault_surface_inclined.png',
+      fault_surface_inclined: 'img/strikedip.png',
       fault_surface_vertical: 'img/geology/fault_surface_vertical.png',
       fold_axis: 'img/geology/fold_axis.png',
       fold_NO_ORIENTATION: 'img/geology/fold_NO_ORIENTATION.png',
@@ -47,19 +48,17 @@ angular.module('app')
 
         // zach geology
         case 'contact_outcrop':
-          return images.contact_NO_ORIENTATION;
+          return images.default;
         case 'fault_outcrop':
-          return images.fault_location_NO_ORIENTATION;
+          return images.fault_surface_inclined;
         case 'notes':
-          return images.MISC_note_or_description;
+          return images.default;
         case 'orientation':
           return images.fault_surface_inclined;
         case 'sample':
           return images.sample_locality;
         default:
-
-          // TODO: what's the default image if an unknown contentModel is passed?  How about a question mark?
-          break;
+          return images.default;
       }
     };
 

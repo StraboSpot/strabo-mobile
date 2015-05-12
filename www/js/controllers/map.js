@@ -513,7 +513,7 @@ angular.module('app')
             opacity: 1,
             rotation: Math.radians(rotation),
             src: ImagesFactory.getImagePath('contact_outcrop'),
-            scale: 0.07
+            scale: 0.75
           });
         },
         fault_outcrop: function(rotation) {
@@ -523,7 +523,7 @@ angular.module('app')
             opacity: 1,
             rotation: Math.radians(rotation),
             src: ImagesFactory.getImagePath('fault_outcrop'),
-            scale: 0.05
+            scale: 1
           });
         },
         notes: function(rotation) {
@@ -533,7 +533,7 @@ angular.module('app')
             opacity: 1,
             rotation: Math.radians(rotation),
             src: ImagesFactory.getImagePath('notes'),
-            scale: 0.06
+            scale: 0.75
           });
         },
         orientation: function(rotation) {
@@ -543,7 +543,7 @@ angular.module('app')
             opacity: 1,
             rotation: Math.radians(rotation),
             src: ImagesFactory.getImagePath('orientation'),
-            scale: 0.08
+            scale: 1
           });
         },
         sample: function(rotation) {
@@ -553,7 +553,7 @@ angular.module('app')
             opacity: 1,
             rotation: Math.radians(rotation),
             src: ImagesFactory.getImagePath('sample'),
-            scale: 0.08
+            scale: 0.07
           });
         },
         group: function(rotation) {
@@ -566,7 +566,16 @@ angular.module('app')
             scale: 0.4
           });
         },
-
+        default: function(rotation) {
+          return new ol.style.Icon({
+            anchorXUnits: 'pixels',
+            anchorYUnits: 'pixels',
+            opacity: 1,
+            rotation: Math.radians(rotation),
+            src: ImagesFactory.getImagePath('default'),
+            scale: 0.75
+          });
+        }
       };
 
 
@@ -600,12 +609,10 @@ angular.module('app')
             return icon.notes(rotation);
           case "Sample Locality":
             return icon.sample(rotation);
-
           case "Spot Grouping":
             return icon.group(rotation);
           default:
-            // TODO: do we want to put a default image when everything fails?
-            break;
+            return icon.default(rotation);
         }
 
         // if (contentModel == "Orientation") {
