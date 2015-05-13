@@ -19,7 +19,6 @@ angular.module('app')
     $scope.map = {
       name: null,             // name of the map
       tiles: null,            // tiles array of the map region
-      tilesSizeString: null,
       showDownloadMacrostrat: (mapExtent.zoom >= 4 && mapExtent.zoom <= 12) ? true : false,
       downloadMacrostrat: false,
       downloadZooms: false,
@@ -57,9 +56,6 @@ angular.module('app')
 
       // update the tile array to the scope
       $scope.map.tiles = _.flatten(tileArray);
-
-      // get average tile byte size
-      $scope.map.tilesSizeString = bytesToSize($scope.map.tiles.length * SlippyTileNamesFactory.getAvgTileBytes());
     };
 
     // run the estimate right now
