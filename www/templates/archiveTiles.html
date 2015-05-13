@@ -16,7 +16,7 @@
 
     <br>
     <p>Current number of offline tiles: {{numOfflineTiles}}</p>
-    <p>Estimated number of tiles to download: {{map.tiles.length}}</p>
+    <p>Estimated number of tiles to download: {{ (map.downloadMacrostrat) ? map.tiles.length * 2 : map.tiles.length}}</p>
 
     <button class="button button-block button-positive" ng-disabled="!map.name" ng-click="submit($event)">Save</button>
 
