@@ -93,6 +93,17 @@ angular.module('app', [
       }
     })
 
+    .state('app.settings', {
+      cache: false,
+      url: "/settings",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/settings.html",
+          controller: "SettingsCtrl"
+        }
+      }
+    })
+
     .state('app.spots', {
       cache: false,
       url: "/spots",

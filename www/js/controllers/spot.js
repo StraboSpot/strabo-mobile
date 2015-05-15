@@ -5,6 +5,7 @@ angular.module('app')
     $stateParams,
     $location,
     SpotsFactory,
+    SettingsFactory,
     NewSpot,
     MapView,
     $ionicHistory,
@@ -379,7 +380,35 @@ angular.module('app')
       $scope.spot = NewSpot.getNewSpot();
       // now clear the new spot from the service because we have the info in our current scope
       NewSpot.clearNewSpot();
-      setProperties();
+
+      // Set default name
+      SettingsFactory.getNamePrefix().then(function(prefix) {
+        if (!prefix)
+          prefix = "";
+        if (prefix && !isNaN(prefix)) {
+          SettingsFactory.getPrefixIncrement().then(function(prefix_increment) {
+            SettingsFactory.setNamePrefix(prefix + prefix_increment);
+            prefix = prefix.toString();
+          })
+        }
+        SettingsFactory.getNameRoot().then(function(root){
+          SettingsFactory.getNameSuffix().then(function(suffix){
+            if (!suffix)
+              suffix = "";
+            if (suffix && !isNaN(suffix)) {
+              SettingsFactory.getSuffixIncrement().then(function(suffix_increment) {
+                SettingsFactory.setNameSuffix(suffix + suffix_increment);
+                suffix = suffix.toString();
+              })
+            }
+            if (root)
+              $scope.spot.properties.name = prefix + root + suffix;
+            else
+              $scope.spot.properties.name = prefix + new Date().getTime().toString() + suffix;
+            setProperties();
+          });
+        })
+      });
     }
     else {
       // Load spot from local storage

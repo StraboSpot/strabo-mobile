@@ -7,15 +7,15 @@ angular.module('app')
   
   var setMapView = function(view) {
     mapView = view;
-  }
+  };
   
   var getMapView = function() {
     return mapView;
-  }
+  };
   
   return {
     setMapView: setMapView,
     getMapView: getMapView
   };
-})
+});
   
