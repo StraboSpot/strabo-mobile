@@ -11,7 +11,7 @@
       <ion-item ng-repeat="map in maps.maps">
         <div class="row">
           <div class="col">
-            <b>{{map.name}}</b>  <small>({{map.tileArray.length}} tiles, {{map.size }} {{map.size | normalizeBytes}}, {{map.mapProvider}})</small>
+            <b>{{map.name}}</b>  <small>({{map.tileArray.length}} tiles, {{map.size | normalizeBytes}}, {{map.mapProvider}})</small>
           </div>
           <div class="col item-button-right">
             <button class="button button-second icon-left button-small button-calm ion-edit " ng-click="edit(map)">Edit</button>
