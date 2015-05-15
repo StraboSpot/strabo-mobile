@@ -26,7 +26,8 @@ module.exports = function(config) {
       'www/lib/ol3/ol3-layerswitcher.js',
 
       // mocks is required for jasmine testing
-      'www/lib/ionic/js/angular-mocks.js',
+      'www/lib/angular-mocks.js',
+      'www/lib/angular-messages.js',
 
       // app specific
       'www/js/**/*.js',
