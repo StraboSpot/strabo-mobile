@@ -1,11 +1,11 @@
 <ion-modal-view>
   <ion-header-bar class="bar-dark nav-title-slide-ios7">
     <h1 class="title">Select a Spot Type</h1>
-    <div class="button button-clear" ng-click="closeModal()"><span class="icon ion-close"></span></div>
+    <div class="button button-clear" ng-click="closeModal('allModal')"><span class="icon ion-close"></span></div>
   </ion-header-bar>
   <ion-content>
     <ion-list ng-controller="ModalCtrl">
-      <ion-item ng-repeat="item in allTypes" href="#/app/spots/newspot" ng-click="closeModal();setSpotType(item)">
+      <ion-item ng-repeat="item in allTypes" href="#/app/spots/newspot" ng-click="closeModal('allModal');setSpotType(item)">
         {{item}}
       </ion-item>
     </ion-list>

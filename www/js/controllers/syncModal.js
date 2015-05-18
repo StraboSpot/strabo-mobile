@@ -1,14 +1,11 @@
 angular.module('app')
 
-  .controller("SyncCtrl", function(
+  .controller("SyncModalCtrl", function(
     $scope,
     $ionicPopup,
     SpotsFactory,
     SyncService,
     LoginFactory) {
-
-    // Form data for the login modal
-    $scope.loginData = {};
 
     // base64 encoded login
     $scope.encodedLogin = null;
@@ -22,23 +19,28 @@ angular.module('app')
       total: null
     };
 
-    $scope.hideActionButtons = {
-      login: false,
-      logout: true
-    };
-
-    var hideLoginButton = function() {
-      $scope.hideActionButtons.login = true;
-      $scope.hideActionButtons.logout = false;
-    };
-
-    var hideLogoutButton = function() {
-      $scope.hideActionButtons.login = false;
-      $scope.hideActionButtons.logout = true;
-    };
-
     $scope.showDatasetOpts = function() {
       return navigator.onLine && $scope.encodedLogin;
+    };
+
+    $scope.startDatasetOp = function(){
+      switch($scope.operation){
+        case "download":
+          $scope.getDatasetSpots();
+          break;
+        case "upload":
+          $scope.addDatasetSpots();
+          break;
+        case "remove":
+          $scope.deleteDataset();
+          break;
+        case "deleteAll":
+          $scope.deleteSpots();
+          break;
+      }
+      $scope.operation = null;
+      $scope.progress.showUploadDone = false;
+      $scope.progress.showDownloadDone = false;
     };
 
     // is the user logged in from before?
@@ -47,101 +49,49 @@ angular.module('app')
         if (login !== null) {
           // we do have a login -- lets set the authentication
           console.log("we have a login!", login);
-
+          $scope.loggedIn = true;
           // Encode the login string
           $scope.encodedLogin = Base64.encode(login.email + ":" + login.password);
 
           // set the email to the login email
-          $scope.loginData.email = login.email;
-
-          $scope.$apply(function(){
-            hideLoginButton();
-          });
-
-          console.log($scope.hideActionButtons);
+          $scope.loginEmail = login.email;
 
           $scope.getDatasets();
 
         } else {
           // nope, dont have a login
           console.log("no login!");
-
-          $scope.$apply(function() {
-            hideLogoutButton();
-          });
+          $scope.loggedIn = false;
         }
       });
 
-    // Perform the login action when the user presses the login icon
-    $scope.doLogin = function() {
-      // Authenticate user login
-      if (navigator.onLine) {
-        SyncService.authenticateUser($scope.loginData)
-          .then(function(response) {
-            if (response.status === 200 && response.data.valid == "true") {
-              console.log("Logged in successfully.");
-              hideLoginButton();
-              LoginFactory.setLogin($scope.loginData)
-                .then(function(login) {
-                  // Encode the login string
-                  $scope.encodedLogin = Base64.encode($scope.loginData.email + ":" + $scope.loginData.password);
-                  // Get the list of datasets for this user
-                  $scope.getDatasets($scope.encodedLogin);
-                });
-            } else {
-              $ionicPopup.alert({
-                title: 'Login Failure!',
-                template: 'Incorrect username or password.'
-              });
-            }
-          },
-          function(errorMessage) {
-            $ionicPopup.alert({
-              title: 'Alert!',
-              template: errorMessage
-            });
-          }
-        );
-      } else
-        $ionicPopup.alert({
-          title: 'Offline!',
-          template: 'Can\'t login while offline.'
-        });
-    };
-
-    // Perform the logout action when the user presses the logout icon
-    $scope.doLogout = function() {
-      console.log('Logged out');
-      // we do have a login so we should destroy the login because the user wants to logout
-      LoginFactory.destroyLogin();
-      $scope.encodedLogin = null;
-      $scope.loginData = {
-        email: null,
-        password: null
-      };
-      hideLogoutButton();
-    };
-
     // Get all of the datasets for a user
     $scope.getDatasets = function() {
-      SyncService.getDatasets($scope.encodedLogin)
-        .then(function(response) {
-          if (response.data) {
-            $scope.datasets = response.data.datasets;
-            if ($scope.datasets.length > 0)
-              $scope.dataset = $scope.datasets[0];
+      if ($scope.encodedLogin) {
+        SyncService.getDatasets($scope.encodedLogin)
+          .then(function(response) {
+            $scope.datasets = [];
+            $scope.datasets.push({"name": "-- new dataset --"});
+            // Append response data to the beginning of array of datasets
+            if (response.data)
+              $scope.datasets = _.union(response.data.datasets, $scope.datasets);
+            // Show second to last select option if more options than -- new dataset --
+            if ($scope.datasets.length > 1)
+              $scope.dataset = $scope.datasets[$scope.datasets.length - 2];
+            else
+              $scope.dataset = $scope.datasets[$scope.datasets.length - 1];
           }
-          else
-            $scope.datasets = null;
-        }
-      );
+        );
+      }
     };
 
     // Create a new dataset
     $scope.createDataset = function() {
       SyncService.createDataset({"name": this.dataset_name}, $scope.encodedLogin)
         .then(function(response) {
+          $scope.operation = null;
           $scope.dataset_name = "";
+          $scope.dataset = null;
           $scope.getDatasets();
         }
       );
@@ -152,6 +102,7 @@ angular.module('app')
       SyncService.deleteDataset(this.dataset.self, $scope.encodedLogin)
         .then(function(response) {
           console.log("deleted: ", response);
+          $scope.dataset = null;
           $scope.getDatasets();
         }
       );
@@ -170,10 +121,6 @@ angular.module('app')
 
       var getAllLocalSpots = function() {
         return SpotsFactory.all();
-      };
-
-      var updateDataset = function(id) {
-        console.log(id);
       };
 
       var uploadSpots = function(spots) {
@@ -307,6 +254,10 @@ angular.module('app')
             $scope.progress.showDownloadDone = true;
             console.log("Downloaded", response.data);
             response.data.features.forEach(function(spot) {
+              if (!_.filter($scope.spots, function(item) {
+                return _.findWhere(item, { id: spot.properties.id });
+              })[0])
+                $scope.spots.push(spot);
               SpotsFactory.save(spot);
             });
           } else
@@ -325,7 +276,7 @@ angular.module('app')
     $scope.deleteSpots = function() {
       var confirmPopup = $ionicPopup.confirm({
         title: 'Delete Spots',
-        template: 'Are you sure you want to delete <b>ALL</b> spots for this user from ther server?'
+        template: 'Are you sure you want to delete <b>ALL</b> spots for this user from the server? Spots on your local device will remain on your device.'
       });
       confirmPopup.then(function(res) {
         if (res) {

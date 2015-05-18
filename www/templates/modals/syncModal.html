@@ -1,0 +1,78 @@
+<ion-modal-view>
+  <ion-header-bar class="bar-dark nav-title-slide-ios7">
+    <h1 class="title">Sync Spots with Strabo Database</h1>
+    <div class="button button-clear" ng-click="closeModal('syncModal')"><span class="icon ion-close"></span></div>
+  </ion-header-bar>
+  <ion-content class="has-header" ng-controller="SyncModalCtrl">
+    <h6>You are currently logged in as: {{ loginEmail }}</h6>
+    <div ng-show="progress.showProgress">You are uploading spot {{ progress.current }} of {{ progress.total }}</div>
+    <div ng-show="showDatasetOpts() && !progress.showProgress">
+      <div class="list">
+        <div>
+          <!-- List Current Datasets -->
+          <label class="item item-input item-select item-stacked-label item-text-wrap">
+            <div class="input-label">
+              Select a Dataset
+            </div>
+            <select ng-model="dataset"
+                    ng-options="item.name for item in datasets">
+            </select>
+          </label>
+
+          <!-- Create New Dataset -->
+          <div class="item item-input-inset" ng-show="dataset.name=='-- new dataset --'">
+            <label class="item-input-wrapper item-stacked-label item-text-wrap">
+              <span class="input-label">New Dataset Name</span>
+              <input type="text"
+                     ng-model="dataset_name">
+            </label>
+            <button ng-click="createDataset()" ng-disabled="!dataset_name" class="button button-positive button-small">
+              Create Dataset
+            </button>
+          </div>
+
+          <!-- Show Dataset Operations -->
+          <div>
+            <div class="list">
+              <label class="item item-radio" ng-hide="dataset.name=='-- new dataset --'">
+                <input type="radio" name="group" ng-model="operation" value="download">
+                <div class="item-content">
+                  <i class="icon ion-android-download"></i>
+                  Download all Spots from <b>{{ dataset.name }}</b>
+                </div>
+                <i class="radio-icon ion-checkmark"></i>
+              </label>
+              <label class="item item-radio" ng-hide="dataset.name=='-- new dataset --'">
+                <input type="radio" name="group" ng-model="operation" value="upload">
+                <div class="item-content">
+                  <i class="icon ion-upload"></i>
+                  Upload all Spots to <b>{{ dataset.name }}</b>
+                </div>
+                <i class="radio-icon ion-checkmark"></i>
+              </label>
+              <label class="item item-radio" ng-hide="dataset.name=='-- new dataset --'">
+                <input type="radio" name="group" ng-model="operation" value="remove">
+                <div class="item-content">
+                  <i class="icon ion-trash-b"></i>
+                  Remove all Spots from <b>{{ dataset.name }}</b> and delete <b>{{ dataset.name }}</b>
+                </div>
+                <i class="radio-icon ion-checkmark"></i>
+              </label>
+              <label class="item item-radio">
+                <input type="radio" name="group" ng-model="operation" value="deleteAll">
+                <div class="item-content">
+                  <i class="icon ion-trash-b"></i>
+                  Delete <b>ALL</b> Spots for this user on the server
+                </div>
+                <i class="radio-icon ion-checkmark"></i>
+              </label>
+            </div>
+            <button ng-click="startDatasetOp()" ng-disabled="!dataset || !operation" class="button button-positive icon-left icon">Start</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div ng-show="progress.showUploadDone">Finished uploading spots to Dataset <b>{{ dataset.name }}</b> on the server.</div>
+    <div ng-show="progress.showDownloadDone">Finished downloading spots from Dataset <b>{{ dataset.name }}</b> on the server.</div>
+  </ion-content>
+</ion-modal-view>

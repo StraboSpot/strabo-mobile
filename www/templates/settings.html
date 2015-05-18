@@ -4,6 +4,16 @@
   </ion-nav-buttons>
   <ion-content class="has-header" ng-controller="SettingsCtrl">
 
+    <h6 ng-hide="hideActionButtons.logout">You are currently logged in as: {{loginData.email}}</h6>
+    <label class="item item-input" ng-hide="hideActionButtons.login">
+      <input type="text" placeholder="Email" ng-model="loginData.email">
+    </label>
+    <label class="item item-input" ng-hide="hideActionButtons.login">
+      <input type="text" placeholder="Password" ng-model="loginData.password">
+    </label>
+    <button ng-click="doLogin();" ng-hide="hideActionButtons.login" ng-disabled="!(loginData.email && loginData.password)" class="button icon-left icon ion-log-in button-balanced">Login</button>
+    <button ng-click="doLogout();" ng-hide="hideActionButtons.logout" class="button icon-left icon ion-log-out button-assertive">Logout</button>
+
     <div class="item item-divider">
       Spot Name Default Prefix
     </div>
@@ -63,6 +73,6 @@
         <input type="number" ng-model="suffix_increment">
       </label>
     </div>
-    <button ng-click='save()' class="button button-positive">Save</button>
+    <button ng-click='save()' class="button icon-left icon ion-checkmark-circled button-positive">Save</button>
   </ion-content>
 </ion-view>

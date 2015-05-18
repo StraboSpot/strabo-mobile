@@ -82,17 +82,6 @@ angular.module('app', [
       }
     })
 
-    .state('app.sync', {
-      cache: false,
-      url: "/sync",
-      views: {
-        'menuContent': {
-          templateUrl: "templates/sync.html",
-          controller: "SyncCtrl"
-        }
-      }
-    })
-
     .state('app.settings', {
       cache: false,
       url: "/settings",
