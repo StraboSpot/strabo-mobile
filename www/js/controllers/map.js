@@ -841,50 +841,59 @@ angular.module('app')
       }
     });
 
+    var geolocationWatchId;
+
     // Get current position
-    $scope.getLocation = function() {
+    $scope.toggleLocation = function() {
 
-      console.log("clicked getLocation");
+      if ($scope.locationOn === undefined || $scope.locationOn === false) {
+        $scope.locationOn = true;
+      } else {
+        $scope.locationOn = false;
+      }
 
-      $cordovaGeolocation.getCurrentPosition({
-          maximumAge: 0,
-          timeout: 10000,
-          enableHighAccuracy: true
-        })
-        .then(function(position) {
-          var lat = position.coords.latitude;
-          var lng = position.coords.longitude;
-          var altitude =  position.coords.altitude;
-          var accuracy = position.coords.accuracy;
-          var heading = position.coords.heading;
-          var speed = position.coords.speed;
+      if ($scope.locationOn) {
+        console.log("toggleLocation is now true");
+        $cordovaGeolocation.getCurrentPosition({
+            maximumAge: 0,
+            timeout: 10000,
+            enableHighAccuracy: true
+          })
+          .then(function(position) {
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+            var altitude =  position.coords.altitude;
+            var accuracy = position.coords.accuracy;
+            var heading = position.coords.heading;
+            var speed = position.coords.speed;
 
-          console.log("getLocation ", [lat, lng], "(accuracy: " + accuracy + ") (altitude: " + altitude + ") (heading: " + heading + ") (speed: " + speed + ")");
+            console.log("getLocation ", [lat, lng], "(accuracy: " + accuracy + ") (altitude: " + altitude + ") (heading: " + heading + ") (speed: " + speed + ")");
 
-          var newView = new ol.View({
-            center: ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
-            zoom: 18,
-            minZoom: 4
+            var newView = new ol.View({
+              center: ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
+              zoom: 18,
+              minZoom: 4
+            });
+            map.setView(newView);
+          }, function(err) {
+            $ionicPopup.alert({
+              title: 'Alert!',
+              template: "Unable to get location: " + err.message
+            });
           });
-          map.setView(newView);
-        }, function(err) {
-          $ionicPopup.alert({
-            title: 'Alert!',
-            template: "Unable to get location: " + err.message
-          });
-        });
 
-      $cordovaGeolocation.watchPosition({
+        geolocationWatchId = $cordovaGeolocation.watchPosition({
           frequency: 1000,
           timeout: 10000,
           enableHighAccuracy: true // may cause errors if true
-        })
-        .then(
+        });
+
+        geolocationWatchId.then(
           null,
           function(err) {
             $ionicPopup.alert({
               title: 'Alert!',
-              template: "Unable to get location: " + err.message
+              template: "Unable to get location for geolocationWatchId: " + geolocationWatchId.watchID + " (" + err.message + ")"
             });
             // TODO: what do we do here?
           },
@@ -916,7 +925,17 @@ angular.module('app')
             });
 
             geolocationLayer.setSource(vectorSource);
-          });
+        });
+      } else {
+        // locationOn must be false
+        console.log("toggleLocation is now false");
+
+        // clear geolocation watch
+        geolocationWatchId.clearWatch();
+
+        // clear the geolocation marker
+        geolocationLayer.setSource(new ol.source.Vector({}));
+      }
     };
 
     /////////////////
