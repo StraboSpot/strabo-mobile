@@ -46,11 +46,15 @@ angular.module('app')
         case 'group':
           return images.group;
 
-        // zach geology
+          // zach geology
         case 'contact_outcrop':
-          return images.default;
+          return images.contact_inclined;
         case 'fault_outcrop':
           return images.fault_surface_inclined;
+        case 'shear_zone':
+          return images.shear_zone_inclined;
+        case 'fold':
+          return images.fold_axis;
         case 'notes':
           return images.default;
         case 'orientation':

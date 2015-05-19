@@ -513,7 +513,7 @@ angular.module('app')
             opacity: 1,
             rotation: Math.radians(rotation),
             src: ImagesFactory.getImagePath('contact_outcrop'),
-            scale: 0.75
+            scale: 0.05
           });
         },
         fault_outcrop: function(rotation) {
@@ -524,6 +524,26 @@ angular.module('app')
             rotation: Math.radians(rotation),
             src: ImagesFactory.getImagePath('fault_outcrop'),
             scale: 1
+          });
+        },
+        shear_zone: function(rotation) {
+          return new ol.style.Icon({
+            anchorXUnits: 'pixels',
+            anchorYUnits: 'pixels',
+            opacity: 1,
+            rotation: Math.radians(rotation),
+            src: ImagesFactory.getImagePath('shear_zone'),
+            scale: 0.05
+          });
+        },
+        fold: function(rotation) {
+          return new ol.style.Icon({
+            anchorXUnits: 'pixels',
+            anchorYUnits: 'pixels',
+            opacity: 1,
+            rotation: Math.radians(rotation),
+            src: ImagesFactory.getImagePath('fold'),
+            scale: 0.05
           });
         },
         notes: function(rotation) {
@@ -601,6 +621,10 @@ angular.module('app')
             return icon.contact_outcrop(rotation);
           case "Fault":
             return icon.fault_outcrop(rotation);
+          case "Shear Zone":
+            return icon.shear_zone(rotation);
+          case "Fold":
+            return icon.fold(rotation);
           case "Notes":
             return icon.notes(rotation);
           case "Orientation":
