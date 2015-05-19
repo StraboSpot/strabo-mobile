@@ -938,6 +938,13 @@ angular.module('app')
       }
     };
 
+    var groupSpots = function() {
+      $ionicPopup.alert({
+        title: 'To Do!',
+        template: "This will allow you to group spots by drawing a polygon around the spots you want to group."
+      });
+    };
+
     /////////////////
     // ACTIONSHEET
     /////////////////
@@ -949,6 +956,7 @@ angular.module('app')
         buttons: [
           {text: '<i class="icon ion-map"></i> Zoom to Extent of Spots'},
           {text: '<i class="icon ion-archive"></i>Save Map for Offline Use'},
+          {text: '<i class="icon ion-grid"></i> Create a Grouping of Spots'}
         ],
         cancelText: 'Cancel',
         cancel: function () {
@@ -962,6 +970,9 @@ angular.module('app')
               break;
             case 1:
               $scope.cacheOfflineTiles();
+              break;
+            case 2:
+              groupSpots();
               break;
           }
           return true;
