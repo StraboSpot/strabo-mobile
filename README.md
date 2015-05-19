@@ -38,7 +38,7 @@ In the `strabo-mobile` folder:
     cordova plugin add org.apache.cordova.network-information
     cordova plugin add org.apache.cordova.camera
     cordova plugin add org.apache.cordova.file
-    cordova plugin add https://git-wip-us.apache.org/repos/asf/cordova-plugin-inappbrowser.git
+    cordova plugin add org.apache.cordova.inappbrowser
 
 ###Run
 

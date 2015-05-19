@@ -34,7 +34,7 @@
   <gap:plugin name="org.apache.cordova.network-information"/>
   <gap:plugin name="org.apache.cordova.camera"/>
   <gap:plugin name="org.apache.cordova.file"/>
-  <gap:plugin name="https://git-wip-us.apache.org/repos/asf/cordova-plugin-inappbrowser.git"/>
+  <gap:plugin name="org.apache.cordova.inappbrowser"/>
 
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
