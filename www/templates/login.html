@@ -1,0 +1,24 @@
+<ion-view view-title="Login" name="login-view">
+  <ion-content>
+    <div class="login scroll">
+      <h1 class="logintext">Strabo Mobile</h1>
+      <div class="list list-inset">
+        <label class="item item-input">
+          <input type="text" placeholder="Username" ng-model="loginData.email">
+        </label>
+        <label class="item item-input">
+          <input type="password" placeholder="Password" ng-model="loginData.password">
+        </label>
+      </div>
+      <div class="padding">
+        <button class="button button-block button-positive" ng-click="doLogin()">Login</button>
+      </div>
+      <div align="center">
+        <a href="#" onclick="window.open('http://strabospot.org/register', '_system', 'location=yes'); return false;">
+          <span class="create-account-text">Create an account</span>
+        </a>
+      </div>
+      <button class="button icon-left button-positive button-small ion-forward pull-right skip" ng-click="skip()">Skip</button>
+    </div>
+  </ion-content>
+</ion-view>

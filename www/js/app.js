@@ -45,6 +45,13 @@ angular.module('app', [
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
 
+    .state('login', {
+      cache: false,
+      url: '/login',
+      templateUrl: 'templates/login.html',
+      controller: 'LoginCtrl'
+    })
+
     .state('app', {
       url: "/app",
       abstract: true,
@@ -154,5 +161,5 @@ angular.module('app', [
     });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/map');
+  $urlRouterProvider.otherwise('/login');
 });
