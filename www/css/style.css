@@ -263,8 +263,9 @@ Login Page
   font-weight: 900;
   font-family: Impact, Charcoal, sans-serif;
   padding-top: 20px;
-  color: #001F5C;
+  color: #373737;
   text-shadow: 0 0 6px #FFF;
+  letter-spacing: 6px;
 }
 
 .logininset {
@@ -284,7 +285,7 @@ button.skip {
 
 .create-account-text{
   font-weight: bold;
-  color: #001F5C;
+  color: #373737;
   text-transform: uppercase;
   text-shadow: 0 0 6px #FFF;
 }
