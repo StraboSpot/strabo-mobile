@@ -251,18 +251,24 @@ Style fields for input errors and no-errors
 Login Page
 --------------------*/
 .login {
-  background: url(../img/background.jpg) no-repeat center center fixed;;
+  background: url(../img/PetrifiedForestNP6-8-06.jpg) no-repeat center center fixed;;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
 }
 
-.logintext{
+.logintext {
   text-align: center;
   font-weight: 900;
-  font-family: 'Open Sans Condensed', sans-serif;
+  font-family: Impact, Charcoal, sans-serif;
   padding-top: 20px;
+  color: #001F5C;
+  text-shadow: 0 0 6px #FFF;
+}
+
+.logininset {
+  max-width: 400px;
 }
 
 .scroll {
@@ -278,7 +284,7 @@ button.skip {
 
 .create-account-text{
   font-weight: bold;
-  color: #000;
+  color: #001F5C;
   text-transform: uppercase;
   text-shadow: 0 0 6px #FFF;
 }
