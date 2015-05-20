@@ -63,6 +63,7 @@
                       <label class="item item-input item-select item-stacked-label item-text-wrap"
                              ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid }">
                         <span class="input-label">{{ field.label }}</span>
+                        <span class="item-placeholder"><small>{{ field.hint }}</small></span><br>
                         <select name="{{ field.name }}"
                                 ng-model="spot.properties[field.name]"
                                 ng-options="choice.name as choice.label for choice in choices
@@ -75,12 +76,25 @@
                     <div ng-switch-when="select_multiple">
                       <label class="item item-stacked-label item-text-wrap" ng-class="setSelMultClass(field)">
                         <span class="input-label">{{field.label}}</span>
+                        <span class="item-placeholder"><small>{{ field.hint }}</small></span><br>
                         <ion-checkbox name="{{ field.name }}"
                                       ng-repeat="choice in choices | orderBy: 'label' | filter: { 'list name': field.type.split(' ')[1] }"
                                       ng-checked="isOptionChecked(field.name, choice.name)"
                                       ng-click="toggleChecked(field.name, choice.name)"
                                       ng-required="{{ field.required }}">
                           {{ choice.label }}
+                        </ion-checkbox>
+                      </label>
+                    </div>
+                    <div ng-switch-when="acknowledge">
+                      <label class="item item-stacked-label item-text-wrap" ng-class="setSelMultClass(field)">
+                        <span class="input-label">{{field.label}}</span><br>
+                        <span class="item-placeholder"><small>{{ field.hint }}</small></span>
+                        <ion-checkbox name="{{ field.name }}"
+                                      ng-checked="isAcknowledgeChecked(field.name)"
+                                      ng-click="toggleAcknowledgeChecked(field.name)"
+                                      ng-required="{{ field.required }}">
+                          Yes
                         </ion-checkbox>
                       </label>
                     </div>

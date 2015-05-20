@@ -14,6 +14,10 @@ angular.module('app')
     $cordovaGeolocation,
     $cordovaCamera) {
 
+    angular.module('app').addContactsAndTracesSurvey($scope);
+    angular.module('app').addContactsAndTracesChoices($scope);
+    angular.module('app').addMeasurementsAndObservationsSurvey($scope);
+    angular.module('app').addMeasurementsAndObservationsChoices($scope);
     angular.module('app').addContactSurvey($scope);
     angular.module('app').addContactChoices($scope);
     angular.module('app').addFaultSurvey($scope);
@@ -209,6 +213,17 @@ angular.module('app')
         $scope.spot.properties.type = "Custom";
 
       switch ($scope.spot.properties.type) {
+        case "Measurements and Observations":
+          $scope.showDynamicFields = true;
+          $scope.survey = $scope.measurements_and_observations_survey;
+          $scope.choices = $scope.measurements_and_observations_choices;
+          break;
+        case "Contacts and Traces":
+          $scope.showDynamicFields = true;
+          $scope.survey = $scope.contacts_and_traces_survey;
+          $scope.choices = $scope.contacts_and_traces_choices;
+          break;
+
         case "Contact":
           $scope.showDynamicFields = true;
           $scope.survey = $scope.contact_survey;
@@ -482,10 +497,10 @@ angular.module('app')
           var ele = document.getElementById(field.name);
           if (getComputedStyle(ele).display != "none" && !$scope.spot.properties[field.name]) {
             if (field.required == "true")
-              errorMessages += "<b>" + field.label + "</b>: Required!<br>";
+              errorMessages += "<b>" + field.label + "</b> Required!<br>";
             else
               if (field.name in $scope.spot.properties)
-                errorMessages += "<b>" + field.label + "</b>: " + field.constraint_message + "<br>";
+                errorMessages += "<b>" + field.label + "</b> " + field.constraint_message + "<br>";
           }
           else if (getComputedStyle(ele).display == "none")
             delete $scope.spot.properties[field.name];
@@ -768,7 +783,7 @@ angular.module('app')
     // Set the class for the select_multiple fields here because it is not working
     // to set the class in the html the same way as for the other fields
     $scope.setSelMultClass = function(field) {
-      if (field.required){
+      if (field.required == "true"){
         if ($scope.spot.properties[field.name]){
           if ($scope.spot.properties[field.name].length > 0)
             return 'no-errors';
@@ -806,6 +821,23 @@ angular.module('app')
       }
       else
         return false;
+    };
+
+    // Is the other_spot is this spot's links list?
+    $scope.isAcknowledgeChecked = function (field) {
+      if ($scope.spot) {
+        if ($scope.spot.properties[field])
+          return true;
+      }
+      else
+        return false;
+    };
+
+    $scope.toggleAcknowledgeChecked = function (field) {
+      if ($scope.spot.properties[field])
+        delete $scope.spot.properties[field];
+      else
+        $scope.spot.properties[field] = true;
     };
 
     // Is the other_spot is this spot's links list?

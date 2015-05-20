@@ -3,27 +3,29 @@ angular.module('app')
 .controller("ModalCtrl", function($scope, NewSpot) {
 
   $scope.pointTypes = [
-    "Contact",
+    "Measurements and Observations",
+   /* "Contact",
     "Fault",
     "Fold",
     "Notes",
     "Orientation",
     "Sample Locality",
-    "Shear Zone",
+    "Shear Zone",*/
     "Spot Grouping"
   ];
 
   $scope.lineTypes = [
-    "Contact",
+    "Contacts and Traces",
+   /* "Contact",
     "Fault",
     "Fold",
     "Notes",
-    "Shear Zone",
+    "Shear Zone",*/
     "Spot Grouping"
   ];
 
   $scope.polyTypes = [
-    "Notes",
+  /*  "Notes",*/
     "Rock Description",
     "Spot Grouping"
   ];
