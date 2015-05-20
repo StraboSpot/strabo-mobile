@@ -288,3 +288,13 @@ button.skip {
   text-transform: uppercase;
   text-shadow: 0 0 6px #FFF;
 }
+
+.caption {
+  font-style: italic;
+  font-size: small;
+  font-weight: bold;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  color: #3D3D3D;
+}
