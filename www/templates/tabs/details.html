@@ -1,0 +1,184 @@
+<form name="straboForm" novalidate="">
+  <ion-view title="Spot Info">
+    <ion-nav-buttons side="left">
+      <button ng-click="goToSpots();" class="button button-icon icon ion-arrow-left-c"></button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+      <button ng-click="deleteSpot();" class="button button-icon icon ion-trash-b"></button>
+      <button ng-click="submit();" class="button button-icon icon ion-checkmark-circled"></button>
+    </ion-nav-buttons>
+
+    <ion-header-bar class="bar-subheader">
+      <ion-scroll direction="x" class="wide-as-needed">
+        <a class="button inline-button button-clear button-dark" href="#/app/spots/{{spot.properties.id}}/details">Details</a>
+        .
+        <a class="button button-clear button-light" ng-click="validateDetailsAndGo('notes');">Notes</a>
+        .
+        <a class="button button-clear button-light" ng-click="validateDetailsAndGo('pictures');">Photos</a>
+        .
+        <a class="button button-clear button-light" ng-click="validateDetailsAndGo('georeference');">Georeference</a>
+        .
+        <span ng-show="showLinks">
+          <a class="button button-clear button-light" ng-click="validateDetailsAndGo('links');">Links</a>
+          .
+        </span>
+        <span ng-show="showGroups">
+          <a class="button button-clear button-light" ng-click="validateDetailsAndGo('groups');">Groups</a>
+          .
+        </span>
+        <span ng-show="showGroupMembers">
+          <a class="button button-clear button-light" ng-click="validateDetailsAndGo('groupmembers');">Group Members</a>
+          .
+        </span>
+        <a class="button button-clear button-light" ng-click="validateDetailsAndGo('rockdescription');">Rock Description</a>
+        .
+        <a class="button button-clear button-light" ng-click="validateDetailsAndGo('rocksample');">Rock Sample</a>
+      </ion-scroll>
+    </ion-header-bar>
+
+
+    <ion-content>
+      <div ng-show="showDynamicFields">
+        <div class="item item-divider">
+          {{ spot.properties.type }}
+        </div>
+        <div ng-repeat="field in survey">
+          <div id="{{ field.name }}" ng-show="showField(field.relevant)">
+            <div data-ng-switch on="field.type.split(' ')[0]">
+              <div ng-switch-when="integer">
+                <label class="item item-input item-stacked-label item-text-wrap"
+                       ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid }"
+                       ng-messages-include="templates/error-messages.html">
+                  <span class="input-label">{{field.label}}</span>
+                  <input type="number"
+                         name="{{ field.name }}"
+                         placeholder="{{ field.hint }}"
+                         ng-model="spot.properties[field.name]"
+                         ng-required="{{ field.required }}"
+                         ng-min="getMin(field.constraint)"
+                         ng-max="getMax(field.constraint)">
+                </label>
+              </div>
+              <div ng-switch-when="text">
+                <label class="item item-input item-stacked-label item-text-wrap"
+                       ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid }"
+                       ng-messages-include="templates/error-messages.html">
+                  <span class="input-label">{{field.label}}</span>
+                  <input type="text"
+                         name="{{ field.name }}"
+                         placeholder="{{ field.hint }}"
+                         ng-model="spot.properties[field.name]"
+                         ng-required="{{ field.required }}">
+                </label>
+              </div>
+              <div ng-switch-when="note">
+                <label class="item item-input item-stacked-label item-text-wrap"
+                       ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid }"
+                       ng-messages-include="templates/error-messages.html">
+                  <span class="input-label">{{ field.label }}</span>
+                        <textarea name="{{ field.name }}"
+                                  rows="4"
+                                  placeholder="{{field.hint}}"
+                                  ng-model="spot.properties[field.name]"
+                                  ng-required="{{ field.required }}">
+                        </textarea>
+                </label>
+              </div>
+              <div ng-switch-when="select_one">
+                <label class="item item-input item-select item-stacked-label item-text-wrap"
+                       ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid }">
+                  <span class="input-label">{{ field.label }}</span>
+                  <span class="item-placeholder"><small>{{ field.hint }}</small></span><br>
+                  <select name="{{ field.name }}"
+                          ng-model="spot.properties[field.name]"
+                          ng-options="choice.name as choice.label for choice in choices
+                                | orderBy: 'label'
+                                | filter: { 'list name': field.type.split(' ')[1] }"
+                          ng-required="{{ field.required }}">
+                  </select>
+                </label>
+              </div>
+              <div ng-switch-when="select_multiple">
+                <label class="item item-stacked-label item-text-wrap" ng-class="setSelMultClass(field)">
+                  <span class="input-label">{{field.label}}</span>
+                  <span class="item-placeholder"><small>{{ field.hint }}</small></span><br>
+                  <ion-checkbox name="{{ field.name }}"
+                                ng-repeat="choice in choices | orderBy: 'label' | filter: { 'list name': field.type.split(' ')[1] }"
+                                ng-checked="isOptionChecked(field.name, choice.name)"
+                                ng-click="toggleChecked(field.name, choice.name)"
+                                ng-required="{{ field.required }}">
+                    {{ choice.label }}
+                  </ion-checkbox>
+                </label>
+              </div>
+              <div ng-switch-when="acknowledge">
+                <label class="item item-stacked-label item-text-wrap" ng-class="setSelMultClass(field)">
+                  <span class="input-label">{{field.label}}</span><br>
+                  <span class="item-placeholder"><small>{{ field.hint }}</small></span>
+                  <ion-checkbox name="{{ field.name }}"
+                                ng-checked="isAcknowledgeChecked(field.name)"
+                                ng-click="toggleAcknowledgeChecked(field.name)"
+                                ng-required="{{ field.required }}">
+                    Yes
+                  </ion-checkbox>
+                </label>
+              </div>
+              <div ng-if="straboForm[field.name].$touched"
+                   ng-messages="straboForm[field.name].$error"
+                   ng-messages-include="templates/error-messages.html">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div ng-show="showCustomFields">
+        <div ng-repeat="(key, value) in spot.properties">
+          <label class="item item-input item-stacked-label item-text-wrap">
+            <span class="input-label">{{ key }}</span>
+            <input type="text" ng-model="spot.properties[key]">
+          </label>
+        </div>
+      </div>
+
+
+      <div class="row responsive-sm">
+        <div class="col" ng-show="showContactButtons()">
+          <button ng-click="newSpot('Contact');" class="button button-block button-positive icon-left icon ion-compass">Link to New Contact Description</button>
+        </div>
+        <div class="col" ng-show="showContactButtons()">
+          <button ng-click="linkContact();" ng-disabled="enableLinkContact" class="button button-block button-positive icon-left icon ion-compass">Link to Existing Contact Description</button>
+        </div>
+
+        <div class="col" ng-show="showFaultButtons()">
+          <button ng-click="newSpot('Fault');" class="button button-block button-positive icon-left icon ion-compass">Link to New Fault Description</button>
+        </div>
+        <div class="col" ng-show="showFaultButtons()">
+          <button ng-click="linkFault();" ng-disabled="enableLinkFault" class="button button-block button-positive icon-left icon ion-compass">Link to Existing Fault Description</button>
+        </div>
+
+        <div class="col" ng-show="showFoldButtons()">
+          <button ng-click="newSpot('Fold');" class="button button-block button-positive icon-left icon ion-compass">Link to New Fold Description</button>
+        </div>
+        <div class="col" ng-show="showFoldButtons()">
+          <button ng-click="linkFold();" ng-disabled="enableLinkFold" class="button button-block button-positive button-positive icon-left icon ion-compass">Link to Existing Fold Description</button>
+        </div>
+
+        <div class="col" ng-show="showOrientationButtons">
+          <button ng-click="newSpot('Orientation');" class="button button-block button-positive icon-left icon ion-compass">Link to New Orientation</button>
+        </div>
+        <div class="col" ng-show="showOrientationButtons">
+          <button ng-click="linkOrientation();" ng-disabled="enableLinkOrientation" class="button button-block button-positive icon-left icon ion-compass">Link to Existing Orientation</button>
+        </div>
+
+        <div class="col" ng-show="showShearZoneButtons()">
+          <button ng-click="newSpot('Shear Zone');" class="button button-block button-positive icon-left icon ion-compass">Link to New Shear Zone Description</button>
+        </div>
+        <div class="col" ng-show="showShearZoneButtons()">
+          <button ng-click="linkShearZone();" ng-disabled="enableLinkShearZone" class="button button-block button-positive icon-left icon ion-compass">Link to Existing Shear Zone Description</button>
+        </div>
+      </div>
+    </ion-content>
+
+  </ion-view>
+</form>

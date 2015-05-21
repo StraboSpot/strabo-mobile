@@ -6,7 +6,10 @@ angular.module('app')
     $ionicPopup,
     SpotsFactory,
     LoginFactory,
-    SyncService) {
+    CurrentSpot) {
+
+    // Make sure the current spot is empty
+    CurrentSpot.clearCurrentSpot();
 
     // Load or initialize Spots
     $scope.spots;

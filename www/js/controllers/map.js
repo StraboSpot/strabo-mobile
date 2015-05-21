@@ -820,7 +820,7 @@ angular.module('app')
 
           // popup content
           var content = '';
-          content += '<a href="#/app/spots/' + feature.get('id') + '"><b>' + feature.get('name') + '</b></a>';
+          content += '<a href="#/app/spots/' + feature.get('id') + '/details"><b>' + feature.get('name') + '</b></a>';
           content += '<br>';
           content += '<small>' + feature.get('type') + '</small>';
           content += '<small> (' + feature.getGeometry().getType() + ')</small>';

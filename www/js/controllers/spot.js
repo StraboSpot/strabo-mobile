@@ -7,6 +7,7 @@ angular.module('app')
     SpotsFactory,
     SettingsFactory,
     NewSpot,
+    CurrentSpot,
     MapView,
     $ionicHistory,
     $ionicPopup,
@@ -34,6 +35,15 @@ angular.module('app')
     angular.module('app').addShearZoneChoices($scope);
     angular.module('app').addSpotGroupingSurvey($scope);
     angular.module('app').addSpotGroupingChoices($scope);
+
+    $scope.goToSpots = function() {
+      $state.go('app.spots');
+    };
+
+    $scope.openSpot = function(id) {
+      CurrentSpot.clearCurrentSpot();
+      $location.path('/app/spots/' + id + '/details');
+    };
 
     $scope.showImages = function(index) {
       $scope.activeSlide = index;
@@ -228,19 +238,16 @@ angular.module('app')
           $scope.showDynamicFields = true;
           $scope.survey = $scope.contact_survey;
           $scope.choices = $scope.contact_choices;
-          $scope.showOrientationButtons = true;
           break;
         case "Fault":
           $scope.showDynamicFields = true;
           $scope.survey = $scope.fault_survey;
           $scope.choices = $scope.fault_choices;
-          $scope.showOrientationButtons = true;
           break;
         case "Fold":
           $scope.showDynamicFields = true;
           $scope.survey = $scope.fold_survey;
           $scope.choices = $scope.fold_choices;
-          $scope.showOrientationButtons = true;
           break;
         case "Notes":
           break;
@@ -263,13 +270,12 @@ angular.module('app')
           $scope.showDynamicFields = true;
           $scope.survey = $scope.shear_zone_survey;
           $scope.choices = $scope.shear_zone_choices;
-          $scope.showOrientationButtons = true;
           break;
         case "Spot Grouping":
           $scope.showDynamicFields = true;
           $scope.survey = $scope.spot_grouping_survey;
           $scope.choices = $scope.spot_grouping_choices;
-          $scope.showGroupButtons = true;
+          $scope.showGroupMembers = true;
           break;
         default:
           $scope.showCustomFields = true;
@@ -348,43 +354,6 @@ angular.module('app')
         $scope.enableLinkShearZone = !_.findWhere($scope.other_spots, {type: 'Shear Zone'});
       });
     };
-    $scope.showContactButtons = function () {
-      try {
-        return $scope.spot.properties.feature_type == 'contact';
-      }
-      catch (e) {
-        return false;
-      }
-    };
-
-    $scope.showFaultButtons = function () {
-      try {
-        return $scope.spot.properties.feature_type == 'fault_plane';
-      }
-      catch (e) {
-        return false;
-      }
-    };
-
-    $scope.showFoldButtons = function () {
-      try {
-        return $scope.spot.properties.feature_type == 'fold_limb'
-          || $scope.spot.properties.feature_type == 'axial_surface'
-          || $scope.spot.properties.feature_type == 'fold_hinge';
-      }
-      catch (e) {
-        return false;
-      }
-    };
-
-    $scope.showShearZoneButtons = function () {
-      try {
-        return $scope.spot.properties.feature_type == 'shear_zone';
-      }
-      catch (e) {
-        return false;
-      }
-    };
 
     // Get the current spot
     if (NewSpot.getNewSpot()){
@@ -393,6 +362,7 @@ angular.module('app')
       $scope.hideSetFromMapButton = true;
       // Load spot stored in the NewSpot service
       $scope.spot = NewSpot.getNewSpot();
+      CurrentSpot.setCurrentSpot($scope.spot);
       // now clear the new spot from the service because we have the info in our current scope
       NewSpot.clearNewSpot();
 
@@ -426,11 +396,17 @@ angular.module('app')
       });
     }
     else {
-      // Load spot from local storage
-      SpotsFactory.read($stateParams.spotId, function (spot) {
-        $scope.spot = spot;
+      if (CurrentSpot.getCurrentSpot()) {
+        $scope.spot = CurrentSpot.getCurrentSpot();
         setProperties();
-      });
+      }
+      else {
+        // Load spot from local storage
+        SpotsFactory.read($stateParams.spotId, function (spot) {
+          $scope.spot = spot;
+          setProperties();
+        });
+      }
     }
 
     // Toggle selected for links or groups or group members selected
@@ -484,10 +460,15 @@ angular.module('app')
       $location.path("/app/map");
     };
 
-    // Add or modify Spot
-    $scope.submit = function() {
+    // Run validation and then go to the given page
+    $scope.validateDetailsAndGo = function (tab) {
+      if ($scope.validateDetails())
+        $location.path('/app/spots/' + $scope.spot.properties.id + '/' + tab);
+    };
 
-      console.log("spot to save: ", $scope.spot);
+    // Validate the details form inputs
+    $scope.validateDetails = function() {
+      console.log("Validating form with spot:", $scope.spot);
       var errorMessages = "";
 
       // Run validation check on the forms that are generated dynamically
@@ -499,8 +480,8 @@ angular.module('app')
             if (field.required == "true")
               errorMessages += "<b>" + field.label + "</b> Required!<br>";
             else
-              if (field.name in $scope.spot.properties)
-                errorMessages += "<b>" + field.label + "</b> " + field.constraint_message + "<br>";
+            if (field.name in $scope.spot.properties)
+              errorMessages += "<b>" + field.label + "</b> " + field.constraint_message + "<br>";
           }
           else if (getComputedStyle(ele).display == "none")
             delete $scope.spot.properties[field.name];
@@ -508,12 +489,27 @@ angular.module('app')
 
         if (errorMessages) {
           alertPopup = $ionicPopup.alert({
-            title: 'Error Saving!',
-            template: "Fix the following errors before saving:<br>" + errorMessages
+            title: 'Validation Error!',
+            template: "Fix the following errors before continuing:<br>" + errorMessages
           });
-          return 0;
+          return false;
         }
+        else
+          return true;
       }
+      else
+        return true;
+    };
+
+    // Add or modify Spot
+    $scope.submit = function() {
+
+      // If currently on the details page validate before saving
+      if ($state.current.url.split("/").pop() == "app.details")
+        if (!$scope.validateDetails())
+          return 0;
+
+      console.log("spot to save: ", $scope.spot);
 
       if (!$scope.spot.properties.name) {
         $ionicPopup.alert({
@@ -672,7 +668,8 @@ angular.module('app')
         console.log("spot saved: ", data);
       });
 
-      $ionicHistory.goBack();
+      $location.path("/app/map");
+      //$ionicHistory.goBack();
     };
 
     // Delete the spot

@@ -299,3 +299,16 @@ button.skip {
   left: 10px;
   color: #3D3D3D;
 }
+
+/*--------------------
+Buttons on Spot Page (Psuedo Tabs)
+--------------------*/
+.wide-as-needed {
+  overflow: scroll;
+  white-space: nowrap;
+  height: 40px;
+}
+
+.scroll-bar {
+  visibility: hidden!important;
+}

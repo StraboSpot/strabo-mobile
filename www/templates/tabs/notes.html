@@ -1,0 +1,68 @@
+<ion-view title="Spot Info">
+  <ion-nav-buttons side="left">
+    <button ng-click="goToSpots();" class="button button-icon icon ion-arrow-left-c"></button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side="right">
+    <button ng-click="deleteSpot();" class="button button-icon icon ion-trash-b"></button>
+    <button ng-click="submit();" class="button button-icon icon ion-checkmark-circled"></button>
+  </ion-nav-buttons>
+
+  <ion-header-bar class="bar-subheader">
+    <ion-scroll direction="x" class="wide-as-needed">
+      <a class="button inline-button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/details">Details</a>
+      .
+      <a class="button button-clear button-dark" href="#/app/spots/{{spot.properties.id}}/notes">Notes</a>
+      .
+      <a class="button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/pictures">Photos</a>
+      .
+      <a class="button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/georeference">Georeference</a>
+      .
+      <span ng-show="showLinks">
+        <a class="button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/links">Links</a>
+        .
+      </span>
+      <span ng-show="showGroups">
+        <a class="button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/groups">Groups</a>
+        .
+      </span>
+      <span ng-show="showGroupMembers">
+        <a class="button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/groupmembers">Group Members</a>
+        .
+      </span>
+      <a class="button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/rockdescription">Rock Description</a>
+      .
+      <a class="button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/rocksample">Rock Sample</a>
+    </ion-scroll>
+  </ion-header-bar>
+
+  <ion-content>
+    <div class="item item-divider">
+      {{spot.properties.type}}
+    </div>
+    <label class="item item-input item-stacked-label item-text-wrap">
+      <span class="input-label">Spot Name</span>
+      <input type="text" placeholder="Name this Spot" ng-model="spot.properties.name">
+    </label>
+    <label class="item item-input item-stacked-label item-text-wrap">
+      <span class="input-label">ID</span>
+      <input type="number" disabled ng-model="spot.properties.id">
+    </label>
+    <label class="item item-input item-stacked-label item-text-wrap">
+      <span class="input-label">Date</span>
+      <input type="date" ng-model="spot.properties.date">
+    </label>
+    <label class="item item-input item-stacked-label item-text-wrap">
+      <span class="input-label">Time</span>
+      <input type="time" ng-model="spot.properties.time">
+    </label>
+
+    <div class="item item-divider">
+      Notes
+    </div>
+    <label class="item item-input">
+      <textarea placeholder="Notes about this Spot" rows="12" ng-model="spot.properties.notes"></textarea>
+    </label>
+
+  </ion-content>
+
+</ion-view>

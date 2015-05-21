@@ -3,10 +3,15 @@
 angular.module('app')
   .controller('ArchiveTilesCtrl', function(
     $scope,
+    $state,
     $ionicHistory,
     ViewExtentFactory,
     SlippyTileNamesFactory,
     OfflineTilesFactory) {
+
+    $scope.goToMap = function() {
+      $state.go('app.map');
+    };
 
     // get the mapExtent from its service upon entering this script
     var mapExtent = ViewExtentFactory.getExtent();

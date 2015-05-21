@@ -112,20 +112,110 @@ angular.module('app', [
     })
 
     .state('app.newspot', {
+      cache: false,
       url: "/spots/newspot",
       views: {
         'menuContent': {
-          templateUrl: "templates/spot.html",
+          templateUrl: "templates/tabs/details.html",
           controller: 'SpotCtrl'
         }
       }
     })
 
-    .state('app.spot', {
-      url: "/spots/:spotId",
+    .state('app.details', {
+      cache: false,
+      url: "/spots/:spotId/details",
       views: {
         'menuContent': {
-          templateUrl: "templates/spot.html",
+          templateUrl: "templates/tabs/details.html",
+          controller: 'SpotCtrl'
+        }
+      }
+    })
+
+    .state('app.notes', {
+      cache: false,
+      url: "/spots/:spotId/notes",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/tabs/notes.html",
+          controller: 'SpotCtrl'
+        }
+      }
+    })
+
+    .state('app.pictures', {
+      cache: false,
+      url: "/spots/:spotId/pictures",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/tabs/pictures.html",
+          controller: 'SpotCtrl'
+        }
+      }
+    })
+
+    .state('app.georeference', {
+      cache: false,
+      url: "/spots/:spotId/georeference",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/tabs/georeference.html",
+          controller: 'SpotCtrl'
+        }
+      }
+    })
+
+    .state('app.links', {
+      cache: false,
+      url: "/spots/:spotId/links",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/tabs/links.html",
+          controller: 'SpotCtrl'
+        }
+      }
+    })
+
+    .state('app.groups', {
+      cache: false,
+      url: "/spots/:spotId/groups",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/tabs/groups.html",
+          controller: 'SpotCtrl'
+        }
+      }
+    })
+
+    .state('app.groupmembers', {
+      cache: false,
+      url: "/spots/:spotId/groupmembers",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/tabs/groupmembers.html",
+          controller: 'SpotCtrl'
+        }
+      }
+    })
+
+    .state('app.rockdescription', {
+      cache: false,
+      url: "/spots/:spotId/rockdescription",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/tabs/rockdescription.html",
+          controller: 'SpotCtrl'
+        }
+      }
+    })
+
+    .state('app.rocksample', {
+      cache: false,
+      url: "/spots/:spotId/rocksample",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/tabs/rocksample.html",
           controller: 'SpotCtrl'
         }
       }

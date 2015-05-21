@@ -1,0 +1,70 @@
+<ion-view title="Spot Info">
+  <ion-nav-buttons side="left">
+    <button ng-click="goToSpots();" class="button button-icon icon ion-arrow-left-c"></button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side="right">
+    <button ng-click="deleteSpot();" class="button button-icon icon ion-trash-b"></button>
+    <button ng-click="submit();" class="button button-icon icon ion-checkmark-circled"></button>
+  </ion-nav-buttons>
+
+  <ion-header-bar class="bar-subheader">
+    <ion-scroll direction="x" class="wide-as-needed">
+      <a class="button inline-button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/details">Details</a>
+      .
+      <a class="button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/notes">Notes</a>
+      .
+      <a class="button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/pictures">Photos</a>
+      .
+      <a class="button button-clear button-dark" href="#/app/spots/{{spot.properties.id}}/georeference">Georeference</a>
+      .
+      <span ng-show="showLinks">
+        <a class="button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/links">Links</a>
+        .
+      </span>
+      <span ng-show="showGroups">
+        <a class="button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/groups">Groups</a>
+        .
+      </span>
+      <span ng-show="showGroupMembers">
+        <a class="button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/groupmembers">Group Members</a>
+        .
+      </span>
+      <a class="button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/rockdescription">Rock Description</a>
+      .
+      <a class="button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/rocksample">Rock Sample</a>
+    </ion-scroll>
+  </ion-header-bar>
+
+  <ion-content>
+    <div class="item item-divider">
+      Map Representation
+    </div>
+    <label class="item item-input item-stacked-label item-text-wrap">
+      <span class="input-label">Geometry</span>
+      <input type="text" disabled ng-model="spot.geometry.type">
+    </label>
+    <label class="item item-input item-stacked-label item-text-wrap" ng-show="showLatLng">
+      <span class="input-label">Latitude</span>
+      <input type="number" ng-model="point.latitude" value={{point.latitude}}>
+    </label>
+    <label class="item item-input item-stacked-label item-text-wrap" ng-show="showLatLng">
+      <span class="input-label">Longitude</span>
+      <input type="number" ng-model="point.longitude" value={{point.longitude}}>
+    </label>
+    <div>
+      <!-- Map Interaction -->
+      <div class="row responsive-sm">
+        <div class="col">
+          <button ng-click="goToSpot();" ng-hide="hideViewOnMapButton" class="button button-block button-positive icon-left icon ion-eye">View on Map</button>
+        </div>
+        <div class="col">
+          <button ng-click="getLocation();" ng-show="showMyLocationButton" class="button button-block button-positive icon-left ion-pinpoint">Set to My Location</button>
+        </div>
+        <div class="col">
+          <button ng-click="openMap();" ng-hide="hideSetFromMapButton" class="button button-block button-positive icon-left icon ion-map">Set From Map</button>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+
+</ion-view>
