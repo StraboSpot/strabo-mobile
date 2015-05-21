@@ -7,7 +7,7 @@ angular.module('app')
     SyncService) {
 
     $scope.skip = function() {
-      $state.go('app.map');
+      $state.go('app.spots');
     };
 
     // Form data for the login modal
