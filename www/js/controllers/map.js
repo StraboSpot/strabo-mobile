@@ -696,9 +696,10 @@ angular.module('app')
       };
 
       return new ol.layer.Vector({
-        source: new ol.source.GeoJSON({
-          object: geojson,
-          projection: 'EPSG:3857'
+        source: new ol.source.Vector({
+          features: (new ol.format.GeoJSON()).readFeatures(geojson, {
+            featureProjection: 'EPSG:3857'
+          })
         }),
         title: geojson.properties.name,
         style: function(feature, resolution) {
@@ -802,17 +803,18 @@ angular.module('app')
         // clear any existing popovers
         popup.hide();
 
-        map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
-          console.log("feature", feature);
-          console.log("layer", layer);
-        });
-
         var feature = map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
           return feature;
+        }, this, function(layer) {
+          // we only want the layer where the spots are located
+          return (layer instanceof ol.layer.Vector) && layer.get('name') !== 'drawLayer' && layer.get('name') !== 'geolocationLayer';
         });
 
         var layer = map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
           return layer;
+        }, this, function(layer) {
+          // we only want the layer where the spots are located
+          return (layer instanceof ol.layer.Vector) && layer.get('name') !== 'drawLayer' && layer.get('name') !== 'geolocationLayer';
         });
 
         // we need to check that we're not clicking on the geolocation layer
