@@ -696,9 +696,10 @@ angular.module('app')
       };
 
       return new ol.layer.Vector({
-        source: new ol.source.GeoJSON({
-          object: geojson,
-          projection: 'EPSG:3857'
+        source: new ol.source.Vector({
+          features: (new ol.format.GeoJSON()).readFeatures(geojson, {
+            featureProjection: 'EPSG:3857'
+          })
         }),
         title: geojson.properties.name,
         style: function(feature, resolution) {
