@@ -192,9 +192,6 @@ angular.module('app')
     var popup = new ol.Overlay.Popup();
     map.addOverlay(popup);
 
-    // Zoom
-    map.addControl(new ol.control.Zoom());
-
     /////////////////
     // END MAP LAYERS
     /////////////////
