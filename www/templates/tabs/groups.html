@@ -9,27 +9,19 @@
 
   <ion-header-bar class="bar-subheader">
     <ion-scroll direction="x" class="wide-as-needed">
-      <a class="button inline-button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/details">Details</a>
-      .
-      <a class="button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/notes">Notes</a>
-      .
-      <a class="button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/pictures">Photos</a>
-      .
-      <a class="button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/georeference">Georeference</a>
-      .
+      <a class="button inline-button button-clear spot-tab-inactive" href="#/app/spots/{{spot.properties.id}}/details">Details</a>
+      <a class="button button-clear spot-tab-inactive" href="#/app/spots/{{spot.properties.id}}/notes">Notes</a>
+      <a class="button button-clear spot-tab-inactive" href="#/app/spots/{{spot.properties.id}}/pictures">Photos</a>
+      <a class="button button-clear spot-tab-inactive" href="#/app/spots/{{spot.properties.id}}/georeference">Georeference</a>
       <span ng-show="showLinks">
-        <a class="button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/links">Links</a>
-        .
+        <a class="button button-clear spot-tab-inactive" href="#/app/spots/{{spot.properties.id}}/links">Links</a>
       </span>
-      <a class="button button-clear button-dark" href="#/app/spots/{{spot.properties.id}}/groups">Groups</a>
-      .
+      <a class="button button-clear button-light spot-tab-active" href="#/app/spots/{{spot.properties.id}}/groups">Groups</a>
       <span ng-show="showGroupMembers">
-        <a class="button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/groupmembers">Group Members</a>
-        .
+        <a class="button button-clear spot-tab-inactive" href="#/app/spots/{{spot.properties.id}}/groupmembers">Group Members</a>
       </span>
-      <a class="button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/rockdescription">Rock Description</a>
-      .
-      <a class="button button-clear button-light" href="#/app/spots/{{spot.properties.id}}/rocksample">Rock Sample</a>
+      <a class="button button-clear spot-tab-inactive" href="#/app/spots/{{spot.properties.id}}/rockdescription">Rock Description</a>
+      <a class="button button-clear spot-tab-inactive" href="#/app/spots/{{spot.properties.id}}/rocksample">Rock Sample</a>
     </ion-scroll>
   </ion-header-bar>
 

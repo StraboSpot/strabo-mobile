@@ -301,14 +301,35 @@ button.skip {
 }
 
 /*--------------------
-Buttons on Spot Page (Psuedo Tabs)
+Buttons on Spot Page (Pseudo Tabs)
 --------------------*/
+
+.bar {
+  background-size: 100% 0px;
+}
+
 .wide-as-needed {
-  overflow: scroll;
   white-space: nowrap;
-  height: 40px;
+  height: 44px;
 }
 
 .scroll-bar {
-  visibility: hidden!important;
+  visibility: hidden !important;
+}
+
+.bar-subheader {
+  background-color: #444444;
+}
+
+.spot-tab-active {
+  font-weight: bold !important;
+  text-transform: uppercase !important;
+  border-bottom: medium solid #FFA500 !important;
+  font-size: small !important;
+}
+
+.spot-tab-inactive {
+  font-weight: bold !important;
+  text-transform: uppercase !important;
+  font-size: small !important;
 }
