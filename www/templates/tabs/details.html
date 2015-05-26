@@ -10,29 +10,29 @@
 
     <ion-header-bar class="bar-subheader">
       <ion-scroll direction="x" class="wide-as-needed">
-        <a class="button inline-button button-clear button-dark" href="#/app/spots/{{spot.properties.id}}/details">Details</a>
+        <a class="button inline-button button-clear button-light spot-tab-active" href="#/app/spots/{{spot.properties.id}}/details">Details</a>
         .
-        <a class="button button-clear button-light" ng-click="validateDetailsAndGo('notes');">Notes</a>
+        <a class="button button-clear spot-tab-inactive" ng-click="validateDetailsAndGo('notes');">Notes</a>
         .
-        <a class="button button-clear button-light" ng-click="validateDetailsAndGo('pictures');">Photos</a>
+        <a class="button button-clear spot-tab-inactive" ng-click="validateDetailsAndGo('pictures');">Photos</a>
         .
-        <a class="button button-clear button-light" ng-click="validateDetailsAndGo('georeference');">Georeference</a>
+        <a class="button button-clear spot-tab-inactive" ng-click="validateDetailsAndGo('georeference');">Georeference</a>
         .
         <span ng-show="showLinks">
-          <a class="button button-clear button-light" ng-click="validateDetailsAndGo('links');">Links</a>
+          <a class="button button-clear spot-tab-inactive" ng-click="validateDetailsAndGo('links');">Links</a>
           .
         </span>
         <span ng-show="showGroups">
-          <a class="button button-clear button-light" ng-click="validateDetailsAndGo('groups');">Groups</a>
+          <a class="button button-clear spot-tab-inactive" ng-click="validateDetailsAndGo('groups');">Groups</a>
           .
         </span>
         <span ng-show="showGroupMembers">
-          <a class="button button-clear button-light" ng-click="validateDetailsAndGo('groupmembers');">Group Members</a>
+          <a class="button button-clear spot-tab-inactive" ng-click="validateDetailsAndGo('groupmembers');">Group Members</a>
           .
         </span>
-        <a class="button button-clear button-light" ng-click="validateDetailsAndGo('rockdescription');">Rock Description</a>
+        <a class="button button-clear spot-tab-inactive" ng-click="validateDetailsAndGo('rockdescription');">Rock Description</a>
         .
-        <a class="button button-clear button-light" ng-click="validateDetailsAndGo('rocksample');">Rock Sample</a>
+        <a class="button button-clear spot-tab-inactive" ng-click="validateDetailsAndGo('rocksample');">Rock Sample</a>
       </ion-scroll>
     </ion-header-bar>
 
