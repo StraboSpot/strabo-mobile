@@ -11,20 +11,20 @@
     <ion-header-bar class="bar-subheader">
       <ion-scroll direction="x" class="wide-as-needed">
         <a class="button inline-button button-clear button-light spot-tab-active" href="#/app/spots/{{spot.properties.id}}/details">Details</a>
-        <a class="button button-clear spot-tab-inactive" ng-click="validateDetailsAndGo('notes');">Notes</a>
-        <a class="button button-clear spot-tab-inactive" ng-click="validateDetailsAndGo('pictures');">Photos</a>
-        <a class="button button-clear spot-tab-inactive" ng-click="validateDetailsAndGo('georeference');">Georeference</a>
+        <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('notes');">Notes</a>
+        <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('pictures');">Photos</a>
+        <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('georeference');">Georeference</a>
         <span ng-show="showLinks">
-          <a class="button button-clear spot-tab-inactive" ng-click="validateDetailsAndGo('links');">Links</a>
+          <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('links');">Links</a>
         </span>
         <span ng-show="showGroups">
-          <a class="button button-clear spot-tab-inactive" ng-click="validateDetailsAndGo('groups');">Groups</a>
+          <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('groups');">Groups</a>
         </span>
         <span ng-show="showGroupMembers">
-          <a class="button button-clear spot-tab-inactive" ng-click="validateDetailsAndGo('groupmembers');">Group Members</a>
+          <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('groupmembers');">Group Members</a>
         </span>
-        <a class="button button-clear spot-tab-inactive" ng-click="validateDetailsAndGo('rockdescription');">Rock Description</a>
-        <a class="button button-clear spot-tab-inactive" ng-click="validateDetailsAndGo('rocksample');">Rock Sample</a>
+        <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('rockdescription');">Rock Description</a>
+        <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('rocksample');">Rock Sample</a>
       </ion-scroll>
     </ion-header-bar>
 
@@ -40,6 +40,20 @@
               <div ng-switch-when="integer">
                 <label class="item item-input item-stacked-label item-text-wrap"
                        ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid }"
+                       ng-messages-include="templates/error-messages.html">
+                  <span class="input-label">{{field.label}}</span>
+                  <input type="number"
+                         name="{{ field.name }}"
+                         placeholder="{{ field.hint }}"
+                         ng-model="spot.properties[field.name]"
+                         ng-required="{{ field.required }}"
+                         ng-min="getMin(field.constraint)"
+                         ng-max="getMax(field.constraint)">
+                </label>
+              </div>
+              <div ng-switch-when="decimal">
+                <label class="item item-input item-stacked-label item-text-wrap"
+                       ng-class="{ 'has-errors' : rockDescriptionForm[field.name].$invalid, 'no-errors' : rockDescriptionForm[field.name].$valid }"
                        ng-messages-include="templates/error-messages.html">
                   <span class="input-label">{{field.label}}</span>
                   <input type="number"
@@ -133,7 +147,7 @@
         </div>
       </div>
 
-
+<!--
       <div class="row responsive-sm">
         <div class="col" ng-show="showContactButtons()">
           <button ng-click="newSpot('Contact');" class="button button-block button-positive icon-left icon ion-compass">Link to New Contact Description</button>
@@ -170,6 +184,7 @@
           <button ng-click="linkShearZone();" ng-disabled="enableLinkShearZone" class="button button-block button-positive icon-left icon ion-compass">Link to Existing Shear Zone Description</button>
         </div>
       </div>
+-->
     </ion-content>
 
   </ion-view>

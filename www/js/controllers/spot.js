@@ -460,64 +460,77 @@ angular.module('app')
       $location.path("/app/map");
     };
 
-    // Run validation and then go to the given page
-    $scope.validateDetailsAndGo = function (tab) {
-      if ($scope.validateDetails())
-        $location.path('/app/spots/' + $scope.spot.properties.id + '/' + tab);
-    };
-
-    // Validate the details form inputs
-    $scope.validateDetails = function() {
+    // Validate the fields in the given form
+    $scope.validateFields = function(form) {
       console.log("Validating form with spot:", $scope.spot);
       var errorMessages = "";
 
-      // Run validation check on the forms that are generated dynamically
-      if ($scope.survey) {
-        // If a field is visible and required but empty give the user an error message and return to the form
-        _.each($scope.survey, function (field) {
-          var ele = document.getElementById(field.name);
-          if (getComputedStyle(ele).display != "none" && !$scope.spot.properties[field.name]) {
-            if (field.required == "true")
-              errorMessages += "<b>" + field.label + "</b> Required!<br>";
-            else
-            if (field.name in $scope.spot.properties)
-              errorMessages += "<b>" + field.label + "</b> " + field.constraint_message + "<br>";
-          }
-          else if (getComputedStyle(ele).display == "none")
-            delete $scope.spot.properties[field.name];
-        });
-
-        if (errorMessages) {
-          alertPopup = $ionicPopup.alert({
-            title: 'Validation Error!',
-            template: "Fix the following errors before continuing:<br>" + errorMessages
-          });
-          return false;
+      // If a field is visible and required but empty give the user an error message and return to the form
+      _.each(form, function (field) {
+        var ele = document.getElementById(field.name);
+        if (getComputedStyle(ele).display != "none" && !$scope.spot.properties[field.name]) {
+          if (field.required == "true")
+            errorMessages += "<b>" + field.label + "</b> Required!<br>";
+          else
+          if (field.name in $scope.spot.properties)
+            errorMessages += "<b>" + field.label + "</b> " + field.constraint_message + "<br>";
         }
-        else
-          return true;
+        else if (getComputedStyle(ele).display == "none")
+          delete $scope.spot.properties[field.name];
+      });
+
+      if (errorMessages) {
+        alertPopup = $ionicPopup.alert({
+          title: 'Validation Error!',
+          template: "Fix the following errors before continuing:<br>" + errorMessages
+        });
+        return false;
       }
       else
         return true;
     };
 
+    // Validate the current form
+    $scope.validateForm = function() {
+      switch($state.current.url.split("/").pop()) {
+        case "details":
+          if (!$scope.validateFields($scope.survey))
+            return false;
+          break;
+        case "rockdescription":
+          if (!$scope.validateFields($scope.rock_description_survey))
+            return false;
+          break;
+        case "notes":
+          if (!$scope.spot.properties.name) {
+            $ionicPopup.alert({
+              title: 'Validation Error!',
+              template: '<b>Spot Name</b> is required.'
+            });
+            return false;
+          }
+      }
+      return true;
+    };
+
+    // When switching tabs validate the form first (if the tab is based on a form),
+    // save the properties for the current spot temporarily, then go to the new tab
+    $scope.switchTabs = function (toTab) {
+      if (!$scope.validateForm())
+        return 0;
+
+      CurrentSpot.setCurrentSpot($scope.spot);
+      $location.path('/app/spots/' + $scope.spot.properties.id + '/' + toTab);
+    };
+
     // Add or modify Spot
     $scope.submit = function() {
 
-      // If currently on the details page validate before saving
-      if ($state.current.url.split("/").pop() == "app.details")
-        if (!$scope.validateDetails())
-          return 0;
+      // Validate the form first
+      if (!$scope.validateForm())
+        return 0;
 
       console.log("spot to save: ", $scope.spot);
-
-      if (!$scope.spot.properties.name) {
-        $ionicPopup.alert({
-          title: 'Error Saving!',
-          template: '<b>Spot Name</b> is required.'
-        });
-        return;
-      }
 
       // define the geojson feature type
       $scope.spot.type = "Feature";
