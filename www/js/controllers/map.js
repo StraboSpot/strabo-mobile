@@ -124,9 +124,7 @@ angular.module('app')
       // remove rotate icon from controls and add drawing controls
       controls: ol.control.defaults({
         rotate: false
-      }).extend([
-        new drawControls()
-      ]),
+      }),
       // turn off ability to rotate map via keyboard+mouse and using fingers on a mobile device
       interactions: ol.interaction.defaults({
         altShiftDragRotate: false,
@@ -184,6 +182,9 @@ angular.module('app')
 
     // add geolocation layer
     map.addLayer(geolocationLayer);
+
+    // add draw controls
+    map.addControl(new drawControls());
 
     // layer switcher
     map.addControl(new ol.control.LayerSwitcher());
