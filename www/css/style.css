@@ -308,6 +308,13 @@ Buttons on Spot Page (Pseudo Tabs)
   background-size: 100% 0px;
 }
 
+.bar-header {
+  border: 0px !important;
+  border-bottom-color: transparent !important;
+  background-image: none;
+  border-bottom: none;
+}
+
 .wide-as-needed {
   white-space: nowrap;
   height: 44px;
