@@ -304,11 +304,8 @@ button.skip {
 Buttons on Spot Page (Pseudo Tabs)
 --------------------*/
 
-.bar-header {
-  border: 0px !important;
-  border-bottom-color: transparent !important;
-  background-image: none;
-  border-bottom: none !important;
+.bar {
+  background-size: 100% 0px;
 }
 
 .wide-as-needed {
