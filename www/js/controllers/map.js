@@ -290,14 +290,27 @@ angular.module('app')
     // drawButtonActive used to keep state of which selected drawing tool is active
     $scope.drawButtonActive = null;
 
-    $scope.startDraw = function(type) {
+    $scope.startDraw = function(type, isFreeHand) {
       //if the type is already selected, we want to stop drawing
-      if ($scope.drawButtonActive === type) {
+      if ($scope.drawButtonActive === type && !isFreeHand) {
         $scope.drawButtonActive = null;
         $scope.cancelDraw();
         return;
       } else {
         $scope.drawButtonActive = type;
+      }
+
+      console.log("isFreeHand, ", isFreeHand);
+
+      // are we in freehand mode?
+      if (isFreeHand) {
+        // yes -- then disable the map drag pan
+        map.getInteractions().forEach(function (interaction) {
+          if (interaction instanceof ol.interaction.DragPan) {
+            console.log(interaction);
+            map.getInteractions().remove(interaction);
+          }
+        });
       }
 
       // is draw already set?
@@ -306,45 +319,102 @@ angular.module('app')
         $scope.cancelDraw();
       }
 
-      draw = new ol.interaction.Draw({
-        source: drawLayer.getSource(),
-        type: type
-      });
+      if (isFreeHand) {
+        draw = new ol.interaction.Draw({
+          source: drawLayer.getSource(),
+          type: type,
+          condition: ol.events.condition.singleClick,
+          freehandCondition: ol.events.condition.noModifierKeys,
+          snapTolerance: 96
+        });
+      } else {
+        draw = new ol.interaction.Draw({
+          source: drawLayer.getSource(),
+          type: type
+        });
+      }
+
 
       draw.on("drawend", function(e) {
+
         // we want a geojson object when the user finishes drawing
         var geojson = new ol.format.GeoJSON;
 
-        // the actual geojson object
+        // the actual geojson object that was drawn
         var geojsonObj = JSON.parse(geojson.writeFeature(e.feature, {
           featureProjection: "EPSG:3857"
         }));
 
-        // Initialize new Spot
-        NewSpot.setNewSpot(geojsonObj);
 
-        // If we got to the map from the spot view go back to that view
-        var backView = $ionicHistory.backView();
-        if (backView) {
-          if (backView.stateName == "app.spot") {
-            $rootScope.$apply(function() {
-              $location.path("/app/spots/newspot");
+        if (isFreeHand) {
+          console.log("Drawend : Freehand");
+
+          // contains all the lassoed objects
+          var isLassoed = [];
+
+          SpotsFactory.all().then(function(spots) {
+            _.each(spots, function (spot) {
+
+              // if the spot is a point, we test using turf.inside
+              // if the spot is a polygon or line, we test using turf.intersect
+
+              var spotType = spot.geometry.type;
+
+              if (spotType === "Point") {
+                // is the point inside the drawn polygon?
+                if (turf.inside(spot, geojsonObj)) {
+                  isLassoed.push(spot.properties.name);
+                }
+              }
+
+              if (spotType === "LineString" || spotType === "Polygon") {
+                // is the line or polygon within/intersected in the drawn polygon?
+                if (turf.intersect(spot, geojsonObj)) {
+                  isLassoed.push(spot.properties.name);
+                }
+              }
             });
-          }
-        }
-        else {
+
+            // add the regular draw controls back
+            map.addControl(new drawControls());
+
+            // add the layer switcher controls back
+            map.addControl(new ol.control.LayerSwitcher());
+
+            // add the dragging back in
+            map.addInteraction(new ol.interaction.DragPan());
+
+            console.log("isLassoed, ", isLassoed);
+          });
+        } else {
+          console.log("Drawend: Normal (not freehand)");
+
           // Initialize new Spot
           NewSpot.setNewSpot(geojsonObj);
-          switch ($scope.drawButtonActive) {
-            case "Point":
-              $scope.openModal("pointModal");
-              break;
-            case "LineString":
-              $scope.openModal("lineModal");
-              break;
-            case "Polygon":
-              $scope.openModal("polyModal");
-              break;
+
+          // If we got to the map from the spot view go back to that view
+          var backView = $ionicHistory.backView();
+          if (backView) {
+            if (backView.stateName == "app.spot") {
+              $rootScope.$apply(function() {
+                $location.path("/app/spots/newspot");
+              });
+            }
+          }
+          else {
+            // Initialize new Spot
+            NewSpot.setNewSpot(geojsonObj);
+            switch ($scope.drawButtonActive) {
+              case "Point":
+                $scope.openModal("pointModal");
+                break;
+              case "LineString":
+                $scope.openModal("lineModal");
+                break;
+              case "Polygon":
+                $scope.openModal("polyModal");
+                break;
+            }
           }
         }
       });
@@ -939,10 +1009,14 @@ angular.module('app')
     };
 
     var groupSpots = function() {
-      $ionicPopup.alert({
-        title: 'To Do!',
-        template: "This will allow you to group spots by drawing a polygon around the spots you want to group."
-      });
+      // remove the layer switcher to avoid confusion with lasso and regular drawing
+      map.getControls().removeAt(3);
+
+      // remove the drawing tools to avoid confusion with lasso and regular drawing
+      map.getControls().removeAt(2);
+
+      // start the draw with freehand enabled
+      $scope.startDraw('Polygon', true);
     };
 
     /////////////////
