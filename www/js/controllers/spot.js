@@ -13,28 +13,8 @@ angular.module('app')
     $ionicPopup,
     $ionicModal,
     $cordovaGeolocation,
-    $cordovaCamera) {
-
-    angular.module('app').addContactsAndTracesSurvey($scope);
-    angular.module('app').addContactsAndTracesChoices($scope);
-    angular.module('app').addMeasurementsAndObservationsSurvey($scope);
-    angular.module('app').addMeasurementsAndObservationsChoices($scope);
-    angular.module('app').addContactSurvey($scope);
-    angular.module('app').addContactChoices($scope);
-    angular.module('app').addFaultSurvey($scope);
-    angular.module('app').addFaultChoices($scope);
-    angular.module('app').addFoldSurvey($scope);
-    angular.module('app').addFoldChoices($scope);
-    angular.module('app').addOrientationSurvey($scope);
-    angular.module('app').addOrientationChoices($scope);
-    angular.module('app').addRockDescriptionSurvey($scope);
-    angular.module('app').addRockDescriptionChoices($scope);
-    angular.module('app').addSampleLocalitySurvey($scope);
-    angular.module('app').addSampleLocalityChoices($scope);
-    angular.module('app').addShearZoneSurvey($scope);
-    angular.module('app').addShearZoneChoices($scope);
-    angular.module('app').addSpotGroupingSurvey($scope);
-    angular.module('app').addSpotGroupingChoices($scope);
+    $cordovaCamera,
+    ContentModelSurveyFactory) {
 
     $scope.goToSpots = function() {
       $state.go('app.spots');
@@ -225,56 +205,56 @@ angular.module('app')
       switch ($scope.spot.properties.type) {
         case "Measurements and Observations":
           $scope.showDynamicFields = true;
-          $scope.survey = $scope.measurements_and_observations_survey;
-          $scope.choices = $scope.measurements_and_observations_choices;
+          $scope.survey = ContentModelSurveyFactory.measurements_and_observations_survey;
+          $scope.choices = ContentModelSurveyFactory.measurements_and_observations_choices;
           break;
         case "Contacts and Traces":
           $scope.showDynamicFields = true;
-          $scope.survey = $scope.contacts_and_traces_survey;
-          $scope.choices = $scope.contacts_and_traces_choices;
+          $scope.survey = ContentModelSurveyFactory.contacts_and_traces_survey;
+          $scope.choices = ContentModelSurveyFactory.contacts_and_traces_choices;
           break;
 
         case "Contact":
           $scope.showDynamicFields = true;
-          $scope.survey = $scope.contact_survey;
-          $scope.choices = $scope.contact_choices;
+          $scope.survey = ContentModelSurveyFactory.contact_survey;
+          $scope.choices = ContentModelSurveyFactory.contact_choices;
           break;
         case "Fault":
           $scope.showDynamicFields = true;
-          $scope.survey = $scope.fault_survey;
-          $scope.choices = $scope.fault_choices;
+          $scope.survey = ContentModelSurveyFactory.fault_survey;
+          $scope.choices = ContentModelSurveyFactory.fault_choices;
           break;
         case "Fold":
           $scope.showDynamicFields = true;
-          $scope.survey = $scope.fold_survey;
-          $scope.choices = $scope.fold_choices;
+          $scope.survey = ContentModelSurveyFactory.fold_survey;
+          $scope.choices = ContentModelSurveyFactory.fold_choices;
           break;
         case "Notes":
           break;
         case "Orientation":
           $scope.showDynamicFields = true;
-          $scope.survey = $scope.orientation_survey;
-          $scope.choices = $scope.orientation_choices;
+          $scope.survey = ContentModelSurveyFactory.orientation_survey;
+          $scope.choices = ContentModelSurveyFactory.orientation_choices;
           break;
         case "Rock Description":
           $scope.showDynamicFields = true;
-          $scope.survey = $scope.rock_description_survey;
-          $scope.choices = $scope.rock_description_choices;
+          $scope.survey = ContentModelSurveyFactory.rock_description_survey;
+          $scope.choices = ContentModelSurveyFactory.rock_description_choices;
           break;
         case "Sample Locality":
           $scope.showDynamicFields = true;
-          $scope.survey = $scope.sample_locality_survey;
-          $scope.choices = $scope.sample_locality_choices;
+          $scope.survey = ContentModelSurveyFactory.sample_locality_survey;
+          $scope.choices = ContentModelSurveyFactory.sample_locality_choices;
           break;
         case "Shear Zone":
           $scope.showDynamicFields = true;
-          $scope.survey = $scope.shear_zone_survey;
-          $scope.choices = $scope.shear_zone_choices;
+          $scope.survey = ContentModelSurveyFactory.shear_zone_survey;
+          $scope.choices = ContentModelSurveyFactory.shear_zone_choices;
           break;
         case "Spot Grouping":
           $scope.showDynamicFields = true;
-          $scope.survey = $scope.spot_grouping_survey;
-          $scope.choices = $scope.spot_grouping_choices;
+          $scope.survey = ContentModelSurveyFactory.spot_grouping_survey;
+          $scope.choices = ContentModelSurveyFactory.spot_grouping_choices;
           $scope.showGroupMembers = true;
           break;
         default:
@@ -498,7 +478,7 @@ angular.module('app')
             return false;
           break;
         case "rockdescription":
-          if (!$scope.validateFields($scope.rock_description_survey))
+          if (!$scope.validateFields(ContentModelSurveyFactory.rock_description_survey))
             return false;
           break;
         case "notes":
