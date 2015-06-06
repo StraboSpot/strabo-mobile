@@ -13,6 +13,7 @@ angular.module('app')
     $ionicModal,
     $ionicPopup,
     $ionicActionSheet,
+    $ionicSideMenuDelegate,
     NewSpot,
     MapView,
     OfflineTilesFactory,
@@ -21,6 +22,9 @@ angular.module('app')
     ViewExtentFactory,
     ImagesFactory,
     MapLayerFactory) {
+
+    // disable dragging back to ionic side menu because this affects drawing tools
+    $ionicSideMenuDelegate.canDragContent(false);
 
     // ol3 map
     var map;
