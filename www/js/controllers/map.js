@@ -428,6 +428,10 @@ angular.module('app')
     // If the map is moved save the view
     map.on('moveend', function(evt) {
       MapView.setMapView(map.getView());
+
+      // update the zoom information control
+      $scope.currentZoom = evt.map.getView().getZoom();
+      $scope.$apply();
     });
 
     // Zoom to the extent of the spots, if that fails geolocate the user

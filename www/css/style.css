@@ -66,6 +66,14 @@ Map Draw Controls Style
   right: .5em;
   transition: opacity .25s
 }
+#zoomInfo {
+ position: absolute;
+ font-size: 0.8em;
+ bottom: 0.5em;
+ left: 0.5em;
+ background-color: white;
+ padding: 0.5em;
+}
 
 /*--------------------
 Map Popups Style
