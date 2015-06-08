@@ -98,7 +98,6 @@
                   <select name="{{ field.name }}"
                           ng-model="spot.properties[field.name]"
                           ng-options="choice.name as choice.label for choice in choices
-                                | orderBy: 'label'
                                 | filter: { 'list name': field.type.split(' ')[1] }"
                           ng-required="{{ field.required }}">
                   </select>
@@ -109,7 +108,7 @@
                   <span class="input-label">{{field.label}}</span>
                   <span class="item-placeholder"><small>{{ field.hint }}</small></span><br>
                   <ion-checkbox name="{{ field.name }}"
-                                ng-repeat="choice in choices | orderBy: 'label' | filter: { 'list name': field.type.split(' ')[1] }"
+                                ng-repeat="choice in choices | filter: { 'list name': field.type.split(' ')[1] }"
                                 ng-checked="isOptionChecked(field.name, choice.name)"
                                 ng-click="toggleChecked(field.name, choice.name)"
                                 ng-required="{{ field.required }}">
