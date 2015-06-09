@@ -1074,31 +1074,31 @@ angular.module('app')
         "list name":"iq4bx64"
       },
       {
-        "label":"gentle   (180º –120º)",
+        "label":"gentle   (180\xB0–120\xB0)",
         "name":"gentle",
         "order":null,
         "list name":"ao3ks66"
       },
       {
-        "label":"open   (120º–70º)",
+        "label":"open   (120\xB0–70\xB0)",
         "name":"open",
         "order":null,
         "list name":"ao3ks66"
       },
       {
-        "label":"close   (70º–30º)",
+        "label":"close   (70\xB0–30\xB0)",
         "name":"close",
         "order":null,
         "list name":"ao3ks66"
       },
       {
-        "label":"tight   (30º–10º)",
+        "label":"tight   (30\xB0–10\xB0)",
         "name":"tight",
         "order":null,
         "list name":"ao3ks66"
       },
       {
-        "label":"isoclinal   (10º–0º)",
+        "label":"isoclinal   (10\xB0–0\xB0)",
         "name":"isoclinal",
         "order":null,
         "list name":"ao3ks66"
@@ -3378,25 +3378,25 @@ angular.module('app')
         "order":null
       },
       {
-        "label":"open   (120º–70º)",
+        "label":"open   (120\xB0–70\xB0)",
         "name":"open",
         "list name":"ao3ks66",
         "order":null
       },
       {
-        "label":"close   (70º–30º)",
+        "label":"close   (70\xB0–30\xB0)",
         "name":"close",
         "list name":"ao3ks66",
         "order":null
       },
       {
-        "label":"tight   (30º–10º)",
+        "label":"tight   (30\xB0–10\xB0)",
         "name":"tight",
         "list name":"ao3ks66",
         "order":null
       },
       {
-        "label":"isoclinal   (10º–0º)",
+        "label":"isoclinal   (10\xB0–0\xB0)",
         "name":"isoclinal",
         "list name":"ao3ks66",
         "order":null
