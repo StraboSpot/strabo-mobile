@@ -10,7 +10,9 @@
 
     <ion-header-bar class="bar-subheader">
       <ion-scroll direction="x" class="wide-as-needed">
-        <a class="button inline-button button-clear spot-tab-inactive" ng-click="switchTabs('details')">Details</a>
+        <span ng-show="showDetails">
+          <a class="button inline-button button-clear spot-tab-inactive" ng-click="switchTabs('details')">Details</a>
+        </span>
         <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('notes');">Notes</a>
         <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('pictures')">Photos</a>
         <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('georeference')">Georeference</a>
@@ -24,7 +26,9 @@
           <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('groupmembers')">Group Members</a>
         </span>
         <a class="button button-clear button-light spot-tab-active" href="#/app/spots/{{spot.properties.id}}/rockdescription">Rock Description</a>
-        <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('rocksample')">Rock Sample</a>
+        <span ng-show="showRockSample">
+          <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('rocksample');">Rock Sample</a>
+        </span>
       </ion-scroll>
     </ion-header-bar>
 
@@ -80,12 +84,12 @@
                      ng-class="{ 'has-errors' : rockDescriptionForm[field.name].$invalid, 'no-errors' : rockDescriptionForm[field.name].$valid }"
                      ng-messages-include="templates/error-messages.html">
                 <span class="input-label">{{ field.label }}</span>
-                        <textarea name="{{ field.name }}"
-                                  rows="4"
-                                  placeholder="{{field.hint}}"
-                                  ng-model="spot.properties[field.name]"
-                                  ng-required="{{ field.required }}">
-                        </textarea>
+                <textarea name="{{ field.name }}"
+                          rows="4"
+                          placeholder="{{field.hint}}"
+                          ng-model="spot.properties[field.name]"
+                          ng-required="{{ field.required }}">
+                </textarea>
               </label>
             </div>
             <div ng-switch-when="select_one">

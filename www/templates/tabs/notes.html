@@ -9,7 +9,9 @@
 
   <ion-header-bar class="bar-subheader">
     <ion-scroll direction="x" class="wide-as-needed">
-      <a class="button inline-button button-clear spot-tab-inactive" ng-click="switchTabs('details')">Details</a>
+      <span ng-show="showDetails">
+        <a class="button inline-button button-clear spot-tab-inactive" ng-click="switchTabs('details')">Details</a>
+      </span>
       <a class="button button-clear button-light spot-tab-active" href="#/app/spots/{{spot.properties.id}}/notes">Notes</a>
       <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('pictures')">Photos</a>
       <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('georeference')">Georeference</a>
@@ -22,8 +24,12 @@
       <span ng-show="showGroupMembers">
         <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('groupmembers')">Group Members</a>
       </span>
-      <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('rockdescription')">Rock Description</a>
-      <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('rocksample')">Rock Sample</a>
+      <span ng-show="showRockDescription">
+        <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('rockdescription');">Rock Description</a>
+      </span>
+      <span ng-show="showRockSample">
+        <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('rocksample');">Rock Sample</a>
+      </span>
     </ion-scroll>
   </ion-header-bar>
 

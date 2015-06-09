@@ -23,8 +23,12 @@
         <span ng-show="showGroupMembers">
           <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('groupmembers');">Group Members</a>
         </span>
-        <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('rockdescription');">Rock Description</a>
-        <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('rocksample');">Rock Sample</a>
+        <span ng-show="showRockDescription">
+          <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('rockdescription');">Rock Description</a>
+        </span>
+        <span ng-show="showRockSample">
+          <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('rocksample');">Rock Sample</a>
+        </span>
       </ion-scroll>
     </ion-header-bar>
 
@@ -82,12 +86,12 @@
                        ng-class="{ 'has-errors' : straboForm[field.name].$invalid, 'no-errors' : straboForm[field.name].$valid }"
                        ng-messages-include="templates/error-messages.html">
                   <span class="input-label">{{ field.label }}</span>
-                        <textarea name="{{ field.name }}"
-                                  rows="4"
-                                  placeholder="{{field.hint}}"
-                                  ng-model="spot.properties[field.name]"
-                                  ng-required="{{ field.required }}">
-                        </textarea>
+                  <textarea name="{{ field.name }}"
+                            rows="4"
+                            placeholder="{{field.hint}}"
+                            ng-model="spot.properties[field.name]"
+                            ng-required="{{ field.required }}">
+                  </textarea>
                 </label>
               </div>
               <div ng-switch-when="select_one">

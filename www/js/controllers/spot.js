@@ -22,7 +22,7 @@ angular.module('app')
 
     $scope.openSpot = function(id) {
       CurrentSpot.clearCurrentSpot();
-      $location.path('/app/spots/' + id + '/details');
+      $location.path('/app/spots/' + id + '/notes');
     };
 
     $scope.showImages = function(index) {
@@ -205,54 +205,24 @@ angular.module('app')
       switch ($scope.spot.properties.type) {
         case "Measurements and Observations":
           $scope.showDynamicFields = true;
+          $scope.showDetails = true;
+          $scope.showRockDescription = true;
+          $scope.showRockSample = true;
           $scope.survey = ContentModelSurveyFactory.measurements_and_observations_survey;
           $scope.choices = ContentModelSurveyFactory.measurements_and_observations_choices;
           break;
         case "Contacts and Traces":
           $scope.showDynamicFields = true;
+          $scope.showDetails = true;
           $scope.survey = ContentModelSurveyFactory.contacts_and_traces_survey;
           $scope.choices = ContentModelSurveyFactory.contacts_and_traces_choices;
           break;
-
-        case "Contact":
-          $scope.showDynamicFields = true;
-          $scope.survey = ContentModelSurveyFactory.contact_survey;
-          $scope.choices = ContentModelSurveyFactory.contact_choices;
-          break;
-        case "Fault":
-          $scope.showDynamicFields = true;
-          $scope.survey = ContentModelSurveyFactory.fault_survey;
-          $scope.choices = ContentModelSurveyFactory.fault_choices;
-          break;
-        case "Fold":
-          $scope.showDynamicFields = true;
-          $scope.survey = ContentModelSurveyFactory.fold_survey;
-          $scope.choices = ContentModelSurveyFactory.fold_choices;
-          break;
-        case "Notes":
-          break;
-        case "Orientation":
-          $scope.showDynamicFields = true;
-          $scope.survey = ContentModelSurveyFactory.orientation_survey;
-          $scope.choices = ContentModelSurveyFactory.orientation_choices;
-          break;
         case "Rock Description":
-          $scope.showDynamicFields = true;
-          $scope.survey = ContentModelSurveyFactory.rock_description_survey;
-          $scope.choices = ContentModelSurveyFactory.rock_description_choices;
-          break;
-        case "Sample Locality":
-          $scope.showDynamicFields = true;
-          $scope.survey = ContentModelSurveyFactory.sample_locality_survey;
-          $scope.choices = ContentModelSurveyFactory.sample_locality_choices;
-          break;
-        case "Shear Zone":
-          $scope.showDynamicFields = true;
-          $scope.survey = ContentModelSurveyFactory.shear_zone_survey;
-          $scope.choices = ContentModelSurveyFactory.shear_zone_choices;
+          $scope.showRockDescription = true;
           break;
         case "Spot Grouping":
           $scope.showDynamicFields = true;
+          $scope.showDetails = true;
           $scope.survey = ContentModelSurveyFactory.spot_grouping_survey;
           $scope.choices = ContentModelSurveyFactory.spot_grouping_choices;
           $scope.showGroupMembers = true;
@@ -260,6 +230,11 @@ angular.module('app')
         default:
           $scope.showCustomFields = true;
       }
+
+      $scope.rock_description_survey = ContentModelSurveyFactory.rock_description_survey;
+      $scope.rock_description_choices = ContentModelSurveyFactory.rock_description_choices;
+      $scope.rock_sample_survey = ContentModelSurveyFactory.rock_sample_survey;
+      $scope.rock_sample_choices = ContentModelSurveyFactory.rock_sample_choices;
 
       // Set default values for the spot
       if ($scope.survey) {
@@ -479,6 +454,10 @@ angular.module('app')
           break;
         case "rockdescription":
           if (!$scope.validateFields(ContentModelSurveyFactory.rock_description_survey))
+            return false;
+          break;
+        case "rocksample":
+          if (!$scope.validateFields(ContentModelSurveyFactory.rock_sample_survey))
             return false;
           break;
         case "notes":
@@ -905,41 +884,6 @@ angular.module('app')
       animation: 'slide-in-up'
     }).then(function(modal) {
       $scope.linkModal = modal;
-    });
-
-    $ionicModal.fromTemplateUrl('templates/modals/linkContactModal.html', {
-      scope: $scope,
-      animation: 'slide-in-up'
-    }).then(function(modal) {
-      $scope.linkContactModal = modal;
-    });
-
-    $ionicModal.fromTemplateUrl('templates/modals/linkFaultModal.html', {
-      scope: $scope,
-      animation: 'slide-in-up'
-    }).then(function(modal) {
-      $scope.linkFaultModal = modal;
-    });
-
-    $ionicModal.fromTemplateUrl('templates/modals/linkFoldModal.html', {
-      scope: $scope,
-      animation: 'slide-in-up'
-    }).then(function(modal) {
-      $scope.linkFoldModal = modal;
-    });
-
-    $ionicModal.fromTemplateUrl('templates/modals/linkOrientationModal.html', {
-      scope: $scope,
-      animation: 'slide-in-up'
-    }).then(function(modal) {
-      $scope.linkOrientationModal = modal;
-    });
-
-    $ionicModal.fromTemplateUrl('templates/modals/linkShearZoneModal.html', {
-      scope: $scope,
-      animation: 'slide-in-up'
-    }).then(function(modal) {
-      $scope.linkShearZoneModal = modal;
     });
 
     $ionicModal.fromTemplateUrl('templates/modals/groupModal.html', {

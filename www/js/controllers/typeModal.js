@@ -26,8 +26,7 @@ angular.module('app')
 
   $scope.polyTypes = [
   /*  "Notes",*/
-  /*  "Rock Description",*/
-    "Polygon Form",
+    "Rock Description",
     "Spot Grouping"
   ];
 
