@@ -1,13 +1,17 @@
 angular.module('app')
 
 // Service for dealing with the creation of new spots and editing of existing spots
-.service('NewSpot', function($filter) {
+.service('NewSpot', function() {
   var newSpot;
 
   // Initialize a new Spot
   var setNewSpot = function(geojsonObj) {
     if (!newSpot)
-      newSpot = {};
+      newSpot = {
+        'geometry': {},
+        'type': undefined,
+        'properties': {}
+      };
 
     if (geojsonObj) {
       if (geojsonObj.geometry)
@@ -16,17 +20,28 @@ angular.module('app')
         newSpot.type = geojsonObj.type;
       if (geojsonObj.properties)
         newSpot.properties = geojsonObj.properties;
-      else {
-        if (!newSpot.properties) {
-          var time = new Date(Date.now());
-          time.setSeconds(00);
-          time.setMilliseconds(00);
-          newSpot.properties = {
-            date: new Date(Date.now()),
-            time: time,
-            id: Math.floor((new Date().getTime() + (Math.random() * 9000 + 1000) * .0001) * 10000), // datetime with random 4 digit number appended
-            name: new Date().getTime().toString()
-          };
+      if (!newSpot.properties.date || !newSpot.properties.date ) {
+        var time = new Date(Date.now());
+        time.setSeconds(00);
+        time.setMilliseconds(00);
+        newSpot.properties['date'] = new Date(Date.now());
+        newSpot.properties['time'] = time;
+      }
+      if (!newSpot.properties.id)
+        newSpot.properties['id'] = Math.floor((new Date().getTime() + (Math.random() * 9000 + 1000) * .0001) * 10000); // datetime with random 4 digit number appended
+
+      // Set type
+      if (!newSpot.properties.type) {
+        switch (newSpot.geometry.type){
+          case "Point":
+            newSpot.properties['type'] = 'Measurements and Observations';
+            break;
+          case "LineString":
+            newSpot.properties['type'] = 'Contacts and Traces';
+            break;
+          case "Polygon":
+            newSpot.properties['type'] = 'Rock Description';
+            break;
         }
       }
     }

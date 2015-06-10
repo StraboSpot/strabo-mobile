@@ -6,6 +6,7 @@ angular.module('app')
   .controller("MapCtrl", function(
     $scope,
     $rootScope,
+    $state,
     $cordovaGeolocation,
     $location,
     $filter,
@@ -15,6 +16,7 @@ angular.module('app')
     $ionicActionSheet,
     $ionicSideMenuDelegate,
     NewSpot,
+    CurrentSpot,
     MapView,
     OfflineTilesFactory,
     SlippyTileNamesFactory,
@@ -393,30 +395,74 @@ angular.module('app')
         } else {
           console.log("Drawend: Normal (not freehand)");
 
-          // Initialize new Spot
-          NewSpot.setNewSpot(geojsonObj);
-
-          // If we got to the map from the spot view go back to that view
-          var backView = $ionicHistory.backView();
-          if (backView) {
-            if (backView.stateName == "app.spot") {
-              $rootScope.$apply(function() {
-                $location.path("/app/spots/newspot");
-              });
+          // If there is already a current spot only update the geometry if the draw tool used
+          // matches the required geometry for the Spot type
+          if (CurrentSpot.getCurrentSpot()) {
+            var curSpot = CurrentSpot.getCurrentSpot();
+            switch (curSpot.properties.type) {
+              case "Measurements and Observations":
+                if ($scope.drawButtonActive == "Point"){
+                  curSpot.geometry = geojsonObj.geometry;
+                  CurrentSpot.setCurrentSpot(curSpot);
+                }
+                else
+                  $ionicPopup.alert({
+                    title: 'Geometry Mismatch!',
+                    template: "Measurements and Observations Spots must be drawn as a Points. Draw Again."
+                  });
+                $state.go('app.details');
+                break;
+              case "Contacts and Traces":
+                if ($scope.drawButtonActive == "LineString") {
+                  curSpot.geometry = geojsonObj.geometry;
+                  CurrentSpot.setCurrentSpot(curSpot);
+                }
+                else
+                  $ionicPopup.alert({
+                    title: 'Geometry Mismatch!',
+                    template: "Contacts and Traces Spots must be drawn as Lines. Draw Again."
+                  });
+                $state.go('app.details');
+                break;
+              case "Rock Description":
+                if ($scope.drawButtonActive == "Polygon") {
+                  curSpot.geometry = geojsonObj.geometry;
+                  CurrentSpot.setCurrentSpot(curSpot);
+                }
+                else
+                  $ionicPopup.alert({
+                    title: 'Geometry Mismatch!',
+                    template: "Rock Description Spots must be drawn as Polygons. Draw Again."
+                  });
+                $state.go('app.rockdescription');
+                break;
+              case "Spot Grouping":
+                if ($scope.drawButtonActive == "Polygon") {
+                  curSpot.geometry = geojsonObj.geometry;
+                  CurrentSpot.setCurrentSpot(curSpot);
+                }
+                else
+                  $ionicPopup.alert({
+                    title: 'Geometry Mismatch!',
+                    template: "Spot Groupings must be drawn as Polygons. Draw Again."
+                  });
+                $state.go('app.details');
+                break;
             }
           }
+          // Initialize new Spot
           else {
-            // Initialize new Spot
             NewSpot.setNewSpot(geojsonObj);
+
             switch ($scope.drawButtonActive) {
               case "Point":
-                $scope.openModal("pointModal");
+                $state.go('app.details');
                 break;
               case "LineString":
-                $scope.openModal("lineModal");
+                $state.go('app.details');
                 break;
               case "Polygon":
-                $scope.openModal("polyModal");
+                  $state.go('app.rockdescription');
                 break;
             }
           }
@@ -693,7 +739,9 @@ angular.module('app')
         var rotation = (dip || plunge) ? dip || plunge : 0;
 
         switch (contentModel) {
-          case "Contact":
+          case "Measurements and Observations":
+            return icon.orientation(rotation);
+      /*    case "Contact":
             return icon.contact_outcrop(rotation);
           case "Fault":
             return icon.fault_outcrop(rotation);
@@ -710,7 +758,7 @@ angular.module('app')
           case "Sample Locality":
             return icon.sample(rotation);
           case "Spot Grouping":
-            return icon.group(rotation);
+            return icon.group(rotation);*/
           default:
             return icon.default(rotation);
         }
@@ -1017,6 +1065,12 @@ angular.module('app')
     };
 
     var groupSpots = function() {
+      $ionicPopup.alert({
+        title: 'Not Yet Functional',
+        template: "This will allow you to group spots by drawing a polygon around the spots you want to group."
+      });
+
+      /***** COMMENTING OUT UNTIL FULLY FUNCTIONAL *****
       // remove the layer switcher to avoid confusion with lasso and regular drawing
       map.getControls().removeAt(3);
 
@@ -1025,6 +1079,7 @@ angular.module('app')
 
       // start the draw with freehand enabled
       $scope.startDraw('Polygon', true);
+      */
     };
 
     /////////////////
@@ -1061,51 +1116,4 @@ angular.module('app')
         }
       });
     };
-
-    /////////////////
-    // MODALS
-    /////////////////
-
-    $ionicModal.fromTemplateUrl('templates/modals/pointModal.html', {
-      scope: $scope,
-      animation: 'slide-in-up'
-    }).then(function(modal) {
-      $scope.pointModal = modal;
-    });
-
-    $ionicModal.fromTemplateUrl('templates/modals/lineModal.html', {
-      scope: $scope,
-      animation: 'slide-in-up'
-    }).then(function(modal) {
-      $scope.lineModal = modal;
-    });
-
-    $ionicModal.fromTemplateUrl('templates/modals/polyModal.html', {
-      scope: $scope,
-      animation: 'slide-in-up'
-    }).then(function(modal) {
-      $scope.polyModal = modal;
-    });
-
-    $scope.openModal = function(modal) {
-      $scope[modal].show();
-    };
-
-    $scope.closeModal = function() {
-      $scope.pointModal.hide();
-      $scope.lineModal.hide();
-      $scope.polyModal.hide();
-    };
-
-    //Cleanup the modal when we're done with it!
-    // Execute action on hide modal
-    $scope.$on('pointModal.hidden', function() {
-      $scope.pointModal.remove();
-    });
-    $scope.$on('lineModal.hidden', function() {
-      $scope.lineModal.remove();
-    });
-    $scope.$on('polyModal.hidden', function() {
-      $scope.polyModal.remove();
-    });
   });

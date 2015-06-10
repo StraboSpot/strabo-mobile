@@ -12,6 +12,7 @@ angular.module('app')
     $ionicHistory,
     $ionicPopup,
     $ionicModal,
+    $ionicActionSheet,
     $cordovaGeolocation,
     $cordovaCamera,
     ContentModelSurveyFactory) {
@@ -411,7 +412,8 @@ angular.module('app')
 
     $scope.openMap = function() {
       // Save current spot
-      NewSpot.setNewSpot($scope.spot);
+      //NewSpot.setNewSpot($scope.spot);
+      CurrentSpot.setCurrentSpot($scope.spot);
       $location.path("/app/map");
     };
 
@@ -640,22 +642,9 @@ angular.module('app')
         console.log("spot saved: ", data);
       });
 
+      CurrentSpot.clearCurrentSpot();
       $location.path("/app/map");
       //$ionicHistory.goBack();
-    };
-
-    // Delete the spot
-    $scope.deleteSpot = function() {
-      var confirmPopup = $ionicPopup.confirm({
-        title: 'Delete Spot',
-        template: 'Are you sure you want to delete this spot?'
-      });
-      confirmPopup.then(function(res) {
-        if(res) {
-          SpotsFactory.destroy($scope.spot.properties.id);
-          $location.path("/app/spots");
-        }
-      });
     };
 
     // View the spot on the map
@@ -668,7 +657,7 @@ angular.module('app')
       }));
       $location.path("/app/map");
     };
-
+/*
     // Create a new spot from within a spot
     $scope.newSpot = function(spot_type) {
       alertPopup = $ionicPopup.alert({
@@ -699,7 +688,7 @@ angular.module('app')
       });
       NewSpot.setNewSpot(newSpot);
       $location.path("/app/spots/newspot");
-    };
+    };*/
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair
     $scope.showField = function(relevant) {
@@ -833,31 +822,6 @@ angular.module('app')
       $scope.openModal("linkModal");
     };
 
-    $scope.linkContact = function() {
-      NewSpot.setNewSpot($scope.spot);
-      $scope.openModal("linkContactModal");
-    };
-
-    $scope.linkFault = function() {
-      NewSpot.setNewSpot($scope.spot);
-      $scope.openModal("linkFaultModal");
-    };
-
-    $scope.linkFold = function() {
-      NewSpot.setNewSpot($scope.spot);
-      $scope.openModal("linkFoldModal");
-    };
-
-    $scope.linkOrientation = function() {
-      NewSpot.setNewSpot($scope.spot);
-      $scope.openModal("linkOrientationModal");
-    };
-
-    $scope.linkShearZone = function() {
-      NewSpot.setNewSpot($scope.spot);
-      $scope.openModal("linkShearZoneModal");
-    };
-
     $scope.setLinkRelationship = function(item, relationship) {
       var related_spot = _.find($scope.links_selected, function (rel_spot) {
         return rel_spot.id === item.id;
@@ -873,6 +837,29 @@ angular.module('app')
     $scope.addGroupMember = function () {
       NewSpot.setNewSpot($scope.spot);
       $scope.openModal("groupMembersModal");
+    };
+
+    // Delete the spot
+    $scope.deleteSpot = function() {
+      var confirmPopup = $ionicPopup.confirm({
+        title: 'Delete Spot',
+        template: 'Are you sure you want to delete this spot?'
+      });
+      confirmPopup.then(function(res) {
+        if(res) {
+          SpotsFactory.destroy($scope.spot.properties.id);
+          $location.path("/app/spots");
+        }
+      });
+    };
+
+    // Create a new spot with the details from this spot
+    $scope.copySpot = function() {
+      var copySpot = _.omit($scope.spot, 'properties');
+      var copyProperties = _.omit($scope.spot.properties, ['id', 'date', 'time', 'links', 'groups', 'group_members']);
+      copySpot['properties'] = copyProperties;
+      NewSpot.setNewSpot(copySpot);
+      $location.path("/app/spots//notes");
     };
 
     /////////////////
