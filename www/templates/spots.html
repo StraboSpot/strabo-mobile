@@ -10,49 +10,55 @@
     <button class="button button-icon ion-plus" ng-click="newSpot()"></button>
   </ion-nav-buttons>
     <ion-content class="has-header">
-      <div class="item item-divider">
-        Stations
+      <div class="row responsive-sm">
+        <div class="col">
+          <div class="item item-divider">
+            STATIONS
+          </div>
+          <ion-list>
+            <ion-item ng-repeat="spot in spots | filter: { 'properties': {'type': 'point' }}"
+                      href="#/app/spots/{{spot.properties.id}}/details">
+              {{spot.properties.name}}
+            </ion-item>
+          </ion-list>
+          <div class="item item-divider">
+            CONTACTS & TRACES
+          </div>
+          <ion-list>
+            <ion-item ng-repeat="spot in spots | filter: { 'properties': {'type': 'line' }}"
+                      href="#/app/spots/{{spot.properties.id}}/details">
+              {{spot.properties.name}}
+            </ion-item>
+          </ion-list>
+          <div class="item item-divider">
+            ROCK DESCRIPTION ONLY
+          </div>
+          <ion-list>
+            <ion-item ng-repeat="spot in spots | filter: { 'properties': {'type': 'polygon' }}"
+                      href="#/app/spots/{{spot.properties.id}}/rockdescription">
+              {{spot.properties.name}}
+            </ion-item>
+          </ion-list>
+          <div class="item item-divider">
+            3D STRUCTURE
+          </div>
+          <ion-list>
+            <ion-item>
+              Not implemented yet
+            </ion-item>
+          </ion-list>
+        </div>
+        <div class="col">
+          <div class="item item-divider">
+            GROUPS
+          </div>
+          <ion-list>
+            <ion-item ng-repeat="spot in spots | filter: {'properties': {'type': 'group'}}"
+                      href="#/app/spots/{{spot.properties.id}}/details">
+              {{spot.properties.name}}
+            </ion-item>
+          </ion-list>
+        </div>
       </div>
-      <ion-list>
-        <ion-item ng-repeat="spot in spots | filter: { 'properties': {'type': 'point' }}"
-                  href="#/app/spots/{{spot.properties.id}}/details">
-          {{spot.properties.name}}
-        </ion-item>
-      </ion-list>
-      <div class="item item-divider">
-        Contacts & Traces
-      </div>
-      <ion-list>
-        <ion-item ng-repeat="spot in spots | filter: { 'properties': {'type': 'line' }}"
-                  href="#/app/spots/{{spot.properties.id}}/details">
-          {{spot.properties.name}}
-        </ion-item>
-      </ion-list>
-      <div class="item item-divider">
-        Rock Descriptions Only
-      </div>
-      <ion-list>
-        <ion-item ng-repeat="spot in spots | filter: { 'properties': {'type': 'polygon' }}"
-                  href="#/app/spots/{{spot.properties.id}}/rockdescription">
-          {{spot.properties.name}}
-        </ion-item>
-      </ion-list>
-      <div class="item item-divider">
-        Structure represented by 3D geometry
-      </div>
-      <ion-list>
-        <ion-item>
-          Not implemented yet
-        </ion-item>
-      </ion-list>
-      <div class="item item-divider">
-        Groups
-      </div>
-      <ion-list>
-        <ion-item ng-repeat="spot in spots | filter: {'properties': {'type': 'group'}}"
-                  href="#/app/spots/{{spot.properties.id}}/details">
-          {{spot.properties.name}}
-        </ion-item>
-      </ion-list>
     </ion-content>
 </ion-view>
