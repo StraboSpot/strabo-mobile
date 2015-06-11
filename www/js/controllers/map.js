@@ -723,20 +723,20 @@ angular.module('app')
 
       var getIconForFeature = function(feature) {
         var contentModel = feature.get('type');
-        var dip = null;
-        var plunge = null;
+        var strike = null;
+        var trend = null;
 
-        // do we have a dip?
-        if (typeof feature.get('dip') !== 'undefined') {
-          dip = feature.get('dip');
+        // do we have a strike?
+        if (typeof feature.get('strike') !== 'undefined') {
+          strike = feature.get('strike');
         }
 
         // do we have a plunge?
-        if (typeof feature.get('plunge') !== 'undefined') {
-          plunge = feature.get('plunge');
+        if (typeof feature.get('trend') !== 'undefined') {
+          plunge = feature.get('trend');
         }
 
-        var rotation = (dip || plunge) ? dip || plunge : 0;
+        var rotation = (strike || trend) ? strike || trend : 0;
 
         switch (contentModel) {
           case "Measurements and Observations":
