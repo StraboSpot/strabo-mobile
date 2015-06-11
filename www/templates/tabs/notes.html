@@ -1,4 +1,5 @@
-<ion-view title="Spot Info">
+<ion-view>
+  <ion-nav-title>{{ spotTitle }}</ion-nav-title>
   <ion-nav-buttons side="left">
     <button ng-click="goToSpots();" class="button button-icon icon ion-arrow-left-c"></button>
   </ion-nav-buttons>
@@ -35,9 +36,6 @@
   </ion-header-bar>
 
   <ion-content>
-    <div class="item item-divider">
-      {{spot.properties.type}}
-    </div>
     <label class="item item-input item-stacked-label item-text-wrap">
       <span class="input-label">Spot Name</span>
       <input type="text" placeholder="Name this Spot" ng-model="spot.properties.name">

@@ -1,5 +1,6 @@
 <form name="straboForm" novalidate="">
-  <ion-view title="Spot Info">
+  <ion-view>
+    <ion-nav-title>{{ spotTitle }}</ion-nav-title>
     <ion-nav-buttons side="left">
       <button ng-click="goToSpots();" class="button button-icon icon ion-arrow-left-c"></button>
     </ion-nav-buttons>
@@ -36,9 +37,6 @@
 
     <ion-content>
       <div ng-show="showDynamicFields">
-        <div class="item item-divider">
-          {{ spot.properties.type }}
-        </div>
         <div ng-repeat="field in survey">
           <div id="{{ field.name }}" ng-show="showField(field.relevant)">
             <div data-ng-switch on="field.type.split(' ')[0]">

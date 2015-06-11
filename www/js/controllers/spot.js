@@ -17,6 +17,13 @@ angular.module('app')
     $cordovaCamera,
     ContentModelSurveyFactory) {
 
+    $scope.spotTypes = {
+      "point": "Station",
+      "line": "Contact & Trace",
+      "polygon": "Rock Description",
+      "group": "Spot Group"
+    };
+
     $scope.goToSpots = function() {
       $state.go('app.spots');
     };
@@ -204,7 +211,8 @@ angular.module('app')
         $scope.spot.properties.type = "Custom";
 
       switch ($scope.spot.properties.type) {
-        case "Measurements and Observations":
+        case "point":
+          $scope.spotTitle = "Station";
           $scope.showDynamicFields = true;
           $scope.showDetails = true;
           $scope.showRockDescription = true;
@@ -212,16 +220,23 @@ angular.module('app')
           $scope.survey = ContentModelSurveyFactory.measurements_and_observations_survey;
           $scope.choices = ContentModelSurveyFactory.measurements_and_observations_choices;
           break;
-        case "Contacts and Traces":
+        case "line":
+          $scope.spotTitle = "Contact & Trace";
           $scope.showDynamicFields = true;
           $scope.showDetails = true;
           $scope.survey = ContentModelSurveyFactory.contacts_and_traces_survey;
           $scope.choices = ContentModelSurveyFactory.contacts_and_traces_choices;
           break;
-        case "Rock Description":
+        case "polygon":
+          $scope.spotTitle = "Rock Description Only";
+          $scope.showDynamicFields = false;
+          $scope.showDetails = false;
+          $scope.survey = undefined;
+          $scope.choices = undefined;
           $scope.showRockDescription = true;
           break;
-        case "Spot Grouping":
+        case "group":
+          $scope.spotTitle = "Spot Group";
           $scope.showDynamicFields = true;
           $scope.showDetails = true;
           $scope.survey = ContentModelSurveyFactory.spot_grouping_survey;
@@ -266,21 +281,19 @@ angular.module('app')
         });
       }
 
-      // If current spot is a point
-      $scope.point = {};
-      if ($scope.spot.geometry && $scope.spot.geometry.type === "Point") {
-        $scope.showMyLocationButton = true;
-        // toggles the Lat/Lng input boxes based on available Lat/Lng data
-        $scope.showLatLng = true;
+      // Hide map view buttons
+      if ($scope.spot.geometry && $scope.spot.geometry.coordinates) {
+        $scope.mapped = true;
+        if ($scope.spot.geometry.type === "Point") {
+          $scope.showMyLocationButton = true;
+          // toggles the Lat/Lng input boxes based on available Lat/Lng data
+          $scope.showLatLng = true;
 
-        // Assign lat and long from current spot geometry
-        $scope.point.latitude = $scope.spot.geometry.coordinates[1];
-        $scope.point.longitude = $scope.spot.geometry.coordinates[0];
-      }
-      // Current spot is not a point, put placeholder values for lat and long
-      else {
-        $scope.point.latitude = 0;
-        $scope.point.longitude = 0;
+          // Assign lat and long from current spot geometry
+          $scope.point = {};
+          $scope.point.latitude = $scope.spot.geometry.coordinates[1];
+          $scope.point.longitude = $scope.spot.geometry.coordinates[0];
+        }
       }
 
       // Create checkbox list of other spots for selected as related spots
@@ -293,7 +306,7 @@ angular.module('app')
             $scope.other_spots.push({
               name: obj.properties.name, id: obj.properties.id, type: obj.properties.type
             });
-            if (obj.properties.type == "Spot Grouping") {
+            if (obj.properties.type == "group") {
               $scope.groups.push({
                 name: obj.properties.name, id: obj.properties.id, type: obj.properties.type
               });
@@ -303,19 +316,11 @@ angular.module('app')
         // Don't show links or groups until there are other spots to link to or groups to join
         $scope.showLinks = $scope.other_spots.length;
         $scope.showGroups = $scope.groups.length;
-        $scope.enableLinkContact = !_.findWhere($scope.other_spots, {type: 'Contact'});
-        $scope.enableLinkFault = !_.findWhere($scope.other_spots, {type: 'Fault'});
-        $scope.enableLinkFold = !_.findWhere($scope.other_spots, {type: 'Fold'});
-        $scope.enableLinkOrientation = !_.findWhere($scope.other_spots, {type: 'Orientation'});
-        $scope.enableLinkShearZone = !_.findWhere($scope.other_spots, {type: 'Shear Zone'});
       });
     };
 
     // Get the current spot
     if (NewSpot.getNewSpot()){
-      // hide map view/set controls if new spot
-      $scope.hideViewOnMapButton = true;
-      $scope.hideSetFromMapButton = true;
       // Load spot stored in the NewSpot service
       $scope.spot = NewSpot.getNewSpot();
       CurrentSpot.setCurrentSpot($scope.spot);
@@ -369,20 +374,9 @@ angular.module('app')
     $scope.toggleSelection = function toggleSelection(ref_spot, type_selected, type_unselected) {
       var selected_spot = _.findWhere($scope[type_selected], { id: ref_spot.id });
 
-      // Set a few default relationships
-      if (!selected_spot) {
-        if (ref_spot.type == "Orientation")
-          if ($scope.spot.properties.type == "Contact" || $scope.spot.properties.type == "Fault"
-            || $scope.spot.properties.type == "Fold" || $scope.spot.properties.type == "Shear Zone")
-            ref_spot["relationship"] = "describes";
-        if ($scope.spot.properties.type == "Orientation")
-          if (ref_spot.type == "Contact" || ref_spot.type == "Fault"
-            || ref_spot.type == "Fold" || ref_spot.type == "Shear Zone")
-              ref_spot["relationship"] = "has";
-
-        // If selected spot is not already in the links_selected object
+      // If selected spot is not already in the links_selected object
+      if (!selected_spot)
         $scope[type_selected].push(ref_spot);
-      }
       // This spot has been unselected so remove it
       else {
         $scope[type_selected] = _.reject($scope[type_selected], function (spot) { return spot.id == ref_spot.id });
@@ -479,6 +473,13 @@ angular.module('app')
       if (!$scope.validateForm())
         return 0;
 
+      // Save new Lat and Long in case changed by user
+      if ($scope.mapped && $scope.spot.geometry.type === "Point") {
+        // yes, replace the geojson geometry with the lat/lng from the input fields
+        $scope.spot.geometry.coordinates[1] = $scope.point.latitude;
+        $scope.spot.geometry.coordinates[0] = $scope.point.longitude;
+      }
+
       CurrentSpot.setCurrentSpot($scope.spot);
       $location.path('/app/spots/' + $scope.spot.properties.id + '/' + toTab);
     };
@@ -496,7 +497,7 @@ angular.module('app')
       $scope.spot.type = "Feature";
 
       // is the new spot a single point?
-      if ($scope.spot.geometry.type === "Point") {
+      if ($scope.mapped && $scope.spot.geometry.type === "Point") {
         // yes, replace the geojson geometry with the lat/lng from the input fields
         $scope.spot.geometry.coordinates[1] = $scope.point.latitude;
         $scope.spot.geometry.coordinates[0] = $scope.point.longitude;

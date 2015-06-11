@@ -8,7 +8,7 @@
                   ng-value="item"
                   ng-checked="isMemberChecked(item.id)"
                   ng-click="toggleSelection(item, 'group_members_selected', 'group_members_unselected')">
-      {{ item.name }} <small>({{ item.type }})</small>
+      {{ item.name }} <small>({{ spotTypes[item.type] }})</small>
     </ion-checkbox>
   </ion-content>
 </ion-modal-view>

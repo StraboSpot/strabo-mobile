@@ -1,53 +1,38 @@
 angular.module('app')
+  .controller("ModalCtrl", function($scope, NewSpot) {
 
-.controller("ModalCtrl", function($scope, NewSpot) {
+    $scope.spotTypes = [
+      { "label": "New Station", "value": "point" },
+      { "label": "New Contact or Trace", "value": "line" },
+      { "label": "New Rock Description Only", "value": "polygon" },
+      { "label": "New Spot Group", "value": "group" }
+    ];
 
-  $scope.pointTypes = [
-    "Measurements and Observations",
-    "Spot Grouping"
-  ];
-
-  $scope.lineTypes = [
-    "Contacts and Traces",
-    "Spot Grouping"
-  ];
-
-  $scope.polyTypes = [
-    "Rock Description",
-    "Spot Grouping"
-  ];
-
-  $scope.allTypes = _.sortBy(_.union($scope.pointTypes, $scope.lineTypes, $scope.polyTypes), function (type) { return type; });
-
-  // Set spot type for newspot
-  $scope.setSpotType = function(type){
-    // If spot was not created from map assume it's a point for now
-    if (!NewSpot.getNewSpot())
-    {
+    // Set spot type for newspot
+    $scope.setSpotType = function(type){
       switch(type) {
-        case "Measurements and Observations":
+        case "point":
           var geojsonTemplate = {
             "geometry": {
-              "type": "Point",
-              "coordinates": [0, 0]
+              "type": "Point"
             }
           };
           break;
-        case "Contacts and Traces":
+        case "line":
           var geojsonTemplate = {
             "geometry": {
               "type": "LineString"
             }
           };
           break;
-        case "Rock Description":
+        case "polygon":
           var geojsonTemplate = {
             "geometry": {
               "type": "Polygon"
             }
           };
           break;
-        case "Spot Grouping":
+        case "group":
           var geojsonTemplate = {
             "geometry": {
               "type": "Polygon"
@@ -56,10 +41,8 @@ angular.module('app')
           break;
       }
       NewSpot.setNewSpot(geojsonTemplate);
-    }
-
-    $scope.spot = NewSpot.getNewSpot();
-    $scope.spot.properties.type = type;
-    NewSpot.setNewSpot($scope.spot);
-  };
-});
+      $scope.spot = NewSpot.getNewSpot();
+      $scope.spot.properties.type = type;
+      NewSpot.setNewSpot($scope.spot);
+    };
+  });

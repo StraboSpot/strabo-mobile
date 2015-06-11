@@ -1,4 +1,5 @@
-<ion-view title="Spot Info">
+<ion-view>
+  <ion-nav-title>{{ spotTitle }}</ion-nav-title>
   <ion-nav-buttons side="left">
     <button ng-click="goToSpots();" class="button button-icon icon ion-arrow-left-c"></button>
   </ion-nav-buttons>
@@ -24,24 +25,21 @@
       </span>
       <a class="button button-clear button-light spot-tab-active" href="#/app/spots/{{spot.properties.id}}/groupmembers">Group Members</a>
       <span ng-show="showRockDescription">
-        <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('rockdescription');">Rock Description</a>
+        <a class="button button-clear spot-tab-inactive" href="#/app/spots/{{spot.properties.id}}/rockdescription">Rock Description</a>
       </span>
       <span ng-show="showRockSample">
-        <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('rocksample');">Rock Sample</a>
+        <a class="button button-clear spot-tab-inactive" href="#/app/spots/{{spot.properties.id}}/rocksample">Rock Sample</a>
       </span>
     </ion-scroll>
   </ion-header-bar>
 
   <ion-content>
-    <div class="item item-divider">
-      Group Members
-    </div>
-    <div>
+    <div class="padding">
       <button ng-click="addGroupMember();" class="button button-positive icon-left icon ion-plus-round">Add or Edit Members of this Group</button>
     </div>
     <ion-list>
       <ion-item ng-repeat="item in group_members_selected" ng-click="openSpot(item.id);">
-        {{ item.name }} <small>({{ item.type }})</small>
+        {{ item.name }} <small>({{ spotTypes[item.type] }})</small>
       </ion-item>
     </ion-list>
   </ion-content>

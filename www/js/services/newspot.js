@@ -34,13 +34,13 @@ angular.module('app')
       if (!newSpot.properties.type) {
         switch (newSpot.geometry.type){
           case "Point":
-            newSpot.properties['type'] = 'Measurements and Observations';
+            newSpot.properties['type'] = 'point';
             break;
           case "LineString":
-            newSpot.properties['type'] = 'Contacts and Traces';
+            newSpot.properties['type'] = 'line';
             break;
           case "Polygon":
-            newSpot.properties['type'] = 'Rock Description';
+            newSpot.properties['type'] = 'polygon';
             break;
         }
       }

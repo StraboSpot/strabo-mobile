@@ -1,5 +1,6 @@
 <form name="rockDescriptionForm" novalidate="">
-  <ion-view title="Spot Info">
+  <ion-view>
+    <ion-nav-title>{{ spotTitle }}</ion-nav-title>
     <ion-nav-buttons side="left">
       <button ng-click="goToSpots();" class="button button-icon icon ion-arrow-left-c"></button>
     </ion-nav-buttons>
@@ -34,9 +35,6 @@
     </ion-header-bar>
 
     <ion-content>
-      <div class="item item-divider">
-        Rock Description
-      </div>
       <div ng-repeat="field in rock_description_survey">
         <div id="{{ field.name }}" ng-show="showField(field.relevant)">
           <div data-ng-switch on="field.type.split(' ')[0]">

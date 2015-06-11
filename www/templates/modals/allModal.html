@@ -5,8 +5,8 @@
   </ion-header-bar>
   <ion-content>
     <ion-list ng-controller="ModalCtrl">
-      <ion-item ng-repeat="item in allTypes" href="#/app/spots/newspot" ng-click="closeModal('allModal');setSpotType(item)">
-        {{item}}
+      <ion-item ng-repeat="item in spotTypes" href="#/app/spots/newspot" ng-click="closeModal('allModal');setSpotType(item.value)">
+        {{item.label}}
       </ion-item>
     </ion-list>
   </ion-content>

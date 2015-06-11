@@ -138,11 +138,8 @@ angular.module('app')
       })
     });
 
-
-
     // restricts the map constraint to these coordinates
     // var mapExtent = ol.proj.transformExtent([-180,80,180,-80], 'EPSG:4326', 'EPSG:3857');
-
 
     var mlf = MapLayerFactory;
 
@@ -400,7 +397,7 @@ angular.module('app')
           if (CurrentSpot.getCurrentSpot()) {
             var curSpot = CurrentSpot.getCurrentSpot();
             switch (curSpot.properties.type) {
-              case "Measurements and Observations":
+              case "point":
                 if ($scope.drawButtonActive == "Point"){
                   curSpot.geometry = geojsonObj.geometry;
                   CurrentSpot.setCurrentSpot(curSpot);
@@ -412,7 +409,7 @@ angular.module('app')
                   });
                 $state.go('app.details');
                 break;
-              case "Contacts and Traces":
+              case "line":
                 if ($scope.drawButtonActive == "LineString") {
                   curSpot.geometry = geojsonObj.geometry;
                   CurrentSpot.setCurrentSpot(curSpot);
@@ -424,7 +421,7 @@ angular.module('app')
                   });
                 $state.go('app.details');
                 break;
-              case "Rock Description":
+              case "polygon":
                 if ($scope.drawButtonActive == "Polygon") {
                   curSpot.geometry = geojsonObj.geometry;
                   CurrentSpot.setCurrentSpot(curSpot);
@@ -436,7 +433,7 @@ angular.module('app')
                   });
                 $state.go('app.rockdescription');
                 break;
-              case "Spot Grouping":
+              case "group":
                 if ($scope.drawButtonActive == "Polygon") {
                   curSpot.geometry = geojsonObj.geometry;
                   CurrentSpot.setCurrentSpot(curSpot);
@@ -444,7 +441,7 @@ angular.module('app')
                 else
                   $ionicPopup.alert({
                     title: 'Geometry Mismatch!',
-                    template: "Spot Groupings must be drawn as Polygons. Draw Again."
+                    template: "Spot Groups must be drawn as Polygons. Draw Again."
                   });
                 $state.go('app.details');
                 break;
@@ -561,7 +558,6 @@ angular.module('app')
       });
     };
 
-
     //  do we currently have mapview set?  if so, we should reset the map view to that first
     if (MapView.getMapView()) {
       console.log("have mapview set, changing map view to that");
@@ -605,8 +601,6 @@ angular.module('app')
         zoom: zoom
       };
     };
-
-
 
     // we want to load all the geojson markers from the persistence storage onto the map
     // creates a ol vector layer for supplied geojson object
@@ -720,7 +714,6 @@ angular.module('app')
         }
       };
 
-
       var getIconForFeature = function(feature) {
         var contentModel = feature.get('type');
         var strike = null;
@@ -739,7 +732,7 @@ angular.module('app')
         var rotation = (strike || trend) ? strike || trend : 0;
 
         switch (contentModel) {
-          case "Measurements and Observations":
+          case "point":
             return icon.orientation(rotation);
       /*    case "Contact":
             return icon.contact_outcrop(rotation);
@@ -885,10 +878,21 @@ angular.module('app')
       // wipe the array because we want to avoid duplicating the feature in the ol.Collection
       featureLayer.getLayers().clear();
 
+      // Get mappable spots (spots made from the Spots Page, instead of
+      // from the map, do not have geometry until defined by the user)
+      var mappableSpots = _.filter(spots, function (spot) { return spot.geometry.coordinates;});
+
       // get distinct groups and aggregate spots by group type
-      var spotGroup = _.groupBy(spots, function(spot) {
+      var spotGroup = _.groupBy(mappableSpots, function(spot) {
         return spot.properties.type;
       });
+
+      var spotTypes = {
+        "point": "Station",
+        "line": "Contact & Trace",
+        "polygon": "Rock Description",
+        "group": "Spot Group"
+      };
 
       // go through each group and assign all the aggregates to the geojson feature
       for (var key in spotGroup) {
@@ -898,7 +902,7 @@ angular.module('app')
             type: 'FeatureCollection',
             features: spotGroup[key],
             properties: {
-              name: key + ' (' + spotGroup[key].length + ')'
+              name: spotTypes[key] + ' (' + spotGroup[key].length + ')'
             }
           };
 
@@ -941,6 +945,13 @@ angular.module('app')
           return (layer instanceof ol.layer.Vector) && layer.get('name') !== 'drawLayer' && layer.get('name') !== 'geolocationLayer';
         });
 
+        var spotTypes = [
+          { "label": "Station", "value": "point" },
+          { "label": "Contact or Trace", "value": "line" },
+          { "label": "Rock Description Only", "value": "polygon" },
+          { "label": "Spot Group", "value": "group" }
+        ];
+
         // we need to check that we're not clicking on the geolocation layer
         if (feature && layer.get('name') != 'geolocationLayer') {
 
@@ -948,7 +959,7 @@ angular.module('app')
           var content = '';
           content += '<a href="#/app/spots/' + feature.get('id') + '/notes"><b>' + feature.get('name') + '</b></a>';
           content += '<br>';
-          content += '<small>' + feature.get('type') + '</small>';
+          content += '<small>' + _.findWhere(spotTypes, {value: feature.get('type')}).label + '</small>';
           content += '<small> (' + feature.getGeometry().getType() + ')</small>';
 
           if (feature.get('strike') && feature.get('dip')) {
@@ -1093,7 +1104,7 @@ angular.module('app')
         buttons: [
           {text: '<i class="icon ion-map"></i> Zoom to Extent of Spots'},
           {text: '<i class="icon ion-archive"></i>Save Map for Offline Use'},
-          {text: '<i class="icon ion-grid"></i> Create a Grouping of Spots'}
+          {text: '<i class="icon ion-grid"></i> Create a Group of Spots'}
         ],
         cancelText: 'Cancel',
         cancel: function () {
