@@ -12,18 +12,14 @@ angular.module('app')
     CurrentSpot.clearCurrentSpot();
 
     $scope.groups = [];
-    // Load or initialize Spots
-    $scope.spots;
 
-    SpotsFactory.all().then(function(spots) {
-      $scope.spots = spots;
-
+    $scope.createAccordionGroups = (function(spots) {
       var spotTypesTitle = [
-          { "title": "STATIONS", "type": "point", "tab": "details" },
-          { "title": "CONTACTS & TRACES", "type": "line", "tab": "details" },
-          { "title": "ROCK DESCRIPTIONS ONLY", "type": "polygon", "tab": "rockdescription" },
-          { "title": "3D STRUCTURES", "type": "volume", "tab": "notes" }
-        ];
+        { "title": "STATIONS", "type": "point", "tab": "details" },
+        { "title": "CONTACTS & TRACES", "type": "line", "tab": "details" },
+        { "title": "ROCK DESCRIPTIONS ONLY", "type": "polygon", "tab": "rockdescription" },
+        { "title": "3D STRUCTURES", "type": "volume", "tab": "notes" }
+      ];
 
       for (var i=0; i < spotTypesTitle.length; i++) {
         $scope.groups[i] = {
@@ -40,6 +36,14 @@ angular.module('app')
       }
 
       $scope.shownGroup = $scope.groups[0];
+    });
+
+    // Load or initialize Spots
+    $scope.spots;
+
+    SpotsFactory.all().then(function(spots) {
+      $scope.spots = spots;
+      $scope.createAccordionGroups(spots);
     });
 
     /*
@@ -69,6 +73,7 @@ angular.module('app')
             // update the spots list
             SpotsFactory.all().then(function (spots) {
               $scope.spots = spots;
+              $scope.createAccordionGroups(spots);
             });
           });
         }
