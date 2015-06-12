@@ -55,6 +55,12 @@ angular.module('app')
           return images.shear_zone_inclined;
         case 'fold':
           return images.fold_axis;
+        case 'foliation_general_inclined':
+          return images.foliation_general_inclined;
+        case 'bedding_inclined':
+          return images.bedding_inclined;
+        case 'joint_surface_inclined':
+          return images.joint_surface_inclined;
         case 'notes':
           return images.default;
         case 'orientation':

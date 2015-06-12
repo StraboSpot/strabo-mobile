@@ -652,6 +652,36 @@ angular.module('app')
             scale: 0.05
           });
         },
+        foliation_general_inclined: function(rotation) {
+          return new ol.style.Icon({
+            anchorXUnits: 'pixels',
+            anchorYUnits: 'pixels',
+            opacity: 1,
+            rotation: Math.radians(rotation),
+            src: ImagesFactory.getImagePath('foliation_general_inclined'),
+            scale: 0.05
+          });
+        },
+        bedding: function(rotation) {
+          return new ol.style.Icon({
+            anchorXUnits: 'pixels',
+            anchorYUnits: 'pixels',
+            opacity: 1,
+            rotation: Math.radians(rotation),
+            src: ImagesFactory.getImagePath('bedding_inclined'),
+            scale: 0.05
+          });
+        },
+        joint: function(rotation) {
+          return new ol.style.Icon({
+            anchorXUnits: 'pixels',
+            anchorYUnits: 'pixels',
+            opacity: 1,
+            rotation: Math.radians(rotation),
+            src: ImagesFactory.getImagePath('joint_surface_inclined'),
+            scale: 0.05
+          });
+        },
         fold: function(rotation) {
           return new ol.style.Icon({
             anchorXUnits: 'pixels',
@@ -731,29 +761,47 @@ angular.module('app')
 
         var rotation = (strike || trend) ? strike || trend : 0;
 
-        switch (contentModel) {
-          case "point":
-            return icon.orientation(rotation);
-      /*    case "Contact":
-            return icon.contact_outcrop(rotation);
-          case "Fault":
-            return icon.fault_outcrop(rotation);
-          case "Shear Zone":
-            return icon.shear_zone(rotation);
-          case "Fold":
-            return icon.fold(rotation);
-          case "Notes":
-            return icon.notes(rotation);
-          case "Orientation":
-            return icon.orientation(rotation);
-          case "Rock Description":
-            return icon.notes(rotation);
-          case "Sample Locality":
-            return icon.sample(rotation);
-          case "Spot Grouping":
-            return icon.group(rotation);*/
-          default:
-            return icon.default(rotation);
+        if (contentModel === "point") {
+
+          var planarFeatureType = feature.get('planar_feature_type');
+
+          switch (planarFeatureType) {
+            case undefined:
+              return icon.default(rotation);
+            case 'contact':
+              return icon.contact_outcrop(rotation);
+            case 'fault_plane':
+              return icon.fault_outcrop(rotation);
+            case 'shear_zone':
+              return icon.shear_zone(rotation);
+            case 'foliation':
+              return icon.foliation_general_inclined(rotation);
+            case 'bedding':
+              return icon.bedding(rotation);
+            case 'joint':
+              return icon.joint(rotation);
+            /*case "Fold":
+              return icon.fold(rotation);
+            case "Notes":
+              return icon.notes(rotation);
+            case "Orientation":
+              return icon.orientation(rotation);
+            case "Rock Description":
+              return icon.notes(rotation);
+            case "Sample Locality":
+              return icon.sample(rotation);
+            case "Spot Grouping":
+              return icon.group(rotation);*/
+            default:
+              //TODO: missing the following images:
+              // axial plane surface,
+              // fracture,
+              // vein,
+              // shear fracture,
+              // other
+              // (blank)
+              return icon.default(rotation);
+          }
         }
 
         // if (contentModel == "Orientation") {
