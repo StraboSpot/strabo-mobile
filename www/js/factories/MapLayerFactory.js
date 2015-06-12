@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('app')
-  .factory('MapLayerFactory', function() {
+  .factory('MapLayerFactory', function(OfflineTilesFactory) {
     var factory = {};
 
     // vector layer where we house all the geojson spot objects
@@ -184,6 +184,17 @@ angular.module('app')
 
           // do we have the image already?
           if (blob !== null) {
+
+            // converts blobs to base64
+            var blobToBase64 = function(blob, callback) {
+              var reader = new window.FileReader();
+              reader.readAsDataURL(blob);
+              reader.onloadend = function() {
+                var base64data = reader.result;
+                callback(base64data);
+              };
+            };
+
             // yes, lets load the tile into the map
             blobToBase64(blob, function(base64data) {
               imgElement.src = base64data;
@@ -274,7 +285,6 @@ angular.module('app')
     factory.getOfflineOverlayLayer = function() {
       return offlineOverlayLayer;
     };
-
 
     return factory;
   });

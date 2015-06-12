@@ -571,16 +571,6 @@ angular.module('app')
       map.removeInteraction(draw);
     };
 
-    // converts blobs to base64
-    var blobToBase64 = function(blob, callback) {
-      var reader = new window.FileReader();
-      reader.readAsDataURL(blob);
-      reader.onloadend = function() {
-        base64data = reader.result;
-        callback(base64data);
-      };
-    };
-
     // Point object
     var Point = function(lat, lng) {
       this.lat = lat;
