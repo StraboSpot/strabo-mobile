@@ -996,7 +996,7 @@ angular.module('app')
         var spotTypes = [
           { "label": "Station", "value": "point" },
           { "label": "Contact or Trace", "value": "line" },
-          { "label": "Rock Description Only", "value": "polygon" },
+          { "label": "Rock Description", "value": "polygon" },
           { "label": "Spot Group", "value": "group" }
         ];
 
@@ -1008,16 +1008,40 @@ angular.module('app')
           content += '<a href="#/app/spots/' + feature.get('id') + '/notes"><b>' + feature.get('name') + '</b></a>';
           content += '<br>';
           content += '<small>' + _.findWhere(spotTypes, {value: feature.get('type')}).label + '</small>';
-          content += '<small> (' + feature.getGeometry().getType() + ')</small>';
+
+          if (feature.get('planar_feature_type')) {
+            content += '<br>';
+            content += '<small>' + feature.get('planar_feature_type') + '</small>';
+          }
+
+          if (feature.get('contact_type')) {
+            content += '<br>';
+            content += '<small>' + feature.get('contact_type') + '</small>';
+          }
+
+          if (feature.get('rock_type')) {
+            content += '<br>';
+            content += '<small>' + feature.get('rock_type') + '</small>';
+          }
 
           if (feature.get('strike') && feature.get('dip')) {
             content += '<br>';
             content += '<small>' + feature.get('strike') + '&deg; strike / ' + feature.get('dip') + '&deg; dip</small>';
           }
 
+          if (feature.get('linear_feature_type')) {
+            content += '<br>';
+            content += '<small>' + feature.get('linear_feature_type') + '</small>';
+          }
+
           if (feature.get('trend') && feature.get('plunge')) {
             content += '<br>';
             content += '<small>' + feature.get('trend') + '&deg; trend / ' + feature.get('plunge') + '&deg; plunge</small>';
+          }
+
+          if (feature.get('group_relationship')) {
+            content += '<br>';
+            content += '<small>Grouped by: ' + feature.get('group_relationship').toString() + '</small>';
           }
 
           // setup the popup position
