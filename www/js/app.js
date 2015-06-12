@@ -111,17 +111,6 @@ angular.module('app', [
       }
     })
 
-    .state('app.newspot', {
-      cache: false,
-      url: "/spots/newspot",
-      views: {
-        'menuContent': {
-          templateUrl: "templates/tabs/details.html",
-          controller: 'SpotCtrl'
-        }
-      }
-    })
-
     .state('app.details', {
       cache: false,
       url: "/spots/:spotId/details",
