@@ -827,7 +827,7 @@ angular.module('app')
                 image: getIconForFeature(feature)
               }),
               new ol.style.Style({
-                text: textStyle(feature.values_.name)
+                text: textStyle(feature.get('name'))
               })
             ],
 
@@ -845,7 +845,7 @@ angular.module('app')
                 })
               }),
               new ol.style.Style({
-                text: textStyle(feature.values_.name)
+                text: textStyle(feature.get('name'))
               })
             ],
 
@@ -863,7 +863,7 @@ angular.module('app')
                 })
               }),
               new ol.style.Style({
-                text: textStyle(feature.values_.name)
+                text: textStyle(feature.get('name'))
               })
             ]
           };
