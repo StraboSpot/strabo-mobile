@@ -11,12 +11,51 @@ angular.module('app')
     // Make sure the current spot is empty
     CurrentSpot.clearCurrentSpot();
 
+    $scope.groups = [];
     // Load or initialize Spots
     $scope.spots;
 
     SpotsFactory.all().then(function(spots) {
       $scope.spots = spots;
+
+      var spotTypesTitle = [
+          { "title": "STATIONS", "type": "point", "tab": "details" },
+          { "title": "CONTACTS & TRACES", "type": "line", "tab": "details" },
+          { "title": "ROCK DESCRIPTIONS ONLY", "type": "polygon", "tab": "rockdescription" },
+          { "title": "3D STRUCTURES", "type": "volume", "tab": "notes" }
+        ];
+
+      for (var i=0; i < spotTypesTitle.length; i++) {
+        $scope.groups[i] = {
+          name: spotTypesTitle[i].title,
+          tab: spotTypesTitle[i].tab,
+          items: []
+        };
+        for (var j=0; j<spots.length; j++) {
+          if (spots[j].properties.type == spotTypesTitle[i].type)
+            $scope.groups[i].items.push(spots[j]);
+        }
+        if (spotTypesTitle[i].type == "volume")
+          $scope.groups[i].items.push({"properties": {"name": "3D Structures have not been implemented yet"}});
+      }
+
+      $scope.shownGroup = $scope.groups[0];
     });
+
+    /*
+     * if given group is the selected group, deselect it
+     * else, select the given group
+     */
+    $scope.toggleGroup = function(group) {
+      if ($scope.isGroupShown(group)) {
+        $scope.shownGroup = null;
+      } else {
+        $scope.shownGroup = group;
+      }
+    };
+    $scope.isGroupShown = function(group) {
+      return $scope.shownGroup === group;
+    };
 
     // clears all spots
     $scope.clearAllSpots = function() {

@@ -2,10 +2,10 @@ angular.module('app')
   .controller("ModalCtrl", function($scope, NewSpot) {
 
     $scope.spotTypes = [
-      { "label": "New Station", "value": "point" },
-      { "label": "New Contact or Trace", "value": "line" },
-      { "label": "New Rock Description Only", "value": "polygon" },
-      { "label": "New Spot Group", "value": "group" }
+      { "label": "Station", "value": "point" },
+      { "label": "Contact or Trace", "value": "line" },
+      { "label": "Rock Description Only", "value": "polygon" },
+      { "label": "Spot Group", "value": "group" }
     ];
 
     // Set spot type for newspot

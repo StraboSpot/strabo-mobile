@@ -9,7 +9,42 @@
     <button class="button button-icon ion-trash-b" ng-click="clearAllSpots()"></button>
     <button class="button button-icon ion-plus" ng-click="newSpot()"></button>
   </ion-nav-buttons>
-    <ion-content class="has-header">
+  <ion-content class="has-header">
+    <div class="row responsive-sm">
+      <div class="col">
+        <ion-list>
+          <div ng-repeat="group in groups">
+            <ion-item class="item-stable group-title"
+                      ng-click="toggleGroup(group)"
+                      ng-class="{active: isGroupShown(group)}">
+              <i class="icon" ng-class="isGroupShown(group) ? 'ion-minus' : 'ion-plus'"></i>
+              &nbsp;
+              <b>{{group.name}}</b>
+            </ion-item>
+            <ion-item class="item-accordion"
+                      ng-repeat="item in group.items"
+                      ng-show="isGroupShown(group)"
+                      href="#/app/spots/{{item.properties.id}}/{{group.tab}}">
+              {{item.properties.name}}
+            </ion-item>
+          </div>
+        </ion-list>
+      </div>
+      <div class="col">
+        <div class="item item-divider">
+          <b>GROUPS</b>
+        </div>
+        <ion-list>
+          <ion-item class="item-accordion"
+                    ng-repeat="spot in spots | filter: {'properties': {'type': 'group'}}"
+                    href="#/app/spots/{{spot.properties.id}}/details">
+            {{spot.properties.name}}
+          </ion-item>
+        </ion-list>
+      </div>
+    </div>
+<!--
+
       <div class="row responsive-sm">
         <div class="col">
           <div class="item item-divider">
@@ -59,6 +94,6 @@
             </ion-item>
           </ion-list>
         </div>
-      </div>
+      </div>-->
     </ion-content>
 </ion-view>
