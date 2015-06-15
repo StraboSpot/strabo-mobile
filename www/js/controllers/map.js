@@ -352,43 +352,52 @@ angular.module('app')
         if (isFreeHand) {
           console.log("Drawend : Freehand");
 
-          // contains all the lassoed objects
-          var isLassoed = [];
+          // does the drawing contain a kink, aka self-intersecting polygon?
+          if (turf.kinks(geojsonObj).intersections.features.length === 0) {
+            // no, good
 
-          SpotsFactory.all().then(function(spots) {
-            _.each(spots, function (spot) {
+            // contains all the lassoed objects
+            var isLassoed = [];
 
-              // if the spot is a point, we test using turf.inside
-              // if the spot is a polygon or line, we test using turf.intersect
+            SpotsFactory.all().then(function(spots) {
+              _.each(spots, function (spot) {
 
-              var spotType = spot.geometry.type;
+                // if the spot is a point, we test using turf.inside
+                // if the spot is a polygon or line, we test using turf.intersect
 
-              if (spotType === "Point") {
-                // is the point inside the drawn polygon?
-                if (turf.inside(spot, geojsonObj)) {
-                  isLassoed.push(spot.properties.name);
+                var spotType = spot.geometry.type;
+
+                if (spotType === "Point") {
+                  // is the point inside the drawn polygon?
+                  if (turf.inside(spot, geojsonObj)) {
+                    isLassoed.push(spot.properties.name);
+                  }
                 }
-              }
 
-              if (spotType === "LineString" || spotType === "Polygon") {
-                // is the line or polygon within/intersected in the drawn polygon?
-                if (turf.intersect(spot, geojsonObj)) {
-                  isLassoed.push(spot.properties.name);
+                if (spotType === "LineString" || spotType === "Polygon") {
+                  // is the line or polygon within/intersected in the drawn polygon?
+                  if (turf.intersect(spot, geojsonObj)) {
+                    isLassoed.push(spot.properties.name);
+                  }
                 }
-              }
+              });
+
+              // add the regular draw controls back
+              map.addControl(new drawControls());
+
+              // add the layer switcher controls back
+              map.addControl(new ol.control.LayerSwitcher());
+
+              // add the dragging back in
+              map.addInteraction(new ol.interaction.DragPan());
+
+              console.log("isLassoed, ", isLassoed);
             });
-
-            // add the regular draw controls back
-            map.addControl(new drawControls());
-
-            // add the layer switcher controls back
-            map.addControl(new ol.control.LayerSwitcher());
-
-            // add the dragging back in
-            map.addInteraction(new ol.interaction.DragPan());
-
-            console.log("isLassoed, ", isLassoed);
-          });
+          }
+          else {
+            // contains a kink, aka self-intersecting polygon
+            alert('cannot draw self-intersecting polygon');
+          }
         } else {
           console.log("Drawend: Normal (not freehand)");
 
