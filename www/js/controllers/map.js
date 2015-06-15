@@ -772,18 +772,6 @@ angular.module('app')
               return icon.bedding(rotation);
             case 'joint':
               return icon.joint(rotation);
-              /*case "Fold":
-                return icon.fold(rotation);
-              case "Notes":
-                return icon.notes(rotation);
-              case "Orientation":
-                return icon.orientation(rotation);
-              case "Rock Description":
-                return icon.notes(rotation);
-              case "Sample Locality":
-                return icon.sample(rotation);
-              case "Spot Grouping":
-                return icon.group(rotation);*/
             default:
               //TODO: missing the following images:
               // axial plane surface,
@@ -795,62 +783,65 @@ angular.module('app')
               return icon.default(rotation);
           }
         }
-
-        // if (contentModel == "Orientation") {
-        //   // we do something else with orientation content models
-        // } else {
-        //   // get the links
-        //   // TODO: what if there's more than one relationship?  What do we use then?
-        //
-        //   if (feature.get('links') === undefined) {
-        //     // TODO: what if there's NO relationship?
-        //     return;
-        //   } else {
-        //     var linkedRelationshipId = feature.get('links')[0].id;
-        //     console.log("aaa", linkedRelationshipId);
-        //
-        //     // get the actual spot
-        //     return SpotsFactory.getSpotId(linkedRelationshipId).then(function(spot) {
-        //
-        //       // we only care about orientations linkages at this point
-        //       if (spot.properties.type == "Orientation") {
-        //
-        //         console.log("the spot is", spot);
-        //
-        //         var dip = null;
-        //         var plunge = null;
-        //
-        //         // do we have a dip?
-        //         if (typeof spot.properties.dip !== 'undefined') {
-        //           dip = spot.properties.dip;
-        //         }
-        //
-        //         // do we have a plunge?
-        //         if (typeof spot.properties.plunge !== 'undefined') {
-        //           plunge = spot.properties.plunge;
-        //         }
-        //
-        //         var rotation = (dip || plunge) ? dip || plunge : 0;
-        //
-        //         switch(contentModel) {
-        //           case "Contact Outcrop":
-        //             return icon.contact_outcrop(rotation);
-        //           case "Fault Outcrop":
-        //             return icon.fault_outcrop(rotation);
-        //           default:
-        //             // TODO: do we want to put a default image when everything fails?
-        //             break;
-        //         }
-        //
-        //
-        //       }
-        //
-        //
-        //
-        //
-        //     });
-        //   }
       };
+
+      // Set styles for points, lines and polygon and groups
+      function styleFunction(feature, resolution) {
+        var styles = {
+          'Point': [
+            new ol.style.Style({
+              image: getIconForFeature(feature)
+            }),
+            new ol.style.Style({
+              text: textStyle(feature.get('name'))
+            })
+          ],
+          'LineString': [
+            new ol.style.Style({
+              stroke: new ol.style.Stroke({
+                color: "#CC0000",
+                width: 4
+              })
+            }),
+            new ol.style.Style({
+              text: textStyle(feature.get('name'))
+            })
+          ]};
+
+        if (feature.get("type") == 'group') {
+          styles['Polygon'] = [
+            new ol.style.Style({
+              stroke: new ol.style.Stroke({
+                color: "#FF8000",
+                width: 2
+              }),
+              fill: new ol.style.Fill({
+                color: 'rgba(255, 128, 0, 0.2)'
+              })
+            }),
+            new ol.style.Style({
+              text: textStyle(feature.get('name'))
+            })
+          ]
+        }
+        else {
+          styles["Polygon"] = [
+            new ol.style.Style({
+              stroke: new ol.style.Stroke({
+                color: "#663300",
+                width: 5
+              }),
+              fill: new ol.style.Fill({
+                color: 'rgba(102, 51, 0, 0.2)'
+              })
+            }),
+            new ol.style.Style({
+              text: textStyle(feature.get('name'))
+            })
+          ]
+        }
+        return styles[feature.getGeometry().getType()];
+      }
 
       return new ol.layer.Vector({
         source: new ol.source.Vector({
@@ -859,56 +850,7 @@ angular.module('app')
           })
         }),
         title: geojson.properties.name,
-        style: function(feature, resolution) {
-
-          var styles = {
-            'Point': [
-              new ol.style.Style({
-                image: getIconForFeature(feature)
-              }),
-              new ol.style.Style({
-                text: textStyle(feature.get('name'))
-              })
-            ],
-
-            'LineString': [
-              new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                  color: "#000000",
-                  width: 10
-                })
-              }),
-              new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                  color: "#ff0000",
-                  width: 8
-                })
-              }),
-              new ol.style.Style({
-                text: textStyle(feature.get('name'))
-              })
-            ],
-
-            'Polygon': [
-              new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                  color: "#000000",
-                  width: 10
-                })
-              }),
-              new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                  color: "#035339",
-                  width: 8
-                })
-              }),
-              new ol.style.Style({
-                text: textStyle(feature.get('name'))
-              })
-            ]
-          };
-          return styles[feature.getGeometry().getType()];
-        }
+        style: styleFunction
       });
     };
 
@@ -1044,8 +986,9 @@ angular.module('app')
 
           if (feature.get('group_relationship')) {
             content += '<br>';
-            content += '<small>Grouped by: ' + feature.get('group_relationship').toString() + '</small>';
+            content += '<small>Grouped by: ' + feature.get('group_relationship').join(", ") + '</small>';
           }
+          content = content.replace(/_/g," ");
 
           // setup the popup position
           popup.show(evt.coordinate, content);
