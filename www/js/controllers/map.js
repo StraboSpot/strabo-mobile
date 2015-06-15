@@ -235,7 +235,7 @@ angular.module('app')
     };
 
     // Watch whether we have internet access or not
-      $scope.$watch('isOnline()', function(online) {
+    $scope.$watch('isOnline()', function(online) {
 
       if (!online) {
         console.log("Offline");
@@ -255,8 +255,7 @@ angular.module('app')
 
         // re-render the map, grabs "new" tiles from storage
         map.render();
-      }
-      else {
+      } else {
         console.log("Online");
 
         // remove the offline layers
@@ -269,7 +268,7 @@ angular.module('app')
       }
     });
 
-      // cache the tiles in the current view but don't switch to the offline layer
+    // cache the tiles in the current view but don't switch to the offline layer
     $scope.cacheOfflineTiles = function() {
       if (navigator.onLine) {
         // get the map extent
@@ -282,8 +281,7 @@ angular.module('app')
         OfflineTilesFactory.setCurrentMapProvider(getCurrentVisibleLayer());
 
         $location.path("/app/map/archiveTiles");
-      }
-      else
+      } else
         $ionicPopup.alert({
           title: 'Offline!',
           template: 'You must be online to save a map!'
@@ -308,7 +306,7 @@ angular.module('app')
       // are we in freehand mode?
       if (isFreeHand) {
         // yes -- then disable the map drag pan
-        map.getInteractions().forEach(function (interaction) {
+        map.getInteractions().forEach(function(interaction) {
           if (interaction instanceof ol.interaction.DragPan) {
             console.log(interaction);
             map.getInteractions().remove(interaction);
@@ -360,7 +358,7 @@ angular.module('app')
             var isLassoed = [];
 
             SpotsFactory.all().then(function(spots) {
-              _.each(spots, function (spot) {
+              _.each(spots, function(spot) {
 
                 // if the spot is a point, we test using turf.inside
                 // if the spot is a polygon or line, we test using turf.intersect
@@ -393,8 +391,7 @@ angular.module('app')
 
               console.log("isLassoed, ", isLassoed);
             });
-          }
-          else {
+          } else {
             // contains a kink, aka self-intersecting polygon
             alert('cannot draw self-intersecting polygon');
           }
@@ -407,11 +404,10 @@ angular.module('app')
             var curSpot = CurrentSpot.getCurrentSpot();
             switch (curSpot.properties.type) {
               case "point":
-                if ($scope.drawButtonActive == "Point"){
+                if ($scope.drawButtonActive == "Point") {
                   curSpot.geometry = geojsonObj.geometry;
                   CurrentSpot.setCurrentSpot(curSpot);
-                }
-                else
+                } else
                   $ionicPopup.alert({
                     title: 'Geometry Mismatch!',
                     template: "Measurements and Observations Spots must be drawn as a Points. Draw Again."
@@ -422,8 +418,7 @@ angular.module('app')
                 if ($scope.drawButtonActive == "LineString") {
                   curSpot.geometry = geojsonObj.geometry;
                   CurrentSpot.setCurrentSpot(curSpot);
-                }
-                else
+                } else
                   $ionicPopup.alert({
                     title: 'Geometry Mismatch!',
                     template: "Contacts and Traces Spots must be drawn as Lines. Draw Again."
@@ -434,8 +429,7 @@ angular.module('app')
                 if ($scope.drawButtonActive == "Polygon") {
                   curSpot.geometry = geojsonObj.geometry;
                   CurrentSpot.setCurrentSpot(curSpot);
-                }
-                else
+                } else
                   $ionicPopup.alert({
                     title: 'Geometry Mismatch!',
                     template: "Rock Description Spots must be drawn as Polygons. Draw Again."
@@ -446,8 +440,7 @@ angular.module('app')
                 if ($scope.drawButtonActive == "Polygon") {
                   curSpot.geometry = geojsonObj.geometry;
                   CurrentSpot.setCurrentSpot(curSpot);
-                }
-                else
+                } else
                   $ionicPopup.alert({
                     title: 'Geometry Mismatch!',
                     template: "Spot Groups must be drawn as Polygons. Draw Again."
@@ -468,7 +461,7 @@ angular.module('app')
                 $state.go('app.details');
                 break;
               case "Polygon":
-                  $state.go('app.rockdescription');
+                $state.go('app.rockdescription');
                 break;
             }
           }
@@ -779,18 +772,18 @@ angular.module('app')
               return icon.bedding(rotation);
             case 'joint':
               return icon.joint(rotation);
-            /*case "Fold":
-              return icon.fold(rotation);
-            case "Notes":
-              return icon.notes(rotation);
-            case "Orientation":
-              return icon.orientation(rotation);
-            case "Rock Description":
-              return icon.notes(rotation);
-            case "Sample Locality":
-              return icon.sample(rotation);
-            case "Spot Grouping":
-              return icon.group(rotation);*/
+              /*case "Fold":
+                return icon.fold(rotation);
+              case "Notes":
+                return icon.notes(rotation);
+              case "Orientation":
+                return icon.orientation(rotation);
+              case "Rock Description":
+                return icon.notes(rotation);
+              case "Sample Locality":
+                return icon.sample(rotation);
+              case "Spot Grouping":
+                return icon.group(rotation);*/
             default:
               //TODO: missing the following images:
               // axial plane surface,
@@ -927,7 +920,9 @@ angular.module('app')
 
       // Get mappable spots (spots made from the Spots Page, instead of
       // from the map, do not have geometry until defined by the user)
-      var mappableSpots = _.filter(spots, function (spot) { return spot.geometry.coordinates;});
+      var mappableSpots = _.filter(spots, function(spot) {
+        return spot.geometry.coordinates;
+      });
 
       // get distinct groups and aggregate spots by group type
       var spotGroup = _.groupBy(mappableSpots, function(spot) {
@@ -992,12 +987,19 @@ angular.module('app')
           return (layer instanceof ol.layer.Vector) && layer.get('name') !== 'drawLayer' && layer.get('name') !== 'geolocationLayer';
         });
 
-        var spotTypes = [
-          { "label": "Station", "value": "point" },
-          { "label": "Contact or Trace", "value": "line" },
-          { "label": "Rock Description", "value": "polygon" },
-          { "label": "Spot Group", "value": "group" }
-        ];
+        var spotTypes = [{
+          "label": "Station",
+          "value": "point"
+        }, {
+          "label": "Contact or Trace",
+          "value": "line"
+        }, {
+          "label": "Rock Description",
+          "value": "polygon"
+        }, {
+          "label": "Spot Group",
+          "value": "group"
+        }];
 
         // we need to check that we're not clicking on the geolocation layer
         if (feature && layer.get('name') != 'geolocationLayer') {
@@ -1006,7 +1008,9 @@ angular.module('app')
           var content = '';
           content += '<a href="#/app/spots/' + feature.get('id') + '/notes"><b>' + feature.get('name') + '</b></a>';
           content += '<br>';
-          content += '<small>' + _.findWhere(spotTypes, {value: feature.get('type')}).label + '</small>';
+          content += '<small>' + _.findWhere(spotTypes, {
+            value: feature.get('type')
+          }).label + '</small>';
 
           if (feature.get('planar_feature_type')) {
             content += '<br>';
@@ -1070,7 +1074,7 @@ angular.module('app')
           .then(function(position) {
             var lat = position.coords.latitude;
             var lng = position.coords.longitude;
-            var altitude =  position.coords.altitude;
+            var altitude = position.coords.altitude;
             var accuracy = position.coords.accuracy;
             var heading = position.coords.heading;
             var speed = position.coords.speed;
@@ -1108,7 +1112,7 @@ angular.module('app')
           function(position) {
             var lat = position.coords.latitude;
             var lng = position.coords.longitude;
-            var altitude =  position.coords.altitude;
+            var altitude = position.coords.altitude;
             var accuracy = position.coords.accuracy;
             var altitudeAccuracy = position.coords.altitudeAccuracy;
             var heading = position.coords.heading;
@@ -1133,7 +1137,7 @@ angular.module('app')
             });
 
             geolocationLayer.setSource(vectorSource);
-        });
+          });
       } else {
         // locationOn must be false
         console.log("toggleLocation is now false");
@@ -1172,18 +1176,20 @@ angular.module('app')
 
       $ionicActionSheet.show({
         titleText: 'Map Actions',
-        buttons: [
-          {text: '<i class="icon ion-map"></i> Zoom to Extent of Spots'},
-          {text: '<i class="icon ion-archive"></i>Save Map for Offline Use'},
-          {text: '<i class="icon ion-grid"></i> Create a Group of Spots'}
-        ],
+        buttons: [{
+          text: '<i class="icon ion-map"></i> Zoom to Extent of Spots'
+        }, {
+          text: '<i class="icon ion-archive"></i>Save Map for Offline Use'
+        }, {
+          text: '<i class="icon ion-grid"></i> Create a Group of Spots'
+        }],
         cancelText: 'Cancel',
-        cancel: function () {
+        cancel: function() {
           console.log('CANCELLED');
         },
-        buttonClicked: function (index) {
+        buttonClicked: function(index) {
           console.log('BUTTON CLICKED', index);
-          switch(index) {
+          switch (index) {
             case 0:
               $scope.zoomToSpotsExtent();
               break;
