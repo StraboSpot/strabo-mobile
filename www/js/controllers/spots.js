@@ -143,6 +143,10 @@ angular.module('app')
 
     $scope.closeModal = function(modal) {
       $scope[modal].hide();
+      SpotsFactory.all().then(function(spots) {
+        $scope.spots = spots;
+        $scope.createAccordionGroups(spots);
+      });
     };
 
     //Cleanup the modal when we're done with it!

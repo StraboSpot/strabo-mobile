@@ -18,4 +18,4 @@ angular.module('app')
       window.localStorage[key] = angular.toJson(spots);
     }
   }
-})
+});

@@ -9,16 +9,41 @@ CoordinateRange.prototype._getAllCoordinates = function() {
     var type = element.geometry.type;
     var coords = element.geometry.coordinates;
 
-    if (type === 'Point') {
-      allCoords.push(coords);
-    } else if (type === 'Polygon') {
-      _.each(coords[0], function(polyElem) {
-        allCoords.push(polyElem);
-      });
-    } else if (type === 'LineString') {
-      _.each(coords, function(lineElem) {
-        allCoords.push(lineElem);
-      });
+    switch(type) {
+      case "Point":
+        allCoords.push(coords);
+        break;
+      case "LineString":
+        _.each(coords, function(lineElem) {
+          allCoords.push(lineElem);
+        });
+        break;
+      case "Polygon":
+        _.each(coords[0], function(polyElem) {
+          allCoords.push(polyElem);
+        });
+        break;
+      case "MultiPoint":
+        _.each(coords, function(pointVertex) {
+          allCoords.push(pointVertex);
+        });
+        break;
+      case "MultiLineString":
+        _.each(coords, function(lineElem) {
+          _.each(lineElem, function(lineVertex) {
+            allCoords.push(lineVertex);
+          });
+        });
+        break;
+      case "MultiPolygon":
+        _.each(coords, function(multiPolyElem) {
+          _.each(multiPolyElem, function(polyElem) {
+            _.each(polyElem, function(polyVertex) {
+              allCoords.push(polyVertex);
+            });
+          });
+        });
+        break;
     }
   });
 

@@ -58,10 +58,10 @@
       <div class="col" ng-show="mapped" >
         <button ng-click="goToSpot();" class="button button-positive icon-left icon ion-eye">View on Map</button>
       </div>
-      <div class="col" ng-show="showMyLocationButton" >
+      <div class="col" ng-show="showMyLocationButton">
         <button ng-click="getLocation();" class="button button-positive icon-left ion-pinpoint">Set to My Location</button>
       </div>
-      <div class="col">
+      <div class="col" ng-show="showSetFromMapButton">
         <button ng-click="openMap();" class="button button-positive icon-left icon ion-map">Set From Map</button>
       </div>
     </div>

@@ -294,6 +294,9 @@ angular.module('app')
           $scope.point.latitude = $scope.spot.geometry.coordinates[1];
           $scope.point.longitude = $scope.spot.geometry.coordinates[0];
         }
+
+        if ($scope.spot.geometry.type == "MultiPoint" || $scope.spot.geometry.type == "MultiLineString" || $scope.spot.geometry.type == "MultiPolygon")
+          $scope.showSetFromMapButton = false;
       }
 
       // Create checkbox list of other spots for selected as related spots

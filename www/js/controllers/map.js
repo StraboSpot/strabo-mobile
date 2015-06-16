@@ -564,9 +564,9 @@ angular.module('app')
     if (MapView.getMapView()) {
       console.log("have mapview set, changing map view to that");
       map.setView(MapView.getMapView());
-    } else {
-      $scope.zoomToSpotsExtent();
     }
+    else
+      $scope.zoomToSpotsExtent();
 
     $scope.cancelDraw = function() {
       if (draw === null) return;
@@ -787,58 +787,71 @@ angular.module('app')
 
       // Set styles for points, lines and polygon and groups
       function styleFunction(feature, resolution) {
-        var styles = {
-          'Point': [
-            new ol.style.Style({
-              image: getIconForFeature(feature)
-            }),
-            new ol.style.Style({
-              text: textStyle(feature.get('name'))
-            })
-          ],
-          'LineString': [
-            new ol.style.Style({
-              stroke: new ol.style.Stroke({
-                color: "#CC0000",
-                width: 4
-              })
-            }),
-            new ol.style.Style({
-              text: textStyle(feature.get('name'))
-            })
-          ]};
-
-        if (feature.get("type") == 'group') {
-          styles['Polygon'] = [
-            new ol.style.Style({
-              stroke: new ol.style.Stroke({
-                color: "#FF8000",
-                width: 2
+        var styles = [];
+        switch(feature.get("type")) {
+          case "point":
+            var pointStyle = [
+              new ol.style.Style({
+                image: getIconForFeature(feature)
               }),
-              fill: new ol.style.Fill({
-                color: 'rgba(255, 128, 0, 0.2)'
+              new ol.style.Style({
+                text: textStyle(feature.get('name'))
               })
-            }),
-            new ol.style.Style({
-              text: textStyle(feature.get('name'))
-            })
-          ]
-        }
-        else {
-          styles["Polygon"] = [
-            new ol.style.Style({
-              stroke: new ol.style.Stroke({
-                color: "#663300",
-                width: 5
+            ];
+            styles['Point'] = pointStyle;
+            styles['MultiPoint'] = pointStyle;
+            break;
+          case "line":
+            var lineStyle = [
+              new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                  color: "#CC0000",
+                  width: 4
+                })
               }),
-              fill: new ol.style.Fill({
-                color: 'rgba(102, 51, 0, 0.2)'
+              new ol.style.Style({
+                text: textStyle(feature.get('name'))
               })
-            }),
-            new ol.style.Style({
-              text: textStyle(feature.get('name'))
-            })
-          ]
+            ];
+            styles['LineString'] = lineStyle;
+            styles['MultiLineString'] = lineStyle;
+            break;
+          case "polygon":
+            var polyStyle = [
+              new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                  color: "#663300",
+                  width: 2
+                }),
+                fill: new ol.style.Fill({
+                  color: 'rgba(102, 51, 0, 0.2)'
+                })
+              }),
+              new ol.style.Style({
+                text: textStyle(feature.get('name'))
+              })
+            ];
+            styles["Polygon"] = polyStyle;
+            styles["MultiPolygon"] = polyStyle;
+            break;
+          case "group":
+            var groupStyle = [
+              new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                  color: "#FF8000",
+                  width: 2
+                }),
+                fill: new ol.style.Fill({
+                  color: 'rgba(255, 128, 0, 0.2)'
+                })
+              }),
+              new ol.style.Style({
+                text: textStyle(feature.get('name'))
+              })
+            ];
+            styles['Polygon'] = groupStyle;
+            styles['MultiPolygon'] = groupStyle;
+            break;
         }
         return styles[feature.getGeometry().getType()];
       }
