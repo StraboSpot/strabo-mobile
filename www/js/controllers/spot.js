@@ -472,9 +472,12 @@ angular.module('app')
 
     // When switching tabs validate the form first (if the tab is based on a form),
     // save the properties for the current spot temporarily, then go to the new tab
-    $scope.switchTabs = function (toTab) {
-      if (!$scope.validateForm())
-        return 0;
+    $scope.switchTabs = function (toTab, pristine) {
+      // If the pristine variable is undefined or true don't validate the form,
+      // but always validate if the spot is a rock description
+      if (!pristine || $scope.spot.properties.type == "polygon")
+        if (!$scope.validateForm())
+          return 0;
 
       // Save new Lat and Long in case changed by user
       if ($scope.mapped && $scope.spot.geometry.type === "Point") {

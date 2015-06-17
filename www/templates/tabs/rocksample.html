@@ -13,22 +13,22 @@
     <ion-header-bar class="bar-subheader">
       <ion-scroll direction="x" class="wide-as-needed">
         <span ng-show="showDetails">
-          <a class="button inline-button button-clear spot-tab-inactive" ng-click="switchTabs('details')">Details</a>
+          <a class="button inline-button button-clear spot-tab-inactive" ng-click="switchTabs('details', rockSampleForm.$pristine);">Details</a>
         </span>
-        <a class="button button-clear spot-tab-inactive" href="#/app/spots/{{spot.properties.id}}/notes">Notes</a>
-        <a class="button button-clear spot-tab-inactive" href="#/app/spots/{{spot.properties.id}}/pictures">Photos</a>
-        <a class="button button-clear spot-tab-inactive" href="#/app/spots/{{spot.properties.id}}/georeference">Georeference</a>
+        <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('notes', rockSampleForm.$pristine);">Notes</a>
+        <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('pictures', rockSampleForm.$pristine);">Photos</a>
+        <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('georeference', rockSampleForm.$pristine);">Georeference</a>
         <span ng-show="showLinks">
-          <a class="button button-clear spot-tab-inactive" href="#/app/spots/{{spot.properties.id}}/links">Links</a>
+          <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('links', rockSampleForm.$pristine);">Links</a>
         </span>
         <span ng-show="showGroups">
-          <a class="button button-clear spot-tab-inactive" href="#/app/spots/{{spot.properties.id}}/groups">Groups</a>
+          <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('groups', rockSampleForm.$pristine);">Groups</a>
         </span>
         <span ng-show="showGroupMembers">
-          <a class="button button-clear spot-tab-inactive" href="#/app/spots/{{spot.properties.id}}/groupmembers">Group Members</a>
+          <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('groupmembers', rockSampleForm.$pristine);">Group Members</a>
         </span>
         <span ng-show="showRockDescription">
-          <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('rockdescription');">Rock Description</a>
+          <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('rockdescription', rockSampleForm.$pristine);">Rock Description</a>
         </span>
         <a class="button button-clear button-light spot-tab-active" href="#/app/spots/{{spot.properties.id}}/rocksample">Rock Sample</a>
       </ion-scroll>
