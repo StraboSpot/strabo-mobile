@@ -790,12 +790,13 @@ angular.module('app')
         var styles = [];
         switch(feature.get("type")) {
           case "point":
+            var pointText = (feature.get('dip')) ? feature.get('dip').toString() : feature.get('name');
             var pointStyle = [
               new ol.style.Style({
                 image: getIconForFeature(feature)
               }),
               new ol.style.Style({
-                text: textStyle(feature.get('name'))
+                text: textStyle(pointText)
               })
             ];
             styles['Point'] = pointStyle;
@@ -806,7 +807,7 @@ angular.module('app')
               new ol.style.Style({
                 stroke: new ol.style.Stroke({
                   color: "#CC0000",
-                  width: 4
+                  width: 3
                 })
               }),
               new ol.style.Style({
@@ -817,18 +818,19 @@ angular.module('app')
             styles['MultiLineString'] = lineStyle;
             break;
           case "polygon":
+            var polyText = feature.get('unit_label_abbreviation') ? feature.get('unit_label_abbreviation') : feature.get('name');
             var polyStyle = [
               new ol.style.Style({
                 stroke: new ol.style.Stroke({
                   color: "#663300",
-                  width: 2
+                  width: .5
                 }),
                 fill: new ol.style.Fill({
                   color: 'rgba(102, 51, 0, 0.2)'
                 })
               }),
               new ol.style.Style({
-                text: textStyle(feature.get('name'))
+                text: textStyle(polyText)
               })
             ];
             styles["Polygon"] = polyStyle;
@@ -839,7 +841,7 @@ angular.module('app')
               new ol.style.Style({
                 stroke: new ol.style.Stroke({
                   color: "#FF8000",
-                  width: 2
+                  width: .5
                 }),
                 fill: new ol.style.Fill({
                   color: 'rgba(255, 128, 0, 0.2)'
