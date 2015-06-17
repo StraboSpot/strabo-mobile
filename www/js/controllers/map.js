@@ -806,7 +806,7 @@ angular.module('app')
             var lineStyle = [
               new ol.style.Style({
                 stroke: new ol.style.Stroke({
-                  color: "#CC0000",
+                  color: 'rgba(204, 0, 0, 0.7)',
                   width: 3
                 })
               }),
@@ -822,11 +822,11 @@ angular.module('app')
             var polyStyle = [
               new ol.style.Style({
                 stroke: new ol.style.Stroke({
-                  color: "#663300",
+                  color: "#000000",
                   width: .5
                 }),
                 fill: new ol.style.Fill({
-                  color: 'rgba(102, 51, 0, 0.2)'
+                  color: 'rgba(102, 0, 204, 0.4)'
                 })
               }),
               new ol.style.Style({
@@ -840,11 +840,11 @@ angular.module('app')
             var groupStyle = [
               new ol.style.Style({
                 stroke: new ol.style.Stroke({
-                  color: "#FF8000",
+                  color: "#000000",
                   width: .5
                 }),
                 fill: new ol.style.Fill({
-                  color: 'rgba(255, 128, 0, 0.2)'
+                  color: 'rgba(255, 128, 0, 0.4)'
                 })
               }),
               new ol.style.Style({
