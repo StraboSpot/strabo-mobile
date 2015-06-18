@@ -297,6 +297,8 @@ angular.module('app')
 
         if ($scope.spot.geometry.type == "MultiPoint" || $scope.spot.geometry.type == "MultiLineString" || $scope.spot.geometry.type == "MultiPolygon")
           $scope.showSetFromMapButton = false;
+        else
+          $scope.showSetFromMapButton = true;
       }
 
       // Create checkbox list of other spots for selected as related spots
