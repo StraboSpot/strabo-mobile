@@ -1,6 +1,6 @@
 angular.module('app')
 
-.service(
+  .service(
   "SyncService",
   function($http, $q) {
 
@@ -16,7 +16,8 @@ angular.module('app')
       deleteAllDatasetSpots: deleteAllDatasetSpots,
       addDatasetSpot: addDatasetSpot,
       getDatasetSpots: getDatasetSpots,
-      deleteSpots: deleteSpots
+      deleteSpots: deleteSpots,
+      uploadImage: uploadImage
     });
 
     // ---
@@ -176,6 +177,24 @@ angular.module('app')
       return(request.then(handleSuccess, handleError));
     }
 
+    // Upload load an image
+    function uploadImage(spot_id, image_file, encodedLogin) {
+      var request = $http({
+        method: "post",
+        url: "http://strabospot.org/db/image/",
+        transformRequest: angular.identity,
+        headers: {
+          'Authorization': "Basic " + encodedLogin + "\"",
+          'Content-Type': undefined
+        },
+        data: JSON.stringify({
+          feature_id: spot_id,
+          image_file: image_file
+        })
+      });
+      return(request.then(handleSuccess, handleError));
+    }
+
     // ---
     // Private Methods
     // ---
@@ -184,12 +203,12 @@ angular.module('app')
     function handleError(response) {
       return(response);
       /*if(!angular.isObject(response.data) || !response.data.Error) {
-        var communicationError = "There was a failure communicating with the strabo server. " +
-          "You are likely working in offline mode and cannot reach the server or the server is currently down. ";
-        return($q.reject(communicationError));
-      }
-      // Otherwise, use expected error message.
-      return($q.reject(response.data.Error));*/
+       var communicationError = "There was a failure communicating with the strabo server. " +
+       "You are likely working in offline mode and cannot reach the server or the server is currently down. ";
+       return($q.reject(communicationError));
+       }
+       // Otherwise, use expected error message.
+       return($q.reject(response.data.Error));*/
     }
 
     // Transform the successful response, unwrapping the application data from the API response payload

@@ -146,12 +146,21 @@ angular.module('app')
               console.log("Update Feature server response: ", response);
               if (response.status === 201) {
                 console.log("Updated spot ", i, "/", spotsCount);
+                if (spot.images) {
+                  _.each(spot.images, function (image) {
+                    SyncService.uploadImage(spot.properties.id, image.src, $scope.encodedLogin).then(function(response) {
+                      if (response.status === 201)
+                        console.log("Image uploaded for", spot, "Server response:", response);
+                      else
+                        console.log("Error uploading image for", spot, "Server response:", response);
+                    });
+                  });
+                }
 
                 // Add spot to dataset
                 SyncService.addSpotToDataset(spot.properties.id, dataset_id, $scope.encodedLogin).then(function(response) {
-                  if (response.status === 201) {
+                  if (response.status === 201)
                     console.log("Spot", spot, "added to Dataset", dataset_id, "Server response:", response);
-                  }
                   else
                     console.log("Error adding spot", spot, "added to Dataset", dataset_id, "Server response:", response);
                 });
@@ -178,9 +187,8 @@ angular.module('app')
 
                     // Add spot to dataset
                     SyncService.addSpotToDataset(spot.properties.id, dataset_id, $scope.encodedLogin).then(function(response) {
-                      if (response.status === 201) {
+                      if (response.status === 201)
                         console.log("Spot", spot, "added to Dataset", dataset_id, "Server response:", response);
-                      }
                       else
                         console.log("Error adding spot", spot, "to Dataset", dataset_id, "Server response:", response);
                     });
@@ -210,13 +218,12 @@ angular.module('app')
 
                 // Add spot to dataset
                 SyncService.addSpotToDataset(spot.properties.id, dataset_id, $scope.encodedLogin).then(function(response) {
-                  if (response.status === 201) {
+                  if (response.status === 201)
                     console.log("Spot", spot, "added to Dataset", dataset_id, "Server response:", response);
-                  }
                   else
                     console.log("Error adding spot", spot, "to Dataset", dataset_id, "Server response:", response);
                 });
-            }
+              }
               else
                 throw new Error("Unable to create spot " + i + "/" + spotsCount);
 
@@ -255,8 +262,8 @@ angular.module('app')
             console.log("Downloaded", response.data);
             response.data.features.forEach(function(spot) {
               if (!_.filter($scope.spots, function(item) {
-                return _.findWhere(item, { id: spot.properties.id });
-              })[0])
+                  return _.findWhere(item, { id: spot.properties.id });
+                })[0])
                 $scope.spots.push(spot);
               SpotsFactory.save(spot);
             });
