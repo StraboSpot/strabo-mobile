@@ -24,7 +24,7 @@
             <ion-item class="item-accordion"
                       ng-repeat="item in group.items"
                       ng-show="isGroupShown(group)"
-                      href="#/app/spots/{{item.properties.id}}/{{group.tab}}">
+                      href="#/spotTab/{{item.properties.id}}/{{group.tab}}">
               {{item.properties.name}}
             </ion-item>
           </div>
@@ -37,63 +37,11 @@
         <ion-list>
           <ion-item class="item-accordion"
                     ng-repeat="spot in spots | filter: {'properties': {'type': 'group'}}"
-                    href="#/app/spots/{{spot.properties.id}}/details">
+                    href="#/spotTab/{{spot.properties.id}}/details">
             {{spot.properties.name}}
           </ion-item>
         </ion-list>
       </div>
     </div>
-<!--
-
-      <div class="row responsive-sm">
-        <div class="col">
-          <div class="item item-divider">
-            STATIONS
-          </div>
-          <ion-list>
-            <ion-item ng-repeat="spot in spots | filter: { 'properties': {'type': 'point' }}"
-                      href="#/app/spots/{{spot.properties.id}}/details">
-              {{spot.properties.name}}
-            </ion-item>
-          </ion-list>
-          <div class="item item-divider">
-            CONTACTS & TRACES
-          </div>
-          <ion-list>
-            <ion-item ng-repeat="spot in spots | filter: { 'properties': {'type': 'line' }}"
-                      href="#/app/spots/{{spot.properties.id}}/details">
-              {{spot.properties.name}}
-            </ion-item>
-          </ion-list>
-          <div class="item item-divider">
-            ROCK DESCRIPTION ONLY
-          </div>
-          <ion-list>
-            <ion-item ng-repeat="spot in spots | filter: { 'properties': {'type': 'polygon' }}"
-                      href="#/app/spots/{{spot.properties.id}}/rockdescription">
-              {{spot.properties.name}}
-            </ion-item>
-          </ion-list>
-          <div class="item item-divider">
-            3D STRUCTURE
-          </div>
-          <ion-list>
-            <ion-item>
-              Not implemented yet
-            </ion-item>
-          </ion-list>
-        </div>
-        <div class="col">
-          <div class="item item-divider">
-            GROUPS
-          </div>
-          <ion-list>
-            <ion-item ng-repeat="spot in spots | filter: {'properties': {'type': 'group'}}"
-                      href="#/app/spots/{{spot.properties.id}}/details">
-              {{spot.properties.name}}
-            </ion-item>
-          </ion-list>
-        </div>
-      </div>-->
     </ion-content>
 </ion-view>

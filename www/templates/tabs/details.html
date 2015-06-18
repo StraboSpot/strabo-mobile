@@ -1,40 +1,5 @@
 <form name="straboForm" novalidate="">
   <ion-view>
-    <ion-nav-title>{{ spotTitle }}</ion-nav-title>
-    <ion-nav-buttons side="left">
-      <button ng-click="goToSpots();" class="button button-icon icon ion-arrow-left-c"></button>
-    </ion-nav-buttons>
-    <ion-nav-buttons side="right">
-      <button ng-click="copySpot();" class="button button-icon icon ion-forward"></button>
-      <button ng-click="deleteSpot();" class="button button-icon icon ion-trash-b"></button>
-      <button ng-click="submit();" class="button button-icon icon ion-checkmark-circled"></button>
-    </ion-nav-buttons>
-
-    <ion-header-bar class="bar-subheader">
-      <ion-scroll direction="x" class="wide-as-needed">
-        <a class="button inline-button button-clear button-light spot-tab-active" href="#/app/spots/{{spot.properties.id}}/details">Details</a>
-        <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('notes');">Notes</a>
-        <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('pictures');">Photos</a>
-        <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('georeference');">Georeference</a>
-        <span ng-show="showLinks">
-          <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('links');">Links</a>
-        </span>
-        <span ng-show="showGroups">
-          <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('groups');">Groups</a>
-        </span>
-        <span ng-show="showGroupMembers">
-          <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('groupmembers');">Group Members</a>
-        </span>
-        <span ng-show="showRockDescription">
-          <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('rockdescription');">Rock Description</a>
-        </span>
-        <span ng-show="showRockSample">
-          <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('rocksample');">Rock Sample</a>
-        </span>
-      </ion-scroll>
-    </ion-header-bar>
-
-
     <ion-content>
       <div ng-show="showDynamicFields">
         <div ng-repeat="field in survey">
@@ -148,46 +113,6 @@
           </label>
         </div>
       </div>
-
-<!--
-      <div class="row responsive-sm">
-        <div class="col" ng-show="showContactButtons()">
-          <button ng-click="newSpot('Contact');" class="button button-block button-positive icon-left icon ion-compass">Link to New Contact Description</button>
-        </div>
-        <div class="col" ng-show="showContactButtons()">
-          <button ng-click="linkContact();" ng-disabled="enableLinkContact" class="button button-block button-positive icon-left icon ion-compass">Link to Existing Contact Description</button>
-        </div>
-
-        <div class="col" ng-show="showFaultButtons()">
-          <button ng-click="newSpot('Fault');" class="button button-block button-positive icon-left icon ion-compass">Link to New Fault Description</button>
-        </div>
-        <div class="col" ng-show="showFaultButtons()">
-          <button ng-click="linkFault();" ng-disabled="enableLinkFault" class="button button-block button-positive icon-left icon ion-compass">Link to Existing Fault Description</button>
-        </div>
-
-        <div class="col" ng-show="showFoldButtons()">
-          <button ng-click="newSpot('Fold');" class="button button-block button-positive icon-left icon ion-compass">Link to New Fold Description</button>
-        </div>
-        <div class="col" ng-show="showFoldButtons()">
-          <button ng-click="linkFold();" ng-disabled="enableLinkFold" class="button button-block button-positive button-positive icon-left icon ion-compass">Link to Existing Fold Description</button>
-        </div>
-
-        <div class="col" ng-show="showOrientationButtons">
-          <button ng-click="newSpot('Orientation');" class="button button-block button-positive icon-left icon ion-compass">Link to New Orientation</button>
-        </div>
-        <div class="col" ng-show="showOrientationButtons">
-          <button ng-click="linkOrientation();" ng-disabled="enableLinkOrientation" class="button button-block button-positive icon-left icon ion-compass">Link to Existing Orientation</button>
-        </div>
-
-        <div class="col" ng-show="showShearZoneButtons()">
-          <button ng-click="newSpot('Shear Zone');" class="button button-block button-positive icon-left icon ion-compass">Link to New Shear Zone Description</button>
-        </div>
-        <div class="col" ng-show="showShearZoneButtons()">
-          <button ng-click="linkShearZone();" ng-disabled="enableLinkShearZone" class="button button-block button-positive icon-left icon ion-compass">Link to Existing Shear Zone Description</button>
-        </div>
-      </div>
--->
     </ion-content>
-
   </ion-view>
 </form>

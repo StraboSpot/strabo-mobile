@@ -410,9 +410,9 @@ angular.module('app')
                 } else
                   $ionicPopup.alert({
                     title: 'Geometry Mismatch!',
-                    template: "Measurements and Observations Spots must be drawn as a Points. Draw Again."
+                    template: "Station Spots must be drawn as a Points. Draw Again."
                   });
-                $state.go('app.details');
+                $state.go('spotTab.details');
                 break;
               case "line":
                 if ($scope.drawButtonActive == "LineString") {
@@ -423,7 +423,7 @@ angular.module('app')
                     title: 'Geometry Mismatch!',
                     template: "Contacts and Traces Spots must be drawn as Lines. Draw Again."
                   });
-                $state.go('app.details');
+                $state.go('spotTab.details');
                 break;
               case "polygon":
                 if ($scope.drawButtonActive == "Polygon") {
@@ -434,7 +434,7 @@ angular.module('app')
                     title: 'Geometry Mismatch!',
                     template: "Rock Description Spots must be drawn as Polygons. Draw Again."
                   });
-                $state.go('app.rockdescription');
+                $state.go('spotTab.rockdescription');
                 break;
               case "group":
                 if ($scope.drawButtonActive == "Polygon") {
@@ -445,7 +445,7 @@ angular.module('app')
                     title: 'Geometry Mismatch!',
                     template: "Spot Groups must be drawn as Polygons. Draw Again."
                   });
-                $state.go('app.details');
+                $state.go('spotTab.details');
                 break;
             }
           }
@@ -455,13 +455,13 @@ angular.module('app')
 
             switch ($scope.drawButtonActive) {
               case "Point":
-                $state.go('app.details');
+                $state.go('spotTab.details');
                 break;
               case "LineString":
-                $state.go('app.details');
+                $state.go('spotTab.details');
                 break;
               case "Polygon":
-                $state.go('app.rockdescription');
+                $state.go('spotTab.rockdescription');
                 break;
             }
           }
@@ -963,7 +963,7 @@ angular.module('app')
 
           // popup content
           var content = '';
-          content += '<a href="#/app/spots/' + feature.get('id') + '/notes"><b>' + feature.get('name') + '</b></a>';
+          content += '<a href="#/spotTab/' + feature.get('id') + '/notes"><b>' + feature.get('name') + '</b></a>';
           content += '<br>';
           content += '<small>' + _.findWhere(spotTypes, {
             value: feature.get('type')

@@ -1,6 +1,7 @@
 angular.module('app')
   .controller('SpotCtrl', function(
     $scope,
+    $rootScope,
     $state,
     $stateParams,
     $location,
@@ -8,14 +9,15 @@ angular.module('app')
     SettingsFactory,
     NewSpot,
     CurrentSpot,
-    MapView,
     $ionicHistory,
     $ionicPopup,
     $ionicModal,
     $ionicActionSheet,
-    $cordovaGeolocation,
-    $cordovaCamera,
     ContentModelSurveyFactory) {
+
+    // this scope is the parent scope for the SpotCtrl that all child SpotCtrl will inherit
+
+    $rootScope.$state = $state;
 
     $scope.spotTypes = {
       "point": "Station",
@@ -30,150 +32,7 @@ angular.module('app')
 
     $scope.openSpot = function(id) {
       CurrentSpot.clearCurrentSpot();
-      $location.path('/app/spots/' + id + '/notes');
-    };
-
-    $scope.showImages = function(index) {
-      $scope.activeSlide = index;
-      $ionicModal.fromTemplateUrl('templates/modals/imageModal.html', {
-        scope: $scope,
-        animation: 'slide-in-up'
-      }).then(function(modal) {
-        $scope.imageModal = modal;
-        $scope.imageModal.show();
-      });
-    };
-
-    $scope.closeImageModal = function() {
-      $scope.imageModal.hide();
-      $scope.imageModal.remove();
-    };
-
-    $scope.cameraSource = [{
-      text: 'Photo Library',
-      value: 'PHOTOLIBRARY'
-    }, {
-      text: 'Camera',
-      value: 'CAMERA'
-    }, {
-      text: 'Saved Photo Album',
-      value: 'SAVEDPHOTOALBUM'
-    }];
-
-    $scope.selectedCameraSource = {
-      // default is always camera
-      source: "CAMERA"
-    };
-
-    $scope.cameraModal = function(source) {
-      // camera modal popup
-      var myPopup = $ionicPopup.show({
-        template: '<ion-radio ng-repeat="source in cameraSource" ng-value="source.value" ng-model="selectedCameraSource.source">{{ source.text }}</ion-radio>',
-        title: 'Select an image source',
-        scope: $scope,
-        buttons: [{
-          text: 'Cancel'
-        }, {
-          text: '<b>Go</b>',
-          type: 'button-positive',
-          onTap: function(e) {
-            if (!$scope.selectedCameraSource.source) {
-              //don't allow the user to close unless a value is set
-              e.preventDefault();
-            } else {
-              return $scope.selectedCameraSource.source;
-            }
-          }
-        }]
-      });
-
-      myPopup.then(function(cameraSource) {
-        if (cameraSource) {
-          launchCamera(cameraSource);
-        }
-      });
-    };
-
-    var launchCamera = function(source) {
-      // all plugins must be wrapped in a ready function
-      document.addEventListener("deviceready", function() {
-
-        if (source == "PHOTOLIBRARY") {
-          source = Camera.PictureSourceType.PHOTOLIBRARY;
-        } else if (source == "CAMERA") {
-          source = Camera.PictureSourceType.CAMERA;
-        } else if (source == "SAVEDPHOTOALBUM") {
-          source = Camera.PictureSourceType.SAVEDPHOTOALBUM;
-        }
-
-        var cameraOptions = {
-          quality: 75,
-          destinationType: Camera.DestinationType.FILE_URI,
-          sourceType: source,
-          allowEdit: true,
-          encodingType: Camera.EncodingType.PNG,
-          // popoverOptions: CameraPopoverOptions,
-          saveToPhotoAlbum: true
-        };
-
-        $cordovaCamera.getPicture(cameraOptions).then(function(imageURI) {
-
-          // the image has been written to mobile device.  It is written in two places:
-          // 1) the local strabo-mobile cache, aka "/storage/emulated/0/Android/data/com.ionicframework.strabomobile327690/cache/filename.jpg"
-          // 2) the Photo Album folder, on Android, this is: /Pictures
-          // 3) in iOS, this is in the Photos Gallery
-
-          console.log(imageURI);
-
-          // now we read the image from the filesystem and save the image to the spot
-
-          // create an images array if it doesn't exist -- camera images are stored here
-          if ($scope.spot.images === undefined) {
-            $scope.spot.images = [];
-          }
-
-          var gotFileEntry = function(fileEntry) {
-            // console.log("inside gotFileEntry");
-            fileEntry.file(gotFile, fail);
-          };
-
-          var gotFile = function(file) {
-            // console.log("inside gotFile");
-            readDataUrl(file);
-          };
-
-          var readDataUrl = function(file) {
-            // console.log("inside readDataUrl");
-            var reader = new FileReader();
-            reader.onloadend = function(evt) {
-              // console.log("Read as data URL");
-              // console.log(evt.target.result);
-              var base64Image = evt.target.result;
-
-              // push the image data to our camera images array
-              $scope.$apply(function() {
-                $scope.spot.images.push({
-                  src: base64Image
-                });
-              });
-            };
-
-            reader.readAsDataURL(file);
-          };
-
-          var fail = function(evt) {
-            // console.log("inside fail");
-            console.log(evt);
-          };
-
-          // invoke the reading of the image file from the local filesystem
-          window.resolveLocalFileSystemURL(imageURI, gotFileEntry, fail);
-
-
-        }, function(err) {
-          console.log("error: ", err);
-        });
-      });
+      $location.path('/spotTab/' + id + '/notes');
     };
 
     // Set or cleanup some of the properties of the $scope
@@ -266,7 +125,7 @@ angular.module('app')
               $scope.spot.properties[field.name] = parseInt(field.default);
             else if (field.type.split(' ')[0] == "select_one" || field.type.split(' ')[0] == "select_multiple"){
               var curChoices = _.filter($scope.choices, function (choice) {
-                return choice["list name"] == field.type.split(' ')[1] }
+                  return choice["list name"] == field.type.split(' ')[1] }
               );
               // Check that default is in the list of choices for field
               if (_.findWhere(curChoices, { name: field.default })) {
@@ -324,56 +183,61 @@ angular.module('app')
       });
     };
 
-    // Get the current spot
-    if (NewSpot.getNewSpot()){
-      // Load spot stored in the NewSpot service
-      $scope.spot = NewSpot.getNewSpot();
-      CurrentSpot.setCurrentSpot($scope.spot);
-      // now clear the new spot from the service because we have the info in our current scope
-      NewSpot.clearNewSpot();
+    $scope.load = function (params) {
+      // Get the current spot
+      if (NewSpot.getNewSpot()) {
+        // Load spot stored in the NewSpot service
+        $scope.spot = NewSpot.getNewSpot();
+        CurrentSpot.setCurrentSpot($scope.spot);
+        // now clear the new spot from the service because we have the info in our current scope
+        NewSpot.clearNewSpot();
 
-      // Set default name
-      SettingsFactory.getNamePrefix().then(function(prefix) {
-        if (!prefix)
-          prefix = "";
-        if (prefix && !isNaN(prefix)) {
-          SettingsFactory.getPrefixIncrement().then(function(prefix_increment) {
-            SettingsFactory.setNamePrefix(prefix + prefix_increment);
-            prefix = prefix.toString();
+        // Set default name
+        SettingsFactory.getNamePrefix().then(function (prefix) {
+          if (!prefix)
+            prefix = "";
+          if (prefix && !isNaN(prefix)) {
+            SettingsFactory.getPrefixIncrement().then(function (prefix_increment) {
+              SettingsFactory.setNamePrefix(prefix + prefix_increment);
+              prefix = prefix.toString();
+            })
+          }
+          SettingsFactory.getNameRoot().then(function (root) {
+            SettingsFactory.getNameSuffix().then(function (suffix) {
+              if (!suffix)
+                suffix = "";
+              if (suffix && !isNaN(suffix)) {
+                SettingsFactory.getSuffixIncrement().then(function (suffix_increment) {
+                  SettingsFactory.setNameSuffix(suffix + suffix_increment);
+                  suffix = suffix.toString();
+                })
+              }
+              if (root)
+                $scope.spot.properties.name = prefix + root + suffix;
+              else
+                $scope.spot.properties.name = prefix + new Date().getTime().toString() + suffix;
+              console.log('attempting to set properties');
+              setProperties();
+            });
           })
-        }
-        SettingsFactory.getNameRoot().then(function(root){
-          SettingsFactory.getNameSuffix().then(function(suffix){
-            if (!suffix)
-              suffix = "";
-            if (suffix && !isNaN(suffix)) {
-              SettingsFactory.getSuffixIncrement().then(function(suffix_increment) {
-                SettingsFactory.setNameSuffix(suffix + suffix_increment);
-                suffix = suffix.toString();
-              })
-            }
-            if (root)
-              $scope.spot.properties.name = prefix + root + suffix;
-            else
-              $scope.spot.properties.name = prefix + new Date().getTime().toString() + suffix;
-            setProperties();
-          });
-        })
-      });
-    }
-    else {
-      if (CurrentSpot.getCurrentSpot()) {
-        $scope.spot = CurrentSpot.getCurrentSpot();
-        setProperties();
-      }
-      else {
-        // Load spot from local storage
-        SpotsFactory.read($stateParams.spotId, function (spot) {
-          $scope.spot = spot;
-          setProperties();
         });
       }
-    }
+      else {
+        if (CurrentSpot.getCurrentSpot()) {
+          $scope.spot = CurrentSpot.getCurrentSpot();
+          console.log('attempting to set properties2');
+          setProperties();
+        }
+        else {
+          // Load spot from local storage
+          SpotsFactory.read(params.spotId, function (spot) {
+            $scope.spot = spot;
+            console.log('attempting to set properties3');
+            setProperties();
+          });
+        }
+      }
+    };
 
     // Toggle selected for links or groups or group members selected
     $scope.toggleSelection = function toggleSelection(ref_spot, type_selected, type_unselected) {
@@ -387,32 +251,6 @@ angular.module('app')
         $scope[type_selected] = _.reject($scope[type_selected], function (spot) { return spot.id == ref_spot.id });
         $scope[type_unselected].push(ref_spot);
       }
-    };
-
-    // Get current location
-    $scope.getLocation = function() {
-      $cordovaGeolocation.getCurrentPosition().then(function(position) {
-
-        // assign the lat/lng upon getting location
-        $scope.point.latitude = position.coords.latitude;
-        $scope.point.longitude = position.coords.longitude;
-
-        $scope.spot.geometry = {
-          type: "Point",
-          coordinates: [position.coords.longitude, position.coords.latitude]
-        };
-      }, function(err) {
-        $ionicPopup.alert({
-          title: 'Alert!',
-          template: "Unable to get location: " + err.message
-        });
-      });
-    };
-
-    $scope.openMap = function() {
-      // Save current spot
-      CurrentSpot.setCurrentSpot($scope.spot);
-      $location.path("/app/map");
     };
 
     // Validate the fields in the given form
@@ -489,7 +327,7 @@ angular.module('app')
       }
 
       CurrentSpot.setCurrentSpot($scope.spot);
-      $location.path('/app/spots/' + $scope.spot.properties.id + '/' + toTab);
+      $location.path('/spotTab/' + $scope.spot.properties.id + '/' + toTab);
     };
 
     // Add or modify Spot
@@ -651,19 +489,8 @@ angular.module('app')
       });
 
       CurrentSpot.clearCurrentSpot();
-      $location.path("/app/map");
+      $location.path("/app/spots");
       //$ionicHistory.goBack();
-    };
-
-    // View the spot on the map
-    $scope.goToSpot = function() {
-      var center = SpotsFactory.getCenter($scope.spot);
-      var spotCenter = ol.proj.transform([center.lon, center.lat], 'EPSG:4326', 'EPSG:3857');
-      MapView.setMapView(new ol.View({
-        center: spotCenter,
-        zoom: 16
-      }));
-      $location.path("/app/map");
     };
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair
@@ -794,7 +621,7 @@ angular.module('app')
     };
 
     $scope.linkSpot = function() {
-      NewSpot.setNewSpot($scope.spot);
+      CurrentSpot.setCurrentSpot($scope.spot);
       $scope.openModal("linkModal");
     };
 
@@ -806,12 +633,12 @@ angular.module('app')
     };
 
     $scope.linkGroup = function() {
-      NewSpot.setNewSpot($scope.spot);
+      CurrentSpot.setCurrentSpot($scope.spot);
       $scope.openModal("groupModal");
     };
 
     $scope.addGroupMember = function () {
-      NewSpot.setNewSpot($scope.spot);
+      CurrentSpot.setCurrentSpot($scope.spot);
       $scope.openModal("groupMembersModal");
     };
 
@@ -835,7 +662,7 @@ angular.module('app')
       var copyProperties = _.omit($scope.spot.properties, ['id', 'date', 'time', 'links', 'groups', 'group_members']);
       copySpot['properties'] = copyProperties;
       NewSpot.setNewSpot(copySpot);
-      $location.path("/app/spots//notes");
+      $location.path("/spotTab//notes");
     };
 
     /////////////////
@@ -892,7 +719,7 @@ angular.module('app')
         { type: 'has', inverse: 'describes'},
         { type: 'describes', inverse: 'has'},
         { type: 'cross-cuts', inverse: 'is cross cut by' },
-        { type: 'is cross-cut by', inverse: 'cross cuts' },
+        { type: 'is cross-cut by', inverse: 'cross-cuts' },
         { type: 'is younger than', inverse: 'is older than' },
         { type: 'is older than', inverse: 'is younger than' },
         { type: 'is a lower metamorphic grade than', inverse: 'is a higher metamorphic grade than' },

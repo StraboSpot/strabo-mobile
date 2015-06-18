@@ -1,39 +1,5 @@
 <form name="rockSampleForm" novalidate="">
   <ion-view>
-    <ion-nav-title>{{ spotTitle }}</ion-nav-title>
-    <ion-nav-buttons side="left">
-      <button ng-click="goToSpots();" class="button button-icon icon ion-arrow-left-c"></button>
-    </ion-nav-buttons>
-    <ion-nav-buttons side="right">
-      <button ng-click="copySpot();" class="button button-icon icon ion-forward"></button>
-      <button ng-click="deleteSpot();" class="button button-icon icon ion-trash-b"></button>
-      <button ng-click="submit();" class="button button-icon icon ion-checkmark-circled"></button>
-    </ion-nav-buttons>
-
-    <ion-header-bar class="bar-subheader">
-      <ion-scroll direction="x" class="wide-as-needed">
-        <span ng-show="showDetails">
-          <a class="button inline-button button-clear spot-tab-inactive" ng-click="switchTabs('details', rockSampleForm.$pristine);">Details</a>
-        </span>
-        <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('notes', rockSampleForm.$pristine);">Notes</a>
-        <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('pictures', rockSampleForm.$pristine);">Photos</a>
-        <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('georeference', rockSampleForm.$pristine);">Georeference</a>
-        <span ng-show="showLinks">
-          <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('links', rockSampleForm.$pristine);">Links</a>
-        </span>
-        <span ng-show="showGroups">
-          <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('groups', rockSampleForm.$pristine);">Groups</a>
-        </span>
-        <span ng-show="showGroupMembers">
-          <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('groupmembers', rockSampleForm.$pristine);">Group Members</a>
-        </span>
-        <span ng-show="showRockDescription">
-          <a class="button button-clear spot-tab-inactive" ng-click="switchTabs('rockdescription', rockSampleForm.$pristine);">Rock Description</a>
-        </span>
-        <a class="button button-clear button-light spot-tab-active" href="#/app/spots/{{spot.properties.id}}/rocksample">Rock Sample</a>
-      </ion-scroll>
-    </ion-header-bar>
-
     <ion-content>
       <div ng-repeat="field in rock_sample_survey">
         <div id="{{ field.name }}" ng-show="showField(field.relevant)">
@@ -137,6 +103,5 @@
         </div>
       </div>
     </ion-content>
-
   </ion-view>
 </form>

@@ -1,40 +1,4 @@
 <ion-view>
-  <ion-nav-title>{{ spotTitle }}</ion-nav-title>
-  <ion-nav-buttons side="left">
-    <button ng-click="goToSpots();" class="button button-icon icon ion-arrow-left-c"></button>
-  </ion-nav-buttons>
-  <ion-nav-buttons side="right">
-    <button ng-click="copySpot();" class="button button-icon icon ion-forward"></button>
-    <button ng-click="deleteSpot();" class="button button-icon icon ion-trash-b"></button>
-    <button ng-click="submit();" class="button button-icon icon ion-checkmark-circled"></button>
-  </ion-nav-buttons>
-
-  <ion-header-bar class="bar-subheader">
-    <ion-scroll direction="x" class="wide-as-needed">
-      <span ng-show="showDetails">
-        <a class="button inline-button button-clear spot-tab-inactive" ng-click="switchTabs('details')">Details</a>
-      </span>
-      <a class="button button-clear spot-tab-inactive" href="#/app/spots/{{spot.properties.id}}/notes">Notes</a>
-      <a class="button button-clear button-light spot-tab-active" href="#/app/spots/{{spot.properties.id}}/pictures">Photos</a>
-      <a class="button button-clear spot-tab-inactive" href="#/app/spots/{{spot.properties.id}}/georeference">Georeference</a>
-      <span ng-show="showLinks">
-        <a class="button button-clear spot-tab-inactive" href="#/app/spots/{{spot.properties.id}}/links">Links</a>
-      </span>
-      <span ng-show="showGroups">
-        <a class="button button-clear spot-tab-inactive" href="#/app/spots/{{spot.properties.id}}/groups">Groups</a>
-      </span>
-      <span ng-show="showGroupMembers">
-        <a class="button button-clear spot-tab-inactive" href="#/app/spots/{{spot.properties.id}}/groupmembers">Group Members</a>
-      </span>
-      <span ng-show="showRockDescription">
-        <a class="button button-clear spot-tab-inactive" href="#/app/spots/{{spot.properties.id}}/rockdescription">Rock Description</a>
-      </span>
-      <span ng-show="showRockSample">
-        <a class="button button-clear spot-tab-inactive" href="#/app/spots/{{spot.properties.id}}/rocksample">Rock Sample</a>
-      </span>
-    </ion-scroll>
-  </ion-header-bar>
-
   <ion-content>
     <div class="padding">
       <button ng-click="cameraModal()" class="button button-positive icon-left ion-camera">Add Photo</button>
@@ -47,5 +11,4 @@
       </ul>
     </div>
   </ion-content>
-
 </ion-view>
