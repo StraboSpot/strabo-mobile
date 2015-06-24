@@ -140,26 +140,6 @@ angular.module('app')
         });
       }
 
-      // Hide map view buttons
-      if ($scope.spot.geometry && $scope.spot.geometry.coordinates) {
-        $scope.mapped = true;
-        if ($scope.spot.geometry.type === "Point") {
-          $scope.showMyLocationButton = true;
-          // toggles the Lat/Lng input boxes based on available Lat/Lng data
-          $scope.showLatLng = true;
-
-          // Assign lat and long from current spot geometry
-          $scope.point = {};
-          $scope.point.latitude = $scope.spot.geometry.coordinates[1];
-          $scope.point.longitude = $scope.spot.geometry.coordinates[0];
-        }
-
-        if ($scope.spot.geometry.type == "MultiPoint" || $scope.spot.geometry.type == "MultiLineString" || $scope.spot.geometry.type == "MultiPolygon")
-          $scope.showSetFromMapButton = false;
-        else
-          $scope.showSetFromMapButton = true;
-      }
-
       // Create checkbox list of other spots for selected as related spots
       SpotsFactory.all().then(function (spots) {
         $scope.spots = spots;
@@ -290,14 +270,6 @@ angular.module('app')
           if (!$scope.validateFields($scope.survey))
             return false;
           break;
-        case "rockdescription":
-          if (!$scope.validateFields(ContentModelSurveyFactory.rock_description_survey))
-            return false;
-          break;
-        case "rocksample":
-          if (!$scope.validateFields(ContentModelSurveyFactory.rock_sample_survey))
-            return false;
-          break;
         case "notes":
           if (!$scope.spot.properties.name) {
             $ionicPopup.alert({
@@ -306,6 +278,33 @@ angular.module('app')
             });
             return false;
           }
+          break;
+        case "georeference":
+          if ($scope.spot.geometry.type == "Point") {
+            var geoError;
+            if (!$scope.spot.geometry.coordinates[0] && !$scope.spot.geometry.coordinates[1])
+              geoError = '<b>Latitude</b> and <b>longitude</b> are required.';
+            else if (!$scope.spot.geometry.coordinates[0])
+              geoError = '<b>Longitude</b> is required.';
+            else if (!$scope.spot.geometry.coordinates[1])
+              geoError = '<b>Latitude</b> is required.';
+            if (geoError) {
+              $ionicPopup.alert({
+                title: 'Validation Error!',
+                template: geoError
+              });
+              return false;
+            }
+          }
+          break;
+        case "rockdescription":
+          if (!$scope.validateFields(ContentModelSurveyFactory.rock_description_survey))
+            return false;
+          break;
+        case "rocksample":
+          if (!$scope.validateFields(ContentModelSurveyFactory.rock_sample_survey))
+            return false;
+          break;
       }
       return true;
     };
@@ -318,13 +317,6 @@ angular.module('app')
       if (!pristine || $scope.spot.properties.type == "polygon")
         if (!$scope.validateForm())
           return 0;
-
-      // Save new Lat and Long in case changed by user
-      if ($scope.mapped && $scope.spot.geometry.type === "Point") {
-        // yes, replace the geojson geometry with the lat/lng from the input fields
-        $scope.spot.geometry.coordinates[1] = $scope.point.latitude;
-        $scope.spot.geometry.coordinates[0] = $scope.point.longitude;
-      }
 
       CurrentSpot.setCurrentSpot($scope.spot);
       $location.path('/spotTab/' + $scope.spot.properties.id + '/' + toTab);
@@ -341,13 +333,6 @@ angular.module('app')
 
       // define the geojson feature type
       $scope.spot.type = "Feature";
-
-      // is the new spot a single point?
-      if ($scope.mapped && $scope.spot.geometry.type === "Point") {
-        // yes, replace the geojson geometry with the lat/lng from the input fields
-        $scope.spot.geometry.coordinates[1] = $scope.point.latitude;
-        $scope.spot.geometry.coordinates[0] = $scope.point.longitude;
-      }
 
       // Remove references from links or groups or group members
       var cleanRefs = function (ref_type, id) {

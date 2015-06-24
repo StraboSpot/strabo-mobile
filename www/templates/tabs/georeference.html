@@ -1,33 +1,57 @@
-<ion-view>
-  <ion-content>
-    <div ng-if="mapped">
-      <label class="item item-input item-stacked-label item-text-wrap">
-        <span class="input-label">Geometry</span>
-        <input type="text" disabled ng-model="spot.geometry.type">
-      </label>
-      <label class="item item-input item-stacked-label item-text-wrap" ng-show="showLatLng">
-        <span class="input-label">Latitude</span>
-        <input type="number" ng-model="point.latitude" value={{point.latitude}}>
-      </label>
-      <label class="item item-input item-stacked-label item-text-wrap" ng-show="showLatLng">
-        <span class="input-label">Longitude</span>
-        <input type="number" ng-model="point.longitude" value={{point.longitude}}>
-      </label>
-    </div>
-    <div ng-if="!mapped" class="padding">
-      This spot has not been mapped yet. Click on the Set from Map button below and be sure to map this feature as a {{spot.geometry.type}}.
-    </div>
+<form name="geoForm" novalidate="">
+  <ion-view>
+    <ion-content>
+      <div ng-if="mapped">
+        <label class="item item-input item-stacked-label item-text-wrap">
+          <span class="input-label">Geometry</span>
+          <input type="text" disabled ng-model="spot.geometry.type">
+        </label>
+        <!-- Latitude and Longitude text boxes for Point features -->
+        <label ng-show="showLatLng"
+               class="item item-input item-stacked-label item-text-wrap"
+               ng-class="{ 'has-errors': geoForm['lat'].$invalid, 'no-errors': geoForm['lat'].$valid }">
+          <span class="input-label">Latitude</span>
+          <input type="number" name="lat" ng-model="lat" ng-change="updateLatitude(lat)"
+                 required min="-90" max="90">
+        </label>
+        <div ng-if="geoForm['lat'].$touched"
+             ng-messages="geoForm['lat'].$error"
+             ng-messages-include="templates/error-messages.html">
+        </div>
+        <label ng-show="showLatLng"
+               class="item item-input item-stacked-label item-text-wrap"
+               ng-class="{ 'has-errors': geoForm['lng'].$invalid, 'no-errors': geoForm['lng'].$valid }">
+          <span class="input-label">Longitude</span>
+          <input type="number" name="lng" ng-model="lng" ng-change="updateLongitude(lng)"
+                 required min="-180" max="180">
+        </label>
+        <div ng-if="geoForm['lng'].$touched"
+             ng-messages="geoForm['lng'].$error"
+             ng-messages-include="templates/error-messages.html">
+        </div>
+      </div>
+      <div ng-if="!mapped" class="padding">
+        This spot has not been mapped yet. Click on the Set from Map button below and be sure to map this feature as a
+        {{spot.geometry.type}}.
+      </div>
       <!-- Map Interaction -->
-    <div class="row responsive-sm">
-      <div class="col" ng-show="mapped" >
-        <button ng-click="goToSpot();" class="button button-positive icon-left icon ion-eye">View on Map</button>
+      <div class="row responsive-sm">
+        <div class="col">
+          <button ng-click="viewSpot();" ng-disabled="!mapped" class="button button-positive icon-left icon ion-eye">
+            View on Map
+          </button>
+        </div>
+        <div class="col">
+          <button ng-click="getCurrentLocation();" ng-disabled="!showMyLocationButton"
+                  class="button button-positive icon-left ion-pinpoint">Set to My Location
+          </button>
+        </div>
+        <div class="col">
+          <button ng-click="setFromMap();" ng-disabled="!showSetFromMapButton"
+                  class="button button-positive icon-left icon ion-map">Set From Map
+          </button>
+        </div>
       </div>
-      <div class="col" ng-show="showMyLocationButton">
-        <button ng-click="getLocation();" class="button button-positive icon-left ion-pinpoint">Set to My Location</button>
-      </div>
-      <div class="col" ng-show="showSetFromMapButton">
-        <button ng-click="openMap();" class="button button-positive icon-left icon ion-map">Set From Map</button>
-      </div>
-    </div>
-  </ion-content>
-</ion-view>
+    </ion-content>
+  </ion-view>
+</form>

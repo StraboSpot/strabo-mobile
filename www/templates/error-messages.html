@@ -7,6 +7,10 @@
   This field must be a number!
 </div>
 <div class="error" ng-message="min"><i class="ion-information-circled"></i>
-  {{field.constraint_message}}</div>
+  <span ng-if="field.constraint_message">{{field.constraint_message}}</span>
+  <span ng-if="!field.constraint_message">Outside lower bound of valid range</span>
+</div>
 <div class="error" ng-message="max"><i class="ion-information-circled"></i>
-  {{field.constraint_message}}</div>
+  <span ng-if="field.constraint_message">{{field.constraint_message}}</span>
+  <span ng-if="!field.constraint_message">Outside upper bound of valid range</span>
+</div>
