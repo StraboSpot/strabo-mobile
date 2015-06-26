@@ -179,18 +179,32 @@ angular.module('app')
 
     // Upload load an image
     function uploadImage(spot_id, image_file, encodedLogin) {
+
+      function dataURItoBlob(dataURI) {
+        var binary = atob(dataURI.split(',')[1]);
+        var array = [];
+        for(var i = 0; i < binary.length; i++) {
+            array.push(binary.charCodeAt(i));
+        }
+        return new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
+      }
+
+      // base64 encoded string needs to be a blob type in formdata
+      var blob = dataURItoBlob(image_file);
+
+      var formdata = new FormData();
+      formdata.append("feature_id", spot_id);
+      formdata.append("image_file", blob, "image.jpeg");
+
       var request = $http({
         method: "post",
-        url: "http://strabospot.org/db/image/",
+        url: "http://strabospot.org/db/image",
         transformRequest: angular.identity,
         headers: {
-          'Authorization': "Basic " + encodedLogin + "\"",
+          'Authorization': "Basic " + encodedLogin,
           'Content-Type': undefined
         },
-        data: JSON.stringify({
-          feature_id: spot_id,
-          image_file: image_file
-        })
+        data: formdata
       });
       return(request.then(handleSuccess, handleError));
     }
