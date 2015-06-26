@@ -43,7 +43,7 @@ angular.module('app')
         method: "post",
         url: "http://strabospot.org/db/feature",
         headers: {
-          'Authorization': "Basic " + encodedLogin + "\"",
+          'Authorization': "Basic " + encodedLogin,
           'Content-Type': 'application/json'
         },
         data:
@@ -58,7 +58,7 @@ angular.module('app')
         method: "post",
         url: spot.properties.self,
         headers: {
-          'Authorization': "Basic " + encodedLogin + "\"",
+          'Authorization': "Basic " + encodedLogin,
           'Content-Type': 'application/json'
         },
         data:
@@ -73,7 +73,7 @@ angular.module('app')
         method: "get",
         url: "http://strabospot.org/db/myDatasets",
         headers: {
-          'Authorization': "Basic " + encodedLogin + "\""
+          'Authorization': "Basic " + encodedLogin
         }
       });
       return(request.then(handleSuccess, handleError));
@@ -85,7 +85,7 @@ angular.module('app')
         method: "post",
         url: "http://strabospot.org/db/dataset",
         headers: {
-          'Authorization': "Basic " + encodedLogin + "\"",
+          'Authorization': "Basic " + encodedLogin,
           'Content-Type': 'application/json'
         },
         data:
@@ -100,7 +100,7 @@ angular.module('app')
         method: "delete",
         url: self_url,
         headers: {
-          'Authorization': "Basic " + encodedLogin + "\"",
+          'Authorization': "Basic " + encodedLogin,
           'Content-Type': 'application/json'
         }
       });
@@ -113,7 +113,7 @@ angular.module('app')
         method: "post",
         url: "http://strabospot.org/db/datasetSpots/" + dataset_id,
         headers: {
-          'Authorization': "Basic " + encodedLogin + "\"",
+          'Authorization': "Basic " + encodedLogin,
           'Content-Type': 'application/json'
         },
         data: {
@@ -129,7 +129,7 @@ angular.module('app')
         method: "delete",
         url: "http://strabospot.org/db/datasetSpots/" + dataset_id,
         headers: {
-          'Authorization': "Basic " + encodedLogin + "\"",
+          'Authorization': "Basic " + encodedLogin,
           'Content-Type': 'application/json'
         }
       });
@@ -142,7 +142,7 @@ angular.module('app')
         method: "post",
         url: "http://strabospot.org/db/datasetSpots/" + dataset_id,
         headers: {
-          'Authorization': "Basic " + encodedLogin + "\"",
+          'Authorization': "Basic " + encodedLogin,
           'Content-Type': 'application/json'
         },
         data:
@@ -157,7 +157,7 @@ angular.module('app')
         method: "get",
         url: "http://www.strabospot.org/db/datasetSpots/" + dataset_id,
         headers: {
-          'Authorization': "Basic " + encodedLogin + "\""
+          'Authorization': "Basic " + encodedLogin
         }
       });
       return(request.then(handleSuccess, handleError));
@@ -169,7 +169,7 @@ angular.module('app')
         method: "delete",
         url: "http://strabospot.org/db/myFeatures",
         headers: {
-          'Authorization': "Basic " + encodedLogin + "\"",
+          'Authorization': "Basic " + encodedLogin,
           'Content-Type': 'application/json'
         }
       });
