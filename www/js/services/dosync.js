@@ -17,7 +17,9 @@ angular.module('app')
       addDatasetSpot: addDatasetSpot,
       getDatasetSpots: getDatasetSpots,
       deleteSpots: deleteSpots,
-      uploadImage: uploadImage
+      uploadImage: uploadImage,
+      getImages: getImages,
+      downloadImage: downloadImage
     });
 
     // ---
@@ -205,6 +207,30 @@ angular.module('app')
           'Content-Type': undefined
         },
         data: formdata
+      });
+      return(request.then(handleSuccess, handleError));
+    }
+
+    // Get all images for a feature
+    function getImages(dataset_id, encodedLogin) {
+      var request = $http({
+        method: "get",
+        url: "http://www.strabospot.org/db/featureImages/" + dataset_id,
+        headers: {
+          'Authorization': "Basic " + encodedLogin + "\""
+        }
+      });
+      return(request.then(handleSuccess, handleError));
+    }
+
+    // Download image for a feature
+    function downloadImage(image_url, encodedLogin) {
+      var request = $http({
+        method: "get",
+        url: image_url,
+        headers: {
+          'Authorization': "Basic " + encodedLogin + "\""
+        }
       });
       return(request.then(handleSuccess, handleError));
     }

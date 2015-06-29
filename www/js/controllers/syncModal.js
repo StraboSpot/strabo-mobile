@@ -123,6 +123,19 @@ angular.module('app')
         return SpotsFactory.all();
       };
 
+      var uploadImages = function (spot) {
+        if (spot.images) {
+          _.each(spot.images, function (image) {
+            SyncService.uploadImage(spot.properties.id, image.src, $scope.encodedLogin).then(function(response) {
+              if (response.status === 201)
+                console.log("Image uploaded for", spot, "Server response:", response);
+              else
+                console.log("Error uploading image for", spot, "Server response:", response);
+            });
+          });
+        }
+      };
+
       var uploadSpots = function(spots) {
         if (!spots)
           return;
@@ -146,16 +159,7 @@ angular.module('app')
               console.log("Update Feature server response: ", response);
               if (response.status === 201) {
                 console.log("Updated spot ", i, "/", spotsCount);
-                if (spot.images) {
-                  _.each(spot.images, function (image) {
-                    SyncService.uploadImage(spot.properties.id, image.src, $scope.encodedLogin).then(function(response) {
-                      if (response.status === 201)
-                        console.log("Image uploaded for", spot, "Server response:", response);
-                      else
-                        console.log("Error uploading image for", spot, "Server response:", response);
-                    });
-                  });
-                }
+                uploadImages(spot);
 
                 // Add spot to dataset
                 SyncService.addSpotToDataset(spot.properties.id, dataset_id, $scope.encodedLogin).then(function(response) {
@@ -184,6 +188,7 @@ angular.module('app')
                     spot.properties.self = response.data.properties.self;
                     SpotsFactory.save(spot);
                     console.log("Created spot ", i, "/", spotsCount);
+                    uploadImages(spot);
 
                     // Add spot to dataset
                     SyncService.addSpotToDataset(spot.properties.id, dataset_id, $scope.encodedLogin).then(function(response) {
@@ -215,6 +220,7 @@ angular.module('app')
                 spot.properties.self = response.data.properties.self;
                 SpotsFactory.save(spot);
                 console.log("Created spot ", i, "/", spotsCount);
+                uploadImages(spot);
 
                 // Add spot to dataset
                 SyncService.addSpotToDataset(spot.properties.id, dataset_id, $scope.encodedLogin).then(function(response) {
@@ -251,27 +257,49 @@ angular.module('app')
 
     // Download all spots from a dataset
     $scope.getDatasetSpots = function() {
+
+      var saveSpot = function(spot) {
+        if (!_.filter($scope.spots, function(item) {
+            return _.findWhere(item, { id: spot.properties.id });
+          })[0])
+          $scope.spots.push(spot);
+        SpotsFactory.save(spot);
+      };
+
       // Get the dataset id
       var url_parts = this.dataset.self.split("/");
       var dataset_id = url_parts.pop();
-      SyncService.getDatasetSpots(dataset_id, $scope.encodedLogin)
-        .then(function(response) {
-          console.log(response);
-          if (response.data !== null) {
-            $scope.progress.showDownloadDone = true;
-            console.log("Downloaded", response.data);
-            response.data.features.forEach(function(spot) {
-              if (!_.filter($scope.spots, function(item) {
-                  return _.findWhere(item, { id: spot.properties.id });
-                })[0])
-                $scope.spots.push(spot);
-              SpotsFactory.save(spot);
-            });
-          } else
-            $ionicPopup.alert({
-              title: 'Empty Dataset!',
-              template: 'There are no spots in this dataset.'
-            });
+      SyncService.getDatasetSpots(dataset_id, $scope.encodedLogin).then(function(response) {
+        console.log(response);
+        if (response.data !== null) {
+          $scope.progress.showDownloadDone = true;
+          console.log("Downloaded", response.data);
+          response.data.features.forEach(function(spot) {
+            SyncService.getImages(spot.properties.id, $scope.encodedLogin).then(function(getImagesResponse) {
+              if (getImagesResponse.data) {
+                getImagesResponse.data.images.forEach(function (image_url) {
+                  SyncService.downloadImage(image_url, $scope.encodedLogin).then(function(downloadImageResponse) {
+                    if (downloadImageResponse.data) {
+                      if (!spot.images)
+                        spot.images = [];
+                      spot.images.push({
+                        src: downloadImageResponse.data
+                      });
+                    }
+                    saveSpot(spot);
+                  });
+                });
+              }
+              else
+                saveSpot(spot);
+            })
+          });
+        }
+        else
+          $ionicPopup.alert({
+            title: 'Empty Dataset!',
+            template: 'There are no spots in this dataset.'
+          });
         },
         function(errorMessage) {
           console.warn(errorMessage);
