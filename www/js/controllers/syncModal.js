@@ -273,26 +273,34 @@ angular.module('app')
         console.log(response);
         if (response.data !== null) {
           $scope.progress.showDownloadDone = true;
-          console.log("Downloaded", response.data);
           response.data.features.forEach(function(spot) {
             SyncService.getImages(spot.properties.id, $scope.encodedLogin).then(function(getImagesResponse) {
               if (getImagesResponse.data) {
                 getImagesResponse.data.images.forEach(function (image_url) {
                   SyncService.downloadImage(image_url, $scope.encodedLogin).then(function(downloadImageResponse) {
                     if (downloadImageResponse.data) {
-                      if (!spot.images)
-                        spot.images = [];
-                      spot.images.push({
-                        src: downloadImageResponse.data
+                      var readDataUrl = function(file, callback) {
+                        var reader = new FileReader();
+                        reader.onloadend = function(evt) {
+                          callback(evt.target.result);
+                        };
+                        reader.readAsDataURL(file);
+                      };
+                      readDataUrl(downloadImageResponse.data, function(base64Image) {
+                        if (!spot.images)
+                          spot.images = [];
+                        spot.images.push({
+                          src: base64Image
+                        });
+                        saveSpot(spot);
                       });
                     }
-                    saveSpot(spot);
                   });
                 });
               }
               else
                 saveSpot(spot);
-            })
+            });
           });
         }
         else

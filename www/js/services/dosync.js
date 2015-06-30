@@ -228,6 +228,7 @@ angular.module('app')
       var request = $http({
         method: "get",
         url: image_url,
+        responseType: "blob",
         headers: {
           'Authorization': "Basic " + encodedLogin + "\""
         }
