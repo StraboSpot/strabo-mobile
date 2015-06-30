@@ -126,7 +126,7 @@ angular.module('app')
       var uploadImages = function (spot) {
         if (spot.images) {
           _.each(spot.images, function (image) {
-            SyncService.uploadImage(spot.properties.id, image.src, $scope.encodedLogin).then(function(response) {
+            SyncService.uploadImage(spot.properties.id, image.src, image.caption, $scope.encodedLogin).then(function(response) {
               if (response.status === 201)
                 console.log("Image uploaded for", spot, "Server response:", response);
               else
@@ -275,10 +275,16 @@ angular.module('app')
           $scope.progress.showDownloadDone = true;
           response.data.features.forEach(function(spot) {
             SyncService.getImages(spot.properties.id, $scope.encodedLogin).then(function(getImagesResponse) {
-              if (getImagesResponse.data) {
-                getImagesResponse.data.images.forEach(function (image_url) {
-                  SyncService.downloadImage(image_url, $scope.encodedLogin).then(function(downloadImageResponse) {
-                    if (downloadImageResponse.data) {
+              if (getImagesResponse.status == 200 && getImagesResponse.data) {
+                getImagesResponse.data.images.forEach(function (image) {
+                  if (!spot.images)
+                    spot.images = [];
+                  spot.images.push({
+                    caption: image.caption,
+                    self: image.self
+                  });
+                  SyncService.downloadImage(image.self, $scope.encodedLogin).then(function(downloadImageResponse) {
+                    if (downloadImageResponse.status == 200 && downloadImageResponse.data) {
                       var readDataUrl = function(file, callback) {
                         var reader = new FileReader();
                         reader.onloadend = function(evt) {
@@ -287,11 +293,8 @@ angular.module('app')
                         reader.readAsDataURL(file);
                       };
                       readDataUrl(downloadImageResponse.data, function(base64Image) {
-                        if (!spot.images)
-                          spot.images = [];
-                        spot.images.push({
-                          src: base64Image
-                        });
+                        var imageProps = _.findWhere(spot.images, { self: downloadImageResponse.config.url });
+                        imageProps["src"] = base64Image;
                         saveSpot(spot);
                       });
                     }

@@ -180,7 +180,7 @@ angular.module('app')
     }
 
     // Upload load an image
-    function uploadImage(spot_id, image_file, encodedLogin) {
+    function uploadImage(spot_id, image_file, caption, encodedLogin) {
 
       function dataURItoBlob(dataURI) {
         var binary = atob(dataURI.split(',')[1]);
@@ -197,6 +197,8 @@ angular.module('app')
       var formdata = new FormData();
       formdata.append("feature_id", spot_id);
       formdata.append("image_file", blob, "image.jpeg");
+      if (caption && caption != "undefined")
+        formdata.append("caption", caption);
 
       var request = $http({
         method: "post",
