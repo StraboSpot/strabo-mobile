@@ -29,15 +29,15 @@
 
   <!-- Plugins -->
   <gap:plugin name="com.ionic.keyboard"/>
-  <gap:plugin name="cordova-plugin-console"/>
-  <gap:plugin name="cordova-plugin-device"/>
-  <gap:plugin name="cordova-plugin-splashscreen"/>
+  <gap:plugin name="org.apache.cordova.console"/>
+  <gap:plugin name="org.apache.cordova.device"/>
+  <gap:plugin name="org.apache.cordova.splashscreen"/>
   <gap:plugin name="cordova-plugin-whitelist"/>
-  <gap:plugin name="cordova-plugin-geolocation"/>
-  <gap:plugin name="cordova-plugin-network-information"/>
-  <gap:plugin name="cordova-plugin-camera"/>
-  <gap:plugin name="cordova-plugin-file"/>
-  <gap:plugin name="cordova-plugin-inappbrowser"/>
+  <gap:plugin name="org.apache.cordova.geolocation"/>
+  <gap:plugin name="org.apache.cordova.network-information"/>
+  <gap:plugin name="org.apache.cordova.camera"/>
+  <gap:plugin name="org.apache.cordova.file"/>
+  <gap:plugin name="org.apache.cordova.inappbrowser"/>
 
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
