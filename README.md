@@ -28,7 +28,9 @@ Build Stack:
     git clone https://github.com/StraboSpot/strabo-mobile.git
     cd strabo-mobile
 
-Move everything, **except `.gitignore`, `config.xml` and the `www` folder**, from the `ionic-sample` folder created above into the `strabo-mobile` folder. Delete the now mostly empty ionic-sample folder.
+- Move everything, **except `.gitignore`, `config.xml` and the `www` folder**, from the `ionic-sample` folder created above into the `strabo-mobile` folder.
+- Delete the now mostly empty ionic-sample folder.
+- In `ionic.project` modify to `"app_id": "90b11d0a"`.
 
 ### Add Cordova Plugins
 

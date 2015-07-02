@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget
-  id="com.ionicframework.strabomobile327690"
-  version="0.0.1"
-  xmlns="http://www.w3.org/ns/widgets"
-  xmlns:cdv="http://cordova.apache.org/ns/1.0"
-  xmlns:gap = "http://phonegap.com/ns/1.0">
+    id="com.ionicframework.strabomobile327690"
+    version="0.0.1"
+    xmlns="http://www.w3.org/ns/widgets"
+    xmlns:cdv="http://cordova.apache.org/ns/1.0"
+    xmlns:gap="http://phonegap.com/ns/1.0">
 
   <name>Strabo Mobile</name>
   <description>
-        Strabo Mobile is a cross-platform mobile application for geologic field data acquisition.
-    </description>
+    Strabo Mobile is a cross-platform mobile application for geologic field data acquisition.
+  </description>
   <author email="jessica.good@azgs.az.gov" href="https://github.com/StraboSpot/strabo-mobile">
-      Jessica Good
+    Jessica Good
   </author>
-	<icon src="icon.png" />
+  <icon src="icon.png"/>
 
   <content src="index.html"/>
   <access origin="*"/>
@@ -21,20 +21,23 @@
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>
   <preference name="BackupWebStorage" value="none"/>
-  <preference name="android-minSdkVersion" value="11" />
-  <preference name="android-targetSdkVersion" value="14"/>
+  <preference name="android-minSdkVersion" value="11"/>
+  <preference name="android-targetSdkVersion" value="22"/>
+  <preference name='phonegap-version' value='cli-5.1.1' />
 
-  <preference name="iosPersistentFileLocation" value="Library" />
+  <preference name="iosPersistentFileLocation" value="Library"/>
 
-	<!-- Plugins -->
+  <!-- Plugins -->
   <gap:plugin name="com.ionic.keyboard"/>
-  <gap:plugin name="org.apache.cordova.console"/>
-  <gap:plugin name="org.apache.cordova.device"/>
-  <gap:plugin name="org.apache.cordova.geolocation"/>
-  <gap:plugin name="org.apache.cordova.network-information"/>
-  <gap:plugin name="org.apache.cordova.camera"/>
-  <gap:plugin name="org.apache.cordova.file"/>
-  <gap:plugin name="org.apache.cordova.inappbrowser"/>
+  <gap:plugin name="cordova-plugin-console"/>
+  <gap:plugin name="cordova-plugin-device"/>
+  <gap:plugin name="cordova-plugin-splashscreen"/>
+  <gap:plugin name="cordova-plugin-whitelist"/>
+  <gap:plugin name="cordova-plugin-geolocation"/>
+  <gap:plugin name="cordova-plugin-network-information"/>
+  <gap:plugin name="cordova-plugin-camera"/>
+  <gap:plugin name="cordova-plugin-file"/>
+  <gap:plugin name="cordova-plugin-inappbrowser"/>
 
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
