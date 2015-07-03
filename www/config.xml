@@ -23,7 +23,6 @@
   <preference name="BackupWebStorage" value="none"/>
   <preference name="android-minSdkVersion" value="11"/>
   <preference name="android-targetSdkVersion" value="22"/>
-  <preference name='phonegap-version' value='cli-5.1.1' />
 
   <preference name="iosPersistentFileLocation" value="Library"/>
 
