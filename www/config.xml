@@ -31,8 +31,6 @@
   <gap:plugin name="com.ionic.keyboard"/>
   <gap:plugin name="org.apache.cordova.console"/>
   <gap:plugin name="org.apache.cordova.device"/>
-  <gap:plugin name="org.apache.cordova.splashscreen"/>
-  <gap:plugin name="cordova-plugin-whitelist"/>
   <gap:plugin name="org.apache.cordova.geolocation"/>
   <gap:plugin name="org.apache.cordova.network-information"/>
   <gap:plugin name="org.apache.cordova.camera"/>
