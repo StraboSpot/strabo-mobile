@@ -42,6 +42,12 @@ In the `strabo-mobile` folder:
     cordova plugin add cordova-plugin-file
     cordova plugin add cordova-plugin-inappbrowser
 
+###Tested environment:
+    cordova: 5.1.1
+    ionic: 1.5.5
+    cordova-plugin-camera: 1.2.0
+    cordova-plugin-file: 2.1.0
+
 ###Run
 
 In a web browser:
