@@ -77,6 +77,11 @@ navigation history that also transitions its views in and out.
       Rock Sample
     </a>
   </span>
+  <a class="button button-clear spot-tab-inactive"
+     ng-class="{ 'spot-tab-active': $state.current.name == 'spotTab.custom'}"
+     ng-click="switchTabs('custom');">
+    Custom
+  </a>
 </ion-scroll>
 </ion-header-bar>
 

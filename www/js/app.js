@@ -218,6 +218,17 @@ angular.module('app', [
         }
       })
 
+      .state('spotTab.custom', {
+        cache: false,
+        url: "/:spotId/custom",
+        views: {
+          'spottab-childview': {
+            templateUrl: "templates/tabs/custom.html",
+            controller: 'SpotTabCustomCtrl'
+          }
+        }
+      })
+
       .state('app.archiveTiles', {
         url: "/map/archiveTiles",
         views: {
