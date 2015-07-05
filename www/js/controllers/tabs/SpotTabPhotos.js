@@ -84,18 +84,22 @@ angular.module('app')
           destinationType: Camera.DestinationType.FILE_URI,
           sourceType: source,
           allowEdit: true,
-          encodingType: Camera.EncodingType.PNG,
+          encodingType: Camera.EncodingType.JPEG,
           // popoverOptions: CameraPopoverOptions,
           saveToPhotoAlbum: true
         };
 
         $cordovaCamera.getPicture(cameraOptions).then(function(imageURI) {
 
-          // the image has been written to mobile device.  It is written in two places:
-          // 1) the local strabo-mobile cache, aka "/storage/emulated/0/Android/data/com.ionicframework.strabomobile327690/cache/filename.jpg"
-          // 2) the Photo Album folder, on Android, this is: /Pictures
-          // 3) in iOS, this is in the Photos Gallery
-
+          /* the image has been written to mobile device.  It is written in two places:
+           *
+           * Android:
+           * 1) the local strabo-mobile cache, aka "/storage/emulated/0/Android/data/com.ionicframework.strabomobile327690/cache/filename.jpg"
+           * 2) the Photo Album folder, on Android, this is: "/sdcard/Pictures/filename.jpg"
+           *
+           * iOS:
+           * 1) in iOS, this is in the Photos Gallery???
+           */
           console.log(imageURI);
 
           // now we read the image from the filesystem and save the image to the spot
@@ -106,12 +110,13 @@ angular.module('app')
           }
 
           var gotFileEntry = function(fileEntry) {
-            // console.log("inside gotFileEntry");
+            console.log("inside gotFileEntry");
             fileEntry.file(gotFile, fail);
           };
 
           var gotFile = function(file) {
-            // console.log("inside gotFile");
+            console.log("inside gotFile");
+            console.log('file is ', file);
             readDataUrl(file);
           };
 
@@ -141,7 +146,6 @@ angular.module('app')
 
           // invoke the reading of the image file from the local filesystem
           window.resolveLocalFileSystemURL(imageURI, gotFileEntry, fail);
-
 
         }, function(err) {
           console.log("error: ", err);
