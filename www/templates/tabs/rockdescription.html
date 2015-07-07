@@ -67,6 +67,7 @@
                         ng-options="choice.name as choice.label for choice in rock_description_choices
                                 | filter: { 'list name': field.type.split(' ')[1] }"
                         ng-required="{{ field.required }}">
+                        <option value=""></option>
                 </select>
               </label>
             </div>
