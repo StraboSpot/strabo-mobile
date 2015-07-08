@@ -241,7 +241,7 @@ angular.module('app')
       // If a field is visible and required but empty give the user an error message and return to the form
       _.each(form, function (field) {
         var ele = document.getElementById(field.name);
-        if (getComputedStyle(ele).display != "none" && !$scope.spot.properties[field.name]) {
+        if (getComputedStyle(ele).display != "none" && $scope.spot.properties[field.name] == undefined) {
           if (field.required == "true")
             errorMessages += "<b>" + field.label + "</b> Required!<br>";
           else

@@ -22,7 +22,7 @@ angular.module('app')
     SlippyTileNamesFactory,
     SpotsFactory,
     ViewExtentFactory,
-    ImagesFactory,
+    SymbolsFactory,
     MapLayerFactory) {
 
     // disable dragging back to ionic side menu because this affects drawing tools
@@ -613,184 +613,36 @@ angular.module('app')
         });
       };
 
-      var icon = {
-        contact_outcrop: function(rotation) {
-          return new ol.style.Icon({
-            anchorXUnits: 'pixels',
-            anchorYUnits: 'pixels',
-            opacity: 1,
-            rotation: Math.radians(rotation),
-            src: ImagesFactory.getImagePath('contact_outcrop'),
-            scale: 0.05
-          });
-        },
-        fault_outcrop: function(rotation) {
-          return new ol.style.Icon({
-            anchorXUnits: 'pixels',
-            anchorYUnits: 'pixels',
-            opacity: 1,
-            rotation: Math.radians(rotation),
-            src: ImagesFactory.getImagePath('fault_outcrop'),
-            scale: 1
-          });
-        },
-        shear_zone: function(rotation) {
-          return new ol.style.Icon({
-            anchorXUnits: 'pixels',
-            anchorYUnits: 'pixels',
-            opacity: 1,
-            rotation: Math.radians(rotation),
-            src: ImagesFactory.getImagePath('shear_zone'),
-            scale: 0.05
-          });
-        },
-        foliation_general_inclined: function(rotation) {
-          return new ol.style.Icon({
-            anchorXUnits: 'pixels',
-            anchorYUnits: 'pixels',
-            opacity: 1,
-            rotation: Math.radians(rotation),
-            src: ImagesFactory.getImagePath('foliation_general_inclined'),
-            scale: 0.05
-          });
-        },
-        bedding: function(rotation) {
-          return new ol.style.Icon({
-            anchorXUnits: 'pixels',
-            anchorYUnits: 'pixels',
-            opacity: 1,
-            rotation: Math.radians(rotation),
-            src: ImagesFactory.getImagePath('bedding_inclined'),
-            scale: 0.05
-          });
-        },
-        joint: function(rotation) {
-          return new ol.style.Icon({
-            anchorXUnits: 'pixels',
-            anchorYUnits: 'pixels',
-            opacity: 1,
-            rotation: Math.radians(rotation),
-            src: ImagesFactory.getImagePath('joint_surface_inclined'),
-            scale: 0.05
-          });
-        },
-        fold: function(rotation) {
-          return new ol.style.Icon({
-            anchorXUnits: 'pixels',
-            anchorYUnits: 'pixels',
-            opacity: 1,
-            rotation: Math.radians(rotation),
-            src: ImagesFactory.getImagePath('fold'),
-            scale: 0.05
-          });
-        },
-        notes: function(rotation) {
-          return new ol.style.Icon({
-            anchorXUnits: 'pixels',
-            anchorYUnits: 'pixels',
-            opacity: 1,
-            rotation: Math.radians(rotation),
-            src: ImagesFactory.getImagePath('notes'),
-            scale: 0.75
-          });
-        },
-        orientation: function(rotation) {
-          return new ol.style.Icon({
-            anchorXUnits: 'pixels',
-            anchorYUnits: 'pixels',
-            opacity: 1,
-            rotation: Math.radians(rotation),
-            src: ImagesFactory.getImagePath('orientation'),
-            scale: 1
-          });
-        },
-        sample: function(rotation) {
-          return new ol.style.Icon({
-            anchorXUnits: 'pixels',
-            anchorYUnits: 'pixels',
-            opacity: 1,
-            rotation: Math.radians(rotation),
-            src: ImagesFactory.getImagePath('sample'),
-            scale: 0.07
-          });
-        },
-        group: function(rotation) {
-          return new ol.style.Icon({
-            anchorXUnits: 'pixels',
-            anchorYUnits: 'pixels',
-            opacity: 1,
-            rotation: Math.radians(rotation),
-            src: ImagesFactory.getImagePath('group'),
-            scale: 0.4
-          });
-        },
-        default: function(rotation) {
-          return new ol.style.Icon({
-            anchorXUnits: 'pixels',
-            anchorYUnits: 'pixels',
-            opacity: 1,
-            rotation: Math.radians(rotation),
-            src: ImagesFactory.getImagePath('default'),
-            scale: 0.75
-          });
-        }
-      };
-
       var getIconForFeature = function(feature) {
-        var contentModel = feature.get('type');
-        var strike = null;
-        var trend = null;
 
-        // do we have a strike?
-        if (typeof feature.get('strike') !== 'undefined') {
-          strike = feature.get('strike');
-        }
+        if ((feature.get('strike') == undefined) && (feature.get('trend') == undefined))
+          return;
 
-        // do we have a plunge?
-        if (typeof feature.get('trend') !== 'undefined') {
-          plunge = feature.get('trend');
-        }
+        var rotation = feature.get('strike') || feature.get('trend') || 0;
+        var orientation = feature.get('dip') || feature.get('plunge') || 0;
+        var feature_type = feature.get('planar_feature_type') || feature.get('linear_feature_type');
 
-        var rotation = (strike || trend) ? strike || trend : 0;
+        // Is this a planar or linear feature? If both use planar.
+        var pORl = feature.get('planar_feature_type') ? "planar" : "linear";
 
-        if (contentModel === "point") {
-
-          var planarFeatureType = feature.get('planar_feature_type');
-
-          switch (planarFeatureType) {
-            case undefined:
-              return icon.default(rotation);
-            case 'contact':
-              return icon.contact_outcrop(rotation);
-            case 'fault_plane':
-              return icon.fault_outcrop(rotation);
-            case 'shear_zone':
-              return icon.shear_zone(rotation);
-            case 'foliation':
-              return icon.foliation_general_inclined(rotation);
-            case 'bedding':
-              return icon.bedding(rotation);
-            case 'joint':
-              return icon.joint(rotation);
-            default:
-              //TODO: missing the following images:
-              // axial plane surface,
-              // fracture,
-              // vein,
-              // shear fracture,
-              // other
-              // (blank)
-              return icon.default(rotation);
-          }
-        }
+        return new ol.style.Icon({
+          anchorXUnits: 'pixels',
+          anchorYUnits: 'pixels',
+          opacity: 1,
+          rotation: Math.radians(rotation),
+          src: SymbolsFactory.getSymbolPath(feature_type, pORl, orientation),
+          scale: 0.05
+        });
       };
 
       // Set styles for points, lines and polygon and groups
       function styleFunction(feature, resolution) {
         var styles = [];
+        var pointText = (feature.get('plunge') != undefined) ? feature.get('plunge').toString() : feature.get('name');
+        pointText = (feature.get('dip') != undefined) ? feature.get('dip').toString() : pointText;
+
         switch(feature.get("type")) {
           case "point":
-            var pointText = (feature.get('dip')) ? feature.get('dip').toString() : feature.get('name');
             var pointStyle = [
               new ol.style.Style({
                 image: getIconForFeature(feature)
