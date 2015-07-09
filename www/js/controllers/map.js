@@ -22,7 +22,7 @@ angular.module('app')
     SlippyTileNamesFactory,
     SpotsFactory,
     ViewExtentFactory,
-    SymbolsFactory,
+    SymbologyFactory,
     MapLayerFactory) {
 
     // disable dragging back to ionic side menu because this affects drawing tools
@@ -629,7 +629,7 @@ angular.module('app')
           anchorYUnits: 'pixels',
           opacity: 1,
           rotation: Math.radians(rotation),
-          src: SymbolsFactory.getSymbolPath(feature_type, pORl, orientation),
+          src: SymbologyFactory.getSymbolPath(feature_type, pORl, orientation),
           scale: 0.05
         });
       };

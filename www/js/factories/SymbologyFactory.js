@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('app')
-  .factory('SymbolsFactory', function() {
+  .factory('SymbologyFactory', function() {
     var symbols = {
       axial_planar_inclined: 'img/geology/cleavage_inclined.png',
       axial_planar_vertical: 'img/geology/cleavage_vertical.png',
