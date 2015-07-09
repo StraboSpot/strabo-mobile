@@ -615,15 +615,14 @@ angular.module('app')
 
       var getIconForFeature = function(feature) {
 
-        if ((feature.get('strike') == undefined) && (feature.get('trend') == undefined))
-          return;
-
         var rotation = feature.get('strike') || feature.get('trend') || 0;
         var orientation = feature.get('dip') || feature.get('plunge') || 0;
         var feature_type = feature.get('planar_feature_type') || feature.get('linear_feature_type');
 
         // Is this a planar or linear feature? If both use planar.
         var pORl = feature.get('planar_feature_type') ? "planar" : "linear";
+        // If feature_type is undefined use planar as default so get the default planar symbol
+        pORl = feature_type ? pORl : "planar";
 
         return new ol.style.Icon({
           anchorXUnits: 'pixels',
@@ -638,7 +637,7 @@ angular.module('app')
       // Set styles for points, lines and polygon and groups
       function styleFunction(feature, resolution) {
         var styles = [];
-        var pointText = (feature.get('plunge') != undefined) ? feature.get('plunge').toString() : feature.get('name');
+        var pointText = (feature.get('plunge') != undefined) ? feature.get('plunge').toString() : feature.get('label');
         pointText = (feature.get('dip') != undefined) ? feature.get('dip').toString() : pointText;
 
         switch(feature.get("type")) {
@@ -663,14 +662,14 @@ angular.module('app')
                 })
               }),
               new ol.style.Style({
-                text: textStyle(feature.get('name'))
+                text: textStyle(feature.get('label'))
               })
             ];
             styles['LineString'] = lineStyle;
             styles['MultiLineString'] = lineStyle;
             break;
           case "polygon":
-            var polyText = feature.get('unit_label_abbreviation') ? feature.get('unit_label_abbreviation') : feature.get('name');
+            var polyText = feature.get('unit_label_abbreviation') ? feature.get('unit_label_abbreviation') : feature.get('label');
             var polyStyle = [
               new ol.style.Style({
                 stroke: new ol.style.Stroke({
@@ -700,7 +699,7 @@ angular.module('app')
                 })
               }),
               new ol.style.Style({
-                text: textStyle(feature.get('name'))
+                text: textStyle(feature.get('label'))
               })
             ];
             styles['Polygon'] = groupStyle;

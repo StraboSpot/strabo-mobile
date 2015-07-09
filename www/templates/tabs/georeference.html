@@ -3,6 +3,10 @@
     <ion-content>
       <div ng-if="mapped">
         <label class="item item-input item-stacked-label item-text-wrap">
+          <span class="input-label">Label</span>
+          <input type="text" placeholder="Label on Map" ng-model="spot.properties.label">
+        </label>
+        <label class="item item-input item-stacked-label item-text-wrap">
           <span class="input-label">Geometry</span>
           <input type="text" disabled ng-model="spot.geometry.type">
         </label>
