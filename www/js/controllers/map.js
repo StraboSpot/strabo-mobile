@@ -368,14 +368,22 @@ angular.module('app')
                 if (spotType === "Point") {
                   // is the point inside the drawn polygon?
                   if (turf.inside(spot, geojsonObj)) {
-                    isLassoed.push(spot.properties.name);
+                    isLassoed.push({
+                      id: spot.properties.id,
+                      name: spot.properties.name,
+                      type: spot.properties.type
+                    });
                   }
                 }
 
                 if (spotType === "LineString" || spotType === "Polygon") {
                   // is the line or polygon within/intersected in the drawn polygon?
                   if (turf.intersect(spot, geojsonObj)) {
-                    isLassoed.push(spot.properties.name);
+                    isLassoed.push({
+                      id: spot.properties.id,
+                      name: spot.properties.name,
+                      type: spot.properties.type
+                    });
                   }
                 }
               });
@@ -390,6 +398,23 @@ angular.module('app')
               map.addInteraction(new ol.interaction.DragPan());
 
               console.log("isLassoed, ", isLassoed);
+
+              if (isLassoed.length == 0)
+              {
+                $ionicPopup.alert({
+                  title: 'Empty Group',
+                  template: "No spots are within or intersect the drawn poloygon."
+                });
+                return;
+              };
+
+              geojsonObj.properties = {
+                type: "group",
+                group_members: isLassoed
+              };
+
+              NewSpot.setNewSpot(geojsonObj);
+              $state.go('spotTab.details');
             });
           } else {
             // contains a kink, aka self-intersecting polygon
@@ -688,6 +713,7 @@ angular.module('app')
             styles["MultiPolygon"] = polyStyle;
             break;
           case "group":
+            var groupText = feature.get('group_name') ? feature.get('group_name') : feature.get('label');
             var groupStyle = [
               new ol.style.Style({
                 stroke: new ol.style.Stroke({
@@ -699,7 +725,7 @@ angular.module('app')
                 })
               }),
               new ol.style.Style({
-                text: textStyle(feature.get('label'))
+                text: textStyle(groupText)
               })
             ];
             styles['Polygon'] = groupStyle;
@@ -959,13 +985,8 @@ angular.module('app')
       }
     };
 
+    // Create a group of spots by drawing a polygon on the map
     var groupSpots = function() {
-      $ionicPopup.alert({
-        title: 'Not Yet Functional',
-        template: "This will allow you to group spots by drawing a polygon around the spots you want to group."
-      });
-
-      /***** COMMENTING OUT UNTIL FULLY FUNCTIONAL *****
       // remove the layer switcher to avoid confusion with lasso and regular drawing
       map.getControls().removeAt(3);
 
@@ -974,7 +995,6 @@ angular.module('app')
 
       // start the draw with freehand enabled
       $scope.startDraw('Polygon', true);
-      */
     };
 
     /////////////////
