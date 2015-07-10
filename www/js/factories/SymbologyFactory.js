@@ -19,7 +19,7 @@ angular.module('app')
       joint_inclined: 'img/geology/joint_surface_inclined.png',
       joint_vertical: 'img/geology/joint_surface_vertical.png',
       lineation_general: 'img/geology/lineation_general.png',
-      planar_general: 'img/geology/point.png',
+      planar_general: 'img/point.png',
       shear_zone_inclined: 'img/geology/shear_zone_inclined.png',
       shear_zone_vertical: 'img/geology/shear_zone_vertical.png',
       striation: 'img/geology/striation.png'
