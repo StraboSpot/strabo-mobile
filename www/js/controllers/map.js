@@ -356,6 +356,15 @@ angular.module('app')
         if (isFreeHand) {
           console.log("Drawend : Freehand");
 
+          // add the regular draw controls back
+          map.addControl(new drawControls());
+
+          // add the layer switcher controls back
+          map.addControl(new ol.control.LayerSwitcher());
+
+          // add the dragging back in
+          map.addInteraction(new ol.interaction.DragPan());
+
           // does the drawing contain a kink, aka self-intersecting polygon?
           if (turf.kinks(geojsonObj).intersections.features.length === 0) {
             // no, good
@@ -385,15 +394,6 @@ angular.module('app')
                   }
                 }
               });
-
-              // add the regular draw controls back
-              map.addControl(new drawControls());
-
-              // add the layer switcher controls back
-              map.addControl(new ol.control.LayerSwitcher());
-
-              // add the dragging back in
-              map.addInteraction(new ol.interaction.DragPan());
 
               console.log("isLassoed, ", isLassoed);
             });
