@@ -338,6 +338,12 @@ angular.module('app')
 
       draw.on("drawend", function(e) {
 
+        // drawend event needs to end the drawing interaction
+        map.removeInteraction(draw);
+
+        // clear the drawing
+        drawLayer.setSource(new ol.source.Vector());
+
         // we want a geojson object when the user finishes drawing
         var geojson = new ol.format.GeoJSON;
 
@@ -349,6 +355,15 @@ angular.module('app')
 
         if (isFreeHand) {
           console.log("Drawend : Freehand");
+
+          // add the regular draw controls back
+          map.addControl(new drawControls());
+
+          // add the layer switcher controls back
+          map.addControl(new ol.control.LayerSwitcher());
+
+          // add the dragging back in
+          map.addInteraction(new ol.interaction.DragPan());
 
           // does the drawing contain a kink, aka self-intersecting polygon?
           if (turf.kinks(geojsonObj).intersections.features.length === 0) {
@@ -387,15 +402,6 @@ angular.module('app')
                   }
                 }
               });
-
-              // add the regular draw controls back
-              map.addControl(new drawControls());
-
-              // add the layer switcher controls back
-              map.addControl(new ol.control.LayerSwitcher());
-
-              // add the dragging back in
-              map.addInteraction(new ol.interaction.DragPan());
 
               console.log("isLassoed, ", isLassoed);
 
