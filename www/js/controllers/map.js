@@ -338,6 +338,12 @@ angular.module('app')
 
       draw.on("drawend", function(e) {
 
+        // drawend event needs to end the drawing interaction
+        map.removeInteraction(draw);
+
+        // clear the drawing
+        drawLayer.setSource(new ol.source.Vector());
+
         // we want a geojson object when the user finishes drawing
         var geojson = new ol.format.GeoJSON;
 
