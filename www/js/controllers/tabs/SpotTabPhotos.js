@@ -91,7 +91,8 @@ angular.module('app')
 
         $cordovaCamera.getPicture(cameraOptions).then(function(imageURI) {
 
-          /* the image has been written to mobile device.  It is written in two places:
+          /* the image has been written to the mobile device and the source is a camera type.
+           * It is written in two places:
            *
            * Android:
            * 1) the local strabo-mobile cache, aka "/storage/emulated/0/Android/data/com.ionicframework.strabomobile327690/cache/filename.jpg"
@@ -99,53 +100,78 @@ angular.module('app')
            *
            * iOS:
            * 1) in iOS, this is in the Photos Gallery???
+           *
+           *
+           * If pulling from Photo Library:
+           *
+           * Android: file:///storage/emulated/0/DCIM/Camera/file.jpg
+           * iOS: ???
+           *
            */
-          console.log(imageURI);
-
-          // now we read the image from the filesystem and save the image to the spot
 
           // create an images array if it doesn't exist -- camera images are stored here
           if ($scope.spot.images === undefined) {
             $scope.spot.images = [];
           }
 
-          var gotFileEntry = function(fileEntry) {
-            console.log("inside gotFileEntry");
-            fileEntry.file(gotFile, fail);
-          };
+          console.log('original imageURI ', imageURI);
 
-          var gotFile = function(file) {
-            console.log("inside gotFile");
-            console.log('file is ', file);
-            readDataUrl(file);
-          };
+          // are we on an android device and is the URI schema a "content://" type?
+          if (imageURI.substring(0,10) === 'content://') {
+            // yes, then convert it to a "file://" yet schemaless type
+            window.FilePath.resolveNativePath(imageURI, resolveSuccess, resolveFail);
+          } else {
+            // no, so no conversion is needed
+            resolveSuccess(imageURI);
+          }
 
-          var readDataUrl = function(file) {
-            // console.log("inside readDataUrl");
-            var reader = new FileReader();
-            reader.onloadend = function(evt) {
-              // console.log("Read as data URL");
-              // console.log(evt.target.result);
-              var base64Image = evt.target.result;
+          function resolveFail(message) {
+            console.log('failed to resolve URI', message);
+          }
 
-              // push the image data to our camera images array
-              $scope.$apply(function() {
-                $scope.spot.images.push({
-                  src: base64Image
-                });
-              });
+          // now we read the image from the filesystem and save the image to the spot
+          function resolveSuccess(imageURI) {
+            // is this a real file schema?
+            if (imageURI.substring(0,7) !== 'file://') {
+              // nope, then lets make this a real file schema
+              imageURI = 'file://' + imageURI;
+            }
+
+            console.log('final imageURI ', imageURI);
+
+            var gotFileEntry = function(fileEntry) {
+              console.log("inside gotFileEntry");
+              fileEntry.file(gotFile, resolveFail);
             };
 
-            reader.readAsDataURL(file);
-          };
+            var gotFile = function(file) {
+              console.log("inside gotFile");
+              console.log('file is ', file);
+              readDataUrl(file);
+            };
 
-          var fail = function(evt) {
-            // console.log("inside fail");
-            console.log(evt);
-          };
+            var readDataUrl = function(file) {
+              // console.log("inside readDataUrl");
+              var reader = new FileReader();
+              reader.onloadend = function(evt) {
+                // console.log("Read as data URL");
+                // console.log(evt.target.result);
+                var base64Image = evt.target.result;
 
-          // invoke the reading of the image file from the local filesystem
-          window.resolveLocalFileSystemURL(imageURI, gotFileEntry, fail);
+                // push the image data to our camera images array
+                $scope.$apply(function() {
+                  $scope.spot.images.push({
+                    src: base64Image
+                  });
+                });
+              };
+
+              reader.readAsDataURL(file);
+            };
+
+            // invoke the reading of the image file from the local filesystem
+            window.resolveLocalFileSystemURL(imageURI, gotFileEntry, resolveFail);
+          }
 
         }, function(err) {
           console.log("error: ", err);

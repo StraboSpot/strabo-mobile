@@ -42,6 +42,11 @@ In the `strabo-mobile` folder:
     cordova plugin add cordova-plugin-file
     cordova plugin add cordova-plugin-inappbrowser
 
+Also need to install this plugin due to Cordova bug with Android and content schema
+
+    cordova plugin add cordova-plugin-filepath
+
+
 ###Tested environment:
     cordova: 5.1.1
     ionic: 1.5.5
