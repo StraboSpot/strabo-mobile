@@ -34,8 +34,10 @@ angular.module('app')
         headers: {
           'Content-Type': 'application/json'
         },
-        data:
-          loginData
+        data: {
+          email: loginData.email.toLowerCase(),
+          password: loginData.password
+        }
       });
       return(request.then(handleSuccess, handleError));
     }
