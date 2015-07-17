@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget
-    id="com.ionicframework.strabomobile327690"
-    version="0.4.2"
+    id="gov.az.azgs.strabomobile"
+    version="0.5.0"
     xmlns="http://www.w3.org/ns/widgets"
     xmlns:cdv="http://cordova.apache.org/ns/1.0"
     xmlns:gap="http://phonegap.com/ns/1.0">
@@ -15,26 +15,33 @@
   </author>
   <icon src="icon.png"/>
 
+  <gap:platform name="ios" />
+  <gap:platform name="android" />
+
   <content src="index.html"/>
   <access origin="*"/>
+
+  <preference name='phonegap-version' value='cli-5.1.1' />
+
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>
   <preference name="BackupWebStorage" value="none"/>
   <preference name="android-minSdkVersion" value="11"/>
-  <preference name="android-targetSdkVersion" value="22"/>
+  <preference name="android-targetSdkVersion" value="21"/>
 
   <preference name="iosPersistentFileLocation" value="Library"/>
 
   <!-- Plugins -->
-  <gap:plugin name="com.ionic.keyboard"/>
-  <gap:plugin name="org.apache.cordova.console"/>
-  <gap:plugin name="org.apache.cordova.device"/>
-  <gap:plugin name="org.apache.cordova.geolocation"/>
-  <gap:plugin name="org.apache.cordova.network-information"/>
-  <gap:plugin name="org.apache.cordova.camera"/>
-  <gap:plugin name="org.apache.cordova.file"/>
-  <gap:plugin name="org.apache.cordova.inappbrowser"/>
+  <gap:plugin name="ionic-plugin-keyboard" version="1.0.4" source="npm"/>
+  <gap:plugin name="cordova-plugin-console" version="1.0.0" source="npm"/>
+  <gap:plugin name="cordova-plugin-device" version="1.0.0" source="npm"/>
+  <gap:plugin name="cordova-plugin-geolocation" version="1.0.0" source="npm"/>
+  <gap:plugin name="cordova-plugin-network-information" version="1.0.0" source="npm"/>
+  <gap:plugin name="cordova-plugin-camera" version="1.2.0" source="npm"/>
+  <gap:plugin name="cordova-plugin-file" version="2.1.0" source="npm"/>
+  <gap:plugin name="cordova-plugin-inappbrowser" version="1.0.0" source="npm"/>
+  <gap:plugin name="com.hiddentao.cordova.filepath" version="1.0.0" source="npm"/>
 
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
