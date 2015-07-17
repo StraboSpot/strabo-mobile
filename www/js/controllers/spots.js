@@ -156,7 +156,7 @@ angular.module('app')
             console.log(success);
             $ionicPopup.alert({
               title: 'Success!',
-              template: 'CSV written to ' + devicePath + path + fileName
+              template: 'CSV written to ' + devicePath + dir + fileName
             });
           }, function (error) {
             console.log(error);
