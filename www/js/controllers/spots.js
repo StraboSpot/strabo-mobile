@@ -147,7 +147,21 @@ angular.module('app')
       }
 
       var fileName = "strabo-data.csv";
-      var devicePath = cordova.file.externalRootDirectory;  // Android file location
+
+      var devicePath;
+      switch(device.platform) {
+        case 'Android':
+          devicePath = cordova.file.externalRootDirectory;
+          break;
+        case 'iOS':
+          devicePath = cordova.file.documentsDirectory;
+          break;
+        default:
+          // uh oh?  TODO: what about windows and blackberry?
+          devicePath = cordova.file.externalRootDirectory;
+          break;
+      }
+
       var directory = "strabo";
 
       var writeFile = function (dir) {
