@@ -31,6 +31,7 @@
   <preference name="android-targetSdkVersion" value="21"/>
 
   <preference name="iosPersistentFileLocation" value="Library"/>
+  <preference name="UIFileSharingEnabled" value="true" />
 
   <!-- Plugins -->
   <gap:plugin name="ionic-plugin-keyboard" version="1.0.4" source="npm"/>
