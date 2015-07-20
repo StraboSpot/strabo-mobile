@@ -253,7 +253,7 @@ angular.module('app')
       });
 
       if (errorMessages) {
-        alertPopup = $ionicPopup.alert({
+        $ionicPopup.alert({
           title: 'Validation Error!',
           template: "Fix the following errors before continuing:<br>" + errorMessages
         });
@@ -486,11 +486,10 @@ angular.module('app')
       // Save the spot
       SpotsFactory.save($scope.spot).then(function(data) {
         console.log("spot saved: ", data);
+        CurrentSpot.clearCurrentSpot();
+        $location.path("/app/spots");
+        //$ionicHistory.goBack();
       });
-
-      CurrentSpot.clearCurrentSpot();
-      $location.path("/app/spots");
-      //$ionicHistory.goBack();
     };
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair
@@ -578,7 +577,7 @@ angular.module('app')
     $scope.isOptionChecked = function (field, choice) {
       if ($scope.spot) {
         if ($scope.spot.properties[field])
-          return $scope.spot.properties[field].indexOf(choice) == -1 ? false : true;
+          return $scope.spot.properties[field].indexOf(choice) != -1;
       }
       else
         return false;
@@ -637,8 +636,7 @@ angular.module('app')
     // Create a new spot with the details from this spot
     $scope.copySpot = function() {
       var copySpot = _.omit($scope.spot, 'properties');
-      var copyProperties = _.omit($scope.spot.properties, ['id', 'date', 'time', 'links', 'groups', 'group_members']);
-      copySpot['properties'] = copyProperties;
+      copySpot['properties'] = _.omit($scope.spot.properties, ['id', 'date', 'time', 'links', 'groups', 'group_members']);
       NewSpot.setNewSpot(copySpot);
       $location.path("/spotTab//notes");
     };
