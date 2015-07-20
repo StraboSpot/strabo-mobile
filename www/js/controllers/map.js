@@ -550,7 +550,7 @@ angular.module('app')
             });
 
             map.setView(newView);
-            map.getView().fitExtent(ol.proj.transformExtent(newExtent, 'EPSG:4326', 'EPSG:3857'), map.getSize());
+            map.getView().fit(ol.proj.transformExtent(newExtent, 'EPSG:4326', 'EPSG:3857'), map.getSize());
           }
         }
         // no spots either, then attempt to geolocate the user
