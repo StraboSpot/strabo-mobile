@@ -33,6 +33,29 @@
              ng-messages="geoForm['lng'].$error"
              ng-messages-include="templates/error-messages.html">
         </div>
+        <!-- X and Y text boxes for Point features mapped on an image -->
+        <label ng-show="showXY"
+               class="item item-input item-stacked-label item-text-wrap"
+               ng-class="{ 'has-errors': geoForm['x'].$invalid, 'no-errors': geoForm['y'].$valid }">
+          <span class="input-label">Pixels in the X direction</span>
+          <input type="number" name="x" ng-model="x" ng-change="updateX(x)"
+                 required min="0">
+        </label>
+        <div ng-if="geoForm['x'].$touched"
+             ng-messages="geoForm['x'].$error"
+             ng-messages-include="templates/error-messages.html">
+        </div>
+        <label ng-show="showXY"
+               class="item item-input item-stacked-label item-text-wrap"
+               ng-class="{ 'has-errors': geoForm['y'].$invalid, 'no-errors': geoForm['y'].$valid }">
+          <span class="input-label">Pixels in the Y direction</span>
+          <input type="number" name="y" ng-model="y" ng-change="updateY(y)"
+                 required min="0">
+        </label>
+        <div ng-if="geoForm['y'].$touched"
+             ng-messages="geoForm['y'].$error"
+             ng-messages-include="templates/error-messages.html">
+        </div>
       </div>
       <div ng-if="!mapped" class="padding">
         This spot has not been mapped yet. Click on the Set from Map button below and be sure to map this feature as a
@@ -41,7 +64,7 @@
       <!-- Map Interaction -->
       <div class="row responsive-sm">
         <div class="col">
-          <button ng-click="viewSpot();" ng-disabled="!mapped" class="button button-positive icon-left icon ion-eye">
+          <button ng-click="viewSpot();" ng-disabled="!viewOnMapButton" class="button button-positive icon-left icon ion-eye">
             View on Map
           </button>
         </div>

@@ -1,0 +1,16 @@
+<ion-view title="Image Maps">
+  <ion-nav-buttons side="left">
+    <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+  </ion-nav-buttons>
+	<ion-nav-buttons side="right">
+    <button class="button button-icon ion-plus" ng-click="newImageMap()"></button>
+  </ion-nav-buttons>
+  <ion-content class="has-header">
+    <ion-list>
+      <ion-item ng-repeat="imageMap in imageMaps"
+                ng-click="goToImageMap(imageMap)">
+        {{imageMap.name}}
+      </ion-item>
+    </ion-list>
+    </ion-content>
+</ion-view>

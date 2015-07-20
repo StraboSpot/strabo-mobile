@@ -1,29 +1,30 @@
-Math.radians = function(deg) {
+Math.radians = function (deg) {
   return deg * (Math.PI / 180);
 };
 
 angular.module('app')
-  .controller("MapCtrl", function(
-    $scope,
-    $rootScope,
-    $state,
-    $cordovaGeolocation,
-    $location,
-    $filter,
-    $ionicHistory,
-    $ionicModal,
-    $ionicPopup,
-    $ionicActionSheet,
-    $ionicSideMenuDelegate,
-    NewSpot,
-    CurrentSpot,
-    MapView,
-    OfflineTilesFactory,
-    SlippyTileNamesFactory,
-    SpotsFactory,
-    ViewExtentFactory,
-    SymbologyFactory,
-    MapLayerFactory) {
+  .controller("ImageMapCtrl", function ($scope,
+                                        $window,
+                                        $rootScope,
+                                        $state,
+                                        $cordovaGeolocation,
+                                        $location,
+                                        $filter,
+                                        $ionicHistory,
+                                        $ionicModal,
+                                        $ionicPopup,
+                                        $ionicActionSheet,
+                                        $ionicSideMenuDelegate,
+                                        NewSpot,
+                                        CurrentSpot,
+                                        MapView,
+                                        OfflineTilesFactory,
+                                        SlippyTileNamesFactory,
+                                        SpotsFactory,
+                                        ViewExtentFactory,
+                                        SymbologyFactory,
+                                        MapLayerFactory,
+                                        ImageMapService) {
 
     // disable dragging back to ionic side menu because this affects drawing tools
     $ionicSideMenuDelegate.canDragContent(false);
@@ -35,7 +36,7 @@ angular.module('app')
     var draw;
 
     // added draw controls
-    var drawControls = function(opt_options) {
+    var drawControls = function (opt_options) {
 
       var options = opt_options || {};
 
@@ -56,7 +57,7 @@ angular.module('app')
       drawPoly.href = '#drawPolyControl';
       drawPoly.className = 'poly';
 
-      var handleDrawPoint = function(e) {
+      var handleDrawPoint = function (e) {
         if (drawPoint.style.backgroundColor === '')
           drawPoint.style.backgroundColor = '#DDDDDD';
         else
@@ -67,7 +68,7 @@ angular.module('app')
         e.preventDefault();
         $scope.startDraw("Point");
       };
-      var handleDrawLine = function(e) {
+      var handleDrawLine = function (e) {
         if (drawLine.style.backgroundColor === '')
           drawLine.style.backgroundColor = '#DDDDDD';
         else
@@ -78,7 +79,7 @@ angular.module('app')
         e.preventDefault();
         $scope.startDraw("LineString");
       };
-      var handleDrawPoly = function(e) {
+      var handleDrawPoly = function (e) {
         if (drawPoly.style.backgroundColor === '')
           drawPoly.style.backgroundColor = '#DDDDDD';
         else
@@ -114,41 +115,73 @@ angular.module('app')
     };
 
     ol.inherits(drawControls, ol.control.Control);
+    $scope.imageMap = ImageMapService.getCurrentImageMap();
 
-    // initial map view, used for setting the view upon map creation
-    var initialMapView = new ol.View({
-      projection: 'EPSG:3857',
-      center: [-11000000, 4600000],
-      zoom: 4,
-      minZoom: 4
+   // var headerHeight = 42;
+    //var extent = [0, 0, $window.innerWidth, $window.innerHeight - headerHeight];
+    var projection = new ol.proj.Projection({
+      code: 'map-image',
+      units: 'pixels',
+      extent: $scope.imageMap.extent
     });
 
-    // lets create a new map
     map = new ol.Map({
+      layers: [
+        new ol.layer.Image({
+          source: new ol.source.ImageStatic({
+            attributions: [
+              new ol.Attribution({
+                html: '&copy; <a href="">Need image source here.</a>'
+              })
+            ],
+            url: $scope.imageMap.source,
+            projection: projection,
+            imageExtent: $scope.imageMap.extent
+          })
+        })
+      ],
       target: 'mapdiv',
-      view: initialMapView,
-      // remove rotate icon from controls and add drawing controls
-      controls: ol.control.defaults({
-        rotate: false
-      }),
-      // turn off ability to rotate map via keyboard+mouse and using fingers on a mobile device
-      interactions: ol.interaction.defaults({
-        altShiftDragRotate: false,
-        pinchRotate: false
+      view: new ol.View({
+        projection: projection,
+        center: ol.extent.getCenter($scope.imageMap.extent),
+        zoom: 2
       })
     });
 
-    // restricts the map constraint to these coordinates
-    // var mapExtent = ol.proj.transformExtent([-180,80,180,-80], 'EPSG:4326', 'EPSG:3857');
+    // initial map view, used for setting the view upon map creation
+    /*  var initialMapView = new ol.View({
+     projection: 'EPSG:3857',
+     center: [-11000000, 4600000],
+     zoom: 4,
+     minZoom: 4
+     });
+
+     // lets create a new map
+     map = new ol.Map({
+     target: 'mapdiv',
+     view: initialMapView,
+     // remove rotate icon from controls and add drawing controls
+     controls: ol.control.defaults({
+     rotate: false
+     }),
+     // turn off ability to rotate map via keyboard+mouse and using fingers on a mobile device
+     interactions: ol.interaction.defaults({
+     altShiftDragRotate: false,
+     pinchRotate: false
+     })
+     });
+
+     // restricts the map constraint to these coordinates
+     // var mapExtent = ol.proj.transformExtent([-180,80,180,-80], 'EPSG:4326', 'EPSG:3857');*/
 
     var mlf = MapLayerFactory;
 
     // map layers
-    var onlineLayer = mlf.getOnlineLayer();
-    var onlineOverlayLayer = mlf.getOnlineOverlayLayer();
-    var offlineLayer = mlf.getOfflineLayer();
-    var offlineOverlayLayer = mlf.getOfflineOverlayLayer();
-    var geolocationLayer = mlf.getGeolocationLayer();
+    // var onlineLayer = mlf.getOnlineLayer();
+    //  var onlineOverlayLayer = mlf.getOnlineOverlayLayer();
+    //  var offlineLayer = mlf.getOfflineLayer();
+    //  var offlineOverlayLayer = mlf.getOfflineOverlayLayer();
+    //  var geolocationLayer = mlf.getGeolocationLayer();
     var featureLayer = mlf.getFeatureLayer();
     // var drawLayer = mlf.getDrawLayer();  //bug, TODO
 
@@ -184,7 +217,7 @@ angular.module('app')
     map.addLayer(drawLayer);
 
     // add geolocation layer
-    map.addLayer(geolocationLayer);
+    // map.addLayer(geolocationLayer);
 
     // add draw controls
     map.addControl(new drawControls());
@@ -201,97 +234,97 @@ angular.module('app')
     /////////////////
 
     // did we come back from a map provider?
-    if (OfflineTilesFactory.getCurrentMapProvider()) {
-      // yes -- then we need to change the current visible layer
-      console.log("back at map, ", OfflineTilesFactory.getCurrentMapProvider());
+/*       if (OfflineTilesFactory.getCurrentMapProvider()) {
+     // yes -- then we need to change the current visible layer
+     console.log("back at map, ", OfflineTilesFactory.getCurrentMapProvider());
 
-      var onlineLayerCollection = onlineLayer.getLayers().getArray();
+     var onlineLayerCollection = onlineLayer.getLayers().getArray();
 
-      _.each(onlineLayerCollection, function(layer) {
-        if (layer.get('id') == OfflineTilesFactory.getCurrentMapProvider()) {
-          layer.setVisible(true);
-        } else {
-          layer.setVisible(false);
-        }
-      });
-    }
-
+     _.each(onlineLayerCollection, function(layer) {
+     if (layer.get('id') == OfflineTilesFactory.getCurrentMapProvider()) {
+     layer.setVisible(true);
+     } else {
+     layer.setVisible(false);
+     }
+     });
+     }
+*/
     // update the current visible layer, there is no return type as it updates the scope variable directly
-    var getCurrentVisibleLayer = function() {
+       var getCurrentVisibleLayer = function() {
 
-      // the first element in the layers array is our ol.layer.group that contains all the map tile layers
-      var mapTileLayers = map.getLayers().getArray()[0].getLayers().getArray();
+     // the first element in the layers array is our ol.layer.group that contains all the map tile layers
+     var mapTileLayers = map.getLayers().getArray()[0].getLayers().getArray();
 
-      // loop through and get the first layer that is visible
-      var mapTileId = _.find(mapTileLayers, function(layer) {
-        return layer.getVisible();
-      });
+     // loop through and get the first layer that is visible
+     var mapTileId = _.find(mapTileLayers, function(layer) {
+     return layer.getVisible();
+     });
 
-      return mapTileId.get('id');
-    };
+     return mapTileId.get('id');
+     };
 
-    $scope.isOnline = function() {
-      return navigator.onLine;
-    };
-
+ /*      $scope.isOnline = function() {
+     return navigator.onLine;
+     };
+*/
     // Watch whether we have internet access or not
-    $scope.$watch('isOnline()', function(online) {
+/*       $scope.$watch('isOnline()', function(online) {
 
-      if (!online) {
-        console.log("Offline");
+     if (!online) {
+     console.log("Offline");
 
-        // remove the online maps
-        map.removeLayer(onlineLayer);
-        map.removeLayer(onlineOverlayLayer);
+     // remove the online maps
+     map.removeLayer(onlineLayer);
+     map.removeLayer(onlineOverlayLayer);
 
-        // Add offline tile layer
-        map.getLayers().insertAt(0, offlineLayer);
-        map.getLayers().insertAt(1, offlineOverlayLayer);
+     // Add offline tile layer
+     map.getLayers().insertAt(0, offlineLayer);
+     map.getLayers().insertAt(1, offlineOverlayLayer);
 
-        // clear the tiles, because we need to redraw if tiles have already been loaded to the screen
-        map.getLayers().getArray()[0].getLayers().item(0).getSource().tileCache.clear();
-        map.getLayers().getArray()[0].getLayers().item(1).getSource().tileCache.clear();
-        map.getLayers().getArray()[1].getLayers().item(0).getSource().tileCache.clear();
+     // clear the tiles, because we need to redraw if tiles have already been loaded to the screen
+     map.getLayers().getArray()[0].getLayers().item(0).getSource().tileCache.clear();
+     map.getLayers().getArray()[0].getLayers().item(1).getSource().tileCache.clear();
+     map.getLayers().getArray()[1].getLayers().item(0).getSource().tileCache.clear();
 
-        // re-render the map, grabs "new" tiles from storage
-        map.render();
-      } else {
-        console.log("Online");
+     // re-render the map, grabs "new" tiles from storage
+     map.render();
+     } else {
+     console.log("Online");
 
-        // remove the offline layers
-        map.removeLayer(offlineLayer);
-        map.removeLayer(offlineOverlayLayer);
+     // remove the offline layers
+     map.removeLayer(offlineLayer);
+     map.removeLayer(offlineOverlayLayer);
 
-        // Add online map layer
-        map.getLayers().insertAt(0, onlineLayer);
-        map.getLayers().insertAt(1, onlineOverlayLayer);
-      }
-    });
-
+     // Add online map layer
+     map.getLayers().insertAt(0, onlineLayer);
+     map.getLayers().insertAt(1, onlineOverlayLayer);
+     }
+     });
+*/
     // cache the tiles in the current view but don't switch to the offline layer
-    $scope.cacheOfflineTiles = function() {
-      if (navigator.onLine) {
-        // get the map extent
-        var mapViewExtent = getMapViewExtent();
+    /*   $scope.cacheOfflineTiles = function() {
+     if (navigator.onLine) {
+     // get the map extent
+     var mapViewExtent = getMapViewExtent();
 
-        // set the extent into the ViewExtentFactory
-        ViewExtentFactory.setExtent(getCurrentVisibleLayer(), mapViewExtent.topRight, mapViewExtent.bottomLeft, mapViewExtent.zoom);
+     // set the extent into the ViewExtentFactory
+     ViewExtentFactory.setExtent(getCurrentVisibleLayer(), mapViewExtent.topRight, mapViewExtent.bottomLeft, mapViewExtent.zoom);
 
-        // we set the current map provider so if we ever come back, we should try to use that map provider instead of the default provider
-        OfflineTilesFactory.setCurrentMapProvider(getCurrentVisibleLayer());
+     // we set the current map provider so if we ever come back, we should try to use that map provider instead of the default provider
+     OfflineTilesFactory.setCurrentMapProvider(getCurrentVisibleLayer());
 
-        $location.path("/app/map/archiveTiles");
-      } else
-        $ionicPopup.alert({
-          title: 'Offline!',
-          template: 'You must be online to save a map!'
-        });
-    };
+     $location.path("/app/map/archiveTiles");
+     } else
+     $ionicPopup.alert({
+     title: 'Offline!',
+     template: 'You must be online to save a map!'
+     });
+     };*/
 
     // drawButtonActive used to keep state of which selected drawing tool is active
     $scope.drawButtonActive = null;
 
-    $scope.startDraw = function(type, isFreeHand) {
+    $scope.startDraw = function (type, isFreeHand) {
       //if the type is already selected, we want to stop drawing
       if ($scope.drawButtonActive === type && !isFreeHand) {
         $scope.drawButtonActive = null;
@@ -306,7 +339,7 @@ angular.module('app')
       // are we in freehand mode?
       if (isFreeHand) {
         // yes -- then disable the map drag pan
-        map.getInteractions().forEach(function(interaction) {
+        map.getInteractions().forEach(function (interaction) {
           if (interaction instanceof ol.interaction.DragPan) {
             console.log(interaction);
             map.getInteractions().remove(interaction);
@@ -336,7 +369,7 @@ angular.module('app')
       }
 
 
-      draw.on("drawend", function(e) {
+      draw.on("drawend", function (e) {
 
         // drawend event needs to end the drawing interaction
         map.removeInteraction(draw);
@@ -348,10 +381,15 @@ angular.module('app')
         var geojson = new ol.format.GeoJSON;
 
         // the actual geojson object that was drawn
-        var geojsonObj = geojson.writeFeatureObject(e.feature, {
-          featureProjection: "EPSG:3857"
-        });
+        var geojsonObj = geojson.writeFeatureObject(e.feature);
 
+        geojsonObj.properties = {image_map: $scope.imageMap.id};
+
+        /*
+        var geojsonObj = JSON.parse(geojson.writeFeature(e.feature, {
+          featureProjection: "EPSG:3857"
+        }));
+*/
 
         if (isFreeHand) {
           console.log("Drawend : Freehand");
@@ -372,8 +410,8 @@ angular.module('app')
             // contains all the lassoed objects
             var isLassoed = [];
 
-            SpotsFactory.all().then(function(spots) {
-              _.each(spots, function(spot) {
+            SpotsFactory.all().then(function (spots) {
+              _.each(spots, function (spot) {
 
                 // if the spot is a point, we test using turf.inside
                 // if the spot is a polygon or line, we test using turf.intersect
@@ -405,14 +443,13 @@ angular.module('app')
 
               console.log("isLassoed, ", isLassoed);
 
-              if (isLassoed.length == 0)
-              {
+              if (isLassoed.length == 0) {
                 $ionicPopup.alert({
                   title: 'Empty Group',
                   template: "No spots are within or intersect the drawn poloygon."
                 });
                 return;
-              };
+              }
 
               geojsonObj.properties = {
                 type: "group",
@@ -502,8 +539,8 @@ angular.module('app')
     };
 
     // If the map is moved save the view
-    map.on('moveend', function(evt) {
-      MapView.setMapView(map.getView());
+    map.on('moveend', function (evt) {
+      //MapView.setMapView(map.getView());
 
       // update the zoom information control
       $scope.currentZoom = evt.map.getView().getZoom();
@@ -511,14 +548,16 @@ angular.module('app')
     });
 
     // Zoom to the extent of the spots, if that fails geolocate the user
-    $scope.zoomToSpotsExtent = function() {
+    $scope.zoomToSpotsExtent = function () {
       // nope, we have NO mapview set, so...
 
       // Loop through all spots and create ol vector layers
-      SpotsFactory.all().then(function(spots) {
+      SpotsFactory.all().then(function (spots) {
 
-        // Remove spots that are mapped on an image and not map
-        spots = _.reject(spots, function(spot) { return spot.properties.image_map; });
+        // Get only the spots mapped on this image
+        spots = _.filter(spots, function (spot) {
+          return spot.properties.image_map && (spot.properties.image_map == $scope.imageMap.id)
+        });
 
         // do we even have any spots?
         if (spots.length > 0) {
@@ -544,16 +583,16 @@ angular.module('app')
 
           if (spots.length === 1) {
             // we just have a single spot, so we should fixate the resolution manually
-            initialMapView.setCenter(ol.proj.transform([newExtentCenter[0], newExtentCenter[1]], 'EPSG:4326', 'EPSG:3857'));
+            initialMapView.setCenter(newExtentCenter);
             initialMapView.setZoom(15);
           } else {
             // we have multiple spots -- need to create the new view with the new center
             var newView = new ol.View({
-              center: ol.proj.transform([newExtentCenter[0], newExtentCenter[1]], 'EPSG:4326', 'EPSG:3857')
+              center: newExtentCenter
             });
 
             map.setView(newView);
-            map.getView().fit(ol.proj.transformExtent(newExtent, 'EPSG:4326', 'EPSG:3857'), map.getSize());
+            map.getView().fit(newExtent, map.getSize());
           }
         }
         // no spots either, then attempt to geolocate the user
@@ -561,11 +600,11 @@ angular.module('app')
           console.log("no spots found, attempting to geolocate");
           // attempt to geolocate instead
           $cordovaGeolocation.getCurrentPosition({
-              maximumAge: 0,
-              timeout: 10000,
-              enableHighAccuracy: true
-            })
-            .then(function(position) {
+            maximumAge: 0,
+            timeout: 10000,
+            enableHighAccuracy: true
+          })
+            .then(function (position) {
               var lat = position.coords.latitude;
               var lng = position.coords.longitude;
 
@@ -577,7 +616,7 @@ angular.module('app')
                 minZoom: 4
               });
               map.setView(newView);
-            }, function(err) {
+            }, function (err) {
               // uh oh, cannot geolocate, nor have any spots
               $ionicPopup.alert({
                 title: 'Alert!',
@@ -595,25 +634,25 @@ angular.module('app')
     };
 
     //  do we currently have mapview set?  if so, we should reset the map view to that first
-    if (MapView.getMapView()) {
-      console.log("have mapview set, changing map view to that");
-      map.setView(MapView.getMapView());
-    }
-    else
-      $scope.zoomToSpotsExtent();
-
-    $scope.cancelDraw = function() {
+    /*   if (MapView.getMapView()) {
+     console.log("have mapview set, changing map view to that");
+     map.setView(MapView.getMapView());
+     }
+     else
+     $scope.zoomToSpotsExtent();
+     */
+    $scope.cancelDraw = function () {
       if (draw === null) return;
       map.removeInteraction(draw);
     };
 
     // Point object
-    var Point = function(lat, lng) {
+    var Point = function (lat, lng) {
       this.lat = lat;
       this.lng = lng;
     };
-
-    var getMapViewExtent = function() {
+/*
+    var getMapViewExtent = function () {
       var extent = map.getView().calculateExtent(map.getSize());
       var zoom = map.getView().getZoom();
       var bottomLeft = ol.proj.transform(ol.extent.getBottomLeft(extent),
@@ -626,14 +665,14 @@ angular.module('app')
         bottomLeft: new Point(bottomLeft[1], bottomLeft[0]),
         zoom: zoom
       };
-    };
+    };*/
 
     // we want to load all the geojson markers from the persistence storage onto the map
     // creates a ol vector layer for supplied geojson object
-    var geojsonToVectorLayer = function(geojson) {
+    var geojsonToVectorLayer = function (geojson) {
 
       // textStyle is a function because each point has a different text associated
-      var textStyle = function(text) {
+      var textStyle = function (text) {
         return new ol.style.Text({
           font: '12px Calibri,sans-serif',
           text: text,
@@ -647,7 +686,7 @@ angular.module('app')
         });
       };
 
-      var getIconForFeature = function(feature) {
+      var getIconForFeature = function (feature) {
 
         var rotation = feature.get('strike') || feature.get('trend') || 0;
         var orientation = feature.get('dip') || feature.get('plunge') || 0;
@@ -674,7 +713,7 @@ angular.module('app')
         var pointText = (feature.get('plunge') != undefined) ? feature.get('plunge').toString() : feature.get('label');
         pointText = (feature.get('dip') != undefined) ? feature.get('dip').toString() : pointText;
 
-        switch(feature.get("type")) {
+        switch (feature.get("type")) {
           case "point":
             var pointStyle = [
               new ol.style.Style({
@@ -746,9 +785,9 @@ angular.module('app')
 
       return new ol.layer.Vector({
         source: new ol.source.Vector({
-          features: (new ol.format.GeoJSON()).readFeatures(geojson, {
+          features: (new ol.format.GeoJSON()).readFeatures(geojson/*, {
             featureProjection: 'EPSG:3857'
-          })
+          }*/)
         }),
         title: geojson.properties.name,
         style: styleFunction
@@ -756,22 +795,23 @@ angular.module('app')
     };
 
     // Loop through all spots and create ol vector layers
-    SpotsFactory.all().then(function(spots) {
+    SpotsFactory.all().then(function (spots) {
 
       // wipe the array because we want to avoid duplicating the feature in the ol.Collection
       featureLayer.getLayers().clear();
 
       // Get mappable spots (spots made from the Spots Page, instead of
       // from the map, do not have geometry until defined by the user)
-      var mappableSpots = _.filter(spots, function(spot) {
+    /*  var mappableSpots = _.filter(spots, function (spot) {
         return spot.geometry.coordinates;
+      });*/
+
+      var mappableSpots= _.filter(spots, function (spot) {
+        return spot.properties.image_map && (spot.properties.image_map == $scope.imageMap.id)
       });
 
-      // Remove the spots that are mapped on a image and not a map
-      mappableSpots = _.reject(spots, function(spot) { return spot.properties.image_map; });
-
       // get distinct groups and aggregate spots by group type
-      var spotGroup = _.groupBy(mappableSpots, function(spot) {
+      var spotGroup = _.groupBy(mappableSpots, function (spot) {
         return spot.properties.type;
       });
 
@@ -800,13 +840,13 @@ angular.module('app')
       }
     });
 
-    map.on('touchstart', function(event) {
+    map.on('touchstart', function (event) {
       console.log("touch");
       console.log(event);
     });
 
     // display popup on click
-    map.on('click', function(evt) {
+    map.on('click', function (evt) {
 
       console.log("map clicked");
 
@@ -819,16 +859,16 @@ angular.module('app')
         // clear any existing popovers
         popup.hide();
 
-        var feature = map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+        var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
           return feature;
-        }, this, function(layer) {
+        }, this, function (layer) {
           // we only want the layer where the spots are located
           return (layer instanceof ol.layer.Vector) && layer.get('name') !== 'drawLayer' && layer.get('name') !== 'geolocationLayer';
         });
 
-        var layer = map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+        var layer = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
           return layer;
-        }, this, function(layer) {
+        }, this, function (layer) {
           // we only want the layer where the spots are located
           return (layer instanceof ol.layer.Vector) && layer.get('name') !== 'drawLayer' && layer.get('name') !== 'geolocationLayer';
         });
@@ -855,8 +895,8 @@ angular.module('app')
           content += '<a href="#/spotTab/' + feature.get('id') + '/notes"><b>' + feature.get('name') + '</b></a>';
           content += '<br>';
           content += '<small>' + _.findWhere(spotTypes, {
-            value: feature.get('type')
-          }).label + '</small>';
+              value: feature.get('type')
+            }).label + '</small>';
 
           if (feature.get('planar_feature_type')) {
             content += '<br>';
@@ -892,18 +932,18 @@ angular.module('app')
             content += '<br>';
             content += '<small>Grouped by: ' + feature.get('group_relationship').join(", ") + '</small>';
           }
-          content = content.replace(/_/g," ");
+          content = content.replace(/_/g, " ");
 
           // setup the popup position
           popup.show(evt.coordinate, content);
         }
       }
     });
-
+/*
     var geolocationWatchId;
 
     // Get current position
-    $scope.toggleLocation = function() {
+    $scope.toggleLocation = function () {
 
       if ($scope.locationOn === undefined || $scope.locationOn === false) {
         $scope.locationOn = true;
@@ -914,11 +954,11 @@ angular.module('app')
       if ($scope.locationOn) {
         console.log("toggleLocation is now true");
         $cordovaGeolocation.getCurrentPosition({
-            maximumAge: 0,
-            timeout: 10000,
-            enableHighAccuracy: true
-          })
-          .then(function(position) {
+          maximumAge: 0,
+          timeout: 10000,
+          enableHighAccuracy: true
+        })
+          .then(function (position) {
             var lat = position.coords.latitude;
             var lng = position.coords.longitude;
             var altitude = position.coords.altitude;
@@ -934,7 +974,7 @@ angular.module('app')
               minZoom: 4
             });
             map.setView(newView);
-          }, function(err) {
+          }, function (err) {
             $ionicPopup.alert({
               title: 'Alert!',
               template: "Unable to get location: " + err.message
@@ -949,14 +989,14 @@ angular.module('app')
 
         geolocationWatchId.then(
           null,
-          function(err) {
+          function (err) {
             $ionicPopup.alert({
               title: 'Alert!',
               template: "Unable to get location for geolocationWatchId: " + geolocationWatchId.watchID + " (" + err.message + ")"
             });
             // TODO: what do we do here?
           },
-          function(position) {
+          function (position) {
             var lat = position.coords.latitude;
             var lng = position.coords.longitude;
             var altitude = position.coords.altitude;
@@ -996,9 +1036,9 @@ angular.module('app')
         geolocationLayer.setSource(new ol.source.Vector({}));
       }
     };
-
+*/
     // Create a group of spots by drawing a polygon on the map
-    var groupSpots = function() {
+    var groupSpots = function () {
       // remove the layer switcher to avoid confusion with lasso and regular drawing
       map.getControls().removeAt(3);
 
@@ -1009,35 +1049,34 @@ angular.module('app')
       $scope.startDraw('Polygon', true);
     };
 
+    $scope.goToImageMaps = function () {
+      $state.go('app.image-maps');
+    };
+
     /////////////////
     // ACTIONSHEET
     /////////////////
 
-    $scope.showActionsheet = function() {
+    $scope.showActionsheet = function () {
 
       $ionicActionSheet.show({
         titleText: 'Map Actions',
         buttons: [{
           text: '<i class="icon ion-map"></i> Zoom to Extent of Spots'
         }, {
-          text: '<i class="icon ion-archive"></i>Save Map for Offline Use'
-        }, {
           text: '<i class="icon ion-grid"></i> Create a Group of Spots'
         }],
         cancelText: 'Cancel',
-        cancel: function() {
+        cancel: function () {
           console.log('CANCELLED');
         },
-        buttonClicked: function(index) {
+        buttonClicked: function (index) {
           console.log('BUTTON CLICKED', index);
           switch (index) {
             case 0:
               $scope.zoomToSpotsExtent();
               break;
             case 1:
-              $scope.cacheOfflineTiles();
-              break;
-            case 2:
               groupSpots();
               break;
           }
