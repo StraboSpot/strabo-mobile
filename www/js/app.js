@@ -19,25 +19,25 @@ angular.module('app', [
 
     // localforage is the global for offline map tiles
     localforage.config({
-      driver: localforage.WEBSQL,
+      // driver: localforage.WEBSQL,
       name: 'offlineMapTiles'
     });
 
     // global LF for map names
     mapNamesDb = localforage.createInstance({
-      driver: localforage.WEBSQL,
+      // driver: localforage.WEBSQL,
       name: 'MapNames'
     });
 
     // global LF for spot data
     spotsDb = localforage.createInstance({
-      driver: localforage.WEBSQL,
+      // driver: localforage.WEBSQL,
       name: 'Spots'
     });
 
     // global LF for configuration data
     configDb = localforage.createInstance({
-      driver: localforage.WEBSQL,
+      // driver: localforage.WEBSQL,
       name: 'Config'
     });
   })
