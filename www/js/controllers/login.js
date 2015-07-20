@@ -32,8 +32,9 @@ angular.module('app')
           .then(function(response) {
             if (response.status === 200 && response.data.valid == "true") {
               console.log("Logged in successfully.");
-              LoginFactory.setLogin($scope.loginData);
-              $state.go('app.spots');
+              LoginFactory.setLogin($scope.loginData).then(function() {
+                $state.go('app.spots');
+              });
             } else {
               $ionicPopup.alert({
                 title: 'Login Failure!',
