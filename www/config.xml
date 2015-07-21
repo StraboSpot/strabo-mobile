@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget
     id="gov.az.azgs.strabomobile"
-    version="0.5.0"
+    version="0.5.2"
     xmlns="http://www.w3.org/ns/widgets"
     xmlns:cdv="http://cordova.apache.org/ns/1.0"
     xmlns:gap="http://phonegap.com/ns/1.0">
@@ -43,6 +43,7 @@
   <gap:plugin name="cordova-plugin-file" version="2.1.0" source="npm"/>
   <gap:plugin name="cordova-plugin-inappbrowser" version="1.0.0" source="npm"/>
   <gap:plugin name="com.hiddentao.cordova.filepath" version="1.0.0" source="npm"/>
+  <gap:plugin name="cordova-plugin-whitelist" version="1.0.0" source="npm"/>
 
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>

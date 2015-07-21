@@ -25,14 +25,16 @@ angular.module('app')
 
     // Perform the login action
     $scope.doLogin = function() {
+      $scope.loginData.email = $scope.loginData.email.toLowerCase();
       // Authenticate user login
       if (navigator.onLine) {
         SyncService.authenticateUser($scope.loginData)
           .then(function(response) {
             if (response.status === 200 && response.data.valid == "true") {
               console.log("Logged in successfully.");
-              LoginFactory.setLogin($scope.loginData);
-              $state.go('app.spots');
+              LoginFactory.setLogin($scope.loginData).then(function() {
+                $state.go('app.spots');
+              });
             } else {
               $ionicPopup.alert({
                 title: 'Login Failure!',

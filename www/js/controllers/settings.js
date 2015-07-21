@@ -50,6 +50,7 @@ angular.module('app')
 
     // Perform the login action when the user presses the login icon
     $scope.doLogin = function() {
+      $scope.loginData.email = $scope.loginData.email.toLowerCase();
       // Authenticate user login
       if (navigator.onLine) {
         SyncService.authenticateUser($scope.loginData)

@@ -20,7 +20,7 @@ angular.module('app')
         newSpot.type = geojsonObj.type;
       if (geojsonObj.properties)
         newSpot.properties = geojsonObj.properties;
-      if (!newSpot.properties.date || !newSpot.properties.date ) {
+      if (!newSpot.properties.date || !newSpot.properties.time ) {
         var time = new Date(Date.now());
         time.setSeconds(00);
         time.setMilliseconds(00);

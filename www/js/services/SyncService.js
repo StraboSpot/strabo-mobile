@@ -35,7 +35,7 @@ angular.module('app')
           'Content-Type': 'application/json'
         },
         data: {
-          email: loginData.email.toLowerCase(),
+          email: loginData.email,
           password: loginData.password
         }
       });
