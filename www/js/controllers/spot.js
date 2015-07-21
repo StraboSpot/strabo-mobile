@@ -1,19 +1,18 @@
 angular.module('app')
-  .controller('SpotCtrl', function(
-    $scope,
-    $rootScope,
-    $state,
-    $stateParams,
-    $location,
-    SpotsFactory,
-    SettingsFactory,
-    NewSpot,
-    CurrentSpot,
-    $ionicHistory,
-    $ionicPopup,
-    $ionicModal,
-    $ionicActionSheet,
-    ContentModelSurveyFactory) {
+  .controller('SpotCtrl', function ($scope,
+                                    $rootScope,
+                                    $state,
+                                    $stateParams,
+                                    $location,
+                                    SpotsFactory,
+                                    SettingsFactory,
+                                    NewSpot,
+                                    CurrentSpot,
+                                    $ionicHistory,
+                                    $ionicPopup,
+                                    $ionicModal,
+                                    $ionicActionSheet,
+                                    ContentModelSurveyFactory) {
 
     // this scope is the parent scope for the SpotCtrl that all child SpotCtrl will inherit
 
@@ -26,17 +25,17 @@ angular.module('app')
       "group": "Spot Group"
     };
 
-    $scope.goToSpots = function() {
+    $scope.goToSpots = function () {
       $state.go('app.spots');
     };
 
-    $scope.openSpot = function(id) {
+    $scope.openSpot = function (id) {
       CurrentSpot.clearCurrentSpot();
       $location.path('/spotTab/' + id + '/notes');
     };
 
     // Set or cleanup some of the properties of the $scope
-    var setProperties = function() {
+    var setProperties = function () {
       // Convert date string to Date type
       $scope.spot.properties.date = new Date($scope.spot.properties.date);
       $scope.spot.properties.time = new Date($scope.spot.properties.time);
@@ -123,12 +122,13 @@ angular.module('app')
               $scope.spot.properties[field.name] = field.default;
             else if (field.type == "integer" && !isNaN(parseInt(field.default)))
               $scope.spot.properties[field.name] = parseInt(field.default);
-            else if (field.type.split(' ')[0] == "select_one" || field.type.split(' ')[0] == "select_multiple"){
+            else if (field.type.split(' ')[0] == "select_one" || field.type.split(' ')[0] == "select_multiple") {
               var curChoices = _.filter($scope.choices, function (choice) {
-                  return choice["list name"] == field.type.split(' ')[1] }
+                  return choice["list name"] == field.type.split(' ')[1]
+                }
               );
               // Check that default is in the list of choices for field
-              if (_.findWhere(curChoices, { name: field.default })) {
+              if (_.findWhere(curChoices, {name: field.default})) {
                 if (field.type.split(' ')[0] == "select_one")
                   $scope.spot.properties[field.name] = field.default;
                 else {
@@ -221,20 +221,22 @@ angular.module('app')
 
     // Toggle selected for links or groups or group members selected
     $scope.toggleSelection = function toggleSelection(ref_spot, type_selected, type_unselected) {
-      var selected_spot = _.findWhere($scope[type_selected], { id: ref_spot.id });
+      var selected_spot = _.findWhere($scope[type_selected], {id: ref_spot.id});
 
       // If selected spot is not already in the links_selected object
       if (!selected_spot)
         $scope[type_selected].push(ref_spot);
       // This spot has been unselected so remove it
       else {
-        $scope[type_selected] = _.reject($scope[type_selected], function (spot) { return spot.id == ref_spot.id });
+        $scope[type_selected] = _.reject($scope[type_selected], function (spot) {
+          return spot.id == ref_spot.id
+        });
         $scope[type_unselected].push(ref_spot);
       }
     };
 
     // Validate the fields in the given form
-    $scope.validateFields = function(form) {
+    $scope.validateFields = function (form) {
       console.log("Validating form with spot:", $scope.spot);
       var errorMessages = "";
 
@@ -244,8 +246,7 @@ angular.module('app')
         if (getComputedStyle(ele).display != "none" && $scope.spot.properties[field.name] == undefined) {
           if (field.required == "true")
             errorMessages += "<b>" + field.label + "</b> Required!<br>";
-          else
-          if (field.name in $scope.spot.properties)
+          else if (field.name in $scope.spot.properties)
             errorMessages += "<b>" + field.label + "</b> " + field.constraint_message + "<br>";
         }
         else if (getComputedStyle(ele).display == "none")
@@ -264,8 +265,8 @@ angular.module('app')
     };
 
     // Validate the current form
-    $scope.validateForm = function() {
-      switch($state.current.url.split("/").pop()) {
+    $scope.validateForm = function () {
+      switch ($state.current.url.split("/").pop()) {
         case "details":
           if (!$scope.validateFields($scope.survey))
             return false;
@@ -280,20 +281,22 @@ angular.module('app')
           }
           break;
         case "georeference":
-          if ($scope.spot.geometry.type == "Point") {
-            var geoError;
-            if (!$scope.spot.geometry.coordinates[0] && !$scope.spot.geometry.coordinates[1])
-              geoError = '<b>Latitude</b> and <b>longitude</b> are required.';
-            else if (!$scope.spot.geometry.coordinates[0])
-              geoError = '<b>Longitude</b> is required.';
-            else if (!$scope.spot.geometry.coordinates[1])
-              geoError = '<b>Latitude</b> is required.';
-            if (geoError) {
-              $ionicPopup.alert({
-                title: 'Validation Error!',
-                template: geoError
-              });
-              return false;
+          if ($scope.spot.geometry) {
+            if ($scope.spot.geometry.type == "Point") {
+              var geoError;
+              if (!$scope.spot.geometry.coordinates[0] && !$scope.spot.geometry.coordinates[1])
+                geoError = '<b>Latitude</b> and <b>longitude</b> are required.';
+              else if (!$scope.spot.geometry.coordinates[0])
+                geoError = '<b>Longitude</b> is required.';
+              else if (!$scope.spot.geometry.coordinates[1])
+                geoError = '<b>Latitude</b> is required.';
+              if (geoError) {
+                $ionicPopup.alert({
+                  title: 'Validation Error!',
+                  template: geoError
+                });
+                return false;
+              }
             }
           }
           break;
@@ -338,7 +341,7 @@ angular.module('app')
     };
 
     // Add or modify Spot
-    $scope.submit = function() {
+    $scope.submit = function () {
 
       // Validate the form first
       if (!$scope.validateForm())
@@ -357,8 +360,8 @@ angular.module('app')
         });
 
         // Get the linked spot or group
-        var reference = _.filter($scope.spots, function(item) {
-          return _.findWhere(item, { id: id });
+        var reference = _.filter($scope.spots, function (item) {
+          return _.findWhere(item, {id: id});
         })[0];
 
         switch (ref_type) {
@@ -392,7 +395,7 @@ angular.module('app')
         $scope.spot.properties.links.push(obj);
 
         var link_relationship_inverse = _.findWhere($scope.link_relationship.choices,
-          { type: obj.relationship }).inverse;
+          {type: obj.relationship}).inverse;
 
         // Add the new/updated link reference to the link references for the linked spot
         linked_spot.properties.links.push({
@@ -403,7 +406,7 @@ angular.module('app')
         });
 
         // Save the linked spot
-        SpotsFactory.save(linked_spot).then(function(data){
+        SpotsFactory.save(linked_spot).then(function (data) {
           console.log("updated inverse spot", data);
         });
       });
@@ -414,7 +417,7 @@ angular.module('app')
         var linked_spot = cleanRefs("links", obj.id);
 
         // Save the linked spot
-        SpotsFactory.save(linked_spot).then(function(data){
+        SpotsFactory.save(linked_spot).then(function (data) {
           console.log("updated inverse spot", data);
         });
       });
@@ -435,7 +438,7 @@ angular.module('app')
         });
 
         // Save the group
-        SpotsFactory.save(group).then(function(data){
+        SpotsFactory.save(group).then(function (data) {
           console.log("added group member", data);
         });
       });
@@ -446,7 +449,7 @@ angular.module('app')
         var group = cleanRefs("groups", obj.id);
 
         // Save the group
-        SpotsFactory.save(group).then(function(data){
+        SpotsFactory.save(group).then(function (data) {
           console.log("removed group member", data);
         });
       });
@@ -467,7 +470,7 @@ angular.module('app')
         });
 
         // Save the group
-        SpotsFactory.save(group).then(function(data){
+        SpotsFactory.save(group).then(function (data) {
           console.log("added group", data);
         });
       });
@@ -478,13 +481,13 @@ angular.module('app')
         var group = cleanRefs("group_members", obj.id);
 
         // Save the group
-        SpotsFactory.save(group).then(function(data){
+        SpotsFactory.save(group).then(function (data) {
           console.log("removed group", data);
         });
       });
 
       // Save the spot
-      SpotsFactory.save($scope.spot).then(function(data) {
+      SpotsFactory.save($scope.spot).then(function (data) {
         console.log("spot saved: ", data);
         CurrentSpot.clearCurrentSpot();
         $location.path("/app/spots");
@@ -493,18 +496,18 @@ angular.module('app')
     };
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair
-    $scope.showField = function(relevant) {
+    $scope.showField = function (relevant) {
       if (!relevant)
         return true;
 
-      relevant = relevant.replace(/selected\(\$/g,"_.contains(");
-      relevant = relevant.replace(/\$/g,"");
-      relevant = relevant.replace(/{/g,"$scope.spot.properties.");
-      relevant = relevant.replace(/}/g,"");
-      relevant = relevant.replace(/''/g,"undefined");
-      relevant = relevant.replace(/ = /g," == ");
-      relevant = relevant.replace(/ or /g," || ");
-      relevant = relevant.replace(/ and /g," && ");
+      relevant = relevant.replace(/selected\(\$/g, "_.contains(");
+      relevant = relevant.replace(/\$/g, "");
+      relevant = relevant.replace(/{/g, "$scope.spot.properties.");
+      relevant = relevant.replace(/}/g, "");
+      relevant = relevant.replace(/''/g, "undefined");
+      relevant = relevant.replace(/ = /g, " == ");
+      relevant = relevant.replace(/ or /g, " || ");
+      relevant = relevant.replace(/ and /g, " && ");
 
       try {
         return eval(relevant);
@@ -515,36 +518,36 @@ angular.module('app')
     };
 
     // Get the min value allowed for a number field
-    $scope.getMin = function(constraint) {
-      try{
+    $scope.getMin = function (constraint) {
+      try {
         // Look for >= in constraint, followed by a space and any number of digits
         var regexMin = />=\s(\d*)/i;
         // Return just the number
         return regexMin.exec(constraint)[1];
       }
-      catch(e) {
+      catch (e) {
         return undefined;
       }
     };
 
     // Get the max value allowed for a number field
-    $scope.getMax = function(constraint) {
-      try{
+    $scope.getMax = function (constraint) {
+      try {
         // Look for <= in constraint, followed by a space and then a number
         var regexMax = /<=\s(\d*)/i;
         // Return just the number
         return regexMax.exec(constraint)[1];
       }
-      catch(e) {
+      catch (e) {
         return undefined;
       }
     };
 
     // Set the class for the select_multiple fields here because it is not working
     // to set the class in the html the same way as for the other fields
-    $scope.setSelMultClass = function(field) {
-      if (field.required == "true"){
-        if ($scope.spot.properties[field.name]){
+    $scope.setSelMultClass = function (field) {
+      if (field.required == "true") {
+        if ($scope.spot.properties[field.name]) {
           if ($scope.spot.properties[field.name].length > 0)
             return 'no-errors';
         }
@@ -620,13 +623,13 @@ angular.module('app')
     };
 
     // Delete the spot
-    $scope.deleteSpot = function() {
+    $scope.deleteSpot = function () {
       var confirmPopup = $ionicPopup.confirm({
         title: 'Delete Spot',
         template: 'Are you sure you want to delete this spot?'
       });
-      confirmPopup.then(function(res) {
-        if(res) {
+      confirmPopup.then(function (res) {
+        if (res) {
           SpotsFactory.destroy($scope.spot.properties.id);
           $location.path("/app/spots");
         }
@@ -634,7 +637,7 @@ angular.module('app')
     };
 
     // Create a new spot with the details from this spot
-    $scope.copySpot = function() {
+    $scope.copySpot = function () {
       var copySpot = _.omit($scope.spot, 'properties');
       copySpot['properties'] = _.omit($scope.spot.properties, ['id', 'date', 'time', 'links', 'groups', 'group_members']);
       NewSpot.setNewSpot(copySpot);
@@ -648,61 +651,61 @@ angular.module('app')
     $ionicModal.fromTemplateUrl('templates/modals/linkModal.html', {
       scope: $scope,
       animation: 'slide-in-up'
-    }).then(function(modal) {
+    }).then(function (modal) {
       $scope.linkModal = modal;
     });
 
     $ionicModal.fromTemplateUrl('templates/modals/groupModal.html', {
       scope: $scope,
       animation: 'slide-in-up'
-    }).then(function(modal) {
+    }).then(function (modal) {
       $scope.groupModal = modal;
     });
 
     $ionicModal.fromTemplateUrl('templates/modals/groupMembersModal.html', {
       scope: $scope,
       animation: 'slide-in-up'
-    }).then(function(modal) {
+    }).then(function (modal) {
       $scope.groupMembersModal = modal;
     });
 
-    $scope.openModal = function(modal) {
+    $scope.openModal = function (modal) {
       $scope[modal].show();
     };
 
-    $scope.closeModal = function(modal) {
+    $scope.closeModal = function (modal) {
       $scope[modal].hide();
     };
 
     //Cleanup the modal when we're done with it!
     // Execute action on hide modal
-    $scope.$on('linkModal.hidden', function() {
+    $scope.$on('linkModal.hidden', function () {
       $scope.linkModal.remove();
     });
-    $scope.$on('groupModal.hidden', function() {
+    $scope.$on('groupModal.hidden', function () {
       $scope.groupModal.remove();
     });
-    $scope.$on('groupMembersModal.hidden', function() {
+    $scope.$on('groupMembersModal.hidden', function () {
       $scope.groupMembersModal.remove();
     });
 
     /*************************************
-    /* Links
-    /************************************/
+     /* Links
+     /************************************/
 
     $scope.link_relationship = {
       choices: [
-        { type: 'has', inverse: 'describes'},
-        { type: 'describes', inverse: 'has'},
-        { type: 'cross-cuts', inverse: 'is cross cut by' },
-        { type: 'is cross-cut by', inverse: 'cross-cuts' },
-        { type: 'is younger than', inverse: 'is older than' },
-        { type: 'is older than', inverse: 'is younger than' },
-        { type: 'is a lower metamorphic grade than', inverse: 'is a higher metamorphic grade than' },
-        { type: 'is a higher metamorphic grade than', inverse: 'is a lower metamorphic grade than' },
-        { type: 'is included within',inverse: 'includes' },
-        { type: 'includes', inverse: 'is included within' },
-        { type: 'is otherwise related to', inverse: 'is otherwise related to' }
+        {type: 'has', inverse: 'describes'},
+        {type: 'describes', inverse: 'has'},
+        {type: 'cross-cuts', inverse: 'is cross cut by'},
+        {type: 'is cross-cut by', inverse: 'cross-cuts'},
+        {type: 'is younger than', inverse: 'is older than'},
+        {type: 'is older than', inverse: 'is younger than'},
+        {type: 'is a lower metamorphic grade than', inverse: 'is a higher metamorphic grade than'},
+        {type: 'is a higher metamorphic grade than', inverse: 'is a lower metamorphic grade than'},
+        {type: 'is included within', inverse: 'includes'},
+        {type: 'includes', inverse: 'is included within'},
+        {type: 'is otherwise related to', inverse: 'is otherwise related to'}
       ]
     };
   });

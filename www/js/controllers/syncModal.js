@@ -1,11 +1,10 @@
 angular.module('app')
 
-  .controller("SyncModalCtrl", function(
-    $scope,
-    $ionicPopup,
-    SpotsFactory,
-    SyncService,
-    LoginFactory) {
+  .controller("SyncModalCtrl", function ($scope,
+                                         $ionicPopup,
+                                         SpotsFactory,
+                                         SyncService,
+                                         LoginFactory) {
 
     // base64 encoded login
     $scope.encodedLogin = null;
@@ -19,12 +18,12 @@ angular.module('app')
       total: null
     };
 
-    $scope.showDatasetOpts = function() {
+    $scope.showDatasetOpts = function () {
       return navigator.onLine && $scope.encodedLogin;
     };
 
-    $scope.startDatasetOp = function(){
-      switch($scope.operation){
+    $scope.startDatasetOp = function () {
+      switch ($scope.operation) {
         case "download":
           $scope.getDatasetSpots();
           break;
@@ -45,7 +44,7 @@ angular.module('app')
 
     // is the user logged in from before?
     LoginFactory.getLogin()
-      .then(function(login) {
+      .then(function (login) {
         if (login !== null) {
           // we do have a login -- lets set the authentication
           console.log("we have a login!", login);
@@ -66,10 +65,10 @@ angular.module('app')
       });
 
     // Get all of the datasets for a user
-    $scope.getDatasets = function() {
+    $scope.getDatasets = function () {
       if ($scope.encodedLogin) {
         SyncService.getDatasets($scope.encodedLogin)
-          .then(function(response) {
+          .then(function (response) {
             $scope.datasets = [];
             $scope.datasets.push({"name": "-- new dataset --"});
             // Append response data to the beginning of array of datasets
@@ -86,9 +85,9 @@ angular.module('app')
     };
 
     // Create a new dataset
-    $scope.createDataset = function() {
+    $scope.createDataset = function () {
       SyncService.createDataset({"name": this.dataset_name}, $scope.encodedLogin)
-        .then(function(response) {
+        .then(function (response) {
           $scope.operation = null;
           $scope.dataset_name = "";
           $scope.dataset = null;
@@ -98,9 +97,9 @@ angular.module('app')
     };
 
     // Delete a dataset
-    $scope.deleteDataset = function() {
+    $scope.deleteDataset = function () {
       SyncService.deleteDataset(this.dataset.self, $scope.encodedLogin)
-        .then(function(response) {
+        .then(function (response) {
           console.log("deleted: ", response);
           $scope.dataset = null;
           $scope.getDatasets();
@@ -109,24 +108,24 @@ angular.module('app')
     };
 
     // Upload all spots to a dataset
-    $scope.addDatasetSpots = function() {
+    $scope.addDatasetSpots = function () {
 
       // Get the dataset id
       var url_parts = this.dataset.self.split("/");
       var dataset_id = url_parts.pop();
 
-      var deleteAllDatasetSpots = function() {
+      var deleteAllDatasetSpots = function () {
         return SyncService.deleteAllDatasetSpots(dataset_id, $scope.encodedLogin);
       };
 
-      var getAllLocalSpots = function() {
+      var getAllLocalSpots = function () {
         return SpotsFactory.all();
       };
 
       var uploadImages = function (spot) {
         if (spot.images) {
           _.each(spot.images, function (image) {
-            SyncService.uploadImage(spot.properties.id, image.src, image.caption, $scope.encodedLogin).then(function(response) {
+            SyncService.uploadImage(spot.properties.id, image.src, image.caption, $scope.encodedLogin).then(function (response) {
               if (response.status === 201)
                 console.log("Image uploaded for", spot, "Server response:", response);
               else
@@ -136,7 +135,7 @@ angular.module('app')
         }
       };
 
-      var uploadSpots = function(spots) {
+      var uploadSpots = function (spots) {
         if (!spots)
           return;
 
@@ -162,7 +161,7 @@ angular.module('app')
                 uploadImages(spot);
 
                 // Add spot to dataset
-                SyncService.addSpotToDataset(spot.properties.id, dataset_id, $scope.encodedLogin).then(function(response) {
+                SyncService.addSpotToDataset(spot.properties.id, dataset_id, $scope.encodedLogin).then(function (response) {
                   if (response.status === 201)
                     console.log("Spot", spot, "added to Dataset", dataset_id, "Server response:", response);
                   else
@@ -191,7 +190,7 @@ angular.module('app')
                     uploadImages(spot);
 
                     // Add spot to dataset
-                    SyncService.addSpotToDataset(spot.properties.id, dataset_id, $scope.encodedLogin).then(function(response) {
+                    SyncService.addSpotToDataset(spot.properties.id, dataset_id, $scope.encodedLogin).then(function (response) {
                       if (response.status === 201)
                         console.log("Spot", spot, "added to Dataset", dataset_id, "Server response:", response);
                       else
@@ -223,7 +222,7 @@ angular.module('app')
                 uploadImages(spot);
 
                 // Add spot to dataset
-                SyncService.addSpotToDataset(spot.properties.id, dataset_id, $scope.encodedLogin).then(function(response) {
+                SyncService.addSpotToDataset(spot.properties.id, dataset_id, $scope.encodedLogin).then(function (response) {
                   if (response.status === 201)
                     console.log("Spot", spot, "added to Dataset", dataset_id, "Server response:", response);
                   else
@@ -245,7 +244,7 @@ angular.module('app')
         });
       };
 
-      var reportProblems = function(fault) {
+      var reportProblems = function (fault) {
         console.log(fault);
       };
 
@@ -256,11 +255,17 @@ angular.module('app')
     };
 
     // Download all spots from a dataset
-    $scope.getDatasetSpots = function() {
+    $scope.getDatasetSpots = function () {
 
-      var saveSpot = function(spot) {
-        if (!_.filter($scope.spots, function(item) {
-            return _.findWhere(item, { id: spot.properties.id });
+      var saveSpot = function (spot) {
+        // If the geometry coordinates contain any null values, delete the geometry; it shouldn't be defined
+        if (spot.geometry)
+          if (spot.geometry.coordinates)
+            if (_.indexOf(_.flatten(spot.geometry.coordinates), null) != -1)
+              delete spot.geometry;
+        // Look for any current spots that match the id of the downloaded spot and remove the current spot
+        if (!_.filter($scope.spots, function (item) {
+            return _.findWhere(item, {id: spot.properties.id});
           })[0])
           $scope.spots.push(spot);
         SpotsFactory.save(spot);
@@ -269,62 +274,62 @@ angular.module('app')
       // Get the dataset id
       var url_parts = this.dataset.self.split("/");
       var dataset_id = url_parts.pop();
-      SyncService.getDatasetSpots(dataset_id, $scope.encodedLogin).then(function(response) {
-        console.log(response);
-        if (response.data !== null) {
-          $scope.progress.showDownloadDone = true;
-          response.data.features.forEach(function(spot) {
-            SyncService.getImages(spot.properties.id, $scope.encodedLogin).then(function(getImagesResponse) {
-              if (getImagesResponse.status == 200 && getImagesResponse.data) {
-                getImagesResponse.data.images.forEach(function (image) {
-                  if (!spot.images)
-                    spot.images = [];
-                  spot.images.push({
-                    caption: image.caption,
-                    self: image.self
-                  });
-                  SyncService.downloadImage(image.self, $scope.encodedLogin).then(function(downloadImageResponse) {
-                    if (downloadImageResponse.status == 200 && downloadImageResponse.data) {
-                      var readDataUrl = function(file, callback) {
-                        var reader = new FileReader();
-                        reader.onloadend = function(evt) {
-                          callback(evt.target.result);
+      SyncService.getDatasetSpots(dataset_id, $scope.encodedLogin).then(function (response) {
+          console.log(response);
+          if (response.data !== null) {
+            $scope.progress.showDownloadDone = true;
+            response.data.features.forEach(function (spot) {
+              SyncService.getImages(spot.properties.id, $scope.encodedLogin).then(function (getImagesResponse) {
+                if (getImagesResponse.status == 200 && getImagesResponse.data) {
+                  getImagesResponse.data.images.forEach(function (image) {
+                    if (!spot.images)
+                      spot.images = [];
+                    spot.images.push({
+                      caption: image.caption,
+                      self: image.self
+                    });
+                    SyncService.downloadImage(image.self, $scope.encodedLogin).then(function (downloadImageResponse) {
+                      if (downloadImageResponse.status == 200 && downloadImageResponse.data) {
+                        var readDataUrl = function (file, callback) {
+                          var reader = new FileReader();
+                          reader.onloadend = function (evt) {
+                            callback(evt.target.result);
+                          };
+                          reader.readAsDataURL(file);
                         };
-                        reader.readAsDataURL(file);
-                      };
-                      readDataUrl(downloadImageResponse.data, function(base64Image) {
-                        var imageProps = _.findWhere(spot.images, { self: downloadImageResponse.config.url });
-                        imageProps["src"] = base64Image;
-                        saveSpot(spot);
-                      });
-                    }
+                        readDataUrl(downloadImageResponse.data, function (base64Image) {
+                          var imageProps = _.findWhere(spot.images, {self: downloadImageResponse.config.url});
+                          imageProps["src"] = base64Image;
+                          saveSpot(spot);
+                        });
+                      }
+                    });
                   });
-                });
-              }
-              else
-                saveSpot(spot);
+                }
+                else
+                  saveSpot(spot);
+              });
             });
-          });
-        }
-        else
-          $ionicPopup.alert({
-            title: 'Empty Dataset!',
-            template: 'There are no spots in this dataset.'
-          });
+          }
+          else
+            $ionicPopup.alert({
+              title: 'Empty Dataset!',
+              template: 'There are no spots in this dataset.'
+            });
         },
-        function(errorMessage) {
+        function (errorMessage) {
           console.warn(errorMessage);
         }
       );
     };
 
     // Delete ALL spots for a user on the server
-    $scope.deleteSpots = function() {
+    $scope.deleteSpots = function () {
       var confirmPopup = $ionicPopup.confirm({
         title: 'Delete Spots',
         template: 'Are you sure you want to delete <b>ALL</b> spots for this user from the server? Spots on your local device will remain on your device.'
       });
-      confirmPopup.then(function(res) {
+      confirmPopup.then(function (res) {
         if (res) {
           SyncService.deleteSpots($scope.encodedLogin).then(function (response) {
             console.log("ALL spots deleted. Server response: ", response);
@@ -336,7 +341,7 @@ angular.module('app')
     // Create Base64 Object
     var Base64 = {
       _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
-      encode: function(e) {
+      encode: function (e) {
         var t = "";
         var n, r, i, s, o, u, a;
         var f = 0;
@@ -358,7 +363,7 @@ angular.module('app')
         }
         return t
       },
-      decode: function(e) {
+      decode: function (e) {
         var t = "";
         var n, r, i;
         var s, o, u, a;
@@ -383,7 +388,7 @@ angular.module('app')
         t = Base64._utf8_decode(t);
         return t
       },
-      _utf8_encode: function(e) {
+      _utf8_encode: function (e) {
         e = e.replace(/\r\n/g, "\n");
         var t = "";
         for (var n = 0; n < e.length; n++) {
@@ -401,7 +406,7 @@ angular.module('app')
         }
         return t
       },
-      _utf8_decode: function(e) {
+      _utf8_decode: function (e) {
         var t = "";
         var n = 0;
         var r = c1 = c2 = 0;
