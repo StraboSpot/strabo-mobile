@@ -115,6 +115,15 @@ angular.module('app')
                     value = _.pluck(value, "id");
                     row[i] = "\"" + value.join(", ") + "\"";
                   }
+                  // Separate date parts
+                  else if (value instanceof Date) {
+                    if (key == "time")
+                      row[i] = value.toLocaleTimeString();
+                    else if (key == "date")
+                      row[i] = value.toLocaleDateString();
+                    else
+                      row[i] = value.toJSON();
+                  }
                   // Flatten the child values
                   else
                     row[i] = "\"" + _.flatten(value).join(", ") + "\"";
@@ -141,12 +150,18 @@ angular.module('app')
 
       // If this is a web browser and not using cordova
       if (document.location.protocol != 'file:') { //Phonegap is not present }
-        var win = window.open("", "Title");
+        spotData = spotData.replace(/\r\n/g, "<br>");
+        var win = window.open();
         win.document.body.innerHTML = spotData;
         return;
       }
 
-      var fileName = "strabo-data.csv";
+      var d = new Date();
+      d = d.toLocaleDateString() + "-" + d.toLocaleTimeString();
+      d = d.replace(/\//g, "-");
+      d = d.replace(/:/g, "");
+      d = d.replace(/ /g, "");
+      var fileName = d + "-" + "strabo-data.csv";
 
       var devicePath;
       switch(device.platform) {
