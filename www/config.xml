@@ -32,6 +32,11 @@
 
   <preference name="iosPersistentFileLocation" value="Library"/>
 
+  <!-- needed for file sharing in iOS -->
+  <gap:config-file platform="ios" parent="UIFileSharingEnabled" mode="replace">
+    <true/>
+  </gap:config-file>
+
   <!-- Plugins -->
   <gap:plugin name="ionic-plugin-keyboard" version="1.0.4" source="npm"/>
   <gap:plugin name="cordova-plugin-console" version="1.0.0" source="npm"/>
