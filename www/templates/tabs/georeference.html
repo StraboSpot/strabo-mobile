@@ -18,6 +18,7 @@
           <input type="number" name="lat" ng-model="lat" ng-change="updateLatitude(lat)"
                  required min="-90" max="90">
         </label>
+
         <div ng-if="geoForm['lat'].$touched"
              ng-messages="geoForm['lat'].$error"
              ng-messages-include="templates/error-messages.html">
@@ -29,6 +30,7 @@
           <input type="number" name="lng" ng-model="lng" ng-change="updateLongitude(lng)"
                  required min="-180" max="180">
         </label>
+
         <div ng-if="geoForm['lng'].$touched"
              ng-messages="geoForm['lng'].$error"
              ng-messages-include="templates/error-messages.html">
@@ -59,7 +61,7 @@
       </div>
       <div ng-if="!mapped" class="padding">
         This spot has not been mapped yet. Click on the Set from Map button below and be sure to map this feature as a
-        {{spot.geometry.type}}.
+        {{getGeometryType()}}.
       </div>
       <!-- Map Interaction -->
       <div class="row responsive-sm">

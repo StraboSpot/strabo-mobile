@@ -373,14 +373,16 @@ angular.module('app')
             var isLassoed = [];
 
             SpotsFactory.all().then(function(spots) {
-              _.each(spots, function(spot) {
-
+              var mappedSpots = _.filter(spots, function(spot) {
+                return spot.geometry;
+              });
+              _.each(mappedSpots, function(spot) {
                 // if the spot is a point, we test using turf.inside
                 // if the spot is a polygon or line, we test using turf.intersect
 
-                var spotType = spot.geometry.type;
+                var spotType = spot.properties.type;
 
-                if (spotType === "Point") {
+                if (spotType === "point") {
                   // is the point inside the drawn polygon?
                   if (turf.inside(spot, geojsonObj)) {
                     isLassoed.push({
@@ -391,7 +393,7 @@ angular.module('app')
                   }
                 }
 
-                if (spotType === "LineString" || spotType === "Polygon") {
+                if (spotType === "line" || spotType === "polygon" || spotType === "group") {
                   // is the line or polygon within/intersected in the drawn polygon?
                   if (turf.intersect(spot, geojsonObj)) {
                     isLassoed.push({
@@ -412,7 +414,7 @@ angular.module('app')
                   template: "No spots are within or intersect the drawn poloygon."
                 });
                 return;
-              };
+              }
 
               geojsonObj.properties = {
                 type: "group",
@@ -441,9 +443,9 @@ angular.module('app')
                 } else
                   $ionicPopup.alert({
                     title: 'Geometry Mismatch!',
-                    template: "Station Spots must be drawn as a Points. Draw Again."
+                    template: "Station Spots must be drawn as Points. Draw Again."
                   });
-                $state.go('spotTab.details');
+                $state.go('spotTab.georeference');
                 break;
               case "line":
                 if ($scope.drawButtonActive == "LineString") {
@@ -454,7 +456,7 @@ angular.module('app')
                     title: 'Geometry Mismatch!',
                     template: "Contacts and Traces Spots must be drawn as Lines. Draw Again."
                   });
-                $state.go('spotTab.details');
+                $state.go('spotTab.georeference');
                 break;
               case "polygon":
                 if ($scope.drawButtonActive == "Polygon") {
@@ -465,7 +467,7 @@ angular.module('app')
                     title: 'Geometry Mismatch!',
                     template: "Rock Description Spots must be drawn as Polygons. Draw Again."
                   });
-                $state.go('spotTab.rockdescription');
+                $state.go('spotTab.georeference');
                 break;
               case "group":
                 if ($scope.drawButtonActive == "Polygon") {
@@ -476,25 +478,27 @@ angular.module('app')
                     title: 'Geometry Mismatch!',
                     template: "Spot Groups must be drawn as Polygons. Draw Again."
                   });
-                $state.go('spotTab.details');
+                $state.go('spotTab.georeference');
                 break;
             }
           }
           // Initialize new Spot
           else {
-            NewSpot.setNewSpot(geojsonObj);
-
+            var goTo = "spotTab.details";
             switch ($scope.drawButtonActive) {
               case "Point":
-                $state.go('spotTab.details');
+                geojsonObj.properties = { type: "point" };
                 break;
               case "LineString":
-                $state.go('spotTab.details');
+                geojsonObj.properties = { type: "line" };
                 break;
               case "Polygon":
-                $state.go('spotTab.rockdescription');
+                geojsonObj.properties = { type: "polygon"};
+                goTo = "spotTab.rockdescription";
                 break;
             }
+            NewSpot.setNewSpot(geojsonObj);
+            $state.go(goTo);
           }
         }
       });
@@ -764,7 +768,7 @@ angular.module('app')
       // Get mappable spots (spots made from the Spots Page, instead of
       // from the map, do not have geometry until defined by the user)
       var mappableSpots = _.filter(spots, function(spot) {
-        return spot.geometry.coordinates;
+        return spot.geometry;
       });
 
       // Remove the spots that are mapped on a image and not a map
@@ -1004,6 +1008,11 @@ angular.module('app')
 
       // remove the drawing tools to avoid confusion with lasso and regular drawing
       map.getControls().removeAt(2);
+
+      $ionicPopup.alert({
+        title: 'Group Spots',
+        template: 'Draw a polygon around the spots you want to group.'
+      });
 
       // start the draw with freehand enabled
       $scope.startDraw('Polygon', true);

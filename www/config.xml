@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget
     id="gov.az.azgs.strabomobile"
-    version="0.5.2"
+    version="0.5.3"
     xmlns="http://www.w3.org/ns/widgets"
     xmlns:cdv="http://cordova.apache.org/ns/1.0"
     xmlns:gap="http://phonegap.com/ns/1.0">
@@ -31,7 +31,11 @@
   <preference name="android-targetSdkVersion" value="21"/>
 
   <preference name="iosPersistentFileLocation" value="Library"/>
-  <preference name="UIFileSharingEnabled" value="true" />
+
+  <!-- needed for file sharing in iOS -->
+  <gap:config-file platform="ios" parent="UIFileSharingEnabled" mode="replace">
+    <true/>
+  </gap:config-file>
 
   <!-- Plugins -->
   <gap:plugin name="ionic-plugin-keyboard" version="1.0.4" source="npm"/>

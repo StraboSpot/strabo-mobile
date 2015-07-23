@@ -8,34 +8,32 @@ angular.module('app')
 
     console.log('inside spot tab georeference ctrl');
 
+    $scope.showSetFromMapButton = true;
+
     // Has the spot been mapped yet?
-    $scope.mapped = $scope.spot.geometry && $scope.spot.geometry.coordinates ? true : false;
+    if ($scope.spot.geometry) {
+      // If the geometry coordinates contain any null values, delete the geometry; it shouldn't be defined
+      if ($scope.spot.geometry.coordinates) {
+        if (_.indexOf(_.flatten($scope.spot.geometry.coordinates), null) != -1)
+          delete $scope.spot.geometry;
+        else {
+          $scope.mapped = true;
 
-    // Only show Latitude and Longitude input boxes if the geometry type is Point
-    if ($scope.mapped && $scope.spot.geometry.type === "Point") {
+          // Only allow set location from map if geometry type is not MultiPoint, MultiLineString or MultiPolygon
+          $scope.showSetFromMapButton = !($scope.spot.geometry.type == "MultiPoint" || $scope.spot.geometry.type == "MultiLineString" || $scope.spot.geometry.type == "MultiPolygon");
 
-      if ($scope.spot.properties.image_map != undefined) {
-        $scope.showXY = true;
-        $scope.y = $scope.spot.geometry.coordinates[1];
-        $scope.x = $scope.spot.geometry.coordinates[0];
-      }
-      else {
-        $scope.showLatLng = true;
-        $scope.lat = $scope.spot.geometry.coordinates[1];
-        $scope.lng = $scope.spot.geometry.coordinates[0];
+          // Only show Latitude and Longitude input boxes if the geometry type is Point
+          if ($scope.spot.geometry.type === "Point") {
+            $scope.showLatLng = true;
+            $scope.lat = $scope.spot.geometry.coordinates[1];
+            $scope.lng = $scope.spot.geometry.coordinates[0];
+          }
+        }
       }
     }
 
-    if (!$scope.spot.properties.image_map) {
-      $scope.viewOnMapButton = $scope.mapped;
-
-      // Only allow set location to user's location if geometry type is Point
-      $scope.showMyLocationButton = ($scope.spot.geometry.type == "Point");
-
-      // Only allow set location from map if geometry type is Point, LineString or Polygon
-      // (eg. not MultiPoint, MultiLineString or MultiPolygon)
-      $scope.showSetFromMapButton = ($scope.spot.geometry.type == "Point" || $scope.spot.geometry.type == "LineString" || $scope.spot.geometry.type == "Polygon");
-    }
+    // Only allow set location to user's location if geometry type is Point
+    $scope.showMyLocationButton = ($scope.spot.properties.type == "point");
 
     // Update the value for the Latitude from the user input
     $scope.updateLatitude = function (lat) {
@@ -96,6 +94,19 @@ angular.module('app')
     $scope.setFromMap = function () {
       CurrentSpot.setCurrentSpot($scope.spot);    // Save current spot
       $location.path("/app/map");
+    };
+
+    $scope.getGeometryType = function () {
+      switch ($scope.spot.properties.type) {
+        case "point":
+          return "Point";
+        case "line":
+          return "LineString";
+        case "polygon":
+          return "Polygon";
+        case "group":
+          return "Polygon";
+      }
     };
 
   });
