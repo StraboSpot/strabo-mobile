@@ -116,13 +116,14 @@ angular.module('app')
 
     ol.inherits(drawControls, ol.control.Control);
     $scope.imageMap = ImageMapService.getCurrentImageMap();
+    var extent = [0, 0, $scope.imageMap.width, $scope.imageMap.height];
 
    // var headerHeight = 42;
     //var extent = [0, 0, $window.innerWidth, $window.innerHeight - headerHeight];
     var projection = new ol.proj.Projection({
       code: 'map-image',
       units: 'pixels',
-      extent: $scope.imageMap.extent
+      extent: extent
     });
 
     map = new ol.Map({
@@ -134,16 +135,16 @@ angular.module('app')
                 html: '&copy; <a href="">Need image source here.</a>'
               })
             ],
-            url: $scope.imageMap.source,
+            url: $scope.imageMap.src,
             projection: projection,
-            imageExtent: $scope.imageMap.extent
+            imageExtent: extent
           })
         })
       ],
       target: 'mapdiv',
       view: new ol.View({
         projection: projection,
-        center: ol.extent.getCenter($scope.imageMap.extent),
+        center: ol.extent.getCenter(extent),
         zoom: 2
       })
     });
@@ -383,7 +384,15 @@ angular.module('app')
         // the actual geojson object that was drawn
         var geojsonObj = geojson.writeFeatureObject(e.feature);
 
-        geojsonObj.properties = {image_map: $scope.imageMap.id};
+        if (_.find(_.flatten(geojsonObj.geometry.coordinates), function (num) {
+            return num < 0;
+          })) {
+          $ionicPopup.alert({
+            title: 'Out of Bounds',
+            template: "Spot coordinate is off the image. Try again."
+          });
+          return;
+        }
 
         /*
         var geojsonObj = JSON.parse(geojson.writeFeature(e.feature, {
@@ -411,14 +420,17 @@ angular.module('app')
             var isLassoed = [];
 
             SpotsFactory.all().then(function (spots) {
-              _.each(spots, function (spot) {
+              var mappedSpots = _.filter(spots, function(spot) {
+                return spot.geometry;
+              });
+              _.each(mappedSpots, function (spot) {
 
                 // if the spot is a point, we test using turf.inside
                 // if the spot is a polygon or line, we test using turf.intersect
 
-                var spotType = spot.geometry.type;
+                var spotType = spot.properties.type;
 
-                if (spotType === "Point") {
+                if (spotType === "point") {
                   // is the point inside the drawn polygon?
                   if (turf.inside(spot, geojsonObj)) {
                     isLassoed.push({
@@ -429,7 +441,7 @@ angular.module('app')
                   }
                 }
 
-                if (spotType === "LineString" || spotType === "Polygon") {
+                if (spotType === "line" || spotType === "polygon" || spotType === "group") {
                   // is the line or polygon within/intersected in the drawn polygon?
                   if (turf.intersect(spot, geojsonObj)) {
                     isLassoed.push({
@@ -453,7 +465,8 @@ angular.module('app')
 
               geojsonObj.properties = {
                 type: "group",
-                group_members: isLassoed
+                group_members: isLassoed,
+                image_map: $scope.imageMap.id
               };
 
               NewSpot.setNewSpot(geojsonObj);
@@ -480,7 +493,7 @@ angular.module('app')
                     title: 'Geometry Mismatch!',
                     template: "Station Spots must be drawn as a Points. Draw Again."
                   });
-                $state.go('spotTab.details');
+                $state.go('spotTab.georeference');
                 break;
               case "line":
                 if ($scope.drawButtonActive == "LineString") {
@@ -491,7 +504,7 @@ angular.module('app')
                     title: 'Geometry Mismatch!',
                     template: "Contacts and Traces Spots must be drawn as Lines. Draw Again."
                   });
-                $state.go('spotTab.details');
+                $state.go('spotTab.georeference');
                 break;
               case "polygon":
                 if ($scope.drawButtonActive == "Polygon") {
@@ -502,7 +515,7 @@ angular.module('app')
                     title: 'Geometry Mismatch!',
                     template: "Rock Description Spots must be drawn as Polygons. Draw Again."
                   });
-                $state.go('spotTab.rockdescription');
+                $state.go('spotTab.georeference');
                 break;
               case "group":
                 if ($scope.drawButtonActive == "Polygon") {
@@ -513,25 +526,28 @@ angular.module('app')
                     title: 'Geometry Mismatch!',
                     template: "Spot Groups must be drawn as Polygons. Draw Again."
                   });
-                $state.go('spotTab.details');
+                $state.go('spotTab.georeference');
                 break;
             }
           }
           // Initialize new Spot
           else {
-            NewSpot.setNewSpot(geojsonObj);
-
+            var goTo = "spotTab.details";
             switch ($scope.drawButtonActive) {
               case "Point":
-                $state.go('spotTab.details');
+                geojsonObj.properties = { type: "point" };
                 break;
               case "LineString":
-                $state.go('spotTab.details');
+                geojsonObj.properties = { type: "line" };
                 break;
               case "Polygon":
-                $state.go('spotTab.rockdescription');
+                geojsonObj.properties = { type: "polygon"};
+                goTo = "spotTab.rockdescription";
                 break;
             }
+            geojsonObj.properties["image_map"] = $scope.imageMap.id;
+            NewSpot.setNewSpot(geojsonObj);
+            $state.go(goTo);
           }
         }
       });
@@ -556,7 +572,7 @@ angular.module('app')
 
         // Get only the spots mapped on this image
         spots = _.filter(spots, function (spot) {
-          return spot.properties.image_map && (spot.properties.image_map == $scope.imageMap.id)
+          return spot.properties.image_map == $scope.imageMap.id;
         });
 
         // do we even have any spots?
@@ -583,23 +599,25 @@ angular.module('app')
 
           if (spots.length === 1) {
             // we just have a single spot, so we should fixate the resolution manually
-            initialMapView.setCenter(newExtentCenter);
-            initialMapView.setZoom(15);
+            //initialMapView.setCenter(newExtentCenter);
+            map.getView().fit(newExtent, map.getSize());
+            //initialMapView.setZoom(15);
+            map.getView().setZoom(3);
           } else {
             // we have multiple spots -- need to create the new view with the new center
-            var newView = new ol.View({
+         /*   var newView = new ol.View({
               center: newExtentCenter
             });
 
-            map.setView(newView);
+            map.setView(newView);*/
             map.getView().fit(newExtent, map.getSize());
           }
         }
         // no spots either, then attempt to geolocate the user
         else {
-          console.log("no spots found, attempting to geolocate");
+          console.log("no spots found");
           // attempt to geolocate instead
-          $cordovaGeolocation.getCurrentPosition({
+     /*     $cordovaGeolocation.getCurrentPosition({
             maximumAge: 0,
             timeout: 10000,
             enableHighAccuracy: true
@@ -628,7 +646,7 @@ angular.module('app')
                 minZoom: 4
               });
               map.setView(newView);
-            });
+            });*/
         }
       });
     };
@@ -806,8 +824,10 @@ angular.module('app')
         return spot.geometry.coordinates;
       });*/
 
+      ImageMapService.clearCurrentImageMap();
+
       var mappableSpots= _.filter(spots, function (spot) {
-        return spot.properties.image_map && (spot.properties.image_map == $scope.imageMap.id)
+        return spot.properties.image_map == $scope.imageMap.id
       });
 
       // get distinct groups and aggregate spots by group type

@@ -113,7 +113,7 @@ angular.module('app', [
 
       .state('app.image-map', {
         cache: false,
-        url: "/image-map",
+        url: "/image-maps/:imagemapId",
         views: {
           'menuContent': {
             templateUrl: "templates/image-map.html",

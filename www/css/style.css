@@ -364,3 +364,32 @@ Buttons on Spot Page (Pseudo Tabs)
   text-transform: uppercase !important;
   font-size: small !important;
 }
+
+/*--------------------
+Images on Photos Page
+---------------------*/
+.images-container {
+  position: relative;
+  width: 100px;
+  height: 120px;
+  float: left;
+  margin-left: 10px;
+  display: inline;
+}
+.annotate-checkbox {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+}
+
+.annotate-checkbox-label {
+  position: absolute;
+  left: 20px;
+  bottom: -3px;
+}
+
+.image-map {
+  position: absolute;
+  bottom: 20px;
+  right: 0px;
+}

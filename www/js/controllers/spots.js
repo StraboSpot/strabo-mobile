@@ -7,7 +7,8 @@ angular.module('app')
                                      $ionicActionSheet,
                                      SpotsFactory,
                                      LoginFactory,
-                                     CurrentSpot) {
+                                     CurrentSpot,
+                                     ImageMapService) {
 
     // Make sure the current spot is empty
     CurrentSpot.clearCurrentSpot();
@@ -164,7 +165,7 @@ angular.module('app')
       var fileName = d + "-" + "strabo-data.csv";
 
       var devicePath;
-      switch(device.platform) {
+      switch (device.platform) {
         case 'Android':
           devicePath = cordova.file.externalRootDirectory;
           break;
@@ -222,6 +223,9 @@ angular.module('app')
               $scope.spots = spots;
               $scope.createAccordionGroups(spots);
             });
+
+            // Remove all of the image maps
+            ImageMapService.clearAllImageMaps();
           });
         }
       });

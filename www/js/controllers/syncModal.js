@@ -284,9 +284,17 @@ angular.module('app')
                   getImagesResponse.data.images.forEach(function (image) {
                     if (!spot.images)
                       spot.images = [];
+
+                    if (!image.id)
+                      image["id"] = Math.floor((new Date().getTime() + (Math.random() * 9000 + 1000) * .0001) * 10000);
+                    // Set the title from the caption
+                    image["title"] = image.caption ? image.caption.substring(0, 24) : "Untitled " + _.indexOf(spot.images, image);
+
                     spot.images.push({
                       caption: image.caption,
-                      self: image.self
+                      self: image.self,
+                      id: image.id,
+                      title: image.title
                     });
                     SyncService.downloadImage(image.self, $scope.encodedLogin).then(function (downloadImageResponse) {
                       if (downloadImageResponse.status == 200 && downloadImageResponse.data) {
@@ -300,6 +308,13 @@ angular.module('app')
                         readDataUrl(downloadImageResponse.data, function (base64Image) {
                           var imageProps = _.findWhere(spot.images, {self: downloadImageResponse.config.url});
                           imageProps["src"] = base64Image;
+                          // Set the image height and width
+                          if (!imageProps.height || !imageProps.width) {
+                            var im = new Image();
+                            im.src = base64Image;
+                            imageProps["height"] = im.height;
+                            imageProps["width"] = im.width;
+                          }
                           saveSpot(spot);
                         });
                       }

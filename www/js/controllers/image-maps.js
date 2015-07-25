@@ -5,54 +5,39 @@ angular.module('app')
                                          ImageMapService,
                                          SpotsFactory) {
 
- /*   $scope.imageMaps = [
-      {
-        name: "Test",
-        id: 12345,
-        source: 'http://imgs.xkcd.com/comics/online_communities.png',
-        extent: [0, 0, 1024, 968]
-      },
-      {
-        name: "Test2",
-        id: 54321,
-        source: 'http://minerva.union.edu/hollochk/c_petrology/ig_minerals/quartz1-X.jpg',
-        extent: [0, 0, 650, 480]
-      }
-    ];*/
-
-    $scope.imageMaps = [];
     SpotsFactory.all().then(function (spots) {
       var spotsWithImages = _.filter(spots, function (spot) {
         return spot.images
       });
       _.forEach(spotsWithImages, function (spot) {
-        _.forEach(spot.images, function(image) {
-          $scope.imageMaps.push(image);
+        _.forEach(spot.images, function (image) {
+          var title = image.caption ? image.caption.substring(0, 24) : "Untitled " + _.indexOf(spot.images, image);
+          if (!image["title"] == title) {
+            image["title"] = title;
+            SpotsFactory.save(spot).then(function (data) {
+              console.log("image title updated for spot: ", data);
+            });
+          }
+          if (image.annotated) {
+            image["annotated"] = true;
+            ImageMapService.addImageMap(image);
+          }
+          else {
+            image["annotated"] = false;
+            ImageMapService.removeImageMap(image);
+          }
         });
       });
-
-      _.forEach($scope.imageMaps, function (image) {
-        image["name"] = image.caption ? image.caption.substring(0, 16) : "Untitled " + _.indexOf($scope.imageMaps, image);
-        image["id"] = _.indexOf($scope.imageMaps, image);
-        image["extent"] = [0, 0, 1024, 968];
-        image["source"] = image.src;
-      });
+      $scope.imageMaps = ImageMapService.getImageMaps();
       console.log($scope.imageMaps);
     });
 
+    $scope.getParentSpotName = function(imageID) {
 
-    /*
-     _.each($scope.imageMaps, function (imageMap) {
-     ImageMapService.addImageMap(imageMap);
-     });*/
-
-    $scope.newImageMap = function () {
-      console.log("new");
     };
 
     $scope.goToImageMap = function (imageMap) {
-      console.log(imageMap);
       ImageMapService.setCurrentImageMap(imageMap);
-      $location.path("/app/image-map");
+      $location.path("/app/image-maps/" + imageMap.id);
     };
   });

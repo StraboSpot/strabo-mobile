@@ -521,8 +521,11 @@ angular.module('app')
       // Loop through all spots and create ol vector layers
       SpotsFactory.all().then(function(spots) {
 
-        // Remove spots that are mapped on an image and not map
-        spots = _.reject(spots, function(spot) { return spot.properties.image_map; });
+        // Remove spots that don't have a geometry defined or
+        // are mapped on an image
+        spots = _.reject(spots, function(spot) {
+          return !_.has(spot, "geometry") || _.has(spot.properties, "image_map");
+        });
 
         // do we even have any spots?
         if (spots.length > 0) {
@@ -765,14 +768,11 @@ angular.module('app')
       // wipe the array because we want to avoid duplicating the feature in the ol.Collection
       featureLayer.getLayers().clear();
 
-      // Get mappable spots (spots made from the Spots Page, instead of
-      // from the map, do not have geometry until defined by the user)
-      var mappableSpots = _.filter(spots, function(spot) {
-        return spot.geometry;
+      // Remove spots that don't have a geometry defined or
+      // are mapped on an image
+      var mappableSpots = _.reject(spots, function(spot) {
+        return !_.has(spot, "geometry") || _.has(spot.properties, "image_map");
       });
-
-      // Remove the spots that are mapped on a image and not a map
-      mappableSpots = _.reject(spots, function(spot) { return spot.properties.image_map; });
 
       // get distinct groups and aggregate spots by group type
       var spotGroup = _.groupBy(mappableSpots, function(spot) {

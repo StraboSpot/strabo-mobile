@@ -2,11 +2,22 @@ angular.module('app')
 
   // Service for temporarily saving an image map
   .service('ImageMapService', function () {
-    var imageMaps;
+    var imageMaps = [];
     var currentImageMap;
 
     var addImageMap = function (imageMap) {
-      imageMaps.push(imageMap);
+      if (!_.findWhere(imageMaps, {id: imageMap.id}))
+        imageMaps.push(imageMap);
+    };
+
+    var removeImageMap = function (imageMap) {
+      imageMaps = _.reject(imageMaps, function (image) {
+        return image.id == imageMap.id;
+      });
+    };
+
+    var clearAllImageMaps = function () {
+      imageMaps = [];
     };
 
     var getImageMaps = function () {
@@ -27,6 +38,8 @@ angular.module('app')
 
     return {
       addImageMap: addImageMap,
+      removeImageMap: removeImageMap,
+      clearAllImageMaps: clearAllImageMaps,
       getImageMaps: getImageMaps,
       setCurrentImageMap: setCurrentImageMap,
       getCurrentImageMap: getCurrentImageMap,
