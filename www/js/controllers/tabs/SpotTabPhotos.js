@@ -2,22 +2,25 @@ angular.module('app')
   .controller('SpotTabPhotosCtrl', function ($scope,
                                              $cordovaCamera,
                                              $ionicPopup,
-                                             $ionicModal) {
+                                             $ionicModal,
+                                             $location,
+                                             SpotsFactory,
+                                             ImageMapService) {
 
     console.log('inside spot tab photos ctrl');
 
-    $scope.showImages = function(index) {
+    $scope.showImages = function (index) {
       $scope.activeSlide = index;
       $ionicModal.fromTemplateUrl('templates/modals/imageModal.html', {
         scope: $scope,
         animation: 'slide-in-up'
-      }).then(function(modal) {
+      }).then(function (modal) {
         $scope.imageModal = modal;
         $scope.imageModal.show();
       });
     };
 
-    $scope.closeImageModal = function() {
+    $scope.closeImageModal = function () {
       $scope.imageModal.hide();
       $scope.imageModal.remove();
     };
@@ -38,7 +41,7 @@ angular.module('app')
       source: "CAMERA"
     };
 
-    $scope.cameraModal = function(source) {
+    $scope.cameraModal = function (source) {
       // camera modal popup
       var myPopup = $ionicPopup.show({
         template: '<ion-radio ng-repeat="source in cameraSource" ng-value="source.value" ng-model="selectedCameraSource.source">{{ source.text }}</ion-radio>',
@@ -49,7 +52,7 @@ angular.module('app')
         }, {
           text: '<b>Go</b>',
           type: 'button-positive',
-          onTap: function(e) {
+          onTap: function (e) {
             if (!$scope.selectedCameraSource.source) {
               //don't allow the user to close unless a value is set
               e.preventDefault();
@@ -60,16 +63,16 @@ angular.module('app')
         }]
       });
 
-      myPopup.then(function(cameraSource) {
+      myPopup.then(function (cameraSource) {
         if (cameraSource) {
           launchCamera(cameraSource);
         }
       });
     };
 
-    var launchCamera = function(source) {
+    var launchCamera = function (source) {
       // all plugins must be wrapped in a ready function
-      document.addEventListener("deviceready", function() {
+      document.addEventListener("deviceready", function () {
 
         if (source == "PHOTOLIBRARY") {
           source = Camera.PictureSourceType.PHOTOLIBRARY;
@@ -89,7 +92,7 @@ angular.module('app')
           saveToPhotoAlbum: (source === Camera.PictureSourceType.CAMERA) ? true : false
         };
 
-        $cordovaCamera.getPicture(cameraOptions).then(function(imageURI) {
+        $cordovaCamera.getPicture(cameraOptions).then(function (imageURI) {
 
           /* the image has been written to the mobile device and the source is a camera type.
            * It is written in two places:
@@ -117,7 +120,7 @@ angular.module('app')
           console.log('original imageURI ', imageURI);
 
           // are we on an android device and is the URI schema a "content://" type?
-          if (imageURI.substring(0,10) === 'content://') {
+          if (imageURI.substring(0, 10) === 'content://') {
             // yes, then convert it to a "file://" yet schemaless type
             window.FilePath.resolveNativePath(imageURI, resolveSuccess, resolveFail);
           } else {
@@ -132,38 +135,49 @@ angular.module('app')
           // now we read the image from the filesystem and save the image to the spot
           function resolveSuccess(imageURI) {
             // is this a real file schema?
-            if (imageURI.substring(0,7) !== 'file://') {
+            if (imageURI.substring(0, 7) !== 'file://') {
               // nope, then lets make this a real file schema
               imageURI = 'file://' + imageURI;
             }
 
             console.log('final imageURI ', imageURI);
 
-            var gotFileEntry = function(fileEntry) {
+            var gotFileEntry = function (fileEntry) {
               console.log("inside gotFileEntry");
               fileEntry.file(gotFile, resolveFail);
             };
 
-            var gotFile = function(file) {
+            var gotFile = function (file) {
               console.log("inside gotFile");
               console.log('file is ', file);
               readDataUrl(file);
             };
 
-            var readDataUrl = function(file) {
+            var readDataUrl = function (file) {
               // console.log("inside readDataUrl");
               var reader = new FileReader();
-              reader.onloadend = function(evt) {
+              var image = new Image();
+              reader.onloadend = function (evt) {
                 // console.log("Read as data URL");
                 // console.log(evt.target.result);
-                var base64Image = evt.target.result;
-
-                // push the image data to our camera images array
-                $scope.$apply(function() {
-                  $scope.spot.images.push({
-                    src: base64Image
+                image.src = evt.target.result;
+                image.onload = function () {
+                  // push the image data to our camera images array
+                  $scope.$apply(function () {
+                    $scope.spot.images.push({
+                      src: image.src,
+                      height: image.height,
+                      width: image.width,
+                      id: Math.floor((new Date().getTime() + (Math.random() * 9000 + 1000) * .0001) * 10000)
+                    });
                   });
-                });
+                };
+                image.onerror = function () {
+                  $ionicPopup.alert({
+                    title: 'Error!',
+                    template: 'Invalid file type: ' + evt.type
+                  });
+                };
               };
 
               reader.readAsDataURL(file);
@@ -173,10 +187,34 @@ angular.module('app')
             window.resolveLocalFileSystemURL(imageURI, gotFileEntry, resolveFail);
           }
 
-        }, function(err) {
+        }, function (err) {
           console.log("error: ", err);
         });
       });
     };
 
+    $scope.isAnnotated = function (image) {
+      return image.annotated;
+    };
+
+    $scope.annotateChecked = function (image) {
+      image.annotated = !image.annotated;
+    };
+
+    $scope.goToImageMap = function (image) {
+      SpotsFactory.read($scope.spot.properties.id, (function (savedSpot) {
+        savedSpot.properties.date = new Date(savedSpot.properties.date);
+        savedSpot.properties.time = new Date(savedSpot.properties.time);
+        if (_.isEqual($scope.spot, savedSpot)) {
+          ImageMapService.setCurrentImageMap(image);    // Save referenced image map
+          $location.path("/app/image-maps/" + image.id);
+        }
+        else {
+          $ionicPopup.alert({
+            title: 'Save First!',
+            template: "There have been changes to this Spot. Please save this Spot before opening the Image Map."
+          });
+        }
+      }));
+    }
   });

@@ -100,6 +100,28 @@ angular.module('app', [
         }
       })
 
+      .state('app.image-maps', {
+        cache: false,
+        url: "/image-maps",
+        views: {
+          'menuContent': {
+            templateUrl: "templates/image-maps.html",
+            controller: 'ImageMapsCtrl'
+          }
+        }
+      })
+
+      .state('app.image-map', {
+        cache: false,
+        url: "/image-maps/:imagemapId",
+        views: {
+          'menuContent': {
+            templateUrl: "templates/image-map.html",
+            controller: 'ImageMapCtrl'
+          }
+        }
+      })
+
       .state('app.spots', {
         cache: false,
         url: "/spots",

@@ -4,14 +4,15 @@ angular.module('app')
                                     $state,
                                     $stateParams,
                                     $location,
-                                    SpotsFactory,
-                                    SettingsFactory,
-                                    NewSpot,
-                                    CurrentSpot,
                                     $ionicHistory,
                                     $ionicPopup,
                                     $ionicModal,
                                     $ionicActionSheet,
+                                    SpotsFactory,
+                                    SettingsFactory,
+                                    NewSpot,
+                                    CurrentSpot,
+                                    ImageMapService,
                                     ContentModelSurveyFactory) {
 
     // this scope is the parent scope for the SpotCtrl that all child SpotCtrl will inherit
@@ -156,6 +157,17 @@ angular.module('app')
               });
             }
           }
+          // Check for Image Maps
+          _.forEach(obj.images, function (image) {
+            if (image.annotated) {
+              image["annotated"] = true;
+              ImageMapService.addImageMap(image);
+            }
+            else {
+              image["annotated"] = false;
+              ImageMapService.removeImageMap(image);
+            }
+          });
         });
         // Don't show links or groups until there are other spots to link to or groups to join
         $scope.showLinks = $scope.other_spots.length;
@@ -484,6 +496,13 @@ angular.module('app')
         SpotsFactory.save(group).then(function (data) {
           console.log("removed group", data);
         });
+      });
+
+      _.forEach($scope.spot.images, function(image) {
+        if (image.annotated)
+          ImageMapService.addImageMap(image);
+        else
+          ImageMapService.removeImageMap(image);
       });
 
       // Save the spot
