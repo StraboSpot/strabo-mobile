@@ -208,6 +208,7 @@ angular.module('app')
         if (_.isEqual($scope.spot, savedSpot)) {
           ImageMapService.setCurrentImageMap(image);    // Save referenced image map
           $location.path("/app/image-maps/" + image.id);
+          $scope.$apply();
         }
         else {
           $ionicPopup.alert({
