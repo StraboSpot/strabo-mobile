@@ -16,9 +16,9 @@ angular.module('app')
     // get the mapExtent from its service upon entering this script
     var mapExtent = ViewExtentFactory.getExtent();
 
-    // Only allow the user to download inner zoom tiles if the map zoom is greater than or equal to 15,
+    // Only allow the user to download inner zoom tiles if the map zoom is greater than or equal to 12,
     // otherwise the download would be too much to handle
-    $scope.showDownload = mapExtent.zoom >= 15;
+    $scope.showDownload = mapExtent.zoom >= 12;
 
     // map variables
     $scope.map = {
