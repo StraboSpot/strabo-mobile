@@ -685,11 +685,12 @@ angular.module('app')
           case "point":
             var pointStyle = [
               new ol.style.Style({
-                image: getIconForFeature(feature)
-              }),
-              new ol.style.Style({
+                image: getIconForFeature(feature),
                 text: textStyle(pointText)
-              })
+              })//,
+           //   new ol.style.Style({
+           //     text: textStyle(pointText)
+           //   })
             ];
             styles['Point'] = pointStyle;
             styles['MultiPoint'] = pointStyle;
@@ -700,9 +701,7 @@ angular.module('app')
                 stroke: new ol.style.Stroke({
                   color: 'rgba(204, 0, 0, 0.7)',
                   width: 3
-                })
-              }),
-              new ol.style.Style({
+                }),
                 text: textStyle(feature.get('label'))
               })
             ];
@@ -719,9 +718,7 @@ angular.module('app')
                 }),
                 fill: new ol.style.Fill({
                   color: 'rgba(102, 0, 204, 0.4)'
-                })
-              }),
-              new ol.style.Style({
+                }),
                 text: textStyle(polyText)
               })
             ];
@@ -738,9 +735,7 @@ angular.module('app')
                 }),
                 fill: new ol.style.Fill({
                   color: 'rgba(255, 128, 0, 0.4)'
-                })
-              }),
-              new ol.style.Style({
+                }),
                 text: textStyle(groupText)
               })
             ];
