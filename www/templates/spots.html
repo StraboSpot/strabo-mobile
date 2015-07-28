@@ -20,6 +20,11 @@
               <i class="icon" ng-class="isGroupShown(group) ? 'ion-minus' : 'ion-plus'"></i>
               &nbsp;
               <b>{{group.name}}</b>
+              <small>
+                <span ng-if="group.items.length == 1 && group.name != '3D STRUCTURES'">&nbsp;&nbsp;(1 Spot)</span>
+                <span ng-if="group.items.length == 1 && group.name == '3D STRUCTURES'">&nbsp;&nbsp;(0 Spots)</span>
+                <span ng-if="group.items.length != 1">&nbsp;&nbsp;({{group.items.length}} Spots)</span>
+              </small>
             </ion-item>
             <ion-item class="item-accordion"
                       ng-repeat="item in group.items"
