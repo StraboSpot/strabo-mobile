@@ -1878,7 +1878,7 @@ angular.module('app')
         "name":"rake_calculated",
         "type":"acknowledge",
         "label":"Rake Calculated?",
-        "required":"true",
+        "required":"false",
         "hint":"Was the rake calculated, instead of measured?",
         "relevant":"${measured_line} != ''",
         "constraint":"",
