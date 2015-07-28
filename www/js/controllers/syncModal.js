@@ -125,7 +125,7 @@ angular.module('app')
       var uploadImages = function (spot) {
         if (spot.images) {
           _.each(spot.images, function (image) {
-            SyncService.uploadImage(spot.properties.id, image.src, image.caption, $scope.encodedLogin).then(function (response) {
+            SyncService.uploadImage(spot.properties.id, image, $scope.encodedLogin).then(function (response) {
               if (response.status === 201)
                 console.log("Image uploaded for", spot, "Server response:", response);
               else
@@ -284,18 +284,12 @@ angular.module('app')
                   getImagesResponse.data.images.forEach(function (image) {
                     if (!spot.images)
                       spot.images = [];
-
+                    spot.images.push(image);
+                    // Set an id if there is not one
                     if (!image.id)
-                      image["id"] = Math.floor((new Date().getTime() + (Math.random() * 9000 + 1000) * .0001) * 10000);
+                      image["id"] = Math.floor((new Date().getTime() + Math.random()) * 10);
                     // Set the title from the caption
                     image["title"] = image.caption ? image.caption.substring(0, 24) : "Untitled " + _.indexOf(spot.images, image);
-
-                    spot.images.push({
-                      caption: image.caption,
-                      self: image.self,
-                      id: image.id,
-                      title: image.title
-                    });
                     SyncService.downloadImage(image.self, $scope.encodedLogin).then(function (downloadImageResponse) {
                       if (downloadImageResponse.status == 200 && downloadImageResponse.data) {
                         var readDataUrl = function (file, callback) {

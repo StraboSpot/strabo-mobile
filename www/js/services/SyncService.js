@@ -182,7 +182,7 @@ angular.module('app')
     }
 
     // Upload load an image
-    function uploadImage(spot_id, image_file, caption, encodedLogin) {
+    function uploadImage(spot_id, image, encodedLogin) {
 
       function dataURItoBlob(dataURI) {
         var binary = atob(dataURI.split(',')[1]);
@@ -194,13 +194,19 @@ angular.module('app')
       }
 
       // base64 encoded string needs to be a blob type in formdata
-      var blob = dataURItoBlob(image_file);
+      var blob = dataURItoBlob(image.src);
 
       var formdata = new FormData();
       formdata.append("feature_id", spot_id);
       formdata.append("image_file", blob, "image.jpeg");
-      if (caption && caption != "undefined")
-        formdata.append("caption", caption);
+      formdata.append("id", image.id);
+      formdata.append("height", image.height);
+      formdata.append("width", image.width);
+      formdata.append("annotated", image.annotated);
+      if (image.title && image.title != "undefined")
+        formdata.append("title", image.title);
+      if (image.caption && image.caption != "undefined")
+        formdata.append("caption", image.caption);
 
       var request = $http({
         method: "post",
