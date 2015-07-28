@@ -168,7 +168,7 @@ angular.module('app')
                       src: image.src,
                       height: image.height,
                       width: image.width,
-                      id: Math.floor((new Date().getTime() + (Math.random() * 9000 + 1000) * .0001) * 10000)
+                      id: Math.floor((new Date().getTime() + Math.random()) * 10)
                     });
                   });
                 };

@@ -24,8 +24,8 @@ angular.module('app')
       newSpot.properties.date = d;
       newSpot.properties.time = d;
 
-      // Set id from the datetime with random 4 digit number appended
-      newSpot.properties.id = Math.floor((new Date().getTime() + (Math.random() * 9000 + 1000) * .0001) * 10000);
+      // Set id from the timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id)
+      newSpot.properties.id = Math.floor((new Date().getTime() + Math.random()) * 10);
     };
 
     var getNewSpot = function () {
