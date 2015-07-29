@@ -205,10 +205,15 @@ angular.module('app')
       SpotsFactory.read($scope.spot.properties.id, (function (savedSpot) {
         savedSpot.properties.date = new Date(savedSpot.properties.date);
         savedSpot.properties.time = new Date(savedSpot.properties.time);
-        if (_.isEqual(angular.copy($scope.spot), savedSpot)) {    // User angular.copy to get rid of angular's $$hashKey
+        if (_.isEqual($scope.spot, savedSpot)) {    // User angular.copy to get rid of angular's $$hashKey
           ImageMapService.setCurrentImageMap(image);              // Save referenced image map
           $location.path("/app/image-maps/" + image.id);
           $scope.$apply();
+        }
+        else if (_.isEqual(angular.copy($scope.spot), savedSpot)) {    // User angular.copy to get rid of angular's $$hashKey
+            ImageMapService.setCurrentImageMap(image);              // Save referenced image map
+            $location.path("/app/image-maps/" + image.id);
+            $scope.$apply();
         }
         else {
           $ionicPopup.alert({
