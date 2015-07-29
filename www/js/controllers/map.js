@@ -640,10 +640,12 @@ angular.module('app')
     var geojsonToVectorLayer = function(geojson) {
 
       // textStyle is a function because each point has a different text associated
-      var textStyle = function(text) {
+      var textStyle = function(text, rotation) {
         return new ol.style.Text({
           font: '12px Calibri,sans-serif',
-          text: text,
+          text: '          ' + text,  // we pad with spaces due to rotational offset
+          textAlign: 'center',
+          rotation: Math.radians(rotation) * (-1),
           fill: new ol.style.Fill({
             color: '#000'
           }),
@@ -666,10 +668,10 @@ angular.module('app')
         pORl = feature_type ? pORl : "planar";
 
         return new ol.style.Icon({
-          anchorXUnits: 'pixels',
-          anchorYUnits: 'pixels',
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'fraction',
           opacity: 1,
-          rotation: Math.radians(rotation),
+          rotation: Math.radians(rotation) * (-1),
           src: SymbologyFactory.getSymbolPath(feature_type, pORl, orientation),
           scale: 0.05
         });
@@ -681,12 +683,14 @@ angular.module('app')
         var pointText = (feature.get('plunge') != undefined) ? feature.get('plunge').toString() : feature.get('label');
         pointText = (feature.get('dip') != undefined) ? feature.get('dip').toString() : pointText;
 
+        var rotation = feature.get('strike') || feature.get('trend') || 0;
+
         switch(feature.get("type")) {
           case "point":
             var pointStyle = [
               new ol.style.Style({
                 image: getIconForFeature(feature),
-                text: textStyle(pointText)
+                text: textStyle(pointText, rotation)
               })//,
            //   new ol.style.Style({
            //     text: textStyle(pointText)
