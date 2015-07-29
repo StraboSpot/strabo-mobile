@@ -640,7 +640,21 @@ angular.module('app')
     var geojsonToVectorLayer = function(geojson) {
 
       // textStyle is a function because each point has a different text associated
-      var textStyle = function(text, rotation) {
+      var textStyle = function (text) {
+        return new ol.style.Text({
+          font: '12px Calibri,sans-serif',
+          text: text,
+          fill: new ol.style.Fill({
+            color: '#000'
+          }),
+          stroke: new ol.style.Stroke({
+            color: '#fff',
+            width: 3
+          })
+        });
+      };
+
+      var textStylePoint = function(text, rotation) {
         return new ol.style.Text({
           font: '12px Calibri,sans-serif',
           text: '          ' + text,  // we pad with spaces due to rotational offset
@@ -690,11 +704,8 @@ angular.module('app')
             var pointStyle = [
               new ol.style.Style({
                 image: getIconForFeature(feature),
-                text: textStyle(pointText, rotation)
-              })//,
-           //   new ol.style.Style({
-           //     text: textStyle(pointText)
-           //   })
+                text: textStylePoint(pointText, rotation)
+              })
             ];
             styles['Point'] = pointStyle;
             styles['MultiPoint'] = pointStyle;

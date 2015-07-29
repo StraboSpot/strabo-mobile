@@ -704,6 +704,22 @@ angular.module('app')
         });
       };
 
+      var textStylePoint = function (text, rotation) {
+        return new ol.style.Text({
+          font: '12px Calibri,sans-serif',
+          text: '          ' + text,  // we pad with spaces due to rotational offset
+          textAlign: 'center',
+          rotation: Math.radians(rotation) * (-1),
+          fill: new ol.style.Fill({
+            color: '#000'
+          }),
+          stroke: new ol.style.Stroke({
+            color: '#fff',
+            width: 3
+          })
+        });
+      };
+
       var getIconForFeature = function (feature) {
 
         var rotation = feature.get('strike') || feature.get('trend') || 0;
@@ -716,10 +732,10 @@ angular.module('app')
         pORl = feature_type ? pORl : "planar";
 
         return new ol.style.Icon({
-          anchorXUnits: 'pixels',
-          anchorYUnits: 'pixels',
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'fraction',
           opacity: 1,
-          rotation: Math.radians(rotation),
+          rotation: Math.radians(rotation) * (-1),
           src: SymbologyFactory.getSymbolPath(feature_type, pORl, orientation),
           scale: 0.05
         });
@@ -731,14 +747,14 @@ angular.module('app')
         var pointText = (feature.get('plunge') != undefined) ? feature.get('plunge').toString() : feature.get('label');
         pointText = (feature.get('dip') != undefined) ? feature.get('dip').toString() : pointText;
 
+        var rotation = feature.get('strike') || feature.get('trend') || 0;
+
         switch (feature.get("type")) {
           case "point":
             var pointStyle = [
               new ol.style.Style({
-                image: getIconForFeature(feature)
-              }),
-              new ol.style.Style({
-                text: textStyle(pointText)
+                image: getIconForFeature(feature),
+                text: textStylePoint(pointText, rotation)
               })
             ];
             styles['Point'] = pointStyle;
@@ -750,9 +766,7 @@ angular.module('app')
                 stroke: new ol.style.Stroke({
                   color: 'rgba(204, 0, 0, 0.7)',
                   width: 3
-                })
-              }),
-              new ol.style.Style({
+                }),
                 text: textStyle(feature.get('label'))
               })
             ];
@@ -769,9 +783,7 @@ angular.module('app')
                 }),
                 fill: new ol.style.Fill({
                   color: 'rgba(102, 0, 204, 0.4)'
-                })
-              }),
-              new ol.style.Style({
+                }),
                 text: textStyle(polyText)
               })
             ];
@@ -788,9 +800,7 @@ angular.module('app')
                 }),
                 fill: new ol.style.Fill({
                   color: 'rgba(255, 128, 0, 0.4)'
-                })
-              }),
-              new ol.style.Style({
+                }),
                 text: textStyle(groupText)
               })
             ];
