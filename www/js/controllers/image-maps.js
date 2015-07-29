@@ -11,13 +11,7 @@ angular.module('app')
       });
       _.forEach(spotsWithImages, function (spot) {
         _.forEach(spot.images, function (image) {
-          var title = image.caption ? image.caption.substring(0, 24) : "Untitled " + _.indexOf(spot.images, image);
-          if (!(image["title"] == title)) {
-            image["title"] = title;
-            SpotsFactory.save(spot).then(function (data) {
-              console.log("image title updated for spot: ", data);
-            });
-          }
+          image["title"] = image.caption ? image.caption.substring(0, 24) : "Untitled " + _.indexOf(spot.images, image);
           if (image.annotated) {
             image["annotated"] = true;
             ImageMapService.addImageMap(image);

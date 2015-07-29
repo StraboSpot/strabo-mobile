@@ -6,8 +6,10 @@ angular.module('app')
     var currentImageMap;
 
     var addImageMap = function (imageMap) {
-      if (!_.findWhere(imageMaps, {id: imageMap.id}))
-        imageMaps.push(imageMap);
+      imageMaps = _.reject(imageMaps, function (image) {
+        return image.id == imageMap.id;
+      });
+      imageMaps.push(imageMap);
     };
 
     var removeImageMap = function (imageMap) {
