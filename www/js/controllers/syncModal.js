@@ -64,6 +64,8 @@ angular.module('app')
         }
       });
 
+    $scope.downloadProgress = '';
+
     // Get all of the datasets for a user
     $scope.getDatasets = function () {
       if ($scope.encodedLogin) {
@@ -278,8 +280,11 @@ angular.module('app')
           console.log(response);
           if (response.data !== null) {
             $scope.progress.showDownloadDone = true;
+            var currentDownloadedCount = 0;
             response.data.features.forEach(function (spot) {
               SyncService.getImages(spot.properties.id, $scope.encodedLogin).then(function (getImagesResponse) {
+                currentDownloadedCount++;
+                $scope.downloadProgress = 'downloading ' + currentDownloadedCount + ' of ' + response.data.features.length;
                 if (getImagesResponse.status == 200 && getImagesResponse.data) {
                   getImagesResponse.data.images.forEach(function (image) {
                     if (!spot.images)
