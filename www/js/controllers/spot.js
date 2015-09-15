@@ -78,6 +78,7 @@ angular.module('app')
           $scope.showRockSample = true;
           $scope.survey = ContentModelSurveyFactory.measurements_and_observations_survey;
           $scope.choices = ContentModelSurveyFactory.measurements_and_observations_choices;
+          $scope.showGroupMembers = false;
           break;
         case "line":
           $scope.spotTitle = "Contact or Trace";
@@ -85,6 +86,7 @@ angular.module('app')
           $scope.showDetails = true;
           $scope.survey = ContentModelSurveyFactory.contacts_and_traces_survey;
           $scope.choices = ContentModelSurveyFactory.contacts_and_traces_choices;
+          $scope.showGroupMembers = false;
           break;
         case "polygon":
           $scope.spotTitle = "Rock Description";
@@ -93,6 +95,7 @@ angular.module('app')
           $scope.survey = undefined;
           $scope.choices = undefined;
           $scope.showRockDescription = true;
+          $scope.showGroupMembers = false;
           break;
         case "group":
           $scope.spotTitle = "Station or Group";
