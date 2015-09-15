@@ -33,6 +33,7 @@ angular.module('app')
           if (spots[j].properties.type == spotTypesTitle[i].type)
             $scope.groups[i].items.push(spots[j]);
         }
+        $scope.groups[i].items.reverse(); // Move newest to top
         if (spotTypesTitle[i].type == "volume")
           $scope.groups[i].items.push({"properties": {"name": "3D Structures have not been implemented yet"}});
       }
