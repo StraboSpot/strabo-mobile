@@ -68,8 +68,8 @@ Map Draw Controls Style
 }
 #zoomInfo {
  position: absolute;
- font-size: 0.8em;
- bottom: 0.5em;
+ font-size: 0.7em;
+ bottom: 4em;
  left: 0.5em;
  background-color: white;
  padding: 0.5em;

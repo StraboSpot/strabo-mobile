@@ -123,6 +123,8 @@ angular.module('app')
       minZoom: 4
     });
 
+    var scaleLineControl = new ol.control.ScaleLine();
+
     // lets create a new map
     map = new ol.Map({
       target: 'mapdiv',
@@ -130,7 +132,9 @@ angular.module('app')
       // remove rotate icon from controls and add drawing controls
       controls: ol.control.defaults({
         rotate: false
-      }),
+      }).extend([
+        scaleLineControl
+      ]),
       // turn off ability to rotate map via keyboard+mouse and using fingers on a mobile device
       interactions: ol.interaction.defaults({
         altShiftDragRotate: false,
