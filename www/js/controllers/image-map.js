@@ -491,7 +491,7 @@ angular.module('app')
                 } else
                   $ionicPopup.alert({
                     title: 'Geometry Mismatch!',
-                    template: "Station Spots must be drawn as a Points. Draw Again."
+                    template: "Measurements and observations must be drawn as points. Draw Again."
                   });
                 $state.go('spotTab.georeference');
                 break;
@@ -502,7 +502,7 @@ angular.module('app')
                 } else
                   $ionicPopup.alert({
                     title: 'Geometry Mismatch!',
-                    template: "Contacts and Traces Spots must be drawn as Lines. Draw Again."
+                    template: "Contacts and traces must be drawn as lines. Draw Again."
                   });
                 $state.go('spotTab.georeference');
                 break;
@@ -513,7 +513,7 @@ angular.module('app')
                 } else
                   $ionicPopup.alert({
                     title: 'Geometry Mismatch!',
-                    template: "Rock Description Spots must be drawn as Polygons. Draw Again."
+                    template: "Rock descriptions must be drawn as polygons. Draw Again."
                   });
                 $state.go('spotTab.georeference');
                 break;
@@ -524,7 +524,7 @@ angular.module('app')
                 } else
                   $ionicPopup.alert({
                     title: 'Geometry Mismatch!',
-                    template: "Spot Groups must be drawn as Polygons. Draw Again."
+                    template: "Stations must be drawn as polygons. Draw Again."
                   });
                 $state.go('spotTab.georeference');
                 break;
@@ -846,10 +846,10 @@ angular.module('app')
       });
 
       var spotTypes = {
-        "point": "Station",
-        "line": "Contact & Trace",
-        "polygon": "Rock Description",
-        "group": "Spot Group"
+        "point": "Measurements & Observations",
+        "line": "Contacts & Traces",
+        "polygon": "Rock Descriptions",
+        "group": "Stations"
       };
 
       // go through each group and assign all the aggregates to the geojson feature
@@ -904,7 +904,7 @@ angular.module('app')
         });
 
         var spotTypes = [{
-          "label": "Station",
+          "label": "Measurement or Observation",
           "value": "point"
         }, {
           "label": "Contact or Trace",
@@ -913,7 +913,7 @@ angular.module('app')
           "label": "Rock Description",
           "value": "polygon"
         }, {
-          "label": "Spot Group",
+          "label": "Station",
           "value": "group"
         }];
 
@@ -1075,6 +1075,11 @@ angular.module('app')
       // remove the drawing tools to avoid confusion with lasso and regular drawing
       map.getControls().removeAt(2);
 
+      $ionicPopup.alert({
+        title: 'Create a Station',
+        template: 'Draw a polygon around the features you would like to add to a new station.'
+      });
+
       // start the draw with freehand enabled
       $scope.startDraw('Polygon', true);
     };
@@ -1094,7 +1099,7 @@ angular.module('app')
         buttons: [{
           text: '<i class="icon ion-map"></i> Zoom to Extent of Spots'
         }, {
-          text: '<i class="icon ion-grid"></i> Create a Group of Spots'
+          text: '<i class="icon ion-grid"></i> Add Features to a New Station'
         }],
         cancelText: 'Cancel',
         cancel: function () {

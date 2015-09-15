@@ -1,4 +1,4 @@
-<ion-view title="Spots">
+<ion-view title="Features">
   <ion-nav-buttons side="left">
     <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
   </ion-nav-buttons>
@@ -21,9 +21,8 @@
               &nbsp;
               <b>{{group.name}}</b>
               <small>
-                <span ng-if="group.items.length == 1 && group.name != '3D STRUCTURES'">&nbsp;&nbsp;(1 Spot)</span>
-                <span ng-if="group.items.length == 1 && group.name == '3D STRUCTURES'">&nbsp;&nbsp;(0 Spots)</span>
-                <span ng-if="group.items.length != 1">&nbsp;&nbsp;({{group.items.length}} Spots)</span>
+                <span ng-if="group.name == '3D STRUCTURES'">&nbsp;&nbsp;(Count 0)</span>
+                <span ng-if="group.name != '3D STRUCTURES'">&nbsp;&nbsp;(Count {{group.items.length}})</span>
               </small>
             </ion-item>
             <ion-item class="item-accordion"
@@ -37,7 +36,17 @@
       </div>
       <div class="col">
         <div class="item item-divider">
-          <b>GROUPS</b>
+          <b>STATIONS</b> <small>(spatial)</small>
+        </div>
+        <ion-list>
+          <ion-item class="item-accordion"
+                    ng-repeat="spot in spots | filter: {'properties': {'type': 'group'}}"
+                    href="#/spotTab/{{spot.properties.id}}/details">
+            {{spot.properties.name}}
+          </ion-item>
+        </ion-list>
+        <div class="item item-divider">
+          <b>GROUPS</b><small> (conceputal)</small>
         </div>
         <ion-list>
           <ion-item class="item-accordion"

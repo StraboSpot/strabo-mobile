@@ -17,9 +17,9 @@ angular.module('app')
 
     $scope.createAccordionGroups = (function (spots) {
       var spotTypesTitle = [
-        {"title": "STATIONS", "type": "point", "tab": "details"},
+        {"title": "MEASUREMENTS & OBSERVATIONS", "type": "point", "tab": "details"},
         {"title": "CONTACTS & TRACES", "type": "line", "tab": "details"},
-        {"title": "ROCK DESCRIPTIONS ONLY", "type": "polygon", "tab": "rockdescription"},
+        {"title": "ROCK DESCRIPTIONS", "type": "polygon", "tab": "rockdescription"},
         {"title": "3D STRUCTURES", "type": "volume", "tab": "notes"}
       ];
 

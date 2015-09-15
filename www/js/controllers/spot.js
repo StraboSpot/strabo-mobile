@@ -20,10 +20,10 @@ angular.module('app')
     $rootScope.$state = $state;
 
     $scope.spotTypes = {
-      "point": "Station",
-      "line": "Contact & Trace",
+      "point": "Measument or Observation",
+      "line": "Contact or Trace",
       "polygon": "Rock Description",
-      "group": "Spot Group"
+      "group": "Station or Group"
     };
 
     $scope.goToSpots = function () {
@@ -71,7 +71,7 @@ angular.module('app')
 
       switch ($scope.spot.properties.type) {
         case "point":
-          $scope.spotTitle = "Station";
+          $scope.spotTitle = "Measurement or Observation";
           $scope.showDynamicFields = true;
           $scope.showDetails = true;
           $scope.showRockDescription = true;
@@ -80,14 +80,14 @@ angular.module('app')
           $scope.choices = ContentModelSurveyFactory.measurements_and_observations_choices;
           break;
         case "line":
-          $scope.spotTitle = "Contact & Trace";
+          $scope.spotTitle = "Contact or Trace";
           $scope.showDynamicFields = true;
           $scope.showDetails = true;
           $scope.survey = ContentModelSurveyFactory.contacts_and_traces_survey;
           $scope.choices = ContentModelSurveyFactory.contacts_and_traces_choices;
           break;
         case "polygon":
-          $scope.spotTitle = "Rock Description Only";
+          $scope.spotTitle = "Rock Description";
           $scope.showDynamicFields = false;
           $scope.showDetails = false;
           $scope.survey = undefined;
@@ -95,7 +95,7 @@ angular.module('app')
           $scope.showRockDescription = true;
           break;
         case "group":
-          $scope.spotTitle = "Spot Group";
+          $scope.spotTitle = "Station or Group";
           $scope.showDynamicFields = true;
           $scope.showDetails = true;
           $scope.survey = ContentModelSurveyFactory.spot_grouping_survey;
