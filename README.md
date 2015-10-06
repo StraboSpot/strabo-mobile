@@ -1,7 +1,7 @@
 Strabo Mobile
 ==============
 
-Strabo Mobile is a cross-platform mobile application for geologic field data acquisition.
+Strabo Mobile is a cross-platform mobile application for Structural Geology and Tectonics (SG&T) data acquisition.
 
 Build Stack:
 - Core Technology - [Cordova/PhoneGap](http://cordova.apache.org/)
@@ -10,7 +10,7 @@ Build Stack:
 - Map Library - [OpenLayers 3](http://openlayers.org/)
 - AngularJS Extensions for Cordova API - [ngCordova](http://ngcordova.com/)
 
-##Development Setup
+## Development Setup
 
 ### Prerequisites
 
@@ -46,27 +46,37 @@ Also need to install this plugin due to Cordova bug with Android and content sch
 
     cordova plugin add cordova-plugin-filepath
 
+### Tested Environment
 
-###Tested environment:
-    cordova: 5.1.1
-    ionic-cli: 1.6.1
     ionic library: 1.1.0
+    ionic cli : 1.6.5
+    cordova: 5.2.0
     cordova-plugin-camera: 1.2.0
-    cordova-plugin-file: 2.1.0
+    cordova-plugin-console: 1.0.1
+    cordova-plugin-device: 1.0.1
+    cordova-plugin-file: 3.0.0
+    cordova-plugin-geolocation: 1.0.1
+    cordova-plugin-inappbrowser: 1.0.1
+    cordova-plugin-network-information: 1.0.1
+    cordova-plugin-whitelist: 1.0.0
+    ionic-plugin-keyboard: 1.0.7
+    nodejs: 4.1.2
+    npm: 3.3.5
 
-###Run
+### Run
 
 In a web browser:
 
     ionic serve
 
 To test as a native app see the Ionic [guide](http://ionicframework.com/docs/guide/testing.html).
-For a USB connected Android device:
+
+For a USB connected Android device first copy `config.xml` from `strabo-moble/www` into the `strabo-mobile` root. (This copy can be deleted after but be sure the original remains in `strabo-moble/www`. PhoneGap Build needs `config.xml` in `strabo-moble/www`.) Then:
 
     ionic platform add android
     ionic run
 
-###Testing
+### Testing
 
 Prerequisites:
 
