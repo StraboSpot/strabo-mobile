@@ -24,7 +24,7 @@ angular.module('app')
     $scope.map = {
       name: null,             // name of the map
       tiles: null,            // tiles array of the map region
-      showDownloadMacrostrat: (mapExtent.zoom >= 4 && mapExtent.zoom <= 12) ? true : false,
+      showDownloadMacrostrat: mapExtent.zoom >= 4 && mapExtent.zoom <= 12,
       downloadMacrostrat: false,
       downloadZooms: false,
       percentDownload: 0,

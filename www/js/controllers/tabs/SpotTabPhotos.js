@@ -89,7 +89,7 @@ angular.module('app')
           allowEdit: true,
           encodingType: Camera.EncodingType.JPEG,
           // popoverOptions: CameraPopoverOptions,
-          saveToPhotoAlbum: (source === Camera.PictureSourceType.CAMERA) ? true : false
+          saveToPhotoAlbum: source === Camera.PictureSourceType.CAMERA
         };
 
         $cordovaCamera.getPicture(cameraOptions).then(function (imageURI) {

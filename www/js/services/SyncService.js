@@ -2,7 +2,7 @@ angular.module('app')
 
   .service(
   "SyncService",
-  function($http, $q) {
+  function($http) {
 
     // Return public API.
     return({

@@ -175,16 +175,14 @@ angular.module('app')
      // restricts the map constraint to these coordinates
      // var mapExtent = ol.proj.transformExtent([-180,80,180,-80], 'EPSG:4326', 'EPSG:3857');*/
 
-    var mlf = MapLayerFactory;
-
     // map layers
-    // var onlineLayer = mlf.getOnlineLayer();
-    //  var onlineOverlayLayer = mlf.getOnlineOverlayLayer();
-    //  var offlineLayer = mlf.getOfflineLayer();
-    //  var offlineOverlayLayer = mlf.getOfflineOverlayLayer();
-    //  var geolocationLayer = mlf.getGeolocationLayer();
-    var featureLayer = mlf.getFeatureLayer();
-    // var drawLayer = mlf.getDrawLayer();  //bug, TODO
+    // var onlineLayer = MapLayerFactory.getOnlineLayer();
+    //  var onlineOverlayLayer = MapLayerFactory.getOnlineOverlayLayer();
+    //  var offlineLayer = MapLayerFactory.getOfflineLayer();
+    //  var offlineOverlayLayer = MapLayerFactory.getOfflineOverlayLayer();
+    //  var geolocationLayer = MapLayerFactory.getGeolocationLayer();
+    var featureLayer = MapLayerFactory.getFeatureLayer();
+    // var drawLayer = MapLayerFactory.getDrawLayer();  //bug, TODO
 
     // layer where the drawing will go to
     var drawLayer = new ol.layer.Vector({

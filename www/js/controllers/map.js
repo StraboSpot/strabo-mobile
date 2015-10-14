@@ -923,11 +923,7 @@ angular.module('app')
     // Get current position
     $scope.toggleLocation = function() {
 
-      if ($scope.locationOn === undefined || $scope.locationOn === false) {
-        $scope.locationOn = true;
-      } else {
-        $scope.locationOn = false;
-      }
+      $scope.locationOn = $scope.locationOn === undefined || $scope.locationOn === false;
 
       if ($scope.locationOn) {
         console.log("toggleLocation is now true");

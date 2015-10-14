@@ -58,10 +58,9 @@ angular.module('app')
     };
 
     var getMapTileProvider = function(id) {
-      var provider = _.find(mapProviders, function(provider) {
+      return _.find(mapProviders, function(provider) {
         return provider.id == id;
       });
-      return provider;
     };
 
 
