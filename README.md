@@ -98,6 +98,7 @@ Note: Make sure the version of `angular.js` that is bundled within `www/lib/ioni
 ### Updating
 
 Ionic:
+
 1. Download latest ionic: `npm install -g ionic`
 2. In project root run: `ionic lib update`
 3. Check the version of `angular.js` that is bundled within `www/lib/ionic/js/ionic.bundle.js` and make sure that `www/lib/angular-mocks.js` and `www/lib/angular-messages.js` have the same version number. Download updates from [here](https://code.angularjs.org/) if necessary. 

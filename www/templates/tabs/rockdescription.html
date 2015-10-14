@@ -6,8 +6,7 @@
           <div data-ng-switch on="field.type.split(' ')[0]">
             <div ng-switch-when="integer">
               <label class="item item-input item-stacked-label item-text-wrap"
-                     ng-class="{ 'has-errors' : rockDescriptionForm[field.name].$invalid, 'no-errors' : rockDescriptionForm[field.name].$valid }"
-                     ng-messages-include="templates/error-messages.html">
+                     ng-class="{ 'has-errors' : rockDescriptionForm[field.name].$invalid, 'no-errors' : rockDescriptionForm[field.name].$valid }">
                 <span class="input-label">{{field.label}}</span>
                 <input type="number"
                        name="{{ field.name }}"
@@ -20,8 +19,7 @@
             </div>
             <div ng-switch-when="decimal">
               <label class="item item-input item-stacked-label item-text-wrap"
-                     ng-class="{ 'has-errors' : rockDescriptionForm[field.name].$invalid, 'no-errors' : rockDescriptionForm[field.name].$valid }"
-                     ng-messages-include="templates/error-messages.html">
+                     ng-class="{ 'has-errors' : rockDescriptionForm[field.name].$invalid, 'no-errors' : rockDescriptionForm[field.name].$valid }">
                 <span class="input-label">{{field.label}}</span>
                 <input type="number"
                        name="{{ field.name }}"
@@ -34,8 +32,7 @@
             </div>
             <div ng-switch-when="text">
               <label class="item item-input item-stacked-label item-text-wrap"
-                     ng-class="{ 'has-errors' : rockDescriptionForm[field.name].$invalid, 'no-errors' : rockDescriptionForm[field.name].$valid }"
-                     ng-messages-include="templates/error-messages.html">
+                     ng-class="{ 'has-errors' : rockDescriptionForm[field.name].$invalid, 'no-errors' : rockDescriptionForm[field.name].$valid }">
                 <span class="input-label">{{field.label}}</span>
                 <input type="text"
                        name="{{ field.name }}"
@@ -46,8 +43,7 @@
             </div>
             <div ng-switch-when="note">
               <label class="item item-input item-stacked-label item-text-wrap"
-                     ng-class="{ 'has-errors' : rockDescriptionForm[field.name].$invalid, 'no-errors' : rockDescriptionForm[field.name].$valid }"
-                     ng-messages-include="templates/error-messages.html">
+                     ng-class="{ 'has-errors' : rockDescriptionForm[field.name].$invalid, 'no-errors' : rockDescriptionForm[field.name].$valid }">
                 <span class="input-label">{{ field.label }}</span>
                 <textarea name="{{ field.name }}"
                           rows="4"
@@ -67,7 +63,7 @@
                         ng-options="choice.name as choice.label for choice in rock_description_choices
                                 | filter: { 'list name': field.type.split(' ')[1] }"
                         ng-required="{{ field.required }}">
-                        <option value=""></option>
+                  <option value=""></option>
                 </select>
               </label>
             </div>
@@ -96,9 +92,10 @@
                 </ion-checkbox>
               </label>
             </div>
-            <div ng-if="rockDescriptionForm[field.name].$touched"
-                 ng-messages="rockDescriptionForm[field.name].$error"
-                 ng-messages-include="templates/error-messages.html">
+            <div ng-if="rockDescriptionForm[field.name].$touched">
+              <div ng-messages="rockDescriptionForm[field.name].$error">
+                <div ng-messages-include="templates/error-messages.html"></div>
+              </div>
             </div>
           </div>
         </div>
