@@ -80,10 +80,24 @@ For a USB connected Android device first copy `config.xml` from `strabo-moble/ww
 
 Prerequisites:
 
-    npm install -g jasmine
-    npm install -g karma
+    npm install karma --save-dev
+    npm install karma-jasmine --save-dev
+    npm install jasmine-core --save-dev
     npm install -g karma-cli
+    
+Add test browsers:
+
+    npm install karma-chrome-launcher --save-dev
 
 To run tests:
 
     karma start
+
+Note: Make sure the version of `angular.js` that is bundled within `www/lib/ionic/js/ionic.bundle.js` matches the version of `angular-mocks.js`. Updated versions can be found [here](https://code.angularjs.org/).
+
+### Updating
+
+Ionic:
+1. Download latest ionic: `npm install -g ionic`
+2. In project root run: `ionic lib update`
+3. Check the version of `angular.js` that is bundled within `www/lib/ionic/js/ionic.bundle.js` and make sure that `www/lib/angular-mocks.js` and `www/lib/angular-messages.js` have the same version number. Download updates from [here](https://code.angularjs.org/) if necessary. 
