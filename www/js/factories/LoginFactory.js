@@ -7,15 +7,15 @@ angular.module('app')
 
     factory.setLogin = function(loginInfo) {
       return configDb.setItem('login', loginInfo);
-    }
+    };
 
     factory.getLogin = function() {
       return configDb.getItem('login')
-    }
+    };
 
     factory.destroyLogin = function() {
       return configDb.removeItem('login');
-    }
+    };
 
     return factory;
 

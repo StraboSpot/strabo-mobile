@@ -55,14 +55,14 @@ angular.module('app')
     var getRandomElement = function(ary) {
       var num = _.random(0, ary.length - 1);
       return ary[num];
-    }
+    };
 
     var getMapTileProvider = function(id) {
       var provider = _.find(mapProviders, function(provider) {
         return provider.id == id;
       });
       return provider;
-    }
+    };
 
 
     // gets the number of tiles from offline storage
@@ -70,7 +70,7 @@ angular.module('app')
       localforage.length(function(err, numberOfKeys) {
         callback(err || numberOfKeys);
       });
-    }
+    };
 
     // wipes the offline database
     factory.clear = function(callback) {
@@ -89,7 +89,7 @@ angular.module('app')
           });
         }
       });
-    }
+    };
 
     // write to storage
     var write = function(mapProvider, tile, blob) {
@@ -191,7 +191,7 @@ angular.module('app')
       });
 
       return deferred.promise;
-    }
+    };
 
     factory.downloadTileToStorage = function(options, callback) {
       var deferred = $q.defer(); //init promise
@@ -253,7 +253,7 @@ angular.module('app')
         });
 
       return deferred.promise;
-    }
+    };
 
     factory.getMaps = function() {
       var deferred = $q.defer();
@@ -273,7 +273,7 @@ angular.module('app')
 
       });
       return deferred.promise;
-    }
+    };
 
     factory.deleteMap = function(map) {
       var deferred = $q.defer();

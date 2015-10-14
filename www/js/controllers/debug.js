@@ -6,18 +6,18 @@ angular.module('app')
 
   $scope.data = {
     pointsToGenerate: null
-  }
+  };
 
   $scope.submit = function() {
     console.log("submitted");
     generateRandomGeojsonPoint($scope.data.pointsToGenerate)
-  }
+  };
 
   // Point object
   var Point = function(lat, lng) {
     this.lat = lat;
     this.lng = lng;
-  }
+  };
 
   // bounding area for united states
   var UsBounds = {
@@ -29,14 +29,14 @@ angular.module('app')
       "lat": 11,
       "lng": -122
     }
-  }
+  };
 
   // generate a random point in the US
   var generateRandomPoint = function() {
     var lat = _.random(UsBounds.topRight.lat, UsBounds.bottomLeft.lat);
     var lng = _.random(UsBounds.topRight.lng, UsBounds.bottomLeft.lng);
     return new Point(lat, lng);
-  }
+  };
 
 
   var generateRandomGeojsonPoint = function(num) {

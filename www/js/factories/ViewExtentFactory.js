@@ -14,15 +14,15 @@ angular.module('app')
   			bottomLeft: bottomLeft,
   			zoom: zoom
   		}
-  	}
+  	};
 
   	factory.getExtent = function() {
   		return viewExtent;
-  	}
+  	};
 
   	factory.clearExtent = function() {
   		viewExtent = null;
-  	}
+  	};
 
     // return factory
     return factory;
