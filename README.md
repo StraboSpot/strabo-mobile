@@ -9,6 +9,9 @@ Build Stack:
 - MVC - [Angular JS](https://angularjs.org/)
 - Map Library - [OpenLayers 3](http://openlayers.org/)
 - AngularJS Extensions for Cordova API - [ngCordova](http://ngcordova.com/)
+- Testing Framework - [Jasmine](http://jasmine.github.io/)
+- Test Runner - [Karma](karma-runner.github.io/)
+- Linting Utility - [ESLint](http://eslint.org/)
 
 ## Development Setup
 
@@ -104,24 +107,20 @@ Ionic:
 3. Check the version of `angular.js` that is bundled within `www/lib/ionic/js/ionic.bundle.js` and make sure that `www/lib/angular-mocks.js` and `www/lib/angular-messages.js` have the same version number. Download updates from [here](https://code.angularjs.org/) if necessary. 
 
 
-### Code Quality
+### Linting
 
 Using [ESLint](http://eslint.org/) with an AngularJS plugin based on [John Papa's Guideline](https://github.com/johnpapa/angular-styleguide).
 
-1. Install eslint as a dev-dependency:
-
+1) Install eslint as a dev-dependency:
 
     npm install --save-dev eslint
 
-2. Install eslint-plugin-angular as a dev-dependency:
-
+2) Install eslint-plugin-angular as a dev-dependency:
 
     npm install --save-dev eslint-plugin-angular
 
-3. Install eslint-config-angular as a dev-dependency:
-
+3) Install eslint-config-angular as a dev-dependency:
 
     npm install --save-dev eslint-config-angular
     
-    
-Use the config file in the project root: `.eslintrc`
+4) Use the config file in the project root: `.eslintrc`
