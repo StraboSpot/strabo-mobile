@@ -4,14 +4,14 @@ Strabo Mobile
 Strabo Mobile is a cross-platform mobile application for Structural Geology and Tectonics (SG&T) data acquisition.
 
 Build Stack:
-- Core Technology - [Cordova/PhoneGap](http://cordova.apache.org/)
-- UI Framework (CSS & JS) - [Ionic](http://ionicframework.com/)
-- MVC - [Angular JS](https://angularjs.org/)
-- Map Library - [OpenLayers 3](http://openlayers.org/)
-- AngularJS Extensions for Cordova API - [ngCordova](http://ngcordova.com/)
-- Testing Framework - [Jasmine](http://jasmine.github.io/)
-- Test Runner - [Karma](karma-runner.github.io/)
-- Linting Utility - [ESLint](http://eslint.org/)
+- Core Technology: [Cordova/PhoneGap](http://cordova.apache.org/)
+- UI Framework (CSS & JS): [Ionic](http://ionicframework.com/)
+- MVC: [Angular JS](https://angularjs.org/)
+- Map Library: [OpenLayers 3](http://openlayers.org/)
+- AngularJS Extensions for Cordova API: [ngCordova](http://ngcordova.com/)
+- Testing Framework: [Jasmine](http://jasmine.github.io/)
+- Test Runner: [Karma](karma-runner.github.io/)
+- Linting Utility: [ESLint](http://eslint.org/)
 
 ## Development Setup
 

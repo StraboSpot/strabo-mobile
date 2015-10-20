@@ -6,38 +6,37 @@ CoordinateRange.prototype._getAllCoordinates = function () {
   var allCoords = [];
 
   _.each(this.list, function (element) {
-
     if (element.geometry) {
       var type = element.geometry.type;
       var coords = element.geometry.coordinates;
 
       switch (type) {
-        case "Point":
+        case 'Point':
           allCoords.push(coords);
           break;
-        case "LineString":
+        case 'LineString':
           _.each(coords, function (lineElem) {
             allCoords.push(lineElem);
           });
           break;
-        case "Polygon":
+        case 'Polygon':
           _.each(coords[0], function (polyElem) {
             allCoords.push(polyElem);
           });
           break;
-        case "MultiPoint":
+        case 'MultiPoint':
           _.each(coords, function (pointVertex) {
             allCoords.push(pointVertex);
           });
           break;
-        case "MultiLineString":
+        case 'MultiLineString':
           _.each(coords, function (lineElem) {
             _.each(lineElem, function (lineVertex) {
               allCoords.push(lineVertex);
             });
           });
           break;
-        case "MultiPolygon":
+        case 'MultiPolygon':
           _.each(coords, function (multiPolyElem) {
             _.each(multiPolyElem, function (polyElem) {
               _.each(polyElem, function (polyVertex) {
@@ -49,7 +48,6 @@ CoordinateRange.prototype._getAllCoordinates = function () {
       }
     }
   });
-
   return allCoords;
 };
 

@@ -1,15 +1,14 @@
 'use strict';
 
 angular.module('app')
-  .controller('ArchiveTilesCtrl', function(
-    $scope,
-    $state,
-    $ionicHistory,
-    ViewExtentFactory,
-    SlippyTileNamesFactory,
-    OfflineTilesFactory) {
-
-    $scope.goToMap = function() {
+  .controller('ArchiveTilesCtrl', function ($scope,
+                                            $state,
+                                            $log,
+                                            $ionicHistory,
+                                            ViewExtentFactory,
+                                            SlippyTileNamesFactory,
+                                            OfflineTilesFactory) {
+    $scope.goToMap = function () {
       $state.go('app.map');
     };
 
@@ -22,15 +21,15 @@ angular.module('app')
 
     // map variables
     $scope.map = {
-      name: null,             // name of the map
-      tiles: null,            // tiles array of the map region
-      showDownloadMacrostrat: mapExtent.zoom >= 4 && mapExtent.zoom <= 12,
-      downloadMacrostrat: false,
-      downloadZooms: false,
-      percentDownload: 0,
-      overLayPercentDownload: 0,
-      showProgressBar: false,
-      showOverlayProgressBar: false
+      'name': null,             // name of the map
+      'tiles': null,            // tiles array of the map region
+      'showDownloadMacrostrat': mapExtent.zoom >= 4 && mapExtent.zoom <= 12,
+      'downloadMacrostrat': false,
+      'downloadZooms': false,
+      'percentDownload': 0,
+      'overLayPercentDownload': 0,
+      'showProgressBar': false,
+      'showOverlayProgressBar': false
     };
 
     // number of tiles we have in offline storage
@@ -40,8 +39,7 @@ angular.module('app')
     var maxZoomToDownload = 18;
 
     // estimates how many tiles would be downloaded
-    var estimateArchiveTile = function() {
-
+    var estimateArchiveTile = function () {
       var tileArray = [];
       var zoom = mapExtent.zoom;
 
@@ -53,8 +51,8 @@ angular.module('app')
           tileArray.push(currentZoomTileArray);
           zoom++;
         }
-
-      } else {
+      }
+      else {
         // no, get just this zoom level
         tileArray = SlippyTileNamesFactory.getTileIds(mapExtent.topRight, mapExtent.bottomLeft, zoom);
       }
@@ -66,29 +64,27 @@ angular.module('app')
     // run the estimate right now
     estimateArchiveTile();
 
-    $scope.updateOfflineTileCount = function() {
+    $scope.updateOfflineTileCount = function () {
       // get the image count
-      OfflineTilesFactory.getOfflineTileCount(function(count) {
-        $scope.$apply(function() {
+      OfflineTilesFactory.getOfflineTileCount(function (count) {
+        $scope.$apply(function () {
           // update the number of offline tiles to scope
           $scope.numOfflineTiles = count;
         });
-
       });
     };
 
     // lets update the count right now
     $scope.updateOfflineTileCount();
 
-    $scope.onChangeDownloadZooms = function() {
+    $scope.onChangeDownloadZooms = function () {
       // update the estimation when the user toggles whether to download inner zooms
       estimateArchiveTile();
     };
 
-    $scope.submit = function(event) {
-
+    $scope.submit = function (event) {
       // tell the user that we're downloading tiles
-      event.target.innerHTML = "Downloading tiles . . . please wait.";
+      event.target.innerHTML = 'Downloading tiles . . . please wait.';
       // disable the download button
       event.target.disabled = true;
 
@@ -99,39 +95,38 @@ angular.module('app')
       }
 
       var downloadTileOptions = {
-        mapName: $scope.map.name,
-        mapProvider: mapExtent.mapProvider,
-        tiles: $scope.map.tiles
+        'mapName': $scope.map.name,
+        'mapProvider': mapExtent.mapProvider,
+        'tiles': $scope.map.tiles
       };
 
       var downloadMacrostratGeologicOptions = {
-        mapName: $scope.map.name + '-macrostratGeologic',
-        mapProvider: 'macrostratGeologic',
-        tiles: $scope.map.tiles
+        'mapName': $scope.map.name + '-macrostratGeologic',
+        'mapProvider': 'macrostratGeologic',
+        'tiles': $scope.map.tiles
       };
 
       // start the download
       // OfflineTilesFactory.downloadTileToStorage(downloadTileOptions).then(function() {
-      //   // console.log("***archiveTiles-done: archiving tiles all completed");
+      //   // $log.log('***archiveTiles-done: archiving tiles all completed');
       //   // everything has been downloaded, so lets go back a screen
       //   var backView = $ionicHistory.backView();
       //   backView.go();
       // }, function(error) {
-      //   console.log("error at OfflineTilesFactory.downloadTileToStorage", error);
+      //   $log.log('error at OfflineTilesFactory.downloadTileToStorage', error);
       // }, function(notify) {
-      //   // console.log("***archiveTiles-notify: ", notify);
+      //   // $log.log('***archiveTiles-notify: ', notify);
       //
       //   // update the progress bar once we receive notifications
       //   $scope.map.percentDownload = Math.ceil((notify[0] / notify[1]) * 100);
       //
       // });
 
-
-      var downloadMapTile = function() {
+      var downloadMapTile = function () {
         return OfflineTilesFactory.downloadTileToStorage(downloadTileOptions);
       };
 
-      var downloadMacrostratGeologic = function() {
+      var downloadMacrostratGeologic = function () {
         return OfflineTilesFactory.downloadTileToStorage(downloadMacrostratGeologicOptions);
       };
 
@@ -139,34 +134,35 @@ angular.module('app')
       if ($scope.map.downloadMacrostrat) {
         // yes
         downloadMapTile()
-          .then(downloadMacrostratGeologic, null, function(notify1) {
-            // console.log("notify1 ", notify1);
-            // console.log("***archiveTiles-notify: ", notify);
+          .then(downloadMacrostratGeologic, null, function (notify1) {
+            // $log.log('notify1 ', notify1);
+            // $log.log('***archiveTiles-notify: ', notify);
             // update the progress bar once we receive notifications
             $scope.map.percentDownload = Math.ceil((notify1[0] / notify1[1]) * 100);
           })
-          .then(function() {
+          .then(function () {
             // everything has been downloaded, so lets go back a screen
             var backView = $ionicHistory.backView();
             backView.go();
-          }, null, function(notify2) {
-            // console.log("***archiveTiles-notify: ", notify);
+          }, null, function (notify2) {
+            // $log.log('***archiveTiles-notify: ', notify);
             // has the second notification kicked in yet?
             if (notify2) {
               // update the progress bar once we receive notifications
               $scope.map.overLayPercentDownload = Math.ceil((notify2[0] / notify2[1]) * 100);
             }
           });
-      } else {
+      }
+      else {
         // no -- are not downloading macrostrat tiles
         downloadMapTile()
-          .then(function() {
+          .then(function () {
             // everything has been downloaded, so lets go back a screen
             var backView = $ionicHistory.backView();
             backView.go();
-          }, function(error) {
-            console.log("error at downloadMapTile", error);
-          }, function(notify) {
+          }, function (error) {
+            $log.log('error at downloadMapTile', error);
+          }, function (notify) {
             // update the progress bar once we receive notifications
             $scope.map.percentDownload = Math.ceil((notify[0] / notify[1]) * 100);
           });

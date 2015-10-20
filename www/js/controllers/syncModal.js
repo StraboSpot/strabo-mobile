@@ -1,21 +1,21 @@
-angular.module('app')
-
-  .controller("SyncModalCtrl", function ($scope,
+angular
+  .module('app')
+  .controller('SyncModalCtrl', function ($scope,
                                          $ionicPopup,
+                                         $log,
                                          SpotsFactory,
                                          SyncService,
                                          LoginFactory) {
-
     // base64 encoded login
     $scope.encodedLogin = null;
 
     // upload progress
     $scope.progress = {
-      showProgress: false,
-      showUploadDone: false,
-      showDownloadDone: false,
-      current: null,
-      total: null
+      'showProgress': false,
+      'showUploadDone': false,
+      'showDownloadDone': false,
+      'current': null,
+      'total': null
     };
 
     $scope.showDatasetOpts = function () {
@@ -24,16 +24,16 @@ angular.module('app')
 
     $scope.startDatasetOp = function () {
       switch ($scope.operation) {
-        case "download":
+        case 'download':
           $scope.getDatasetSpots();
           break;
-        case "upload":
+        case 'upload':
           $scope.addDatasetSpots();
           break;
-        case "remove":
+        case 'remove':
           $scope.deleteDataset();
           break;
-        case "deleteAll":
+        case 'deleteAll':
           $scope.deleteSpots();
           break;
       }
@@ -47,19 +47,19 @@ angular.module('app')
       .then(function (login) {
         if (login !== null) {
           // we do have a login -- lets set the authentication
-          console.log("we have a login!", login);
+          $log.log('we have a login!', login);
           $scope.loggedIn = true;
           // Encode the login string
-          $scope.encodedLogin = Base64.encode(login.email + ":" + login.password);
+          $scope.encodedLogin = Base64.encode(login.email + ':' + login.password);
 
           // set the email to the login email
           $scope.loginEmail = login.email;
 
           $scope.getDatasets();
-
-        } else {
+        }
+        else {
           // nope, dont have a login
-          console.log("no login!");
+          $log.log('no login!');
           $scope.loggedIn = false;
         }
       });
@@ -72,15 +72,18 @@ angular.module('app')
         SyncService.getDatasets($scope.encodedLogin)
           .then(function (response) {
             $scope.datasets = [];
-            $scope.datasets.push({"name": "-- new dataset --"});
+            $scope.datasets.push({'name': '-- new dataset --'});
             // Append response data to the beginning of array of datasets
-            if (response.data)
+            if (response.data) {
               $scope.datasets = _.union(response.data.datasets, $scope.datasets);
+            }
             // Show second to last select option if more options than -- new dataset --
-            if ($scope.datasets.length > 1)
+            if ($scope.datasets.length > 1) {
               $scope.dataset = $scope.datasets[$scope.datasets.length - 2];
-            else
+            }
+            else {
               $scope.dataset = $scope.datasets[$scope.datasets.length - 1];
+            }
           }
         );
       }
@@ -88,10 +91,10 @@ angular.module('app')
 
     // Create a new dataset
     $scope.createDataset = function () {
-      SyncService.createDataset({"name": this.dataset_name}, $scope.encodedLogin)
+      SyncService.createDataset({'name': this.dataset_name}, $scope.encodedLogin)
         .then(function (response) {
           $scope.operation = null;
-          $scope.dataset_name = "";
+          $scope.dataset_name = '';
           $scope.dataset = null;
           $scope.getDatasets();
         }
@@ -102,7 +105,7 @@ angular.module('app')
     $scope.deleteDataset = function () {
       SyncService.deleteDataset(this.dataset.self, $scope.encodedLogin)
         .then(function (response) {
-          console.log("deleted: ", response);
+          $log.log('deleted: ', response);
           $scope.dataset = null;
           $scope.getDatasets();
         }
@@ -111,9 +114,8 @@ angular.module('app')
 
     // Upload all spots to a dataset
     $scope.addDatasetSpots = function () {
-
       // Get the dataset id
-      var url_parts = this.dataset.self.split("/");
+      var url_parts = this.dataset.self.split('/');
       var dataset_id = url_parts.pop();
 
       var deleteAllDatasetSpots = function () {
@@ -128,51 +130,58 @@ angular.module('app')
         if (spot.images) {
           _.each(spot.images, function (image) {
             SyncService.uploadImage(spot.properties.id, image, $scope.encodedLogin).then(function (response) {
-              if (response.status === 201)
-                console.log("Image uploaded for", spot, "Server response:", response);
-              else
-                console.log("Error uploading image for", spot, "Server response:", response);
+              if (response.status === 201) {
+                $log.log('Image uploaded for', spot, 'Server response:', response);
+              }
+              else {
+                $log.log('Error uploading image for', spot, 'Server response:', response);
+              }
             });
           });
         }
       };
 
       var uploadSpots = function (spots) {
-        if (!spots)
+        if (!spots) {
           return;
+        }
 
         var spotsCount = spots.length;
-        console.log("Spots to upload:", spotsCount, spots);
+        $log.log('Spots to upload:', spotsCount, spots);
 
         var i = 1;
 
         $scope.progress.total = spotsCount;
         $scope.progress.current = i;
 
-        if (spotsCount > 0)
+        if (spotsCount > 0) {
           $scope.progress.showProgress = true;
+        }
 
         spots.forEach(function (spot) {
           if (spot.properties.self) {
             // Try to update the spot first
-            console.log("Attempting to update the spot: ", spot);
+            $log.log('Attempting to update the spot: ', spot);
             SyncService.updateFeature(spot, $scope.encodedLogin).then(function (response) {
-              console.log("Update Feature server response: ", response);
+              $log.log('Update Feature server response: ', response);
               if (response.status === 201) {
-                console.log("Updated spot ", i, "/", spotsCount);
+                $log.log('Updated spot ', i, '/', spotsCount);
                 uploadImages(spot);
 
                 // Add spot to dataset
-                SyncService.addSpotToDataset(spot.properties.id, dataset_id, $scope.encodedLogin).then(function (response) {
-                  if (response.status === 201)
-                    console.log("Spot", spot, "added to Dataset", dataset_id, "Server response:", response);
-                  else
-                    console.log("Error adding spot", spot, "added to Dataset", dataset_id, "Server response:", response);
-                });
+                SyncService.addSpotToDataset(spot.properties.id, dataset_id,
+                  $scope.encodedLogin).then(function (response) {
+                    if (response.status === 201) {
+                      $log.log('Spot', spot, 'added to Dataset', dataset_id, 'Server response:', response);
+                    }
+                    else {
+                      $log.log('Error adding spot', spot, 'added to Dataset', dataset_id, 'Server response:', response);
+                    }
+                  });
 
                 // Update the progress
                 $scope.progress.current = i;
-                if (i == spotsCount) {
+                if (i === spotsCount) {
                   $scope.progress.showProgress = false;
                   $scope.progress.showUploadDone = true;
                 }
@@ -181,30 +190,34 @@ angular.module('app')
               else {
                 // Maybe this is a new spot, try to create the spot
                 delete spot.properties.self;
-                console.log("Unable to update spot ", i, "/", spotsCount, " - Maybe this is a new spot.");
-                console.log("Attempting to create the spot: ", spot);
+                $log.log('Unable to update spot ', i, '/', spotsCount, ' - Maybe this is a new spot.');
+                $log.log('Attempting to create the spot: ', spot);
                 SyncService.createFeature(spot, $scope.encodedLogin).then(function (response) {
-                  console.log("Create Feature server response: ", response);
+                  $log.log('Create Feature server response: ', response);
                   if (response.status === 201) {
                     spot.properties.self = response.data.properties.self;
                     SpotsFactory.save(spot);
-                    console.log("Created spot ", i, "/", spotsCount);
+                    $log.log('Created spot ', i, '/', spotsCount);
                     uploadImages(spot);
 
                     // Add spot to dataset
-                    SyncService.addSpotToDataset(spot.properties.id, dataset_id, $scope.encodedLogin).then(function (response) {
-                      if (response.status === 201)
-                        console.log("Spot", spot, "added to Dataset", dataset_id, "Server response:", response);
-                      else
-                        console.log("Error adding spot", spot, "to Dataset", dataset_id, "Server response:", response);
-                    });
+                    SyncService.addSpotToDataset(spot.properties.id, dataset_id,
+                      $scope.encodedLogin).then(function (response) {
+                        if (response.status === 201) {
+                          $log.log('Spot', spot, 'added to Dataset', dataset_id, 'Server response:', response);
+                        }
+                        else {
+                          $log.log('Error adding spot', spot, 'to Dataset', dataset_id, 'Server response:', response);
+                        }
+                      });
                   }
-                  else
-                    throw new Error("Unable to create spot " + i + "/" + spotsCount);
+                  else {
+                    throw new Error('Unable to create spot ' + i + '/' + spotsCount);
+                  }
 
                   // Update the progress
                   $scope.progress.current = i;
-                  if (i == spotsCount) {
+                  if (i === spotsCount) {
                     $scope.progress.showProgress = false;
                     $scope.progress.showUploadDone = true;
                   }
@@ -214,29 +227,33 @@ angular.module('app')
             });
           }
           else {
-            console.log("Attempting to create the spot: ", spot);
+            $log.log('Attempting to create the spot: ', spot);
             SyncService.createFeature(spot, $scope.encodedLogin).then(function (response) {
-              console.log("Create Feature server response: ", response);
+              $log.log('Create Feature server response: ', response);
               if (response.status === 201) {
                 spot.properties.self = response.data.properties.self;
                 SpotsFactory.save(spot);
-                console.log("Created spot ", i, "/", spotsCount);
+                $log.log('Created spot ', i, '/', spotsCount);
                 uploadImages(spot);
 
                 // Add spot to dataset
-                SyncService.addSpotToDataset(spot.properties.id, dataset_id, $scope.encodedLogin).then(function (response) {
-                  if (response.status === 201)
-                    console.log("Spot", spot, "added to Dataset", dataset_id, "Server response:", response);
-                  else
-                    console.log("Error adding spot", spot, "to Dataset", dataset_id, "Server response:", response);
-                });
+                SyncService.addSpotToDataset(spot.properties.id, dataset_id,
+                  $scope.encodedLogin).then(function (response) {
+                    if (response.status === 201) {
+                      $log.log('Spot', spot, 'added to Dataset', dataset_id, 'Server response:', response);
+                    }
+                    else {
+                      $log.log('Error adding spot', spot, 'to Dataset', dataset_id, 'Server response:', response);
+                    }
+                  });
               }
-              else
-                throw new Error("Unable to create spot " + i + "/" + spotsCount);
+              else {
+                throw new Error('Unable to create spot ' + i + '/' + spotsCount);
+              }
 
               // Update the progress
               $scope.progress.current = i;
-              if (i == spotsCount) {
+              if (i === spotsCount) {
                 $scope.progress.showProgress = false;
                 $scope.progress.showUploadDone = true;
               }
@@ -247,7 +264,7 @@ angular.module('app')
       };
 
       var reportProblems = function (fault) {
-        console.log(fault);
+        $log.log(fault);
       };
 
       deleteAllDatasetSpots()
@@ -258,26 +275,31 @@ angular.module('app')
 
     // Download all spots from a dataset
     $scope.getDatasetSpots = function () {
-
       var saveSpot = function (spot) {
         // If the geometry coordinates contain any null values, delete the geometry; it shouldn't be defined
-        if (spot.geometry)
-          if (spot.geometry.coordinates)
-            if (_.indexOf(_.flatten(spot.geometry.coordinates), null) != -1)
+        if (spot.geometry) {
+          if (spot.geometry.coordinates) {
+            if (_.indexOf(_.flatten(spot.geometry.coordinates), null) !== -1) {
               delete spot.geometry;
+            }
+          }
+        }
         // Look for any current spots that match the id of the downloaded spot and remove the current spot
-        if (!_.filter($scope.spots, function (item) {
-            return _.findWhere(item, {id: spot.properties.id});
-          })[0])
+        if (!_.filter($scope.spots,
+            function (item) {
+              return _.findWhere(item, {'id': spot.properties.id});
+            })[0]) {
           $scope.spots.push(spot);
+        }
         SpotsFactory.save(spot);
       };
 
       // Get the dataset id
-      var url_parts = this.dataset.self.split("/");
+      var url_parts = this.dataset.self.split('/');
       var dataset_id = url_parts.pop();
-      SyncService.getDatasetSpots(dataset_id, $scope.encodedLogin).then(function (response) {
-          console.log(response);
+      SyncService.getDatasetSpots(dataset_id, $scope.encodedLogin)
+        .then(function (response) {
+          $log.log(response);
           if (response.data !== null) {
             $scope.progress.showDownloadDone = true;
             var currentDownloadedCount = 0;
@@ -285,18 +307,21 @@ angular.module('app')
               SyncService.getImages(spot.properties.id, $scope.encodedLogin).then(function (getImagesResponse) {
                 currentDownloadedCount++;
                 $scope.downloadProgress = 'downloading ' + currentDownloadedCount + ' of ' + response.data.features.length;
-                if (getImagesResponse.status == 200 && getImagesResponse.data) {
+                if (getImagesResponse.status === 200 && getImagesResponse.data) {
                   getImagesResponse.data.images.forEach(function (image) {
-                    if (!spot.images)
+                    if (!spot.images) {
                       spot.images = [];
+                    }
                     spot.images.push(image);
                     // Set an id if there is not one
-                    if (!image.id)
-                      image["id"] = Math.floor((new Date().getTime() + Math.random()) * 10);
+                    if (!image.id) {
+                      image['id'] = Math.floor((new Date().getTime() + Math.random()) * 10);
+                    }
                     // Set the title from the caption
-                    image["title"] = image.caption ? image.caption.substring(0, 24) : "Untitled " + _.indexOf(spot.images, image);
+                    image['title'] = image.caption ? image.caption.substring(0,
+                      24) : 'Untitled ' + _.indexOf(spot.images, image);
                     SyncService.downloadImage(image.self, $scope.encodedLogin).then(function (downloadImageResponse) {
-                      if (downloadImageResponse.status == 200 && downloadImageResponse.data) {
+                      if (downloadImageResponse.status === 200 && downloadImageResponse.data) {
                         var readDataUrl = function (file, callback) {
                           var reader = new FileReader();
                           reader.onloadend = function (evt) {
@@ -305,14 +330,14 @@ angular.module('app')
                           reader.readAsDataURL(file);
                         };
                         readDataUrl(downloadImageResponse.data, function (base64Image) {
-                          var imageProps = _.findWhere(spot.images, {self: downloadImageResponse.config.url});
-                          imageProps["src"] = base64Image;
+                          var imageProps = _.findWhere(spot.images, {'self': downloadImageResponse.config.url});
+                          imageProps['src'] = base64Image;
                           // Set the image height and width
                           if (!imageProps.height || !imageProps.width) {
                             var im = new Image();
                             im.src = base64Image;
-                            imageProps["height"] = im.height;
-                            imageProps["width"] = im.width;
+                            imageProps['height'] = im.height;
+                            imageProps['width'] = im.width;
                           }
                           saveSpot(spot);
                         });
@@ -320,19 +345,21 @@ angular.module('app')
                     });
                   });
                 }
-                else
+                else {
                   saveSpot(spot);
+                }
               });
             });
           }
-          else
+          else {
             $ionicPopup.alert({
-              title: 'Empty Dataset!',
-              template: 'There are no spots in this dataset.'
+              'title': 'Empty Dataset!',
+              'template': 'There are no spots in this dataset.'
             });
+          }
         },
         function (errorMessage) {
-          console.warn(errorMessage);
+          $log.warn(errorMessage);
         }
       );
     };
@@ -340,13 +367,13 @@ angular.module('app')
     // Delete ALL spots for a user on the server
     $scope.deleteSpots = function () {
       var confirmPopup = $ionicPopup.confirm({
-        title: 'Delete Spots',
-        template: 'Are you sure you want to delete <b>ALL</b> spots for this user from the server? Spots on your local device will remain on your device.'
+        'title': 'Delete Spots',
+        'template': 'Are you sure you want to delete <b>ALL</b> spots for this user from the server? Spots on your local device will remain on your device.'
       });
       confirmPopup.then(function (res) {
         if (res) {
           SyncService.deleteSpots($scope.encodedLogin).then(function (response) {
-            console.log("ALL spots deleted. Server response: ", response);
+            $log.log('ALL spots deleted. Server response: ', response);
           });
         }
       });
@@ -354,9 +381,9 @@ angular.module('app')
 
     // Create Base64 Object
     var Base64 = {
-      _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+      _keyStr: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=',
       encode: function (e) {
-        var t = "";
+        var t = '';
         var n, r, i, s, o, u, a;
         var f = 0;
         e = Base64._utf8_encode(e);
@@ -369,20 +396,21 @@ angular.module('app')
           u = (r & 15) << 2 | i >> 6;
           a = i & 63;
           if (isNaN(r)) {
-            u = a = 64
-          } else if (isNaN(i)) {
-            a = 64
+            u = a = 64;
           }
-          t = t + this._keyStr.charAt(s) + this._keyStr.charAt(o) + this._keyStr.charAt(u) + this._keyStr.charAt(a)
+          else if (isNaN(i)) {
+            a = 64;
+          }
+          t = t + this._keyStr.charAt(s) + this._keyStr.charAt(o) + this._keyStr.charAt(u) + this._keyStr.charAt(a);
         }
-        return t
+        return t;
       },
       decode: function (e) {
-        var t = "";
+        var t = '';
         var n, r, i;
         var s, o, u, a;
         var f = 0;
-        e = e.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+        e = e.replace(/[^A-Za-z0-9\+\/\=]/g, '');
         while (f < e.length) {
           s = this._keyStr.indexOf(e.charAt(f++));
           o = this._keyStr.indexOf(e.charAt(f++));
@@ -393,54 +421,58 @@ angular.module('app')
           i = (u & 3) << 6 | a;
           t = t + String.fromCharCode(n);
           if (u != 64) {
-            t = t + String.fromCharCode(r)
+            t = t + String.fromCharCode(r);
           }
           if (a != 64) {
-            t = t + String.fromCharCode(i)
+            t = t + String.fromCharCode(i);
           }
         }
         t = Base64._utf8_decode(t);
-        return t
+        return t;
       },
       _utf8_encode: function (e) {
-        e = e.replace(/\r\n/g, "\n");
-        var t = "";
+        e = e.replace(/\r\n/g, '\n');
+        var t = '';
         for (var n = 0; n < e.length; n++) {
           var r = e.charCodeAt(n);
           if (r < 128) {
-            t += String.fromCharCode(r)
-          } else if (r > 127 && r < 2048) {
+            t += String.fromCharCode(r);
+          }
+          else if (r > 127 && r < 2048) {
             t += String.fromCharCode(r >> 6 | 192);
-            t += String.fromCharCode(r & 63 | 128)
-          } else {
+            t += String.fromCharCode(r & 63 | 128);
+          }
+          else {
             t += String.fromCharCode(r >> 12 | 224);
             t += String.fromCharCode(r >> 6 & 63 | 128);
-            t += String.fromCharCode(r & 63 | 128)
+            t += String.fromCharCode(r & 63 | 128);
           }
         }
-        return t
+        return t;
       },
       _utf8_decode: function (e) {
-        var t = "";
+        var t = '';
         var n = 0;
         var r = c1 = c2 = 0;
         while (n < e.length) {
           r = e.charCodeAt(n);
           if (r < 128) {
             t += String.fromCharCode(r);
-            n++
-          } else if (r > 191 && r < 224) {
+            n++;
+          }
+          else if (r > 191 && r < 224) {
             c2 = e.charCodeAt(n + 1);
             t += String.fromCharCode((r & 31) << 6 | c2 & 63);
-            n += 2
-          } else {
+            n += 2;
+          }
+          else {
             c2 = e.charCodeAt(n + 1);
             c3 = e.charCodeAt(n + 2);
             t += String.fromCharCode((r & 15) << 12 | (c2 & 63) << 6 | c3 & 63);
-            n += 3
+            n += 3;
           }
         }
-        return t
+        return t;
       }
-    }
+    };
   });

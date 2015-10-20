@@ -1,74 +1,67 @@
-angular.module('app')
+angular
+  .module('app')
+  .controller('DebugCtrl', function ($scope,
+                                     $log,
+                                     SpotsFactory) {
+    $scope.data = {
+      'pointsToGenerate': null
+    };
 
-.controller("DebugCtrl", function(
-  $scope,
-  SpotsFactory) {
+    $scope.submit = function () {
+      $log.log('submitted');
+      generateRandomGeojsonPoint($scope.data.pointsToGenerate);
+    };
 
-  $scope.data = {
-    pointsToGenerate: null
-  };
+    // Point object
+    var Point = function (lat, lng) {
+      this.lat = lat;
+      this.lng = lng;
+    };
 
-  $scope.submit = function() {
-    console.log("submitted");
-    generateRandomGeojsonPoint($scope.data.pointsToGenerate)
-  };
+    // bounding area for united states
+    var UsBounds = {
+      'topRight': {
+        'lat': 58,
+        'lng': -76
+      },
+      'bottomLeft': {
+        'lat': 11,
+        'lng': -122
+      }
+    };
 
-  // Point object
-  var Point = function(lat, lng) {
-    this.lat = lat;
-    this.lng = lng;
-  };
+    // generate a random point in the US
+    var generateRandomPoint = function () {
+      var lat = _.random(UsBounds.topRight.lat, UsBounds.bottomLeft.lat);
+      var lng = _.random(UsBounds.topRight.lng, UsBounds.bottomLeft.lng);
+      return new Point(lat, lng);
+    };
 
-  // bounding area for united states
-  var UsBounds = {
-    "topRight": {
-      "lat": 58,
-      "lng": -76
-    },
-    "bottomLeft": {
-      "lat": 11,
-      "lng": -122
-    }
-  };
+    var generateRandomGeojsonPoint = function (num) {
+      for (var i = 0; i < num; i++) {
+        var point = generateRandomPoint();
 
-  // generate a random point in the US
-  var generateRandomPoint = function() {
-    var lat = _.random(UsBounds.topRight.lat, UsBounds.bottomLeft.lat);
-    var lng = _.random(UsBounds.topRight.lng, UsBounds.bottomLeft.lng);
-    return new Point(lat, lng);
-  };
+        var key = 'x' + i.toString();
 
+        var geojsonPoint = {
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [point.lng, point.lat]
+          },
+          'type': 'Feature',
+          'properties': {
+            'date': '2015-01-04',
+            'time': '11:20',
+            'strike': _.random(0, 180),
+            'dip': _.random(0, 180),
+            'name': 'x' + i.toString(),
+            'id': new Date().getTime().toString()
+          }
+        };
 
-  var generateRandomGeojsonPoint = function(num) {
-
-    for (var i = 0; i < num; i++) {
-      var point = generateRandomPoint();
-
-      var key = "x" + i.toString();
-
-      var geojsonPoint = {
-        "geometry": {
-          "type": "Point",
-          "coordinates": [point.lng, point.lat]
-        },
-        "type": "Feature",
-        "properties": {
-          "date": "2015-01-04",
-          "time": "11:20",
-          "strike": _.random(0, 180),
-          "dip": _.random(0, 180),
-          "name": "x" + i.toString(),
-          "id": new Date().getTime().toString()
-        }
-      };
-
-      SpotsFactory.save(geojsonPoint).then(function(data) {
-        console.log("wrote: ", data);
-      });
-
-    }
-  }
-
-
-
-});
+        SpotsFactory.save(geojsonPoint).then(function (data) {
+          $log.log('wrote: ', data);
+        });
+      }
+    };
+  });

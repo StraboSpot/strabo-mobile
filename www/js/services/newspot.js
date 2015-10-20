@@ -1,19 +1,21 @@
-angular.module('app')
-
 // Service for dealing with the creation of new spots and editing of existing spots
+
+angular
+  .module('app')
   .service('NewSpot', function () {
     var newSpot;
 
     // Initialize a new Spot
     var setNewSpot = function (jsonObj) {
       newSpot = {
-        type: "Feature",
-        properties: {}
+        'type': 'Feature',
+        'properties': {}
       };
 
       // Set the geometry if the spot has been mapped
-      if (jsonObj.geometry)
+      if (jsonObj.geometry) {
         newSpot.geometry = jsonObj.geometry;
+      }
 
       // Set the properties
       newSpot.properties = jsonObj.properties;
@@ -37,8 +39,8 @@ angular.module('app')
     };
 
     return {
-      setNewSpot: setNewSpot,
-      getNewSpot: getNewSpot,
-      clearNewSpot: clearNewSpot
+      'setNewSpot': setNewSpot,
+      'getNewSpot': getNewSpot,
+      'clearNewSpot': clearNewSpot
     };
   });

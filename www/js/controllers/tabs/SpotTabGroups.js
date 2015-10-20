@@ -1,12 +1,12 @@
-angular.module('app')
+angular
+  .module('app')
   .controller('SpotTabGroupsCtrl', function ($scope,
+                                             $log,
                                              CurrentSpot) {
+    $log.log('inside spot tab groups ctrl');
 
-    console.log('inside spot tab groups ctrl');
-
-    $scope.linkGroup = function() {
+    $scope.linkGroup = function () {
       CurrentSpot.setCurrentSpot($scope.spot);
-      $scope.openModal("groupModal");
+      $scope.openModal('groupModal');
     };
-
   });

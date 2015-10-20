@@ -3,7 +3,11 @@ extends:
 
 globals:
   angular: true
+  cordova: true
+  ol: true
   _: true
+  localforage: true
+  turf: true
 
 env:
   browser: true
@@ -142,11 +146,11 @@ rules:
   # http://eslint.org/docs/rules/#stylistic-issues
   brace-style:
     - 2
-    - 1tbs
+    - stroustrup
     - allowSingleLine: false
   camelcase:
-    - 2
-    - properties: always
+    - 0
+    - properties: never
   comma-spacing:
     - 2
     - before: false
@@ -233,7 +237,8 @@ rules:
     - always
   space-before-function-paren:
     - 2
-    - always
+    - anonymous: always
+      named: never
   space-in-parens:
     - 2
     - never

@@ -1,20 +1,21 @@
-angular.module('app')
+// Service for temporarily saving an image map
 
-  // Service for temporarily saving an image map
+angular
+  .module('app')
   .service('ImageMapService', function () {
     var imageMaps = [];
     var currentImageMap;
 
     var addImageMap = function (imageMap) {
       imageMaps = _.reject(imageMaps, function (image) {
-        return image.id == imageMap.id;
+        return image.id === imageMap.id;
       });
       imageMaps.push(imageMap);
     };
 
     var removeImageMap = function (imageMap) {
       imageMaps = _.reject(imageMaps, function (image) {
-        return image.id == imageMap.id;
+        return image.id === imageMap.id;
       });
     };
 
@@ -39,12 +40,12 @@ angular.module('app')
     };
 
     return {
-      addImageMap: addImageMap,
-      removeImageMap: removeImageMap,
-      clearAllImageMaps: clearAllImageMaps,
-      getImageMaps: getImageMaps,
-      setCurrentImageMap: setCurrentImageMap,
-      getCurrentImageMap: getCurrentImageMap,
-      clearCurrentImageMap: clearCurrentImageMap
+      'addImageMap': addImageMap,
+      'removeImageMap': removeImageMap,
+      'clearAllImageMaps': clearAllImageMaps,
+      'getImageMaps': getImageMaps,
+      'setCurrentImageMap': setCurrentImageMap,
+      'getCurrentImageMap': getCurrentImageMap,
+      'clearCurrentImageMap': clearCurrentImageMap
     };
   });

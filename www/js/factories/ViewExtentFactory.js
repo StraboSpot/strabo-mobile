@@ -1,28 +1,28 @@
 'use strict';
 
-angular.module('app')
-  .factory('ViewExtentFactory', function() {
+angular
+  .module('app')
+  .factory('ViewExtentFactory', function () {
+    var viewExtent;
 
-  	var viewExtent;  	
+    var factory = {};
 
-  	var factory = {};
+    factory.setExtent = function (mapProvider, topRight, bottomLeft, zoom) {
+      viewExtent = {
+        'mapProvider': mapProvider,
+        'topRight': topRight,
+        'bottomLeft': bottomLeft,
+        'zoom': zoom
+      };
+    };
 
-  	factory.setExtent = function(mapProvider, topRight, bottomLeft, zoom) {
-  		viewExtent = {
-  			mapProvider: mapProvider,
-  			topRight: topRight,
-  			bottomLeft: bottomLeft,
-  			zoom: zoom
-  		}
-  	};
+    factory.getExtent = function () {
+      return viewExtent;
+    };
 
-  	factory.getExtent = function() {
-  		return viewExtent;
-  	};
-
-  	factory.clearExtent = function() {
-  		viewExtent = null;
-  	};
+    factory.clearExtent = function () {
+      viewExtent = null;
+    };
 
     // return factory
     return factory;

@@ -1,25 +1,26 @@
-angular.module('app')
+// Service for temporarily saving the current spot
+// Used for preserving spot when switching tabs or changing the location/geometry
 
-  // Service for temporarily saving the current spot
-  // Used for preserving spot when switching tabs or changing the location/geometry
-  .service('CurrentSpot', function($filter) {
+angular
+  .module('app')
+  .service('CurrentSpot', function () {
     var currentSpot;
 
-    var setCurrentSpot = function(geojsonObj) {
+    var setCurrentSpot = function (geojsonObj) {
       currentSpot = geojsonObj;
     };
 
-    var getCurrentSpot = function() {
+    var getCurrentSpot = function () {
       return currentSpot;
     };
 
-    var clearCurrentSpot = function() {
+    var clearCurrentSpot = function () {
       currentSpot = null;
     };
 
     return {
-      setCurrentSpot: setCurrentSpot,
-      getCurrentSpot: getCurrentSpot,
-      clearCurrentSpot: clearCurrentSpot
+      'setCurrentSpot': setCurrentSpot,
+      'getCurrentSpot': getCurrentSpot,
+      'clearCurrentSpot': clearCurrentSpot
     };
-});
+  });

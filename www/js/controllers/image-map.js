@@ -3,7 +3,7 @@ Math.radians = function (deg) {
 };
 
 angular.module('app')
-  .controller("ImageMapCtrl", function ($scope,
+  .controller('ImageMapCtrl', function ($scope,
                                         $window,
                                         $rootScope,
                                         $state,
@@ -15,6 +15,7 @@ angular.module('app')
                                         $ionicPopup,
                                         $ionicActionSheet,
                                         $ionicSideMenuDelegate,
+                                        $log,
                                         NewSpot,
                                         CurrentSpot,
                                         MapView,
@@ -25,7 +26,6 @@ angular.module('app')
                                         SymbologyFactory,
                                         MapLayerFactory,
                                         ImageMapService) {
-
     // disable dragging back to ionic side menu because this affects drawing tools
     $ionicSideMenuDelegate.canDragContent(false);
 
@@ -37,10 +37,11 @@ angular.module('app')
 
     // added draw controls
     var drawControls = function (opt_options) {
-
       var options = opt_options || {};
 
-      var drawPoint, drawLine, drawPoly;
+      var drawPoint;
+      var drawLine;
+      var drawPoly;
 
       drawPoint = document.createElement('a');
       drawPoint.id = 'drawPointControl';
@@ -58,37 +59,43 @@ angular.module('app')
       drawPoly.className = 'poly';
 
       var handleDrawPoint = function (e) {
-        if (drawPoint.style.backgroundColor === '')
+        if (drawPoint.style.backgroundColor === '') {
           drawPoint.style.backgroundColor = '#DDDDDD';
-        else
+        }
+        else {
           drawPoint.style.backgroundColor = '';
+        }
         drawLine.style.backgroundColor = '';
         drawPoly.style.backgroundColor = '';
 
         e.preventDefault();
-        $scope.startDraw("Point");
+        $scope.startDraw('Point');
       };
       var handleDrawLine = function (e) {
-        if (drawLine.style.backgroundColor === '')
+        if (drawLine.style.backgroundColor === '') {
           drawLine.style.backgroundColor = '#DDDDDD';
-        else
+        }
+        else {
           drawLine.style.backgroundColor = '';
+        }
         drawPoint.style.backgroundColor = '';
         drawPoly.style.backgroundColor = '';
 
         e.preventDefault();
-        $scope.startDraw("LineString");
+        $scope.startDraw('LineString');
       };
       var handleDrawPoly = function (e) {
-        if (drawPoly.style.backgroundColor === '')
+        if (drawPoly.style.backgroundColor === '') {
           drawPoly.style.backgroundColor = '#DDDDDD';
-        else
+        }
+        else {
           drawPoly.style.backgroundColor = '';
+        }
         drawPoint.style.backgroundColor = '';
         drawLine.style.backgroundColor = '';
 
         e.preventDefault();
-        $scope.startDraw("Polygon");
+        $scope.startDraw('Polygon');
       };
 
       drawPoint.addEventListener('click', handleDrawPoint, false);
@@ -108,44 +115,43 @@ angular.module('app')
       element.appendChild(drawPoly);
 
       ol.control.Control.call(this, {
-        element: element,
-        target: options.target
+        'element': element,
+        'target': options.target
       });
-
     };
 
     ol.inherits(drawControls, ol.control.Control);
     $scope.imageMap = ImageMapService.getCurrentImageMap();
     var extent = [0, 0, $scope.imageMap.width, $scope.imageMap.height];
 
-   // var headerHeight = 42;
-    //var extent = [0, 0, $window.innerWidth, $window.innerHeight - headerHeight];
+    // var headerHeight = 42;
+    // var extent = [0, 0, $window.innerWidth, $window.innerHeight - headerHeight];
     var projection = new ol.proj.Projection({
-      code: 'map-image',
-      units: 'pixels',
-      extent: extent
+      'code': 'map-image',
+      'units': 'pixels',
+      'extent': extent
     });
 
     map = new ol.Map({
-      layers: [
+      'layers': [
         new ol.layer.Image({
-          source: new ol.source.ImageStatic({
-            attributions: [
+          'source': new ol.source.ImageStatic({
+            'attributions': [
               new ol.Attribution({
-                html: '&copy; <a href="">Need image source here.</a>'
+                'html': '&copy; <a href="">Need image source here.</a>'
               })
             ],
-            url: $scope.imageMap.src,
-            projection: projection,
-            imageExtent: extent
+            'url': $scope.imageMap.src,
+            'projection': projection,
+            'imageExtent': extent
           })
         })
       ],
-      target: 'mapdiv',
-      view: new ol.View({
-        projection: projection,
-        center: ol.extent.getCenter(extent),
-        zoom: 2
+      'target': 'mapdiv',
+      'view': new ol.View({
+        'projection': projection,
+        'center': ol.extent.getCenter(extent),
+        'zoom': 2
       })
     });
 
@@ -186,30 +192,30 @@ angular.module('app')
 
     // layer where the drawing will go to
     var drawLayer = new ol.layer.Vector({
-      name: 'drawLayer',
-      source: new ol.source.Vector(),
-      style: new ol.style.Style({
-        fill: new ol.style.Fill({
-          color: 'rgba(255, 255, 255, 0.2)'
+      'name': 'drawLayer',
+      'source': new ol.source.Vector(),
+      'style': new ol.style.Style({
+        'fill': new ol.style.Fill({
+          'color': 'rgba(255, 255, 255, 0.2)'
         }),
-        stroke: new ol.style.Stroke({
-          color: '#ffcc33',
-          width: 2
+        'stroke': new ol.style.Stroke({
+          'color': '#ffcc33',
+          'width': 2
         }),
-        image: new ol.style.Circle({
-          radius: 7,
-          fill: new ol.style.Fill({
-            color: '#ffcc33'
+        'image': new ol.style.Circle({
+          'radius': 7,
+          'fill': new ol.style.Fill({
+            'color': '#ffcc33'
           })
         })
       })
     });
 
-    ///////////////////////////
-    // map adding layers
-    ///////////////////////////
+    /**
+     * map adding layers
+     */
 
-    // add the feature layer to the map first
+      // add the feature layer to the map first
     map.addLayer(featureLayer);
 
     // add draw layer
@@ -228,14 +234,14 @@ angular.module('app')
     var popup = new ol.Overlay.Popup();
     map.addOverlay(popup);
 
-    /////////////////
-    // END MAP LAYERS
-    /////////////////
+    /*
+     * END MAP LAYERS
+     */
 
     // did we come back from a map provider?
-/*       if (OfflineTilesFactory.getCurrentMapProvider()) {
+    /*       if (OfflineTilesFactory.getCurrentMapProvider()) {
      // yes -- then we need to change the current visible layer
-     console.log("back at map, ", OfflineTilesFactory.getCurrentMapProvider());
+     $log.log('back at map, ', OfflineTilesFactory.getCurrentMapProvider());
 
      var onlineLayerCollection = onlineLayer.getLayers().getArray();
 
@@ -247,30 +253,29 @@ angular.module('app')
      }
      });
      }
-*/
+     */
     // update the current visible layer, there is no return type as it updates the scope variable directly
-       var getCurrentVisibleLayer = function() {
+    var getCurrentVisibleLayer = function () {
+      // the first element in the layers array is our ol.layer.group that contains all the map tile layers
+      var mapTileLayers = map.getLayers().getArray()[0].getLayers().getArray();
 
-     // the first element in the layers array is our ol.layer.group that contains all the map tile layers
-     var mapTileLayers = map.getLayers().getArray()[0].getLayers().getArray();
+      // loop through and get the first layer that is visible
+      var mapTileId = _.find(mapTileLayers, function (layer) {
+        return layer.getVisible();
+      });
 
-     // loop through and get the first layer that is visible
-     var mapTileId = _.find(mapTileLayers, function(layer) {
-     return layer.getVisible();
-     });
+      return mapTileId.get('id');
+    };
 
-     return mapTileId.get('id');
-     };
-
- /*      $scope.isOnline = function() {
+    /*      $scope.isOnline = function() {
      return navigator.onLine;
      };
-*/
+     */
     // Watch whether we have internet access or not
-/*       $scope.$watch('isOnline()', function(online) {
+    /*       $scope.$watch('isOnline()', function(online) {
 
      if (!online) {
-     console.log("Offline");
+     $log.log('Offline');
 
      // remove the online maps
      map.removeLayer(onlineLayer);
@@ -285,10 +290,10 @@ angular.module('app')
      map.getLayers().getArray()[0].getLayers().item(1).getSource().tileCache.clear();
      map.getLayers().getArray()[1].getLayers().item(0).getSource().tileCache.clear();
 
-     // re-render the map, grabs "new" tiles from storage
+     // re-render the map, grabs 'new' tiles from storage
      map.render();
      } else {
-     console.log("Online");
+     $log.log('Online');
 
      // remove the offline layers
      map.removeLayer(offlineLayer);
@@ -299,7 +304,7 @@ angular.module('app')
      map.getLayers().insertAt(1, onlineOverlayLayer);
      }
      });
-*/
+     */
     // cache the tiles in the current view but don't switch to the offline layer
     /*   $scope.cacheOfflineTiles = function() {
      if (navigator.onLine) {
@@ -312,7 +317,7 @@ angular.module('app')
      // we set the current map provider so if we ever come back, we should try to use that map provider instead of the default provider
      OfflineTilesFactory.setCurrentMapProvider(getCurrentVisibleLayer());
 
-     $location.path("/app/map/archiveTiles");
+     $location.path('/app/map/archiveTiles');
      } else
      $ionicPopup.alert({
      title: 'Offline!',
@@ -324,23 +329,24 @@ angular.module('app')
     $scope.drawButtonActive = null;
 
     $scope.startDraw = function (type, isFreeHand) {
-      //if the type is already selected, we want to stop drawing
+      // if the type is already selected, we want to stop drawing
       if ($scope.drawButtonActive === type && !isFreeHand) {
         $scope.drawButtonActive = null;
         $scope.cancelDraw();
         return;
-      } else {
+      }
+      else {
         $scope.drawButtonActive = type;
       }
 
-      console.log("isFreeHand, ", isFreeHand);
+      $log.log('isFreeHand, ', isFreeHand);
 
       // are we in freehand mode?
       if (isFreeHand) {
         // yes -- then disable the map drag pan
         map.getInteractions().forEach(function (interaction) {
           if (interaction instanceof ol.interaction.DragPan) {
-            console.log(interaction);
+            $log.log(interaction);
             map.getInteractions().remove(interaction);
           }
         });
@@ -354,22 +360,22 @@ angular.module('app')
 
       if (isFreeHand) {
         draw = new ol.interaction.Draw({
-          source: drawLayer.getSource(),
-          type: type,
-          condition: ol.events.condition.singleClick,
-          freehandCondition: ol.events.condition.noModifierKeys,
-          snapTolerance: 96
+          'source': drawLayer.getSource(),
+          'type': type,
+          'condition': ol.events.condition.singleClick,
+          'freehandCondition': ol.events.condition.noModifierKeys,
+          'snapTolerance': 96
         });
-      } else {
+      }
+      else {
         draw = new ol.interaction.Draw({
-          source: drawLayer.getSource(),
-          type: type
+          'source': drawLayer.getSource(),
+          'type': type
         });
       }
 
 
-      draw.on("drawend", function (e) {
-
+      draw.on('drawend', function (e) {
         // drawend event needs to end the drawing interaction
         map.removeInteraction(draw);
 
@@ -386,20 +392,20 @@ angular.module('app')
             return num < 0;
           })) {
           $ionicPopup.alert({
-            title: 'Out of Bounds',
-            template: "Spot coordinate is off the image. Try again."
+            'title': 'Out of Bounds',
+            'template': 'Spot coordinate is off the image. Try again.'
           });
           return;
         }
 
         /*
-        var geojsonObj = JSON.parse(geojson.writeFeature(e.feature, {
-          featureProjection: "EPSG:3857"
-        }));
-*/
+         var geojsonObj = JSON.parse(geojson.writeFeature(e.feature, {
+         featureProjection: 'EPSG:3857'
+         }));
+         */
 
         if (isFreeHand) {
-          console.log("Drawend : Freehand");
+          $log.log('Drawend : Freehand');
 
           // add the regular draw controls back
           map.addControl(new drawControls());
@@ -418,132 +424,141 @@ angular.module('app')
             var isLassoed = [];
 
             SpotsFactory.all().then(function (spots) {
-              var mappedSpots = _.filter(spots, function(spot) {
+              var mappedSpots = _.filter(spots, function (spot) {
                 return spot.geometry;
               });
               _.each(mappedSpots, function (spot) {
-
                 // if the spot is a point, we test using turf.inside
                 // if the spot is a polygon or line, we test using turf.intersect
 
                 var spotType = spot.properties.type;
 
-                if (spotType === "point") {
+                if (spotType === 'point') {
                   // is the point inside the drawn polygon?
                   if (turf.inside(spot, geojsonObj)) {
                     isLassoed.push({
-                      id: spot.properties.id,
-                      name: spot.properties.name,
-                      type: spot.properties.type
+                      'id': spot.properties.id,
+                      'name': spot.properties.name,
+                      'type': spot.properties.type
                     });
                   }
                 }
 
-                if (spotType === "line" || spotType === "polygon" || spotType === "group") {
+                if (spotType === 'line' || spotType === 'polygon' || spotType === 'group') {
                   // is the line or polygon within/intersected in the drawn polygon?
                   if (turf.intersect(spot, geojsonObj)) {
                     isLassoed.push({
-                      id: spot.properties.id,
-                      name: spot.properties.name,
-                      type: spot.properties.type
+                      'id': spot.properties.id,
+                      'name': spot.properties.name,
+                      'type': spot.properties.type
                     });
                   }
                 }
               });
 
-              console.log("isLassoed, ", isLassoed);
+              $log.log('isLassoed, ', isLassoed);
 
-              if (isLassoed.length == 0) {
+              if (isLassoed.length === 0) {
                 $ionicPopup.alert({
-                  title: 'Empty Group',
-                  template: "No spots are within or intersect the drawn poloygon."
+                  'title': 'Empty Group',
+                  'template': 'No spots are within or intersect the drawn poloygon.'
                 });
                 return;
               }
 
               geojsonObj.properties = {
-                type: "group",
-                group_members: isLassoed,
-                image_map: $scope.imageMap.id
+                'type': 'group',
+                'group_members': isLassoed,
+                'image_map': $scope.imageMap.id
               };
 
               NewSpot.setNewSpot(geojsonObj);
               $state.go('spotTab.details');
             });
-          } else {
+          }
+          else {
             // contains a kink, aka self-intersecting polygon
             alert('cannot draw self-intersecting polygon');
           }
-        } else {
-          console.log("Drawend: Normal (not freehand)");
+        }
+        else {
+          $log.log('Drawend: Normal (not freehand)');
 
           // If there is already a current spot only update the geometry if the draw tool used
           // matches the required geometry for the Spot type
           if (CurrentSpot.getCurrentSpot()) {
             var curSpot = CurrentSpot.getCurrentSpot();
             switch (curSpot.properties.type) {
-              case "point":
-                if ($scope.drawButtonActive == "Point") {
+              case 'point':
+                if ($scope.drawButtonActive === 'Point') {
                   curSpot.geometry = geojsonObj.geometry;
                   CurrentSpot.setCurrentSpot(curSpot);
-                } else
+                }
+                else {
                   $ionicPopup.alert({
-                    title: 'Geometry Mismatch!',
-                    template: "Measurements and observations must be drawn as points. Draw Again."
+                    'title': 'Geometry Mismatch!',
+                    'template': 'Measurements and observations must be drawn as points. Draw Again.'
                   });
+                }
                 $state.go('spotTab.georeference');
                 break;
-              case "line":
-                if ($scope.drawButtonActive == "LineString") {
+              case 'line':
+                if ($scope.drawButtonActive === 'LineString') {
                   curSpot.geometry = geojsonObj.geometry;
                   CurrentSpot.setCurrentSpot(curSpot);
-                } else
+                }
+                else {
                   $ionicPopup.alert({
-                    title: 'Geometry Mismatch!',
-                    template: "Contacts and traces must be drawn as lines. Draw Again."
+                    'title': 'Geometry Mismatch!',
+                    'template': 'Contacts and traces must be drawn as lines. Draw Again.'
                   });
+                }
                 $state.go('spotTab.georeference');
                 break;
-              case "polygon":
-                if ($scope.drawButtonActive == "Polygon") {
+              case 'polygon':
+                if ($scope.drawButtonActive === 'Polygon') {
                   curSpot.geometry = geojsonObj.geometry;
                   CurrentSpot.setCurrentSpot(curSpot);
-                } else
+                }
+                else {
                   $ionicPopup.alert({
-                    title: 'Geometry Mismatch!',
-                    template: "Rock descriptions must be drawn as polygons. Draw Again."
+                    'title': 'Geometry Mismatch!',
+                    'template': 'Rock descriptions must be drawn as polygons. Draw Again.'
                   });
+                }
                 $state.go('spotTab.georeference');
                 break;
-              case "group":
-                if ($scope.drawButtonActive == "Polygon") {
+              case 'group':
+                if ($scope.drawButtonActive === 'Polygon') {
                   curSpot.geometry = geojsonObj.geometry;
                   CurrentSpot.setCurrentSpot(curSpot);
-                } else
+                }
+                else {
                   $ionicPopup.alert({
-                    title: 'Geometry Mismatch!',
-                    template: "Stations must be drawn as polygons. Draw Again."
+                    'title': 'Geometry Mismatch!',
+                    'template': 'Stations must be drawn as polygons. Draw Again.'
                   });
+                }
                 $state.go('spotTab.georeference');
                 break;
             }
           }
           // Initialize new Spot
           else {
-            var goTo = "spotTab.details";
+            var goTo = 'spotTab.details';
             switch ($scope.drawButtonActive) {
-              case "Point":
-                geojsonObj.properties = { type: "point" };
+              case 'Point':
+                geojsonObj.properties = {'type': 'point'};
                 break;
-              case "LineString":
-                geojsonObj.properties = { type: "line" };
+              case 'LineString':
+                geojsonObj.properties = {'type': 'line'};
                 break;
-              case "Polygon":
-                geojsonObj.properties = { type: "polygon"};
-                goTo = "spotTab.rockdescription";
+              case 'Polygon':
+                geojsonObj.properties = {'type': 'polygon'};
+                goTo = 'spotTab.rockdescription';
                 break;
             }
-            geojsonObj.properties["image_map"] = $scope.imageMap.id;
+            geojsonObj.properties['image_map'] = $scope.imageMap.id;
             NewSpot.setNewSpot(geojsonObj);
             $state.go(goTo);
           }
@@ -554,7 +569,7 @@ angular.module('app')
 
     // If the map is moved save the view
     map.on('moveend', function (evt) {
-      //MapView.setMapView(map.getView());
+      // MapView.setMapView(map.getView());
 
       // update the zoom information control
       $scope.currentZoom = evt.map.getView().getZoom();
@@ -567,15 +582,14 @@ angular.module('app')
 
       // Loop through all spots and create ol vector layers
       SpotsFactory.all().then(function (spots) {
-
         // Get only the spots mapped on this image
         spots = _.filter(spots, function (spot) {
-          return spot.properties.image_map == $scope.imageMap.id;
+          return spot.properties.image_map === $scope.imageMap.id;
         });
 
         // do we even have any spots?
         if (spots.length > 0) {
-          console.log("found spots, attempting to get the center of all spots and change the map view to that");
+          $log.log('found spots, attempting to get the center of all spots and change the map view to that');
           var cr = new CoordinateRange(spots);
           var newExtent = ol.extent.boundingExtent(_.compact(cr._getAllCoordinates()));
           var newExtentCenter = ol.extent.getCenter(newExtent);
@@ -584,74 +598,75 @@ angular.module('app')
           var duration = 2000;
           var start = +new Date();
           var pan = ol.animation.pan({
-            duration: duration,
-            source: map.getView().getCenter(),
-            start: start
+            'duration': duration,
+            'source': map.getView().getCenter(),
+            'start': start
           });
           var bounce = ol.animation.bounce({
-            duration: duration,
-            resolution: map.getView().getResolution(),
-            start: start
+            'duration': duration,
+            'resolution': map.getView().getResolution(),
+            'start': start
           });
           map.beforeRender(pan, bounce);
 
           if (spots.length === 1) {
             // we just have a single spot, so we should fixate the resolution manually
-            //initialMapView.setCenter(newExtentCenter);
+            // initialMapView.setCenter(newExtentCenter);
             map.getView().fit(newExtent, map.getSize());
-            //initialMapView.setZoom(15);
+            // initialMapView.setZoom(15);
             map.getView().setZoom(3);
-          } else {
+          }
+          else {
             // we have multiple spots -- need to create the new view with the new center
-         /*   var newView = new ol.View({
-              center: newExtentCenter
-            });
+            /*   var newView = new ol.View({
+             center: newExtentCenter
+             });
 
-            map.setView(newView);*/
+             map.setView(newView);*/
             map.getView().fit(newExtent, map.getSize());
           }
         }
         // no spots either, then attempt to geolocate the user
         else {
-          console.log("no spots found");
+          $log.log('no spots found');
           // attempt to geolocate instead
-     /*     $cordovaGeolocation.getCurrentPosition({
-            maximumAge: 0,
-            timeout: 10000,
-            enableHighAccuracy: true
-          })
-            .then(function (position) {
-              var lat = position.coords.latitude;
-              var lng = position.coords.longitude;
+          /*     $cordovaGeolocation.getCurrentPosition({
+           maximumAge: 0,
+           timeout: 10000,
+           enableHighAccuracy: true
+           })
+           .then(function (position) {
+           var lat = position.coords.latitude;
+           var lng = position.coords.longitude;
 
-              console.log("initial getLocation ", [lat, lng]);
+           $log.log('initial getLocation ', [lat, lng]);
 
-              var newView = new ol.View({
-                center: ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
-                zoom: 17,
-                minZoom: 4
-              });
-              map.setView(newView);
-            }, function (err) {
-              // uh oh, cannot geolocate, nor have any spots
-              $ionicPopup.alert({
-                title: 'Alert!',
-                template: 'Could not geolocate your position.  Defaulting you to 0,0'
-              });
-              var newView = new ol.View({
-                center: ol.proj.transform([0, 0], 'EPSG:4326', 'EPSG:3857'),
-                zoom: 4,
-                minZoom: 4
-              });
-              map.setView(newView);
-            });*/
+           var newView = new ol.View({
+           center: ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
+           zoom: 17,
+           minZoom: 4
+           });
+           map.setView(newView);
+           }, function (err) {
+           // uh oh, cannot geolocate, nor have any spots
+           $ionicPopup.alert({
+           title: 'Alert!',
+           template: 'Could not geolocate your position.  Defaulting you to 0,0'
+           });
+           var newView = new ol.View({
+           center: ol.proj.transform([0, 0], 'EPSG:4326', 'EPSG:3857'),
+           zoom: 4,
+           minZoom: 4
+           });
+           map.setView(newView);
+           });*/
         }
       });
     };
 
     //  do we currently have mapview set?  if so, we should reset the map view to that first
     /*   if (MapView.getMapView()) {
-     console.log("have mapview set, changing map view to that");
+     $log.log('have mapview set, changing map view to that');
      map.setView(MapView.getMapView());
      }
      else
@@ -667,139 +682,137 @@ angular.module('app')
       this.lat = lat;
       this.lng = lng;
     };
-/*
-    var getMapViewExtent = function () {
-      var extent = map.getView().calculateExtent(map.getSize());
-      var zoom = map.getView().getZoom();
-      var bottomLeft = ol.proj.transform(ol.extent.getBottomLeft(extent),
-        'EPSG:3857', 'EPSG:4326');
-      var topRight = ol.proj.transform(ol.extent.getTopRight(extent),
-        'EPSG:3857', 'EPSG:4326');
+    /*
+     var getMapViewExtent = function () {
+     var extent = map.getView().calculateExtent(map.getSize());
+     var zoom = map.getView().getZoom();
+     var bottomLeft = ol.proj.transform(ol.extent.getBottomLeft(extent),
+     'EPSG:3857', 'EPSG:4326');
+     var topRight = ol.proj.transform(ol.extent.getTopRight(extent),
+     'EPSG:3857', 'EPSG:4326');
 
-      return {
-        topRight: new Point(topRight[1], topRight[0]),
-        bottomLeft: new Point(bottomLeft[1], bottomLeft[0]),
-        zoom: zoom
-      };
-    };*/
+     return {
+     topRight: new Point(topRight[1], topRight[0]),
+     bottomLeft: new Point(bottomLeft[1], bottomLeft[0]),
+     zoom: zoom
+     };
+     };*/
 
     // we want to load all the geojson markers from the persistence storage onto the map
     // creates a ol vector layer for supplied geojson object
     var geojsonToVectorLayer = function (geojson) {
-
       // textStyle is a function because each point has a different text associated
       var textStyle = function (text) {
         return new ol.style.Text({
-          font: '12px Calibri,sans-serif',
-          text: text,
-          fill: new ol.style.Fill({
-            color: '#000'
+          'font': '12px Calibri,sans-serif',
+          'text': text,
+          'fill': new ol.style.Fill({
+            'color': '#000'
           }),
-          stroke: new ol.style.Stroke({
-            color: '#fff',
-            width: 3
+          'stroke': new ol.style.Stroke({
+            'color': '#fff',
+            'width': 3
           })
         });
       };
 
       var textStylePoint = function (text, rotation) {
         return new ol.style.Text({
-          font: '12px Calibri,sans-serif',
-          text: '          ' + text,  // we pad with spaces due to rotational offset
-          textAlign: 'center',
-          rotation: Math.radians(rotation) * (-1),
-          fill: new ol.style.Fill({
-            color: '#000'
+          'font': '12px Calibri,sans-serif',
+          'text': '          ' + text,  // we pad with spaces due to rotational offset
+          'textAlign': 'center',
+          'rotation': Math.radians(rotation) * (-1),
+          'fill': new ol.style.Fill({
+            'color': '#000'
           }),
-          stroke: new ol.style.Stroke({
-            color: '#fff',
-            width: 3
+          'stroke': new ol.style.Stroke({
+            'color': '#fff',
+            'width': 3
           })
         });
       };
 
       var getIconForFeature = function (feature) {
-
         var rotation = feature.get('strike') || feature.get('trend') || 0;
         var orientation = feature.get('dip') || feature.get('plunge') || 0;
         var feature_type = feature.get('planar_feature_type') || feature.get('linear_feature_type');
 
         // Is this a planar or linear feature? If both use planar.
-        var pORl = feature.get('planar_feature_type') ? "planar" : "linear";
+        var pORl = feature.get('planar_feature_type') ? 'planar' : 'linear';
         // If feature_type is undefined use planar as default so get the default planar symbol
-        pORl = feature_type ? pORl : "planar";
+        pORl = feature_type ? pORl : 'planar';
 
         return new ol.style.Icon({
-          anchorXUnits: 'fraction',
-          anchorYUnits: 'fraction',
-          opacity: 1,
-          rotation: Math.radians(rotation) * (-1),
-          src: SymbologyFactory.getSymbolPath(feature_type, pORl, orientation),
-          scale: 0.05
+          'anchorXUnits': 'fraction',
+          'anchorYUnits': 'fraction',
+          'opacity': 1,
+          'rotation': Math.radians(rotation) * (-1),
+          'src': SymbologyFactory.getSymbolPath(feature_type, pORl, orientation),
+          'scale': 0.05
         });
       };
 
       // Set styles for points, lines and polygon and groups
       function styleFunction(feature, resolution) {
         var styles = [];
-        var pointText = (feature.get('plunge') != undefined) ? feature.get('plunge').toString() : feature.get('label');
-        pointText = (feature.get('dip') != undefined) ? feature.get('dip').toString() : pointText;
+        var pointText = (feature.get('plunge') !== undefined) ? feature.get('plunge').toString() : feature.get('label');
+        pointText = (feature.get('dip') !== undefined) ? feature.get('dip').toString() : pointText;
 
         var rotation = feature.get('strike') || feature.get('trend') || 0;
 
-        switch (feature.get("type")) {
-          case "point":
+        switch (feature.get('type')) {
+          case 'point':
             var pointStyle = [
               new ol.style.Style({
-                image: getIconForFeature(feature),
-                text: textStylePoint(pointText, rotation)
+                'image': getIconForFeature(feature),
+                'text': textStylePoint(pointText, rotation)
               })
             ];
             styles['Point'] = pointStyle;
             styles['MultiPoint'] = pointStyle;
             break;
-          case "line":
+          case 'line':
             var lineStyle = [
               new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                  color: 'rgba(204, 0, 0, 0.7)',
-                  width: 3
+                'stroke': new ol.style.Stroke({
+                  'color': 'rgba(204, 0, 0, 0.7)',
+                  'width': 3
                 }),
-                text: textStyle(feature.get('label'))
+                'text': textStyle(feature.get('label'))
               })
             ];
             styles['LineString'] = lineStyle;
             styles['MultiLineString'] = lineStyle;
             break;
-          case "polygon":
+          case 'polygon':
             var polyText = feature.get('unit_label_abbreviation') ? feature.get('unit_label_abbreviation') : feature.get('label');
             var polyStyle = [
               new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                  color: "#000000",
-                  width: .5
+                'stroke': new ol.style.Stroke({
+                  'color': '#000000',
+                  'width': 0.5
                 }),
-                fill: new ol.style.Fill({
-                  color: 'rgba(102, 0, 204, 0.4)'
+                'fill': new ol.style.Fill({
+                  'color': 'rgba(102, 0, 204, 0.4)'
                 }),
-                text: textStyle(polyText)
+                'text': textStyle(polyText)
               })
             ];
-            styles["Polygon"] = polyStyle;
-            styles["MultiPolygon"] = polyStyle;
+            styles['Polygon'] = polyStyle;
+            styles['MultiPolygon'] = polyStyle;
             break;
-          case "group":
+          case 'group':
             var groupText = feature.get('group_name') ? feature.get('group_name') : feature.get('label');
             var groupStyle = [
               new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                  color: "#000000",
-                  width: .5
+                'stroke': new ol.style.Stroke({
+                  'color': '#000000',
+                  'width': 0.5
                 }),
-                fill: new ol.style.Fill({
-                  color: 'rgba(255, 128, 0, 0.4)'
+                'fill': new ol.style.Fill({
+                  'color': 'rgba(255, 128, 0, 0.4)'
                 }),
-                text: textStyle(groupText)
+                'text': textStyle(groupText)
               })
             ];
             styles['Polygon'] = groupStyle;
@@ -810,32 +823,31 @@ angular.module('app')
       }
 
       return new ol.layer.Vector({
-        source: new ol.source.Vector({
-          features: (new ol.format.GeoJSON()).readFeatures(geojson/*, {
-            featureProjection: 'EPSG:3857'
-          }*/)
+        'source': new ol.source.Vector({
+          'features': (new ol.format.GeoJSON()).readFeatures(geojson/* , {
+           featureProjection: 'EPSG:3857'
+           }*/)
         }),
-        title: geojson.properties.name,
-        style: styleFunction
+        'title': geojson.properties.name,
+        'style': styleFunction
       });
     };
 
     // Loop through all spots and create ol vector layers
     SpotsFactory.all().then(function (spots) {
-
       // wipe the array because we want to avoid duplicating the feature in the ol.Collection
       featureLayer.getLayers().clear();
 
       // Get mappable spots (spots made from the Spots Page, instead of
       // from the map, do not have geometry until defined by the user)
-    /*  var mappableSpots = _.filter(spots, function (spot) {
-        return spot.geometry.coordinates;
-      });*/
+      /*  var mappableSpots = _.filter(spots, function (spot) {
+       return spot.geometry.coordinates;
+       });*/
 
       ImageMapService.clearCurrentImageMap();
 
-      var mappableSpots= _.filter(spots, function (spot) {
-        return spot.properties.image_map == $scope.imageMap.id
+      var mappableSpots = _.filter(spots, function (spot) {
+        return spot.properties.image_map === $scope.imageMap.id;
       });
 
       // get distinct groups and aggregate spots by group type
@@ -844,10 +856,10 @@ angular.module('app')
       });
 
       var spotTypes = {
-        "point": "Measurements & Observations",
-        "line": "Contacts & Traces",
-        "polygon": "Rock Descriptions",
-        "group": "Stations"
+        'point': 'Measurements & Observations',
+        'line': 'Contacts & Traces',
+        'polygon': 'Rock Descriptions',
+        'group': 'Stations'
       };
 
       // go through each group and assign all the aggregates to the geojson feature
@@ -855,10 +867,10 @@ angular.module('app')
         if (spotGroup.hasOwnProperty(key)) {
           // create a geojson to hold all the spots that fit the same spot type
           var spotTypeLayer = {
-            type: 'FeatureCollection',
-            features: spotGroup[key],
-            properties: {
-              name: spotTypes[key] + ' (' + spotGroup[key].length + ')'
+            'type': 'FeatureCollection',
+            'features': spotGroup[key],
+            'properties': {
+              'name': spotTypes[key] + ' (' + spotGroup[key].length + ')'
             }
           };
 
@@ -869,18 +881,17 @@ angular.module('app')
     });
 
     map.on('touchstart', function (event) {
-      console.log("touch");
-      console.log(event);
+      $log.log('touch');
+      $log.log(event);
     });
 
     // display popup on click
     map.on('click', function (evt) {
 
-      console.log("map clicked");
+      $log.log('map clicked');
 
       // are we in draw mode?  If so we dont want to display any popovers during draw mode
       if (!draw) {
-
         // where the user just clicked
         var coordinate = evt.coordinate;
 
@@ -902,29 +913,26 @@ angular.module('app')
         });
 
         var spotTypes = [{
-          "label": "Measurement or Observation",
-          "value": "point"
+          'label': 'Measurement or Observation',
+          'value': 'point'
         }, {
-          "label": "Contact or Trace",
-          "value": "line"
+          'label': 'Contact or Trace',
+          'value': 'line'
         }, {
-          "label": "Rock Description",
-          "value": "polygon"
+          'label': 'Rock Description',
+          'value': 'polygon'
         }, {
-          "label": "Station",
-          "value": "group"
+          'label': 'Station',
+          'value': 'group'
         }];
 
         // we need to check that we're not clicking on the geolocation layer
-        if (feature && layer.get('name') != 'geolocationLayer') {
-
+        if (feature && layer.get('name') !== 'geolocationLayer') {
           // popup content
           var content = '';
           content += '<a href="#/spotTab/' + feature.get('id') + '/notes"><b>' + feature.get('name') + '</b></a>';
           content += '<br>';
-          content += '<small>' + _.findWhere(spotTypes, {
-              value: feature.get('type')
-            }).label + '</small>';
+          content += '<small>' + _.findWhere(spotTypes, {'value': feature.get('type')}).label + '</small>';
 
           if (feature.get('planar_feature_type')) {
             content += '<br>';
@@ -958,113 +966,113 @@ angular.module('app')
 
           if (feature.get('group_relationship')) {
             content += '<br>';
-            content += '<small>Grouped by: ' + feature.get('group_relationship').join(", ") + '</small>';
+            content += '<small>Grouped by: ' + feature.get('group_relationship').join(', ') + '</small>';
           }
-          content = content.replace(/_/g, " ");
+          content = content.replace(/_/g, ' ');
 
           // setup the popup position
           popup.show(evt.coordinate, content);
         }
       }
     });
-/*
-    var geolocationWatchId;
+    /*
+     var geolocationWatchId;
 
-    // Get current position
-    $scope.toggleLocation = function () {
+     // Get current position
+     $scope.toggleLocation = function () {
 
-      if ($scope.locationOn === undefined || $scope.locationOn === false) {
-        $scope.locationOn = true;
-      } else {
-        $scope.locationOn = false;
-      }
+     if ($scope.locationOn === undefined || $scope.locationOn === false) {
+     $scope.locationOn = true;
+     } else {
+     $scope.locationOn = false;
+     }
 
-      if ($scope.locationOn) {
-        console.log("toggleLocation is now true");
-        $cordovaGeolocation.getCurrentPosition({
-          maximumAge: 0,
-          timeout: 10000,
-          enableHighAccuracy: true
-        })
-          .then(function (position) {
-            var lat = position.coords.latitude;
-            var lng = position.coords.longitude;
-            var altitude = position.coords.altitude;
-            var accuracy = position.coords.accuracy;
-            var heading = position.coords.heading;
-            var speed = position.coords.speed;
+     if ($scope.locationOn) {
+     $log.log('toggleLocation is now true');
+     $cordovaGeolocation.getCurrentPosition({
+     maximumAge: 0,
+     timeout: 10000,
+     enableHighAccuracy: true
+     })
+     .then(function (position) {
+     var lat = position.coords.latitude;
+     var lng = position.coords.longitude;
+     var altitude = position.coords.altitude;
+     var accuracy = position.coords.accuracy;
+     var heading = position.coords.heading;
+     var speed = position.coords.speed;
 
-            console.log("getLocation ", [lat, lng], "(accuracy: " + accuracy + ") (altitude: " + altitude + ") (heading: " + heading + ") (speed: " + speed + ")");
+     $log.log('getLocation ', [lat, lng], '(accuracy: ' + accuracy + ') (altitude: ' + altitude + ') (heading: ' + heading + ') (speed: ' + speed + ')');
 
-            var newView = new ol.View({
-              center: ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
-              zoom: 18,
-              minZoom: 4
-            });
-            map.setView(newView);
-          }, function (err) {
-            $ionicPopup.alert({
-              title: 'Alert!',
-              template: "Unable to get location: " + err.message
-            });
-          });
+     var newView = new ol.View({
+     center: ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
+     zoom: 18,
+     minZoom: 4
+     });
+     map.setView(newView);
+     }, function (err) {
+     $ionicPopup.alert({
+     title: 'Alert!',
+     template: 'Unable to get location: ' + err.message
+     });
+     });
 
-        geolocationWatchId = $cordovaGeolocation.watchPosition({
-          frequency: 1000,
-          timeout: 10000,
-          enableHighAccuracy: true // may cause errors if true
-        });
+     geolocationWatchId = $cordovaGeolocation.watchPosition({
+     frequency: 1000,
+     timeout: 10000,
+     enableHighAccuracy: true // may cause errors if true
+     });
 
-        geolocationWatchId.then(
-          null,
-          function (err) {
-            $ionicPopup.alert({
-              title: 'Alert!',
-              template: "Unable to get location for geolocationWatchId: " + geolocationWatchId.watchID + " (" + err.message + ")"
-            });
-            // TODO: what do we do here?
-          },
-          function (position) {
-            var lat = position.coords.latitude;
-            var lng = position.coords.longitude;
-            var altitude = position.coords.altitude;
-            var accuracy = position.coords.accuracy;
-            var altitudeAccuracy = position.coords.altitudeAccuracy;
-            var heading = position.coords.heading;
-            var speed = position.coords.speed;
+     geolocationWatchId.then(
+     null,
+     function (err) {
+     $ionicPopup.alert({
+     title: 'Alert!',
+     template: 'Unable to get location for geolocationWatchId: ' + geolocationWatchId.watchID + ' (' + err.message + ')'
+     });
+     // TODO: what do we do here?
+     },
+     function (position) {
+     var lat = position.coords.latitude;
+     var lng = position.coords.longitude;
+     var altitude = position.coords.altitude;
+     var accuracy = position.coords.accuracy;
+     var altitudeAccuracy = position.coords.altitudeAccuracy;
+     var heading = position.coords.heading;
+     var speed = position.coords.speed;
 
-            console.log("getLocation-watch ", [lat, lng], "(accuracy: " + accuracy + ") (altitude: " + altitude + ") (heading: " + heading + ") (speed: " + speed + ")");
+     $log.log('getLocation-watch ', [lat, lng], '(accuracy: ' + accuracy + ') (altitude: ' + altitude + ') (heading: ' + heading + ') (speed: ' + speed + ')');
 
-            // create a point feature and assign the lat/long to its geometry
-            var iconFeature = new ol.Feature({
-              geometry: new ol.geom.Point(ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'))
-            });
+     // create a point feature and assign the lat/long to its geometry
+     var iconFeature = new ol.Feature({
+     geometry: new ol.geom.Point(ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'))
+     });
 
-            // add addition geolocation data to the feature so we can recall it later
-            iconFeature.set('altitude', altitude);
-            iconFeature.set('accuracy', (accuracy === null) ? null : Math.floor(accuracy));
-            iconFeature.set('altitudeAccuracy', altitudeAccuracy);
-            iconFeature.set('heading', heading);
-            iconFeature.set('speed', (speed === null) ? null : Math.floor(speed));
+     // add addition geolocation data to the feature so we can recall it later
+     iconFeature.set('altitude', altitude);
+     iconFeature.set('accuracy', (accuracy === null) ? null : Math.floor(accuracy));
+     iconFeature.set('altitudeAccuracy', altitudeAccuracy);
+     iconFeature.set('heading', heading);
+     iconFeature.set('speed', (speed === null) ? null : Math.floor(speed));
 
-            var vectorSource = new ol.source.Vector({
-              features: [iconFeature]
-            });
+     var vectorSource = new ol.source.Vector({
+     features: [iconFeature]
+     });
 
-            geolocationLayer.setSource(vectorSource);
-          });
-      } else {
-        // locationOn must be false
-        console.log("toggleLocation is now false");
+     geolocationLayer.setSource(vectorSource);
+     });
+     } else {
+     // locationOn must be false
+     $log.log('toggleLocation is now false');
 
-        // clear geolocation watch
-        geolocationWatchId.clearWatch();
+     // clear geolocation watch
+     geolocationWatchId.clearWatch();
 
-        // clear the geolocation marker
-        geolocationLayer.setSource(new ol.source.Vector({}));
-      }
-    };
-*/
+     // clear the geolocation marker
+     geolocationLayer.setSource(new ol.source.Vector({}));
+     }
+     };
+     */
     // Create a group of spots by drawing a polygon on the map
     var groupSpots = function () {
       // remove the layer switcher to avoid confusion with lasso and regular drawing
@@ -1074,8 +1082,8 @@ angular.module('app')
       map.getControls().removeAt(2);
 
       $ionicPopup.alert({
-        title: 'Create a Station',
-        template: 'Draw a polygon around the features you would like to add to a new station.'
+        'title': 'Create a Station',
+        'template': 'Draw a polygon around the features you would like to add to a new station.'
       });
 
       // start the draw with freehand enabled
@@ -1086,25 +1094,24 @@ angular.module('app')
       $state.go('app.image-maps');
     };
 
-    /////////////////
-    // ACTIONSHEET
-    /////////////////
+    /**
+     * ACTIONSHEET
+     */
 
     $scope.showActionsheet = function () {
-
       $ionicActionSheet.show({
-        titleText: 'Map Actions',
-        buttons: [{
-          text: '<i class="icon ion-map"></i> Zoom to Extent of Spots'
+        'titleText': 'Map Actions',
+        'buttons': [{
+          'text': '<i class="icon ion-map"></i> Zoom to Extent of Spots'
         }, {
-          text: '<i class="icon ion-grid"></i> Add Features to a New Station'
+          'text': '<i class="icon ion-grid"></i> Add Features to a New Station'
         }],
-        cancelText: 'Cancel',
-        cancel: function () {
-          console.log('CANCELLED');
+        'cancelText': 'Cancel',
+        'cancel': function () {
+          $log.log('CANCELLED');
         },
-        buttonClicked: function (index) {
-          console.log('BUTTON CLICKED', index);
+        'buttonClicked': function (index) {
+          $log.log('BUTTON CLICKED', index);
           switch (index) {
             case 0:
               $scope.zoomToSpotsExtent();

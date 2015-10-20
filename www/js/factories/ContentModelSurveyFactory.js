@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('app')
-  .factory('ContentModelSurveyFactory', function() {
-
+angular
+  .module('app')
+  .factory('ContentModelSurveyFactory', function () {
     var factory = {};
 
     factory.contacts_and_traces_survey = [

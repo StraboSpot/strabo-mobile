@@ -1,12 +1,12 @@
-angular.module('app')
+angular
+  .module('app')
   .controller('SpotTabGroupmembersCtrl', function ($scope,
+                                                   $log,
                                                    CurrentSpot) {
-
-    console.log('inside spot tab group members ctrl');
+    $log.log('inside spot tab group members ctrl');
 
     $scope.addGroupMember = function () {
       CurrentSpot.setCurrentSpot($scope.spot);
-      $scope.openModal("groupMembersModal");
+      $scope.openModal('groupMembersModal');
     };
-
   });
