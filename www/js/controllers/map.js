@@ -4,7 +4,7 @@ Math.radians = function (deg) {
 
 angular
   .module('app')
-  .controller('MapCtrl', function ($scope,
+  .controller('MapController', function ($scope,
                                    $rootScope,
                                    $state,
                                    $cordovaGeolocation,

@@ -1,6 +1,6 @@
 angular
   .module('app')
-  .controller('SpotTabPhotosCtrl', function ($scope,
+  .controller('SpotTabPhotosController', function ($scope,
                                              $cordovaCamera,
                                              $ionicPopup,
                                              $ionicModal,
@@ -8,7 +8,7 @@ angular
                                              $log,
                                              SpotsFactory,
                                              ImageMapService) {
-    $log.log('inside spot tab photos ctrl');
+    $log.log('inside spot tab photos Controller');
 
     $scope.showImages = function (index) {
       $scope.activeSlide = index;

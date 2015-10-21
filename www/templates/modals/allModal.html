@@ -4,7 +4,7 @@
     <div class="button button-clear" ng-click="closeModal('allModal')"><span class="icon ion-close"></span></div>
   </ion-header-bar>
   <ion-content>
-    <ion-list ng-controller="ModalCtrl">
+    <ion-list ng-controller="ModalController">
       <ion-item ng-repeat="item in spotTypes" href="#/spotTab//{{item.tab}}" ng-click="closeModal('allModal');setSpotType(item.value)">
         {{item.label}}
       </ion-item>

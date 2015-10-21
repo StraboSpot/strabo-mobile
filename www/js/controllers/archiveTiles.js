@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('app')
-  .controller('ArchiveTilesCtrl', function ($scope,
+  .controller('ArchiveTilesController', function ($scope,
                                             $state,
                                             $log,
                                             $ionicHistory,

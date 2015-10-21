@@ -3,7 +3,7 @@ Math.radians = function (deg) {
 };
 
 angular.module('app')
-  .controller('ImageMapCtrl', function ($scope,
+  .controller('ImageMapController', function ($scope,
                                         $window,
                                         $rootScope,
                                         $state,

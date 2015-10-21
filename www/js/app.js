@@ -50,7 +50,7 @@ angular
         'cache': false,
         'url': '/login',
         'templateUrl': 'templates/login.html',
-        'controller': 'LoginCtrl'
+        'controller': 'LoginController'
       })
 
       .state('app', {
@@ -65,7 +65,7 @@ angular
         'views': {
           'menuContent': {
             'templateUrl': 'templates/map.html',
-            'controller': 'MapCtrl'
+            'controller': 'MapController'
           }
         }
       })
@@ -76,7 +76,7 @@ angular
         'views': {
           'menuContent': {
             'templateUrl': 'templates/offlinemap.html',
-            'controller': 'OfflineMapCtrl'
+            'controller': 'OfflineMapController'
           }
         }
       })
@@ -96,7 +96,7 @@ angular
         'views': {
           'menuContent': {
             'templateUrl': 'templates/settings.html',
-            'controller': 'SettingsCtrl'
+            'controller': 'SettingsController'
           }
         }
       })
@@ -107,7 +107,7 @@ angular
         'views': {
           'menuContent': {
             'templateUrl': 'templates/image-maps.html',
-            'controller': 'ImageMapsCtrl'
+            'controller': 'ImageMapsController'
           }
         }
       })
@@ -118,7 +118,7 @@ angular
         'views': {
           'menuContent': {
             'templateUrl': 'templates/image-map.html',
-            'controller': 'ImageMapCtrl'
+            'controller': 'ImageMapController'
           }
         }
       })
@@ -129,7 +129,7 @@ angular
         'views': {
           'menuContent': {
             'templateUrl': 'templates/spots.html',
-            'controller': 'SpotsCtrl'
+            'controller': 'SpotsController'
           }
         }
       })
@@ -139,7 +139,7 @@ angular
         'url': '/spotTab',
         'abstract': true,
         'templateUrl': 'templates/spot.html',
-        'controller': 'SpotCtrl'
+        'controller': 'SpotController'
       })
 
       .state('spotTab.details', {
@@ -148,7 +148,7 @@ angular
         'views': {
           'spottab-childview': {
             'templateUrl': 'templates/tabs/details.html',
-            'controller': 'SpotTabDetailCtrl'
+            'controller': 'SpotTabDetailController'
           }
         }
       })
@@ -159,7 +159,7 @@ angular
         'views': {
           'spottab-childview': {
             'templateUrl': 'templates/tabs/notes.html',
-            'controller': 'SpotTabNotesCtrl'
+            'controller': 'SpotTabNotesController'
           }
         }
       })
@@ -170,7 +170,7 @@ angular
         'views': {
           'spottab-childview': {
             'templateUrl': 'templates/tabs/pictures.html',
-            'controller': 'SpotTabPhotosCtrl'
+            'controller': 'SpotTabPhotosController'
           }
         }
       })
@@ -181,7 +181,7 @@ angular
         'views': {
           'spottab-childview': {
             'templateUrl': 'templates/tabs/georeference.html',
-            'controller': 'SpotTabGeoreferenceCtrl'
+            'controller': 'SpotTabGeoreferenceController'
           }
         }
       })
@@ -192,7 +192,7 @@ angular
         'views': {
           'spottab-childview': {
             'templateUrl': 'templates/tabs/links.html',
-            'controller': 'SpotTabLinksCtrl'
+            'controller': 'SpotTabLinksController'
           }
         }
       })
@@ -203,7 +203,7 @@ angular
         'views': {
           'spottab-childview': {
             'templateUrl': 'templates/tabs/groups.html',
-            'controller': 'SpotTabGroupsCtrl'
+            'controller': 'SpotTabGroupsController'
           }
         }
       })
@@ -214,7 +214,7 @@ angular
         'views': {
           'spottab-childview': {
             'templateUrl': 'templates/tabs/groupmembers.html',
-            'controller': 'SpotTabGroupmembersCtrl'
+            'controller': 'SpotTabGroupmembersController'
           }
         }
       })
@@ -225,7 +225,7 @@ angular
         'views': {
           'spottab-childview': {
             'templateUrl': 'templates/tabs/rockdescription.html',
-            'controller': 'SpotTabRockdescriptionCtrl'
+            'controller': 'SpotTabRockdescriptionController'
           }
         }
       })
@@ -236,7 +236,7 @@ angular
         'views': {
           'spottab-childview': {
             'templateUrl': 'templates/tabs/rocksample.html',
-            'controller': 'SpotTabRocksampleCtrl'
+            'controller': 'SpotTabRocksampleController'
           }
         }
       })
@@ -247,7 +247,7 @@ angular
         'views': {
           'spottab-childview': {
             'templateUrl': 'templates/tabs/custom.html',
-            'controller': 'SpotTabCustomCtrl'
+            'controller': 'SpotTabCustomController'
           }
         }
       })
@@ -257,7 +257,7 @@ angular
         'views': {
           'menuContent': {
             'templateUrl': 'templates/archiveTiles.html',
-            'controller': 'ArchiveTilesCtrl'
+            'controller': 'ArchiveTilesController'
           }
         }
       })
@@ -267,7 +267,7 @@ angular
         'views': {
           'menuContent': {
             'templateUrl': 'templates/debug.html',
-            'controller': 'DebugCtrl'
+            'controller': 'DebugController'
           }
         }
       })

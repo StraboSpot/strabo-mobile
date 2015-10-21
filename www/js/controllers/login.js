@@ -1,6 +1,6 @@
 angular
   .module('app')
-  .controller('LoginCtrl', function ($scope,
+  .controller('LoginController', function ($scope,
                                      $state,
                                      $ionicPopup,
                                      $log,

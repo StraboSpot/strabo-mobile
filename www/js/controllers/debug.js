@@ -1,6 +1,6 @@
 angular
   .module('app')
-  .controller('DebugCtrl', function ($scope,
+  .controller('DebugController', function ($scope,
                                      $log,
                                      SpotsFactory) {
     $scope.data = {

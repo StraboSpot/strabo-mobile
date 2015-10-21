@@ -1,6 +1,6 @@
 angular
   .module('app')
-  .controller('SpotTabRocksampleCtrl', function ($scope,
+  .controller('SpotTabRocksampleController', function ($scope,
                                                  $log) {
-    $log.log('inside spot tab rock sample ctrl');
+    $log.log('inside spot tab rock sample Controller');
   });

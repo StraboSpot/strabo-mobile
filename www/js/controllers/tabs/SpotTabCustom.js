@@ -1,9 +1,9 @@
 angular
   .module('app')
-  .controller('SpotTabCustomCtrl', function ($scope,
+  .controller('SpotTabCustomController', function ($scope,
                                              $ionicPopup,
                                              $log) {
-    $log.log('inside spot tab custom ctrl');
+    $log.log('inside spot tab custom Controller');
 
     $scope.createCustomField = function () {
       var errorMsg;

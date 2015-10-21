@@ -3,7 +3,7 @@
     <h1 class="title">Sync Spots with Strabo Database</h1>
     <div class="button button-clear" ng-click="closeModal('syncModal')"><span class="icon ion-close"></span></div>
   </ion-header-bar>
-  <ion-content class="has-header" ng-controller="SyncModalCtrl">
+  <ion-content class="has-header" ng-controller="SyncModalController">
     <h6>You are currently logged in as: {{ loginEmail }}</h6>
     <div ng-show="progress.showProgress">You are uploading spot {{ progress.current }} of {{ progress.total }}</div>
     <div ng-show="showDatasetOpts() && !progress.showProgress">

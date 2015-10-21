@@ -1,6 +1,6 @@
 angular
   .module('app')
-  .controller('OfflineMapCtrl', function ($scope,
+  .controller('OfflineMapController', function ($scope,
                                           OfflineTilesFactory,
                                           SlippyTileNamesFactory,
                                           $ionicPopup) {

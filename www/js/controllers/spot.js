@@ -1,6 +1,6 @@
 angular
   .module('app')
-  .controller('SpotCtrl', function ($scope,
+  .controller('SpotController', function ($scope,
                                     $rootScope,
                                     $state,
                                     $stateParams,
@@ -16,7 +16,7 @@ angular
                                     CurrentSpot,
                                     ImageMapService,
                                     ContentModelSurveyFactory) {
-    // this scope is the parent scope for the SpotCtrl that all child SpotCtrl will inherit
+    // this scope is the parent scope for the SpotController that all child SpotController will inherit
 
     $rootScope.$state = $state;
 

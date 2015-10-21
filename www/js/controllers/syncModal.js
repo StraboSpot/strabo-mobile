@@ -1,6 +1,6 @@
 angular
   .module('app')
-  .controller('SyncModalCtrl', function ($scope,
+  .controller('SyncModalController', function ($scope,
                                          $ionicPopup,
                                          $log,
                                          SpotsFactory,

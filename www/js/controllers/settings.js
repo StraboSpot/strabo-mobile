@@ -1,6 +1,6 @@
 angular
   .module('app')
-  .controller('SettingsCtrl', function ($scope,
+  .controller('SettingsController', function ($scope,
                                         $ionicPopup,
                                         $log,
                                         SettingsFactory,

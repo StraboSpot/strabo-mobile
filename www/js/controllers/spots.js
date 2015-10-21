@@ -1,6 +1,6 @@
 angular
   .module('app')
-  .controller('SpotsCtrl', function ($scope,
+  .controller('SpotsController', function ($scope,
                                      $location,
                                      $ionicModal,
                                      $ionicPopup,

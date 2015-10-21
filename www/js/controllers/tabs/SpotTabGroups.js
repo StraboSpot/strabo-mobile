@@ -1,9 +1,9 @@
 angular
   .module('app')
-  .controller('SpotTabGroupsCtrl', function ($scope,
+  .controller('SpotTabGroupsController', function ($scope,
                                              $log,
                                              CurrentSpot) {
-    $log.log('inside spot tab groups ctrl');
+    $log.log('inside spot tab groups Controller');
 
     $scope.linkGroup = function () {
       CurrentSpot.setCurrentSpot($scope.spot);

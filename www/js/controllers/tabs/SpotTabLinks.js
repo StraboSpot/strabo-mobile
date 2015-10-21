@@ -1,9 +1,9 @@
 angular
   .module('app')
-  .controller('SpotTabLinksCtrl', function ($scope,
+  .controller('SpotTabLinksController', function ($scope,
                                             $log,
                                             CurrentSpot) {
-    $log.log('inside spot tab links ctrl');
+    $log.log('inside spot tab links Controller');
 
     $scope.linkSpot = function () {
       CurrentSpot.setCurrentSpot($scope.spot);

@@ -1,6 +1,6 @@
 angular
   .module('app')
-  .controller('ImageMapsCtrl', function ($scope,
+  .controller('ImageMapsController', function ($scope,
                                          $location,
                                          $window,
                                          $log,

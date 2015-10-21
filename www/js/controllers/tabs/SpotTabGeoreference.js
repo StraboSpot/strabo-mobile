@@ -1,6 +1,6 @@
 angular
   .module('app')
-  .controller('SpotTabGeoreferenceCtrl', function ($scope,
+  .controller('SpotTabGeoreferenceController', function ($scope,
                                                    $cordovaGeolocation,
                                                    $ionicPopup,
                                                    $location,
@@ -9,7 +9,7 @@ angular
                                                    ImageMapService,
                                                    SpotsFactory,
                                                    MapView) {
-    $log.log('inside spot tab georeference ctrl');
+    $log.log('inside spot tab georeference Controller');
 
     $scope.showSetFromMapButton = true;
 

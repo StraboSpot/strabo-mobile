@@ -1,9 +1,9 @@
 angular
   .module('app')
-  .controller('SpotTabGroupmembersCtrl', function ($scope,
+  .controller('SpotTabGroupmembersController', function ($scope,
                                                    $log,
                                                    CurrentSpot) {
-    $log.log('inside spot tab group members ctrl');
+    $log.log('inside spot tab group members Controller');
 
     $scope.addGroupMember = function () {
       CurrentSpot.setCurrentSpot($scope.spot);
