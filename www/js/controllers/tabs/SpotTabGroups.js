@@ -1,8 +1,10 @@
+'use strict';
+
 angular
   .module('app')
   .controller('SpotTabGroupsController', function ($scope,
-                                             $log,
-                                             CurrentSpot) {
+                                                   $log,
+                                                   CurrentSpot) {
     $log.log('inside spot tab groups Controller');
 
     $scope.linkGroup = function () {

@@ -1,4 +1,8 @@
-// Service for dealing with the creation of new spots and editing of existing spots
+/**
+ * Service for dealing with the creation of new spots and editing of existing spots
+ */
+
+'use strict';
 
 angular
   .module('app')

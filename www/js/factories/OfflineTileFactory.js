@@ -3,7 +3,8 @@
 angular
   .module('app')
   .factory('OfflineTilesFactory', function ($q,
-                                            $log) {
+                                            $log,
+                                            LocalStorage) {
     // used to determine what the map provider is before we archive a tileset
     var currentMapProvider = null;
 
@@ -67,7 +68,7 @@ angular
 
     // gets the number of tiles from offline storage
     factory.getOfflineTileCount = function (callback) {
-      localforage.length(function (err, numberOfKeys) {
+      LocalStorage.mapTilesDb.length(function (err, numberOfKeys) {
         callback(err || numberOfKeys);
       });
     };
@@ -75,13 +76,13 @@ angular
     // wipes the offline database
     factory.clear = function (callback) {
       // deletes all offline tiles
-      localforage.clear(function (err) {
+      LocalStorage.mapTilesDb.clear(function (err) {
         if (err) {
           callback(err);
         }
         else {
           // then delete all map names
-          mapNamesDb.clear(function (err) {
+          LocalStorage.mapNamesDb.clear(function (err) {
             if (err) {
               callback(err);
             }
@@ -100,7 +101,7 @@ angular
       // note that tileId is prefixed with mapProvider, tile itself is not
       var tileId = mapProvider + '/' + tile;
 
-      localforage.setItem(tileId, blob).then(function () {
+      LocalStorage.mapTilesDb.setItem(tileId, blob).then(function () {
         // $log.log('wrote tileId ', tileId, blob.size);
         deferred.resolve(blob.size);
       });
@@ -114,7 +115,7 @@ angular
       var tileId = mapProvider + '/' + tile;
       $log.log('factory, ', tileId);
 
-      localforage.getItem(tileId).then(function (blob) {
+      LocalStorage.mapTilesDb.getItem(tileId).then(function (blob) {
         callback(blob);
       });
     };
@@ -257,7 +258,7 @@ angular
 
       var maps = [];
 
-      mapNamesDb.iterate(function (value, key) {
+      LocalStorage.mapNamesDb.iterate(function (value, key) {
         maps.push({
           'name': key,
           'mapProvider': value.mapProvider,
@@ -284,7 +285,7 @@ angular
       // loop through the tiles and build an delete promise for each tile
       tiles.forEach(function (tile) {
         var tileId = map.mapProvider + '/' + tile;
-        var promise = localforage.removeItem(tileId);
+        var promise = LocalStorage.mapTilesDb.removeItem(tileId);
         promises.push(promise);
       });
 
@@ -292,7 +293,7 @@ angular
         // all the tile associated with this map name has been deleted
 
         // now delete the actual map name
-        mapNamesDb.removeItem(map.name)
+        LocalStorage.mapNamesDb.removeItem(map.name)
           .then(function () {
             // map is deleted, and this is now fully resolved
             deferred.resolve();
@@ -308,11 +309,11 @@ angular
       var newMapTileIds;
 
       // get the existing mapname
-      mapNamesDb.getItem(mapName).then(function (tileIds) {
+      LocalStorage.mapNamesDb.getItem(mapName).then(function (tileIds) {
         // create a new map name, with the existing mapname contents
-        mapNamesDb.setItem(newMapName, tileIds).then(function () {
+        LocalStorage.mapNamesDb.setItem(newMapName, tileIds).then(function () {
           // now delete the actual map name
-          mapNamesDb.removeItem(mapName).then(function () {
+          LocalStorage.mapNamesDb.removeItem(mapName).then(function () {
             // map is deleted, and this is now fully resolved
             deferred.resolve();
           });
@@ -330,7 +331,7 @@ angular
         'size': size
       };
 
-      mapNamesDb.setItem(mapName, mapNameData).then(function () {
+      LocalStorage.mapNamesDb.setItem(mapName, mapNameData).then(function () {
         // $log.log('saved map name ', mapName);
         deferred.resolve();
       });

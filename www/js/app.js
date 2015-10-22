@@ -1,3 +1,5 @@
+'use strict';
+
 angular
   .module('app', [
     'ionic',
@@ -12,34 +14,6 @@ angular
       if (window.cordova && window.cordova.plugins.Keyboard) {
         cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       }
-      if (window.StatusBar) {
-        // org.apache.cordova.statusbar required
-        StatusBar.styleDefault();
-      }
-    });
-
-    // localforage is the global for offline map tiles
-    localforage.config({
-      // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
-      'name': 'offlineMapTiles'
-    });
-
-    // global LF for map names
-    mapNamesDb = localforage.createInstance({
-      // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
-      'name': 'MapNames'
-    });
-
-    // global LF for spot data
-    spotsDb = localforage.createInstance({
-      // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
-      'name': 'Spots'
-    });
-
-    // global LF for configuration data
-    configDb = localforage.createInstance({
-      // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
-      'name': 'Config'
     });
   })
 

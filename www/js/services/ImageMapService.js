@@ -1,4 +1,8 @@
-// Service for temporarily saving an image map
+/**
+ * Service for temporarily saving an image map
+ */
+
+'use strict';
 
 angular
   .module('app')

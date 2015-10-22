@@ -52,7 +52,7 @@ Also need to install this plugin due to Cordova bug with Android and content sch
 ### Tested Environment
 
     ionic library: 1.1.0
-    ionic cli : 1.6.5
+    ionic cli : 1.7.7
     cordova: 5.2.0
     cordova-plugin-camera: 1.2.0
     cordova-plugin-console: 1.0.1

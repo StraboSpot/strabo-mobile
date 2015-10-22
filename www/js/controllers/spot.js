@@ -1,21 +1,23 @@
+'use strict';
+
 angular
   .module('app')
   .controller('SpotController', function ($scope,
-                                    $rootScope,
-                                    $state,
-                                    $stateParams,
-                                    $location,
-                                    $ionicHistory,
-                                    $ionicPopup,
-                                    $ionicModal,
-                                    $ionicActionSheet,
-                                    $log,
-                                    SpotsFactory,
-                                    SettingsFactory,
-                                    NewSpot,
-                                    CurrentSpot,
-                                    ImageMapService,
-                                    ContentModelSurveyFactory) {
+                                          $rootScope,
+                                          $state,
+                                          $stateParams,
+                                          $location,
+                                          $ionicHistory,
+                                          $ionicPopup,
+                                          $ionicModal,
+                                          $ionicActionSheet,
+                                          $log,
+                                          SpotsFactory,
+                                          SettingsFactory,
+                                          NewSpot,
+                                          CurrentSpot,
+                                          ImageMapService,
+                                          ContentModelSurveyFactory) {
     // this scope is the parent scope for the SpotController that all child SpotController will inherit
 
     $rootScope.$state = $state;
@@ -408,15 +410,16 @@ angular
           return _.findWhere(item, {'id': id});
         })[0];
 
+        var inverse_ref;
         switch (ref_type) {
           case 'links':
-            var inverse_ref = 'links';
+            inverse_ref = 'links';
             break;
           case 'groups':
-            var inverse_ref = 'group_members';
+            inverse_ref = 'group_members';
             break;
           case 'group_members':
-            var inverse_ref = 'groups';
+            inverse_ref = 'groups';
             break;
         }
 
@@ -704,7 +707,8 @@ angular
     // Create a new spot with the details from this spot
     $scope.copySpot = function () {
       var copySpot = _.omit($scope.spot, 'properties');
-      copySpot['properties'] = _.omit($scope.spot.properties, ['id', 'date', 'time', 'links', 'groups', 'group_members']);
+      copySpot['properties'] = _.omit($scope.spot.properties,
+        ['id', 'date', 'time', 'links', 'groups', 'group_members']);
       NewSpot.setNewSpot(copySpot);
       $location.path('/spotTab//notes');
     };

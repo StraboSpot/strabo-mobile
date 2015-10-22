@@ -1,8 +1,10 @@
+'use strict';
+
 angular
   .module('app')
   .controller('DebugController', function ($scope,
-                                     $log,
-                                     SpotsFactory) {
+                                           $log,
+                                           SpotsFactory) {
     $scope.data = {
       'pointsToGenerate': null
     };

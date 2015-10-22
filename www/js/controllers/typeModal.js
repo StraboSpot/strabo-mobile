@@ -1,6 +1,9 @@
+'use strict';
+
 angular
   .module('app')
-  .controller('ModalController', function ($scope, NewSpot) {
+  .controller('ModalController', function ($scope,
+                                           NewSpot) {
     $scope.spotTypes = [
       {'label': 'Station (spatial)', 'value': 'group', 'tab': 'details'},
       {'label': 'Group (conceptual)', 'value': 'group', 'tab': 'details'},

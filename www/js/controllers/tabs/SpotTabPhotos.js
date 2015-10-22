@@ -1,13 +1,15 @@
+'use strict';
+
 angular
   .module('app')
   .controller('SpotTabPhotosController', function ($scope,
-                                             $cordovaCamera,
-                                             $ionicPopup,
-                                             $ionicModal,
-                                             $location,
-                                             $log,
-                                             SpotsFactory,
-                                             ImageMapService) {
+                                                   $cordovaCamera,
+                                                   $ionicPopup,
+                                                   $ionicModal,
+                                                   $location,
+                                                   $log,
+                                                   SpotsFactory,
+                                                   ImageMapService) {
     $log.log('inside spot tab photos Controller');
 
     $scope.showImages = function (index) {

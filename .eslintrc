@@ -8,6 +8,8 @@ globals:
   _: true
   localforage: true
   turf: true
+  Camera: true
+  Base64: true
 
 env:
   browser: true

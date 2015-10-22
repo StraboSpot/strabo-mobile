@@ -2,12 +2,12 @@
 
 angular.module('app')
   .controller('ArchiveTilesController', function ($scope,
-                                            $state,
-                                            $log,
-                                            $ionicHistory,
-                                            ViewExtentFactory,
-                                            SlippyTileNamesFactory,
-                                            OfflineTilesFactory) {
+                                                  $state,
+                                                  $log,
+                                                  $ionicHistory,
+                                                  ViewExtentFactory,
+                                                  SlippyTileNamesFactory,
+                                                  OfflineTilesFactory) {
     $scope.goToMap = function () {
       $state.go('app.map');
     };

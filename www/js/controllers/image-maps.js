@@ -1,11 +1,13 @@
+'use strict';
+
 angular
   .module('app')
   .controller('ImageMapsController', function ($scope,
-                                         $location,
-                                         $window,
-                                         $log,
-                                         ImageMapService,
-                                         SpotsFactory) {
+                                               $location,
+                                               $window,
+                                               $log,
+                                               ImageMapService,
+                                               SpotsFactory) {
     SpotsFactory.all().then(function (spots) {
       var spotsWithImages = _.filter(spots, function (spot) {
         return spot.images;
@@ -26,10 +28,6 @@ angular
       $scope.imageMaps = ImageMapService.getImageMaps();
       $log.log($scope.imageMaps);
     });
-
-    $scope.getParentSpotName = function (imageID) {
-
-    };
 
     $scope.goToImageMap = function (imageMap) {
       ImageMapService.setCurrentImageMap(imageMap);

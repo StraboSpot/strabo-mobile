@@ -1,11 +1,13 @@
+'use strict';
+
 angular
   .module('app')
   .controller('SettingsController', function ($scope,
-                                        $ionicPopup,
-                                        $log,
-                                        SettingsFactory,
-                                        LoginFactory,
-                                        SyncService) {
+                                              $ionicPopup,
+                                              $log,
+                                              SettingsFactory,
+                                              LoginFactory,
+                                              SyncService) {
     // Form data for the login modal
     $scope.loginData = {};
 

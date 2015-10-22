@@ -1,8 +1,10 @@
+'use strict';
+
 angular
   .module('app')
   .controller('SpotTabCustomController', function ($scope,
-                                             $ionicPopup,
-                                             $log) {
+                                                   $ionicPopup,
+                                                   $log) {
     $log.log('inside spot tab custom Controller');
 
     $scope.createCustomField = function () {

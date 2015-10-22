@@ -1,8 +1,10 @@
+'use strict';
+
 angular
   .module('app')
   .controller('SpotTabGroupmembersController', function ($scope,
-                                                   $log,
-                                                   CurrentSpot) {
+                                                         $log,
+                                                         CurrentSpot) {
     $log.log('inside spot tab group members Controller');
 
     $scope.addGroupMember = function () {

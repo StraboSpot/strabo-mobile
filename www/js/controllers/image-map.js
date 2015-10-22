@@ -1,31 +1,34 @@
+'use strict';
+
 Math.radians = function (deg) {
   return deg * (Math.PI / 180);
 };
 
 angular.module('app')
   .controller('ImageMapController', function ($scope,
-                                        $window,
-                                        $rootScope,
-                                        $state,
-                                        $cordovaGeolocation,
-                                        $location,
-                                        $filter,
-                                        $ionicHistory,
-                                        $ionicModal,
-                                        $ionicPopup,
-                                        $ionicActionSheet,
-                                        $ionicSideMenuDelegate,
-                                        $log,
-                                        NewSpot,
-                                        CurrentSpot,
-                                        MapView,
-                                        OfflineTilesFactory,
-                                        SlippyTileNamesFactory,
-                                        SpotsFactory,
-                                        ViewExtentFactory,
-                                        SymbologyFactory,
-                                        MapLayerFactory,
-                                        ImageMapService) {
+                                              $window,
+                                              $rootScope,
+                                              $state,
+                                              $cordovaGeolocation,
+                                              $location,
+                                              $filter,
+                                              $ionicHistory,
+                                              $ionicModal,
+                                              $ionicPopup,
+                                              $ionicActionSheet,
+                                              $ionicSideMenuDelegate,
+                                              $log,
+                                              NewSpot,
+                                              CurrentSpot,
+                                              CoordinateRange,
+                                              MapView,
+                                              OfflineTilesFactory,
+                                              SlippyTileNamesFactory,
+                                              SpotsFactory,
+                                              ViewExtentFactory,
+                                              SymbologyFactory,
+                                              MapLayerFactory,
+                                              ImageMapService) {
     // disable dragging back to ionic side menu because this affects drawing tools
     $ionicSideMenuDelegate.canDragContent(false);
 
@@ -590,8 +593,7 @@ angular.module('app')
         // do we even have any spots?
         if (spots.length > 0) {
           $log.log('found spots, attempting to get the center of all spots and change the map view to that');
-          var cr = new CoordinateRange(spots);
-          var newExtent = ol.extent.boundingExtent(_.compact(cr._getAllCoordinates()));
+          var newExtent = ol.extent.boundingExtent(_.compact(CoordinateRange.getAllCoordinates(spots)));
           var newExtentCenter = ol.extent.getCenter(newExtent);
 
           // fly-by map animation
@@ -887,14 +889,10 @@ angular.module('app')
 
     // display popup on click
     map.on('click', function (evt) {
-
       $log.log('map clicked');
 
       // are we in draw mode?  If so we dont want to display any popovers during draw mode
       if (!draw) {
-        // where the user just clicked
-        var coordinate = evt.coordinate;
-
         // clear any existing popovers
         popup.hide();
 

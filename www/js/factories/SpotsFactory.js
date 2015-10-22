@@ -2,7 +2,8 @@
 
 angular
   .module('app')
-  .factory('SpotsFactory', function ($q) {
+  .factory('SpotsFactory', function ($q,
+                                     LocalStorage) {
     var factory = {};
 
     factory.all = function () {
@@ -10,7 +11,7 @@ angular
 
       var spots = [];
 
-      spotsDb.iterate(function (value, key) {
+      LocalStorage.spotsDb.iterate(function (value, key) {
         spots.push(value);
       }, function () {
         deferred.resolve(spots);
@@ -35,24 +36,24 @@ angular
 
     // delete the spot
     factory.destroy = function (key) {
-      return spotsDb.removeItem(key);
+      return LocalStorage.spotsDb.removeItem(key);
     };
 
     // gets the number of spots
     factory.getSpotCount = function () {
-      return spotsDb.length();
+      return LocalStorage.spotsDb.length();
     };
 
     // gets the first spot in the db (if exists) -- used to set the map view
     factory.getFirstSpot = function () {
       var deferred = $q.defer(); // init promise
 
-      spotsDb.keys().then(function (keys, err) {
+      LocalStorage.spotsDb.keys().then(function (keys, err) {
         if (keys[0] === undefined) {
           deferred.resolve(undefined);
         }
         else {
-          deferred.resolve(spotsDb.getItem(keys[0]));
+          deferred.resolve(LocalStorage.spotsDb.getItem(keys[0]));
         }
       });
 
@@ -61,7 +62,7 @@ angular
 
     // wipes the spots database
     factory.clear = function (callback) {
-      spotsDb.clear(function (err) {
+      LocalStorage.spotsDb.clear(function (err) {
         if (err) {
           callback(err);
         }
@@ -73,12 +74,12 @@ angular
 
     // write to storage
     factory.write = function (key, value) {
-      return spotsDb.setItem(key, value);
+      return LocalStorage.spotsDb.setItem(key, value);
     };
 
     // read from storage
     factory.read = function (key, callback) {
-      spotsDb.getItem(key).then(function (value) {
+      LocalStorage.spotsDb.getItem(key).then(function (value) {
         callback(value);
       });
     };
@@ -105,7 +106,7 @@ angular
     };
 
     factory.getSpotId = function (spotId) {
-      return spotsDb.getItem(spotId);
+      return LocalStorage.spotsDb.getItem(spotId);
     };
 
     // return factory

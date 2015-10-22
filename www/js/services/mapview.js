@@ -1,4 +1,8 @@
-// Save the current map view lat, long and zoom level
+/**
+ * Save the current map view lat, long and zoom level
+ */
+
+'use strict';
 
 angular
   .module('app')

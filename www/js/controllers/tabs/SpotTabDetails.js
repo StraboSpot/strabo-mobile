@@ -1,8 +1,10 @@
+'use strict';
+
 angular
   .module('app')
   .controller('SpotTabDetailController', function ($scope,
-                                             $stateParams,
-                                             $log) {
+                                                   $stateParams,
+                                                   $log) {
     $log.log('inside spot tab detail Controller');
 
     // load the current state into the parent, we do this because stateparams are accessible only through the child

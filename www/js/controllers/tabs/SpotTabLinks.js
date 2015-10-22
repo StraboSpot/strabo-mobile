@@ -1,8 +1,10 @@
+'use strict';
+
 angular
   .module('app')
   .controller('SpotTabLinksController', function ($scope,
-                                            $log,
-                                            CurrentSpot) {
+                                                  $log,
+                                                  CurrentSpot) {
     $log.log('inside spot tab links Controller');
 
     $scope.linkSpot = function () {

@@ -1,9 +1,11 @@
+'use strict';
+
 angular
   .module('app')
   .controller('OfflineMapController', function ($scope,
-                                          OfflineTilesFactory,
-                                          SlippyTileNamesFactory,
-                                          $ionicPopup) {
+                                                OfflineTilesFactory,
+                                                SlippyTileNamesFactory,
+                                                $ionicPopup) {
     // number of tiles we have in offline storage
     $scope.numOfflineTiles = 0;
 

@@ -4,6 +4,8 @@
  * values for a Spot
  */
 
+'use strict';
+
 angular
   .module('app')
   .factory('Spots', function () {

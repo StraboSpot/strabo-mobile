@@ -1,16 +1,19 @@
+'use strict';
+
 angular
   .module('app')
   .controller('SpotsController', function ($scope,
-                                     $location,
-                                     $ionicModal,
-                                     $ionicPopup,
-                                     $cordovaFile,
-                                     $ionicActionSheet,
-                                     $log,
-                                     SpotsFactory,
-                                     LoginFactory,
-                                     CurrentSpot,
-                                     ImageMapService) {
+                                           $location,
+                                           $ionicModal,
+                                           $ionicPopup,
+                                           $cordovaFile,
+                                           $cordovaDevice,
+                                           $ionicActionSheet,
+                                           $log,
+                                           SpotsFactory,
+                                           LoginFactory,
+                                           CurrentSpot,
+                                           ImageMapService) {
     // Make sure the current spot is empty
     CurrentSpot.clearCurrentSpot();
 
@@ -185,7 +188,7 @@ angular
       var fileName = d + '-' + 'strabo-data.csv';
 
       var devicePath;
-      switch (device.platform) {
+      switch ($cordovaDevice.getPlatform()) {
         case 'Android':
           devicePath = cordova.file.externalRootDirectory;
           break;

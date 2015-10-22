@@ -1,3 +1,5 @@
+'use strict';
+
 Math.radians = function (deg) {
   return deg * (Math.PI / 180);
 };
@@ -5,26 +7,27 @@ Math.radians = function (deg) {
 angular
   .module('app')
   .controller('MapController', function ($scope,
-                                   $rootScope,
-                                   $state,
-                                   $cordovaGeolocation,
-                                   $location,
-                                   $filter,
-                                   $ionicHistory,
-                                   $ionicModal,
-                                   $ionicPopup,
-                                   $ionicActionSheet,
-                                   $ionicSideMenuDelegate,
-                                   $log,
-                                   NewSpot,
-                                   CurrentSpot,
-                                   MapView,
-                                   OfflineTilesFactory,
-                                   SlippyTileNamesFactory,
-                                   SpotsFactory,
-                                   ViewExtentFactory,
-                                   SymbologyFactory,
-                                   MapLayerFactory) {
+                                         $rootScope,
+                                         $state,
+                                         $cordovaGeolocation,
+                                         $location,
+                                         $filter,
+                                         $ionicHistory,
+                                         $ionicModal,
+                                         $ionicPopup,
+                                         $ionicActionSheet,
+                                         $ionicSideMenuDelegate,
+                                         $log,
+                                         NewSpot,
+                                         CurrentSpot,
+                                         CoordinateRange,
+                                         MapView,
+                                         OfflineTilesFactory,
+                                         SlippyTileNamesFactory,
+                                         SpotsFactory,
+                                         ViewExtentFactory,
+                                         SymbologyFactory,
+                                         MapLayerFactory) {
     // disable dragging back to ionic side menu because this affects drawing tools
     $ionicSideMenuDelegate.canDragContent(false);
 
@@ -285,7 +288,8 @@ angular
         var mapViewExtent = getMapViewExtent();
 
         // set the extent into the ViewExtentFactory
-        ViewExtentFactory.setExtent(getCurrentVisibleLayer(), mapViewExtent.topRight, mapViewExtent.bottomLeft, mapViewExtent.zoom);
+        ViewExtentFactory.setExtent(getCurrentVisibleLayer(), mapViewExtent.topRight, mapViewExtent.bottomLeft,
+          mapViewExtent.zoom);
 
         // we set the current map provider so if we ever come back, we should try to use that map provider instead of the default provider
         OfflineTilesFactory.setCurrentMapProvider(getCurrentVisibleLayer());
@@ -549,8 +553,7 @@ angular
         // do we even have any spots?
         if (spots.length > 0) {
           $log.log('found spots, attempting to get the center of all spots and change the map view to that');
-          var cr = new CoordinateRange(spots);
-          var newExtent = ol.extent.boundingExtent(_.compact(cr._getAllCoordinates()));
+          var newExtent = ol.extent.boundingExtent(_.compact(CoordinateRange.getAllCoordinates(spots)));
           var newExtentCenter = ol.extent.getCenter(newExtent);
 
           // fly-by map animation
@@ -570,7 +573,8 @@ angular
 
           if (spots.length === 1) {
             // we just have a single spot, so we should fixate the resolution manually
-            initialMapView.setCenter(ol.proj.transform([newExtentCenter[0], newExtentCenter[1]], 'EPSG:4326', 'EPSG:3857'));
+            initialMapView.setCenter(ol.proj.transform([newExtentCenter[0], newExtentCenter[1]], 'EPSG:4326',
+              'EPSG:3857'));
             initialMapView.setZoom(15);
           }
           else {
@@ -842,9 +846,6 @@ angular
 
       // are we in draw mode?  If so we dont want to display any popovers during draw mode
       if (!draw) {
-        // where the user just clicked
-        var coordinate = evt.coordinate;
-
         // clear any existing popovers
         popup.hide();
 
@@ -947,7 +948,8 @@ angular
             var heading = position.coords.heading;
             var speed = position.coords.speed;
 
-            $log.log('getLocation ', [lat, lng], '(accuracy: ' + accuracy + ') (altitude: ' + altitude + ') (heading: ' + heading + ') (speed: ' + speed + ')');
+            $log.log('getLocation ', [lat, lng],
+              '(accuracy: ' + accuracy + ') (altitude: ' + altitude + ') (heading: ' + heading + ') (speed: ' + speed + ')');
 
             var newView = new ol.View({
               'center': ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
@@ -986,7 +988,8 @@ angular
             var heading = position.coords.heading;
             var speed = position.coords.speed;
 
-            $log.log('getLocation-watch ', [lat, lng], '(accuracy: ' + accuracy + ') (altitude: ' + altitude + ') (heading: ' + heading + ') (speed: ' + speed + ')');
+            $log.log('getLocation-watch ', [lat, lng],
+              '(accuracy: ' + accuracy + ') (altitude: ' + altitude + ') (heading: ' + heading + ') (speed: ' + speed + ')');
 
             // create a point feature and assign the lat/long to its geometry
             var iconFeature = new ol.Feature({

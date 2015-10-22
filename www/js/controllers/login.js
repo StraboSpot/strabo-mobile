@@ -1,11 +1,13 @@
+'use strict';
+
 angular
   .module('app')
   .controller('LoginController', function ($scope,
-                                     $state,
-                                     $ionicPopup,
-                                     $log,
-                                     LoginFactory,
-                                     SyncService) {
+                                           $state,
+                                           $ionicPopup,
+                                           $log,
+                                           LoginFactory,
+                                           SyncService) {
     $scope.skip = function () {
       $state.go('app.spots');
     };

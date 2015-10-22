@@ -1,14 +1,16 @@
+'use strict';
+
 angular
   .module('app')
   .controller('SpotTabGeoreferenceController', function ($scope,
-                                                   $cordovaGeolocation,
-                                                   $ionicPopup,
-                                                   $location,
-                                                   $log,
-                                                   CurrentSpot,
-                                                   ImageMapService,
-                                                   SpotsFactory,
-                                                   MapView) {
+                                                         $cordovaGeolocation,
+                                                         $ionicPopup,
+                                                         $location,
+                                                         $log,
+                                                         CurrentSpot,
+                                                         ImageMapService,
+                                                         SpotsFactory,
+                                                         MapView) {
     $log.log('inside spot tab georeference Controller');
 
     $scope.showSetFromMapButton = true;
