@@ -3,9 +3,9 @@
 angular
   .module('app')
   .service('CoordinateRange', function () {
-    var getAllCoordinates = function (spots) {
-      var allCoords = [];
+    var allCoords = [];
 
+    var setAllCoordinates = function (spots) {
       _.each(spots, function (element) {
         if (element.geometry) {
           var type = element.geometry.type;
@@ -49,6 +49,9 @@ angular
           }
         }
       });
+    };
+
+    var getAllCoordinates = function () {
       return allCoords;
     };
 
@@ -89,6 +92,7 @@ angular
     };
 
     return {
+      'setAllCoordinates': setAllCoordinates,
       'getAllCoordinates': getAllCoordinates,
       'getLatitudes': getLatitudes,
       'getMaxLatitude': getMaxLatitude,

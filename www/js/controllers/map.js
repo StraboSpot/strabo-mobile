@@ -553,7 +553,8 @@ angular
         // do we even have any spots?
         if (spots.length > 0) {
           $log.log('found spots, attempting to get the center of all spots and change the map view to that');
-          var newExtent = ol.extent.boundingExtent(_.compact(CoordinateRange.getAllCoordinates(spots)));
+          CoordinateRange.setAllCoordinates(spots);
+          var newExtent = ol.extent.boundingExtent(_.compact(CoordinateRange.getAllCoordinates()));
           var newExtentCenter = ol.extent.getCenter(newExtent);
 
           // fly-by map animation
