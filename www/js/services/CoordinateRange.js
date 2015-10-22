@@ -3,9 +3,10 @@
 angular
   .module('app')
   .service('CoordinateRange', function () {
-    var allCoords = [];
+    var allCoords;
 
     var setAllCoordinates = function (spots) {
+      allCoords = [];
       _.each(spots, function (element) {
         if (element.geometry) {
           var type = element.geometry.type;
