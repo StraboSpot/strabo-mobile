@@ -3,6 +3,7 @@ extends:
 
 globals:
   angular: true
+  inject: true
   cordova: true
   ol: true
   _: true
