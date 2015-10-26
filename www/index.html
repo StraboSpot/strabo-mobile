@@ -50,58 +50,59 @@
     -->
 
     <!-- your app's js -->
-    <script src="js/app.js"></script>
+    <script src="app/app.module.js"></script>
+    <script src="app/app.run.js"></script>
+    <script src="app/app.config.js"></script>
 
     <!-- ng controllers -->
-    <script src="js/controllers/login.js"></script>
-    <script src="js/controllers/map.js"></script>
-    <script src="js/controllers/spot.js"></script>
-    <script src="js/controllers/spots.js"></script>
-    <script src="js/controllers/settings.js"></script>
-    <script src="js/controllers/typeModal.js"></script>
-    <script src="js/controllers/syncModal.js"></script>
-    <script src="js/controllers/offlinemap.js"></script>
-    <script src="js/controllers/archiveTiles.js"></script>
-    <script src="js/controllers/debug.js"></script>
-    <script src="js/controllers/image-maps.js"></script>
-    <script src="js/controllers/image-map.js"></script>
+    <script src="app/remote-connection/login.controller.js"></script>
+    <script src="app/map/map.controller.js"></script>
+    <script src="app/spots/spots.controller.js"></script>
+    <script src="app/settings/settings.controller.js"></script>
+    <script src="app/spots/spot-types-modal.controller.js"></script>
+    <script src="app/remote-connection/sync-modal.controller.js"></script>
+    <script src="app/map/offline-map.controller.js"></script>
+    <script src="app/map/archive-tiles.controller.js"></script>
+    <script src="app/debug/debug.controller.js"></script>
+    <script src="app/map/image-maps.controller.js"></script>
+    <script src="app/map/image-map.controller.js"></script>
 
-    <!-- ng tab controllers -->
-    <script src="js/controllers/tabs/SpotTabDetails.js"></script>
-    <script src="js/controllers/tabs/SpotTabNotes.js"></script>
-    <script src="js/controllers/tabs/SpotTabPhotos.js"></script>
-    <script src="js/controllers/tabs/SpotTabGeoreference.js"></script>
-    <script src="js/controllers/tabs/SpotTabRockdescription.js"></script>
-    <script src="js/controllers/tabs/SpotTabRocksample.js"></script>
-    <script src="js/controllers/tabs/SpotTabLinks.js"></script>
-    <script src="js/controllers/tabs/SpotTabGroups.js"></script>
-    <script src="js/controllers/tabs/SpotTabGroupmembers.js"></script>
-    <script src="js/controllers/tabs/SpotTabCustom.js"></script>
+    <!-- ng spot tab controllers -->
+    <script src="app/spot/abstract-spot.controller.js"></script>
+    <script src="app/spot/custom-tab.controller.js"></script>
+    <script src="app/spot/details-tab.controller.js"></script>
+    <script src="app/spot/georeference-tab.controller.js"></script>
+    <script src="app/spot/groupmembers-tab.controller.js"></script>
+    <script src="app/spot/groups-tab.controller.js"></script>
+    <script src="app/spot/links-tab.controller.js"></script>
+    <script src="app/spot/notes-tab.controller.js"></script>
+    <script src="app/spot/images-tab.controller.js"></script>
+    <script src="app/spot/rockdescription-tab.controller.js"></script>
+    <script src="app/spot/rocksample-tab.controller.js"></script>
 
     <!-- ng services -->
-    <script src="js/services/spots.js"></script>
-    <script src="js/services/newspot.js"></script>
-    <script src="js/services/CurrentSpotService.js"></script>
-    <script src="js/services/SyncService.js"></script>
-    <script src="js/services/mapview.js"></script>
-    <script src="js/services/ImageMapService.js"></script>
-    <script src="js/services/CoordinateRange.js"></script>
-    <script src="js/services/LocalStorage.js"></script>
+    <script src="app/shared/spots.service.js"></script>
+    <script src="app/shared/new-spot.service.js"></script>
+    <script src="app/shared/current-spot.service.js"></script>
+    <script src="app/shared/sync.service.js"></script>
+    <script src="app/shared/map-view.service.js"></script>
+    <script src="app/shared/image-map.service.js"></script>
+    <script src="app/map/coordinate-range.service.js"></script>
+    <script src="app/shared/localstorage.service.js"></script>
 
     <!-- ng factories -->
-    <script src="js/factories/OfflineTileFactory.js"></script>
-    <script src="js/factories/SlippyTileNamesFactory.js"></script>
-    <script src="js/factories/SpotsFactory.js"></script>
-    <script src="js/factories/ViewExtentFactory.js"></script>
-    <script src="js/factories/LoginFactory.js"></script>
-    <script src="js/factories/SymbologyFactory.js"></script>
-    <script src="js/factories/MapLayerFactory.js"></script>
-    <script src="js/factories/SettingsFactory.js"></script>
-    <script src="js/factories/ContentModelSurveyFactory.js"></script>
-
+    <script src="app/map/offline-tile.factory.js"></script>
+    <script src="app/map/slippy-tile-names.factory.js"></script>
+    <script src="app/shared/spots.factory.js"></script>
+    <script src="app/map/view-extent.factory.js"></script>
+    <script src="app/shared/login.factory.js"></script>
+    <script src="app/map/symbology.factory.js"></script>
+    <script src="app/map/map-layer.factory.js"></script>
+    <script src="app/shared/settings.factory.js"></script>
+    <script src="app/spot/content-model-survey.factory.js"></script>
 
     <!-- ng filters -->
-    <script src="js/filters/normalizeBytes.js"></script>
+    <script src="app/map/normalize-bytes.filter.js"></script>
 
   </head>
   <body ng-app="app">

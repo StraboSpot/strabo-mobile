@@ -2,7 +2,7 @@
 
 angular
   .module('app')
-  .controller('SpotTabPhotosController', function ($scope,
+  .controller('SpotTabImagesController', function ($scope,
                                                    $cordovaCamera,
                                                    $ionicPopup,
                                                    $ionicModal,
@@ -10,11 +10,11 @@ angular
                                                    $log,
                                                    SpotsFactory,
                                                    ImageMapService) {
-    $log.log('inside spot tab photos Controller');
+    $log.log('inside spot tab images Controller');
 
     $scope.showImages = function (index) {
       $scope.activeSlide = index;
-      $ionicModal.fromTemplateUrl('templates/modals/imageModal.html', {
+      $ionicModal.fromTemplateUrl('app/spot/images-modal.html', {
         'scope': $scope,
         'animation': 'slide-in-up'
       }).then(function (modal) {

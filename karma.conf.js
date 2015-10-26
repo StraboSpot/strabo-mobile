@@ -29,7 +29,8 @@ module.exports = function (config) {
       'www/lib/angular-messages.js',
 
       // app specific
-      'www/js/**/*.js'
+      'www/app/app.module.js',
+      'www/app/**/*.js'
     ],
 
     // list of files to exclude

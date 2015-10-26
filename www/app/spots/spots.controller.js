@@ -313,14 +313,14 @@ angular
      * MODALS
      */
 
-    $ionicModal.fromTemplateUrl('templates/modals/syncModal.html', {
+    $ionicModal.fromTemplateUrl('app/remote-connection/sync-modal.html', {
       'scope': $scope,
       'animation': 'slide-in-up'
     }).then(function (modal) {
       $scope.syncModal = modal;
     });
 
-    $ionicModal.fromTemplateUrl('templates/modals/allModal.html', {
+    $ionicModal.fromTemplateUrl('app/spots/spot-types-modal.html', {
       'scope': $scope,
       'animation': 'slide-in-up'
     }).then(function (modal) {

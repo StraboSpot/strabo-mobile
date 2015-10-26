@@ -717,21 +717,21 @@ angular
      * MODALS
      */
 
-    $ionicModal.fromTemplateUrl('templates/modals/linkModal.html', {
+    $ionicModal.fromTemplateUrl('app/spot/links-modal.html', {
       'scope': $scope,
       'animation': 'slide-in-up'
     }).then(function (modal) {
       $scope.linkModal = modal;
     });
 
-    $ionicModal.fromTemplateUrl('templates/modals/groupModal.html', {
+    $ionicModal.fromTemplateUrl('app/spot/groups-modal.html', {
       'scope': $scope,
       'animation': 'slide-in-up'
     }).then(function (modal) {
       $scope.groupModal = modal;
     });
 
-    $ionicModal.fromTemplateUrl('templates/modals/groupMembersModal.html', {
+    $ionicModal.fromTemplateUrl('app/spot/groupmembers-modal.html', {
       'scope': $scope,
       'animation': 'slide-in-up'
     }).then(function (modal) {
