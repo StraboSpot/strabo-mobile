@@ -1,13 +1,13 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .controller('SettingsController', function ($scope,
-                                              $ionicPopup,
-                                              $log,
-                                              SettingsFactory,
-                                              LoginFactory,
-                                              SyncService) {
+  angular
+    .module('app')
+    .controller('SettingsController', SettingsController);
+
+  SettingsController.$inject = ['$scope', '$ionicPopup', '$log', 'SettingsFactory', 'LoginFactory', 'SyncService'];
+
+  function SettingsController($scope, $ionicPopup, $log, SettingsFactory, LoginFactory, SyncService) {
     // Form data for the login modal
     $scope.loginData = {};
 
@@ -216,5 +216,5 @@ angular
         });
       });
     };
-  });
-
+  }
+}());

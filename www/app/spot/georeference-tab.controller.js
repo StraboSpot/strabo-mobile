@@ -1,16 +1,15 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .controller('SpotTabGeoreferenceController', function ($scope,
-                                                         $cordovaGeolocation,
-                                                         $ionicPopup,
-                                                         $location,
-                                                         $log,
-                                                         CurrentSpot,
-                                                         ImageMapService,
-                                                         SpotsFactory,
-                                                         MapView) {
+  angular
+    .module('app')
+    .controller('SpotTabGeoreferenceController', SpotTabGeoreferenceController);
+
+  SpotTabGeoreferenceController.$inject = ['$scope', '$cordovaGeolocation', '$ionicPopup', '$location', '$log',
+    'CurrentSpot', 'ImageMapService', 'SpotsFactory', 'MapView'];
+
+  function SpotTabGeoreferenceController($scope, $cordovaGeolocation, $ionicPopup, $location, $log, CurrentSpot,
+                                         ImageMapService, SpotsFactory, MapView) {
     $log.log('inside spot tab georeference Controller');
 
     $scope.showSetFromMapButton = true;
@@ -131,4 +130,5 @@ angular
           return 'Polygon';
       }
     };
-  });
+  }
+}());

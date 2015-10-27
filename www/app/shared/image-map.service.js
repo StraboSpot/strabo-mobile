@@ -2,11 +2,14 @@
  * Service for temporarily saving an image map
  */
 
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .service('ImageMapService', function () {
+  angular
+    .module('app')
+    .service('ImageMapService', ImageMapService);
+
+  function ImageMapService() {
     var imageMaps = [];
     var currentImageMap;
 
@@ -52,4 +55,5 @@ angular
       'getCurrentImageMap': getCurrentImageMap,
       'clearCurrentImageMap': clearCurrentImageMap
     };
-  });
+  }
+}());

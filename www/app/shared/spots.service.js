@@ -4,11 +4,14 @@
  * values for a Spot
  */
 
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .factory('Spots', function () {
+  angular
+    .module('app')
+    .factory('Spots', Spots);
+
+  function Spots() {
     return {
       'all': function () {
         var spotString = window.localStorage['spots'];
@@ -21,4 +24,5 @@ angular
         window.localStorage[key] = angular.toJson(spots);
       }
     };
-  });
+  }
+}());

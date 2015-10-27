@@ -1,10 +1,13 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .controller('SpotTabCustomController', function ($scope,
-                                                   $ionicPopup,
-                                                   $log) {
+  angular
+    .module('app')
+    .controller('SpotTabCustomController', SpotTabCustomController);
+
+  SpotTabCustomController.$inject = ['$scope', '$ionicPopup', '$log'];
+
+  function SpotTabCustomController($scope, $ionicPopup, $log) {
     $log.log('inside spot tab custom Controller');
 
     $scope.createCustomField = function () {
@@ -45,4 +48,5 @@ angular
     $scope.deleteCustomField = function (key) {
       $scope.spot.properties.custom = _.omit($scope.spot.properties.custom, key);
     };
-  });
+  }
+}());

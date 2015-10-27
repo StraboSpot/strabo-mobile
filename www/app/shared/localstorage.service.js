@@ -1,8 +1,11 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .service('LocalStorage', function () {
+  angular
+    .module('app')
+    .service('LocalStorage', LocalStorage);
+
+  function LocalStorage() {
     // localforage is the global for offline map tiles
     var mapTilesDb = localforage.createInstance({
       // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
@@ -33,4 +36,5 @@ angular
       'spotsDb': spotsDb,
       'configDb': configDb
     };
-  });
+  }
+}());

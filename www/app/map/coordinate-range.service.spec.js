@@ -1,17 +1,17 @@
-'use strict';
-
 describe('a CoordinateRange', function () {
+  'use strict';
+
   var CoordinateRange;
   var mock_data;
 
-  beforeEach(module('app'));
-
-  // CoordinateRange instance we're testing
-  beforeEach(inject(function (_CoordinateRange_) {
-    CoordinateRange = _CoordinateRange_;
-  }));
-
   beforeEach(function () {
+    module('app');
+
+    // CoordinateRange instance we're testing
+    inject(function (_CoordinateRange_) {
+      CoordinateRange = _CoordinateRange_;
+    });
+
     mock_data = [{
       'geometry': {
         'type': 'Point',

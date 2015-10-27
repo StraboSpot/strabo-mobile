@@ -1,8 +1,13 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .service('CoordinateRange', function () {
+  angular
+    .module('app')
+    .service('CoordinateRange', CoordinateRange);
+
+  CoordinateRange.$inject = [];
+
+  function CoordinateRange() {
     var allCoords;
 
     var setAllCoordinates = function (spots) {
@@ -102,4 +107,5 @@ angular
       'getMaxLongitude': getMaxLongitude,
       'getMinLongitude': getMinLongitude
     };
-  });
+  }
+}());

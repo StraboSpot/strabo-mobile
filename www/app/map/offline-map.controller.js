@@ -1,11 +1,13 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .controller('OfflineMapController', function ($scope,
-                                                OfflineTilesFactory,
-                                                SlippyTileNamesFactory,
-                                                $ionicPopup) {
+  angular
+    .module('app')
+    .controller('OfflineMapController', OfflineMapController);
+
+  OfflineMapController.$inject = ['$scope', 'OfflineTilesFactory', '$ionicPopup'];
+
+  function OfflineMapController($scope, OfflineTilesFactory, $ionicPopup) {
     // number of tiles we have in offline storage
     $scope.numOfflineTiles = 0;
 
@@ -115,4 +117,5 @@ angular
         }
       });
     };
-  });
+  }
+}());

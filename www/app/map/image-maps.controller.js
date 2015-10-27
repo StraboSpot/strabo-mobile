@@ -1,13 +1,13 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .controller('ImageMapsController', function ($scope,
-                                               $location,
-                                               $window,
-                                               $log,
-                                               ImageMapService,
-                                               SpotsFactory) {
+  angular
+    .module('app')
+    .controller('ImageMapsController', ImageMapsController);
+
+  ImageMapsController.$inject = ['$scope', '$location', '$log', 'ImageMapService', 'SpotsFactory'];
+
+  function ImageMapsController($scope, $location, $log, ImageMapService, SpotsFactory) {
     SpotsFactory.all().then(function (spots) {
       var spotsWithImages = _.filter(spots, function (spot) {
         return spot.images;
@@ -33,4 +33,5 @@ angular
       ImageMapService.setCurrentImageMap(imageMap);
       $location.path('/app/image-maps/' + imageMap.id);
     };
-  });
+  }
+}());

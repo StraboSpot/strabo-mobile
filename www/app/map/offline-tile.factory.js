@@ -1,10 +1,13 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .factory('OfflineTilesFactory', function ($q,
-                                            $log,
-                                            LocalStorage) {
+  angular
+    .module('app')
+    .factory('OfflineTilesFactory', OfflineTilesFactory);
+
+  OfflineTilesFactory.$inject('$q', '$log', 'LocalStorage');
+
+  function OfflineTilesFactory($q, $log, LocalStorage) {
     // used to determine what the map provider is before we archive a tileset
     var currentMapProvider = null;
 
@@ -348,4 +351,5 @@ angular
 
     // return factory
     return factory;
-  });
+  }
+}());

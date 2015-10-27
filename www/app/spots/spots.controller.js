@@ -1,19 +1,15 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .controller('SpotsController', function ($scope,
-                                           $location,
-                                           $ionicModal,
-                                           $ionicPopup,
-                                           $cordovaFile,
-                                           $cordovaDevice,
-                                           $ionicActionSheet,
-                                           $log,
-                                           SpotsFactory,
-                                           LoginFactory,
-                                           CurrentSpot,
-                                           ImageMapService) {
+  angular
+    .module('app')
+    .controller('SpotsController', Spots);
+
+  Spots.$inject = ['$scope', '$ionicModal', '$ionicPopup', '$cordovaFile', '$cordovaDevice', '$ionicActionSheet',
+    '$log', 'SpotsFactory', 'LoginFactory', 'CurrentSpot', 'ImageMapService'];
+
+  function Spots($scope, $ionicModal, $ionicPopup, $cordovaFile, $cordovaDevice, $ionicActionSheet,
+                 $log, SpotsFactory, LoginFactory, CurrentSpot, ImageMapService) {
     // Make sure the current spot is empty
     CurrentSpot.clearCurrentSpot();
 
@@ -378,4 +374,5 @@ angular
         }
       });
     };
-  });
+  }
+}());

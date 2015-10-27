@@ -1,8 +1,11 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .factory('SymbologyFactory', function () {
+  angular
+    .module('app')
+    .factory('SymbologyFactory', SymbologyFactory);
+
+  function SymbologyFactory() {
     var symbols = {
       // Planar Symbols
       'axial_planar_inclined': 'img/geology/cleavage_inclined.png',
@@ -53,4 +56,5 @@ angular
     };
 
     return factory;
-  });
+  }
+}());

@@ -2,12 +2,23 @@
  * Service for dealing with the creation of new spots and editing of existing spots
  */
 
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .service('NewSpot', function () {
+  angular
+    .module('app')
+    .service('NewSpot', NewSpot);
+
+  function NewSpot() {
     var newSpot;
+
+    var getSpotTypes = [
+      {'label': 'Station (spatial)', 'value': 'group', 'tab': 'details'},
+      {'label': 'Group (conceptual)', 'value': 'group', 'tab': 'details'},
+      {'label': 'Measurement or Observation', 'value': 'point', 'tab': 'details'},
+      {'label': 'Contact or Trace', 'value': 'line', 'tab': 'details'},
+      {'label': 'Rock Description', 'value': 'polygon', 'tab': 'rockdescription'}
+    ];
 
     // Initialize a new Spot
     var setNewSpot = function (jsonObj) {
@@ -43,8 +54,10 @@ angular
     };
 
     return {
+      'getSpotTypes': getSpotTypes,
       'setNewSpot': setNewSpot,
       'getNewSpot': getNewSpot,
       'clearNewSpot': clearNewSpot
     };
-  });
+  }
+}());

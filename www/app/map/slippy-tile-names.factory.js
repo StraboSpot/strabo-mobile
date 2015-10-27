@@ -1,8 +1,11 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .factory('SlippyTileNamesFactory', function () {
+  angular
+    .module('app')
+    .factory('SlippyTileNamesFactory', SlippyTileNamesFactory);
+
+  function SlippyTileNamesFactory() {
     var factory = {};
 
     // borrowed from http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
@@ -12,7 +15,8 @@ angular
 
     // borrowed from http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
     var lat2tile = function (lat, zoom) {
-      return (Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, zoom)));
+      return (Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2,
+          zoom)));
     };
 
     // borrowed from http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
@@ -83,4 +87,5 @@ angular
 
     // return factory
     return factory;
-  });
+  }
+}());

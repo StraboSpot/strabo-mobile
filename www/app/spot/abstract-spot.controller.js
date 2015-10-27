@@ -1,23 +1,17 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .controller('SpotController', function ($scope,
-                                          $rootScope,
-                                          $state,
-                                          $stateParams,
-                                          $location,
-                                          $ionicHistory,
-                                          $ionicPopup,
-                                          $ionicModal,
-                                          $ionicActionSheet,
-                                          $log,
-                                          SpotsFactory,
-                                          SettingsFactory,
-                                          NewSpot,
-                                          CurrentSpot,
-                                          ImageMapService,
-                                          ContentModelSurveyFactory) {
+  angular
+    .module('app')
+    .controller('SpotController', SpotController);
+
+  SpotController.$inject = ['$scope', '$rootScope', '$state', '$stateParams', '$location', '$ionicHistory',
+    '$ionicPopup', '$ionicModal', '$ionicActionSheet', '$log', 'SpotsFactory', 'SettingsFactory', 'NewSpot',
+    'CurrentSpot', 'ImageMapService', 'ContentModelSurveyFactory'];
+
+  function SpotController($scope, $rootScope, $state, $stateParams, $location, $ionicHistory,
+                          $ionicPopup, $ionicModal, $ionicActionSheet, $log, SpotsFactory, SettingsFactory, NewSpot,
+                          CurrentSpot, ImageMapService, ContentModelSurveyFactory) {
     // this scope is the parent scope for the SpotController that all child SpotController will inherit
 
     $rootScope.$state = $state;
@@ -777,4 +771,5 @@ angular
         {'type': 'is otherwise related to', 'inverse': 'is otherwise related to'}
       ]
     };
-  });
+  }
+}());

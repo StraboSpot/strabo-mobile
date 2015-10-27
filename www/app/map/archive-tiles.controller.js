@@ -1,13 +1,15 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular.module('app')
-  .controller('ArchiveTilesController', function ($scope,
-                                                  $state,
-                                                  $log,
-                                                  $ionicHistory,
-                                                  ViewExtentFactory,
-                                                  SlippyTileNamesFactory,
-                                                  OfflineTilesFactory) {
+  angular
+    .module('app')
+    .controller('ArchiveTilesController', ArchiveTilesController);
+
+  ArchiveTilesController.$inject = ['$scope', '$state', '$log', '$ionicHistory', 'ViewExtentFactory',
+    'SlippyTileNamesFactory', 'OfflineTilesFactory'];
+
+  function ArchiveTilesController($scope, $state, $log, $ionicHistory, ViewExtentFactory,
+                                  SlippyTileNamesFactory, OfflineTilesFactory) {
     $scope.goToMap = function () {
       $state.go('app.map');
     };
@@ -168,4 +170,5 @@ angular.module('app')
           });
       }
     };
-  });
+  }
+}());

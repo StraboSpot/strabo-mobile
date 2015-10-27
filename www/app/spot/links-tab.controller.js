@@ -1,10 +1,13 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .controller('SpotTabLinksController', function ($scope,
-                                                  $log,
-                                                  CurrentSpot) {
+  angular
+    .module('app')
+    .controller('SpotTabLinksController', SpotTabLinksController);
+
+  SpotTabLinksController.$inject = ['$scope', '$log', 'CurrentSpot'];
+
+  function SpotTabLinksController($scope, $log, CurrentSpot) {
     $log.log('inside spot tab links Controller');
 
     $scope.linkSpot = function () {
@@ -18,4 +21,5 @@ angular
       });
       related_spot['relationship'] = relationship.type;
     };
-  });
+  }
+}());

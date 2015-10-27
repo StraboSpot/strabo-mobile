@@ -1,8 +1,11 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .filter('normalizeBytes', function () {
+  angular
+    .module('app')
+    .filter('normalizeBytes', normalizeBytes);
+
+  function normalizeBytes() {
     return function (bytes) {
       var sizes = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
       var k = 1000;
@@ -18,4 +21,5 @@ angular
         return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
       }
     };
-  });
+  }
+}());

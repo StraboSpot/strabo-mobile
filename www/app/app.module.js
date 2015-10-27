@@ -1,8 +1,10 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app', [
-    'ionic',
-    'ngCordova',
-    'ngMessages'
-  ]);
+  angular
+    .module('app', [
+      'ionic',
+      'ngCordova',
+      'ngMessages'
+    ]);
+}());

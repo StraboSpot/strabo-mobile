@@ -1,15 +1,15 @@
-'use strict';
-
 describe('normalizeBytes filter', function ($filter) {
+  'use strict';
+
   var normalize;
 
-  beforeEach(module('app'));
-
-  beforeEach(inject(function (_$filter_) {
-    $filter = _$filter_;
-  }));
-
   beforeEach(function () {
+    module('app');
+
+    inject(function (_$filter_) {
+      $filter = _$filter_;
+    });
+
     normalize = $filter('normalizeBytes');
   });
 

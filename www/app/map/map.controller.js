@@ -1,35 +1,27 @@
-'use strict';
+(function () {
+  'use strict';
 
-Math.radians = function (deg) {
-  return deg * (Math.PI / 180);
-};
+  angular
+    .module('app')
+    .controller('MapController', MapController);
 
-angular
-  .module('app')
-  .controller('MapController', function ($scope,
-                                         $rootScope,
-                                         $state,
-                                         $cordovaGeolocation,
-                                         $location,
-                                         $filter,
-                                         $ionicHistory,
-                                         $ionicModal,
-                                         $ionicPopup,
-                                         $ionicActionSheet,
-                                         $ionicSideMenuDelegate,
-                                         $log,
-                                         NewSpot,
-                                         CurrentSpot,
-                                         CoordinateRange,
-                                         MapView,
-                                         OfflineTilesFactory,
-                                         SlippyTileNamesFactory,
-                                         SpotsFactory,
-                                         ViewExtentFactory,
-                                         SymbologyFactory,
-                                         MapLayerFactory) {
+  MapController.$inject = ['$scope', '$window', '$rootScope', '$state', '$cordovaGeolocation', '$location',
+    '$filter', '$ionicHistory', '$ionicModal', '$ionicPopup', '$ionicActionSheet',
+    '$ionicSideMenuDelegate', '$log', 'NewSpot', 'CurrentSpot', 'CoordinateRange',
+    'MapView', 'OfflineTilesFactory', 'SlippyTileNamesFactory', 'SpotsFactory',
+    'ViewExtentFactory', 'SymbologyFactory', 'MapLayerFactory', 'ImageMapService'];
+
+  function MapController($scope, $window, $rootScope, $state, $cordovaGeolocation, $location,
+                         $filter, $ionicHistory, $ionicModal, $ionicPopup, $ionicActionSheet,
+                         $ionicSideMenuDelegate, $log, NewSpot, CurrentSpot, CoordinateRange,
+                         MapView, OfflineTilesFactory, SlippyTileNamesFactory, SpotsFactory,
+                         ViewExtentFactory, SymbologyFactory, MapLayerFactory, ImageMapService) {
     // disable dragging back to ionic side menu because this affects drawing tools
     $ionicSideMenuDelegate.canDragContent(false);
+
+    Math.radians = function (deg) {
+      return deg * (Math.PI / 180);
+    };
 
     // ol3 map
     var map;
@@ -1075,4 +1067,5 @@ angular
         }
       });
     };
-  });
+  }
+}());

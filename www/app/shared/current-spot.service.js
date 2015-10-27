@@ -3,11 +3,14 @@
  * Used for preserving spot when switching tabs or changing the location/geometry
  */
 
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .service('CurrentSpot', function () {
+  angular
+    .module('app')
+    .service('CurrentSpot', CurrentSpot);
+
+  function CurrentSpot() {
     var currentSpot;
 
     var setCurrentSpot = function (geojsonObj) {
@@ -27,4 +30,5 @@ angular
       'getCurrentSpot': getCurrentSpot,
       'clearCurrentSpot': clearCurrentSpot
     };
-  });
+  }
+}());

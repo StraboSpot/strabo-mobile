@@ -1,9 +1,13 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .factory('SpotsFactory', function ($q,
-                                     LocalStorage) {
+  angular
+    .module('app')
+    .factory('SpotsFactory', SpotsFactory);
+
+  SpotsFactory.$inject = ['$q', 'LocalStorage'];
+
+  function SpotsFactory($q, LocalStorage) {
     var factory = {};
 
     factory.all = function () {
@@ -111,4 +115,5 @@ angular
 
     // return factory
     return factory;
-  });
+  }
+}());

@@ -1,8 +1,13 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .factory('MapLayerFactory', function (OfflineTilesFactory) {
+  angular
+    .module('app')
+    .factory('MapLayerFactory', MapLayerFactory);
+
+  MapLayerFactory.$inject = ['OfflineTilesFactory'];
+
+  function MapLayerFactory(OfflineTilesFactory) {
     var factory = {};
 
     // vector layer where we house all the geojson spot objects
@@ -285,4 +290,5 @@ angular
     };
 
     return factory;
-  });
+  }
+}());

@@ -1,13 +1,13 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .controller('SyncModalController', function ($scope,
-                                               $ionicPopup,
-                                               $log,
-                                               SpotsFactory,
-                                               SyncService,
-                                               LoginFactory) {
+  angular
+    .module('app')
+    .controller('SyncModalController', SyncModalController);
+
+  SyncModalController.$inject = ['$scope', '$ionicPopup', '$log', 'SpotsFactory', 'SyncService', 'LoginFactory'];
+
+  function SyncModalController($scope, $ionicPopup, $log, SpotsFactory, SyncService, LoginFactory) {
     // base64 encoded login
     $scope.encodedLogin = null;
 
@@ -380,4 +380,5 @@ angular
         }
       });
     };
-  });
+  }
+}());

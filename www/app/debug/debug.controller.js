@@ -1,10 +1,13 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .controller('DebugController', function ($scope,
-                                           $log,
-                                           SpotsFactory) {
+  angular
+    .module('app')
+    .controller('DebugController', DebugController);
+
+  DebugController.$inject = ['$scope', '$log', 'SpotsFactory'];
+
+  function DebugController($scope, $log, SpotsFactory) {
     $scope.data = {
       'pointsToGenerate': null
     };
@@ -66,4 +69,5 @@ angular
         });
       }
     };
-  });
+  }
+}());

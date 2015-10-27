@@ -2,11 +2,14 @@
  * Save the current map view lat, long and zoom level
  */
 
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .service('MapView', function () {
+  angular
+    .module('app')
+    .service('MapView', MapView);
+
+  function MapView() {
     var mapView;
 
     var setMapView = function (view) {
@@ -21,4 +24,5 @@ angular
       'setMapView': setMapView,
       'getMapView': getMapView
     };
-  });
+  }
+}());

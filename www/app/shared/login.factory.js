@@ -1,7 +1,12 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular.module('app')
-  .factory('LoginFactory', function (LocalStorage) {
+  angular.module('app')
+    .factory('LoginFactory', LoginFactory);
+
+  LoginFactory.$inject = ['LocalStorage'];
+
+  function LoginFactory(LocalStorage) {
     var factory = {};
 
     factory.setLogin = function (loginInfo) {
@@ -17,4 +22,5 @@ angular.module('app')
     };
 
     return factory;
-  });
+  }
+}());

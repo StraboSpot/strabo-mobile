@@ -1,13 +1,13 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .controller('LoginController', function ($scope,
-                                           $state,
-                                           $ionicPopup,
-                                           $log,
-                                           LoginFactory,
-                                           SyncService) {
+  angular
+    .module('app')
+    .controller('LoginController', LoginController);
+
+  LoginController.$inject = ['$scope', '$state', '$ionicPopup', '$log', 'LoginFactory', 'SyncService'];
+
+  function LoginController($scope, $state, $ionicPopup, $log, LoginFactory, SyncService) {
     $scope.skip = function () {
       $state.go('app.spots');
     };
@@ -60,4 +60,5 @@ angular
         });
       }
     };
-  });
+  }
+}());

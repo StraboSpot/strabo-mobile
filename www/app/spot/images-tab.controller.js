@@ -1,15 +1,15 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .controller('SpotTabImagesController', function ($scope,
-                                                   $cordovaCamera,
-                                                   $ionicPopup,
-                                                   $ionicModal,
-                                                   $location,
-                                                   $log,
-                                                   SpotsFactory,
-                                                   ImageMapService) {
+  angular
+    .module('app')
+    .controller('SpotTabImagesController', SpotTabImagesController);
+
+  SpotTabImagesController.$inject = ['$scope', '$cordovaCamera', '$ionicPopup', '$ionicModal', '$location', '$log',
+    'SpotsFactory', 'ImageMapService'];
+
+  function SpotTabImagesController($scope, $cordovaCamera, $ionicPopup, $ionicModal, $location, $log,
+                                   SpotsFactory, ImageMapService) {
     $log.log('inside spot tab images Controller');
 
     $scope.showImages = function (index) {
@@ -226,4 +226,5 @@ angular
         }
       }));
     };
-  });
+  }
+}());

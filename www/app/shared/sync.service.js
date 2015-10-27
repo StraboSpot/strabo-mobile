@@ -1,8 +1,13 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .service('SyncService', function ($http) {
+  angular
+    .module('app')
+    .service('SyncService', SyncService);
+
+  SyncService.$inject = ['$http'];
+
+  function SyncService($http) {
     // Return public API
     return ({
       'authenticateUser': authenticateUser,
@@ -263,4 +268,4 @@ angular
       return (response);
     }
   }
-);
+}());

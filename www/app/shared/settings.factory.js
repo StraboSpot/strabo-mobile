@@ -1,8 +1,13 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .factory('SettingsFactory', function (LocalStorage) {
+  angular
+    .module('app')
+    .factory('SettingsFactory', SettingsFactory);
+
+  SettingsFactory.$inject = ['LocalStorage'];
+
+  function SettingsFactory(LocalStorage) {
     var factory = {};
 
     factory.setNamePrefix = function (name_prefix) {
@@ -46,4 +51,5 @@ angular
     };
 
     return factory;
-  });
+  }
+}());

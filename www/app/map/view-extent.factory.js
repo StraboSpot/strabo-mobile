@@ -1,8 +1,11 @@
-'use strict';
+(function () {
+  'use strict';
 
-angular
-  .module('app')
-  .factory('ViewExtentFactory', function () {
+  angular
+    .module('app')
+    .factory('ViewExtentFactory', ViewExtentFactory);
+
+  function ViewExtentFactory() {
     var viewExtent;
 
     var factory = {};
@@ -26,4 +29,5 @@ angular
 
     // return factory
     return factory;
-  });
+  }
+}());

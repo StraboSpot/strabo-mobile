@@ -114,7 +114,7 @@ rules:
 
   strict:
     - 2
-    - global
+    - function
 
   # http://eslint.org/docs/rules/#variables
   no-catch-shadow: 2
