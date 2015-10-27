@@ -5,7 +5,7 @@
     .module('app')
     .factory('OfflineTilesFactory', OfflineTilesFactory);
 
-  OfflineTilesFactory.$inject('$q', '$log', 'LocalStorage');
+  OfflineTilesFactory.$inject = ['$q', '$log', 'LocalStorage'];
 
   function OfflineTilesFactory($q, $log, LocalStorage) {
     // used to determine what the map provider is before we archive a tileset
