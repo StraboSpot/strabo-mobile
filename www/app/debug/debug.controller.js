@@ -35,18 +35,45 @@
       }
     };
 
-    // generate a random point in the US
+    // bounding area for downtown Tucson
+    var TUSBounds = {
+      'topRight': {
+        'lat': 32.226293,
+        'lng': -110.972307
+      },
+      'bottomLeft': {
+        'lat': 32.214196,
+        'lng': -110.985042
+      }
+    };
+
+    var bounds = TUSBounds;
+
+    function rand(min, max, interval) {
+      if (typeof(interval) === 'undefined') interval = 1;
+      var r = Math.floor(Math.random() * (max - min + interval) / interval);
+      return r * interval + min;
+    }
+
+    // generate a random point in the bounds
     var generateRandomPoint = function () {
-      var lat = _.random(UsBounds.topRight.lat, UsBounds.bottomLeft.lat);
-      var lng = _.random(UsBounds.topRight.lng, UsBounds.bottomLeft.lng);
+      var lat = rand(bounds.topRight.lat, bounds.bottomLeft.lat, 0.0001);
+      var lng = rand(bounds.bottomLeft.lng, bounds.topRight.lng, 0.0001);
       return new Point(lat, lng);
     };
+
+    var feature_types = ['bedding', 'contact', 'foliation', 'axial_planar_surface', 'fracture', 'joint',
+      'fault_plane', 'shear_fracture', 'shear_zone', 'other', 'vein'];
 
     var generateRandomGeojsonPoint = function (num) {
       for (var i = 0; i < num; i++) {
         var point = generateRandomPoint();
 
         var key = 'x' + i.toString();
+
+        // Set the date and time to now
+        var d = new Date(Date.now());
+        d.setMilliseconds(0);
 
         var geojsonPoint = {
           'geometry': {
@@ -55,12 +82,14 @@
           },
           'type': 'Feature',
           'properties': {
-            'date': '2015-01-04',
-            'time': '11:20',
+            'type': 'point',
+            'planar_feature_type': feature_types[Math.floor(Math.random() * feature_types.length)],
+            'date': d,
+            'time': d,
             'strike': _.random(0, 180),
-            'dip': _.random(0, 180),
-            'name': 'x' + i.toString(),
-            'id': new Date().getTime().toString()
+            'dip': _.random(0, 90),
+            'name': 'x' + _.random(10, 99) + i.toString(),
+            'id': Math.floor((new Date().getTime() + Math.random()) * 10)
           }
         };
 
