@@ -110,7 +110,7 @@
       element.appendChild(drawLine);
       element.appendChild(drawPoly);
 
-      ol.control.Control.call(vm, {
+      ol.control.Control.call(this, {
         'element': element,
         'target': options.target
       });
@@ -676,8 +676,8 @@
 
     // Point object
     var Point = function (lat, lng) {
-      vm.lat = lat;
-      vm.lng = lng;
+      this.lat = lat;
+      this.lng = lng;
     };
     /*
      var getMapViewExtent = function () {
@@ -893,14 +893,14 @@
 
         var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
           return feature;
-        }, vm, function (layer) {
+        }, this, function (layer) {
           // we only want the layer where the spots are located
           return (layer instanceof ol.layer.Vector) && layer.get('name') !== 'drawLayer' && layer.get('name') !== 'geolocationLayer';
         });
 
         var layer = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
           return layer;
-        }, vm, function (layer) {
+        }, this, function (layer) {
           // we only want the layer where the spots are located
           return (layer instanceof ol.layer.Vector) && layer.get('name') !== 'drawLayer' && layer.get('name') !== 'geolocationLayer';
         });

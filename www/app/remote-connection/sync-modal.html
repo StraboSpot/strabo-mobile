@@ -2,15 +2,16 @@
   <ion-header-bar class='bar-dark nav-title-slide-ios7'>
     <h1 class='title'>Sync Spots with Strabo Database</h1>
 
-    <div class='button button-clear' ng-click='closeModal("syncModal")'><span class='icon ion-close'></span></div>
+    <div class='button button-clear' ng-click='vm.closeModal("syncModal")'><span class='icon ion-close'></span></div>
   </ion-header-bar>
-  <ion-content class='has-header' ng-controller='SyncModalController as vm'>
+  <ion-content class='has-header' ng-controller='SyncModalController as vmChild'>
     <h6>You are currently logged in as: {{ vm.loginEmail }}</h6>
 
-    <div ng-show='vm.progress.showProgress'>You are uploading spot {{ vm.progress.current }} of {{ vm.progress.total
+    <div ng-show='vmChild.progress.showProgress'>You are uploading spot {{ vmChild.progress.current }} of {{
+      vmChild.progress.total
       }}
     </div>
-    <div ng-show='vm.showDatasetOpts() && !vm.progress.showProgress'>
+    <div ng-show='vmChild.showDatasetOpts() && !vmChild.progress.showProgress'>
       <div class='list'>
         <div>
           <!-- List Current Datasets -->
@@ -18,19 +19,19 @@
             <div class='input-label'>
               Select a Dataset
             </div>
-            <select ng-model='vm.dataset'
-                    ng-options='item.name for item in vm.datasets'>
+            <select ng-model='vmChild.dataset'
+                    ng-options='item.name for item in vmChild.datasets'>
             </select>
           </label>
 
           <!-- Create New Dataset -->
-          <div class='item item-input-inset' ng-show='vm.dataset.name=="-- new dataset --"'>
+          <div class='item item-input-inset' ng-show='vmChild.dataset.name=="-- new dataset --"'>
             <label class='item-input-wrapper item-stacked-label item-text-wrap'>
               <span class='input-label'>New Dataset Name</span>
               <input type='text'
-                     ng-model='vm.dataset_name'>
+                     ng-model='vmChild.dataset_name'>
             </label>
-            <button ng-click='vm.createDataset()' ng-disabled='!vm.dataset_name'
+            <button ng-click='vmChild.createDataset()' ng-disabled='!vmChild.dataset_name'
                     class='button button-positive button-small'>
               Create Dataset
             </button>
@@ -39,35 +40,35 @@
           <!-- Show Dataset Operations -->
           <div>
             <div class='list'>
-              <label class='item item-radio' ng-hide='vm.dataset.name=="-- new dataset --"'>
-                <input type='radio' name='group' ng-model='vm.operation' value='download'>
+              <label class='item item-radio' ng-hide='vmChild.dataset.name=="-- new dataset --"'>
+                <input type='radio' name='group' ng-model='vmChild.operation' value='download'>
 
                 <div class='item-content'>
                   <i class='icon ion-android-download'></i>
-                  Download all Spots from <b>{{ vm.dataset.name }}</b>
+                  Download all Spots from <b>{{ vmChild.dataset.name }}</b>
                 </div>
                 <i class='radio-icon ion-checkmark'></i>
               </label>
-              <label class='item item-radio' ng-hide='vm.dataset.name=="-- new dataset --"'>
-                <input type='radio' name='group' ng-model='vm.operation' value='upload'>
+              <label class='item item-radio' ng-hide='vmChild.dataset.name=="-- new dataset --"'>
+                <input type='radio' name='group' ng-model='vmChild.operation' value='upload'>
 
                 <div class='item-content'>
                   <i class='icon ion-upload'></i>
-                  Upload all Spots to <b>{{ vm.dataset.name }}</b>
+                  Upload all Spots to <b>{{ vmChild.dataset.name }}</b>
                 </div>
                 <i class='radio-icon ion-checkmark'></i>
               </label>
-              <label class='item item-radio' ng-hide='vm.dataset.name=="-- new dataset --"'>
-                <input type='radio' name='group' ng-model='vm.operation' value='remove'>
+              <label class='item item-radio' ng-hide='vmChild.dataset.name=="-- new dataset --"'>
+                <input type='radio' name='group' ng-model='vmChild.operation' value='remove'>
 
                 <div class='item-content'>
                   <i class='icon ion-trash-b'></i>
-                  Remove all Spots from <b>{{ vm.dataset.name }}</b> and delete <b>{{ vm.dataset.name }}</b>
+                  Remove all Spots from <b>{{ vmChild.dataset.name }}</b> and delete <b>{{ vmChild.dataset.name }}</b>
                 </div>
                 <i class='radio-icon ion-checkmark'></i>
               </label>
               <label class='item item-radio'>
-                <input type='radio' name='group' ng-model='vm.operation' value='deleteAll'>
+                <input type='radio' name='group' ng-model='vmChild.operation' value='deleteAll'>
 
                 <div class='item-content'>
                   <i class='icon ion-trash-b'></i>
@@ -76,19 +77,21 @@
                 <i class='radio-icon ion-checkmark'></i>
               </label>
             </div>
-            <button ng-click='vm.startDatasetOp()' ng-disabled='!vm.dataset || !vm.operation'
+            <button ng-click='vmChild.startDatasetOp()' ng-disabled='!vmChild.dataset || !vmChild.operation'
                     class='button button-positive icon-left icon'>Start
             </button>
           </div>
         </div>
       </div>
     </div>
-    <div ng-show='vm.progress.showUploadDone'>Finished uploading spots to Dataset <b>{{ vm.dataset.name }}</b> on the
+    <div ng-show='vmChild.progress.showUploadDone'>Finished uploading spots to Dataset <b>{{ vmChild.dataset.name }}</b>
+      on the
       server.
     </div>
-    <div ng-show='vm.progress.showDownloadDone'>Finished downloading spots from Dataset <b>{{ vm.dataset.name }}</b> on
+    <div ng-show='vmChild.progress.showDownloadDone'>Finished downloading spots from Dataset <b>{{ vmChild.dataset.name
+      }}</b> on
       the server.
     </div>
-    <div>{{ vm.downloadProgress }}</div>
+    <div>{{ vmChild.downloadProgress }}</div>
   </ion-content>
 </ion-modal-view>

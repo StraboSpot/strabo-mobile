@@ -9,6 +9,7 @@
 
   function SyncModalController($scope, $ionicPopup, $log, SpotsFactory, SyncService, LoginFactory) {
     var vm = this;
+    var vmParent = $scope.vm;
 
     // base64 encoded login
     vm.encodedLogin = null;
@@ -289,11 +290,11 @@
           }
         }
         // Look for any current spots that match the id of the downloaded spot and remove the current spot
-        if (!_.filter($scope.spots,
+        if (!_.filter(vmParent.spots,
             function (item) {
               return _.findWhere(item, {'id': spot.properties.id});
             })[0]) {
-          $scope.spots.push(spot);
+          vmParent.spots.push(spot);
         }
         SpotsFactory.save(spot);
       };
