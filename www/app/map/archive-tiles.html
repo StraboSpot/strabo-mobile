@@ -1,38 +1,43 @@
-<ion-view title="Save Offline Map">
-  <ion-nav-buttons side="left">
-    <button ng-click="goToMap();" class="button button-icon icon ion-arrow-left-c"></button>
+<ion-view title='Save Offline Map'>
+  <ion-nav-buttons side='left'>
+    <button ng-click='vm.goToMap();' class='button button-icon icon ion-arrow-left-c'></button>
   </ion-nav-buttons>
-  <ion-content class="padding has-header">
+  <ion-content class='padding has-header'>
 
-    <label class="item item-input item-stacked-label item-text-wrap">
-      <span class="input-label"><b>Map Name:</b></span>
-      <input type="text" ng-model="map.name" autofocus>
+    <label class='item item-input item-stacked-label item-text-wrap'>
+      <span class='input-label'><b>Map Name:</b></span>
+      <input type='text' ng-model='vm.map.name' autofocus>
     </label>
 
-    <ion-checkbox ng-model="map.downloadMacrostrat" ng-show="map.showDownloadMacrostrat">
+    <ion-checkbox ng-model='vm.map.downloadMacrostrat' ng-show='vm.map.showDownloadMacrostrat'>
       Download Macrostrat-Geologic tiles too?
     </ion-checkbox>
 
-    <ion-checkbox ng-model="map.downloadZooms" ng-show="showDownload" ng-change="onChangeDownloadZooms()">
+    <ion-checkbox ng-model='vm.map.downloadZooms' ng-show='vm.map.showDownloadInnerZooms'
+                  ng-change='vm.onChangeDownloadZooms()'>
       Download inner zooms?
     </ion-checkbox>
 
     <br>
-    <p>Current number of offline tiles: {{numOfflineTiles}}</p>
-    <p>Estimated number of tiles to download: {{ (map.downloadMacrostrat) ? map.tiles.length * 2 : map.tiles.length}}</p>
 
-    <button class="button button-block button-positive" ng-disabled="!map.name" ng-click="submit($event)">Save</button>
+    <p>Current number of offline tiles: {{vm.numOfflineTiles}}</p>
+
+    <p>Estimated number of tiles to download: {{ (vm.map.downloadMacrostrat) ? vm.map.tiles.length * 2 :
+      vm.map.tiles.length}}</p>
+
+    <button class='button button-block button-positive' ng-disabled='!vm.map.name' ng-click='vm.submit($event)'>Save
+    </button>
 
     *Offline Maps are loaded automatically when offline. Edit and delete options for Saved Maps will be available under the Offline Maps menu item.
 
-    <div ng-show="map.showProgressBar">
+    <div ng-show='vm.map.showProgressBar'>
       Downloading basemap tiles:
-      <progress ng-value="map.percentDownload" max="100"></progress>
+      <progress ng-value='vm.map.percentDownload' max='100'></progress>
     </div>
 
-    <div ng-show="map.showOverlayProgressBar">
+    <div ng-show='vm.map.showOverlayProgressBar'>
       Downloading geologic map overlay tiles:
-      <progress ng-value="map.overLayPercentDownload" max="100"></progress>
+      <progress ng-value='vm.map.overLayPercentDownload' max='100'></progress>
     </div>
 
   </ion-content>

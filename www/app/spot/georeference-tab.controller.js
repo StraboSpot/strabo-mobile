@@ -10,35 +10,38 @@
 
   function SpotTabGeoreferenceController($scope, $cordovaGeolocation, $ionicPopup, $location, $log, CurrentSpot,
                                          ImageMapService, SpotsFactory, MapView) {
+    var vm = this;
+    var vmParent = $scope.vm;
+
     $log.log('inside spot tab georeference Controller');
 
-    $scope.showSetFromMapButton = true;
+    vm.showSetFromMapButton = true;
 
     // Has the spot been mapped yet?
-    if ($scope.spot.geometry) {
-      if ($scope.spot.geometry.coordinates) {
+    if (vmParent.spot.geometry) {
+      if (vmParent.spot.geometry.coordinates) {
         // If the geometry coordinates contain any null values, delete the geometry; it shouldn't be defined
-        if (_.indexOf(_.flatten($scope.spot.geometry.coordinates), null) !== -1) {
-          delete $scope.spot.geometry;
+        if (_.indexOf(_.flatten(vmParent.spot.geometry.coordinates), null) !== -1) {
+          delete vmParent.spot.geometry;
         }
         else {
-          $scope.mapped = true;
-          $scope.viewOnMapButton = true;
+          vm.mapped = true;
+          vm.viewOnMapButton = true;
 
           // Only allow set location from map if geometry type is not MultiPoint, MultiLineString or MultiPolygon
-          $scope.showSetFromMapButton = !($scope.spot.geometry.type === 'MultiPoint' || $scope.spot.geometry.type === 'MultiLineString' || $scope.spot.geometry.type === 'MultiPolygon');
+          vm.showSetFromMapButton = !(vmParent.spot.geometry.type === 'MultiPoint' || vmParent.spot.geometry.type === 'MultiLineString' || vmParent.spot.geometry.type === 'MultiPolygon');
 
           // Only show Latitude and Longitude input boxes if the geometry type is Point
-          if ($scope.spot.geometry.type === 'Point') {
-            if (_.has($scope.spot.properties, 'image_map')) {
-              $scope.showXY = true;
-              $scope.y = $scope.spot.geometry.coordinates[1];
-              $scope.x = $scope.spot.geometry.coordinates[0];
+          if (vmParent.spot.geometry.type === 'Point') {
+            if (_.has(vmParent.spot.properties, 'image_map')) {
+              vm.showXY = true;
+              vm.y = vmParent.spot.geometry.coordinates[1];
+              vm.x = vmParent.spot.geometry.coordinates[0];
             }
             else {
-              $scope.showLatLng = true;
-              $scope.lat = $scope.spot.geometry.coordinates[1];
-              $scope.lng = $scope.spot.geometry.coordinates[0];
+              vm.showLatLng = true;
+              vm.lat = vmParent.spot.geometry.coordinates[1];
+              vm.lng = vmParent.spot.geometry.coordinates[0];
             }
           }
         }
@@ -46,37 +49,37 @@
     }
 
     // Only allow set location to user's location if geometry type is Point
-    $scope.showMyLocationButton = $scope.spot.properties.type === 'point' && !$scope.showXY;
+    vm.showMyLocationButton = vmParent.spot.properties.type === 'point' && !vm.showXY;
 
     // Update the value for the Latitude from the user input
-    $scope.updateLatitude = function (lat) {
-      $scope.spot.geometry.coordinates[1] = lat;
+    vm.updateLatitude = function (lat) {
+      vmParent.spot.geometry.coordinates[1] = lat;
     };
 
     // Update the value for the Longitude from the user input
-    $scope.updateLongitude = function (lng) {
-      $scope.spot.geometry.coordinates[0] = lng;
+    vm.updateLongitude = function (lng) {
+      vmParent.spot.geometry.coordinates[0] = lng;
     };
 
     // Update the value for the x from the user input
-    $scope.updateX = function (x) {
-      $scope.spot.geometry.coordinates[0] = x;
+    vm.updateX = function (x) {
+      vmParent.spot.geometry.coordinates[0] = x;
     };
 
     // Update the value for the Longitude from the user input
-    $scope.updateY = function (y) {
-      $scope.spot.geometry.coordinates[1] = y;
+    vm.updateY = function (y) {
+      vmParent.spot.geometry.coordinates[1] = y;
     };
 
     // View the spot on the map
-    $scope.viewSpot = function () {
-      if (_.has($scope.spot.properties, 'image_map')) {
-        var image = _.findWhere(ImageMapService.getImageMaps(), {'id': $scope.spot.properties.image_map});
+    vm.viewSpot = function () {
+      if (_.has(vmParent.spot.properties, 'image_map')) {
+        var image = _.findWhere(ImageMapService.getImageMaps(), {'id': vmParent.spot.properties.image_map});
         ImageMapService.setCurrentImageMap(image);    // Save referenced image map
-        $location.path('/app/image-maps/' + $scope.spot.properties.image_map);
+        $location.path('/app/image-maps/' + vmParent.spot.properties.image_map);
       }
       else {
-        var center = SpotsFactory.getCenter($scope.spot);
+        var center = SpotsFactory.getCenter(vmParent.spot);
         var spotCenter = ol.proj.transform([center.lon, center.lat], 'EPSG:4326', 'EPSG:3857');
         MapView.setMapView(new ol.View({
           'center': spotCenter,
@@ -87,16 +90,16 @@
     };
 
     // Get current location of the user
-    $scope.getCurrentLocation = function () {
+    vm.getCurrentLocation = function () {
       $cordovaGeolocation.getCurrentPosition().then(function (position) {
-        $scope.lat = position.coords.latitude;
-        $scope.lng = position.coords.longitude;
-        $scope.spot.geometry = {
+        vm.lat = position.coords.latitude;
+        vm.lng = position.coords.longitude;
+        vmParent.spot.geometry = {
           'type': 'Point',
-          'coordinates': [$scope.lng, $scope.lat]
+          'coordinates': [vm.lng, vm.lat]
         };
-        $scope.showLatLng = true;
-        $scope.mapped = true;
+        vm.showLatLng = true;
+        vm.mapped = true;
       }, function (err) {
         $ionicPopup.alert({
           'title': 'Alert!',
@@ -106,20 +109,20 @@
     };
 
     // Open the map so the user can set the location for the spot
-    $scope.setFromMap = function () {
-      CurrentSpot.setCurrentSpot($scope.spot);    // Save current spot
-      if (_.has($scope.spot.properties, 'image_map')) {
-        var image = _.findWhere(ImageMapService.getImageMaps(), {'id': $scope.spot.properties.image_map});
+    vm.setFromMap = function () {
+      CurrentSpot.setCurrentSpot(vmParent.spot);    // Save current spot
+      if (_.has(vmParent.spot.properties, 'image_map')) {
+        var image = _.findWhere(ImageMapService.getImageMaps(), {'id': vmParent.spot.properties.image_map});
         ImageMapService.setCurrentImageMap(image);    // Save referenced image map
-        $location.path('/app/image-maps/' + $scope.spot.properties.image_map);
+        $location.path('/app/image-maps/' + vmParent.spot.properties.image_map);
       }
       else {
         $location.path('/app/map');
       }
     };
 
-    $scope.getGeometryType = function () {
-      switch ($scope.spot.properties.type) {
+    vm.getGeometryType = function () {
+      switch (vmParent.spot.properties.type) {
         case 'point':
           return 'Point';
         case 'line':

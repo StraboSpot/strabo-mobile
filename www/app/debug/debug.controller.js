@@ -5,72 +5,43 @@
     .module('app')
     .controller('DebugController', DebugController);
 
-  DebugController.$inject = ['$scope', '$log', 'SpotsFactory'];
+  DebugController.$inject = ['$log', 'SpotsFactory'];
 
-  function DebugController($scope, $log, SpotsFactory) {
-    $scope.data = {
-      'pointsToGenerate': null
-    };
+  function DebugController($log, SpotsFactory) {
+    var vm = this;
 
-    $scope.submit = function () {
-      $log.log('submitted');
-      generateRandomGeojsonPoint($scope.data.pointsToGenerate);
-    };
+    vm.pointsToGenerate = '';
+    vm.submit = submit;
 
-    // Point object
-    var Point = function (lat, lng) {
-      this.lat = lat;
-      this.lng = lng;
-    };
-
-    // bounding area for united states
-    var UsBounds = {
-      'topRight': {
-        'lat': 58,
-        'lng': -76
-      },
-      'bottomLeft': {
-        'lat': 11,
-        'lng': -122
-      }
-    };
-
-    // bounding area for downtown Tucson
-    var TUSBounds = {
-      'topRight': {
-        'lat': 32.226293,
-        'lng': -110.972307
-      },
-      'bottomLeft': {
-        'lat': 32.214196,
-        'lng': -110.985042
-      }
-    };
-
-    var bounds = TUSBounds;
-
-    function rand(min, max, interval) {
-      if (typeof(interval) === 'undefined') interval = 1;
-      var r = Math.floor(Math.random() * (max - min + interval) / interval);
-      return r * interval + min;
+    function submit(pointsToGenerate) {
+      $log.log('Generating ' + pointsToGenerate + ' random points.');
+      generateRandomGeojsonPoint(pointsToGenerate);
     }
 
-    // generate a random point in the bounds
-    var generateRandomPoint = function () {
-      var lat = rand(bounds.topRight.lat, bounds.bottomLeft.lat, 0.0001);
-      var lng = rand(bounds.bottomLeft.lng, bounds.topRight.lng, 0.0001);
-      return new Point(lat, lng);
-    };
+    function generateRandomGeojsonPoint(num) {
+      // Bounding area for United States
+      /* var bounds = {
+       'topRight': {'lat': 58, 'lng': -76},
+       'bottomLeft': {'lat': 11, 'lng': -122}
+       };*/
 
-    var feature_types = ['bedding', 'contact', 'foliation', 'axial_planar_surface', 'fracture', 'joint',
-      'fault_plane', 'shear_fracture', 'shear_zone', 'other', 'vein'];
+      // Bounding area for downtown Tucson
+      var bounds = {
+        'topRight': {'lat': 32.226293, 'lng': -110.972307},
+        'bottomLeft': {'lat': 32.214196, 'lng': -110.985042}
+      };
 
-    var generateRandomGeojsonPoint = function (num) {
+      // Return a random number between min and max
+      function rand(min, max, interval) {
+        if (typeof (interval) === 'undefined') interval = 1;
+        var r = Math.floor(Math.random() * (max - min + interval) / interval);
+        return r * interval + min;
+      }
+
+      var feature_types = ['bedding', 'contact', 'foliation', 'axial_planar_surface', 'fracture', 'joint',
+        'fault_plane', 'shear_fracture', 'shear_zone', 'other', 'vein'];
+
       for (var i = 0; i < num; i++) {
-        var point = generateRandomPoint();
-
-        var key = 'x' + i.toString();
-
         // Set the date and time to now
         var d = new Date(Date.now());
         d.setMilliseconds(0);
@@ -78,7 +49,10 @@
         var geojsonPoint = {
           'geometry': {
             'type': 'Point',
-            'coordinates': [point.lng, point.lat]
+            'coordinates': [
+              rand(bounds.bottomLeft.lng, bounds.topRight.lng, 0.0001),
+              rand(bounds.topRight.lat, bounds.bottomLeft.lat, 0.0001)
+            ]
           },
           'type': 'Feature',
           'properties': {
@@ -97,6 +71,6 @@
           $log.log('wrote: ', data);
         });
       }
-    };
+    }
   }
 }());

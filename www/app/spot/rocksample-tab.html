@@ -1,100 +1,100 @@
-<form name="rockSampleForm" novalidate="">
+<form name='rockSampleForm' novalidate=''>
   <ion-view>
     <ion-content>
-      <div ng-repeat="field in rock_sample_survey">
-        <div id="{{ field.name }}" ng-show="showField(field.relevant)">
-          <div data-ng-switch on="field.type.split(' ')[0]">
-            <div ng-switch-when="integer">
-              <label class="item item-input item-stacked-label item-text-wrap"
-                     ng-class="{ 'has-errors' : rockSampleForm[field.name].$invalid, 'no-errors' : rockSampleForm[field.name].$valid }">
-                <span class="input-label">{{field.label}}</span>
-                <input type="number"
-                       name="{{ field.name }}"
-                       placeholder="{{ field.hint }}"
-                       ng-model="spot.properties[field.name]"
-                       ng-required="{{ field.required }}"
-                       ng-min="getMin(field.constraint)"
-                       ng-max="getMax(field.constraint)">
+      <div ng-repeat='field in vm.rock_sample_survey'>
+        <div id='{{ field.name }}' ng-show='vm.showField(field.relevant)'>
+          <div data-ng-switch on='field.type.split(" ")[0]'>
+            <div ng-switch-when='integer'>
+              <label class='item item-input item-stacked-label item-text-wrap'
+                     ng-class='{ "has-errors" : rockSampleForm[field.name].$invalid, "no-errors" : rockSampleForm[field.name].$valid }'>
+                <span class='input-label'>{{field.label}}</span>
+                <input type='number'
+                       name='{{ field.name }}'
+                       placeholder='{{ field.hint }}'
+                       ng-model='vm.spot.properties[field.name]'
+                       ng-required='{{ field.required }}'
+                       ng-min='vm.getMin(field.constraint)'
+                       ng-max='vm.getMax(field.constraint)'>
               </label>
             </div>
-            <div ng-switch-when="decimal">
-              <label class="item item-input item-stacked-label item-text-wrap"
-                     ng-class="{ 'has-errors' : rockSampleForm[field.name].$invalid, 'no-errors' : rockSampleForm[field.name].$valid }">
-                <span class="input-label">{{field.label}}</span>
-                <input type="number"
-                       name="{{ field.name }}"
-                       placeholder="{{ field.hint }}"
-                       ng-model="spot.properties[field.name]"
-                       ng-required="{{ field.required }}"
-                       ng-min="getMin(field.constraint)"
-                       ng-max="getMax(field.constraint)">
+            <div ng-switch-when='decimal'>
+              <label class='item item-input item-stacked-label item-text-wrap'
+                     ng-class='{ "has-errors" : rockSampleForm[field.name].$invalid, "no-errors" : rockSampleForm[field.name].$valid }'>
+                <span class='input-label'>{{field.label}}</span>
+                <input type='number'
+                       name='{{ field.name }}'
+                       placeholder='{{ field.hint }}'
+                       ng-model='vm.spot.properties[field.name]'
+                       ng-required='{{ field.required }}'
+                       ng-min='vm.getMin(field.constraint)'
+                       ng-max='vm.getMax(field.constraint)'>
               </label>
             </div>
-            <div ng-switch-when="text">
-              <label class="item item-input item-stacked-label item-text-wrap"
-                     ng-class="{ 'has-errors' : rockSampleForm[field.name].$invalid, 'no-errors' : rockSampleForm[field.name].$valid }">
-                <span class="input-label">{{field.label}}</span>
-                <input type="text"
-                       name="{{ field.name }}"
-                       placeholder="{{ field.hint }}"
-                       ng-model="spot.properties[field.name]"
-                       ng-required="{{ field.required }}">
+            <div ng-switch-when='text'>
+              <label class='item item-input item-stacked-label item-text-wrap'
+                     ng-class='{ "has-errors" : rockSampleForm[field.name].$invalid, "no-errors" : rockSampleForm[field.name].$valid }'>
+                <span class='input-label'>{{field.label}}</span>
+                <input type='text'
+                       name='{{ field.name }}'
+                       placeholder='{{ field.hint }}'
+                       ng-model='vm.spot.properties[field.name]'
+                       ng-required='{{ field.required }}'>
               </label>
             </div>
-            <div ng-switch-when="note">
-              <label class="item item-input item-stacked-label item-text-wrap"
-                     ng-class="{ 'has-errors' : rockSampleForm[field.name].$invalid, 'no-errors' : rockSampleForm[field.name].$valid }">
-                <span class="input-label">{{ field.label }}</span>
-                <textarea name="{{ field.name }}"
-                          rows="4"
-                          placeholder="{{field.hint}}"
-                          ng-model="spot.properties[field.name]"
-                          ng-required="{{ field.required }}">
+            <div ng-switch-when='note'>
+              <label class='item item-input item-stacked-label item-text-wrap'
+                     ng-class='{ "has-errors" : rockSampleForm[field.name].$invalid, "no-errors" : rockSampleForm[field.name].$valid }'>
+                <span class='input-label'>{{ field.label }}</span>
+                <textarea name='{{ field.name }}'
+                          rows='4'
+                          placeholder='{{field.hint}}'
+                          ng-model='vm.spot.properties[field.name]'
+                          ng-required='{{ field.required }}'>
                 </textarea>
               </label>
             </div>
-            <div ng-switch-when="select_one">
-              <label class="item item-input item-select item-stacked-label item-text-wrap"
-                     ng-class="{ 'has-errors' : rockSampleForm[field.name].$invalid, 'no-errors' : rockSampleForm[field.name].$valid }">
-                <span class="input-label">{{ field.label }}</span>
-                <span class="item-placeholder"><small>{{ field.hint }}</small></span><br>
-                <select name="{{ field.name }}"
-                        ng-model="spot.properties[field.name]"
-                        ng-options="choice.name as choice.label for choice in rock_sample_choices
-                                  | filter: { 'list name': field.type.split(' ')[1] }"
-                        ng-required="{{ field.required }}">
-                  <option value=""></option>
+            <div ng-switch-when='select_one'>
+              <label class='item item-input item-select item-stacked-label item-text-wrap'
+                     ng-class='{ "has-errors" : rockSampleForm[field.name].$invalid, "no-errors" : rockSampleForm[field.name].$valid }'>
+                <span class='input-label'>{{ field.label }}</span>
+                <span class='item-placeholder'><small>{{ field.hint }}</small></span><br>
+                <select name='{{ field.name }}'
+                        ng-model='vm.spot.properties[field.name]'
+                        ng-options='choice.name as choice.label for choice in vm.rock_sample_choices
+                                  | filter: { "list name": field.type.split(" ")[1] }'
+                        ng-required='{{ field.required }}'>
+                  <option value=''></option>
                 </select>
               </label>
             </div>
-            <div ng-switch-when="select_multiple">
-              <label class="item item-stacked-label item-text-wrap" ng-class="setSelMultClass(field)">
-                <span class="input-label">{{field.label}}</span>
-                <span class="item-placeholder"><small>{{ field.hint }}</small></span><br>
-                <ion-checkbox name="{{ field.name }}"
-                              ng-repeat="choice in rock_sample_choices | filter: { 'list name': field.type.split(' ')[1] }"
-                              ng-checked="isOptionChecked(field.name, choice.name)"
-                              ng-click="toggleChecked(field.name, choice.name)"
-                              ng-required="{{ field.required }}">
+            <div ng-switch-when='select_multiple'>
+              <label class='item item-stacked-label item-text-wrap' ng-class='vm.setSelMultClass(field)'>
+                <span class='input-label'>{{field.label}}</span>
+                <span class='item-placeholder'><small>{{ field.hint }}</small></span><br>
+                <ion-checkbox name='{{ field.name }}'
+                              ng-repeat='choice in vm.rock_sample_choices | filter: { "list name": field.type.split(" ")[1] }'
+                              ng-checked='vm.isOptionChecked(field.name, choice.name)'
+                              ng-click='vm.toggleChecked(field.name, choice.name)'
+                              ng-required='{{ field.required }}'>
                   {{ choice.label }}
                 </ion-checkbox>
               </label>
             </div>
-            <div ng-switch-when="acknowledge">
-              <label class="item item-stacked-label item-text-wrap" ng-class="setSelMultClass(field)">
-                <span class="input-label">{{field.label}}</span><br>
-                <span class="item-placeholder"><small>{{ field.hint }}</small></span>
-                <ion-checkbox name="{{ field.name }}"
-                              ng-checked="isAcknowledgeChecked(field.name)"
-                              ng-click="toggleAcknowledgeChecked(field.name)"
-                              ng-required="{{ field.required }}">
+            <div ng-switch-when='acknowledge'>
+              <label class='item item-stacked-label item-text-wrap' ng-class='vm.setSelMultClass(field)'>
+                <span class='input-label'>{{field.label}}</span><br>
+                <span class='item-placeholder'><small>{{ field.hint }}</small></span>
+                <ion-checkbox name='{{ field.name }}'
+                              ng-checked='vm.isAcknowledgeChecked(field.name)'
+                              ng-click='vm.toggleAcknowledgeChecked(field.name)'
+                              ng-required='{{ field.required }}'>
                   Yes
                 </ion-checkbox>
               </label>
             </div>
-            <div ng-if="rockSampleForm[field.name].$touched">
-              <div ng-messages="rockSampleForm[field.name].$error">
-                <div ng-messages-include="app/spot/error-messages.html"></div>
+            <div ng-if='rockSampleForm[field.name].$touched'>
+              <div ng-messages='rockSampleForm[field.name].$error'>
+                <div ng-messages-include='app/spot/error-messages.html'></div>
               </div>
             </div>
           </div>

@@ -8,11 +8,14 @@
   SpotTabGroupsController.$inject = ['$scope', '$log', 'CurrentSpot'];
 
   function SpotTabGroupsController($scope, $log, CurrentSpot) {
+    var vm = this;
+    var vmParent = $scope.vm;
+
     $log.log('inside spot tab groups Controller');
 
-    $scope.linkGroup = function () {
-      CurrentSpot.setCurrentSpot($scope.spot);
-      $scope.openModal('groupModal');
+    vm.linkGroup = function () {
+      CurrentSpot.setCurrentSpot(vmParent.spot);
+      vmParent.openModal('groupModal');
     };
   }
 }());

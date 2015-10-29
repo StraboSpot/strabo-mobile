@@ -1,92 +1,92 @@
-<form name="geoForm" novalidate="">
+<form name='geoForm' novalidate=''>
   <ion-view>
     <ion-content>
-      <div ng-if="mapped">
-        <label class="item item-input item-stacked-label item-text-wrap">
-          <span class="input-label">Label</span>
-          <input type="text" placeholder="Label on Map" ng-model="spot.properties.label">
+      <div ng-if='vmChild.mapped'>
+        <label class='item item-input item-stacked-label item-text-wrap'>
+          <span class='input-label'>Label</span>
+          <input type='text' placeholder='Label on Map' ng-model='vm.spot.properties.label'>
         </label>
-        <label class="item item-input item-stacked-label item-text-wrap">
-          <span class="input-label">Geometry</span>
-          <input type="text" disabled ng-model="spot.geometry.type">
+        <label class='item item-input item-stacked-label item-text-wrap'>
+          <span class='input-label'>Geometry</span>
+          <input type='text' disabled ng-model='vm.spot.geometry.type'>
         </label>
         <!-- Latitude and Longitude text boxes for Point features -->
-        <label ng-show="showLatLng"
-               class="item item-input item-stacked-label item-text-wrap"
-               ng-class="{ 'has-errors': geoForm['lat'].$invalid, 'no-errors': geoForm['lat'].$valid }">
-          <span class="input-label">Latitude</span>
-          <input type="number" name="lat" ng-model="lat" ng-change="updateLatitude(lat)"
-                 required min="-90" max="90">
+        <label ng-show='vmChild.showLatLng'
+               class='item item-input item-stacked-label item-text-wrap'
+               ng-class='{ "has-errors": geoForm["lat"].$invalid, "no-errors": geoForm["lat"].$valid }'>
+          <span class='input-label'>Latitude</span>
+          <input type='number' name='lat' ng-model='vmChild.lat' ng-change='vmChild.updateLatitude(vmChild.lat)'
+                 required min='-90' max='90'>
         </label>
 
-        <div ng-if="geoForm['lat'].$touched">
-          <div ng-messages="geoForm['lat'].$error">
-            <div ng-messages-include="app/spot/error-messages.html"></div>
+        <div ng-if='geoForm["lat"].$touched'>
+          <div ng-messages='geoForm["lat"].$error'>
+            <div ng-messages-include='app/spot/error-messages.html'></div>
           </div>
         </div>
 
-        <label ng-show="showLatLng"
-               class="item item-input item-stacked-label item-text-wrap"
-               ng-class="{ 'has-errors': geoForm['lng'].$invalid, 'no-errors': geoForm['lng'].$valid }">
-          <span class="input-label">Longitude</span>
-          <input type="number" name="lng" ng-model="lng" ng-change="updateLongitude(lng)"
-                 required min="-180" max="180">
+        <label ng-show='vmChild.showLatLng'
+               class='item item-input item-stacked-label item-text-wrap'
+               ng-class='{ "has-errors": geoForm["lng"].$invalid, "no-errors": geoForm["lng"].$valid }'>
+          <span class='input-label'>Longitude</span>
+          <input type='number' name='lng' ng-model='vmChild.lng' ng-change='vmChild.updateLongitude(vmChild.lng)'
+                 required min='-180' max='180'>
         </label>
 
-        <div ng-if="geoForm['lng'].$touched">
-          <div ng-messages="geoForm['lng'].$error">
-            <div ng-messages-include="app/spot/error-messages.html"></div>
+        <div ng-if='geoForm["lng"].$touched'>
+          <div ng-messages='geoForm["lng"].$error'>
+            <div ng-messages-include='app/spot/error-messages.html'></div>
           </div>
         </div>
       </div>
       <!-- X and Y text boxes for Point features mapped on an image -->
-      <label ng-show="showXY"
-             class="item item-input item-stacked-label item-text-wrap"
-             ng-class="{ 'has-errors': geoForm['x'].$invalid, 'no-errors': geoForm['y'].$valid }">
-        <span class="input-label">Pixels in the X direction</span>
-        <input type="number" name="x" ng-model="x" ng-change="updateX(x)"
-               required min="0">
+      <label ng-show='vmChild.showXY'
+             class='item item-input item-stacked-label item-text-wrap'
+             ng-class='{ "has-errors": geoForm["x"].$invalid, "no-errors": geoForm["y"].$valid }'>
+        <span class='input-label'>Pixels in the X direction</span>
+        <input type='number' name='x' ng-model='vmChild.x' ng-change='vmChild.updateX(vmChild.x)'
+               required min='0'>
       </label>
 
-      <div ng-if="geoForm['x'].$touched">
-        <div ng-messages="geoForm['x'].$error">
-          <div ng-messages-include="app/spot/error-messages.html"></div>
+      <div ng-if='geoForm["x"].$touched'>
+        <div ng-messages='geoForm["x"].$error'>
+          <div ng-messages-include='app/spot/error-messages.html'></div>
         </div>
       </div>
-      <label ng-show="showXY"
-             class="item item-input item-stacked-label item-text-wrap"
-             ng-class="{ 'has-errors': geoForm['y'].$invalid, 'no-errors': geoForm['y'].$valid }">
-        <span class="input-label">Pixels in the Y direction</span>
-        <input type="number" name="y" ng-model="y" ng-change="updateY(y)"
-               required min="0">
+      <label ng-show='vmChild.showXY'
+             class='item item-input item-stacked-label item-text-wrap'
+             ng-class='{ "has-errors": geoForm["y"].$invalid, "no-errors": geoForm["y"].$valid }'>
+        <span class='input-label'>Pixels in the Y direction</span>
+        <input type='number' name='y' ng-model='vmChild.y' ng-change='vmChild.updateY(vmChild.y)'
+               required min='0'>
       </label>
 
-      <div ng-if="geoForm['y'].$touched">
-        <div ng-messages="geoForm['y'].$error">
-          <div ng-messages-include="app/spot/error-messages.html"></div>
+      <div ng-if='geoForm["y"].$touched'>
+        <div ng-messages='geoForm["y"].$error'>
+          <div ng-messages-include='app/spot/error-messages.html'></div>
         </div>
       </div>
       </div>
-      <div ng-if="!mapped" class="padding">
+      <div ng-if='!vmChild.mapped' class='padding'>
         This spot has not been mapped yet. Click on the Set from Map button below and be sure to map this feature as a
-        {{getGeometryType()}}.
+        {{vmChild.getGeometryType()}}.
       </div>
       <!-- Map Interaction -->
-      <div class="row responsive-sm">
-        <div class="col">
-          <button ng-click="viewSpot();" ng-disabled="!viewOnMapButton"
-                  class="button button-positive icon-left icon ion-eye">
+      <div class='row responsive-sm'>
+        <div class='col'>
+          <button ng-click='vmChild.viewSpot();' ng-disabled='!vmChild.viewOnMapButton'
+                  class='button button-positive icon-left icon ion-eye'>
             View on Map
           </button>
         </div>
-        <div class="col">
-          <button ng-click="getCurrentLocation();" ng-disabled="!showMyLocationButton"
-                  class="button button-positive icon-left ion-pinpoint">Set to My Location
+        <div class='col'>
+          <button ng-click='vmChild.getCurrentLocation();' ng-disabled='!vmChild.showMyLocationButton'
+                  class='button button-positive icon-left ion-pinpoint'>Set to My Location
           </button>
         </div>
-        <div class="col">
-          <button ng-click="setFromMap();" ng-disabled="!showSetFromMapButton"
-                  class="button button-positive icon-left icon ion-map">Set From Map
+        <div class='col'>
+          <button ng-click='vmChild.setFromMap();' ng-disabled='!vmChild.showSetFromMapButton'
+                  class='button button-positive icon-left icon ion-map'>Set From Map
           </button>
         </div>
       </div>

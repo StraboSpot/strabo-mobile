@@ -5,9 +5,10 @@
     .module('app')
     .controller('ImageMapsController', ImageMapsController);
 
-  ImageMapsController.$inject = ['$scope', '$location', '$log', 'ImageMapService', 'SpotsFactory'];
+  ImageMapsController.$inject = ['$location', '$log', 'ImageMapService', 'SpotsFactory'];
 
-  function ImageMapsController($scope, $location, $log, ImageMapService, SpotsFactory) {
+  function ImageMapsController($location, $log, ImageMapService, SpotsFactory) {
+    var vm = this;
     SpotsFactory.all().then(function (spots) {
       var spotsWithImages = _.filter(spots, function (spot) {
         return spot.images;
@@ -25,11 +26,11 @@
           }
         });
       });
-      $scope.imageMaps = ImageMapService.getImageMaps();
-      $log.log($scope.imageMaps);
+      vm.imageMaps = ImageMapService.getImageMaps();
+      $log.log(vm.imageMaps);
     });
 
-    $scope.goToImageMap = function (imageMap) {
+    vm.goToImageMap = function (imageMap) {
       ImageMapService.setCurrentImageMap(imageMap);
       $location.path('/app/image-maps/' + imageMap.id);
     };

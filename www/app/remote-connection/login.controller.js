@@ -5,15 +5,17 @@
     .module('app')
     .controller('LoginController', LoginController);
 
-  LoginController.$inject = ['$scope', '$state', '$ionicPopup', '$log', 'LoginFactory', 'SyncService'];
+  LoginController.$inject = ['$state', '$ionicPopup', '$log', 'LoginFactory', 'SyncService'];
 
-  function LoginController($scope, $state, $ionicPopup, $log, LoginFactory, SyncService) {
-    $scope.skip = function () {
+  function LoginController($state, $ionicPopup, $log, LoginFactory, SyncService) {
+    var vm = this;
+
+    vm.skip = function () {
       $state.go('app.spots');
     };
 
     // Form data for the login modal
-    $scope.loginData = {};
+    vm.loginData = {};
 
     // is the user logged in from before?
     LoginFactory.getLogin()
@@ -21,20 +23,20 @@
         if (login !== null) {
           // we do have a login -- lets set the authentication
           $log.log('we have a login already, skipping login page', login);
-          $scope.skip();
+          vm.skip();
         }
       });
 
     // Perform the login action
-    $scope.doLogin = function () {
-      $scope.loginData.email = $scope.loginData.email.toLowerCase();
+    vm.doLogin = function () {
+      vm.loginData.email = vm.loginData.email.toLowerCase();
       // Authenticate user login
       if (navigator.onLine) {
-        SyncService.authenticateUser($scope.loginData)
+        SyncService.authenticateUser(vm.loginData)
           .then(function (response) {
             if (response.status === 200 && response.data.valid === 'true') {
               $log.log('Logged in successfully.');
-              LoginFactory.setLogin($scope.loginData).then(function () {
+              LoginFactory.setLogin(vm.loginData).then(function () {
                 $state.go('app.spots');
               });
             }

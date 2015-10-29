@@ -1,8 +1,9 @@
-<div class="modal image-modal">
-  <ion-slide-box on-slide-changed="slideChanged(index)" show-pager="true" active-slide="activeSlide">
-    <ion-slide ng-repeat="image in spot.images">
-      <img ng-src="{{image.src}}" class="fullscreen-image" ng-click="closeImageModal()"/>
-      <textarea rows="3" class="image-modal-textarea" ng-model="image.caption" placeholder="captions for this image"></textarea>
+<div class='modal image-modal'>
+  <ion-slide-box on-slide-changed='slideChanged(index)' show-pager='true' active-slide='vmChild.activeSlide'>
+    <ion-slide ng-repeat='image in vm.spot.images'>
+      <img ng-src='{{image.src}}' class='fullscreen-image' ng-click='vmChild.closeImageModal()'/>
+      <textarea rows='3' class='image-modal-textarea' ng-model='image.caption'
+                placeholder='captions for this image'></textarea>
     </ion-slide>
   </ion-slide-box>
 </div>

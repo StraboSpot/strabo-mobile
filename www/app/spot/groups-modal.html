@@ -1,14 +1,16 @@
 <ion-modal-view>
-  <ion-header-bar class="bar-dark nav-title-slide-ios7">
-    <h1 class="title">Add to a New or Existing Group</h1>
-    <div class="button button-clear" ng-click="closeModal('groupModal')"><span class="icon ion-close"></span></div>
+  <ion-header-bar class='bar-dark nav-title-slide-ios7'>
+    <h1 class='title'>Add to a New or Existing Group</h1>
+
+    <div class='button button-clear' ng-click='vm.closeModal("groupModal")'><span class='icon ion-close'></span></div>
   </ion-header-bar>
   <ion-content>
-    <ion-checkbox ng-repeat="item in groups"
-                  ng-value="item"
-                  ng-checked="isGroupChecked(item.id)"
-                  ng-click="toggleSelection(item, 'groups_selected', 'groups_unselected')">
-      {{ item.name }} <small>({{ spotTypes[item.type] }})</small>
+    <ion-checkbox ng-repeat='item in vm.groups'
+                  ng-value='item'
+                  ng-checked='vm.isGroupChecked(item.id)'
+                  ng-click='vm.toggleSelection(item, "groups_selected", "groups_unselected")'>
+      {{ item.name }}
+      <small>({{ vm.spotTypes[item.type] }})</small>
     </ion-checkbox>
   </ion-content>
 </ion-modal-view>

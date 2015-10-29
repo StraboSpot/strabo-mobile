@@ -10,25 +10,28 @@
 
   function SpotTabImagesController($scope, $cordovaCamera, $ionicPopup, $ionicModal, $location, $log,
                                    SpotsFactory, ImageMapService) {
+    var vm = this;
+    var vmParent = $scope.vm;
+
     $log.log('inside spot tab images Controller');
 
-    $scope.showImages = function (index) {
-      $scope.activeSlide = index;
+    vm.showImages = function (index) {
+      vm.activeSlide = index;
       $ionicModal.fromTemplateUrl('app/spot/images-modal.html', {
         'scope': $scope,
         'animation': 'slide-in-up'
       }).then(function (modal) {
-        $scope.imageModal = modal;
-        $scope.imageModal.show();
+        vm.imageModal = modal;
+        vm.imageModal.show();
       });
     };
 
-    $scope.closeImageModal = function () {
-      $scope.imageModal.hide();
-      $scope.imageModal.remove();
+    vm.closeImageModal = function () {
+      vm.imageModal.hide();
+      vm.imageModal.remove();
     };
 
-    $scope.cameraSource = [{
+    vm.cameraSource = [{
       'text': 'Photo Library',
       'value': 'PHOTOLIBRARY'
     }, {
@@ -39,29 +42,29 @@
       'value': 'SAVEDPHOTOALBUM'
     }];
 
-    $scope.selectedCameraSource = {
+    vm.selectedCameraSource = {
       // default is always camera
       'source': 'CAMERA'
     };
 
-    $scope.cameraModal = function (source) {
+    vm.cameraModal = function (source) {
       // camera modal popup
       var myPopup = $ionicPopup.show({
         'template': '<ion-radio ng-repeat="source in cameraSource" ng-value="source.value" ng-model="selectedCameraSource.source">{{ source.text }}</ion-radio>',
         'title': 'Select an image source',
-        'scope': $scope,
+        'scope': vm,
         'buttons': [{
           'text': 'Cancel'
         }, {
           'text': '<b>Go</b>',
           'type': 'button-positive',
           'onTap': function (e) {
-            if (!$scope.selectedCameraSource.source) {
+            if (!vm.selectedCameraSource.source) {
               // don't allow the user to close unless a value is set
               e.preventDefault();
             }
             else {
-              return $scope.selectedCameraSource.source;
+              return vm.selectedCameraSource.source;
             }
           }
         }]
@@ -117,8 +120,8 @@
            */
 
           // create an images array if it doesn't exist -- camera images are stored here
-          if ($scope.spot.images === undefined) {
-            $scope.spot.images = [];
+          if (vmParent.spot.images === undefined) {
+            vmParent.spot.images = [];
           }
 
           $log.log('original imageURI ', imageURI);
@@ -169,7 +172,7 @@
                 image.onload = function () {
                   // push the image data to our camera images array
                   $scope.$apply(function () {
-                    $scope.spot.images.push({
+                    vmParent.spot.images.push({
                       'src': image.src,
                       'height': image.height,
                       'width': image.width,
@@ -196,24 +199,24 @@
       });
     };
 
-    $scope.isAnnotated = function (image) {
+    vm.isAnnotated = function (image) {
       return image.annotated;
     };
 
-    $scope.annotateChecked = function (image) {
+    vm.annotateChecked = function (image) {
       image.annotated = !image.annotated;
     };
 
-    $scope.goToImageMap = function (image) {
-      SpotsFactory.read($scope.spot.properties.id, (function (savedSpot) {
+    vm.goToImageMap = function (image) {
+      SpotsFactory.read(vmParent.spot.properties.id, (function (savedSpot) {
         savedSpot.properties.date = new Date(savedSpot.properties.date);
         savedSpot.properties.time = new Date(savedSpot.properties.time);
-        if (_.isEqual($scope.spot, savedSpot)) {    // User angular.copy to get rid of angular's $$hashKey
+        if (_.isEqual(vmParent.spot, savedSpot)) {    // User angular.copy to get rid of angular's $$hashKey
           ImageMapService.setCurrentImageMap(image);              // Save referenced image map
           $location.path('/app/image-maps/' + image.id);
           $scope.$apply();
         }
-        else if (_.isEqual(angular.copy($scope.spot), savedSpot)) {    // User angular.copy to get rid of angular's $$hashKey
+        else if (_.isEqual(angular.copy(vmParent.spot), savedSpot)) {    // User angular.copy to get rid of angular's $$hashKey
           ImageMapService.setCurrentImageMap(image);              // Save referenced image map
           $location.path('/app/image-maps/' + image.id);
           $scope.$apply();

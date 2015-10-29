@@ -1,21 +1,21 @@
 <ion-view>
   <ion-content>
-    <div class="padding">
-      <button ng-click="cameraModal()" class="button button-positive icon-left ion-camera">Add Photo</button>
+    <div class='padding'>
+      <button ng-click='vmChild.cameraModal()' class='button button-positive icon-left ion-camera'>Add Photo</button>
     </div>
-    <div class="row">
+    <div class='row'>
       <ul>
-        <li ng-repeat="image in spot.images" class="images-container">
-          <a><img ng-src="{{image.src}}" width="100" height="100" ng-click="showImages($index)"  /></a>
-          <input type="checkbox"
-                 class="annotate-checkbox"
-                 id="check + {{$index}}"
-                 ng-click="annotateChecked(image)"
-                 ng-checked="image.annotated"/>
-          <span class="annotate-checkbox-label">Annotate?</span>
-          <button ng-click="goToImageMap(image)"
-                  ng-show="image.annotated"
-                  class="button icon ion-map button-small image-map"></button>
+        <li ng-repeat='image in vm.spot.images' class='images-container'>
+          <a><img ng-src='{{image.src}}' width='100' height='100' ng-click='vmChild.showImages($index)'/></a>
+          <input type='checkbox'
+                 class='annotate-checkbox'
+                 id='check + {{$index}}'
+                 ng-click='vmChild.annotateChecked(image)'
+                 ng-checked='image.annotated'/>
+          <span class='annotate-checkbox-label'>Annotate?</span>
+          <button ng-click='vmChild.goToImageMap(image)'
+                  ng-show='image.annotated'
+                  class='button icon ion-map button-small image-map'></button>
         </li>
       </ul>
     </div>

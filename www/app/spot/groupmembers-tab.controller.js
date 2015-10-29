@@ -8,11 +8,14 @@
   SpotTabGroupmembersController.$inject = ['$scope', '$log', 'CurrentSpot'];
 
   function SpotTabGroupmembersController($scope, $log, CurrentSpot) {
+    var vm = this;
+    var vmParent = $scope.vm;
+
     $log.log('inside spot tab group members Controller');
 
-    $scope.addGroupMember = function () {
-      CurrentSpot.setCurrentSpot($scope.spot);
-      $scope.openModal('groupMembersModal');
+    vm.addGroupMember = function () {
+      CurrentSpot.setCurrentSpot(vmParent.spot);
+      vmParent.openModal('groupMembersModal');
     };
   }
 }());

@@ -10,12 +10,14 @@
 
   function Spots($scope, $ionicModal, $ionicPopup, $cordovaFile, $cordovaDevice, $ionicActionSheet,
                  $log, SpotsFactory, LoginFactory, CurrentSpot, ImageMapService) {
+    var vm = this;
+
     // Make sure the current spot is empty
     CurrentSpot.clearCurrentSpot();
 
-    $scope.groups = [];
+    vm.groups = [];
 
-    $scope.createAccordionGroups = (function (spots) {
+    vm.createAccordionGroups = (function (spots) {
       var spotTypesTitle = [
         {'title': 'MEASUREMENTS & OBSERVATIONS', 'type': 'point', 'tab': 'details'},
         {'title': 'CONTACTS & TRACES', 'type': 'line', 'tab': 'details'},
@@ -24,32 +26,32 @@
       ];
 
       for (var i = 0; i < spotTypesTitle.length; i++) {
-        $scope.groups[i] = {
+        vm.groups[i] = {
           'name': spotTypesTitle[i].title,
           'tab': spotTypesTitle[i].tab,
           'items': []
         };
         for (var j = 0; j < spots.length; j++) {
           if (spots[j].properties.type === spotTypesTitle[i].type) {
-            $scope.groups[i].items.push(spots[j]);
+            vm.groups[i].items.push(spots[j]);
           }
         }
-        $scope.groups[i].items.reverse(); // Move newest to top
+        vm.groups[i].items.reverse(); // Move newest to top
         if (spotTypesTitle[i].type === 'volume') {
-          $scope.groups[i].items.push({'properties': {'name': '3D Structures have not been implemented yet'}});
+          vm.groups[i].items.push({'properties': {'name': '3D Structures have not been implemented yet'}});
         }
       }
 
-      $scope.shownGroup = $scope.groups[0];
+      vm.shownGroup = vm.groups[0];
     });
 
     // Load or initialize Spots
-    $scope.spots;
+    vm.spots;
 
     SpotsFactory.all().then(
       function (spots) {
-        $scope.spots = spots;
-        $scope.createAccordionGroups(spots);
+        vm.spots = spots;
+        vm.createAccordionGroups(spots);
       }
     );
 
@@ -57,25 +59,25 @@
      * if given group is the selected group, deselect it
      * else, select the given group
      */
-    $scope.toggleGroup = function (group) {
-      if ($scope.isGroupShown(group)) {
-        $scope.shownGroup = null;
+    vm.toggleGroup = function (group) {
+      if (vm.isGroupShown(group)) {
+        vm.shownGroup = null;
       }
       else {
-        $scope.shownGroup = group;
+        vm.shownGroup = group;
       }
     };
-    $scope.isGroupShown = function (group) {
-      return $scope.shownGroup === group;
+    vm.isGroupShown = function (group) {
+      return vm.shownGroup === group;
     };
 
     // Export data to CSV
-    $scope.exportToCSV = function () {
+    vm.exportToCSV = function () {
       // Convert the spot objects to a csv format
       var convertToCSV = function (jsonString) {
         // Get all the fields for the csv header row
         var allHeaders = [];
-        _.each($scope.spots,
+        _.each(vm.spots,
           function (spot) {
             var headers = _.keys(spot.properties);
             // If there are custom fields, loop through the custom object grabbing those fields
@@ -104,7 +106,7 @@
         var csv = allHeadersQuoted.toString() + '\r\n';
 
         // Get all the values for each csv data row
-        _.each($scope.spots,
+        _.each(vm.spots,
           function (spot) {
             var row = new Array(allHeaders.length);
             row = _.map(row,
@@ -166,7 +168,7 @@
         return csv;
       };
 
-      var spotData = convertToCSV($scope.spots);
+      var spotData = convertToCSV(vm.spots);
 
       // If this is a web browser and not using cordova
       if (document.location.protocol !== 'file:') { // Phonegap is not present }
@@ -234,7 +236,7 @@
     };
 
     // clears all spots
-    $scope.clearAllSpots = function () {
+    vm.clearAllSpots = function () {
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete Spots',
         'template': 'Are you sure you want to delete <b>ALL</b> spots?'
@@ -247,8 +249,8 @@
                 // update the spots list
                 SpotsFactory.all().then(
                   function (spots) {
-                    $scope.spots = spots;
-                    $scope.createAccordionGroups(spots);
+                    vm.spots = spots;
+                    vm.createAccordionGroups(spots);
                   }
                 );
                 // Remove all of the image maps
@@ -264,27 +266,27 @@
     LoginFactory.getLogin().then(
       function (login) {
         if (login !== null) {
-          $scope.loggedIn = true;
+          vm.loggedIn = true;
         }
       }
     );
 
     // Is the user online and logged in
-    $scope.isOnlineLoggedIn = function () {
-      return navigator.onLine && $scope.loggedIn;
+    vm.isOnlineLoggedIn = function () {
+      return navigator.onLine && vm.loggedIn;
     };
 
     // Create a new Spot
-    $scope.newSpot = function () {
-      $scope.openModal('allModal');
+    vm.newSpot = function () {
+      vm.openModal('allModal');
     };
 
-    $scope.sync = function () {
-      if (navigator.onLine && $scope.loggedIn) {
-        $scope.openModal('syncModal');
+    vm.sync = function () {
+      if (navigator.onLine && vm.loggedIn) {
+        vm.openModal('syncModal');
       }
       else {
-        if (!navigator.onLine && !$scope.loggedIn) {
+        if (!navigator.onLine && !vm.loggedIn) {
           $ionicPopup.alert({
             'title': 'Get Online and Log In!',
             'template': 'You must be online and logged in to sync with the Strabo database.'
@@ -313,42 +315,42 @@
       'scope': $scope,
       'animation': 'slide-in-up'
     }).then(function (modal) {
-      $scope.syncModal = modal;
+      vm.syncModal = modal;
     });
 
     $ionicModal.fromTemplateUrl('app/spots/spot-types-modal.html', {
       'scope': $scope,
       'animation': 'slide-in-up'
     }).then(function (modal) {
-      $scope.allModal = modal;
+      vm.allModal = modal;
     });
 
-    $scope.openModal = function (modal) {
-      $scope[modal].show();
+    vm.openModal = function (modal) {
+      vm[modal].show();
     };
 
-    $scope.closeModal = function (modal) {
-      $scope[modal].hide();
+    vm.closeModal = function (modal) {
+      vm[modal].hide();
       SpotsFactory.all().then(function (spots) {
-        $scope.spots = spots;
-        $scope.createAccordionGroups(spots);
+        vm.spots = spots;
+        vm.createAccordionGroups(spots);
       });
     };
 
     // Cleanup the modal when we're done with it!
     // Execute action on hide modal
     $scope.$on('allModal.hidden', function () {
-      $scope.allModal.remove();
+      vm.allModal.remove();
     });
     $scope.$on('syncModal.hidden', function () {
-      $scope.syncModal.remove();
+      vm.syncModal.remove();
     });
 
     /**
      * ACTIONSHEET
      */
 
-    $scope.showActionsheet = function () {
+    vm.showActionsheet = function () {
       $ionicActionSheet.show({
         'titleText': 'Spot Actions',
         'buttons': [{
@@ -364,10 +366,10 @@
           $log.log('BUTTON CLICKED', index);
           switch (index) {
             case 0:
-              $scope.clearAllSpots();
+              vm.clearAllSpots();
               break;
             case 1:
-              $scope.exportToCSV();
+              vm.exportToCSV();
               break;
           }
           return true;

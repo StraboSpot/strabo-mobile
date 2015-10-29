@@ -4,85 +4,85 @@ Each tab's child <ion-nav-view> directive will have its own
 navigation history that also transitions its views in and out.
 -->
 
-<ion-nav-bar class="bar-dark">
+<ion-nav-bar class='bar-dark'>
   <!-- <ion-nav-back-button>
   </ion-nav-back-button> -->
-  <ion-nav-title>{{ spotTitle }}</ion-nav-title>
-  <ion-nav-buttons side="left">
-    <button ng-click="goToSpots();" class="button button-icon icon ion-arrow-left-c"></button>
+  <ion-nav-title>{{ vm.spotTitle }}</ion-nav-title>
+  <ion-nav-buttons side='left'>
+    <button ng-click='vm.goToSpots();' class='button button-icon icon ion-arrow-left-c'></button>
   </ion-nav-buttons>
-  <ion-nav-buttons side="right">
-    <button ng-click="copySpot();" class="button button-icon icon ion-forward"></button>
-    <button ng-click="deleteSpot();" class="button button-icon icon ion-trash-b"></button>
-    <button ng-click="submit();" class="button button-icon icon ion-checkmark-circled"></button>
+  <ion-nav-buttons side='right'>
+    <button ng-click='vm.copySpot();' class='button button-icon icon ion-forward'></button>
+    <button ng-click='vm.deleteSpot();' class='button button-icon icon ion-trash-b'></button>
+    <button ng-click='vm.submit();' class='button button-icon icon ion-checkmark-circled'></button>
   </ion-nav-buttons>
 </ion-nav-bar>
 
-<ion-header-bar class="bar-subheader">
-<ion-scroll direction="x" class="wide-as-needed">
-  <span ng-show="showDetails">
-    <a class="button button-clear spot-tab-inactive"
-       ng-class="{ 'spot-tab-active': $state.current.name == 'spotTab.details'}"
-       ng-click="switchTabs('details')">
+<ion-header-bar class='bar-subheader'>
+  <ion-scroll direction='x' class='wide-as-needed'>
+  <span ng-show='vm.showDetails'>
+    <a class='button button-clear spot-tab-inactive'
+       ng-class='{ "spot-tab-active": $state.current.name == "spotTab.details"}'
+       ng-click='vm.switchTabs("details")'>
       Details
     </a>
   </span>
-  <a class="button button-clear spot-tab-inactive"
-     ng-class="{ 'spot-tab-active': $state.current.name == 'spotTab.notes'}"
-     ng-click="switchTabs('notes');">
+    <a class='button button-clear spot-tab-inactive'
+       ng-class='{ "spot-tab-active": $state.current.name == "spotTab.notes"}'
+       ng-click='vm.switchTabs("notes");'>
     Notes
   </a>
-  <a class="button button-clear spot-tab-inactive"
-     ng-class="{ 'spot-tab-active': $state.current.name == 'spotTab.images'}"
-     ng-click="switchTabs('images');">
+    <a class='button button-clear spot-tab-inactive'
+       ng-class='{ "spot-tab-active": $state.current.name == "spotTab.images"}'
+       ng-click='vm.switchTabs("images");'>
     Images
   </a>
-  <a class="button button-clear spot-tab-inactive"
-     ng-class="{ 'spot-tab-active': $state.current.name == 'spotTab.georeference'}"
-     ng-click="switchTabs('georeference');">
+    <a class='button button-clear spot-tab-inactive'
+       ng-class='{ "spot-tab-active": $state.current.name == "spotTab.georeference"}'
+       ng-click='vm.switchTabs("georeference");'>
     Georeference
   </a>
-  <span ng-show="showLinks">
-    <a class="button button-clear spot-tab-inactive"
-       ng-class="{ 'spot-tab-active': $state.current.name == 'spotTab.links'}"
-       ng-click="switchTabs('links');">
+  <span ng-show='vm.showLinks'>
+    <a class='button button-clear spot-tab-inactive'
+       ng-class='{ "spot-tab-active": $state.current.name == "spotTab.links"}'
+       ng-click='vm.switchTabs("links");'>
       Links
     </a>
   </span>
-  <span ng-show="showGroups">
-    <a class="button button-clear spot-tab-inactive"
-       ng-class="{ 'spot-tab-active': $state.current.name == 'spotTab.groups'}"
-       ng-click="switchTabs('groups');">
+  <span ng-show='vm.showGroups'>
+    <a class='button button-clear spot-tab-inactive'
+       ng-class='{ "spot-tab-active": $state.current.name == "spotTab.groups"}'
+       ng-click='vm.switchTabs("groups");'>
       Groups
     </a>
   </span>
-  <span ng-show="showGroupMembers">
-    <a class="button button-clear spot-tab-inactive"
-       ng-class="{ 'spot-tab-active': $state.current.name == 'spotTab.groupmemebers'}"
-       ng-click="switchTabs('groupmembers');">
+  <span ng-show='vm.showGroupMembers'>
+    <a class='button button-clear spot-tab-inactive'
+       ng-class='{ "spot-tab-active": $state.current.name == "spotTab.groupmemebers"}'
+       ng-click='vm.switchTabs("groupmembers");'>
       Group Members
     </a>
   </span>
-  <span ng-show="showRockDescription">
-    <a class="button button-clear spot-tab-inactive"
-       ng-class="{ 'spot-tab-active': $state.current.name == 'spotTab.rockdescription'}"
-       ng-click="switchTabs('rockdescription');">
+  <span ng-show='vm.showRockDescription'>
+    <a class='button button-clear spot-tab-inactive'
+       ng-class='{ "spot-tab-active": $state.current.name == "spotTab.rockdescription"}'
+       ng-click='vm.switchTabs("rockdescription");'>
       Rock Description
     </a>
   </span>
-  <span ng-show="showRockSample">
-    <a class="button button-clear spot-tab-inactive"
-       ng-class="{ 'spot-tab-active': $state.current.name == 'spotTab.rocksample'}"
-       ng-click="switchTabs('rocksample');">
+  <span ng-show='vm.showRockSample'>
+    <a class='button button-clear spot-tab-inactive'
+       ng-class='{ "spot-tab-active": $state.current.name == "spotTab.rocksample"}'
+       ng-click='vm.switchTabs("rocksample");'>
       Rock Sample
     </a>
   </span>
-  <a class="button button-clear spot-tab-inactive"
-     ng-class="{ 'spot-tab-active': $state.current.name == 'spotTab.custom'}"
-     ng-click="switchTabs('custom');">
+    <a class='button button-clear spot-tab-inactive'
+       ng-class='{ "spot-tab-active": $state.current.name == "spotTab.custom"}'
+       ng-click='vm.switchTabs("custom");'>
     Custom
   </a>
 </ion-scroll>
 </ion-header-bar>
 
-<ion-nav-view name="spottab-childview"></ion-nav-view>
+<ion-nav-view name='spottab-childview'></ion-nav-view>

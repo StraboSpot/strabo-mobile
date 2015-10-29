@@ -5,25 +5,27 @@
     .module('app')
     .controller('SettingsController', SettingsController);
 
-  SettingsController.$inject = ['$scope', '$ionicPopup', '$log', 'SettingsFactory', 'LoginFactory', 'SyncService'];
+  SettingsController.$inject = ['$ionicPopup', '$log', 'SettingsFactory', 'LoginFactory', 'SyncService'];
 
-  function SettingsController($scope, $ionicPopup, $log, SettingsFactory, LoginFactory, SyncService) {
+  function SettingsController($ionicPopup, $log, SettingsFactory, LoginFactory, SyncService) {
+    var vm = this;
+
     // Form data for the login modal
-    $scope.loginData = {};
+    vm.loginData = {};
 
-    $scope.hideActionButtons = {
+    vm.hideActionButtons = {
       'login': false,
       'logout': true
     };
 
     var hideLoginButton = function () {
-      $scope.hideActionButtons.login = true;
-      $scope.hideActionButtons.logout = false;
+      vm.hideActionButtons.login = true;
+      vm.hideActionButtons.logout = false;
     };
 
     var hideLogoutButton = function () {
-      $scope.hideActionButtons.login = false;
-      $scope.hideActionButtons.logout = true;
+      vm.hideActionButtons.login = false;
+      vm.hideActionButtons.logout = true;
     };
 
     // is the user logged in from before?
@@ -34,33 +36,27 @@
           $log.log('we have a login!', login);
 
           // set the email to the login email
-          $scope.loginData.email = login.email;
-
-          $scope.$apply(function () {
-            hideLoginButton();
-          });
+          vm.loginData.email = login.email;
+          hideLoginButton();
         }
         else {
           // nope, dont have a login
           $log.log('no login!');
-
-          $scope.$apply(function () {
-            hideLogoutButton();
-          });
+          hideLogoutButton();
         }
       });
 
     // Perform the login action when the user presses the login icon
-    $scope.doLogin = function () {
-      $scope.loginData.email = $scope.loginData.email.toLowerCase();
+    vm.doLogin = function () {
+      vm.loginData.email = vm.loginData.email.toLowerCase();
       // Authenticate user login
       if (navigator.onLine) {
-        SyncService.authenticateUser($scope.loginData).then(
+        SyncService.authenticateUser(vm.loginData).then(
           function (response) {
             if (response.status === 200 && response.data.valid === 'true') {
               $log.log('Logged in successfully.');
               hideLoginButton();
-              LoginFactory.setLogin($scope.loginData);
+              LoginFactory.setLogin(vm.loginData);
             }
             else {
               $ionicPopup.alert({
@@ -86,11 +82,11 @@
     };
 
     // Perform the logout action when the user presses the logout icon
-    $scope.doLogout = function () {
+    vm.doLogout = function () {
       $log.log('Logged out');
       // we do have a login so we should destroy the login because the user wants to logout
       LoginFactory.destroyLogin();
-      $scope.loginData = {
+      vm.loginData = {
         'email': null,
         'password': null
       };
@@ -100,19 +96,19 @@
     SettingsFactory.getNamePrefix().then(
       function (prefix) {
         if (!prefix || prefix === 'null') {
-          $scope.prefix_type = 'None';
+          vm.prefix_type = 'None';
         }
         else {
           if (isNaN(prefix)) {
-            $scope.prefix_type = 'Text';
-            $scope.text_prefix = prefix;
+            vm.prefix_type = 'Text';
+            vm.text_prefix = prefix;
           }
           else {
-            $scope.prefix_type = 'Counter';
-            $scope.counter_prefix = prefix;
+            vm.prefix_type = 'Counter';
+            vm.counter_prefix = prefix;
             SettingsFactory.getPrefixIncrement().then(
               function (prefix_increment) {
-                $scope.prefix_increment = prefix_increment;
+                vm.prefix_increment = prefix_increment;
               }
             );
           }
@@ -121,94 +117,94 @@
     );
 
     SettingsFactory.getNameRoot().then(function (root) {
-      $scope.text_root = root;
+      vm.text_root = root;
     });
 
     SettingsFactory.getNameSuffix().then(function (suffix) {
       if (!suffix || suffix === 'null') {
-        $scope.suffix_type = 'None';
+        vm.suffix_type = 'None';
       }
       else {
         if (isNaN(suffix)) {
-          $scope.suffix_type = 'Text';
-          $scope.text_suffix = suffix;
+          vm.suffix_type = 'Text';
+          vm.text_suffix = suffix;
         }
         else {
-          $scope.suffix_type = 'Counter';
-          $scope.counter_suffix = suffix;
+          vm.suffix_type = 'Counter';
+          vm.counter_suffix = suffix;
           SettingsFactory.getSuffixIncrement().then(function (suffix_increment) {
-            $scope.suffix_increment = suffix_increment;
+            vm.suffix_increment = suffix_increment;
           });
         }
       }
     });
 
-    $scope.typeChange = function (part) {
+    vm.typeChange = function (part) {
       switch (part) {
         case 'prefix':
-          switch ($scope.prefix_type) {
+          switch (vm.prefix_type) {
             case 'None':
-              $scope.text_prefix = null;
-              $scope.counter_prefix = null;
-              $scope.prefix_increment = null;
+              vm.text_prefix = null;
+              vm.counter_prefix = null;
+              vm.prefix_increment = null;
               break;
             case 'Text':
-              $scope.counter_prefix = null;
-              $scope.prefix_increment = null;
+              vm.counter_prefix = null;
+              vm.prefix_increment = null;
               break;
             case 'Counter':
-              $scope.text_prefix = null;
-              $scope.counter_prefix = 1;
-              $scope.prefix_increment = 1;
+              vm.text_prefix = null;
+              vm.counter_prefix = 1;
+              vm.prefix_increment = 1;
               break;
           }
           break;
         case 'suffix':
-          switch ($scope.suffix_type) {
+          switch (vm.suffix_type) {
             case 'None':
-              $scope.text_suffix = null;
-              $scope.counter_suffix = null;
-              $scope.suffix_increment = null;
+              vm.text_suffix = null;
+              vm.counter_suffix = null;
+              vm.suffix_increment = null;
               break;
             case 'Text':
-              $scope.counter_suffix = null;
-              $scope.suffix_increment = null;
+              vm.counter_suffix = null;
+              vm.suffix_increment = null;
               break;
             case 'Counter':
-              $scope.text_suffix = null;
-              $scope.counter_suffix = 1;
-              $scope.suffix_increment = 1;
+              vm.text_suffix = null;
+              vm.counter_suffix = 1;
+              vm.suffix_increment = 1;
               break;
           }
           break;
       }
     };
 
-    $scope.save = function () {
+    vm.save = function () {
       var prefix = '';
-      if ($scope.text_prefix) {
-        prefix = $scope.text_prefix;
+      if (vm.text_prefix) {
+        prefix = vm.text_prefix;
       }
-      else if ($scope.counter_prefix) {
-        prefix = $scope.counter_prefix;
+      else if (vm.counter_prefix) {
+        prefix = vm.counter_prefix;
       }
 
       var suffix = '';
-      if ($scope.text_suffix) {
-        suffix = $scope.text_suffix;
+      if (vm.text_suffix) {
+        suffix = vm.text_suffix;
       }
-      else if ($scope.counter_suffix) {
-        suffix = $scope.counter_suffix;
+      else if (vm.counter_suffix) {
+        suffix = vm.counter_suffix;
       }
 
       SettingsFactory.setNamePrefix(prefix).then(function () {
-        SettingsFactory.setNameRoot($scope.text_root).then(function () {
+        SettingsFactory.setNameRoot(vm.text_root).then(function () {
           SettingsFactory.setNameSuffix(suffix).then(function () {
-            SettingsFactory.setPrefixIncrement($scope.prefix_increment).then(function () {
-              SettingsFactory.setSuffixIncrement($scope.suffix_increment).then(function () {
+            SettingsFactory.setPrefixIncrement(vm.prefix_increment).then(function () {
+              SettingsFactory.setSuffixIncrement(vm.suffix_increment).then(function () {
                 $ionicPopup.alert({
                   'title': 'Settings!',
-                  'template': 'Saved Settings.<br>Prefix: ' + prefix + '<br>Root: ' + $scope.text_root + '<br>Suffix: ' + suffix
+                  'template': 'Saved Settings.<br>Prefix: ' + prefix + '<br>Root: ' + vm.text_root + '<br>Suffix: ' + suffix
                 });
               });
             });

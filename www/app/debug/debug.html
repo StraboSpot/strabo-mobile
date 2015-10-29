@@ -1,15 +1,16 @@
-<ion-view title="Debug">
+<ion-view title='Debug'>
 
-  <ion-nav-buttons side="left">
-    <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+  <ion-nav-buttons side='left'>
+    <button menu-toggle='left' class='button button-icon icon ion-navicon'></button>
   </ion-nav-buttons>
 
-  <ion-content class="has-header">
-    <label class="item item-input">
-      <span class="input-label">points to generate</span>
-      <input type="number" ng-model="data.pointsToGenerate" value={{data.pointsToGenerate}} placeholder="how many points?">
+  <ion-content class='has-header'>
+    <label class='item item-input item-stacked-label'>
+      <span class='input-label'>Number of points to generate</span>
+      <input type='number' ng-model='vm.pointsToGenerate' value={{vm.pointsToGenerate}} placeholder='How many points?'>
     </label>
-	<button class="button button-block button-positive" ng-click="submit()">Generate Points</button>
+    <button class='button button-block button-positive' ng-click='vm.submit(vm.pointsToGenerate)'>Generate Points
+    </button>
   </ion-content>
 
 </ion-view>

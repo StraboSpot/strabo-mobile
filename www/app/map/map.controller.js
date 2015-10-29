@@ -16,6 +16,8 @@
                          $ionicSideMenuDelegate, $log, NewSpot, CurrentSpot, CoordinateRange,
                          MapView, OfflineTilesFactory, SlippyTileNamesFactory, SpotsFactory,
                          ViewExtentFactory, SymbologyFactory, MapLayerFactory, ImageMapService) {
+    var vm = this;
+
     // disable dragging back to ionic side menu because this affects drawing tools
     $ionicSideMenuDelegate.canDragContent(false);
 
@@ -63,7 +65,7 @@
         drawPoly.style.backgroundColor = '';
 
         e.preventDefault();
-        $scope.startDraw('Point');
+        vm.startDraw('Point');
       };
       var handleDrawLine = function (e) {
         if (drawLine.style.backgroundColor === '') {
@@ -76,7 +78,7 @@
         drawPoly.style.backgroundColor = '';
 
         e.preventDefault();
-        $scope.startDraw('LineString');
+        vm.startDraw('LineString');
       };
       var handleDrawPoly = function (e) {
         if (drawPoly.style.backgroundColor === '') {
@@ -89,7 +91,7 @@
         drawLine.style.backgroundColor = '';
 
         e.preventDefault();
-        $scope.startDraw('Polygon');
+        vm.startDraw('Polygon');
       };
 
       drawPoint.addEventListener('click', handleDrawPoint, false);
@@ -108,7 +110,7 @@
       element.appendChild(drawLine);
       element.appendChild(drawPoly);
 
-      ol.control.Control.call(this, {
+      ol.control.Control.call(vm, {
         'element': element,
         'target': options.target
       });
@@ -235,12 +237,12 @@
       return mapTileId.get('id');
     };
 
-    $scope.isOnline = function () {
+    vm.isOnline = function () {
       return navigator.onLine;
     };
 
     // Watch whether we have internet access or not
-    $scope.$watch('isOnline()', function (online) {
+    $scope.$watch('vm.isOnline()', function (online) {
       if (!online) {
         $log.log('Offline');
 
@@ -274,7 +276,7 @@
     });
 
     // cache the tiles in the current view but don't switch to the offline layer
-    $scope.cacheOfflineTiles = function () {
+    vm.cacheOfflineTiles = function () {
       if (navigator.onLine) {
         // get the map extent
         var mapViewExtent = getMapViewExtent();
@@ -297,17 +299,17 @@
     };
 
     // drawButtonActive used to keep state of which selected drawing tool is active
-    $scope.drawButtonActive = null;
+    vm.drawButtonActive = null;
 
-    $scope.startDraw = function (type, isFreeHand) {
+    vm.startDraw = function (type, isFreeHand) {
       // if the type is already selected, we want to stop drawing
-      if ($scope.drawButtonActive === type && !isFreeHand) {
-        $scope.drawButtonActive = null;
-        $scope.cancelDraw();
+      if (vm.drawButtonActive === type && !isFreeHand) {
+        vm.drawButtonActive = null;
+        vm.cancelDraw();
         return;
       }
       else {
-        $scope.drawButtonActive = type;
+        vm.drawButtonActive = type;
       }
 
       $log.log('isFreeHand, ', isFreeHand);
@@ -326,7 +328,7 @@
       // is draw already set?
       if (draw !== null) {
         // yes, stop and remove the drawing interaction
-        $scope.cancelDraw();
+        vm.cancelDraw();
       }
 
       if (isFreeHand) {
@@ -445,7 +447,7 @@
             var curSpot = CurrentSpot.getCurrentSpot();
             switch (curSpot.properties.type) {
               case 'point':
-                if ($scope.drawButtonActive === 'Point') {
+                if (vm.drawButtonActive === 'Point') {
                   curSpot.geometry = geojsonObj.geometry;
                   CurrentSpot.setCurrentSpot(curSpot);
                 }
@@ -458,7 +460,7 @@
                 $state.go('spotTab.georeference');
                 break;
               case 'line':
-                if ($scope.drawButtonActive === 'LineString') {
+                if (vm.drawButtonActive === 'LineString') {
                   curSpot.geometry = geojsonObj.geometry;
                   CurrentSpot.setCurrentSpot(curSpot);
                 }
@@ -471,7 +473,7 @@
                 $state.go('spotTab.georeference');
                 break;
               case 'polygon':
-                if ($scope.drawButtonActive === 'Polygon') {
+                if (vm.drawButtonActive === 'Polygon') {
                   curSpot.geometry = geojsonObj.geometry;
                   CurrentSpot.setCurrentSpot(curSpot);
                 }
@@ -484,7 +486,7 @@
                 $state.go('spotTab.georeference');
                 break;
               case 'group':
-                if ($scope.drawButtonActive === 'Polygon') {
+                if (vm.drawButtonActive === 'Polygon') {
                   curSpot.geometry = geojsonObj.geometry;
                   CurrentSpot.setCurrentSpot(curSpot);
                 }
@@ -501,7 +503,7 @@
           // Initialize new Spot
           else {
             var goTo = 'spotTab.details';
-            switch ($scope.drawButtonActive) {
+            switch (vm.drawButtonActive) {
               case 'Point':
                 geojsonObj.properties = {'type': 'point'};
                 break;
@@ -526,12 +528,11 @@
       MapView.setMapView(map.getView());
 
       // update the zoom information control
-      $scope.currentZoom = evt.map.getView().getZoom();
-      $scope.$apply();
+      vm.currentZoom = evt.map.getView().getZoom();
     });
 
     // Zoom to the extent of the spots, if that fails geolocate the user
-    $scope.zoomToSpotsExtent = function () {
+    vm.zoomToSpotsExtent = function () {
       // nope, we have NO mapview set, so...
 
       // Loop through all spots and create ol vector layers
@@ -623,18 +624,18 @@
       map.setView(MapView.getMapView());
     }
     else {
-      $scope.zoomToSpotsExtent();
+      vm.zoomToSpotsExtent();
     }
 
-    $scope.cancelDraw = function () {
+    vm.cancelDraw = function () {
       if (draw === null) return;
       map.removeInteraction(draw);
     };
 
     // Point object
     var Point = function (lat, lng) {
-      this.lat = lat;
-      this.lng = lng;
+      vm.lat = lat;
+      vm.lng = lng;
     };
 
     var getMapViewExtent = function () {
@@ -844,14 +845,14 @@
 
         var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
           return feature;
-        }, this, function (layer) {
+        }, vm, function (layer) {
           // we only want the layer where the spots are located
           return (layer instanceof ol.layer.Vector) && layer.get('name') !== 'drawLayer' && layer.get('name') !== 'geolocationLayer';
         });
 
         var layer = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
           return layer;
-        }, this, function (layer) {
+        }, vm, function (layer) {
           // we only want the layer where the spots are located
           return (layer instanceof ol.layer.Vector) && layer.get('name') !== 'drawLayer' && layer.get('name') !== 'geolocationLayer';
         });
@@ -923,10 +924,10 @@
     var geolocationWatchId;
 
     // Get current position
-    $scope.toggleLocation = function () {
-      $scope.locationOn = $scope.locationOn === undefined || $scope.locationOn === false;
+    vm.toggleLocation = function () {
+      vm.locationOn = vm.locationOn === undefined || vm.locationOn === false;
 
-      if ($scope.locationOn) {
+      if (vm.locationOn) {
         $log.log('toggleLocation is now true');
         $cordovaGeolocation.getCurrentPosition({
           'maximumAge': 0,
@@ -1029,14 +1030,14 @@
       });
 
       // start the draw with freehand enabled
-      $scope.startDraw('Polygon', true);
+      vm.startDraw('Polygon', true);
     };
 
     /**
      * ACTIONSHEET
      */
 
-    $scope.showActionsheet = function () {
+    vm.showActionsheet = function () {
       $ionicActionSheet.show({
         'titleText': 'Map Actions',
         'buttons': [{
@@ -1054,10 +1055,10 @@
           $log.log('BUTTON CLICKED', index);
           switch (index) {
             case 0:
-              $scope.zoomToSpotsExtent();
+              vm.zoomToSpotsExtent();
               break;
             case 1:
-              $scope.cacheOfflineTiles();
+              vm.cacheOfflineTiles();
               break;
             case 2:
               groupSpots();

@@ -1,57 +1,58 @@
-<ion-view title="Features">
-  <ion-nav-buttons side="left">
-    <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+<ion-view title='Features'>
+  <ion-nav-buttons side='left'>
+    <button menu-toggle='left' class='button button-icon icon ion-navicon'></button>
   </ion-nav-buttons>
-  <ion-nav-buttons side="right">
-    <button ng-class="{'button button-icon ion-loop': isOnlineLoggedIn(), 'button button-icon ion-alert-circled': !isOnlineLoggedIn()}"
-            ng-click="sync()">
+  <ion-nav-buttons side='right'>
+    <button
+        ng-class='{"button button-icon ion-loop": vm.isOnlineLoggedIn(), "button button-icon ion-alert-circled": !vm.isOnlineLoggedIn()}'
+        ng-click='vm.sync()'>
     </button>
-    <button class="button button-icon ion-plus" ng-click="newSpot()"></button>
-    <button ng-click="showActionsheet()" class="button button-icon icon ion-arrow-up-b"></button>
+    <button class='button button-icon ion-plus' ng-click='vm.newSpot()'></button>
+    <button ng-click='vm.showActionsheet()' class='button button-icon icon ion-arrow-up-b'></button>
   </ion-nav-buttons>
-  <ion-content class="has-header">
-    <div class="row responsive-sm">
-      <div class="col">
+  <ion-content class='has-header'>
+    <div class='row responsive-sm'>
+      <div class='col'>
         <ion-list>
-          <div ng-repeat="group in groups">
-            <ion-item class="item-stable group-title"
-                      ng-click="toggleGroup(group)"
-                      ng-class="{active: isGroupShown(group)}">
-              <i class="icon" ng-class="isGroupShown(group) ? 'ion-minus' : 'ion-plus'"></i>
+          <div ng-repeat='group in vm.groups'>
+            <ion-item class='item-stable group-title'
+                      ng-click='vm.toggleGroup(group)'
+                      ng-class='{active: vm.isGroupShown(group)}'>
+              <i class='icon' ng-class='vm.isGroupShown(group) ? "ion-minus" : "ion-plus"'></i>
               &nbsp;
               <b>{{group.name}}</b>
               <small>
-                <span ng-if="group.name == '3D STRUCTURES'">&nbsp;&nbsp;(Count 0)</span>
-                <span ng-if="group.name != '3D STRUCTURES'">&nbsp;&nbsp;(Count {{group.items.length}})</span>
+                <span ng-if='group.name == "3D STRUCTURES"'>&nbsp;&nbsp;(Count 0)</span>
+                <span ng-if='group.name != "3D STRUCTURES"'>&nbsp;&nbsp;(Count {{group.items.length}})</span>
               </small>
             </ion-item>
-            <ion-item class="item-accordion"
-                      ng-repeat="item in group.items"
-                      ng-show="isGroupShown(group)"
-                      href="#/spotTab/{{item.properties.id}}/{{group.tab}}">
+            <ion-item class='item-accordion'
+                      ng-repeat='item in group.items'
+                      ng-show='vm.isGroupShown(group)'
+                      href='#/spotTab/{{item.properties.id}}/{{group.tab}}'>
               {{item.properties.name}}
             </ion-item>
           </div>
         </ion-list>
       </div>
-      <div class="col">
-        <div class="item item-divider">
+      <div class='col'>
+        <div class='item item-divider'>
           <b>STATIONS</b> <small>(spatial)</small>
         </div>
         <ion-list>
-          <ion-item class="item-accordion"
-                    ng-repeat="spot in spots | filter: {'properties': {'type': 'group'}}"
-                    href="#/spotTab/{{spot.properties.id}}/details">
+          <ion-item class='item-accordion'
+                    ng-repeat='spot in vm.spots | filter: {"properties": {"type": "group"}}'
+                    href='#/spotTab/{{spot.properties.id}}/details'>
             {{spot.properties.name}}
           </ion-item>
         </ion-list>
-        <div class="item item-divider">
+        <div class='item item-divider'>
           <b>GROUPS</b><small> (conceputal)</small>
         </div>
         <ion-list>
-          <ion-item class="item-accordion"
-                    ng-repeat="spot in spots | filter: {'properties': {'type': 'group'}}"
-                    href="#/spotTab/{{spot.properties.id}}/details">
+          <ion-item class='item-accordion'
+                    ng-repeat='spot in vm.spots | filter: {"properties": {"type": "group"}}'
+                    href='#/spotTab/{{spot.properties.id}}/details'>
             {{spot.properties.name}}
           </ion-item>
         </ion-list>

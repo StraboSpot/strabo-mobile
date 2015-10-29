@@ -8,11 +8,13 @@
   SyncModalController.$inject = ['$scope', '$ionicPopup', '$log', 'SpotsFactory', 'SyncService', 'LoginFactory'];
 
   function SyncModalController($scope, $ionicPopup, $log, SpotsFactory, SyncService, LoginFactory) {
+    var vm = this;
+
     // base64 encoded login
-    $scope.encodedLogin = null;
+    vm.encodedLogin = null;
 
     // upload progress
-    $scope.progress = {
+    vm.progress = {
       'showProgress': false,
       'showUploadDone': false,
       'showDownloadDone': false,
@@ -20,28 +22,28 @@
       'total': null
     };
 
-    $scope.showDatasetOpts = function () {
-      return navigator.onLine && $scope.encodedLogin;
+    vm.showDatasetOpts = function () {
+      return navigator.onLine && vm.encodedLogin;
     };
 
-    $scope.startDatasetOp = function () {
-      switch ($scope.operation) {
+    vm.startDatasetOp = function () {
+      switch (vm.operation) {
         case 'download':
-          $scope.getDatasetSpots();
+          vm.getDatasetSpots();
           break;
         case 'upload':
-          $scope.addDatasetSpots();
+          vm.addDatasetSpots();
           break;
         case 'remove':
-          $scope.deleteDataset();
+          vm.deleteDataset();
           break;
         case 'deleteAll':
-          $scope.deleteSpots();
+          vm.deleteSpots();
           break;
       }
-      $scope.operation = null;
-      $scope.progress.showUploadDone = false;
-      $scope.progress.showDownloadDone = false;
+      vm.operation = null;
+      vm.progress.showUploadDone = false;
+      vm.progress.showDownloadDone = false;
     };
 
     // is the user logged in from before?
@@ -50,41 +52,41 @@
         if (login !== null) {
           // we do have a login -- lets set the authentication
           $log.log('we have a login!', login);
-          $scope.loggedIn = true;
+          vm.loggedIn = true;
           // Encode the login string
-          $scope.encodedLogin = Base64.encode(login.email + ':' + login.password);
+          vm.encodedLogin = Base64.encode(login.email + ':' + login.password);
 
           // set the email to the login email
-          $scope.loginEmail = login.email;
+          vm.loginEmail = login.email;
 
-          $scope.getDatasets();
+          vm.getDatasets();
         }
         else {
           // nope, dont have a login
           $log.log('no login!');
-          $scope.loggedIn = false;
+          vm.loggedIn = false;
         }
       });
 
-    $scope.downloadProgress = '';
+    vm.downloadProgress = '';
 
     // Get all of the datasets for a user
-    $scope.getDatasets = function () {
-      if ($scope.encodedLogin) {
-        SyncService.getDatasets($scope.encodedLogin)
+    vm.getDatasets = function () {
+      if (vm.encodedLogin) {
+        SyncService.getDatasets(vm.encodedLogin)
           .then(function (response) {
-            $scope.datasets = [];
-            $scope.datasets.push({'name': '-- new dataset --'});
+            vm.datasets = [];
+            vm.datasets.push({'name': '-- new dataset --'});
             // Append response data to the beginning of array of datasets
             if (response.data) {
-              $scope.datasets = _.union(response.data.datasets, $scope.datasets);
+              vm.datasets = _.union(response.data.datasets, vm.datasets);
             }
             // Show second to last select option if more options than -- new dataset --
-            if ($scope.datasets.length > 1) {
-              $scope.dataset = $scope.datasets[$scope.datasets.length - 2];
+            if (vm.datasets.length > 1) {
+              vm.dataset = vm.datasets[vm.datasets.length - 2];
             }
             else {
-              $scope.dataset = $scope.datasets[$scope.datasets.length - 1];
+              vm.dataset = vm.datasets[vm.datasets.length - 1];
             }
           }
         );
@@ -92,36 +94,36 @@
     };
 
     // Create a new dataset
-    $scope.createDataset = function () {
-      SyncService.createDataset({'name': this.dataset_name}, $scope.encodedLogin)
+    vm.createDataset = function () {
+      SyncService.createDataset({'name': vm.dataset_name}, vm.encodedLogin)
         .then(function (response) {
-          $scope.operation = null;
-          $scope.dataset_name = '';
-          $scope.dataset = null;
-          $scope.getDatasets();
+          vm.operation = null;
+          vm.dataset_name = '';
+          vm.dataset = null;
+          vm.getDatasets();
         }
       );
     };
 
     // Delete a dataset
-    $scope.deleteDataset = function () {
-      SyncService.deleteDataset(this.dataset.self, $scope.encodedLogin)
+    vm.deleteDataset = function () {
+      SyncService.deleteDataset(vm.dataset.self, vm.encodedLogin)
         .then(function (response) {
           $log.log('deleted: ', response);
-          $scope.dataset = null;
-          $scope.getDatasets();
+          vm.dataset = null;
+          vm.getDatasets();
         }
       );
     };
 
     // Upload all spots to a dataset
-    $scope.addDatasetSpots = function () {
+    vm.addDatasetSpots = function () {
       // Get the dataset id
-      var url_parts = this.dataset.self.split('/');
+      var url_parts = vm.dataset.self.split('/');
       var dataset_id = url_parts.pop();
 
       var deleteAllDatasetSpots = function () {
-        return SyncService.deleteAllDatasetSpots(dataset_id, $scope.encodedLogin);
+        return SyncService.deleteAllDatasetSpots(dataset_id, vm.encodedLogin);
       };
 
       var getAllLocalSpots = function () {
@@ -131,7 +133,7 @@
       var uploadImages = function (spot) {
         if (spot.images) {
           _.each(spot.images, function (image) {
-            SyncService.uploadImage(spot.properties.id, image, $scope.encodedLogin).then(function (response) {
+            SyncService.uploadImage(spot.properties.id, image, vm.encodedLogin).then(function (response) {
               if (response.status === 201) {
                 $log.log('Image uploaded for', spot, 'Server response:', response);
               }
@@ -153,18 +155,18 @@
 
         var i = 1;
 
-        $scope.progress.total = spotsCount;
-        $scope.progress.current = i;
+        vm.progress.total = spotsCount;
+        vm.progress.current = i;
 
         if (spotsCount > 0) {
-          $scope.progress.showProgress = true;
+          vm.progress.showProgress = true;
         }
 
         spots.forEach(function (spot) {
           if (spot.properties.self) {
             // Try to update the spot first
             $log.log('Attempting to update the spot: ', spot);
-            SyncService.updateFeature(spot, $scope.encodedLogin).then(function (response) {
+            SyncService.updateFeature(spot, vm.encodedLogin).then(function (response) {
               $log.log('Update Feature server response: ', response);
               if (response.status === 201) {
                 $log.log('Updated spot ', i, '/', spotsCount);
@@ -172,7 +174,7 @@
 
                 // Add spot to dataset
                 SyncService.addSpotToDataset(spot.properties.id, dataset_id,
-                  $scope.encodedLogin).then(function (response) {
+                  vm.encodedLogin).then(function (response) {
                     if (response.status === 201) {
                       $log.log('Spot', spot, 'added to Dataset', dataset_id, 'Server response:', response);
                     }
@@ -182,10 +184,10 @@
                   });
 
                 // Update the progress
-                $scope.progress.current = i;
+                vm.progress.current = i;
                 if (i === spotsCount) {
-                  $scope.progress.showProgress = false;
-                  $scope.progress.showUploadDone = true;
+                  vm.progress.showProgress = false;
+                  vm.progress.showUploadDone = true;
                 }
                 i++;
               }
@@ -194,7 +196,7 @@
                 delete spot.properties.self;
                 $log.log('Unable to update spot ', i, '/', spotsCount, ' - Maybe this is a new spot.');
                 $log.log('Attempting to create the spot: ', spot);
-                SyncService.createFeature(spot, $scope.encodedLogin).then(function (response) {
+                SyncService.createFeature(spot, vm.encodedLogin).then(function (response) {
                   $log.log('Create Feature server response: ', response);
                   if (response.status === 201) {
                     spot.properties.self = response.data.properties.self;
@@ -204,7 +206,7 @@
 
                     // Add spot to dataset
                     SyncService.addSpotToDataset(spot.properties.id, dataset_id,
-                      $scope.encodedLogin).then(function (response) {
+                      vm.encodedLogin).then(function (response) {
                         if (response.status === 201) {
                           $log.log('Spot', spot, 'added to Dataset', dataset_id, 'Server response:', response);
                         }
@@ -218,10 +220,10 @@
                   }
 
                   // Update the progress
-                  $scope.progress.current = i;
+                  vm.progress.current = i;
                   if (i === spotsCount) {
-                    $scope.progress.showProgress = false;
-                    $scope.progress.showUploadDone = true;
+                    vm.progress.showProgress = false;
+                    vm.progress.showUploadDone = true;
                   }
                   i++;
                 });
@@ -230,7 +232,7 @@
           }
           else {
             $log.log('Attempting to create the spot: ', spot);
-            SyncService.createFeature(spot, $scope.encodedLogin).then(function (response) {
+            SyncService.createFeature(spot, vm.encodedLogin).then(function (response) {
               $log.log('Create Feature server response: ', response);
               if (response.status === 201) {
                 spot.properties.self = response.data.properties.self;
@@ -240,7 +242,7 @@
 
                 // Add spot to dataset
                 SyncService.addSpotToDataset(spot.properties.id, dataset_id,
-                  $scope.encodedLogin).then(function (response) {
+                  vm.encodedLogin).then(function (response) {
                     if (response.status === 201) {
                       $log.log('Spot', spot, 'added to Dataset', dataset_id, 'Server response:', response);
                     }
@@ -254,10 +256,10 @@
               }
 
               // Update the progress
-              $scope.progress.current = i;
+              vm.progress.current = i;
               if (i === spotsCount) {
-                $scope.progress.showProgress = false;
-                $scope.progress.showUploadDone = true;
+                vm.progress.showProgress = false;
+                vm.progress.showUploadDone = true;
               }
               i++;
             });
@@ -276,7 +278,7 @@
     };
 
     // Download all spots from a dataset
-    $scope.getDatasetSpots = function () {
+    vm.getDatasetSpots = function () {
       var saveSpot = function (spot) {
         // If the geometry coordinates contain any null values, delete the geometry; it shouldn't be defined
         if (spot.geometry) {
@@ -297,18 +299,18 @@
       };
 
       // Get the dataset id
-      var url_parts = this.dataset.self.split('/');
+      var url_parts = vm.dataset.self.split('/');
       var dataset_id = url_parts.pop();
-      SyncService.getDatasetSpots(dataset_id, $scope.encodedLogin)
+      SyncService.getDatasetSpots(dataset_id, vm.encodedLogin)
         .then(function (response) {
           $log.log(response);
           if (response.data !== null) {
-            $scope.progress.showDownloadDone = true;
+            vm.progress.showDownloadDone = true;
             var currentDownloadedCount = 0;
             response.data.features.forEach(function (spot) {
-              SyncService.getImages(spot.properties.id, $scope.encodedLogin).then(function (getImagesResponse) {
+              SyncService.getImages(spot.properties.id, vm.encodedLogin).then(function (getImagesResponse) {
                 currentDownloadedCount++;
-                $scope.downloadProgress = 'downloading ' + currentDownloadedCount + ' of ' + response.data.features.length;
+                vm.downloadProgress = 'downloading ' + currentDownloadedCount + ' of ' + response.data.features.length;
                 if (getImagesResponse.status === 200 && getImagesResponse.data) {
                   getImagesResponse.data.images.forEach(function (image) {
                     if (!spot.images) {
@@ -322,7 +324,7 @@
                     // Set the title from the caption
                     image['title'] = image.caption ? image.caption.substring(0,
                       24) : 'Untitled ' + _.indexOf(spot.images, image);
-                    SyncService.downloadImage(image.self, $scope.encodedLogin).then(function (downloadImageResponse) {
+                    SyncService.downloadImage(image.self, vm.encodedLogin).then(function (downloadImageResponse) {
                       if (downloadImageResponse.status === 200 && downloadImageResponse.data) {
                         var readDataUrl = function (file, callback) {
                           var reader = new FileReader();
@@ -367,14 +369,14 @@
     };
 
     // Delete ALL spots for a user on the server
-    $scope.deleteSpots = function () {
+    vm.deleteSpots = function () {
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete Spots',
         'template': 'Are you sure you want to delete <b>ALL</b> spots for this user from the server? Spots on your local device will remain on your device.'
       });
       confirmPopup.then(function (res) {
         if (res) {
-          SyncService.deleteSpots($scope.encodedLogin).then(function (response) {
+          SyncService.deleteSpots(vm.encodedLogin).then(function (response) {
             $log.log('ALL spots deleted. Server response: ', response);
           });
         }

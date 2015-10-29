@@ -1,12 +1,13 @@
 <ion-modal-view>
-  <ion-header-bar class="bar-dark nav-title-slide-ios7">
-    <h1 class="title">Create a New Feature</h1>
-    <div class="button button-clear" ng-click="closeModal('allModal')"><span class="icon ion-close"></span></div>
+  <ion-header-bar class='bar-dark nav-title-slide-ios7'>
+    <h1 class='title'>Create a New Feature</h1>
+
+    <div class='button button-clear' ng-click='vm.closeModal("allModal")'><span class='icon ion-close'></span></div>
   </ion-header-bar>
   <ion-content>
-    <ion-list ng-controller="SpotTypeController as newSpot">
-      <ion-item ng-repeat="item in newSpot.getSpotTypes" href="#/spotTab//{{item.tab}}"
-                ng-click="closeModal('allModal');newSpot.setSpotType(item.value)">
+    <ion-list ng-controller='SpotTypeController as vmChild'>
+      <ion-item ng-repeat='item in vmChild.getSpotTypes' href='#/spotTab//{{item.tab}}'
+                ng-click='vm.closeModal("allModal");vmChild.setSpotType(item.value)'>
         {{item.label}}
       </ion-item>
     </ion-list>

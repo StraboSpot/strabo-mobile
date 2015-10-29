@@ -1,27 +1,30 @@
-<ion-view view-title="Login" name="login-view">
+<ion-view view-title='Login' name='login-view'>
   <ion-content>
-    <div class="login scroll" align="center">
-      <div class="logininset">
-        <h1 class="logintext">strabo</h1>
-        <div class="list list-inset">
-          <label class="item item-input logininput">
-            <input type="text" placeholder="Username" ng-model="loginData.email">
+    <div class='login scroll' align='center'>
+      <div class='logininset'>
+        <h1 class='logintext'>strabo</h1>
+
+        <div class='list list-inset'>
+          <label class='item item-input logininput'>
+            <input type='text' placeholder='Username' ng-model='vm.loginData.email'>
           </label>
-          <label class="item item-input">
-            <input type="password" placeholder="Password" ng-model="loginData.password">
+          <label class='item item-input'>
+            <input type='password' placeholder='Password' ng-model='vm.loginData.password'>
           </label>
         </div>
-        <div class="padding">
-          <button class="button button-block button-positive" ng-click="doLogin()">Login</button>
+        <div class='padding'>
+          <button class='button button-block button-positive' ng-click='vm.doLogin()'>Login</button>
         </div>
-        <div align="center">
-          <a href="#" onclick="window.open('http://strabospot.org/register', '_system', 'location=yes'); return false;">
-            <span class="create-account-text">Create an account</span>
+        <div align='center'>
+          <a href='#' onclick='window.open("http://strabospot.org/register", "_system", "location=yes"); return false;'>
+            <span class='create-account-text'>Create an account</span>
           </a>
         </div>
       </div>
-      <span class="caption">Petrified Forest National Park</span>
-      <button class="button icon-left button-positive button-small ion-forward pull-right skip" ng-click="skip()">Skip</button>
+      <span class='caption'>Petrified Forest National Park</span>
+      <button class='button icon-left button-positive button-small ion-forward pull-right skip' ng-click='vm.skip()'>
+        Skip
+      </button>
     </div>
   </ion-content>
 </ion-view>

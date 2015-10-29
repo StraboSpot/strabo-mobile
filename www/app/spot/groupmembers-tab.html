@@ -1,11 +1,14 @@
 <ion-view>
   <ion-content>
-    <div class="padding">
-      <button ng-click="addGroupMember();" class="button button-positive icon-left icon ion-plus-round">Add or Edit Members of this Group</button>
+    <div class='padding'>
+      <button ng-click='vmChild.addGroupMember();' class='button button-positive icon-left icon ion-plus-round'>Add or
+        Edit Members of this Group
+      </button>
     </div>
     <ion-list>
-      <ion-item ng-repeat="item in group_members_selected" ng-click="openSpot(item.id);">
-        {{ item.name }} <small>({{ spotTypes[item.type] }})</small>
+      <ion-item ng-repeat='item in vm.group_members_selected' ng-click='vm.openSpot(item.id);'>
+        {{ item.name }}
+        <small>({{ vm.spotTypes[item.type] }})</small>
       </ion-item>
     </ion-list>
   </ion-content>

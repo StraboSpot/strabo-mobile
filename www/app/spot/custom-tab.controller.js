@@ -8,27 +8,30 @@
   SpotTabCustomController.$inject = ['$scope', '$ionicPopup', '$log'];
 
   function SpotTabCustomController($scope, $ionicPopup, $log) {
+    var vm = this;
+    var vmParent = $scope.vm;
+
     $log.log('inside spot tab custom Controller');
 
-    $scope.createCustomField = function () {
+    vm.createCustomField = function () {
       var errorMsg;
       // Check that both a field name and value has been entered
-      if (!this.customField) {
+      if (!vm.customField) {
         errorMsg = 'You must enter a field name and field value.';
       }
-      else if (!this.customField.name) {
+      else if (!vm.customField.name) {
         errorMsg = 'You must enter a field name.';
       }
-      else if (!this.customField.value) {
+      else if (!vm.customField.value) {
         errorMsg = 'You must enter a field value.';
       }
       else {
-        if (!$scope.spot.properties.custom) {
-          $scope.spot.properties.custom = {};
+        if (!vmParent.spot.properties.custom) {
+          vmParent.spot.properties.custom = {};
         }
         // Check if the field name already exists in properties.custom
-        if ($scope.spot.properties.custom[this.customField.name]) {
-          errorMsg = 'The field name <b>' + this.customField.name + '</b> is already being used. Choose a different custom field name.';
+        if (vmParent.spot.properties.custom[vm.customField.name]) {
+          errorMsg = 'The field name <b>' + vm.customField.name + '</b> is already being used. Choose a different custom field name.';
         }
       }
 
@@ -40,13 +43,13 @@
         return;
       }
 
-      $scope.spot.properties.custom[this.customField.name] = this.customField.value;
-      this.customField.name = undefined;
-      this.customField.value = undefined;
+      vmParent.spot.properties.custom[vm.customField.name] = vm.customField.value;
+      vm.customField.name = undefined;
+      vm.customField.value = undefined;
     };
 
-    $scope.deleteCustomField = function (key) {
-      $scope.spot.properties.custom = _.omit($scope.spot.properties.custom, key);
+    vm.deleteCustomField = function (key) {
+      vmParent.spot.properties.custom = _.omit(vmParent.spot.properties.custom, key);
     };
   }
 }());

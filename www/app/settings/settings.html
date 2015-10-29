@@ -1,78 +1,83 @@
-<ion-view title="Settings">
-  <ion-nav-buttons side="left">
-    <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+<ion-view title='Settings'>
+  <ion-nav-buttons side='left'>
+    <button menu-toggle='left' class='button button-icon icon ion-navicon'></button>
   </ion-nav-buttons>
-  <ion-content class="has-header" ng-controller="SettingsController">
+  <ion-content class='has-header' ng-controller='SettingsController'>
 
-    <h6 ng-hide="hideActionButtons.logout">You are currently logged in as: {{loginData.email}}</h6>
-    <label class="item item-input" ng-hide="hideActionButtons.login">
-      <input type="text" placeholder="Email" ng-model="loginData.email">
+    <h6 ng-hide='vm.hideActionButtons.logout'>You are currently logged in as: {{vm.loginData.email}}</h6>
+    <label class='item item-input' ng-hide='vm.hideActionButtons.login'>
+      <input type='text' placeholder='Email' ng-model='vm.loginData.email'>
     </label>
-    <label class="item item-input" ng-hide="hideActionButtons.login">
-      <input type="text" placeholder="Password" ng-model="loginData.password">
+    <label class='item item-input' ng-hide='vm.hideActionButtons.login'>
+      <input type='text' placeholder='Password' ng-model='vm.loginData.password'>
     </label>
-    <button ng-click="doLogin();" ng-hide="hideActionButtons.login" ng-disabled="!(loginData.email && loginData.password)" class="button icon-left icon ion-log-in button-balanced">Login</button>
-    <button ng-click="doLogout();" ng-hide="hideActionButtons.logout" class="button icon-left icon ion-log-out button-assertive">Logout</button>
+    <button ng-click='vm.doLogin();' ng-hide='vm.hideActionButtons.login'
+            ng-disabled='!(vm.loginData.email && vm.loginData.password)'
+            class='button icon-left icon ion-log-in button-balanced'>Login
+    </button>
+    <button ng-click='vm.doLogout();' ng-hide='vm.hideActionButtons.logout'
+            class='button icon-left icon ion-log-out button-assertive'>Logout
+    </button>
 
-    <div class="item item-divider">
+    <div class='item item-divider'>
       Spot Name Default Prefix
     </div>
     <div>
-      <label class="item item-input item-select item-stacked-label item-text-wrap">
-        <span class="input-label">Prefix Type</span>
-        <select ng-model="prefix_type" ng-change="typeChange('prefix')">
+      <label class='item item-input item-select item-stacked-label item-text-wrap'>
+        <span class='input-label'>Prefix Type</span>
+        <select ng-model='vm.prefix_type' ng-change='vm.typeChange("prefix")'>
           <option>None</option>
           <option>Text</option>
           <option>Counter</option>
         </select>
       </label>
-      <label class="item item-input item-stacked-label item-text-wrap" ng-show="prefix_type=='Text'">
-        <span class="input-label">Text Prefix</span>
-        <input type="text" ng-model="text_prefix">
+      <label class='item item-input item-stacked-label item-text-wrap' ng-show='vm.prefix_type=="Text"'>
+        <span class='input-label'>Text Prefix</span>
+        <input type='text' ng-model='vm.text_prefix'>
       </label>
-      <label class="item item-input item-stacked-label item-text-wrap" ng-show="prefix_type=='Counter'">
-        <span class="input-label">Counter Starting Integer</span>
-        <input type="number" ng-model="counter_prefix">
+      <label class='item item-input item-stacked-label item-text-wrap' ng-show='vm.prefix_type=="Counter"'>
+        <span class='input-label'>Counter Starting Integer</span>
+        <input type='number' ng-model='vm.counter_prefix'>
       </label>
-      <label class="item item-input item-stacked-label item-text-wrap" ng-show="prefix_type=='Counter'">
-        <span class="input-label">Counter Integer Increment <small></small></span>
-        <input type="number" ng-model="prefix_increment">
+      <label class='item item-input item-stacked-label item-text-wrap' ng-show='vm.prefix_type=="Counter"'>
+        <span class='input-label'>Counter Integer Increment</span>
+        <input type='number' ng-model='vm.prefix_increment'>
       </label>
     </div>
 
-    <div class="item item-divider">
+    <div class='item item-divider'>
       Spot Name Default Root
     </div>
-    <label class="item item-input item-stacked-label item-text-wrap">
-      <span class="input-label">Root</span>
-      <input type="text" ng-model="text_root">
+    <label class='item item-input item-stacked-label item-text-wrap'>
+      <span class='input-label'>Root</span>
+      <input type='text' ng-model='vm.text_root'>
     </label>
 
-    <div class="item item-divider">
+    <div class='item item-divider'>
       Spot Name Default Suffix
     </div>
     <div>
-      <label class="item item-input item-select item-stacked-label item-text-wrap">
-        <span class="input-label">Suffix Type</span>
-        <select ng-model="suffix_type" ng-change="typeChange('suffix')">
+      <label class='item item-input item-select item-stacked-label item-text-wrap'>
+        <span class='input-label'>Suffix Type</span>
+        <select ng-model='vm.suffix_type' ng-change='vm.typeChange("suffix")'>
           <option>None</option>
           <option>Text</option>
           <option>Counter</option>
         </select>
       </label>
-      <label class="item item-input item-stacked-label item-text-wrap" ng-show="suffix_type=='Text'">
-        <span class="input-label">Text Suffix</span>
-        <input type="text" ng-model="text_suffix">
+      <label class='item item-input item-stacked-label item-text-wrap' ng-show='vm.suffix_type=="Text"'>
+        <span class='input-label'>Text Suffix</span>
+        <input type='text' ng-model='vm.text_suffix'>
       </label>
-      <label class="item item-input item-stacked-label item-text-wrap" ng-show="suffix_type=='Counter'">
-        <span class="input-label">Counter Starting Integer</span>
-        <input type="number" ng-model="counter_suffix">
+      <label class='item item-input item-stacked-label item-text-wrap' ng-show='vm.suffix_type=="Counter"'>
+        <span class='input-label'>Counter Starting Integer</span>
+        <input type='number' ng-model='vm.counter_suffix'>
       </label>
-      <label class="item item-input item-stacked-label item-text-wrap" ng-show="suffix_type=='Counter'">
-        <span class="input-label">Counter Integer Increment <small></small></span>
-        <input type="number" ng-model="suffix_increment">
+      <label class='item item-input item-stacked-label item-text-wrap' ng-show='vm.suffix_type=="Counter"'>
+        <span class='input-label'>Counter Integer Increment</span>
+        <input type='number' ng-model='vm.suffix_increment'>
       </label>
     </div>
-    <button ng-click='save()' class="button icon-left icon ion-checkmark-circled button-positive">Save</button>
+    <button ng-click='vm.save()' class='button icon-left icon ion-checkmark-circled button-positive'>Save</button>
   </ion-content>
 </ion-view>
