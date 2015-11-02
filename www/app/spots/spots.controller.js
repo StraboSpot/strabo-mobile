@@ -156,11 +156,13 @@
               }
             );
             // Add the values for the geometry fields
-            var i = _.indexOf(allHeaders, 'geometry_type');
-            row[i] = '\'' + spot.geometry.type + '\'';
-            if (spot.geometry.coordinates !== undefined) {
-              i = _.indexOf(allHeaders, 'geometry_coordinates');
-              row[i] = '\'' + _.flatten(spot.geometry.coordinates).join(', ') + '\'';
+            if (angular.isDefined(spot.geometry) && angular.isDefined(spot.geometry.type)) {
+              var i = _.indexOf(allHeaders, 'geometry_type');
+              row[i] = '\'' + spot.geometry.type + '\'';
+              if (angular.isDefined(spot.geometry.coordinates)) {
+                i = _.indexOf(allHeaders, 'geometry_coordinates');
+                row[i] = '\'' + _.flatten(spot.geometry.coordinates).join(', ') + '\'';
+              }
             }
             csv += row.toString() + '\r\n';
           }

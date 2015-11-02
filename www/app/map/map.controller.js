@@ -710,8 +710,8 @@
       // Set styles for points, lines and polygon and groups
       function styleFunction(feature, resolution) {
         var styles = [];
-        var pointText = (feature.get('plunge') !== undefined) ? feature.get('plunge').toString() : feature.get('label');
-        pointText = (feature.get('dip') !== undefined) ? feature.get('dip').toString() : pointText;
+        var pointText = angular.isDefined(feature.get('plunge')) ? feature.get('plunge').toString() : feature.get('label');
+        pointText = angular.isDefined(feature.get('dip')) ? feature.get('dip').toString() : pointText;
 
         var rotation = feature.get('strike') || feature.get('trend') || 0;
 
@@ -925,7 +925,7 @@
 
     // Get current position
     vm.toggleLocation = function () {
-      vm.locationOn = vm.locationOn === undefined || vm.locationOn === false;
+      vm.locationOn = angular.isUndefined(vm.locationOn) || vm.locationOn === false;
 
       if (vm.locationOn) {
         $log.log('toggleLocation is now true');

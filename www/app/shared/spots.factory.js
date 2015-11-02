@@ -53,7 +53,7 @@
       var deferred = $q.defer(); // init promise
 
       LocalStorage.spotsDb.keys().then(function (keys, err) {
-        if (keys[0] === undefined) {
+        if (angular.isUndefined(keys[0])) {
           deferred.resolve(undefined);
         }
         else {

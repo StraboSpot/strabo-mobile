@@ -121,7 +121,7 @@
            */
 
           // create an images array if it doesn't exist -- camera images are stored here
-          if (vmParent.spot.images === undefined) {
+          if (angular.isUndefined(vmParent.spot.images)) {
             vmParent.spot.images = [];
           }
 
