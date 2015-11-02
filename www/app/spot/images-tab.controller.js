@@ -6,10 +6,10 @@
     .controller('SpotTabImagesController', SpotTabImagesController);
 
   SpotTabImagesController.$inject = ['$scope', '$cordovaCamera', '$ionicPopup', '$ionicModal', '$location', '$log',
-    'SpotsFactory', 'ImageMapService'];
+    '$window', 'SpotsFactory', 'ImageMapService'];
 
   function SpotTabImagesController($scope, $cordovaCamera, $ionicPopup, $ionicModal, $location, $log,
-                                   SpotsFactory, ImageMapService) {
+                                   $window, SpotsFactory, ImageMapService) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -50,9 +50,9 @@
     vm.cameraModal = function (source) {
       // camera modal popup
       var myPopup = $ionicPopup.show({
-        'template': '<ion-radio ng-repeat="source in cameraSource" ng-value="source.value" ng-model="selectedCameraSource.source">{{ source.text }}</ion-radio>',
+        'template': '<ion-radio ng-repeat="source in vmChild.cameraSource" ng-value="source.value" ng-model="vmChild.selectedCameraSource.source">{{ source.text }}</ion-radio>',
         'title': 'Select an image source',
-        'scope': vm,
+        'scope': $scope,
         'buttons': [{
           'text': 'Cancel'
         }, {
@@ -129,7 +129,7 @@
           // are we on an android device and is the URI schema a 'content://' type?
           if (imageURI.substring(0, 10) === 'content://') {
             // yes, then convert it to a 'file://' yet schemaless type
-            window.FilePath.resolveNativePath(imageURI, resolveSuccess, resolveFail);
+            $window.FilePath.resolveNativePath(imageURI, resolveSuccess, resolveFail);
           }
           else {
             // no, so no conversion is needed
@@ -191,7 +191,7 @@
             };
 
             // invoke the reading of the image file from the local filesystem
-            window.resolveLocalFileSystemURL(imageURI, gotFileEntry, resolveFail);
+            $window.resolveLocalFileSystemURL(imageURI, gotFileEntry, resolveFail);
           }
         }, function (err) {
           $log.log('error: ', err);

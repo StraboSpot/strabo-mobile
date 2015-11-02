@@ -5,9 +5,9 @@
     .module('app')
     .factory('MapLayerFactory', MapLayerFactory);
 
-  MapLayerFactory.$inject = ['OfflineTilesFactory'];
+  MapLayerFactory.$inject = ['OfflineTilesFactory', '$window'];
 
-  function MapLayerFactory(OfflineTilesFactory) {
+  function MapLayerFactory(OfflineTilesFactory, $window) {
     var factory = {};
 
     // vector layer where we house all the geojson spot objects
@@ -190,7 +190,7 @@
           if (blob !== null) {
             // converts blobs to base64
             var blobToBase64 = function (blob, callback) {
-              var reader = new window.FileReader();
+              var reader = new $window.FileReader();
               reader.readAsDataURL(blob);
               reader.onloadend = function () {
                 var base64data = reader.result;

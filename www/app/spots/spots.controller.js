@@ -6,10 +6,10 @@
     .controller('SpotsController', Spots);
 
   Spots.$inject = ['$scope', '$ionicModal', '$ionicPopup', '$cordovaFile', '$cordovaDevice', '$ionicActionSheet',
-    '$log', 'SpotsFactory', 'LoginFactory', 'CurrentSpot', 'ImageMapService'];
+    '$log', '$window', 'SpotsFactory', 'LoginFactory', 'CurrentSpot', 'ImageMapService'];
 
   function Spots($scope, $ionicModal, $ionicPopup, $cordovaFile, $cordovaDevice, $ionicActionSheet,
-                 $log, SpotsFactory, LoginFactory, CurrentSpot, ImageMapService) {
+                 $log, $window, SpotsFactory, LoginFactory, CurrentSpot, ImageMapService) {
     var vm = this;
 
     // Make sure the current spot is empty
@@ -173,7 +173,7 @@
       // If this is a web browser and not using cordova
       if (document.location.protocol !== 'file:') { // Phonegap is not present }
         spotData = spotData.replace(/\r\n/g, '<br>');
-        var win = window.open();
+        var win = $window.open();
         win.document.body.innerHTML = spotData;
         return;
       }
