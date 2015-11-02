@@ -9,11 +9,8 @@
 
   function SpotTabDetailController($scope, $stateParams, $log) {
     var vmParent = $scope.vm;
+    vmParent.load($stateParams);  // Need to load current state into parent
 
     $log.log('inside spot tab detail Controller');
-
-    // load the current state into the parent, we do this because stateparams are accessible only through the child
-    // and we need to propogate this to the parent because of business logic currently stuck in the parent controller
-    vmParent.load($stateParams);
   }
 }());

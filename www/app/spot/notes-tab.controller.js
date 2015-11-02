@@ -5,9 +5,12 @@
     .module('app')
     .controller('SpotTabNotesController', SpotTabNotesController);
 
-  SpotTabNotesController.$inject = ['$log'];
+  SpotTabNotesController.$inject = ['$scope', '$stateParams', '$log'];
 
-  function SpotTabNotesController($log) {
+  function SpotTabNotesController($scope, $stateParams, $log) {
+    var vmParent = $scope.vm;
+    vmParent.load($stateParams);  // Need to load current state into parent
+
     $log.log('inside spot tab notes Controller');
   }
 }());

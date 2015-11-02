@@ -5,13 +5,14 @@
     .module('app')
     .controller('SpotTabImagesController', SpotTabImagesController);
 
-  SpotTabImagesController.$inject = ['$scope', '$cordovaCamera', '$ionicPopup', '$ionicModal', '$location', '$log',
-    '$window', 'SpotsFactory', 'ImageMapService'];
+  SpotTabImagesController.$inject = ['$scope', '$stateParams', '$log', '$cordovaCamera', '$ionicPopup', '$ionicModal',
+    '$location', '$window', 'SpotsFactory', 'ImageMapService'];
 
-  function SpotTabImagesController($scope, $cordovaCamera, $ionicPopup, $ionicModal, $location, $log,
-                                   $window, SpotsFactory, ImageMapService) {
+  function SpotTabImagesController($scope, $stateParams, $log, $cordovaCamera, $ionicPopup, $ionicModal,
+                                   $location, $window, SpotsFactory, ImageMapService) {
     var vm = this;
     var vmParent = $scope.vm;
+    vmParent.load($stateParams);  // Need to load current state into parent
 
     $log.log('inside spot tab images Controller');
 

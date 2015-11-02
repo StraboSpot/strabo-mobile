@@ -5,11 +5,12 @@
     .module('app')
     .controller('SpotTabLinksController', SpotTabLinksController);
 
-  SpotTabLinksController.$inject = ['$scope', '$log', 'CurrentSpot'];
+  SpotTabLinksController.$inject = ['$scope', '$stateParams', '$log', 'CurrentSpot'];
 
-  function SpotTabLinksController($scope, $log, CurrentSpot) {
+  function SpotTabLinksController($scope, $stateParams, $log, CurrentSpot) {
     var vm = this;
     var vmParent = $scope.vm;
+    vmParent.load($stateParams);  // Need to load current state into parent
 
     $log.log('inside spot tab links Controller');
 

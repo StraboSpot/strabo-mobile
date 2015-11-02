@@ -5,13 +5,14 @@
     .module('app')
     .controller('SpotTabGeoreferenceController', SpotTabGeoreferenceController);
 
-  SpotTabGeoreferenceController.$inject = ['$scope', '$cordovaGeolocation', '$ionicPopup', '$location', '$log',
-    'CurrentSpot', 'ImageMapService', 'SpotsFactory', 'MapView'];
+  SpotTabGeoreferenceController.$inject = ['$scope', '$stateParams', '$cordovaGeolocation', '$ionicPopup', '$location',
+    '$log', 'CurrentSpot', 'ImageMapService', 'SpotsFactory', 'MapView'];
 
-  function SpotTabGeoreferenceController($scope, $cordovaGeolocation, $ionicPopup, $location, $log, CurrentSpot,
-                                         ImageMapService, SpotsFactory, MapView) {
+  function SpotTabGeoreferenceController($scope, $stateParams, $cordovaGeolocation, $ionicPopup, $location,
+                                         $log, CurrentSpot, ImageMapService, SpotsFactory, MapView) {
     var vm = this;
     var vmParent = $scope.vm;
+    vmParent.load($stateParams);  // Need to load current state into parent
 
     $log.log('inside spot tab georeference Controller');
 

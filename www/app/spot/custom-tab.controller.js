@@ -5,11 +5,12 @@
     .module('app')
     .controller('SpotTabCustomController', SpotTabCustomController);
 
-  SpotTabCustomController.$inject = ['$scope', '$ionicPopup', '$log'];
+  SpotTabCustomController.$inject = ['$scope', '$stateParams', '$ionicPopup', '$log'];
 
-  function SpotTabCustomController($scope, $ionicPopup, $log) {
+  function SpotTabCustomController($scope, $stateParams, $ionicPopup, $log) {
     var vm = this;
     var vmParent = $scope.vm;
+    vmParent.load($stateParams);  // Need to load current state into parent
 
     $log.log('inside spot tab custom Controller');
 
