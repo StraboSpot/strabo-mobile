@@ -23,7 +23,7 @@
       var related_spot = _.find(vmParent.links_selected, function (rel_spot) {
         return rel_spot.id === item.id;
       });
-      related_spot['relationship'] = relationship.type;
+      related_spot.relationship = relationship.type;
     };
   }
 }());

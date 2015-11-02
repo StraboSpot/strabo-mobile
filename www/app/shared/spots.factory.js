@@ -25,7 +25,7 @@
     };
 
     factory.save = function (value) {
-      value.properties['modified_timestamp'] = new Date().getTime();
+      value.properties.modified_timestamp = new Date().getTime();
 
       var self = this;
       var deferred = $q.defer(); // init promise

@@ -320,10 +320,10 @@
                     spot.images.push(image);
                     // Set an id if there is not one
                     if (!image.id) {
-                      image['id'] = Math.floor((new Date().getTime() + Math.random()) * 10);
+                      image.id = Math.floor((new Date().getTime() + Math.random()) * 10);
                     }
                     // Set the title from the caption
-                    image['title'] = image.caption ? image.caption.substring(0,
+                    image.title = image.caption ? image.caption.substring(0,
                       24) : 'Untitled ' + _.indexOf(spot.images, image);
                     SyncService.downloadImage(image.self, vm.encodedLogin).then(function (downloadImageResponse) {
                       if (downloadImageResponse.status === 200 && downloadImageResponse.data) {
@@ -336,13 +336,13 @@
                         };
                         readDataUrl(downloadImageResponse.data, function (base64Image) {
                           var imageProps = _.findWhere(spot.images, {'self': downloadImageResponse.config.url});
-                          imageProps['src'] = base64Image;
+                          imageProps.src = base64Image;
                           // Set the image height and width
                           if (!imageProps.height || !imageProps.width) {
                             var im = new Image();
                             im.src = base64Image;
-                            imageProps['height'] = im.height;
-                            imageProps['width'] = im.width;
+                            imageProps.height = im.height;
+                            imageProps.width = im.width;
                           }
                           saveSpot(spot);
                         });

@@ -723,8 +723,8 @@
                 'text': textStylePoint(pointText, rotation)
               })
             ];
-            styles['Point'] = pointStyle;
-            styles['MultiPoint'] = pointStyle;
+            styles.Point = pointStyle;
+            styles.MultiPoint = pointStyle;
             break;
           case 'line':
             var lineStyle = [
@@ -736,8 +736,8 @@
                 'text': textStyle(feature.get('label'))
               })
             ];
-            styles['LineString'] = lineStyle;
-            styles['MultiLineString'] = lineStyle;
+            styles.LineString = lineStyle;
+            styles.MultiLineString = lineStyle;
             break;
           case 'polygon':
             var polyText = feature.get('unit_label_abbreviation') ? feature.get('unit_label_abbreviation') : feature.get('label');
@@ -753,8 +753,8 @@
                 'text': textStyle(polyText)
               })
             ];
-            styles['Polygon'] = polyStyle;
-            styles['MultiPolygon'] = polyStyle;
+            styles.Polygon = polyStyle;
+            styles.MultiPolygon = polyStyle;
             break;
           case 'group':
             var groupText = feature.get('group_name') ? feature.get('group_name') : feature.get('label');
@@ -770,8 +770,8 @@
                 'text': textStyle(groupText)
               })
             ];
-            styles['Polygon'] = groupStyle;
-            styles['MultiPolygon'] = groupStyle;
+            styles.Polygon = groupStyle;
+            styles.MultiPolygon = groupStyle;
             break;
         }
         return styles[feature.getGeometry().getType()];

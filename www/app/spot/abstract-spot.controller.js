@@ -171,11 +171,11 @@
           // Check for Image Maps
           _.forEach(obj.images, function (image) {
             if (image.annotated) {
-              image['annotated'] = true;
+              image.annotated = true;
               ImageMapService.addImageMap(image);
             }
             else {
-              image['annotated'] = false;
+              image.annotated = false;
               ImageMapService.removeImageMap(image);
             }
           });
@@ -431,7 +431,7 @@
         var linked_spot = cleanRefs('links', obj.id);
 
         // If a link relationship was not selected mark as 'is otherwise related to'
-        obj['relationship'] = obj.relationship ? obj.relationship : 'is otherwise related to';
+        obj.relationship = obj.relationship ? obj.relationship : 'is otherwise related to';
 
         // Add the new/updated link reference to the link references for this spot
         vm.spot.properties.links.push(obj);
@@ -702,7 +702,7 @@
     // Create a new spot with the details from this spot
     vm.copySpot = function () {
       var copySpot = _.omit(vm.spot, 'properties');
-      copySpot['properties'] = _.omit(vm.spot.properties,
+      copySpot.properties = _.omit(vm.spot.properties,
         ['id', 'date', 'time', 'links', 'groups', 'group_members']);
       NewSpot.setNewSpot(copySpot);
       $location.path('/spotTab//notes');

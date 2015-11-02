@@ -15,13 +15,13 @@
       });
       _.forEach(spotsWithImages, function (spot) {
         _.forEach(spot.images, function (image) {
-          image['title'] = image.caption ? image.caption.substring(0, 24) : 'Untitled ' + _.indexOf(spot.images, image);
+          image.title = image.caption ? image.caption.substring(0, 24) : 'Untitled ' + _.indexOf(spot.images, image);
           if (image.annotated) {
-            image['annotated'] = true;
+            image.annotated = true;
             ImageMapService.addImageMap(image);
           }
           else {
-            image['annotated'] = false;
+            image.annotated = false;
             ImageMapService.removeImageMap(image);
           }
         });
