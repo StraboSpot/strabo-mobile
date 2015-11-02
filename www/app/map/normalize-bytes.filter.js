@@ -10,7 +10,7 @@
       var sizes = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
       var k = 1000;
 
-      if (typeof bytes !== 'number') {
+      if (!angular.isNumber(bytes)) {
         return 'unknown';
       }
       else if (bytes === 0) {

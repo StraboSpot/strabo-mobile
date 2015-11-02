@@ -33,7 +33,7 @@
 
       // Return a random number between min and max
       function rand(min, max, interval) {
-        if (typeof (interval) === 'undefined') interval = 1;
+        if (angular.isUndefined(interval)) interval = 1;
         var r = Math.floor(Math.random() * (max - min + interval) / interval);
         return r * interval + min;
       }

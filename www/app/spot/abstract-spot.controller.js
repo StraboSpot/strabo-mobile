@@ -42,7 +42,7 @@
       // Push spots from linked spots list into selected and unselected arrays so we know which checkboxes to turn on
       vm.links_selected = [];
       vm.links_unselected = [];
-      if (vm.spot.properties.links && typeof (vm.spot.properties.links) === 'object') {
+      if (vm.spot.properties.links && angular.isObject(vm.spot.properties.links)) {
         vm.spot.properties.links.forEach(function (obj, i) {
           vm.links_selected.push(obj);
         });
@@ -50,7 +50,7 @@
 
       vm.groups_selected = [];
       vm.groups_unselected = [];
-      if (vm.spot.properties.groups && typeof (vm.spot.properties.groups) === 'object') {
+      if (vm.spot.properties.groups && angular.isObject(vm.spot.properties.groups)) {
         vm.spot.properties.groups.forEach(function (obj, i) {
           vm.groups_selected.push(obj);
         });
@@ -58,7 +58,7 @@
 
       vm.group_members_selected = [];
       vm.group_members_unselected = [];
-      if (vm.spot.properties.group_members && typeof (vm.spot.properties.group_members) === 'object') {
+      if (vm.spot.properties.group_members && angular.isObject(vm.spot.properties.group_members)) {
         vm.spot.properties.group_members.forEach(function (obj, i) {
           vm.group_members_selected.push(obj);
         });
