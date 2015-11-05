@@ -9,13 +9,13 @@
     '$filter', '$ionicHistory', '$ionicModal', '$ionicPopup', '$ionicActionSheet',
     '$ionicSideMenuDelegate', '$log', 'NewSpot', 'CurrentSpot', 'CoordinateRange',
     'MapView', 'OfflineTilesFactory', 'SlippyTileNamesFactory', 'SpotsFactory',
-    'ViewExtentFactory', 'SymbologyFactory', 'MapLayerFactory', 'ImageMapService'];
+    'ViewExtentFactory', 'SymbologyFactory', 'MapLayerFactory', 'ImageMapService', 'DrawFactory'];
 
   function ImageMapController($window, $rootScope, $state, $cordovaGeolocation, $location,
                               $filter, $ionicHistory, $ionicModal, $ionicPopup, $ionicActionSheet,
                               $ionicSideMenuDelegate, $log, NewSpot, CurrentSpot, CoordinateRange,
                               MapView, OfflineTilesFactory, SlippyTileNamesFactory, SpotsFactory,
-                              ViewExtentFactory, SymbologyFactory, MapLayerFactory, ImageMapService) {
+                              ViewExtentFactory, SymbologyFactory, MapLayerFactory, ImageMapService, DrawFactory) {
     var vm = this;
 
     // disable dragging back to ionic side menu because this affects drawing tools
@@ -25,110 +25,19 @@
       return deg * (Math.PI / 180);
     };
 
-    // ol3 map
-    var map;
-
-    // draw is a ol3 drawing interaction
-    var draw;
-
-    // added draw controls
-    var drawControls = function (opt_options) {
-      var options = opt_options || {};
-
-      var drawPoint;
-      var drawLine;
-      var drawPoly;
-
-      drawPoint = document.createElement('a');
-      drawPoint.id = 'drawPointControl';
-      drawPoint.href = '#drawPointControl';
-      drawPoint.className = 'point';
-
-      drawLine = document.createElement('a');
-      drawLine.id = 'drawLineControl';
-      drawLine.href = '#drawLineControl';
-      drawLine.className = 'line';
-
-      drawPoly = document.createElement('a');
-      drawPoly.id = 'drawPolyControl';
-      drawPoly.href = '#drawPolyControl';
-      drawPoly.className = 'poly';
-
-      var handleDrawPoint = function (e) {
-        if (drawPoint.style.backgroundColor === '') {
-          drawPoint.style.backgroundColor = '#DDDDDD';
-        }
-        else {
-          drawPoint.style.backgroundColor = '';
-        }
-        drawLine.style.backgroundColor = '';
-        drawPoly.style.backgroundColor = '';
-
-        e.preventDefault();
-        vm.startDraw('Point');
-      };
-      var handleDrawLine = function (e) {
-        if (drawLine.style.backgroundColor === '') {
-          drawLine.style.backgroundColor = '#DDDDDD';
-        }
-        else {
-          drawLine.style.backgroundColor = '';
-        }
-        drawPoint.style.backgroundColor = '';
-        drawPoly.style.backgroundColor = '';
-
-        e.preventDefault();
-        vm.startDraw('LineString');
-      };
-      var handleDrawPoly = function (e) {
-        if (drawPoly.style.backgroundColor === '') {
-          drawPoly.style.backgroundColor = '#DDDDDD';
-        }
-        else {
-          drawPoly.style.backgroundColor = '';
-        }
-        drawPoint.style.backgroundColor = '';
-        drawLine.style.backgroundColor = '';
-
-        e.preventDefault();
-        vm.startDraw('Polygon');
-      };
-
-      drawPoint.addEventListener('click', handleDrawPoint, false);
-      drawPoint.addEventListener('touchstart', handleDrawPoint, false);
-
-      drawLine.addEventListener('click', handleDrawLine, false);
-      drawLine.addEventListener('touchstart', handleDrawLine, false);
-
-      drawPoly.addEventListener('click', handleDrawPoly, false);
-      drawPoly.addEventListener('touchstart', handleDrawPoly, false);
-
-      var element = document.createElement('div');
-      element.className = 'draw-controls ol-unselectable';
-
-      element.appendChild(drawPoint);
-      element.appendChild(drawLine);
-      element.appendChild(drawPoly);
-
-      ol.control.Control.call(this, {
-        'element': element,
-        'target': options.target
-      });
-    };
-
-    ol.inherits(drawControls, ol.control.Control);
     vm.imageMap = ImageMapService.getCurrentImageMap();
-    var extent = [0, 0, vm.imageMap.width, vm.imageMap.height];
 
     // var headerHeight = 42;
     // var extent = [0, 0, $window.innerWidth, $window.innerHeight - headerHeight];
+    var extent = [0, 0, vm.imageMap.width, vm.imageMap.height];
+
     var projection = new ol.proj.Projection({
       'code': 'map-image',
       'units': 'pixels',
       'extent': extent
     });
 
-    map = new ol.Map({
+    var map = new ol.Map({
       'layers': [
         new ol.layer.Image({
           'source': new ol.source.ImageStatic({
@@ -151,33 +60,10 @@
       })
     });
 
-    // initial map view, used for setting the view upon map creation
-    /*  var initialMapView = new ol.View({
-     projection: 'EPSG:3857',
-     center: [-11000000, 4600000],
-     zoom: 4,
-     minZoom: 4
-     });
+    /**
+     * Map Layers
+     */
 
-     // lets create a new map
-     map = new ol.Map({
-     target: 'mapdiv',
-     view: initialMapView,
-     // remove rotate icon from controls and add drawing controls
-     controls: ol.control.defaults({
-     rotate: false
-     }),
-     // turn off ability to rotate map via keyboard+mouse and using fingers on a mobile device
-     interactions: ol.interaction.defaults({
-     altShiftDragRotate: false,
-     pinchRotate: false
-     })
-     });
-
-     // restricts the map constraint to these coordinates
-     // var mapExtent = ol.proj.transformExtent([-180,80,180,-80], 'EPSG:4326', 'EPSG:3857');*/
-
-    // map layers
     // var onlineLayer = MapLayerFactory.getOnlineLayer();
     //  var onlineOverlayLayer = MapLayerFactory.getOnlineOverlayLayer();
     //  var offlineLayer = MapLayerFactory.getOfflineLayer();
@@ -207,21 +93,21 @@
       })
     });
 
-    /**
-     * map adding layers
-     */
+    ol.inherits(DrawFactory.DrawControls, ol.control.Control);
 
-      // add the feature layer to the map first
+    // Add layers to the map
     map.addLayer(featureLayer);
-
-    // add draw layer
     map.addLayer(drawLayer);
 
-    // add geolocation layer
-    // map.addLayer(geolocationLayer);
+    /**
+     * Map Controls/Functions
+     */
 
-    // add draw controls
-    map.addControl(new drawControls());
+    map.addControl(new DrawFactory.DrawControls({
+      'map': map,
+      'drawLayer': drawLayer,
+      'imageMap': vm.imageMap
+    }));
 
     // layer switcher
     map.addControl(new ol.control.LayerSwitcher());
@@ -229,10 +115,6 @@
     // Popup
     var popup = new ol.Overlay.Popup();
     map.addOverlay(popup);
-
-    /*
-     * END MAP LAYERS
-     */
 
     // did we come back from a map provider?
     /*       if (OfflineTilesFactory.getCurrentMapProvider()) {
@@ -320,250 +202,6 @@
      template: 'You must be online to save a map!'
      });
      };*/
-
-    // drawButtonActive used to keep state of which selected drawing tool is active
-    vm.drawButtonActive = null;
-
-    vm.startDraw = function (type, isFreeHand) {
-      // if the type is already selected, we want to stop drawing
-      if (vm.drawButtonActive === type && !isFreeHand) {
-        vm.drawButtonActive = null;
-        vm.cancelDraw();
-        return;
-      }
-      else {
-        vm.drawButtonActive = type;
-      }
-
-      $log.log('isFreeHand, ', isFreeHand);
-
-      // are we in freehand mode?
-      if (isFreeHand) {
-        // yes -- then disable the map drag pan
-        map.getInteractions().forEach(function (interaction) {
-          if (interaction instanceof ol.interaction.DragPan) {
-            $log.log(interaction);
-            map.getInteractions().remove(interaction);
-          }
-        });
-      }
-
-      // is draw already set?
-      if (draw !== null) {
-        // yes, stop and remove the drawing interaction
-        vm.cancelDraw();
-      }
-
-      if (isFreeHand) {
-        draw = new ol.interaction.Draw({
-          'source': drawLayer.getSource(),
-          'type': type,
-          'condition': ol.events.condition.singleClick,
-          'freehandCondition': ol.events.condition.noModifierKeys,
-          'snapTolerance': 96
-        });
-      }
-      else {
-        draw = new ol.interaction.Draw({
-          'source': drawLayer.getSource(),
-          'type': type
-        });
-      }
-
-
-      draw.on('drawend', function (e) {
-        // drawend event needs to end the drawing interaction
-        map.removeInteraction(draw);
-
-        // clear the drawing
-        drawLayer.setSource(new ol.source.Vector());
-
-        // we want a geojson object when the user finishes drawing
-        var geojson = new ol.format.GeoJSON;
-
-        // the actual geojson object that was drawn
-        var geojsonObj = geojson.writeFeatureObject(e.feature);
-
-        if (_.find(_.flatten(geojsonObj.geometry.coordinates),
-            function (num) {
-              return num < 0;
-            }
-          )) {
-          $ionicPopup.alert({
-            'title': 'Out of Bounds',
-            'template': 'Spot coordinate is off the image. Try again.'
-          });
-          return;
-        }
-
-        /*
-         var geojsonObj = JSON.parse(geojson.writeFeature(e.feature, {
-         featureProjection: 'EPSG:3857'
-         }));
-         */
-
-        if (isFreeHand) {
-          $log.log('Drawend : Freehand');
-
-          // add the regular draw controls back
-          map.addControl(new drawControls());
-
-          // add the layer switcher controls back
-          map.addControl(new ol.control.LayerSwitcher());
-
-          // add the dragging back in
-          map.addInteraction(new ol.interaction.DragPan());
-
-          // does the drawing contain a kink, aka self-intersecting polygon?
-          if (turf.kinks(geojsonObj).intersections.features.length === 0) {
-            // no, good
-
-            // contains all the lassoed objects
-            var isLassoed = [];
-
-            SpotsFactory.all().then(function (spots) {
-              var mappedSpots = _.filter(spots, function (spot) {
-                return spot.geometry;
-              });
-              _.each(mappedSpots, function (spot) {
-                // if the spot is a point, we test using turf.inside
-                // if the spot is a polygon or line, we test using turf.intersect
-
-                var spotType = spot.properties.type;
-
-                if (spotType === 'point') {
-                  // is the point inside the drawn polygon?
-                  if (turf.inside(spot, geojsonObj)) {
-                    isLassoed.push({
-                      'id': spot.properties.id,
-                      'name': spot.properties.name,
-                      'type': spot.properties.type
-                    });
-                  }
-                }
-
-                if (spotType === 'line' || spotType === 'polygon' || spotType === 'group') {
-                  // is the line or polygon within/intersected in the drawn polygon?
-                  if (turf.intersect(spot, geojsonObj)) {
-                    isLassoed.push({
-                      'id': spot.properties.id,
-                      'name': spot.properties.name,
-                      'type': spot.properties.type
-                    });
-                  }
-                }
-              });
-
-              $log.log('isLassoed, ', isLassoed);
-
-              if (isLassoed.length === 0) {
-                $ionicPopup.alert({
-                  'title': 'Empty Group',
-                  'template': 'No spots are within or intersect the drawn poloygon.'
-                });
-                return;
-              }
-
-              geojsonObj.properties = {
-                'type': 'group',
-                'group_members': isLassoed,
-                'image_map': vm.imageMap.id
-              };
-
-              NewSpot.setNewSpot(geojsonObj);
-              $state.go('spotTab.details');
-            });
-          }
-          else {
-            // contains a kink, aka self-intersecting polygon
-            alert('cannot draw self-intersecting polygon');
-          }
-        }
-        else {
-          $log.log('Drawend: Normal (not freehand)');
-
-          // If there is already a current spot only update the geometry if the draw tool used
-          // matches the required geometry for the Spot type
-          if (CurrentSpot.getCurrentSpot()) {
-            var curSpot = CurrentSpot.getCurrentSpot();
-            switch (curSpot.properties.type) {
-              case 'point':
-                if (vm.drawButtonActive === 'Point') {
-                  curSpot.geometry = geojsonObj.geometry;
-                  CurrentSpot.setCurrentSpot(curSpot);
-                }
-                else {
-                  $ionicPopup.alert({
-                    'title': 'Geometry Mismatch!',
-                    'template': 'Measurements and observations must be drawn as points. Draw Again.'
-                  });
-                }
-                $state.go('spotTab.georeference');
-                break;
-              case 'line':
-                if (vm.drawButtonActive === 'LineString') {
-                  curSpot.geometry = geojsonObj.geometry;
-                  CurrentSpot.setCurrentSpot(curSpot);
-                }
-                else {
-                  $ionicPopup.alert({
-                    'title': 'Geometry Mismatch!',
-                    'template': 'Contacts and traces must be drawn as lines. Draw Again.'
-                  });
-                }
-                $state.go('spotTab.georeference');
-                break;
-              case 'polygon':
-                if (vm.drawButtonActive === 'Polygon') {
-                  curSpot.geometry = geojsonObj.geometry;
-                  CurrentSpot.setCurrentSpot(curSpot);
-                }
-                else {
-                  $ionicPopup.alert({
-                    'title': 'Geometry Mismatch!',
-                    'template': 'Rock descriptions must be drawn as polygons. Draw Again.'
-                  });
-                }
-                $state.go('spotTab.georeference');
-                break;
-              case 'group':
-                if (vm.drawButtonActive === 'Polygon') {
-                  curSpot.geometry = geojsonObj.geometry;
-                  CurrentSpot.setCurrentSpot(curSpot);
-                }
-                else {
-                  $ionicPopup.alert({
-                    'title': 'Geometry Mismatch!',
-                    'template': 'Stations must be drawn as polygons. Draw Again.'
-                  });
-                }
-                $state.go('spotTab.georeference');
-                break;
-            }
-          }
-          // Initialize new Spot
-          else {
-            var goTo = 'spotTab.details';
-            switch (vm.drawButtonActive) {
-              case 'Point':
-                geojsonObj.properties = {'type': 'point'};
-                break;
-              case 'LineString':
-                geojsonObj.properties = {'type': 'line'};
-                break;
-              case 'Polygon':
-                geojsonObj.properties = {'type': 'polygon'};
-                goTo = 'spotTab.rockdescription';
-                break;
-            }
-            geojsonObj.properties.image_map = vm.imageMap.id;
-            NewSpot.setNewSpot(geojsonObj);
-            $state.go(goTo);
-          }
-        }
-      });
-      map.addInteraction(draw);
-    };
 
     // If the map is moved save the view
     map.on('moveend', function (evt) {
@@ -669,10 +307,6 @@
      else
      vm.zoomToSpotsExtent();
      */
-    vm.cancelDraw = function () {
-      if (draw === null) return;
-      map.removeInteraction(draw);
-    };
 
     // Point object
     var Point = function (lat, lng) {
@@ -887,7 +521,7 @@
       $log.log('map clicked');
 
       // are we in draw mode?  If so we dont want to display any popovers during draw mode
-      if (!draw) {
+      if (!DrawFactory.isDrawMode()) {
         // clear any existing popovers
         popup.hide();
 
@@ -1066,22 +700,6 @@
      }
      };
      */
-    // Create a group of spots by drawing a polygon on the map
-    var groupSpots = function () {
-      // remove the layer switcher to avoid confusion with lasso and regular drawing
-      map.getControls().removeAt(3);
-
-      // remove the drawing tools to avoid confusion with lasso and regular drawing
-      map.getControls().removeAt(2);
-
-      $ionicPopup.alert({
-        'title': 'Create a Station',
-        'template': 'Draw a polygon around the features you would like to add to a new station.'
-      });
-
-      // start the draw with freehand enabled
-      vm.startDraw('Polygon', true);
-    };
 
     vm.goToImageMaps = function () {
       $state.go('app.image-maps');
@@ -1110,7 +728,7 @@
               vm.zoomToSpotsExtent();
               break;
             case 1:
-              groupSpots();
+              DrawFactory.groupSpots();
               break;
           }
           return true;
