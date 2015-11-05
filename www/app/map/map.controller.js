@@ -9,14 +9,45 @@
     '$filter', '$ionicHistory', '$ionicModal', '$ionicPopup', '$ionicActionSheet',
     '$ionicSideMenuDelegate', '$log', 'NewSpot', 'CurrentSpot', 'CoordinateRange',
     'MapView', 'OfflineTilesFactory', 'SlippyTileNamesFactory', 'SpotsFactory',
-    'ViewExtentFactory', 'SymbologyFactory', 'MapLayerFactory', 'ImageMapService', 'DrawFactory'];
+    'ViewExtentFactory', 'SymbologyFactory', 'MapLayerFactory', 'ImageMapService', 'DrawFactory',
+    'InitializeMapFactory'];
 
   function MapController($scope, $window, $rootScope, $state, $cordovaGeolocation, $location,
                          $filter, $ionicHistory, $ionicModal, $ionicPopup, $ionicActionSheet,
                          $ionicSideMenuDelegate, $log, NewSpot, CurrentSpot, CoordinateRange,
                          MapView, OfflineTilesFactory, SlippyTileNamesFactory, SpotsFactory,
-                         ViewExtentFactory, SymbologyFactory, MapLayerFactory, ImageMapService, DrawFactory) {
+                         ViewExtentFactory, SymbologyFactory, MapLayerFactory, ImageMapService, DrawFactory,
+                         InitializeMapFactory) {
     var vm = this;
+
+    var map;
+    var geolocationLayer;
+    var featureLayer;
+    var popup;
+    var offlineLayer;
+    var offlineOverlayLayer;
+    var onlineLayer;
+    var onlineOverlayLayer;
+
+    activate();
+
+    function activate() {
+      InitializeMapFactory.setImageMap(null);
+      InitializeMapFactory.setInitialMapView();
+      InitializeMapFactory.setMap();
+      InitializeMapFactory.setLayers();
+      InitializeMapFactory.setMapControls();
+      InitializeMapFactory.setPopupOverlay();
+
+      map = InitializeMapFactory.getMap();
+      geolocationLayer = InitializeMapFactory.getLayers().geolocationLayer;
+      featureLayer = InitializeMapFactory.getLayers().featureLayer;
+      offlineLayer = InitializeMapFactory.getLayers().offlineLayer;
+      offlineOverlayLayer = InitializeMapFactory.getLayers().offlineOverlayLayer;
+      onlineLayer = InitializeMapFactory.getLayers().onlineLayer;
+      onlineOverlayLayer = InitializeMapFactory.getLayers().onlineOverlayLayer;
+      popup = InitializeMapFactory.getPopupOverlay();
+    }
 
     // disable dragging back to ionic side menu because this affects drawing tools
     $ionicSideMenuDelegate.canDragContent(false);
@@ -24,89 +55,6 @@
     Math.radians = function (deg) {
       return deg * (Math.PI / 180);
     };
-
-    // Initial map view, used for setting the view upon map creation
-    var initialMapView = new ol.View({
-      'projection': 'EPSG:3857',
-      'center': [-11000000, 4600000],
-      'zoom': 4,
-      'minZoom': 4
-    });
-
-    var scaleLineControl = new ol.control.ScaleLine();
-
-    var map = new ol.Map({
-      'target': 'mapdiv',
-      'view': initialMapView,
-      // remove rotate icon from controls and add drawing controls
-      'controls': ol.control.defaults({
-        'rotate': false
-      }).extend([
-        scaleLineControl
-      ]),
-      // turn off ability to rotate map via keyboard+mouse and using fingers on a mobile device
-      'interactions': ol.interaction.defaults({
-        'altShiftDragRotate': false,
-        'pinchRotate': false
-      })
-    });
-
-    /**
-     * Map Layers
-     */
-
-    var onlineLayer = MapLayerFactory.getOnlineLayer();
-    var onlineOverlayLayer = MapLayerFactory.getOnlineOverlayLayer();
-    var offlineLayer = MapLayerFactory.getOfflineLayer();
-    var offlineOverlayLayer = MapLayerFactory.getOfflineOverlayLayer();
-    var geolocationLayer = MapLayerFactory.getGeolocationLayer();
-    var featureLayer = MapLayerFactory.getFeatureLayer();
-    // var drawLayer = MapLayerFactory.getDrawLayer();  //bug, TODO
-
-    // layer where the drawing will go to
-    var drawLayer = new ol.layer.Vector({
-      'name': 'drawLayer',
-      'source': new ol.source.Vector(),
-      'style': new ol.style.Style({
-        'fill': new ol.style.Fill({
-          'color': 'rgba(255, 255, 255, 0.2)'
-        }),
-        'stroke': new ol.style.Stroke({
-          'color': '#ffcc33',
-          'width': 2
-        }),
-        'image': new ol.style.Circle({
-          'radius': 7,
-          'fill': new ol.style.Fill({
-            'color': '#ffcc33'
-          })
-        })
-      })
-    });
-
-    ol.inherits(DrawFactory.DrawControls, ol.control.Control);
-
-    // Add layers to the map
-    map.addLayer(featureLayer);
-    map.addLayer(drawLayer);
-    map.addLayer(geolocationLayer);
-
-    /**
-     * Map Controls/Functions
-     */
-
-    map.addControl(new DrawFactory.DrawControls({
-      'map': map,
-      'drawLayer': drawLayer
-    }));
-
-    // layer switcher
-    map.addControl(new ol.control.LayerSwitcher());
-
-    // Popup
-    var popup = new ol.Overlay.Popup();
-    map.addOverlay(popup);
-
 
     // did we come back from a map provider?
     if (OfflineTilesFactory.getCurrentMapProvider()) {
@@ -243,9 +191,10 @@
 
           if (spots.length === 1) {
             // we just have a single spot, so we should fixate the resolution manually
-            initialMapView.setCenter(ol.proj.transform([newExtentCenter[0], newExtentCenter[1]], 'EPSG:4326',
+            InitializeMapFactory.getInitialMapView.setCenter(ol.proj.transform([newExtentCenter[0], newExtentCenter[1]],
+              'EPSG:4326',
               'EPSG:3857'));
-            initialMapView.setZoom(15);
+            InitializeMapFactory.getInitialMapView.setZoom(15);
           }
           else {
             // we have multiple spots -- need to create the new view with the new center

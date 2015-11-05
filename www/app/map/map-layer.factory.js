@@ -265,9 +265,9 @@
       return featureLayer;
     };
 
-    // factory.getDrawLayer = function() {
-    //   return drawLayer;
-    // };
+    factory.getDrawLayer = function () {
+      return drawLayer;
+    };
 
     factory.getGeolocationLayer = function () {
       return geolocationLayer;

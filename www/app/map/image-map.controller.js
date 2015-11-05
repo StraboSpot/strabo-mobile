@@ -9,14 +9,37 @@
     '$filter', '$ionicHistory', '$ionicModal', '$ionicPopup', '$ionicActionSheet',
     '$ionicSideMenuDelegate', '$log', 'NewSpot', 'CurrentSpot', 'CoordinateRange',
     'MapView', 'OfflineTilesFactory', 'SlippyTileNamesFactory', 'SpotsFactory',
-    'ViewExtentFactory', 'SymbologyFactory', 'MapLayerFactory', 'ImageMapService', 'DrawFactory'];
+    'ViewExtentFactory', 'SymbologyFactory', 'MapLayerFactory', 'ImageMapService', 'DrawFactory',
+    'InitializeMapFactory'];
 
   function ImageMapController($window, $rootScope, $state, $cordovaGeolocation, $location,
                               $filter, $ionicHistory, $ionicModal, $ionicPopup, $ionicActionSheet,
                               $ionicSideMenuDelegate, $log, NewSpot, CurrentSpot, CoordinateRange,
                               MapView, OfflineTilesFactory, SlippyTileNamesFactory, SpotsFactory,
-                              ViewExtentFactory, SymbologyFactory, MapLayerFactory, ImageMapService, DrawFactory) {
+                              ViewExtentFactory, SymbologyFactory, MapLayerFactory, ImageMapService, DrawFactory,
+                              InitializeMapFactory) {
     var vm = this;
+
+    vm.imageMap = ImageMapService.getCurrentImageMap();
+
+    var map;
+    var featureLayer;
+    var popup;
+
+    activate();
+
+    function activate() {
+      InitializeMapFactory.setImageMap(vm.imageMap);
+      InitializeMapFactory.setInitialMapView();
+      InitializeMapFactory.setMap();
+      InitializeMapFactory.setLayers();
+      InitializeMapFactory.setMapControls();
+      InitializeMapFactory.setPopupOverlay();
+
+      map = InitializeMapFactory.getMap();
+      featureLayer = InitializeMapFactory.getLayers().featureLayer;
+      popup = InitializeMapFactory.getPopupOverlay();
+    }
 
     // disable dragging back to ionic side menu because this affects drawing tools
     $ionicSideMenuDelegate.canDragContent(false);
@@ -24,97 +47,6 @@
     Math.radians = function (deg) {
       return deg * (Math.PI / 180);
     };
-
-    vm.imageMap = ImageMapService.getCurrentImageMap();
-
-    // var headerHeight = 42;
-    // var extent = [0, 0, $window.innerWidth, $window.innerHeight - headerHeight];
-    var extent = [0, 0, vm.imageMap.width, vm.imageMap.height];
-
-    var projection = new ol.proj.Projection({
-      'code': 'map-image',
-      'units': 'pixels',
-      'extent': extent
-    });
-
-    var map = new ol.Map({
-      'layers': [
-        new ol.layer.Image({
-          'source': new ol.source.ImageStatic({
-            'attributions': [
-              new ol.Attribution({
-                'html': '&copy; <a href="">Need image source here.</a>'
-              })
-            ],
-            'url': vm.imageMap.src,
-            'projection': projection,
-            'imageExtent': extent
-          })
-        })
-      ],
-      'target': 'mapdiv',
-      'view': new ol.View({
-        'projection': projection,
-        'center': ol.extent.getCenter(extent),
-        'zoom': 2
-      })
-    });
-
-    /**
-     * Map Layers
-     */
-
-    // var onlineLayer = MapLayerFactory.getOnlineLayer();
-    //  var onlineOverlayLayer = MapLayerFactory.getOnlineOverlayLayer();
-    //  var offlineLayer = MapLayerFactory.getOfflineLayer();
-    //  var offlineOverlayLayer = MapLayerFactory.getOfflineOverlayLayer();
-    //  var geolocationLayer = MapLayerFactory.getGeolocationLayer();
-    var featureLayer = MapLayerFactory.getFeatureLayer();
-    // var drawLayer = MapLayerFactory.getDrawLayer();  //bug, TODO
-
-    // layer where the drawing will go to
-    var drawLayer = new ol.layer.Vector({
-      'name': 'drawLayer',
-      'source': new ol.source.Vector(),
-      'style': new ol.style.Style({
-        'fill': new ol.style.Fill({
-          'color': 'rgba(255, 255, 255, 0.2)'
-        }),
-        'stroke': new ol.style.Stroke({
-          'color': '#ffcc33',
-          'width': 2
-        }),
-        'image': new ol.style.Circle({
-          'radius': 7,
-          'fill': new ol.style.Fill({
-            'color': '#ffcc33'
-          })
-        })
-      })
-    });
-
-    ol.inherits(DrawFactory.DrawControls, ol.control.Control);
-
-    // Add layers to the map
-    map.addLayer(featureLayer);
-    map.addLayer(drawLayer);
-
-    /**
-     * Map Controls/Functions
-     */
-
-    map.addControl(new DrawFactory.DrawControls({
-      'map': map,
-      'drawLayer': drawLayer,
-      'imageMap': vm.imageMap
-    }));
-
-    // layer switcher
-    map.addControl(new ol.control.LayerSwitcher());
-
-    // Popup
-    var popup = new ol.Overlay.Popup();
-    map.addOverlay(popup);
 
     // did we come back from a map provider?
     /*       if (OfflineTilesFactory.getCurrentMapProvider()) {
