@@ -8,163 +8,266 @@
   MapLayerFactory.$inject = ['OfflineTilesFactory', '$window'];
 
   function MapLayerFactory(OfflineTilesFactory, $window) {
-    var factory = {};
+    var drawLayer;
+    var featureLayer;
+    var geolocationLayer;
+    var offlineLayer;
+    var offlineOverlayLayer;
+    var onlineLayer;
+    var onlineOverlayLayer;
 
-    // vector layer where we house all the geojson spot objects
-    var featureLayer = new ol.layer.Group({
-      'name': 'featureLayer',
-      'title': 'Spot Types',
-      'layers': []
-    });
+    // Geolocation Layer Styles
+    var geolocationCenterIconStyle;
+    var geolocationHeadingIconStyle;
+    var geolocationAccuracyTextStyle;
+    var geolocationSpeedTextStyle;
 
-    // layer where the drawing will go to
-    var drawLayer = new ol.layer.Vector({
-      'name': 'drawLayer',
-      'source': new ol.source.Vector(),
-      'style': new ol.style.Style({
-        'fill': new ol.style.Fill({
-          'color': 'rgba(255, 255, 255, 0.2)'
-        }),
-        'stroke': new ol.style.Stroke({
-          'color': '#ffcc33',
-          'width': 2
-        }),
-        'image': new ol.style.Circle({
-          'radius': 7,
-          'fill': new ol.style.Fill({
-            'color': '#ffcc33'
-          })
-        })
-      })
-    });
+    activate();
 
-    // online map layer of all possible online map providers
-    var onlineLayer = new ol.layer.Group({
-      'name': 'onlineLayer',
-      'title': 'Online Maps',
-      'layers': [
-        new ol.layer.Tile({
-          'title': 'Satellite',
-          'id': 'mqSat',
-          'type': 'base',
-          'visible': false,
-          'source': new ol.source.MapQuest({
-            'layer': 'sat'
-          }) // ,
-          // 'extent': mapExtent
-        }),
-        new ol.layer.Tile({
-          'title': 'Streets',
-          'id': 'mqOsm',
-          'type': 'base',
-          'visible': true, // default visible layer
-          'source': new ol.source.MapQuest({
-            'layer': 'osm'
-          })
-          // ,
-          // extent: mapExtent
-        })
-      ]
-    });
-
-    // overlay layer
-    var onlineOverlayLayer = new ol.layer.Group({
-      'name': 'onlineOverlayLayer',
-      'title': 'Overlays (online)',
-      'layers': [
-        new ol.layer.Tile({
-          'title': 'Geologic (z4-12)',
-          'id': 'macrostratGeologic',
-          'type': 'overlay',
-          'opacity': 0.5,
-          'visible': false,
-          'source': new ol.source.XYZ({
-            'url': 'http://macrostrat.org/tiles/geologic/{z}/{x}/{y}.png'
-          })
-        })
-      ]
-    });
-
+    return {
+      'getDrawLayer': getDrawLayer,
+      'getFeatureLayer': getFeatureLayer,
+      'getGeolocationLayer': getGeolocationLayer,
+      'getOfflineLayer': getOfflineLayer,
+      'getOfflineOverlayLayer': getOfflineOverlayLayer,
+      'getOnlineLayer': getOnlineLayer,
+      'getOnlineOverlayLayer': getOnlineOverlayLayer
+    };
 
     /**
-     * geolocation layers and styles
+     * Private Functions
      */
+    function activate() {
+      // Initialize Layers
+      setDrawLayer();
+      setFeatureLayer();
+      setGeolocationLayer();
+      setOfflineLayer();
+      setOfflineOverlayLayer();
+      setOnlineLayer();
+      setOnlineOverlayLayer();
 
-    var geolocationCenterIconStyle = new ol.style.Style({
-      'image': new ol.style.Icon({
-        'anchor': [0.5, 0.5],
-        'anchorOrigin': 'top-left',
-        'anchorXUnits': 'fraction',
-        'anchorYUnits': 'fraction',
-        'opacity': 0.75,
-        'src': 'img/geolocate-center.png',
-        'scale': 0.25
-      })
-    });
+      // Initialize Geolocation Layer Styles
+      setGeolocationCenterIconStyle();
+      setGeolocationHeadingIconStyle();
+      setGeolocationAccuracyTextStyle();
+      setGeolocationSpeedTextStyle();
+    }
 
-    var geolocationHeadingIconStyle = function (heading) {
-      return new ol.style.Style({
+    // vector layer where we house all the geojson spot objects
+    function setFeatureLayer() {
+      featureLayer = new ol.layer.Group({
+        'name': 'featureLayer',
+        'title': 'Spot Types',
+        'layers': []
+      });
+    }
+
+    function setDrawLayer() {
+      drawLayer = new ol.layer.Vector({
+        'name': 'drawLayer',
+        'source': new ol.source.Vector(),
+        'style': new ol.style.Style({
+          'fill': new ol.style.Fill({
+            'color': 'rgba(255, 255, 255, 0.2)'
+          }),
+          'stroke': new ol.style.Stroke({
+            'color': '#ffcc33',
+            'width': 2
+          }),
+          'image': new ol.style.Circle({
+            'radius': 7,
+            'fill': new ol.style.Fill({
+              'color': '#ffcc33'
+            })
+          })
+        })
+      });
+    }
+
+    function setGeolocationLayer() {
+      geolocationLayer = new ol.layer.Vector({
+        'name': 'geolocationLayer',
+        'style': function (feature, resolution) {
+          return [
+            geolocationCenterIconStyle,
+            geolocationHeadingIconStyle(feature.get('heading')),
+            geolocationAccuracyTextStyle(feature.get('accuracy')),
+            geolocationSpeedTextStyle(feature.get('speed'))
+          ];
+        }
+      });
+    }
+
+    // offline layer using tileLoadFunction source
+    function setOfflineLayer() {
+      offlineLayer = new ol.layer.Group({
+        'name': 'offlineLayer',
+        'title': 'Offline Maps',
+        'layers': [
+          new ol.layer.Tile({
+            'title': 'Satellite',
+            'id': 'mqSat',
+            'type': 'base',
+            'visible': false,
+            'source': new ol.source.OSM({
+              'tileLoadFunction': tileLoadFunction('mqSat', false)
+            }) // ,
+            // 'extent': mapExtent
+          }),
+          new ol.layer.Tile({
+            'title': 'Streets',
+            'id': 'mqOsm',
+            'type': 'base',
+            'visible': true, // default visible layer
+            'source': new ol.source.OSM({
+              'tileLoadFunction': tileLoadFunction('mqOsm', false)
+            }) // ,
+            // 'extent': mapExtent
+          })
+        ]
+      });
+    }
+
+    function setOfflineOverlayLayer() {
+      offlineOverlayLayer = new ol.layer.Group({
+        'name': 'offlineOverlayLayer',
+        'title': 'Overlays (offline)',
+        'layers': [
+          new ol.layer.Tile({
+            'title': 'Geologic (z4-12)',
+            'id': 'macrostratGeologic',
+            'type': 'overlay',
+            'opacity': 0.5,
+            'visible': false,
+            'source': new ol.source.OSM({
+              'tileLoadFunction': tileLoadFunction('macrostratGeologic', true)
+            })
+          })
+        ]
+      });
+    }
+
+    // online map layer of all possible online map providers
+    function setOnlineLayer() {
+      onlineLayer = new ol.layer.Group({
+        'name': 'onlineLayer',
+        'title': 'Online Maps',
+        'layers': [
+          new ol.layer.Tile({
+            'title': 'Satellite',
+            'id': 'mqSat',
+            'type': 'base',
+            'visible': false,
+            'source': new ol.source.MapQuest({
+              'layer': 'sat'
+            }) // ,
+            // 'extent': mapExtent
+          }),
+          new ol.layer.Tile({
+            'title': 'Streets',
+            'id': 'mqOsm',
+            'type': 'base',
+            'visible': true, // default visible layer
+            'source': new ol.source.MapQuest({
+              'layer': 'osm'
+            })
+            // ,
+            // extent: mapExtent
+          })
+        ]
+      });
+    }
+
+    function setOnlineOverlayLayer() {
+      onlineOverlayLayer = new ol.layer.Group({
+        'name': 'onlineOverlayLayer',
+        'title': 'Overlays (online)',
+        'layers': [
+          new ol.layer.Tile({
+            'title': 'Geologic (z4-12)',
+            'id': 'macrostratGeologic',
+            'type': 'overlay',
+            'opacity': 0.5,
+            'visible': false,
+            'source': new ol.source.XYZ({
+              'url': 'http://macrostrat.org/tiles/geologic/{z}/{x}/{y}.png'
+            })
+          })
+        ]
+      });
+    }
+
+    function setGeolocationCenterIconStyle() {
+      geolocationCenterIconStyle = new ol.style.Style({
         'image': new ol.style.Icon({
-          'anchor': [0.5, 2.1],
+          'anchor': [0.5, 0.5],
           'anchorOrigin': 'top-left',
           'anchorXUnits': 'fraction',
           'anchorYUnits': 'fraction',
           'opacity': 0.75,
-          'src': 'img/geolocate-heading.png',
-          'rotation': Math.radians(heading),
-          'scale': (heading === null) ? 0 : 0.1
+          'src': 'img/geolocate-center.png',
+          'scale': 0.25
         })
       });
-    };
+    }
 
-    var geolocationAccuracyTextStyle = function (text) {
-      return new ol.style.Style({
-        'text': new ol.style.Text({
-          'font': '10px Calibri,sans-serif',
-          'text': (text === null) ? '?' : text + 'm',
-          'fill': new ol.style.Fill({
-            'color': '#000'
-          }),
-          'stroke': new ol.style.Stroke({
-            'color': '#fff',
-            'width': 3
+    function setGeolocationHeadingIconStyle() {
+      geolocationHeadingIconStyle = function (heading) {
+        return new ol.style.Style({
+          'image': new ol.style.Icon({
+            'anchor': [0.5, 2.1],
+            'anchorOrigin': 'top-left',
+            'anchorXUnits': 'fraction',
+            'anchorYUnits': 'fraction',
+            'opacity': 0.75,
+            'src': 'img/geolocate-heading.png',
+            'rotation': Math.radians(heading),
+            'scale': (heading === null) ? 0 : 0.1
           })
-        })
-      });
-    };
+        });
+      };
+    }
 
-    var geolocationSpeedTextStyle = function (speed) {
-      return new ol.style.Style({
-        'text': new ol.style.Text({
-          'font': '10px Calibri,sans-serif',
-          'offsetY': 30,
-          'text': (speed === null) ? '' : speed + 'm/s',
-          'fill': new ol.style.Fill({
-            'color': '#000'
-          }),
-          'stroke': new ol.style.Stroke({
-            'color': '#fff',
-            'width': 3
+    function setGeolocationAccuracyTextStyle() {
+      geolocationAccuracyTextStyle = function (text) {
+        return new ol.style.Style({
+          'text': new ol.style.Text({
+            'font': '10px Calibri,sans-serif',
+            'text': (text === null) ? '?' : text + 'm',
+            'fill': new ol.style.Fill({
+              'color': '#000'
+            }),
+            'stroke': new ol.style.Stroke({
+              'color': '#fff',
+              'width': 3
+            })
           })
-        })
-      });
-    };
+        });
+      };
+    }
 
-    // geolocation layer
-    var geolocationLayer = new ol.layer.Vector({
-      'name': 'geolocationLayer',
-      'style': function (feature, resolution) {
-        return [
-          geolocationCenterIconStyle,
-          geolocationHeadingIconStyle(feature.get('heading')),
-          geolocationAccuracyTextStyle(feature.get('accuracy')),
-          geolocationSpeedTextStyle(feature.get('speed'))
-        ];
-      }
-    });
+    function setGeolocationSpeedTextStyle() {
+      geolocationSpeedTextStyle = function (speed) {
+        return new ol.style.Style({
+          'text': new ol.style.Text({
+            'font': '10px Calibri,sans-serif',
+            'offsetY': 30,
+            'text': (speed === null) ? '' : speed + 'm/s',
+            'fill': new ol.style.Fill({
+              'color': '#000'
+            }),
+            'stroke': new ol.style.Stroke({
+              'color': '#fff',
+              'width': 3
+            })
+          })
+        });
+      };
+    }
 
     // tileLoadFunction is used for offline access mode, required by OL3 for specifying how tiles are retrieved
-    var tileLoadFunction = function (mapProvider, isOverlay) {
+    function tileLoadFunction(mapProvider, isOverlay) {
       return function (imageTile, src) {
         // console.log(mapProvider, isOverlay);
         // console.log(imageTile);
@@ -214,81 +317,37 @@
           }
         });
       };
-    };
+    }
 
-    var offlineOverlayLayer = new ol.layer.Group({
-      'name': 'offlineOverlayLayer',
-      'title': 'Overlays (offline)',
-      'layers': [
-        new ol.layer.Tile({
-          'title': 'Geologic (z4-12)',
-          'id': 'macrostratGeologic',
-          'type': 'overlay',
-          'opacity': 0.5,
-          'visible': false,
-          'source': new ol.source.OSM({
-            'tileLoadFunction': tileLoadFunction('macrostratGeologic', true)
-          })
-        })
-      ]
-    });
-
-    // offline layer using tileLoadFunction source
-    var offlineLayer = new ol.layer.Group({
-      'name': 'offlineLayer',
-      'title': 'Offline Maps',
-      'layers': [
-        new ol.layer.Tile({
-          'title': 'Satellite',
-          'id': 'mqSat',
-          'type': 'base',
-          'visible': false,
-          'source': new ol.source.OSM({
-            'tileLoadFunction': tileLoadFunction('mqSat', false)
-          }) // ,
-          // 'extent': mapExtent
-        }),
-        new ol.layer.Tile({
-          'title': 'Streets',
-          'id': 'mqOsm',
-          'type': 'base',
-          'visible': true, // default visible layer
-          'source': new ol.source.OSM({
-            'tileLoadFunction': tileLoadFunction('mqOsm', false)
-          }) // ,
-          // 'extent': mapExtent
-        })
-      ]
-    });
-
-    factory.getFeatureLayer = function () {
+    /**
+     * Public Functions
+     */
+    function getFeatureLayer() {
       return featureLayer;
-    };
+    }
 
-    factory.getDrawLayer = function () {
+    function getDrawLayer() {
       return drawLayer;
-    };
+    }
 
-    factory.getGeolocationLayer = function () {
+    function getGeolocationLayer() {
       return geolocationLayer;
-    };
+    }
 
-    factory.getOnlineLayer = function () {
-      return onlineLayer;
-    };
-
-    factory.getOnlineOverlayLayer = function () {
-      return onlineOverlayLayer;
-    };
-
-    factory.getOfflineLayer = function () {
+    function getOfflineLayer() {
       return offlineLayer;
-    };
+    }
 
-    factory.getOfflineOverlayLayer = function () {
+    function getOfflineOverlayLayer() {
       return offlineOverlayLayer;
-    };
+    }
 
-    return factory;
+    function getOnlineLayer() {
+      return onlineLayer;
+    }
+
+    function getOnlineOverlayLayer() {
+      return onlineOverlayLayer;
+    }
   }
 }());
