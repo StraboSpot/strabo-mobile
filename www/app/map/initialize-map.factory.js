@@ -15,21 +15,11 @@
     var initialMapView;
     var projection;
 
-    // Map Layers
-    var drawLayer;
-    var featureLayer;
-    var geolocationLayer;
-    var offlineLayer;
-    var offlineOverlayLayer;
-    var onlineLayer;
-    var onlineOverlayLayer;
-
     // Popup Overlay
     var popup;
 
     return {
       'getInitialMapView': getInitialMapView,
-      'getLayers': getLayers,
       'getMap': getMap,
       'getPopupOverlay': getPopupOverlay,
 
@@ -45,18 +35,6 @@
       return initialMapView;
     }
 
-    function getLayers() {
-      return {
-        'featureLayer': featureLayer,
-        'drawLayer': drawLayer,
-        'geolocationLayer': geolocationLayer,
-        'offlineLayer': offlineLayer,
-        'offlineOverlayLayer': offlineOverlayLayer,
-        'onlineLayer': onlineLayer,
-        'onlineOverlayLayer': onlineOverlayLayer
-      };
-    }
-
     function getMap() {
       return map;
     }
@@ -67,13 +45,7 @@
 
     function setLayers() {
       if (!imageMap) {
-        geolocationLayer = MapLayerFactory.getGeolocationLayer();
-        map.addLayer(geolocationLayer);
-
-        offlineLayer = MapLayerFactory.getOfflineLayer();
-        offlineOverlayLayer = MapLayerFactory.getOfflineOverlayLayer();
-        onlineLayer = MapLayerFactory.getOnlineLayer();
-        onlineOverlayLayer = MapLayerFactory.getOnlineOverlayLayer();
+        map.addLayer(MapLayerFactory.getGeolocationLayer());
       }
       else {
         var imageMapLayer = new ol.layer.Image({
@@ -91,11 +63,8 @@
         map.addLayer(imageMapLayer);
       }
 
-      featureLayer = MapLayerFactory.getFeatureLayer();
-      drawLayer = MapLayerFactory.getDrawLayer();
-
-      map.addLayer(featureLayer);
-      map.addLayer(drawLayer);
+      map.addLayer(MapLayerFactory.getFeatureLayer());
+      map.addLayer(MapLayerFactory.getDrawLayer());
     }
 
     function setImageMap(im) {
@@ -148,7 +117,7 @@
     function setMapControls() {
       var drawControlProps = {
         'map': map,
-        'drawLayer': drawLayer,
+        'drawLayer': MapLayerFactory.getDrawLayer(),
         'imageMap': imageMap      // null if not using an image map
       };
 

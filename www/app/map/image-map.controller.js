@@ -37,7 +37,7 @@
       InitializeMapFactory.setPopupOverlay();
 
       map = InitializeMapFactory.getMap();
-      featureLayer = InitializeMapFactory.getLayers().featureLayer;
+      featureLayer = MapLayerFactory.getFeatureLayer();
       popup = InitializeMapFactory.getPopupOverlay();
     }
 

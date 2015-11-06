@@ -40,12 +40,12 @@
       InitializeMapFactory.setPopupOverlay();
 
       map = InitializeMapFactory.getMap();
-      geolocationLayer = InitializeMapFactory.getLayers().geolocationLayer;
-      featureLayer = InitializeMapFactory.getLayers().featureLayer;
-      offlineLayer = InitializeMapFactory.getLayers().offlineLayer;
-      offlineOverlayLayer = InitializeMapFactory.getLayers().offlineOverlayLayer;
-      onlineLayer = InitializeMapFactory.getLayers().onlineLayer;
-      onlineOverlayLayer = InitializeMapFactory.getLayers().onlineOverlayLayer;
+      geolocationLayer = MapLayerFactory.getGeolocationLayer();
+      featureLayer = MapLayerFactory.getFeatureLayer();
+      offlineLayer = MapLayerFactory.getOfflineLayer();
+      offlineOverlayLayer = MapLayerFactory.getOfflineOverlayLayer();
+      onlineLayer = MapLayerFactory.getOnlineLayer();
+      onlineOverlayLayer = MapLayerFactory.getOnlineOverlayLayer();
       popup = InitializeMapFactory.getPopupOverlay();
     }
 
