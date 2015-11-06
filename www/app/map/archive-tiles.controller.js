@@ -5,14 +5,14 @@
     .module('app')
     .controller('ArchiveTilesController', ArchiveTilesController);
 
-  ArchiveTilesController.$inject = ['$state', '$log', '$ionicHistory', 'ViewExtentFactory',
+  ArchiveTilesController.$inject = ['$state', '$log', '$ionicHistory', 'MapViewFactory',
     'SlippyTileNamesFactory', 'OfflineTilesFactory'];
 
-  function ArchiveTilesController($state, $log, $ionicHistory, ViewExtentFactory,
+  function ArchiveTilesController($state, $log, $ionicHistory, MapViewFactory,
                                   SlippyTileNamesFactory, OfflineTilesFactory) {
     var vm = this;
     var maxZoomToDownload = 18;  // the maximum allowable zoom download for any given map
-    var mapExtent = ViewExtentFactory.getExtent();
+    var mapExtent = MapViewFactory.getExtent();
 
     vm.goToMap = goToMap;
     vm.map = {

@@ -9,14 +9,14 @@
     '$filter', '$ionicHistory', '$ionicModal', '$ionicPopup', '$ionicActionSheet',
     '$ionicSideMenuDelegate', '$log', 'NewSpot', 'CurrentSpot', 'CoordinateRange',
     'MapView', 'OfflineTilesFactory', 'SlippyTileNamesFactory', 'SpotsFactory',
-    'ViewExtentFactory', 'SymbologyFactory', 'MapLayerFactory', 'ImageMapService', 'DrawFactory',
+    'SymbologyFactory', 'MapViewFactory', 'MapLayerFactory', 'ImageMapService', 'DrawFactory',
     'InitializeMapFactory'];
 
   function ImageMapController($window, $rootScope, $state, $cordovaGeolocation, $location,
                               $filter, $ionicHistory, $ionicModal, $ionicPopup, $ionicActionSheet,
                               $ionicSideMenuDelegate, $log, NewSpot, CurrentSpot, CoordinateRange,
                               MapView, OfflineTilesFactory, SlippyTileNamesFactory, SpotsFactory,
-                              ViewExtentFactory, SymbologyFactory, MapLayerFactory, ImageMapService, DrawFactory,
+                              SymbologyFactory, MapViewFactory, MapLayerFactory, ImageMapService, DrawFactory,
                               InitializeMapFactory) {
     var vm = this;
 
@@ -48,93 +48,6 @@
       return deg * (Math.PI / 180);
     };
 
-    // did we come back from a map provider?
-    /*       if (OfflineTilesFactory.getCurrentMapProvider()) {
-     // yes -- then we need to change the current visible layer
-     $log.log('back at map, ', OfflineTilesFactory.getCurrentMapProvider());
-
-     var onlineLayerCollection = onlineLayer.getLayers().getArray();
-
-     _.each(onlineLayerCollection, function(layer) {
-     if (layer.get('id') == OfflineTilesFactory.getCurrentMapProvider()) {
-     layer.setVisible(true);
-     } else {
-     layer.setVisible(false);
-     }
-     });
-     }
-     */
-    // update the current visible layer, there is no return type as it updates the scope variable directly
-    var getCurrentVisibleLayer = function () {
-      // the first element in the layers array is our ol.layer.group that contains all the map tile layers
-      var mapTileLayers = map.getLayers().getArray()[0].getLayers().getArray();
-
-      // loop through and get the first layer that is visible
-      var mapTileId = _.find(mapTileLayers, function (layer) {
-        return layer.getVisible();
-      });
-
-      return mapTileId.get('id');
-    };
-
-    /*      vm.isOnline = function() {
-     return navigator.onLine;
-     };
-     */
-    // Watch whether we have internet access or not
-    /*       vm.$watch('isOnline()', function(online) {
-
-     if (!online) {
-     $log.log('Offline');
-
-     // remove the online maps
-     map.removeLayer(onlineLayer);
-     map.removeLayer(onlineOverlayLayer);
-
-     // Add offline tile layer
-     map.getLayers().insertAt(0, offlineLayer);
-     map.getLayers().insertAt(1, offlineOverlayLayer);
-
-     // clear the tiles, because we need to redraw if tiles have already been loaded to the screen
-     map.getLayers().getArray()[0].getLayers().item(0).getSource().tileCache.clear();
-     map.getLayers().getArray()[0].getLayers().item(1).getSource().tileCache.clear();
-     map.getLayers().getArray()[1].getLayers().item(0).getSource().tileCache.clear();
-
-     // re-render the map, grabs 'new' tiles from storage
-     map.render();
-     } else {
-     $log.log('Online');
-
-     // remove the offline layers
-     map.removeLayer(offlineLayer);
-     map.removeLayer(offlineOverlayLayer);
-
-     // Add online map layer
-     map.getLayers().insertAt(0, onlineLayer);
-     map.getLayers().insertAt(1, onlineOverlayLayer);
-     }
-     });
-     */
-    // cache the tiles in the current view but don't switch to the offline layer
-    /*   vm.cacheOfflineTiles = function() {
-     if (navigator.onLine) {
-     // get the map extent
-     var mapViewExtent = getMapViewExtent();
-
-     // set the extent into the ViewExtentFactory
-     ViewExtentFactory.setExtent(getCurrentVisibleLayer(), mapViewExtent.topRight, mapViewExtent.bottomLeft, mapViewExtent.zoom);
-
-     // we set the current map provider so if we ever come back, we should try to use that map provider instead of the default provider
-     OfflineTilesFactory.setCurrentMapProvider(getCurrentVisibleLayer());
-
-     $location.path('/app/map/archiveTiles');
-     } else
-     $ionicPopup.alert({
-     title: 'Offline!',
-     template: 'You must be online to save a map!'
-     });
-     };*/
-
     // If the map is moved save the view
     map.on('moveend', function (evt) {
       // MapView.setMapView(map.getView());
@@ -145,90 +58,7 @@
 
     // Zoom to the extent of the spots, if that fails geolocate the user
     vm.zoomToSpotsExtent = function () {
-      // nope, we have NO mapview set, so...
-
-      // Loop through all spots and create ol vector layers
-      SpotsFactory.all().then(function (spots) {
-        // Get only the spots mapped on this image
-        spots = _.filter(spots, function (spot) {
-          return spot.properties.image_map === vm.imageMap.id;
-        });
-
-        // do we even have any spots?
-        if (spots.length > 0) {
-          $log.log('found spots, attempting to get the center of all spots and change the map view to that');
-          CoordinateRange.setAllCoordinates(spots);
-          var newExtent = ol.extent.boundingExtent(_.compact(CoordinateRange.getAllCoordinates()));
-          var newExtentCenter = ol.extent.getCenter(newExtent);
-
-          // fly-by map animation
-          var duration = 2000;
-          var start = +new Date();
-          var pan = ol.animation.pan({
-            'duration': duration,
-            'source': map.getView().getCenter(),
-            'start': start
-          });
-          var bounce = ol.animation.bounce({
-            'duration': duration,
-            'resolution': map.getView().getResolution(),
-            'start': start
-          });
-          map.beforeRender(pan, bounce);
-
-          if (spots.length === 1) {
-            // we just have a single spot, so we should fixate the resolution manually
-            // initialMapView.setCenter(newExtentCenter);
-            map.getView().fit(newExtent, map.getSize());
-            // initialMapView.setZoom(15);
-            map.getView().setZoom(3);
-          }
-          else {
-            // we have multiple spots -- need to create the new view with the new center
-            /*   var newView = new ol.View({
-             center: newExtentCenter
-             });
-
-             map.setView(newView);*/
-            map.getView().fit(newExtent, map.getSize());
-          }
-        }
-        // no spots either, then attempt to geolocate the user
-        else {
-          $log.log('no spots found');
-          // attempt to geolocate instead
-          /*     $cordovaGeolocation.getCurrentPosition({
-           maximumAge: 0,
-           timeout: 10000,
-           enableHighAccuracy: true
-           })
-           .then(function (position) {
-           var lat = position.coords.latitude;
-           var lng = position.coords.longitude;
-
-           $log.log('initial getLocation ', [lat, lng]);
-
-           var newView = new ol.View({
-           center: ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
-           zoom: 17,
-           minZoom: 4
-           });
-           map.setView(newView);
-           }, function (err) {
-           // uh oh, cannot geolocate, nor have any spots
-           $ionicPopup.alert({
-           title: 'Alert!',
-           template: 'Could not geolocate your position.  Defaulting you to 0,0'
-           });
-           var newView = new ol.View({
-           center: ol.proj.transform([0, 0], 'EPSG:4326', 'EPSG:3857'),
-           zoom: 4,
-           minZoom: 4
-           });
-           map.setView(newView);
-           });*/
-        }
-      });
+      MapViewFactory.zoomToSpotsExtent(map, vm.imageMap);
     };
 
     //  do we currently have mapview set?  if so, we should reset the map view to that first
@@ -240,11 +70,6 @@
      vm.zoomToSpotsExtent();
      */
 
-    // Point object
-    var Point = function (lat, lng) {
-      this.lat = lat;
-      this.lng = lng;
-    };
     /*
      var getMapViewExtent = function () {
      var extent = map.getView().calculateExtent(map.getSize());

@@ -9,14 +9,14 @@
     '$filter', '$ionicHistory', '$ionicModal', '$ionicPopup', '$ionicActionSheet',
     '$ionicSideMenuDelegate', '$log', 'NewSpot', 'CurrentSpot', 'CoordinateRange',
     'MapView', 'OfflineTilesFactory', 'SlippyTileNamesFactory', 'SpotsFactory',
-    'ViewExtentFactory', 'SymbologyFactory', 'MapLayerFactory', 'ImageMapService', 'DrawFactory',
+    'MapViewFactory', 'SymbologyFactory', 'MapLayerFactory', 'ImageMapService', 'DrawFactory',
     'InitializeMapFactory'];
 
   function MapController($scope, $window, $rootScope, $state, $cordovaGeolocation, $location,
                          $filter, $ionicHistory, $ionicModal, $ionicPopup, $ionicActionSheet,
                          $ionicSideMenuDelegate, $log, NewSpot, CurrentSpot, CoordinateRange,
                          MapView, OfflineTilesFactory, SlippyTileNamesFactory, SpotsFactory,
-                         ViewExtentFactory, SymbologyFactory, MapLayerFactory, ImageMapService, DrawFactory,
+                         MapViewFactory, SymbologyFactory, MapLayerFactory, ImageMapService, DrawFactory,
                          InitializeMapFactory) {
     var vm = this;
 
@@ -73,19 +73,6 @@
       });
     }
 
-    // update the current visible layer, there is no return type as it updates the scope variable directly
-    var getCurrentVisibleLayer = function () {
-      // the first element in the layers array is our ol.layer.group that contains all the map tile layers
-      var mapTileLayers = map.getLayers().getArray()[0].getLayers().getArray();
-
-      // loop through and get the first layer that is visible
-      var mapTileId = _.find(mapTileLayers, function (layer) {
-        return layer.getVisible();
-      });
-
-      return mapTileId.get('id');
-    };
-
     vm.isOnline = function () {
       return navigator.onLine;
     };
@@ -130,12 +117,13 @@
         // get the map extent
         var mapViewExtent = getMapViewExtent();
 
-        // set the extent into the ViewExtentFactory
-        ViewExtentFactory.setExtent(getCurrentVisibleLayer(), mapViewExtent.topRight, mapViewExtent.bottomLeft,
+        // set the extent into the MapViewFactory
+        MapViewFactory.setExtent(MapLayerFactory.getCurrentVisibleLayer(map), mapViewExtent.topRight,
+          mapViewExtent.bottomLeft,
           mapViewExtent.zoom);
 
         // we set the current map provider so if we ever come back, we should try to use that map provider instead of the default provider
-        OfflineTilesFactory.setCurrentMapProvider(getCurrentVisibleLayer());
+        OfflineTilesFactory.setCurrentMapProvider(MapLayerFactory.getCurrentVisibleLayer(map));
 
         $location.path('/app/map/archiveTiles');
       }
@@ -157,90 +145,7 @@
 
     // Zoom to the extent of the spots, if that fails geolocate the user
     vm.zoomToSpotsExtent = function () {
-      // nope, we have NO mapview set, so...
-
-      // Loop through all spots and create ol vector layers
-      SpotsFactory.all().then(function (spots) {
-        // Remove spots that don't have a geometry defined or
-        // are mapped on an image
-        spots = _.reject(spots, function (spot) {
-          return !_.has(spot, 'geometry') || _.has(spot.properties, 'image_map');
-        });
-
-        // do we even have any spots?
-        if (spots.length > 0) {
-          $log.log('found spots, attempting to get the center of all spots and change the map view to that');
-          CoordinateRange.setAllCoordinates(spots);
-          var newExtent = ol.extent.boundingExtent(_.compact(CoordinateRange.getAllCoordinates()));
-          var newExtentCenter = ol.extent.getCenter(newExtent);
-
-          // fly-by map animation
-          var duration = 2000;
-          var start = +new Date();
-          var pan = ol.animation.pan({
-            'duration': duration,
-            'source': map.getView().getCenter(),
-            'start': start
-          });
-          var bounce = ol.animation.bounce({
-            'duration': duration,
-            'resolution': map.getView().getResolution(),
-            'start': start
-          });
-          map.beforeRender(pan, bounce);
-
-          if (spots.length === 1) {
-            // we just have a single spot, so we should fixate the resolution manually
-            InitializeMapFactory.getInitialMapView.setCenter(ol.proj.transform([newExtentCenter[0], newExtentCenter[1]],
-              'EPSG:4326',
-              'EPSG:3857'));
-            InitializeMapFactory.getInitialMapView.setZoom(15);
-          }
-          else {
-            // we have multiple spots -- need to create the new view with the new center
-            var newView = new ol.View({
-              'center': ol.proj.transform([newExtentCenter[0], newExtentCenter[1]], 'EPSG:4326', 'EPSG:3857')
-            });
-            map.setView(newView);
-            map.getView().fit(ol.proj.transformExtent(newExtent, 'EPSG:4326', 'EPSG:3857'), map.getSize());
-          }
-        }
-        // no spots either, then attempt to geolocate the user
-        else {
-          $log.log('no spots found, attempting to geolocate');
-          // attempt to geolocate instead
-          $cordovaGeolocation.getCurrentPosition({
-            'maximumAge': 0,
-            'timeout': 10000,
-            'enableHighAccuracy': true
-          })
-            .then(function (position) {
-              var lat = position.coords.latitude;
-              var lng = position.coords.longitude;
-
-              $log.log('initial getLocation ', [lat, lng]);
-
-              var newView = new ol.View({
-                'center': ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
-                'zoom': 17,
-                'minZoom': 4
-              });
-              map.setView(newView);
-            }, function (err) {
-              // uh oh, cannot geolocate, nor have any spots
-              $ionicPopup.alert({
-                'title': 'Alert!',
-                'template': 'Could not geolocate your position.  Defaulting you to 0,0'
-              });
-              var newView = new ol.View({
-                'center': ol.proj.transform([0, 0], 'EPSG:4326', 'EPSG:3857'),
-                'zoom': 4,
-                'minZoom': 4
-              });
-              map.setView(newView);
-            });
-        }
-      });
+      MapViewFactory.zoomToSpotsExtent(map);
     };
 
     //  do we currently have mapview set?  if so, we should reset the map view to that first

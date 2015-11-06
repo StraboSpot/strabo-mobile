@@ -25,6 +25,7 @@
     activate();
 
     return {
+      'getCurrentVisibleLayer': getCurrentVisibleLayer,
       'getDrawLayer': getDrawLayer,
       'getFeatureLayer': getFeatureLayer,
       'getGeolocationLayer': getGeolocationLayer,
@@ -322,6 +323,18 @@
     /**
      * Public Functions
      */
+    function getCurrentVisibleLayer(map) {
+      // the first element in the layers array is our ol.layer.group that contains all the map tile layers
+      var mapTileLayers = map.getLayers().getArray()[0].getLayers().getArray();
+
+      // loop through and get the first layer that is visible
+      var mapTileId = _.find(mapTileLayers, function (layer) {
+        return layer.getVisible();
+      });
+
+      return mapTileId.get('id');
+    }
+
     function getFeatureLayer() {
       return featureLayer;
     }
