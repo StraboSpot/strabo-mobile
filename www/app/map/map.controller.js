@@ -8,14 +8,14 @@
   MapController.$inject = ['$scope', '$window', '$rootScope', '$state', '$cordovaGeolocation', '$location',
     '$filter', '$ionicHistory', '$ionicModal', '$ionicPopup', '$ionicActionSheet',
     '$ionicSideMenuDelegate', '$log', 'NewSpot', 'CurrentSpot', 'CoordinateRange',
-    'MapView', 'OfflineTilesFactory', 'SlippyTileNamesFactory', 'SpotsFactory',
+    'OfflineTilesFactory', 'SlippyTileNamesFactory', 'SpotsFactory',
     'MapViewFactory', 'SymbologyFactory', 'MapLayerFactory', 'ImageMapService', 'DrawFactory',
     'InitializeMapFactory'];
 
   function MapController($scope, $window, $rootScope, $state, $cordovaGeolocation, $location,
                          $filter, $ionicHistory, $ionicModal, $ionicPopup, $ionicActionSheet,
                          $ionicSideMenuDelegate, $log, NewSpot, CurrentSpot, CoordinateRange,
-                         MapView, OfflineTilesFactory, SlippyTileNamesFactory, SpotsFactory,
+                         OfflineTilesFactory, SlippyTileNamesFactory, SpotsFactory,
                          MapViewFactory, SymbologyFactory, MapLayerFactory, ImageMapService, DrawFactory,
                          InitializeMapFactory) {
     var vm = this;
@@ -47,6 +47,8 @@
       onlineLayer = MapLayerFactory.getOnlineLayer();
       onlineOverlayLayer = MapLayerFactory.getOnlineOverlayLayer();
       popup = InitializeMapFactory.getPopupOverlay();
+
+      getMapView();
     }
 
     // disable dragging back to ionic side menu because this affects drawing tools
@@ -135,26 +137,22 @@
       }
     };
 
-    // If the map is moved save the view
+    // When the map is moved save the new view and update the zoom control
     map.on('moveend', function (evt) {
-      MapView.setMapView(map.getView());
-
-      // update the zoom information control
+      MapViewFactory.setMapView(map.getView());
       vm.currentZoom = evt.map.getView().getZoom();
     });
 
-    // Zoom to the extent of the spots, if that fails geolocate the user
-    vm.zoomToSpotsExtent = function () {
-      MapViewFactory.zoomToSpotsExtent(map);
-    };
-
-    //  do we currently have mapview set?  if so, we should reset the map view to that first
-    if (MapView.getMapView()) {
-      $log.log('have mapview set, changing map view to that');
-      map.setView(MapView.getMapView());
-    }
-    else {
-      vm.zoomToSpotsExtent();
+    // If there is a Map View set then reset the map to that view,
+    // otherwise zoom to the extent of the spots
+    function getMapView() {
+      if (MapViewFactory.getMapView()) {
+        $log.log('A mapview is set, changing map view to that');
+        map.setView(MapViewFactory.getMapView());
+      }
+      else {
+        MapViewFactory.zoomToSpotsExtent(map);
+      }
     }
 
     // Point object
@@ -235,7 +233,8 @@
       // Set styles for points, lines and polygon and groups
       function styleFunction(feature, resolution) {
         var styles = [];
-        var pointText = angular.isDefined(feature.get('plunge')) ? feature.get('plunge').toString() : feature.get('label');
+        var pointText = angular.isDefined(feature.get('plunge')) ? feature.get('plunge').toString() : feature.get(
+          'label');
         pointText = angular.isDefined(feature.get('dip')) ? feature.get('dip').toString() : pointText;
 
         var rotation = feature.get('strike') || feature.get('trend') || 0;
@@ -265,7 +264,8 @@
             styles.MultiLineString = lineStyle;
             break;
           case 'polygon':
-            var polyText = feature.get('unit_label_abbreviation') ? feature.get('unit_label_abbreviation') : feature.get('label');
+            var polyText = feature.get('unit_label_abbreviation') ? feature.get(
+              'unit_label_abbreviation') : feature.get('label');
             var polyStyle = [
               new ol.style.Style({
                 'stroke': new ol.style.Stroke({
@@ -371,14 +371,16 @@
           return feature;
         }, this, function (layer) {
           // we only want the layer where the spots are located
-          return (layer instanceof ol.layer.Vector) && layer.get('name') !== 'drawLayer' && layer.get('name') !== 'geolocationLayer';
+          return (layer instanceof ol.layer.Vector) && layer.get('name') !== 'drawLayer' && layer.get(
+              'name') !== 'geolocationLayer';
         });
 
         var layer = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
           return layer;
         }, this, function (layer) {
           // we only want the layer where the spots are located
-          return (layer instanceof ol.layer.Vector) && layer.get('name') !== 'drawLayer' && layer.get('name') !== 'geolocationLayer';
+          return (layer instanceof ol.layer.Vector) && layer.get('name') !== 'drawLayer' && layer.get(
+              'name') !== 'geolocationLayer';
         });
 
         var spotTypes = [{
@@ -430,7 +432,8 @@
 
           if (feature.get('trend') && feature.get('plunge')) {
             content += '<br>';
-            content += '<small>' + feature.get('trend') + '&deg; trend / ' + feature.get('plunge') + '&deg; plunge</small>';
+            content += '<small>' + feature.get('trend') + '&deg; trend / ' + feature.get(
+                'plunge') + '&deg; plunge</small>';
           }
 
           if (feature.get('group_relationship')) {
@@ -453,11 +456,12 @@
 
       if (vm.locationOn) {
         $log.log('toggleLocation is now true');
-        $cordovaGeolocation.getCurrentPosition({
-          'maximumAge': 0,
-          'timeout': 10000,
-          'enableHighAccuracy': true
-        })
+        $cordovaGeolocation.getCurrentPosition(
+          {
+            'maximumAge': 0,
+            'timeout': 10000,
+            'enableHighAccuracy': true
+          })
           .then(function (position) {
             var lat = position.coords.latitude;
             var lng = position.coords.longitude;
@@ -562,7 +566,7 @@
           $log.log('BUTTON CLICKED', index);
           switch (index) {
             case 0:
-              vm.zoomToSpotsExtent();
+              MapViewFactory.zoomToSpotsExtent(map);
               break;
             case 1:
               vm.cacheOfflineTiles();

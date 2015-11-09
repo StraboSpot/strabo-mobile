@@ -10,12 +10,15 @@
 
   function MapViewFactory($cordovaGeolocation, $ionicPopup, $log,
                           CoordinateRange, InitializeMapFactory, SpotsFactory) {
+    var mapView;
     var viewExtent;
 
     return {
       'clearExtent': clearExtent,
       'getExtent': getExtent,
       'setExtent': setExtent,
+      'getMapView': getMapView,
+      'setMapView': setMapView,
       'zoomToSpotsExtent': zoomToSpotsExtent
     };
 
@@ -34,6 +37,14 @@
         'bottomLeft': bottomLeft,
         'zoom': zoom
       };
+    }
+
+    function getMapView() {
+      return mapView;
+    }
+
+    function setMapView(view) {
+      mapView = view;
     }
 
     function zoomToSpotsExtent(map, imageMap) {

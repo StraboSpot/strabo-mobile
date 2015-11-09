@@ -9,7 +9,7 @@
     '$log', 'CurrentSpot', 'ImageMapService', 'SpotsFactory', 'MapView'];
 
   function SpotTabGeoreferenceController($scope, $stateParams, $cordovaGeolocation, $ionicPopup, $location,
-                                         $log, CurrentSpot, ImageMapService, SpotsFactory, MapView) {
+                                         $log, CurrentSpot, ImageMapService, SpotsFactory, MapViewFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.load($stateParams);  // Need to load current state into parent
@@ -82,7 +82,7 @@
       else {
         var center = SpotsFactory.getCenter(vmParent.spot);
         var spotCenter = ol.proj.transform([center.lon, center.lat], 'EPSG:4326', 'EPSG:3857');
-        MapView.setMapView(new ol.View({
+        MapViewFactory.setMapView(new ol.View({
           'center': spotCenter,
           'zoom': 16
         }));

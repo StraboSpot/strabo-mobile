@@ -8,14 +8,14 @@
   ImageMapController.$inject = ['$window', '$rootScope', '$state', '$cordovaGeolocation', '$location',
     '$filter', '$ionicHistory', '$ionicModal', '$ionicPopup', '$ionicActionSheet',
     '$ionicSideMenuDelegate', '$log', 'NewSpot', 'CurrentSpot', 'CoordinateRange',
-    'MapView', 'OfflineTilesFactory', 'SlippyTileNamesFactory', 'SpotsFactory',
+    'OfflineTilesFactory', 'SlippyTileNamesFactory', 'SpotsFactory',
     'SymbologyFactory', 'MapViewFactory', 'MapLayerFactory', 'ImageMapService', 'DrawFactory',
     'InitializeMapFactory'];
 
   function ImageMapController($window, $rootScope, $state, $cordovaGeolocation, $location,
                               $filter, $ionicHistory, $ionicModal, $ionicPopup, $ionicActionSheet,
                               $ionicSideMenuDelegate, $log, NewSpot, CurrentSpot, CoordinateRange,
-                              MapView, OfflineTilesFactory, SlippyTileNamesFactory, SpotsFactory,
+                              OfflineTilesFactory, SlippyTileNamesFactory, SpotsFactory,
                               SymbologyFactory, MapViewFactory, MapLayerFactory, ImageMapService, DrawFactory,
                               InitializeMapFactory) {
     var vm = this;
@@ -48,27 +48,10 @@
       return deg * (Math.PI / 180);
     };
 
-    // If the map is moved save the view
+    // When the map is moved update the zoom control
     map.on('moveend', function (evt) {
-      // MapView.setMapView(map.getView());
-
-      // update the zoom information control
       vm.currentZoom = evt.map.getView().getZoom();
     });
-
-    // Zoom to the extent of the spots, if that fails geolocate the user
-    vm.zoomToSpotsExtent = function () {
-      MapViewFactory.zoomToSpotsExtent(map, vm.imageMap);
-    };
-
-    //  do we currently have mapview set?  if so, we should reset the map view to that first
-    /*   if (MapView.getMapView()) {
-     $log.log('have mapview set, changing map view to that');
-     map.setView(MapView.getMapView());
-     }
-     else
-     vm.zoomToSpotsExtent();
-     */
 
     /*
      var getMapViewExtent = function () {
@@ -482,7 +465,7 @@
           $log.log('BUTTON CLICKED', index);
           switch (index) {
             case 0:
-              vm.zoomToSpotsExtent();
+              MapViewFactory.zoomToSpotsExtent(map, vm.imageMap);
               break;
             case 1:
               DrawFactory.groupSpots();
