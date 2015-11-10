@@ -111,12 +111,6 @@
       return navigator.onLine;
     }
 
-    // Get current position
-    function toggleLocation() {
-      vm.locationOn = angular.isUndefined(vm.locationOn) || vm.locationOn === false;
-      MapViewFactory.getCurrentLocation(map, vm.locationOn);
-    }
-
     function showActionsheet() {
       $ionicActionSheet.show({
         'titleText': 'Map Actions',
@@ -147,6 +141,12 @@
           return true;
         }
       });
+    }
+
+    // Get current position
+    function toggleLocation() {
+      vm.locationOn = angular.isUndefined(vm.locationOn) || vm.locationOn === false;
+      MapViewFactory.getCurrentLocation(map, vm.locationOn);
     }
   }
 }());

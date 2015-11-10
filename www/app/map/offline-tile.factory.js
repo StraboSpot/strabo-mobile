@@ -5,174 +5,38 @@
     .module('app')
     .factory('OfflineTilesFactory', OfflineTilesFactory);
 
-  OfflineTilesFactory.$inject = ['$q', '$log', 'LocalStorage'];
+  OfflineTilesFactory.$inject = ['$log', '$q', 'LocalStorage'];
 
-  function OfflineTilesFactory($q, $log, LocalStorage) {
-    // used to determine what the map provider is before we archive a tileset
+  // used to determine what the map provider is before we archive a tileset
+  function OfflineTilesFactory($log, $q, LocalStorage) {
     var currentMapProvider = null;
+    var mapProviders;
 
-    var factory = {};
+    activate();
 
-    // map providers
-    var mapProviders = [{
-      'id': 'osm',
-      'name': 'OSM Standard',
-      'url': [
-        'http://a.tile.openstreetmap.org/',
-        'http://b.tile.openstreetmap.org/',
-        'http://c.tile.openstreetmap.org/'
-      ],
-      'imageType': 'png',
-      'mime': 'image/png'
-    }, {
-      'id': 'mqSat',
-      'name': 'MapQuest - Satellite',
-      'url': [
-        'http://otile1-s.mqcdn.com/tiles/1.0.0/sat/',
-        'http://otile2-s.mqcdn.com/tiles/1.0.0/sat/',
-        'http://otile3-s.mqcdn.com/tiles/1.0.0/sat/',
-        'http://otile4-s.mqcdn.com/tiles/1.0.0/sat/'
-      ],
-      'imageType': 'jpg',
-      'mime': 'image/jpeg'
-    }, {
-      'id': 'mqOsm',
-      'name': 'MapQuest - OSM',
-      'url': [
-        'http://otile1-s.mqcdn.com/tiles/1.0.0/osm/',
-        'http://otile2-s.mqcdn.com/tiles/1.0.0/osm/',
-        'http://otile3-s.mqcdn.com/tiles/1.0.0/osm/',
-        'http://otile4-s.mqcdn.com/tiles/1.0.0/osm/'
-      ],
-      'imageType': 'jpg',
-      'mime': 'image/jpeg'
-    }, {
-      'id': 'macrostratGeologic',
-      'name': 'Macrostrat - Geologic',
-      'url': [
-        'http://macrostrat.org/tiles/geologic/'
-      ],
-      'imageType': 'png',
-      'mime': 'image/png'
-    }];
-
-    // randomly selects an element from an array
-    var getRandomElement = function (ary) {
-      var num = _.random(0, ary.length - 1);
-      return ary[num];
-    };
-
-    var getMapTileProvider = function (id) {
-      return _.find(mapProviders, function (provider) {
-        return provider.id === id;
-      });
+    return {
+      'clear': clear,
+      'deleteMap': deleteMap,
+      'downloadTileToStorage': downloadTileToStorage,
+      'getCurrentMapProvider': getCurrentMapProvider,
+      'getMaps': getMaps,
+      'getOfflineTileCount': getOfflineTileCount,
+      'read': read,
+      'renameMap': renameMap,
+      'setCurrentMapProvider': setCurrentMapProvider,
+      'write': write
     };
 
 
-    // gets the number of tiles from offline storage
-    factory.getOfflineTileCount = function (callback) {
-      LocalStorage.mapTilesDb.length(function (err, numberOfKeys) {
-        callback(err || numberOfKeys);
-      });
-    };
+    /**
+     *  Private Functions
+     */
 
-    // wipes the offline database
-    factory.clear = function (callback) {
-      // deletes all offline tiles
-      LocalStorage.mapTilesDb.clear(function (err) {
-        if (err) {
-          callback(err);
-        }
-        else {
-          // then delete all map names
-          LocalStorage.mapNamesDb.clear(function (err) {
-            if (err) {
-              callback(err);
-            }
-            else {
-              callback();
-            }
-          });
-        }
-      });
-    };
+    function activate() {
+      setMapProviders();
+    }
 
-    // write to storage
-    var write = function (mapProvider, tile, blob) {
-      var deferred = $q.defer(); // init promise
-
-      // note that tileId is prefixed with mapProvider, tile itself is not
-      var tileId = mapProvider + '/' + tile;
-
-      LocalStorage.mapTilesDb.setItem(tileId, blob).then(function () {
-        // $log.log('wrote tileId ', tileId, blob.size);
-        deferred.resolve(blob.size);
-      });
-
-      return deferred.promise;
-    };
-
-    // read from storage
-    factory.read = function (mapProvider, tile, callback) {
-      // note that tileId is prefixed with mapProvider, tile itself is not
-      var tileId = mapProvider + '/' + tile;
-      $log.log('factory, ', tileId);
-
-      LocalStorage.mapTilesDb.getItem(tileId).then(function (blob) {
-        callback(blob);
-      });
-    };
-
-    // download from internet
-    var downloadInternetMapTile = function (mapProvider, tile) {
-      var deferred = $q.defer(); // init promise
-
-      var mapTileProvider = getMapTileProvider(mapProvider);
-      var url = getRandomElement(mapTileProvider.url);
-      var mime = mapTileProvider.mime;
-
-      var imageUrl = url + tile + '.' + mapTileProvider.imageType;
-
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', imageUrl, true);
-      xhr.responseType = 'arraybuffer';
-
-      // test that the network is accessible
-      xhr.onload = function (e) {
-        // $log.log('status is', this.status);
-
-        if (this.status === 200) {
-          // Note: .response instead of .responseText
-          var blob = new Blob([this.response], {
-            type: mime
-          });
-          // $log.log('downloaded tile ', tile);
-          deferred.resolve(blob);
-        }
-        else {
-          // uh oh, we shouldn't even be here -- this should be captured by the onerror handler
-          $log.log('xhr network was ok but status was not 200 - critical error');
-          deferred.reject('xhr network was ok but status was not 200 - critical error');
-        }
-      };
-
-      // 404 errors and other network errors
-      xhr.onerror = function (e) {
-        $log.log('on error triggered');
-        deferred.reject('could not download due to 404 or other network error');
-      };
-
-      xhr.onprogress = function (e) {
-        // notify that we are downloading the tile
-        deferred.notify(tile);
-      };
-
-      xhr.send();
-
-      return deferred.promise;
-    };
-
-    var downloadAndSave = function (mapProvider, tile) {
+    function downloadAndSave(mapProvider, tile) {
       var deferred = $q.defer(); // init promise
 
       // first we download
@@ -193,9 +57,186 @@
       });
 
       return deferred.promise;
-    };
+    }
 
-    factory.downloadTileToStorage = function (options, callback) {
+    // Download from internet
+    function downloadInternetMapTile(mapProvider, tile) {
+      var deferred = $q.defer(); // init promise
+
+      var mapTileProvider = getMapTileProvider(mapProvider);
+      var url = getRandomElement(mapTileProvider.url);
+      var mime = mapTileProvider.mime;
+
+      var imageUrl = url + tile + '.' + mapTileProvider.imageType;
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', imageUrl, true);
+      xhr.responseType = 'arraybuffer';
+
+      // test that the network is accessible
+      xhr.onload = function (e) {
+        // $log.log('status is', this.status);
+
+        if (this.status === 200) {
+          // Note: .response instead of .responseText
+          var blob = new Blob([this.response], {
+            'type': mime
+          });
+          // $log.log('downloaded tile ', tile);
+          deferred.resolve(blob);
+        }
+        else {
+          // uh oh, we shouldn't even be here -- this should be captured by the onerror handler
+          $log.log('xhr network was ok but status was not 200 - critical error');
+          deferred.reject('xhr network was ok but status was not 200 - critical error');
+        }
+      };
+
+      // 404 errors and other network errors
+      xhr.onerror = function (e) {
+        $log.log('on error triggered');
+        deferred.reject('could not download due to 404 or other network error');
+      };
+
+      xhr.onprogress = function (e) {
+        // Notify that we are downloading the tile
+        deferred.notify(tile);
+      };
+
+      xhr.send();
+
+      return deferred.promise;
+    }
+
+    function getMapTileProvider(id) {
+      return _.find(mapProviders, function (provider) {
+        return provider.id === id;
+      });
+    }
+
+    // Randomly select an element from an array
+    function getRandomElement(ary) {
+      var num = _.random(0, ary.length - 1);
+      return ary[num];
+    }
+
+    function mapNameWrite(mapName, mapProvider, data, size) {
+      var deferred = $q.defer(); // init promise
+
+      var mapNameData = {
+        'mapProvider': mapProvider,
+        'tileArray': data,
+        'size': size
+      };
+
+      LocalStorage.mapNamesDb.setItem(mapName, mapNameData).then(function () {
+        // $log.log('saved map name ', mapName);
+        deferred.resolve();
+      });
+      return deferred.promise;
+    }
+
+    function setMapProviders() {
+      mapProviders = [{
+        'id': 'osm',
+        'name': 'OSM Standard',
+        'url': [
+          'http://a.tile.openstreetmap.org/',
+          'http://b.tile.openstreetmap.org/',
+          'http://c.tile.openstreetmap.org/'
+        ],
+        'imageType': 'png',
+        'mime': 'image/png'
+      }, {
+        'id': 'mqSat',
+        'name': 'MapQuest - Satellite',
+        'url': [
+          'http://otile1-s.mqcdn.com/tiles/1.0.0/sat/',
+          'http://otile2-s.mqcdn.com/tiles/1.0.0/sat/',
+          'http://otile3-s.mqcdn.com/tiles/1.0.0/sat/',
+          'http://otile4-s.mqcdn.com/tiles/1.0.0/sat/'
+        ],
+        'imageType': 'jpg',
+        'mime': 'image/jpeg'
+      }, {
+        'id': 'mqOsm',
+        'name': 'MapQuest - OSM',
+        'url': [
+          'http://otile1-s.mqcdn.com/tiles/1.0.0/osm/',
+          'http://otile2-s.mqcdn.com/tiles/1.0.0/osm/',
+          'http://otile3-s.mqcdn.com/tiles/1.0.0/osm/',
+          'http://otile4-s.mqcdn.com/tiles/1.0.0/osm/'
+        ],
+        'imageType': 'jpg',
+        'mime': 'image/jpeg'
+      }, {
+        'id': 'macrostratGeologic',
+        'name': 'Macrostrat - Geologic',
+        'url': [
+          'http://macrostrat.org/tiles/geologic/'
+        ],
+        'imageType': 'png',
+        'mime': 'image/png'
+      }];
+    }
+
+    /**
+     * Public Functions
+     */
+
+    // Wipe the offline database
+    function clear(callback) {
+      // deletes all offline tiles
+      LocalStorage.mapTilesDb.clear(function (err) {
+        if (err) {
+          callback(err);
+        }
+        else {
+          // then delete all map names
+          LocalStorage.mapNamesDb.clear(function (err) {
+            if (err) {
+              callback(err);
+            }
+            else {
+              callback();
+            }
+          });
+        }
+      });
+    }
+
+    function deleteMap(map) {
+      var deferred = $q.defer();
+
+      // $log.log('map: ', map);
+
+      // first get all the tiles associated with this map name
+      var tiles = map.tileArray;
+
+      // an array of promises
+      var promises = [];
+
+      // loop through the tiles and build an delete promise for each tile
+      tiles.forEach(function (tile) {
+        var tileId = map.mapProvider + '/' + tile;
+        var promise = LocalStorage.mapTilesDb.removeItem(tileId);
+        promises.push(promise);
+      });
+
+      $q.all(promises).then(function () {
+        // all the tile associated with this map name has been deleted
+
+        // now delete the actual map name
+        LocalStorage.mapNamesDb.removeItem(map.name)
+          .then(function () {
+            // map is deleted, and this is now fully resolved
+            deferred.resolve();
+          });
+      });
+      return deferred.promise;
+    }
+
+    function downloadTileToStorage(options, callback) {
       var deferred = $q.defer(); // init promise
 
       var mapName = options.mapName;
@@ -254,9 +295,13 @@
         });
 
       return deferred.promise;
-    };
+    }
 
-    factory.getMaps = function () {
+    function getCurrentMapProvider() {
+      return currentMapProvider;
+    }
+
+    function getMaps() {
       var deferred = $q.defer();
 
       var maps = [];
@@ -272,40 +317,27 @@
         deferred.resolve(maps);
       });
       return deferred.promise;
-    };
+    }
 
-    factory.deleteMap = function (map) {
-      var deferred = $q.defer();
-
-      // $log.log('map: ', map);
-
-      // first get all the tiles associated with this map name
-      var tiles = map.tileArray;
-
-      // an array of promises
-      var promises = [];
-
-      // loop through the tiles and build an delete promise for each tile
-      tiles.forEach(function (tile) {
-        var tileId = map.mapProvider + '/' + tile;
-        var promise = LocalStorage.mapTilesDb.removeItem(tileId);
-        promises.push(promise);
+    // Get the number of tiles from offline storage
+    function getOfflineTileCount(callback) {
+      LocalStorage.mapTilesDb.length(function (err, numberOfKeys) {
+        callback(err || numberOfKeys);
       });
+    }
 
-      $q.all(promises).then(function () {
-        // all the tile associated with this map name has been deleted
+    // Read from storage
+    function read(mapProvider, tile, callback) {
+      // note that tileId is prefixed with mapProvider, tile itself is not
+      var tileId = mapProvider + '/' + tile;
+      $log.log('factory, ', tileId);
 
-        // now delete the actual map name
-        LocalStorage.mapNamesDb.removeItem(map.name)
-          .then(function () {
-            // map is deleted, and this is now fully resolved
-            deferred.resolve();
-          });
+      LocalStorage.mapTilesDb.getItem(tileId).then(function (blob) {
+        callback(blob);
       });
-      return deferred.promise;
-    };
+    }
 
-    factory.renameMap = function (mapName, newMapName) {
+    function renameMap(mapName, newMapName) {
       var deferred = $q.defer();
 
       // the new map tileIds that we will copy into from the current map
@@ -323,33 +355,24 @@
         });
       });
       return deferred.promise;
-    };
+    }
 
-    var mapNameWrite = function (mapName, mapProvider, data, size) {
+    function setCurrentMapProvider(mapProvider) {
+      currentMapProvider = mapProvider;
+    }
+
+    // Write to storage
+    function write(mapProvider, tile, blob) {
       var deferred = $q.defer(); // init promise
 
-      var mapNameData = {
-        'mapProvider': mapProvider,
-        'tileArray': data,
-        'size': size
-      };
+      // note that tileId is prefixed with mapProvider, tile itself is not
+      var tileId = mapProvider + '/' + tile;
 
-      LocalStorage.mapNamesDb.setItem(mapName, mapNameData).then(function () {
-        // $log.log('saved map name ', mapName);
-        deferred.resolve();
+      LocalStorage.mapTilesDb.setItem(tileId, blob).then(function () {
+        // $log.log('wrote tileId ', tileId, blob.size);
+        deferred.resolve(blob.size);
       });
       return deferred.promise;
-    };
-
-    factory.setCurrentMapProvider = function (mapProvider) {
-      currentMapProvider = mapProvider;
-    };
-
-    factory.getCurrentMapProvider = function () {
-      return currentMapProvider;
-    };
-
-    // return factory
-    return factory;
+    }
   }
 }());

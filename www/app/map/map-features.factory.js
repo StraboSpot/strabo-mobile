@@ -10,7 +10,6 @@
 
   function MapFeatures(HelpersFactory, ImageMapService, MapLayerFactory, MapSetupFactory, SpotsFactory,
                        SymbologyFactory) {
-
     return {
       'createFeatureLayer': createFeatureLayer,
       'geojsonToVectorLayer': geojsonToVectorLayer,

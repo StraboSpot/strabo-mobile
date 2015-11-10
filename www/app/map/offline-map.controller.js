@@ -5,42 +5,31 @@
     .module('app')
     .controller('OfflineMapController', OfflineMapController);
 
-  OfflineMapController.$inject = ['$scope', 'OfflineTilesFactory', '$ionicPopup'];
+  OfflineMapController.$inject = ['$ionicPopup', '$scope', 'OfflineTilesFactory'];
 
-  function OfflineMapController($scope, OfflineTilesFactory, $ionicPopup) {
+  function OfflineMapController($ionicPopup, $scope, OfflineTilesFactory) {
     var vm = this;
 
-    // number of tiles we have in offline storage
-    vm.numOfflineTiles = 0;
-
-    // a collection of maps
-    vm.maps = {
+    vm.clearOfflineTile = clearOfflineTile;
+    vm.deleteTiles = deleteTiles;
+    vm.edit = edit;
+    vm.maps = {                   // a collection of maps
       'maps': null
     };
+    vm.numOfflineTiles = 0;       // number of tiles we have in offline storage
+    vm.refreshAndUpdateCount = refreshAndUpdateCount;
+    vm.refreshOfflineMapList = refreshOfflineMapList;
+    vm.showMapRenamePopup = showMapRenamePopup;
+    vm.updateOfflineTileCount = updateOfflineTileCount;
 
-    var refreshOfflineMapList = function () {
-      OfflineTilesFactory.getMaps().then(function (maps) {
-        vm.maps.maps = maps;
-      });
-    };
+    activate();
 
-    var updateOfflineTileCount = function () {
-      // get the image count
-      OfflineTilesFactory.getOfflineTileCount(function (count) {
-        // console.log(count);
-        vm.numOfflineTiles = count;
-      });
-    };
+    function activate() {
+      // lets update the count right now
+      refreshAndUpdateCount();
+    }
 
-    var refreshAndUpdateCount = function () {
-      refreshOfflineMapList();
-      updateOfflineTileCount();
-    };
-
-    // lets update the count right now
-    refreshAndUpdateCount();
-
-    vm.clearOfflineTile = function () {
+    function clearOfflineTile() {
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete Tiles',
         'template': 'Are you sure you want to delete <b>ALL</b> offline tiles?'
@@ -57,15 +46,9 @@
           });
         }
       });
-    };
+    }
 
-    vm.edit = function (map) {
-      // console.log('edit');
-
-      showMapRenamePopup(map.name);
-    };
-
-    vm.delete = function (map) {
+    function deleteTiles(map) {
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete Saved Map',
         'template': 'Are you sure you want to delete the saved offline map <b>' + map.name + '</b>?'
@@ -78,9 +61,14 @@
           });
         }
       });
-    };
+    }
 
-    var showMapRenamePopup = function (mapName) {
+    function edit(map) {
+      // console.log('edit');
+      showMapRenamePopup(map.name);
+    }
+
+    function showMapRenamePopup(mapName) {
       vm.mapDetail = {};
 
       // rename popup
@@ -115,6 +103,25 @@
             });
         }
       });
-    };
+    }
+
+    function refreshAndUpdateCount() {
+      refreshOfflineMapList();
+      updateOfflineTileCount();
+    }
+
+    function refreshOfflineMapList() {
+      OfflineTilesFactory.getMaps().then(function (maps) {
+        vm.maps.maps = maps;
+      });
+    }
+
+    function updateOfflineTileCount() {
+      // get the image count
+      OfflineTilesFactory.getOfflineTileCount(function (count) {
+        // console.log(count);
+        vm.numOfflineTiles = count;
+      });
+    }
   }
 }());
