@@ -5,9 +5,9 @@
     .module('app')
     .factory('DrawFactory', DrawFactory);
 
-  DrawFactory.$inject = ['$log', '$state', '$ionicPopup', '$document', 'SpotsFactory', 'NewSpot', 'CurrentSpot'];
+  DrawFactory.$inject = ['$document', '$ionicPopup', '$log', '$state', 'CurrentSpot', 'NewSpot', 'SpotsFactory'];
 
-  function DrawFactory($log, $state, $ionicPopup, $document, SpotsFactory, NewSpot, CurrentSpot) {
+  function DrawFactory($document, $ionicPopup, $log, $state, CurrentSpot, NewSpot, SpotsFactory) {
     var draw;               // draw is a ol3 drawing interaction
     var drawButtonActive;   // drawButtonActive used to keep state of which selected drawing tool is active
     var drawLayer;

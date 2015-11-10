@@ -52,8 +52,8 @@ Also need to install this plugin due to Cordova bug with Android and content sch
 ### Tested Environment
 
     ionic library: 1.1.0
-    ionic cli : 1.7.7
-    cordova: 5.2.0
+    ionic cli : 1.7.8
+    cordova: 5.4.0
     cordova-plugin-camera: 1.2.0
     cordova-plugin-console: 1.0.1
     cordova-plugin-device: 1.0.1
@@ -63,8 +63,9 @@ Also need to install this plugin due to Cordova bug with Android and content sch
     cordova-plugin-network-information: 1.0.1
     cordova-plugin-whitelist: 1.0.0
     ionic-plugin-keyboard: 1.0.7
-    nodejs: 4.1.2
-    npm: 3.3.5
+    nodejs: 5.0.0
+    npm: 2.12.1
+    bower: 1.6.5
 
 ### Run
 

@@ -5,9 +5,9 @@
     .module('app')
     .factory('MapLayerFactory', MapLayerFactory);
 
-  MapLayerFactory.$inject = ['OfflineTilesFactory', '$window'];
+  MapLayerFactory.$inject = ['$log', '$window', 'HelpersFactory', 'OfflineTilesFactory'];
 
-  function MapLayerFactory(OfflineTilesFactory, $window) {
+  function MapLayerFactory($log, $window, HelpersFactory, OfflineTilesFactory) {
     var drawLayer;
     var featureLayer;
     var geolocationLayer;
@@ -32,7 +32,8 @@
       'getOfflineLayer': getOfflineLayer,
       'getOfflineOverlayLayer': getOfflineOverlayLayer,
       'getOnlineLayer': getOnlineLayer,
-      'getOnlineOverlayLayer': getOnlineOverlayLayer
+      'getOnlineOverlayLayer': getOnlineOverlayLayer,
+      'setVisibleLayers': setVisibleLayers
     };
 
     /**
@@ -223,7 +224,7 @@
             'anchorYUnits': 'fraction',
             'opacity': 0.75,
             'src': 'img/geolocate-heading.png',
-            'rotation': Math.radians(heading),
+            'rotation': HelpersFactory.toRadians(heading),
             'scale': (heading === null) ? 0 : 0.1
           })
         });
@@ -361,6 +362,39 @@
 
     function getOnlineOverlayLayer() {
       return onlineOverlayLayer;
+    }
+
+    function setVisibleLayers(map, online) {
+      if (!online) {
+        $log.log('Offline');
+
+        // remove the online maps
+        map.removeLayer(onlineLayer);
+        map.removeLayer(onlineOverlayLayer);
+
+        // Add offline tile layer
+        map.getLayers().insertAt(0, offlineLayer);
+        map.getLayers().insertAt(1, offlineOverlayLayer);
+
+        // clear the tiles, because we need to redraw if tiles have already been loaded to the screen
+        map.getLayers().getArray()[0].getLayers().item(0).getSource().tileCache.clear();
+        map.getLayers().getArray()[0].getLayers().item(1).getSource().tileCache.clear();
+        map.getLayers().getArray()[1].getLayers().item(0).getSource().tileCache.clear();
+
+        // re-render the map, grabs 'new' tiles from storage
+        map.render();
+      }
+      else {
+        $log.log('Online');
+
+        // remove the offline layers
+        map.removeLayer(offlineLayer);
+        map.removeLayer(offlineOverlayLayer);
+
+        // Add online map layer
+        map.getLayers().insertAt(0, onlineLayer);
+        map.getLayers().insertAt(1, onlineOverlayLayer);
+      }
     }
   }
 }());

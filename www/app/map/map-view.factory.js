@@ -5,25 +5,120 @@
     .module('app')
     .factory('MapViewFactory', MapViewFactory);
 
-  MapViewFactory.$inject = ['$cordovaGeolocation', '$ionicPopup', '$log',
-    'CoordinateRange', 'InitializeMapFactory', 'SpotsFactory'];
+  MapViewFactory.$inject = ['$cordovaGeolocation', '$ionicPopup', '$log', 'CoordinateRange', 'MapLayerFactory',
+    'MapSetupFactory', 'OfflineTilesFactory', 'SpotsFactory'];
 
-  function MapViewFactory($cordovaGeolocation, $ionicPopup, $log,
-                          CoordinateRange, InitializeMapFactory, SpotsFactory) {
+  function MapViewFactory($cordovaGeolocation, $ionicPopup, $log, CoordinateRange, MapLayerFactory, MapSetupFactory,
+                          OfflineTilesFactory, SpotsFactory) {
     var mapView;
     var viewExtent;
 
     return {
       'clearExtent': clearExtent,
+      'getCurrentLocation': getCurrentLocation,
       'getExtent': getExtent,
       'setExtent': setExtent,
       'getMapView': getMapView,
+      'getMapViewExtent': getMapViewExtent,
       'setMapView': setMapView,
       'zoomToSpotsExtent': zoomToSpotsExtent
     };
 
     function clearExtent() {
       viewExtent = null;
+    }
+
+    function getCurrentLocation(map, locationOn) {
+      var geolocationWatchId;
+      var geolocationLayer = MapLayerFactory.getGeolocationLayer();
+
+      if (locationOn) {
+        $log.log('toggleLocation is now true');
+        $cordovaGeolocation.getCurrentPosition({
+          'maximumAge': 0,
+          'timeout': 10000,
+          'enableHighAccuracy': true
+        }).then(
+          function (position) {
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+            var altitude = position.coords.altitude;
+            var accuracy = position.coords.accuracy;
+            var heading = position.coords.heading;
+            var speed = position.coords.speed;
+
+            $log.log('getLocation ', [lat, lng],
+              '(accuracy: ' + accuracy + ') (altitude: ' + altitude + ') (heading: ' + heading + ') (speed: ' + speed + ')');
+
+            var newView = new ol.View({
+              'center': ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
+              'zoom': 18,
+              'minZoom': 4
+            });
+            map.setView(newView);
+          }, function (err) {
+            $ionicPopup.alert({
+              'title': 'Alert!',
+              'template': 'Unable to get location: ' + err.message
+            });
+          });
+
+        geolocationWatchId = $cordovaGeolocation.watchPosition({
+          'frequency': 1000,
+          'timeout': 10000,
+          'enableHighAccuracy': true // may cause errors if true
+        });
+
+        geolocationWatchId.then(
+          null,
+          function (err) {
+            $ionicPopup.alert({
+              'title': 'Alert!',
+              'template': 'Unable to get location for geolocationWatchId: ' + geolocationWatchId.watchID + ' (' + err.message + ')'
+            });
+            // TODO: what do we do here?
+          },
+          function (position) {
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+            var altitude = position.coords.altitude;
+            var accuracy = position.coords.accuracy;
+            var altitudeAccuracy = position.coords.altitudeAccuracy;
+            var heading = position.coords.heading;
+            var speed = position.coords.speed;
+
+            $log.log('getLocation-watch ', [lat, lng],
+              '(accuracy: ' + accuracy + ') (altitude: ' + altitude + ') (heading: ' + heading + ') (speed: ' + speed + ')');
+
+            // create a point feature and assign the lat/long to its geometry
+            var iconFeature = new ol.Feature({
+              'geometry': new ol.geom.Point(ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'))
+            });
+
+            // add addition geolocation data to the feature so we can recall it later
+            iconFeature.set('altitude', altitude);
+            iconFeature.set('accuracy', (accuracy === null) ? null : Math.floor(accuracy));
+            iconFeature.set('altitudeAccuracy', altitudeAccuracy);
+            iconFeature.set('heading', heading);
+            iconFeature.set('speed', (speed === null) ? null : Math.floor(speed));
+
+            var vectorSource = new ol.source.Vector({
+              'features': [iconFeature]
+            });
+
+            geolocationLayer.setSource(vectorSource);
+          });
+      }
+      else {
+        // locationOn must be false
+        $log.log('toggleLocation is now false');
+
+        // clear geolocation watch
+        geolocationWatchId.clearWatch();
+
+        // clear the geolocation marker
+        geolocationLayer.setSource(new ol.source.Vector({}));
+      }
     }
 
     function getExtent() {
@@ -40,7 +135,45 @@
     }
 
     function getMapView() {
+      // did we come back from a map provider?
+      if (OfflineTilesFactory.getCurrentMapProvider()) {
+        // yes -- then we need to change the current visible layer
+        $log.log('back at map, ', OfflineTilesFactory.getCurrentMapProvider());
+
+        var onlineLayer = MapLayerFactory.getOnlineLayer();
+        var onlineLayerCollection = onlineLayer.getLayers().getArray();
+
+        _.each(onlineLayerCollection, function (layer) {
+          if (layer.get('id') === OfflineTilesFactory.getCurrentMapProvider()) {
+            layer.setVisible(true);
+          }
+          else {
+            layer.setVisible(false);
+          }
+        });
+      }
       return mapView;
+    }
+
+    function getMapViewExtent(map) {
+      // Point object
+      function Point(lat, lng) {
+        this.lat = lat;
+        this.lng = lng;
+      }
+
+      var extent = map.getView().calculateExtent(map.getSize());
+      var zoom = map.getView().getZoom();
+      var bottomLeft = ol.proj.transform(ol.extent.getBottomLeft(extent),
+        'EPSG:3857', 'EPSG:4326');
+      var topRight = ol.proj.transform(ol.extent.getTopRight(extent),
+        'EPSG:3857', 'EPSG:4326');
+
+      return {
+        'topRight': new Point(topRight[1], topRight[0]),
+        'bottomLeft': new Point(bottomLeft[1], bottomLeft[0]),
+        'zoom': zoom
+      };
     }
 
     function setMapView(view) {
@@ -73,7 +206,7 @@
         var newExtentCenter = ol.extent.getCenter(newExtent);
         if (spots.length === 1) {
           $log.log('Found 1 spot, setting the map view to center on the spot.');
-          var initialMapView = InitializeMapFactory.getInitialMapView();
+          var initialMapView = MapSetupFactory.getInitialMapView();
           initialMapView.setCenter(ol.proj.transform(
             [newExtentCenter[0], newExtentCenter[1]],
             'EPSG:4326', 'EPSG:3857'));

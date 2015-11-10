@@ -3,11 +3,11 @@
 
   angular
     .module('app')
-    .factory('InitializeMapFactory', InitializeMapFactory);
+    .factory('MapSetupFactory', MapSetupFactory);
 
-  InitializeMapFactory.$inject = ['DrawFactory', 'MapLayerFactory'];
+  MapSetupFactory.$inject = ['DrawFactory', 'MapLayerFactory'];
 
-  function InitializeMapFactory(DrawFactory, MapLayerFactory) {
+  function MapSetupFactory(DrawFactory, MapLayerFactory) {
     // Map Properties
     var map;
     var extent;
