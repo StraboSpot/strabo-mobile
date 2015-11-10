@@ -5,19 +5,129 @@
     .module('app')
     .controller('SpotsController', Spots);
 
-  Spots.$inject = ['$scope', '$ionicModal', '$ionicPopup', '$cordovaFile', '$cordovaDevice', '$ionicActionSheet',
-    '$log', '$window', 'SpotsFactory', 'LoginFactory', 'CurrentSpot', 'ImageMapService'];
+  Spots.$inject = ['$cordovaDevice', '$cordovaFile', '$document', '$ionicActionSheet', '$ionicModal', '$ionicPopup',
+    '$log', '$scope', '$window', 'CurrentSpot', 'ImageMapService', 'LoginFactory', 'SpotsFactory'];
 
-  function Spots($scope, $ionicModal, $ionicPopup, $cordovaFile, $cordovaDevice, $ionicActionSheet,
-                 $log, $window, SpotsFactory, LoginFactory, CurrentSpot, ImageMapService) {
+  function Spots($cordovaDevice, $cordovaFile, $document, $ionicActionSheet, $ionicModal, $ionicPopup, $log, $scope,
+                 $window, CurrentSpot, ImageMapService, LoginFactory, SpotsFactory) {
     var vm = this;
 
-    // Make sure the current spot is empty
-    CurrentSpot.clearCurrentSpot();
-
+    vm.clearAllSpots = clearAllSpots;
+    vm.closeModal = closeModal;
+    vm.createAccordionGroups = createAccordionGroups;
+    vm.exportToCSV = exportToCSV;
     vm.groups = [];
+    vm.isGroupShown = isGroupShown;
+    vm.isOnlineLoggedIn = isOnlineLoggedIn;
+    vm.newSpot = newSpot;
+    vm.openModal = openModal;
+    vm.showActionsheet = showActionsheet;
+    vm.spots = [];
+    vm.sync = sync;
+    vm.toggleGroup = toggleGroup;
 
-    vm.createAccordionGroups = (function (spots) {
+    activate();
+
+    /**
+     * Private Functions
+     */
+
+    function activate() {
+      // Make sure the current spot is empty
+      CurrentSpot.clearCurrentSpot();
+      loadSpots();
+      checkLoggedIn();
+      createModals();
+      cleanupModals();
+    }
+
+    function checkLoggedIn() {
+      // Is the user logged in
+      LoginFactory.getLogin().then(
+        function (login) {
+          if (login !== null) {
+            vm.loggedIn = true;
+          }
+        }
+      );
+    }
+
+    function cleanupModals() {
+      // Cleanup the modal when we're done with it!
+      // Execute action on hide modal
+      $scope.$on('allModal.hidden', function () {
+        vm.allModal.remove();
+      });
+      $scope.$on('syncModal.hidden', function () {
+        vm.syncModal.remove();
+      });
+    }
+
+    function createModals() {
+      $ionicModal.fromTemplateUrl('app/remote-connection/sync-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up'
+      }).then(function (modal) {
+        vm.syncModal = modal;
+      });
+
+      $ionicModal.fromTemplateUrl('app/spots/spot-types-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up'
+      }).then(function (modal) {
+        vm.allModal = modal;
+      });
+    }
+
+    function loadSpots() {
+      SpotsFactory.all().then(
+        function (spots) {
+          vm.spots = spots;
+          vm.createAccordionGroups(spots);
+        }
+      );
+    }
+
+    /**
+     * Public Functions
+     */
+
+    // clears all spots
+    function clearAllSpots() {
+      var confirmPopup = $ionicPopup.confirm({
+        'title': 'Delete Spots',
+        'template': 'Are you sure you want to delete <b>ALL</b> spots?'
+      });
+      confirmPopup.then(
+        function (res) {
+          if (res) {
+            SpotsFactory.clear(
+              function () {
+                // update the spots list
+                SpotsFactory.all().then(
+                  function (spots) {
+                    vm.spots = spots;
+                    vm.createAccordionGroups(spots);
+                  }
+                );
+                // Remove all of the image maps
+                ImageMapService.clearAllImageMaps();
+              }
+            );
+          }
+        }
+      );
+    }
+
+    function closeModal(modal) {
+      vm[modal].hide();
+      SpotsFactory.all().then(function (spots) {
+        vm.spots = spots;
+        vm.createAccordionGroups(spots);
+      });
+    }
+
+    function createAccordionGroups(spots) {
       var spotTypesTitle = [
         {'title': 'MEASUREMENTS & OBSERVATIONS', 'type': 'point', 'tab': 'details'},
         {'title': 'CONTACTS & TRACES', 'type': 'line', 'tab': 'details'},
@@ -43,38 +153,12 @@
       }
 
       vm.shownGroup = vm.groups[0];
-    });
-
-    // Load or initialize Spots
-    vm.spots;
-
-    SpotsFactory.all().then(
-      function (spots) {
-        vm.spots = spots;
-        vm.createAccordionGroups(spots);
-      }
-    );
-
-    /*
-     * if given group is the selected group, deselect it
-     * else, select the given group
-     */
-    vm.toggleGroup = function (group) {
-      if (vm.isGroupShown(group)) {
-        vm.shownGroup = null;
-      }
-      else {
-        vm.shownGroup = group;
-      }
-    };
-    vm.isGroupShown = function (group) {
-      return vm.shownGroup === group;
-    };
+    }
 
     // Export data to CSV
-    vm.exportToCSV = function () {
+    function exportToCSV() {
       // Convert the spot objects to a csv format
-      var convertToCSV = function (jsonString) {
+      function convertToCSV() {
         // Get all the fields for the csv header row
         var allHeaders = [];
         _.each(vm.spots,
@@ -90,8 +174,11 @@
                   return 'custom_' + header;
                 }
               );
+              allHeaders = _.union(headers, allHeaders, customHeaders);
             }
-            allHeaders = _.union(headers, allHeaders, customHeaders);
+            else {
+              allHeaders = _.union(headers, allHeaders);
+            }
           }
         );
         // Add the two fields for the geometry
@@ -168,12 +255,12 @@
           }
         );
         return csv;
-      };
+      }
 
       var spotData = convertToCSV(vm.spots);
 
       // If this is a web browser and not using cordova
-      if (document.location.protocol !== 'file:') { // Phonegap is not present }
+      if ($document[0].location.protocol !== 'file:') { // Phonegap is not present }
         spotData = spotData.replace(/\r\n/g, '<br>');
         var win = $window.open();
         win.document.body.innerHTML = spotData;
@@ -203,7 +290,7 @@
 
       var directory = 'strabo';
 
-      var writeFile = function (dir) {
+      function writeFile(dir) {
         $cordovaFile.writeFile(devicePath + dir, fileName, spotData, true).then(
           function (success) {
             $log.log(success);
@@ -216,7 +303,7 @@
             $log.log(error);
           }
         );
-      };
+      }
 
       $cordovaFile.checkDir(devicePath, directory).then(
         function (success) {
@@ -235,124 +322,27 @@
           );
         }
       );
-    };
+    }
 
-    // clears all spots
-    vm.clearAllSpots = function () {
-      var confirmPopup = $ionicPopup.confirm({
-        'title': 'Delete Spots',
-        'template': 'Are you sure you want to delete <b>ALL</b> spots?'
-      });
-      confirmPopup.then(
-        function (res) {
-          if (res) {
-            SpotsFactory.clear(
-              function () {
-                // update the spots list
-                SpotsFactory.all().then(
-                  function (spots) {
-                    vm.spots = spots;
-                    vm.createAccordionGroups(spots);
-                  }
-                );
-                // Remove all of the image maps
-                ImageMapService.clearAllImageMaps();
-              }
-            );
-          }
-        }
-      );
-    };
-
-    // Is the user logged in
-    LoginFactory.getLogin().then(
-      function (login) {
-        if (login !== null) {
-          vm.loggedIn = true;
-        }
-      }
-    );
+    function isGroupShown(group) {
+      return vm.shownGroup === group;
+    }
 
     // Is the user online and logged in
-    vm.isOnlineLoggedIn = function () {
+    function isOnlineLoggedIn() {
       return navigator.onLine && vm.loggedIn;
-    };
+    }
 
     // Create a new Spot
-    vm.newSpot = function () {
+    function newSpot() {
       vm.openModal('allModal');
-    };
+    }
 
-    vm.sync = function () {
-      if (navigator.onLine && vm.loggedIn) {
-        vm.openModal('syncModal');
-      }
-      else {
-        if (!navigator.onLine && !vm.loggedIn) {
-          $ionicPopup.alert({
-            'title': 'Get Online and Log In!',
-            'template': 'You must be online and logged in to sync with the Strabo database.'
-          });
-        }
-        else if (!navigator.onLine) {
-          $ionicPopup.alert({
-            'title': 'Not Online!',
-            'template': 'You must be online to sync with the Strabo database.'
-          });
-        }
-        else {
-          $ionicPopup.alert({
-            'title': 'Not Logged In!',
-            'template': 'You must be logged in to sync with the Strabo database. Log in on the Settings page.'
-          });
-        }
-      }
-    };
-
-    /**
-     * MODALS
-     */
-
-    $ionicModal.fromTemplateUrl('app/remote-connection/sync-modal.html', {
-      'scope': $scope,
-      'animation': 'slide-in-up'
-    }).then(function (modal) {
-      vm.syncModal = modal;
-    });
-
-    $ionicModal.fromTemplateUrl('app/spots/spot-types-modal.html', {
-      'scope': $scope,
-      'animation': 'slide-in-up'
-    }).then(function (modal) {
-      vm.allModal = modal;
-    });
-
-    vm.openModal = function (modal) {
+    function openModal(modal) {
       vm[modal].show();
-    };
+    }
 
-    vm.closeModal = function (modal) {
-      vm[modal].hide();
-      SpotsFactory.all().then(function (spots) {
-        vm.spots = spots;
-        vm.createAccordionGroups(spots);
-      });
-    };
-
-    // Cleanup the modal when we're done with it!
-    // Execute action on hide modal
-    $scope.$on('allModal.hidden', function () {
-      vm.allModal.remove();
-    });
-    $scope.$on('syncModal.hidden', function () {
-      vm.syncModal.remove();
-    });
-
-    /**
-     * ACTIONSHEET
-     */
-
-    vm.showActionsheet = function () {
+    function showActionsheet() {
       $ionicActionSheet.show({
         'titleText': 'Spot Actions',
         'buttons': [{
@@ -377,6 +367,42 @@
           return true;
         }
       });
-    };
+    }
+
+    function sync() {
+      if (navigator.onLine && vm.loggedIn) {
+        vm.openModal('syncModal');
+      }
+      else {
+        if (!navigator.onLine && !vm.loggedIn) {
+          $ionicPopup.alert({
+            'title': 'Get Online and Log In!',
+            'template': 'You must be online and logged in to sync with the Strabo database.'
+          });
+        }
+        else if (!navigator.onLine) {
+          $ionicPopup.alert({
+            'title': 'Not Online!',
+            'template': 'You must be online to sync with the Strabo database.'
+          });
+        }
+        else {
+          $ionicPopup.alert({
+            'title': 'Not Logged In!',
+            'template': 'You must be logged in to sync with the Strabo database. Log in on the Settings page.'
+          });
+        }
+      }
+    }
+
+    // If given group is the selected group, deselect it, else, select the given group
+    function toggleGroup(group) {
+      if (vm.isGroupShown(group)) {
+        vm.shownGroup = null;
+      }
+      else {
+        vm.shownGroup = group;
+      }
+    }
   }
 }());
