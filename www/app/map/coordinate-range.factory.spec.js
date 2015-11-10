@@ -1,15 +1,15 @@
-describe('a CoordinateRange', function () {
+describe('a CoordinateRangeFactory', function () {
   'use strict';
 
-  var CoordinateRange;
+  var CoordinateRangeFactory;
   var mock_data;
 
   beforeEach(function () {
     module('app');
 
-    // CoordinateRange instance we're testing
-    inject(function (_CoordinateRange_) {
-      CoordinateRange = _CoordinateRange_;
+    // CoordinateRangeFactory instance we're testing
+    inject(function (_CoordinateRangeFactory_) {
+      CoordinateRangeFactory = _CoordinateRangeFactory_;
     });
 
     mock_data = [{
@@ -46,17 +46,17 @@ describe('a CoordinateRange', function () {
         ]
       }
     }];
-    CoordinateRange.setAllCoordinates(mock_data);
+    CoordinateRangeFactory.setAllCoordinates(mock_data);
   });
 
   // Begin Spec
 
   it('should be defined', function () {
-    expect(CoordinateRange).toBeDefined();
+    expect(CoordinateRangeFactory).toBeDefined();
   });
 
   it('should return a list of coordinates within a list', function () {
-    expect(CoordinateRange.getAllCoordinates(mock_data)).toEqual([
+    expect(CoordinateRangeFactory.getAllCoordinates(mock_data)).toEqual([
       [-119.89, 34.43],
       [-150, 22],
       [-119.89110849350129, 34.43351248079004],
@@ -72,18 +72,18 @@ describe('a CoordinateRange', function () {
   });
 
   it('should return the max latitude', function () {
-    expect(CoordinateRange.getMaxLatitude()).toEqual(34.43398147438511);
+    expect(CoordinateRangeFactory.getMaxLatitude()).toEqual(34.43398147438511);
   });
 
   it('should return the min latitude', function () {
-    expect(CoordinateRange.getMinLatitude()).toEqual(22);
+    expect(CoordinateRangeFactory.getMinLatitude()).toEqual(22);
   });
 
   it('should return the max longitude', function () {
-    expect(CoordinateRange.getMaxLongitude()).toEqual(-119.89);
+    expect(CoordinateRangeFactory.getMaxLongitude()).toEqual(-119.89);
   });
 
   it('should return the min longitude', function () {
-    expect(CoordinateRange.getMinLongitude()).toEqual(-150);
+    expect(CoordinateRangeFactory.getMinLongitude()).toEqual(-150);
   });
 });

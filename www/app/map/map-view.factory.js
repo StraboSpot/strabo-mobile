@@ -5,10 +5,10 @@
     .module('app')
     .factory('MapViewFactory', MapViewFactory);
 
-  MapViewFactory.$inject = ['$cordovaGeolocation', '$ionicPopup', '$log', 'CoordinateRange', 'MapLayerFactory',
+  MapViewFactory.$inject = ['$cordovaGeolocation', '$ionicPopup', '$log', 'CoordinateRangeFactory', 'MapLayerFactory',
     'MapSetupFactory', 'OfflineTilesFactory', 'SpotsFactory'];
 
-  function MapViewFactory($cordovaGeolocation, $ionicPopup, $log, CoordinateRange, MapLayerFactory, MapSetupFactory,
+  function MapViewFactory($cordovaGeolocation, $ionicPopup, $log, CoordinateRangeFactory, MapLayerFactory, MapSetupFactory,
                           OfflineTilesFactory, SpotsFactory) {
     var mapView;
     var viewExtent;
@@ -201,8 +201,8 @@
       // If there is just one spot set the map view centered at the single spot
       // Otherwise fit the map view to the extent of the spots
       function setNewMapView(spots) {
-        CoordinateRange.setAllCoordinates(spots);
-        var newExtent = ol.extent.boundingExtent(_.compact(CoordinateRange.getAllCoordinates()));
+        CoordinateRangeFactory.setAllCoordinates(spots);
+        var newExtent = ol.extent.boundingExtent(_.compact(CoordinateRangeFactory.getAllCoordinates()));
         var newExtentCenter = ol.extent.getCenter(newExtent);
         if (spots.length === 1) {
           $log.log('Found 1 spot, setting the map view to center on the spot.');
@@ -225,8 +225,8 @@
       // Fit the extent of the spots
       function setNewImageMapView(spots) {
         $log.log('Fitting the map view to the extent of the spots.');
-        CoordinateRange.setAllCoordinates(spots);
-        var newExtent = ol.extent.boundingExtent(_.compact(CoordinateRange.getAllCoordinates()));
+        CoordinateRangeFactory.setAllCoordinates(spots);
+        var newExtent = ol.extent.boundingExtent(_.compact(CoordinateRangeFactory.getAllCoordinates()));
         map.getView().fit(newExtent, map.getSize());
       }
 

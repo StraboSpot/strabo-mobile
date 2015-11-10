@@ -3,14 +3,65 @@
 
   angular
     .module('app')
-    .service('CoordinateRange', CoordinateRange);
+    .service('CoordinateRangeFactory', CoordinateRangeFactory);
 
-  CoordinateRange.$inject = [];
+  CoordinateRangeFactory.$inject = [];
 
-  function CoordinateRange() {
+  function CoordinateRangeFactory() {
     var allCoords;
 
-    var setAllCoordinates = function (spots) {
+    return {
+      'getAllCoordinates': getAllCoordinates,
+      'getLatitudes': getLatitudes,
+      'getLongitudes': getLongitudes,
+      'getMaxLatitude': getMaxLatitude,
+      'getMaxLongitude': getMaxLongitude,
+      'getMinLatitude': getMinLatitude,
+      'getMinLongitude': getMinLongitude,
+      'setAllCoordinates': setAllCoordinates
+    };
+
+    function getAllCoordinates() {
+      return allCoords;
+    }
+
+    function getLatitudes() {
+      return _.map(getAllCoordinates(), function (coord) {
+        return coord[1];
+      });
+    }
+
+    function getLongitudes() {
+      return _.map(getAllCoordinates(), function (coord) {
+        return coord[0];
+      });
+    }
+
+    function getMaxLatitude() {
+      return _.max(getLatitudes(), function (latitude) {
+        return latitude;
+      });
+    }
+
+    function getMaxLongitude() {
+      return _.max(getLongitudes(), function (longitude) {
+        return longitude;
+      });
+    }
+
+    function getMinLatitude() {
+      return _.min(getLatitudes(), function (latitude) {
+        return latitude;
+      });
+    }
+
+    function getMinLongitude() {
+      return _.min(getLongitudes(), function (longitude) {
+        return longitude;
+      });
+    }
+
+    function setAllCoordinates(spots) {
       allCoords = [];
       _.each(spots, function (element) {
         if (element.geometry) {
@@ -55,57 +106,6 @@
           }
         }
       });
-    };
-
-    var getAllCoordinates = function () {
-      return allCoords;
-    };
-
-    var getLatitudes = function () {
-      return _.map(getAllCoordinates(), function (coord) {
-        return coord[1];
-      });
-    };
-
-    var getMaxLatitude = function () {
-      return _.max(getLatitudes(), function (latitude) {
-        return latitude;
-      });
-    };
-
-    var getMinLatitude = function () {
-      return _.min(getLatitudes(), function (latitude) {
-        return latitude;
-      });
-    };
-
-    var getLongitudes = function () {
-      return _.map(getAllCoordinates(), function (coord) {
-        return coord[0];
-      });
-    };
-
-    var getMaxLongitude = function () {
-      return _.max(getLongitudes(), function (longitude) {
-        return longitude;
-      });
-    };
-
-    var getMinLongitude = function () {
-      return _.min(getLongitudes(), function (longitude) {
-        return longitude;
-      });
-    };
-
-    return {
-      'setAllCoordinates': setAllCoordinates,
-      'getAllCoordinates': getAllCoordinates,
-      'getLatitudes': getLatitudes,
-      'getMaxLatitude': getMaxLatitude,
-      'getMinLatitude': getMinLatitude,
-      'getLongitudes': getLongitudes,
-      'getMaxLongitude': getMaxLongitude,
-      'getMinLongitude': getMinLongitude
-    };
+    }
   }
 }());
