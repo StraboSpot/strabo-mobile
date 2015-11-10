@@ -4,9 +4,9 @@
   angular.module('app')
     .factory('LoginFactory', LoginFactory);
 
-  LoginFactory.$inject = ['LocalStorage'];
+  LoginFactory.$inject = ['LocalStorageFactory'];
 
-  function LoginFactory(LocalStorage) {
+  function LoginFactory(LocalStorageFactory) {
     return {
       'destroyLogin': destroyLogin,
       'getLogin': getLogin,
@@ -14,15 +14,15 @@
     };
 
     function destroyLogin() {
-      return LocalStorage.configDb.removeItem('login');
+      return LocalStorageFactory.configDb.removeItem('login');
     }
 
     function getLogin() {
-      return LocalStorage.configDb.getItem('login');
+      return LocalStorageFactory.configDb.getItem('login');
     }
 
     function setLogin(loginInfo) {
-      return LocalStorage.configDb.setItem('login', loginInfo);
+      return LocalStorageFactory.configDb.setItem('login', loginInfo);
     }
   }
 }());

@@ -6,10 +6,10 @@
     .controller('SpotsController', Spots);
 
   Spots.$inject = ['$cordovaDevice', '$cordovaFile', '$document', '$ionicActionSheet', '$ionicModal', '$ionicPopup',
-    '$log', '$scope', '$window', 'CurrentSpot', 'ImageMapService', 'LoginFactory', 'SpotsFactory'];
+    '$log', '$scope', '$window', 'CurrentSpotFactory', 'ImageMapFactory', 'LoginFactory', 'SpotsFactory'];
 
   function Spots($cordovaDevice, $cordovaFile, $document, $ionicActionSheet, $ionicModal, $ionicPopup, $log, $scope,
-                 $window, CurrentSpot, ImageMapService, LoginFactory, SpotsFactory) {
+                 $window, CurrentSpotFactory, ImageMapFactory, LoginFactory, SpotsFactory) {
     var vm = this;
 
     vm.clearAllSpots = clearAllSpots;
@@ -34,7 +34,7 @@
 
     function activate() {
       // Make sure the current spot is empty
-      CurrentSpot.clearCurrentSpot();
+      CurrentSpotFactory.clearCurrentSpot();
       loadSpots();
       checkLoggedIn();
       createModals();
@@ -111,7 +111,7 @@
                   }
                 );
                 // Remove all of the image maps
-                ImageMapService.clearAllImageMaps();
+                ImageMapFactory.clearAllImageMaps();
               }
             );
           }

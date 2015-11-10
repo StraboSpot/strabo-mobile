@@ -5,68 +5,39 @@
     .module('app')
     .factory('SpotsFactory', SpotsFactory);
 
-  SpotsFactory.$inject = ['$q', 'LocalStorage'];
+  SpotsFactory.$inject = ['$q', 'LocalStorageFactory'];
 
-  function SpotsFactory($q, LocalStorage) {
-    var factory = {};
+  function SpotsFactory($q, LocalStorageFactory) {
+    return {
+      'all': all,
+      'clear': clear,
+      'destroy': destroy,
+      'getCenter': getCenter,
+      'getFirstSpot': getFirstSpot,
+      'getSpotCount': getSpotCount,
+      'getSpotId': getSpotId,
+      'read': read,
+      'save': save,
+      'write': write
+    };
 
-    factory.all = function () {
+    function all() {
       var deferred = $q.defer(); // init promise
 
       var spots = [];
 
-      LocalStorage.spotsDb.iterate(function (value, key) {
+      LocalStorageFactory.spotsDb.iterate(function (value, key) {
         spots.push(value);
       }, function () {
         deferred.resolve(spots);
       });
 
       return deferred.promise;
-    };
-
-    factory.save = function (value) {
-      value.properties.modified_timestamp = new Date().getTime();
-
-      var self = this;
-      var deferred = $q.defer(); // init promise
-
-      self.write(value.properties.id, value).then(function (data) {
-        deferred.notify();
-        deferred.resolve(data);
-      });
-
-      return deferred.promise;
-    };
-
-    // delete the spot
-    factory.destroy = function (key) {
-      return LocalStorage.spotsDb.removeItem(key);
-    };
-
-    // gets the number of spots
-    factory.getSpotCount = function () {
-      return LocalStorage.spotsDb.length();
-    };
-
-    // gets the first spot in the db (if exists) -- used to set the map view
-    factory.getFirstSpot = function () {
-      var deferred = $q.defer(); // init promise
-
-      LocalStorage.spotsDb.keys().then(function (keys, err) {
-        if (angular.isUndefined(keys[0])) {
-          deferred.resolve(undefined);
-        }
-        else {
-          deferred.resolve(LocalStorage.spotsDb.getItem(keys[0]));
-        }
-      });
-
-      return deferred.promise;
-    };
+    }
 
     // wipes the spots database
-    factory.clear = function (callback) {
-      LocalStorage.spotsDb.clear(function (err) {
+    function clear(callback) {
+      LocalStorageFactory.spotsDb.clear(function (err) {
         if (err) {
           callback(err);
         }
@@ -74,22 +45,15 @@
           callback();
         }
       });
-    };
+    }
 
-    // write to storage
-    factory.write = function (key, value) {
-      return LocalStorage.spotsDb.setItem(key, value);
-    };
-
-    // read from storage
-    factory.read = function (key, callback) {
-      LocalStorage.spotsDb.getItem(key).then(function (value) {
-        callback(value);
-      });
-    };
+    // delete the spot
+    function destroy(key) {
+      return LocalStorageFactory.spotsDb.removeItem(key);
+    }
 
     // Get the center of a geoshape
-    factory.getCenter = function (spot) {
+    function getCenter(spot) {
       var coords = spot.geometry.coordinates;
       var lon = coords[0];
       var lat = coords[1];
@@ -107,13 +71,57 @@
         'lon': lon,
         'lat': lat
       };
-    };
+    }
 
-    factory.getSpotId = function (spotId) {
-      return LocalStorage.spotsDb.getItem(spotId);
-    };
+    // gets the first spot in the db (if exists) -- used to set the map view
+    function getFirstSpot() {
+      var deferred = $q.defer(); // init promise
 
-    // return factory
-    return factory;
+      LocalStorageFactory.spotsDb.keys().then(function (keys, err) {
+        if (angular.isUndefined(keys[0])) {
+          deferred.resolve(undefined);
+        }
+        else {
+          deferred.resolve(LocalStorageFactory.spotsDb.getItem(keys[0]));
+        }
+      });
+
+      return deferred.promise;
+    }
+
+    // gets the number of spots
+    function getSpotCount() {
+      return LocalStorageFactory.spotsDb.length();
+    }
+
+    function getSpotId(spotId) {
+      return LocalStorageFactory.spotsDb.getItem(spotId);
+    }
+
+    // read from storage
+    function read(key, callback) {
+      LocalStorageFactory.spotsDb.getItem(key).then(function (value) {
+        callback(value);
+      });
+    }
+
+    function save(value) {
+      value.properties.modified_timestamp = new Date().getTime();
+
+      var self = this;
+      var deferred = $q.defer(); // init promise
+
+      self.write(value.properties.id, value).then(function (data) {
+        deferred.notify();
+        deferred.resolve(data);
+      });
+
+      return deferred.promise;
+    }
+
+    // write to storage
+    function write(key, value) {
+      return LocalStorageFactory.spotsDb.setItem(key, value);
+    }
   }
 }());

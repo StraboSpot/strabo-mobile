@@ -5,9 +5,9 @@
     .module('app')
     .controller('ImageMapsController', ImageMapsController);
 
-  ImageMapsController.$inject = ['$location', '$log', 'ImageMapService', 'SpotsFactory'];
+  ImageMapsController.$inject = ['$location', '$log', 'ImageMapFactory', 'SpotsFactory'];
 
-  function ImageMapsController($location, $log, ImageMapService, SpotsFactory) {
+  function ImageMapsController($location, $log, ImageMapFactory, SpotsFactory) {
     var vm = this;
     vm.goToImageMap = goToImageMap;
 
@@ -32,15 +32,15 @@
               image);
             if (image.annotated) {
               image.annotated = true;
-              ImageMapService.addImageMap(image);
+              ImageMapFactory.addImageMap(image);
             }
             else {
               image.annotated = false;
-              ImageMapService.removeImageMap(image);
+              ImageMapFactory.removeImageMap(image);
             }
           });
         });
-        vm.imageMaps = ImageMapService.getImageMaps();
+        vm.imageMaps = ImageMapFactory.getImageMaps();
         $log.log(vm.imageMaps);
       });
     }
@@ -50,7 +50,7 @@
      */
 
     function goToImageMap(imageMap) {
-      ImageMapService.setCurrentImageMap(imageMap);
+      ImageMapFactory.setCurrentImageMap(imageMap);
       $location.path('/app/image-maps/' + imageMap.id);
     }
   }

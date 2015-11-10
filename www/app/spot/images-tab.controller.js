@@ -6,10 +6,10 @@
     .controller('SpotTabImagesController', SpotTabImagesController);
 
   SpotTabImagesController.$inject = ['$scope', '$stateParams', '$log', '$cordovaCamera', '$ionicPopup', '$ionicModal',
-    '$location', '$window', 'SpotsFactory', 'ImageMapService'];
+    '$location', '$window', 'SpotsFactory', 'ImageMapFactory'];
 
   function SpotTabImagesController($scope, $stateParams, $log, $cordovaCamera, $ionicPopup, $ionicModal,
-                                   $location, $window, SpotsFactory, ImageMapService) {
+                                   $location, $window, SpotsFactory, ImageMapFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.load($stateParams);  // Need to load current state into parent
@@ -213,12 +213,12 @@
         savedSpot.properties.date = new Date(savedSpot.properties.date);
         savedSpot.properties.time = new Date(savedSpot.properties.time);
         if (_.isEqual(vmParent.spot, savedSpot)) {    // User angular.copy to get rid of angular's $$hashKey
-          ImageMapService.setCurrentImageMap(image);              // Save referenced image map
+          ImageMapFactory.setCurrentImageMap(image);              // Save referenced image map
           $location.path('/app/image-maps/' + image.id);
           $scope.$apply();
         }
         else if (_.isEqual(angular.copy(vmParent.spot), savedSpot)) {    // User angular.copy to get rid of angular's $$hashKey
-          ImageMapService.setCurrentImageMap(image);              // Save referenced image map
+          ImageMapFactory.setCurrentImageMap(image);              // Save referenced image map
           $location.path('/app/image-maps/' + image.id);
           $scope.$apply();
         }

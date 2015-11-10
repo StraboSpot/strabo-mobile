@@ -6,10 +6,10 @@
     .controller('SpotTabGeoreferenceController', SpotTabGeoreferenceController);
 
   SpotTabGeoreferenceController.$inject = ['$scope', '$stateParams', '$cordovaGeolocation', '$ionicPopup', '$location',
-    '$log', 'CurrentSpot', 'ImageMapService', 'SpotsFactory', 'MapView'];
+    '$log', 'CurrentSpotFactory', 'ImageMapFactory', 'SpotsFactory', 'MapViewFactory'];
 
   function SpotTabGeoreferenceController($scope, $stateParams, $cordovaGeolocation, $ionicPopup, $location,
-                                         $log, CurrentSpot, ImageMapService, SpotsFactory, MapViewFactory) {
+                                         $log, CurrentSpotFactory, ImageMapFactory, SpotsFactory, MapViewFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.load($stateParams);  // Need to load current state into parent
@@ -75,8 +75,8 @@
     // View the spot on the map
     vm.viewSpot = function () {
       if (_.has(vmParent.spot.properties, 'image_map')) {
-        var image = _.findWhere(ImageMapService.getImageMaps(), {'id': vmParent.spot.properties.image_map});
-        ImageMapService.setCurrentImageMap(image);    // Save referenced image map
+        var image = _.findWhere(ImageMapFactory.getImageMaps(), {'id': vmParent.spot.properties.image_map});
+        ImageMapFactory.setCurrentImageMap(image);    // Save referenced image map
         $location.path('/app/image-maps/' + vmParent.spot.properties.image_map);
       }
       else {
@@ -111,10 +111,10 @@
 
     // Open the map so the user can set the location for the spot
     vm.setFromMap = function () {
-      CurrentSpot.setCurrentSpot(vmParent.spot);    // Save current spot
+      CurrentSpotFactory.setCurrentSpot(vmParent.spot);    // Save current spot
       if (_.has(vmParent.spot.properties, 'image_map')) {
-        var image = _.findWhere(ImageMapService.getImageMaps(), {'id': vmParent.spot.properties.image_map});
-        ImageMapService.setCurrentImageMap(image);    // Save referenced image map
+        var image = _.findWhere(ImageMapFactory.getImageMaps(), {'id': vmParent.spot.properties.image_map});
+        ImageMapFactory.setCurrentImageMap(image);    // Save referenced image map
         $location.path('/app/image-maps/' + vmParent.spot.properties.image_map);
       }
       else {

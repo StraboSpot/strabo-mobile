@@ -3,7 +3,7 @@
 
   angular
     .module('app')
-    .service('CoordinateRangeFactory', CoordinateRangeFactory);
+    .factory('CoordinateRangeFactory', CoordinateRangeFactory);
 
   CoordinateRangeFactory.$inject = [];
 

@@ -5,12 +5,12 @@
     .module('app')
     .controller('SpotTypeController', SpotTypeController);
 
-  SpotTypeController.$inject = ['NewSpot'];
+  SpotTypeController.$inject = ['NewSpotFactory'];
 
-  function SpotTypeController(NewSpot) {
+  function SpotTypeController(NewSpotFactory) {
     var vm = this;
 
-    vm.getSpotTypes = NewSpot.getSpotTypes;
+    vm.getSpotTypes = NewSpotFactory.getSpotTypes;
     vm.setSpotType = setSpotType;
 
     function setSpotType(type) {
@@ -19,7 +19,7 @@
           'type': type
         }
       };
-      NewSpot.setNewSpot(jsonTemplate);
+      NewSpotFactory.setNewSpot(jsonTemplate);
     }
   }
 }());

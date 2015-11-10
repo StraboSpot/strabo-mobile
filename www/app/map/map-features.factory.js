@@ -5,10 +5,10 @@
     .module('app')
     .factory('MapFeaturesFactory', MapFeatures);
 
-  MapFeatures.$inject = ['HelpersFactory', 'ImageMapService', 'MapLayerFactory', 'MapSetupFactory', 'SpotsFactory',
+  MapFeatures.$inject = ['HelpersFactory', 'ImageMapFactory', 'MapLayerFactory', 'MapSetupFactory', 'SpotsFactory',
     'SymbologyFactory'];
 
-  function MapFeatures(HelpersFactory, ImageMapService, MapLayerFactory, MapSetupFactory, SpotsFactory,
+  function MapFeatures(HelpersFactory, ImageMapFactory, MapLayerFactory, MapSetupFactory, SpotsFactory,
                        SymbologyFactory) {
     return {
       'createFeatureLayer': createFeatureLayer,
@@ -25,7 +25,7 @@
 
         var mappableSpots;
         if (map.getView().getProjection().getUnits() === 'pixels') {
-          ImageMapService.clearCurrentImageMap();
+          ImageMapFactory.clearCurrentImageMap();
 
           mappableSpots = _.filter(spots, function (spot) {
             return spot.properties.image_map === imageMap.id;

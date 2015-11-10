@@ -3,7 +3,7 @@
 
   angular
     .module('app')
-    .service('RemoteServerFactory', RemoteServerFactory);
+    .factory('RemoteServerFactory', RemoteServerFactory);
 
   RemoteServerFactory.$inject = ['$http'];
 

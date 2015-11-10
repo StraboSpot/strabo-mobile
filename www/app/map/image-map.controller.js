@@ -6,13 +6,13 @@
     .controller('ImageMapController', ImageMapController);
 
   ImageMapController.$inject = ['$ionicActionSheet', '$ionicSideMenuDelegate', '$log', '$state', 'DrawFactory',
-    'ImageMapService', 'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory'];
+    'ImageMapFactory', 'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory'];
 
-  function ImageMapController($ionicActionSheet, $ionicSideMenuDelegate, $log, $state, DrawFactory, ImageMapService,
+  function ImageMapController($ionicActionSheet, $ionicSideMenuDelegate, $log, $state, DrawFactory, ImageMapFactory,
                               MapFeaturesFactory, MapSetupFactory, MapViewFactory) {
     var vm = this;
     vm.goToImageMaps = goToImageMaps;
-    vm.imageMap = ImageMapService.getCurrentImageMap();
+    vm.imageMap = ImageMapFactory.getCurrentImageMap();
     vm.showActionsheet = showActionsheet;
 
     var map;

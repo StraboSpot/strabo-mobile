@@ -5,10 +5,10 @@
     .module('app')
     .factory('OfflineTilesFactory', OfflineTilesFactory);
 
-  OfflineTilesFactory.$inject = ['$log', '$q', 'LocalStorage'];
+  OfflineTilesFactory.$inject = ['$log', '$q', 'LocalStorageFactory'];
 
   // used to determine what the map provider is before we archive a tileset
-  function OfflineTilesFactory($log, $q, LocalStorage) {
+  function OfflineTilesFactory($log, $q, LocalStorageFactory) {
     var currentMapProvider = null;
     var mapProviders;
 
@@ -129,7 +129,7 @@
         'size': size
       };
 
-      LocalStorage.mapNamesDb.setItem(mapName, mapNameData).then(function () {
+      LocalStorageFactory.mapNamesDb.setItem(mapName, mapNameData).then(function () {
         // $log.log('saved map name ', mapName);
         deferred.resolve();
       });
@@ -187,13 +187,13 @@
     // Wipe the offline database
     function clear(callback) {
       // deletes all offline tiles
-      LocalStorage.mapTilesDb.clear(function (err) {
+      LocalStorageFactory.mapTilesDb.clear(function (err) {
         if (err) {
           callback(err);
         }
         else {
           // then delete all map names
-          LocalStorage.mapNamesDb.clear(function (err) {
+          LocalStorageFactory.mapNamesDb.clear(function (err) {
             if (err) {
               callback(err);
             }
@@ -219,7 +219,7 @@
       // loop through the tiles and build an delete promise for each tile
       tiles.forEach(function (tile) {
         var tileId = map.mapProvider + '/' + tile;
-        var promise = LocalStorage.mapTilesDb.removeItem(tileId);
+        var promise = LocalStorageFactory.mapTilesDb.removeItem(tileId);
         promises.push(promise);
       });
 
@@ -227,7 +227,7 @@
         // all the tile associated with this map name has been deleted
 
         // now delete the actual map name
-        LocalStorage.mapNamesDb.removeItem(map.name)
+        LocalStorageFactory.mapNamesDb.removeItem(map.name)
           .then(function () {
             // map is deleted, and this is now fully resolved
             deferred.resolve();
@@ -306,7 +306,7 @@
 
       var maps = [];
 
-      LocalStorage.mapNamesDb.iterate(function (value, key) {
+      LocalStorageFactory.mapNamesDb.iterate(function (value, key) {
         maps.push({
           'name': key,
           'mapProvider': value.mapProvider,
@@ -321,7 +321,7 @@
 
     // Get the number of tiles from offline storage
     function getOfflineTileCount(callback) {
-      LocalStorage.mapTilesDb.length(function (err, numberOfKeys) {
+      LocalStorageFactory.mapTilesDb.length(function (err, numberOfKeys) {
         callback(err || numberOfKeys);
       });
     }
@@ -332,7 +332,7 @@
       var tileId = mapProvider + '/' + tile;
       $log.log('factory, ', tileId);
 
-      LocalStorage.mapTilesDb.getItem(tileId).then(function (blob) {
+      LocalStorageFactory.mapTilesDb.getItem(tileId).then(function (blob) {
         callback(blob);
       });
     }
@@ -344,11 +344,11 @@
       var newMapTileIds;
 
       // get the existing mapname
-      LocalStorage.mapNamesDb.getItem(mapName).then(function (tileIds) {
+      LocalStorageFactory.mapNamesDb.getItem(mapName).then(function (tileIds) {
         // create a new map name, with the existing mapname contents
-        LocalStorage.mapNamesDb.setItem(newMapName, tileIds).then(function () {
+        LocalStorageFactory.mapNamesDb.setItem(newMapName, tileIds).then(function () {
           // now delete the actual map name
-          LocalStorage.mapNamesDb.removeItem(mapName).then(function () {
+          LocalStorageFactory.mapNamesDb.removeItem(mapName).then(function () {
             // map is deleted, and this is now fully resolved
             deferred.resolve();
           });
@@ -368,7 +368,7 @@
       // note that tileId is prefixed with mapProvider, tile itself is not
       var tileId = mapProvider + '/' + tile;
 
-      LocalStorage.mapTilesDb.setItem(tileId, blob).then(function () {
+      LocalStorageFactory.mapTilesDb.setItem(tileId, blob).then(function () {
         // $log.log('wrote tileId ', tileId, blob.size);
         deferred.resolve(blob.size);
       });

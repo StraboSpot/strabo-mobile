@@ -6,13 +6,13 @@
     .controller('SpotController', SpotController);
 
   SpotController.$inject = ['$scope', '$rootScope', '$state', '$stateParams', '$location', '$ionicHistory',
-    '$ionicPopup', '$ionicModal', '$ionicActionSheet', '$log', 'SpotsFactory', 'SettingsFactory', 'NewSpot',
-    'CurrentSpot', 'ImageMapService', 'ContentModelSurveyFactory'];
+    '$ionicPopup', '$ionicModal', '$ionicActionSheet', '$log', 'SpotsFactory', 'SettingsFactory', 'NewSpotFactory',
+    'CurrentSpotFactory', 'ImageMapFactory', 'ContentModelSurveyFactory'];
 
   // this scope is the parent scope for the SpotController that all child SpotController will inherit
   function SpotController($scope, $rootScope, $state, $stateParams, $location, $ionicHistory,
-                          $ionicPopup, $ionicModal, $ionicActionSheet, $log, SpotsFactory, SettingsFactory, NewSpot,
-                          CurrentSpot, ImageMapService, ContentModelSurveyFactory) {
+                          $ionicPopup, $ionicModal, $ionicActionSheet, $log, SpotsFactory, SettingsFactory, NewSpotFactory,
+                          CurrentSpotFactory, ImageMapFactory, ContentModelSurveyFactory) {
     var vm = this;
 
     $rootScope.$state = $state;
@@ -29,7 +29,7 @@
     };
 
     vm.openSpot = function (id) {
-      CurrentSpot.clearCurrentSpot();
+      CurrentSpotFactory.clearCurrentSpot();
       $location.path('/spotTab/' + id + '/notes');
     };
 
@@ -172,11 +172,11 @@
           _.forEach(obj.images, function (image) {
             if (image.annotated) {
               image.annotated = true;
-              ImageMapService.addImageMap(image);
+              ImageMapFactory.addImageMap(image);
             }
             else {
               image.annotated = false;
-              ImageMapService.removeImageMap(image);
+              ImageMapFactory.removeImageMap(image);
             }
           });
         });
@@ -188,12 +188,12 @@
 
     vm.load = function (params) {
       // Get the current spot
-      if (NewSpot.getNewSpot()) {
-        // Load spot stored in the NewSpot service
-        vm.spot = NewSpot.getNewSpot();
-        CurrentSpot.setCurrentSpot(vm.spot);
-        // now clear the new spot from the service because we have the info in our current scope
-        NewSpot.clearNewSpot();
+      if (NewSpotFactory.getNewSpot()) {
+        // Load spot stored in the NewSpotFactory factory
+        vm.spot = NewSpotFactory.getNewSpot();
+        CurrentSpotFactory.setCurrentSpot(vm.spot);
+        // now clear the new spot from the factory because we have the info in our current scope
+        NewSpotFactory.clearNewSpot();
 
         // Set default name
         SettingsFactory.getNamePrefix().then(function (prefix) {
@@ -230,8 +230,8 @@
         });
       }
       else {
-        if (CurrentSpot.getCurrentSpot()) {
-          vm.spot = CurrentSpot.getCurrentSpot();
+        if (CurrentSpotFactory.getCurrentSpot()) {
+          vm.spot = CurrentSpotFactory.getCurrentSpot();
           $log.log('attempting to set properties2');
           setProperties();
         }
@@ -377,7 +377,7 @@
         }
       }
 
-      CurrentSpot.setCurrentSpot(vm.spot);
+      CurrentSpotFactory.setCurrentSpot(vm.spot);
       $location.path('/spotTab/' + vm.spot.properties.id + '/' + toTab);
     };
 
@@ -530,17 +530,17 @@
 
       _.forEach(vm.spot.images, function (image) {
         if (image.annotated) {
-          ImageMapService.addImageMap(image);
+          ImageMapFactory.addImageMap(image);
         }
         else {
-          ImageMapService.removeImageMap(image);
+          ImageMapFactory.removeImageMap(image);
         }
       });
 
       // Save the spot
       SpotsFactory.save(vm.spot).then(function (data) {
         $log.log('spot saved: ', data);
-        CurrentSpot.clearCurrentSpot();
+        CurrentSpotFactory.clearCurrentSpot();
         $location.path('/app/spots');
         // $ionicHistory.goBack();
       });
@@ -704,7 +704,7 @@
       var copySpot = _.omit(vm.spot, 'properties');
       copySpot.properties = _.omit(vm.spot.properties,
         ['id', 'date', 'time', 'links', 'groups', 'group_members']);
-      NewSpot.setNewSpot(copySpot);
+      NewSpotFactory.setNewSpot(copySpot);
       $location.path('/spotTab//notes');
     };
 
