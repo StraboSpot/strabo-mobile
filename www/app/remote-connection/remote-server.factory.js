@@ -3,112 +3,43 @@
 
   angular
     .module('app')
-    .service('SyncService', SyncService);
+    .service('RemoteServerFactory', RemoteServerFactory);
 
-  SyncService.$inject = ['$http'];
+  RemoteServerFactory.$inject = ['$http'];
 
-  function SyncService($http) {
+  function RemoteServerFactory($http) {
     // Return public API
-    return ({
-      'authenticateUser': authenticateUser,
-      'createFeature': createFeature,
-      'updateFeature': updateFeature,
-      'getDatasets': getDatasets,
-      'createDataset': createDataset,
-      'deleteDataset': deleteDataset,
-      'addSpotToDataset': addSpotToDataset,
-      'deleteAllDatasetSpots': deleteAllDatasetSpots,
+    return {
       'addDatasetSpot': addDatasetSpot,
-      'getDatasetSpots': getDatasetSpots,
+      'addSpotToDataset': addSpotToDataset,
+      'authenticateUser': authenticateUser,
+      'createDataset': createDataset,
+      'createFeature': createFeature,
+      'deleteAllDatasetSpots': deleteAllDatasetSpots,
+      'deleteDataset': deleteDataset,
       'deleteSpots': deleteSpots,
-      'uploadImage': uploadImage,
+      'downloadImage': downloadImage,
+      'getDatasets': getDatasets,
+      'getDatasetSpots': getDatasetSpots,
       'getImages': getImages,
-      'downloadImage': downloadImage
-    });
+      'updateFeature': updateFeature,
+      'uploadImage': uploadImage
+    };
 
-    // ---
-    // Public Methods
-    // ---
+    /**
+     * Public Functions
+     */
 
-    // Authenticate the user
-    function authenticateUser(loginData) {
+    // Add a spot to a dataset
+    function addDatasetSpot(spot, dataset_id, encodedLogin) {
       var request = $http({
         'method': 'post',
-        'url': 'http://strabospot.org/userAuthenticate',
-        'headers': {
-          'Content-Type': 'application/json'
-        },
-        'data': {
-          'email': loginData.email,
-          'password': loginData.password
-        }
-      });
-      return (request.then(handleSuccess, handleError));
-    }
-
-    // Create a new feature
-    function createFeature(spot, encodedLogin) {
-      var request = $http({
-        'method': 'post',
-        'url': 'http://strabospot.org/db/feature',
+        'url': 'http://strabospot.org/db/datasetSpots/' + dataset_id,
         'headers': {
           'Authorization': 'Basic ' + encodedLogin,
           'Content-Type': 'application/json'
         },
         'data': spot
-      });
-      return (request.then(handleSuccess, handleError));
-    }
-
-    // Update a feature
-    function updateFeature(spot, encodedLogin) {
-      var request = $http({
-        'method': 'post',
-        'url': spot.properties.self,
-        'headers': {
-          'Authorization': 'Basic ' + encodedLogin,
-          'Content-Type': 'application/json'
-        },
-        'data': spot
-      });
-      return (request.then(handleSuccess, handleError));
-    }
-
-    // Get all datasets for a user
-    function getDatasets(encodedLogin) {
-      var request = $http({
-        'method': 'get',
-        'url': 'http://strabospot.org/db/myDatasets',
-        'headers': {
-          'Authorization': 'Basic ' + encodedLogin
-        }
-      });
-      return (request.then(handleSuccess, handleError));
-    }
-
-    // Create a new dataset for a user
-    function createDataset(name, encodedLogin) {
-      var request = $http({
-        'method': 'post',
-        'url': 'http://strabospot.org/db/dataset',
-        'headers': {
-          'Authorization': 'Basic ' + encodedLogin,
-          'Content-Type': 'application/json'
-        },
-        'data': name
-      });
-      return (request.then(handleSuccess, handleError));
-    }
-
-    // Delete a dataset
-    function deleteDataset(self_url, encodedLogin) {
-      var request = $http({
-        'method': 'delete',
-        'url': self_url,
-        'headers': {
-          'Authorization': 'Basic ' + encodedLogin,
-          'Content-Type': 'application/json'
-        }
       });
       return (request.then(handleSuccess, handleError));
     }
@@ -129,6 +60,76 @@
       return (request.then(handleSuccess, handleError));
     }
 
+    // Authenticate the user
+    function authenticateUser(loginData) {
+      var request = $http({
+        'method': 'post',
+        'url': 'http://strabospot.org/userAuthenticate',
+        'headers': {
+          'Content-Type': 'application/json'
+        },
+        'data': {
+          'email': loginData.email,
+          'password': loginData.password
+        }
+      });
+      return (request.then(handleSuccess, handleError));
+    }
+
+    // Create a new dataset for a user
+    function createDataset(name, encodedLogin) {
+      var request = $http({
+        'method': 'post',
+        'url': 'http://strabospot.org/db/dataset',
+        'headers': {
+          'Authorization': 'Basic ' + encodedLogin,
+          'Content-Type': 'application/json'
+        },
+        'data': name
+      });
+      return (request.then(handleSuccess, handleError));
+    }
+
+    // Create a new feature
+    function createFeature(spot, encodedLogin) {
+      var request = $http({
+        'method': 'post',
+        'url': 'http://strabospot.org/db/feature',
+        'headers': {
+          'Authorization': 'Basic ' + encodedLogin,
+          'Content-Type': 'application/json'
+        },
+        'data': spot
+      });
+      return (request.then(handleSuccess, handleError));
+    }
+
+    // Delete a dataset
+    function deleteDataset(self_url, encodedLogin) {
+      var request = $http({
+        'method': 'delete',
+        'url': self_url,
+        'headers': {
+          'Authorization': 'Basic ' + encodedLogin,
+          'Content-Type': 'application/json'
+        }
+      });
+      return (request.then(handleSuccess, handleError));
+    }
+
+    // Delete ALL spots for a user
+    function deleteSpots(encodedLogin) {
+      var request = $http({
+        'method': 'delete',
+        'url': 'http://strabospot.org/db/myFeatures',
+        'headers': {
+          'Authorization': 'Basic ' + encodedLogin,
+          'Content-Type': 'application/json'
+        }
+      });
+      return (request.then(handleSuccess, handleError));
+    }
+
     // Delete all spots in a dataset
     function deleteAllDatasetSpots(dataset_id, encodedLogin) {
       var request = $http({
@@ -142,16 +143,27 @@
       return (request.then(handleSuccess, handleError));
     }
 
-    // Add a spot to a dataset
-    function addDatasetSpot(spot, dataset_id, encodedLogin) {
+    // Download image for a feature
+    function downloadImage(image_url, encodedLogin) {
       var request = $http({
-        'method': 'post',
-        'url': 'http://strabospot.org/db/datasetSpots/' + dataset_id,
+        'method': 'get',
+        'url': image_url,
+        'responseType': 'blob',
         'headers': {
-          'Authorization': 'Basic ' + encodedLogin,
-          'Content-Type': 'application/json'
-        },
-        'data': spot
+          'Authorization': 'Basic ' + encodedLogin + '\''
+        }
+      });
+      return (request.then(handleSuccess, handleError));
+    }
+
+    // Get all datasets for a user
+    function getDatasets(encodedLogin) {
+      var request = $http({
+        'method': 'get',
+        'url': 'http://strabospot.org/db/myDatasets',
+        'headers': {
+          'Authorization': 'Basic ' + encodedLogin
+        }
       });
       return (request.then(handleSuccess, handleError));
     }
@@ -168,15 +180,28 @@
       return (request.then(handleSuccess, handleError));
     }
 
-    // Delete ALL spots for a user
-    function deleteSpots(encodedLogin) {
+    // Get all images for a feature
+    function getImages(dataset_id, encodedLogin) {
       var request = $http({
-        'method': 'delete',
-        'url': 'http://strabospot.org/db/myFeatures',
+        'method': 'get',
+        'url': 'http://www.strabospot.org/db/featureImages/' + dataset_id,
+        'headers': {
+          'Authorization': 'Basic ' + encodedLogin + '\''
+        }
+      });
+      return (request.then(handleSuccess, handleError));
+    }
+
+    // Update a feature
+    function updateFeature(spot, encodedLogin) {
+      var request = $http({
+        'method': 'post',
+        'url': spot.properties.self,
         'headers': {
           'Authorization': 'Basic ' + encodedLogin,
           'Content-Type': 'application/json'
-        }
+        },
+        'data': spot
       });
       return (request.then(handleSuccess, handleError));
     }
@@ -222,34 +247,9 @@
       return (request.then(handleSuccess, handleError));
     }
 
-    // Get all images for a feature
-    function getImages(dataset_id, encodedLogin) {
-      var request = $http({
-        'method': 'get',
-        'url': 'http://www.strabospot.org/db/featureImages/' + dataset_id,
-        'headers': {
-          'Authorization': 'Basic ' + encodedLogin + '\''
-        }
-      });
-      return (request.then(handleSuccess, handleError));
-    }
-
-    // Download image for a feature
-    function downloadImage(image_url, encodedLogin) {
-      var request = $http({
-        'method': 'get',
-        'url': image_url,
-        'responseType': 'blob',
-        'headers': {
-          'Authorization': 'Basic ' + encodedLogin + '\''
-        }
-      });
-      return (request.then(handleSuccess, handleError));
-    }
-
-    // ---
-    // Private Methods
-    // ---
+    /**
+     * Private Functions
+     */
 
     // Transform the error response, unwrapping the application data from the API response payload
     function handleError(response) {

@@ -5,9 +5,9 @@
     .module('app')
     .controller('SettingsController', SettingsController);
 
-  SettingsController.$inject = ['$ionicPopup', '$log', 'SettingsFactory', 'LoginFactory', 'SyncService'];
+  SettingsController.$inject = ['$ionicPopup', '$log', 'SettingsFactory', 'LoginFactory', 'RemoteServerFactory'];
 
-  function SettingsController($ionicPopup, $log, SettingsFactory, LoginFactory, SyncService) {
+  function SettingsController($ionicPopup, $log, SettingsFactory, LoginFactory, RemoteServerFactory) {
     var vm = this;
 
     // Form data for the login modal
@@ -51,7 +51,7 @@
       vm.loginData.email = vm.loginData.email.toLowerCase();
       // Authenticate user login
       if (navigator.onLine) {
-        SyncService.authenticateUser(vm.loginData).then(
+        RemoteServerFactory.authenticateUser(vm.loginData).then(
           function (response) {
             if (response.status === 200 && response.data.valid === 'true') {
               $log.log('Logged in successfully.');

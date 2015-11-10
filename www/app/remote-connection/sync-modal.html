@@ -5,7 +5,7 @@
     <div class='button button-clear' ng-click='vm.closeModal("syncModal")'><span class='icon ion-close'></span></div>
   </ion-header-bar>
   <ion-content class='has-header' ng-controller='SyncModalController as vmChild'>
-    <h6>You are currently logged in as: {{ vm.loginEmail }}</h6>
+    <h6>You are currently logged in as: {{ vmChild.loginEmail }}</h6>
 
     <div ng-show='vmChild.progress.showProgress'>You are uploading spot {{ vmChild.progress.current }} of {{
       vmChild.progress.total

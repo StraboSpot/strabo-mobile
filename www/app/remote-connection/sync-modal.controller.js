@@ -5,136 +5,54 @@
     .module('app')
     .controller('SyncModalController', SyncModalController);
 
-  SyncModalController.$inject = ['$scope', '$ionicPopup', '$log', 'SpotsFactory', 'SyncService', 'LoginFactory'];
+  SyncModalController.$inject = ['$ionicPopup', '$log', '$scope', 'LoginFactory', 'SpotsFactory', 'RemoteServerFactory'];
 
-  function SyncModalController($scope, $ionicPopup, $log, SpotsFactory, SyncService, LoginFactory) {
+  function SyncModalController($ionicPopup, $log, $scope, LoginFactory, SpotsFactory, RemoteServerFactory) {
     var vm = this;
     var vmParent = $scope.vm;
 
-    // base64 encoded login
-    vm.encodedLogin = null;
-
-    // upload progress
-    vm.progress = {
+    vm.addDatasetSpots = addDatasetSpots;
+    vm.createDataset = createDataset;
+    vm.deleteDataset = deleteDataset;
+    vm.deleteSpots = deleteSpots;
+    vm.downloadProgress = '';
+    vm.encodedLogin = null;           // base64 encoded login
+    vm.getDatasets = getDatasets;
+    vm.getDatasetSpots = getDatasetSpots;
+    vm.progress = {                   // upload progress
       'showProgress': false,
       'showUploadDone': false,
       'showDownloadDone': false,
       'current': null,
       'total': null
     };
+    vm.showDatasetOpts = showDatasetOpts;
+    vm.startDatasetOp = startDatasetOp;
 
-    vm.showDatasetOpts = function () {
-      return navigator.onLine && vm.encodedLogin;
-    };
+    activate();
 
-    vm.startDatasetOp = function () {
-      switch (vm.operation) {
-        case 'download':
-          vm.getDatasetSpots();
-          break;
-        case 'upload':
-          vm.addDatasetSpots();
-          break;
-        case 'remove':
-          vm.deleteDataset();
-          break;
-        case 'deleteAll':
-          vm.deleteSpots();
-          break;
-      }
-      vm.operation = null;
-      vm.progress.showUploadDone = false;
-      vm.progress.showDownloadDone = false;
-    };
-
-    // is the user logged in from before?
-    LoginFactory.getLogin()
-      .then(function (login) {
-        if (login !== null) {
-          // we do have a login -- lets set the authentication
-          $log.log('we have a login!', login);
-          vm.loggedIn = true;
-          // Encode the login string
-          vm.encodedLogin = Base64.encode(login.email + ':' + login.password);
-
-          // set the email to the login email
-          vm.loginEmail = login.email;
-
-          vm.getDatasets();
-        }
-        else {
-          // nope, dont have a login
-          $log.log('no login!');
-          vm.loggedIn = false;
-        }
-      });
-
-    vm.downloadProgress = '';
-
-    // Get all of the datasets for a user
-    vm.getDatasets = function () {
-      if (vm.encodedLogin) {
-        SyncService.getDatasets(vm.encodedLogin)
-          .then(function (response) {
-            vm.datasets = [];
-            vm.datasets.push({'name': '-- new dataset --'});
-            // Append response data to the beginning of array of datasets
-            if (response.data) {
-              vm.datasets = _.union(response.data.datasets, vm.datasets);
-            }
-            // Show second to last select option if more options than -- new dataset --
-            if (vm.datasets.length > 1) {
-              vm.dataset = vm.datasets[vm.datasets.length - 2];
-            }
-            else {
-              vm.dataset = vm.datasets[vm.datasets.length - 1];
-            }
-          }
-        );
-      }
-    };
-
-    // Create a new dataset
-    vm.createDataset = function () {
-      SyncService.createDataset({'name': vm.dataset_name}, vm.encodedLogin)
-        .then(function (response) {
-          vm.operation = null;
-          vm.dataset_name = '';
-          vm.dataset = null;
-          vm.getDatasets();
-        }
-      );
-    };
-
-    // Delete a dataset
-    vm.deleteDataset = function () {
-      SyncService.deleteDataset(vm.dataset.self, vm.encodedLogin)
-        .then(function (response) {
-          $log.log('deleted: ', response);
-          vm.dataset = null;
-          vm.getDatasets();
-        }
-      );
-    };
+    function activate() {
+      checkForLogin();
+    }
 
     // Upload all spots to a dataset
-    vm.addDatasetSpots = function () {
+    function addDatasetSpots() {
       // Get the dataset id
       var url_parts = vm.dataset.self.split('/');
       var dataset_id = url_parts.pop();
 
-      var deleteAllDatasetSpots = function () {
-        return SyncService.deleteAllDatasetSpots(dataset_id, vm.encodedLogin);
-      };
+      function deleteAllDatasetSpots() {
+        return RemoteServerFactory.deleteAllDatasetSpots(dataset_id, vm.encodedLogin);
+      }
 
-      var getAllLocalSpots = function () {
+      function getAllLocalSpots() {
         return SpotsFactory.all();
-      };
+      }
 
-      var uploadImages = function (spot) {
+      function uploadImages(spot) {
         if (spot.images) {
           _.each(spot.images, function (image) {
-            SyncService.uploadImage(spot.properties.id, image, vm.encodedLogin).then(function (response) {
+            RemoteServerFactory.uploadImage(spot.properties.id, image, vm.encodedLogin).then(function (response) {
               if (response.status === 201) {
                 $log.log('Image uploaded for', spot, 'Server response:', response);
               }
@@ -144,9 +62,9 @@
             });
           });
         }
-      };
+      }
 
-      var uploadSpots = function (spots) {
+      function uploadSpots(spots) {
         if (!spots) {
           return;
         }
@@ -167,22 +85,24 @@
           if (spot.properties.self) {
             // Try to update the spot first
             $log.log('Attempting to update the spot: ', spot);
-            SyncService.updateFeature(spot, vm.encodedLogin).then(function (response) {
+            RemoteServerFactory.updateFeature(spot, vm.encodedLogin).then(function (response) {
               $log.log('Update Feature server response: ', response);
               if (response.status === 201) {
                 $log.log('Updated spot ', i, '/', spotsCount);
                 uploadImages(spot);
 
                 // Add spot to dataset
-                SyncService.addSpotToDataset(spot.properties.id, dataset_id,
-                  vm.encodedLogin).then(function (response) {
+                RemoteServerFactory.addSpotToDataset(spot.properties.id, dataset_id,
+                  vm.encodedLogin).then(
+                  function (response) {
                     if (response.status === 201) {
                       $log.log('Spot', spot, 'added to Dataset', dataset_id, 'Server response:', response);
                     }
                     else {
                       $log.log('Error adding spot', spot, 'added to Dataset', dataset_id, 'Server response:', response);
                     }
-                  });
+                  }
+                );
 
                 // Update the progress
                 vm.progress.current = i;
@@ -197,7 +117,7 @@
                 delete spot.properties.self;
                 $log.log('Unable to update spot ', i, '/', spotsCount, ' - Maybe this is a new spot.');
                 $log.log('Attempting to create the spot: ', spot);
-                SyncService.createFeature(spot, vm.encodedLogin).then(function (response) {
+                RemoteServerFactory.createFeature(spot, vm.encodedLogin).then(function (response) {
                   $log.log('Create Feature server response: ', response);
                   if (response.status === 201) {
                     spot.properties.self = response.data.properties.self;
@@ -206,15 +126,17 @@
                     uploadImages(spot);
 
                     // Add spot to dataset
-                    SyncService.addSpotToDataset(spot.properties.id, dataset_id,
-                      vm.encodedLogin).then(function (response) {
+                    RemoteServerFactory.addSpotToDataset(spot.properties.id, dataset_id,
+                      vm.encodedLogin).then(
+                      function (response) {
                         if (response.status === 201) {
                           $log.log('Spot', spot, 'added to Dataset', dataset_id, 'Server response:', response);
                         }
                         else {
                           $log.log('Error adding spot', spot, 'to Dataset', dataset_id, 'Server response:', response);
                         }
-                      });
+                      }
+                    );
                   }
                   else {
                     throw new Error('Unable to create spot ' + i + '/' + spotsCount);
@@ -233,7 +155,7 @@
           }
           else {
             $log.log('Attempting to create the spot: ', spot);
-            SyncService.createFeature(spot, vm.encodedLogin).then(function (response) {
+            RemoteServerFactory.createFeature(spot, vm.encodedLogin).then(function (response) {
               $log.log('Create Feature server response: ', response);
               if (response.status === 201) {
                 spot.properties.self = response.data.properties.self;
@@ -242,15 +164,17 @@
                 uploadImages(spot);
 
                 // Add spot to dataset
-                SyncService.addSpotToDataset(spot.properties.id, dataset_id,
-                  vm.encodedLogin).then(function (response) {
+                RemoteServerFactory.addSpotToDataset(spot.properties.id, dataset_id,
+                  vm.encodedLogin).then(
+                  function (response) {
                     if (response.status === 201) {
                       $log.log('Spot', spot, 'added to Dataset', dataset_id, 'Server response:', response);
                     }
                     else {
                       $log.log('Error adding spot', spot, 'to Dataset', dataset_id, 'Server response:', response);
                     }
-                  });
+                  }
+                );
               }
               else {
                 throw new Error('Unable to create spot ' + i + '/' + spotsCount);
@@ -266,21 +190,107 @@
             });
           }
         });
-      };
+      }
 
-      var reportProblems = function (fault) {
+      function reportProblems(fault) {
         $log.log(fault);
-      };
+      }
 
       deleteAllDatasetSpots()
         .then(getAllLocalSpots)
         .then(uploadSpots)
         .catch(reportProblems);
-    };
+    }
+
+    function checkForLogin() {
+      // is the user logged in from before?
+      LoginFactory.getLogin().then(
+        function (login) {
+          if (login !== null) {
+            // we do have a login -- lets set the authentication
+            $log.log('we have a login!', login);
+            vm.loggedIn = true;
+            // Encode the login string
+            vm.encodedLogin = Base64.encode(login.email + ':' + login.password);
+
+            // set the email to the login email
+            vm.loginEmail = login.email;
+
+            vm.getDatasets();
+          }
+          else {
+            // nope, dont have a login
+            $log.log('no login!');
+            vm.loggedIn = false;
+          }
+        }
+      );
+    }
+
+    // Create a new dataset
+    function createDataset() {
+      RemoteServerFactory.createDataset({'name': vm.dataset_name}, vm.encodedLogin).then(
+        function (response) {
+          vm.operation = null;
+          vm.dataset_name = '';
+          vm.dataset = null;
+          vm.getDatasets();
+        }
+      );
+    }
+
+    // Delete a dataset
+    function deleteDataset() {
+      RemoteServerFactory.deleteDataset(vm.dataset.self, vm.encodedLogin).then(
+        function (response) {
+          $log.log('deleted: ', response);
+          vm.dataset = null;
+          vm.getDatasets();
+        }
+      );
+    }
+
+    // Delete ALL spots for a user on the server
+    function deleteSpots() {
+      var confirmPopup = $ionicPopup.confirm({
+        'title': 'Delete Spots',
+        'template': 'Are you sure you want to delete <b>ALL</b> spots for this user from the server? Spots on your local device will remain on your device.'
+      });
+      confirmPopup.then(function (res) {
+        if (res) {
+          RemoteServerFactory.deleteSpots(vm.encodedLogin).then(function (response) {
+            $log.log('ALL spots deleted. Server response: ', response);
+          });
+        }
+      });
+    }
+
+    // Get all of the datasets for a user
+    function getDatasets() {
+      if (vm.encodedLogin) {
+        RemoteServerFactory.getDatasets(vm.encodedLogin).then(
+          function (response) {
+            vm.datasets = [];
+            vm.datasets.push({'name': '-- new dataset --'});
+            // Append response data to the beginning of array of datasets
+            if (response.data) {
+              vm.datasets = _.union(response.data.datasets, vm.datasets);
+            }
+            // Show second to last select option if more options than -- new dataset --
+            if (vm.datasets.length > 1) {
+              vm.dataset = vm.datasets[vm.datasets.length - 2];
+            }
+            else {
+              vm.dataset = vm.datasets[vm.datasets.length - 1];
+            }
+          }
+        );
+      }
+    }
 
     // Download all spots from a dataset
-    vm.getDatasetSpots = function () {
-      var saveSpot = function (spot) {
+    function getDatasetSpots() {
+      function saveSpot(spot) {
         // If the geometry coordinates contain any null values, delete the geometry; it shouldn't be defined
         if (spot.geometry) {
           if (spot.geometry.coordinates) {
@@ -297,19 +307,19 @@
           vmParent.spots.push(spot);
         }
         SpotsFactory.save(spot);
-      };
+      }
 
       // Get the dataset id
       var url_parts = vm.dataset.self.split('/');
       var dataset_id = url_parts.pop();
-      SyncService.getDatasetSpots(dataset_id, vm.encodedLogin)
-        .then(function (response) {
+      RemoteServerFactory.getDatasetSpots(dataset_id, vm.encodedLogin).then(
+        function (response) {
           $log.log(response);
           if (response.data !== null) {
             vm.progress.showDownloadDone = true;
             var currentDownloadedCount = 0;
             response.data.features.forEach(function (spot) {
-              SyncService.getImages(spot.properties.id, vm.encodedLogin).then(function (getImagesResponse) {
+              RemoteServerFactory.getImages(spot.properties.id, vm.encodedLogin).then(function (getImagesResponse) {
                 currentDownloadedCount++;
                 vm.downloadProgress = 'downloading ' + currentDownloadedCount + ' of ' + response.data.features.length;
                 if (getImagesResponse.status === 200 && getImagesResponse.data) {
@@ -325,29 +335,30 @@
                     // Set the title from the caption
                     image.title = image.caption ? image.caption.substring(0,
                       24) : 'Untitled ' + _.indexOf(spot.images, image);
-                    SyncService.downloadImage(image.self, vm.encodedLogin).then(function (downloadImageResponse) {
-                      if (downloadImageResponse.status === 200 && downloadImageResponse.data) {
-                        var readDataUrl = function (file, callback) {
-                          var reader = new FileReader();
-                          reader.onloadend = function (evt) {
-                            callback(evt.target.result);
+                    RemoteServerFactory.downloadImage(image.self, vm.encodedLogin).then(
+                      function (downloadImageResponse) {
+                        if (downloadImageResponse.status === 200 && downloadImageResponse.data) {
+                          var readDataUrl = function (file, callback) {
+                            var reader = new FileReader();
+                            reader.onloadend = function (evt) {
+                              callback(evt.target.result);
+                            };
+                            reader.readAsDataURL(file);
                           };
-                          reader.readAsDataURL(file);
-                        };
-                        readDataUrl(downloadImageResponse.data, function (base64Image) {
-                          var imageProps = _.findWhere(spot.images, {'self': downloadImageResponse.config.url});
-                          imageProps.src = base64Image;
-                          // Set the image height and width
-                          if (!imageProps.height || !imageProps.width) {
-                            var im = new Image();
-                            im.src = base64Image;
-                            imageProps.height = im.height;
-                            imageProps.width = im.width;
-                          }
-                          saveSpot(spot);
-                        });
-                      }
-                    });
+                          readDataUrl(downloadImageResponse.data, function (base64Image) {
+                            var imageProps = _.findWhere(spot.images, {'self': downloadImageResponse.config.url});
+                            imageProps.src = base64Image;
+                            // Set the image height and width
+                            if (!imageProps.height || !imageProps.width) {
+                              var im = new Image();
+                              im.src = base64Image;
+                              imageProps.height = im.height;
+                              imageProps.width = im.width;
+                            }
+                            saveSpot(spot);
+                          });
+                        }
+                      });
                   });
                 }
                 else {
@@ -367,21 +378,30 @@
           $log.warn(errorMessage);
         }
       );
-    };
+    }
 
-    // Delete ALL spots for a user on the server
-    vm.deleteSpots = function () {
-      var confirmPopup = $ionicPopup.confirm({
-        'title': 'Delete Spots',
-        'template': 'Are you sure you want to delete <b>ALL</b> spots for this user from the server? Spots on your local device will remain on your device.'
-      });
-      confirmPopup.then(function (res) {
-        if (res) {
-          SyncService.deleteSpots(vm.encodedLogin).then(function (response) {
-            $log.log('ALL spots deleted. Server response: ', response);
-          });
-        }
-      });
-    };
+    function showDatasetOpts() {
+      return navigator.onLine && vm.encodedLogin;
+    }
+
+    function startDatasetOp() {
+      switch (vm.operation) {
+        case 'download':
+          vm.getDatasetSpots();
+          break;
+        case 'upload':
+          vm.addDatasetSpots();
+          break;
+        case 'remove':
+          vm.deleteDataset();
+          break;
+        case 'deleteAll':
+          vm.deleteSpots();
+          break;
+      }
+      vm.operation = null;
+      vm.progress.showUploadDone = false;
+      vm.progress.showDownloadDone = false;
+    }
   }
 }());

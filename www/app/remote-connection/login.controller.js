@@ -5,35 +5,40 @@
     .module('app')
     .controller('LoginController', LoginController);
 
-  LoginController.$inject = ['$state', '$ionicPopup', '$log', 'LoginFactory', 'SyncService'];
+  LoginController.$inject = ['$ionicPopup', '$log', '$state', 'LoginFactory', 'RemoteServerFactory'];
 
-  function LoginController($state, $ionicPopup, $log, LoginFactory, SyncService) {
+  function LoginController($ionicPopup, $log, $state, LoginFactory, RemoteServerFactory) {
     var vm = this;
 
-    vm.skip = function () {
-      $state.go('app.spots');
-    };
+    vm.doLogin = doLogin;
+    vm.loginData = {};        // Form data for the login modal
+    vm.skip = skip;
 
-    // Form data for the login modal
-    vm.loginData = {};
+    activate();
 
-    // is the user logged in from before?
-    LoginFactory.getLogin()
-      .then(function (login) {
-        if (login !== null) {
-          // we do have a login -- lets set the authentication
-          $log.log('we have a login already, skipping login page', login);
-          vm.skip();
-        }
-      });
+    function activate() {
+      checkForLogin();
+    }
+
+    function checkForLogin() {
+      // is the user logged in from before?
+      LoginFactory.getLogin()
+        .then(function (login) {
+          if (login !== null) {
+            // we do have a login -- lets set the authentication
+            $log.log('we have a login already, skipping login page', login);
+            vm.skip();
+          }
+        });
+    }
 
     // Perform the login action
-    vm.doLogin = function () {
+    function doLogin() {
       vm.loginData.email = vm.loginData.email.toLowerCase();
       // Authenticate user login
       if (navigator.onLine) {
-        SyncService.authenticateUser(vm.loginData)
-          .then(function (response) {
+        RemoteServerFactory.authenticateUser(vm.loginData).then(
+          function (response) {
             if (response.status === 200 && response.data.valid === 'true') {
               $log.log('Logged in successfully.');
               LoginFactory.setLogin(vm.loginData).then(function () {
@@ -61,6 +66,10 @@
           'template': 'Can\'t login while offline.'
         });
       }
-    };
+    }
+
+    function skip() {
+      $state.go('app.spots');
+    }
   }
 }());
