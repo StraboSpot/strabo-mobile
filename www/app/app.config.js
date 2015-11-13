@@ -16,7 +16,41 @@
         .state('app', {
           'url': '/app',
           'abstract': true,
-          'templateUrl': 'app/layout/menu.html'
+          'templateUrl': 'app/menu/menu.html',
+          'controller': 'MenuController as vm'
+        })
+
+        .state('app.project', {
+          'cache': false,
+          'url': '/project',
+          'views': {
+            'menuContent': {
+              'templateUrl': 'app/project/project.html',
+              'controller': 'ProjectController as vm'
+            }
+          }
+        })
+
+        .state('app.tools', {
+          'cache': false,
+          'url': '/tools',
+          'views': {
+            'menuContent': {
+              'templateUrl': 'app/project/tools.html',
+              'controller': 'ProjectController as vm'
+            }
+          }
+        })
+
+        .state('app.user', {
+          'cache': false,
+          'url': '/user',
+          'views': {
+            'menuContent': {
+              'templateUrl': 'app/user/user.html',
+              'controller': 'UserController as vm'
+            }
+          }
         })
 
         .state('app.map', {

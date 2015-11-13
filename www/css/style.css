@@ -6,6 +6,41 @@
 }
 
 /*--------------------
+Project Info
+--------------------*/
+.project-info {
+  background-color: #404040;
+  width: 100%;
+  overflow: hidden;
+  color: white;
+}
+
+.project-info .user {
+  text-align: center;
+  max-width: 75px;
+  padding: 5px;
+}
+
+.project-info .user-name {
+  font-size: x-small;
+}
+
+.project-info .project {
+  vertical-align: top;
+  padding: 5px;
+}
+
+.project-info .project-name-header {
+  font-weight: bold;
+  text-transform: uppercase;
+  text-decoration: underline;
+}
+
+.project-info .project-buttons {
+  vertical-align: bottom;
+}
+
+/*--------------------
 Map Draw Controls Style
 --------------------*/
 .draw-controls {

@@ -7,10 +7,31 @@
   </ion-pane>
 
   <ion-side-menu side='left'>
-    <header class='bar bar-header bar-dark'>
-      <h1 class='title'>Strabo Mobile</h1>
-    </header>
-    <ion-content class='has-header bar-dark'>
+    <ion-content>
+      <table class='project-info'>
+        <tr>
+          <td class='user' rowspan="2" ng-click='vm.editUser();'>
+            <img src='img/ninja.png'>
+            <br>
+            <span class='user-name'>User Name</span>
+          </td>
+          <td class='project'>
+            <span class='project-name-header'>Project</span>
+            <br>
+            The name of the project goes in this area
+          </td>
+        </tr>
+        <tr>
+          <td class='project-buttons'>
+            <button ng-click='vm.editProject();' class='button button-small button-clear icon-left ion-edit'>Edit
+              Project
+            </button>
+            <button ng-click='vm.openTools();' class='button button-small button-clear icon-left ion-settings'>Tools
+            </button>
+          </td>
+        </tr>
+      </table>
+
       <ion-list>
         <ion-item nav-clear menu-close href='#/app/spots'>
           Spots
@@ -34,7 +55,7 @@
           Random Points (testing only)
         </ion-item>
         <ion-item nav-clear menu-close href='#/app/about'>
-          About
+          About Strabo
         </ion-item>
       </ion-list>
     </ion-content>

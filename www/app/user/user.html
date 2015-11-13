@@ -1,0 +1,21 @@
+<ion-view title='User Profile'>
+  <ion-nav-buttons side='left'>
+    <button menu-toggle='left' class='button button-icon icon ion-navicon'></button>
+  </ion-nav-buttons>
+  <ion-content class='has-header'>
+    <h6 ng-hide='vm.hideActionButtons.logout'>You are currently logged in as: {{vm.loginData.email}}</h6>
+    <label class='item item-input' ng-hide='vm.hideActionButtons.login'>
+      <input type='text' placeholder='Email' ng-model='vm.loginData.email'>
+    </label>
+    <label class='item item-input' ng-hide='vm.hideActionButtons.login'>
+      <input type='text' placeholder='Password' ng-model='vm.loginData.password'>
+    </label>
+    <button ng-click='vm.doLogin();' ng-hide='vm.hideActionButtons.login'
+            ng-disabled='!(vm.loginData.email && vm.loginData.password)'
+            class='button icon-left icon ion-log-in button-balanced'>Login
+    </button>
+    <button ng-click='vm.doLogout();' ng-hide='vm.hideActionButtons.logout'
+            class='button icon-left icon ion-log-out button-assertive'>Logout
+    </button>
+  </ion-content>
+</ion-view>

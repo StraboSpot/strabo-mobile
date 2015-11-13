@@ -182,7 +182,7 @@ rules:
   lines-around-comment: 0
   linebreak-style:
     - 2
-    - windows
+    - unix
   max-nested-callbacks: 0
   new-cap: 2
   new-parens: 2
