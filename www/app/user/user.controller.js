@@ -5,9 +5,9 @@
     .module('app')
     .controller('UserController', UserController);
 
-  UserController.$inject = ['$ionicPopup', '$log', 'LoginFactory', 'RemoteServerFactory'];
+  UserController.$inject = ['$ionicPopup', '$log', 'LoginFactory', 'RemoteServerFactory', 'UserFactory'];
 
-  function UserController($ionicPopup, $log, LoginFactory, RemoteServerFactory) {
+  function UserController($ionicPopup, $log, LoginFactory, RemoteServerFactory, UserFactory) {
     var vm = this;
 
     vm.doLogin = doLogin;
@@ -16,7 +16,10 @@
       'login': false,
       'logout': true
     };
+    vm.loggedIn = '';
     vm.loginData = {};                  // Form data for the login modal
+    vm.save = save;
+    vm.userName = '';
 
     activate();
 
@@ -25,6 +28,7 @@
      */
     function activate() {
       checkForLogin();
+      getUserName();
     }
 
     function checkForLogin() {
@@ -38,13 +42,21 @@
             // set the email to the login email
             vm.loginData.email = login.email;
             hideLoginButton();
+            vm.loggedIn = true;
           }
           else {
             // nope, dont have a login
             $log.log('no login!');
             hideLogoutButton();
+            vm.loggedIn = false;
           }
         });
+    }
+
+    function getUserName() {
+      UserFactory.getUserName().then(function (userName) {
+        vm.userName = userName;
+      });
     }
 
     function hideLoginButton() {
@@ -72,6 +84,7 @@
               $log.log('Logged in successfully.');
               hideLoginButton();
               LoginFactory.setLogin(vm.loginData);
+              vm.loggedIn = true;
             }
             else {
               $ionicPopup.alert({
@@ -106,6 +119,16 @@
         'password': null
       };
       hideLogoutButton();
+      vm.loggedIn = false;
+    }
+
+    function save() {
+      UserFactory.setUserName(vm.userName).then(function () {
+        $ionicPopup.alert({
+          'title': 'User Profile!',
+          'template': 'Saved user profile.<br>User Name: ' + vm.userName
+        });
+      });
     }
   }
 }());

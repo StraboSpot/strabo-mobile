@@ -17,5 +17,12 @@
     <button ng-click='vm.doLogout();' ng-hide='vm.hideActionButtons.logout'
             class='button icon-left icon ion-log-out button-assertive'>Logout
     </button>
+    <div ng-show='vm.loggedIn'>
+      <br>
+      <label class='item item-input'>
+        <input type='text' placeholder='Name' ng-model='vm.userName' ng-change='onNameChange'>
+      </label>
+      <button ng-click='vm.save()' class='button icon-left icon ion-checkmark-circled button-positive'>Save</button>
+    </div>
   </ion-content>
 </ion-view>
