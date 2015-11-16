@@ -5,9 +5,9 @@
     .module('app')
     .controller('UserController', UserController);
 
-  UserController.$inject = ['$ionicPopup', '$log', 'LoginFactory', 'RemoteServerFactory', 'UserFactory'];
+  UserController.$inject = ['$ionicPopup', '$log', 'RemoteServerFactory', 'UserFactory'];
 
-  function UserController($ionicPopup, $log, LoginFactory, RemoteServerFactory, UserFactory) {
+  function UserController($ionicPopup, $log, RemoteServerFactory, UserFactory) {
     var vm = this;
 
     vm.doLogin = doLogin;
@@ -16,7 +16,7 @@
       'login': false,
       'logout': true
     };
-    vm.loggedIn = '';
+    vm.loggedIn = false;
     vm.loginData = {};                  // Form data for the login modal
     vm.save = save;
     vm.userName = '';
@@ -28,12 +28,11 @@
      */
     function activate() {
       checkForLogin();
-      getUserName();
     }
 
     function checkForLogin() {
       // is the user logged in from before?
-      LoginFactory.getLogin().then(
+      UserFactory.getLogin().then(
         function (login) {
           if (login !== null) {
             // we do have a login -- lets set the authentication
@@ -43,6 +42,7 @@
             vm.loginData.email = login.email;
             hideLoginButton();
             vm.loggedIn = true;
+            getUserName();
           }
           else {
             // nope, dont have a login
@@ -83,7 +83,7 @@
             if (response.status === 200 && response.data.valid === 'true') {
               $log.log('Logged in successfully.');
               hideLoginButton();
-              LoginFactory.setLogin(vm.loginData);
+              UserFactory.setLogin(vm.loginData);
               vm.loggedIn = true;
             }
             else {
@@ -113,13 +113,14 @@
     function doLogout() {
       $log.log('Logged out');
       // we do have a login so we should destroy the login because the user wants to logout
-      LoginFactory.destroyLogin();
+      UserFactory.destroyLogin();
       vm.loginData = {
         'email': null,
         'password': null
       };
       hideLogoutButton();
       vm.loggedIn = false;
+      vm.userName = null;
     }
 
     function save() {

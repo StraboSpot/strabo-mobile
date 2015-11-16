@@ -5,9 +5,9 @@
     .module('app')
     .controller('LoginController', LoginController);
 
-  LoginController.$inject = ['$ionicPopup', '$log', '$state', 'LoginFactory', 'RemoteServerFactory'];
+  LoginController.$inject = ['$ionicPopup', '$log', '$state', 'RemoteServerFactory', 'UserFactory'];
 
-  function LoginController($ionicPopup, $log, $state, LoginFactory, RemoteServerFactory) {
+  function LoginController($ionicPopup, $log, $state, RemoteServerFactory, UserFactory) {
     var vm = this;
 
     vm.doLogin = doLogin;
@@ -22,7 +22,7 @@
 
     function checkForLogin() {
       // is the user logged in from before?
-      LoginFactory.getLogin()
+      UserFactory.getLogin()
         .then(function (login) {
           if (login !== null) {
             // we do have a login -- lets set the authentication
@@ -41,7 +41,7 @@
           function (response) {
             if (response.status === 200 && response.data.valid === 'true') {
               $log.log('Logged in successfully.');
-              LoginFactory.setLogin(vm.loginData).then(function () {
+              UserFactory.setLogin(vm.loginData).then(function () {
                 $state.go('app.spots');
               });
             }

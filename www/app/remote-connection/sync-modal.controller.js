@@ -5,9 +5,9 @@
     .module('app')
     .controller('SyncModalController', SyncModalController);
 
-  SyncModalController.$inject = ['$ionicPopup', '$log', '$scope', 'LoginFactory', 'SpotsFactory', 'RemoteServerFactory'];
+  SyncModalController.$inject = ['$ionicPopup', '$log', '$scope', 'SpotsFactory', 'RemoteServerFactory', 'UserFactory'];
 
-  function SyncModalController($ionicPopup, $log, $scope, LoginFactory, SpotsFactory, RemoteServerFactory) {
+  function SyncModalController($ionicPopup, $log, $scope, SpotsFactory, RemoteServerFactory, UserFactory) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -204,7 +204,7 @@
 
     function checkForLogin() {
       // is the user logged in from before?
-      LoginFactory.getLogin().then(
+      UserFactory.getLogin().then(
         function (login) {
           if (login !== null) {
             // we do have a login -- lets set the authentication

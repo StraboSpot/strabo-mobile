@@ -6,10 +6,10 @@
     .controller('SpotsController', Spots);
 
   Spots.$inject = ['$cordovaDevice', '$cordovaFile', '$document', '$ionicActionSheet', '$ionicModal', '$ionicPopup',
-    '$log', '$scope', '$window', 'CurrentSpotFactory', 'ImageMapFactory', 'LoginFactory', 'SpotsFactory'];
+    '$log', '$scope', '$window', 'CurrentSpotFactory', 'ImageMapFactory', 'SpotsFactory', 'UserFactory'];
 
   function Spots($cordovaDevice, $cordovaFile, $document, $ionicActionSheet, $ionicModal, $ionicPopup, $log, $scope,
-                 $window, CurrentSpotFactory, ImageMapFactory, LoginFactory, SpotsFactory) {
+                 $window, CurrentSpotFactory, ImageMapFactory, SpotsFactory, UserFactory) {
     var vm = this;
 
     vm.clearAllSpots = clearAllSpots;
@@ -43,7 +43,7 @@
 
     function checkLoggedIn() {
       // Is the user logged in
-      LoginFactory.getLogin().then(
+      UserFactory.getLogin().then(
         function (login) {
           if (login !== null) {
             vm.loggedIn = true;
@@ -389,7 +389,7 @@
         else {
           $ionicPopup.alert({
             'title': 'Not Logged In!',
-            'template': 'You must be logged in to sync with the Strabo database. Log in on the Settings page.'
+            'template': 'You must be logged in to sync with the Strabo database.'
           });
         }
       }

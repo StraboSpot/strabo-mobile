@@ -19,8 +19,9 @@
     </button>
     <div ng-show='vm.loggedIn'>
       <br>
-      <label class='item item-input'>
-        <input type='text' placeholder='Name' ng-model='vm.userName' ng-change='onNameChange'>
+      <label class='item item-input item-stacked-label'>
+        <span class='input-label'>Name</span>
+        <input type='text' placeholder='John Doe' ng-model='vm.userName' ng-change='onNameChange'>
       </label>
       <button ng-click='vm.save()' class='button icon-left icon ion-checkmark-circled button-positive'>Save</button>
     </div>
