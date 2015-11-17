@@ -3,11 +3,11 @@
 
   angular
     .module('app')
-    .controller('SettingsController', SettingsController);
+    .controller('PreferencesController', PreferencesController);
 
-  SettingsController.$inject = ['$ionicPopup', 'SettingsFactory'];
+  PreferencesController.$inject = ['$ionicPopup', 'PreferencesFactory'];
 
-  function SettingsController($ionicPopup, SettingsFactory) {
+  function PreferencesController($ionicPopup, PreferencesFactory) {
     var vm = this;
 
     vm.save = save;
@@ -25,7 +25,7 @@
     }
 
     function setNamePrefix() {
-      SettingsFactory.getNamePrefix().then(
+      PreferencesFactory.getNamePrefix().then(
         function (prefix) {
           if (!prefix || prefix === 'null') {
             vm.prefix_type = 'None';
@@ -38,7 +38,7 @@
             else {
               vm.prefix_type = 'Counter';
               vm.counter_prefix = prefix;
-              SettingsFactory.getPrefixIncrement().then(
+              PreferencesFactory.getPrefixIncrement().then(
                 function (prefix_increment) {
                   vm.prefix_increment = prefix_increment;
                 }
@@ -50,13 +50,13 @@
     }
 
     function setNameRoot() {
-      SettingsFactory.getNameRoot().then(function (root) {
+      PreferencesFactory.getNameRoot().then(function (root) {
         vm.text_root = root;
       });
     }
 
     function setNameSuffix() {
-      SettingsFactory.getNameSuffix().then(function (suffix) {
+      PreferencesFactory.getNameSuffix().then(function (suffix) {
         if (!suffix || suffix === 'null') {
           vm.suffix_type = 'None';
         }
@@ -68,7 +68,7 @@
           else {
             vm.suffix_type = 'Counter';
             vm.counter_suffix = suffix;
-            SettingsFactory.getSuffixIncrement().then(function (suffix_increment) {
+            PreferencesFactory.getSuffixIncrement().then(function (suffix_increment) {
               vm.suffix_increment = suffix_increment;
             });
           }
@@ -97,11 +97,11 @@
         suffix = vm.counter_suffix;
       }
 
-      SettingsFactory.setNamePrefix(prefix).then(function () {
-        SettingsFactory.setNameRoot(vm.text_root).then(function () {
-          SettingsFactory.setNameSuffix(suffix).then(function () {
-            SettingsFactory.setPrefixIncrement(vm.prefix_increment).then(function () {
-              SettingsFactory.setSuffixIncrement(vm.suffix_increment).then(function () {
+      PreferencesFactory.setNamePrefix(prefix).then(function () {
+        PreferencesFactory.setNameRoot(vm.text_root).then(function () {
+          PreferencesFactory.setNameSuffix(suffix).then(function () {
+            PreferencesFactory.setPrefixIncrement(vm.prefix_increment).then(function () {
+              PreferencesFactory.setSuffixIncrement(vm.suffix_increment).then(function () {
                 $ionicPopup.alert({
                   'title': 'Settings!',
                   'template': 'Saved Settings.<br>Prefix: ' + prefix + '<br>Root: ' + vm.text_root + '<br>Suffix: ' + suffix

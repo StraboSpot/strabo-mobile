@@ -84,13 +84,13 @@
           }
         })
 
-        .state('app.settings', {
+        .state('app.preferences', {
           'cache': false,
-          'url': '/settings',
+          'url': '/preferences',
           'views': {
             'menuContent': {
-              'templateUrl': 'app/settings/settings.html',
-              'controller': 'SettingsController as vm'
+              'templateUrl': 'app/config/preferences.html',
+              'controller': 'PreferencesController as vm'
             }
           }
         })

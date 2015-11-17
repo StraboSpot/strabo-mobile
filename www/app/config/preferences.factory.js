@@ -3,11 +3,11 @@
 
   angular
     .module('app')
-    .factory('SettingsFactory', SettingsFactory);
+    .factory('PreferencesFactory', PreferencesFactory);
 
-  SettingsFactory.$inject = ['LocalStorageFactory'];
+  PreferencesFactory.$inject = ['LocalStorageFactory'];
 
-  function SettingsFactory(LocalStorageFactory) {
+  function PreferencesFactory(LocalStorageFactory) {
     return {
       'getNamePrefix': getNamePrefix,
       'getNameRoot': getNameRoot,
