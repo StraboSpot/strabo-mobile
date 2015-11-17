@@ -5,152 +5,90 @@
     .module('app')
     .controller('PreferencesController', PreferencesController);
 
-  PreferencesController.$inject = ['$ionicPopup', 'PreferencesFactory'];
+  PreferencesController.$inject = ['$log', '$scope', 'DataModelsFactory', 'FormFactory', 'PreferencesFactory'];
 
-  function PreferencesController($ionicPopup, PreferencesFactory) {
+  function PreferencesController($log, $scope, DataModelsFactory, FormFactory, PreferencesFactory) {
     var vm = this;
+    var csvFile = 'app/data-models/Preferences.csv';
 
-    vm.save = save;
-    vm.typeChange = typeChange;
+    vm.data = {};
+    vm.dataOriginal = {};
+    vm.isPristine = isPristine;
+    vm.isValid = isValid;
+    vm.pristine = true;
+    vm.showField = showField;
+    vm.survey = [];
+    vm.toggleChecked = toggleChecked;
+    vm.submit = submit;
+    vm.valid = true;
 
     activate();
 
     /**
      * Private Functions
      */
+
     function activate() {
-      setNamePrefix();
-      setNameRoot();
-      setNameSuffix();
-    }
+      DataModelsFactory.readCSV(csvFile, setSurvey);
+      getData();
 
-    function setNamePrefix() {
-      PreferencesFactory.getNamePrefix().then(
-        function (prefix) {
-          if (!prefix || prefix === 'null') {
-            vm.prefix_type = 'None';
-          }
-          else {
-            if (isNaN(prefix)) {
-              vm.prefix_type = 'Text';
-              vm.text_prefix = prefix;
-            }
-            else {
-              vm.prefix_type = 'Counter';
-              vm.counter_prefix = prefix;
-              PreferencesFactory.getPrefixIncrement().then(
-                function (prefix_increment) {
-                  vm.prefix_increment = prefix_increment;
-                }
-              );
-            }
-          }
-        }
-      );
-    }
+      // Watch whether form has been modified or not
+      $scope.$watch('vm.isPristine()', function (pristine) {
+        vm.pristine = pristine;
+      });
 
-    function setNameRoot() {
-      PreferencesFactory.getNameRoot().then(function (root) {
-        vm.text_root = root;
+      // Watch whether form is valid
+      $scope.$watch('vm.isValid()', function (valid) {
+        vm.valid = valid;
+        $log.log('valid ', valid);
       });
     }
 
-    function setNameSuffix() {
-      PreferencesFactory.getNameSuffix().then(function (suffix) {
-        if (!suffix || suffix === 'null') {
-          vm.suffix_type = 'None';
-        }
-        else {
-          if (isNaN(suffix)) {
-            vm.suffix_type = 'Text';
-            vm.text_suffix = suffix;
-          }
-          else {
-            vm.suffix_type = 'Counter';
-            vm.counter_suffix = suffix;
-            PreferencesFactory.getSuffixIncrement().then(function (suffix_increment) {
-              vm.suffix_increment = suffix_increment;
-            });
-          }
-        }
+    function isPristine() {
+      vm.data = _.pick(vm.data, _.identity);
+      return _.isEqual(vm.dataOriginal, vm.data);
+    }
+
+    function isValid() {
+      return !$scope.straboForm.$invalid;
+    }
+
+    function getData() {
+      PreferencesFactory.all().then(function (data) {
+        vm.dataOriginal = data;
+        vm.data = data;
+        $log.log(data);
       });
+    }
+
+    function setSurvey(survey) {
+      vm.survey = survey;
+      $log.log('Survey: ', vm.survey);
     }
 
     /**
      * Public Functions
      */
 
-    function save() {
-      var prefix = '';
-      if (vm.text_prefix) {
-        prefix = vm.text_prefix;
-      }
-      else if (vm.counter_prefix) {
-        prefix = vm.counter_prefix;
-      }
-
-      var suffix = '';
-      if (vm.text_suffix) {
-        suffix = vm.text_suffix;
-      }
-      else if (vm.counter_suffix) {
-        suffix = vm.counter_suffix;
-      }
-
-      PreferencesFactory.setNamePrefix(prefix).then(function () {
-        PreferencesFactory.setNameRoot(vm.text_root).then(function () {
-          PreferencesFactory.setNameSuffix(suffix).then(function () {
-            PreferencesFactory.setPrefixIncrement(vm.prefix_increment).then(function () {
-              PreferencesFactory.setSuffixIncrement(vm.suffix_increment).then(function () {
-                $ionicPopup.alert({
-                  'title': 'Settings!',
-                  'template': 'Saved Settings.<br>Prefix: ' + prefix + '<br>Root: ' + vm.text_root + '<br>Suffix: ' + suffix
-                });
-              });
-            });
-          });
-        });
-      });
+    // Determine if the field should be shown or not by looking at the relevant key-value pair
+    function showField(relevant) {
+      return FormFactory.isRelevant(relevant, vm.data);
     }
 
-    function typeChange(part) {
-      switch (part) {
-        case 'prefix':
-          switch (vm.prefix_type) {
-            case 'None':
-              vm.text_prefix = null;
-              vm.counter_prefix = null;
-              vm.prefix_increment = null;
-              break;
-            case 'Text':
-              vm.counter_prefix = null;
-              vm.prefix_increment = null;
-              break;
-            case 'Counter':
-              vm.text_prefix = null;
-              vm.counter_prefix = 1;
-              vm.prefix_increment = 1;
-              break;
-          }
-          break;
-        case 'suffix':
-          switch (vm.suffix_type) {
-            case 'None':
-              vm.text_suffix = null;
-              vm.counter_suffix = null;
-              vm.suffix_increment = null;
-              break;
-            case 'Text':
-              vm.counter_suffix = null;
-              vm.suffix_increment = null;
-              break;
-            case 'Counter':
-              vm.text_suffix = null;
-              vm.counter_suffix = 1;
-              vm.suffix_increment = 1;
-              break;
-          }
-          break;
+    function submit() {
+      var valid = FormFactory.validate(vm.survey, vm.data);
+      if (valid) {
+        PreferencesFactory.save(vm.data);
+        vm.dataOriginal = vm.data;
+      }
+    }
+
+    function toggleChecked(field) {
+      if (vm.data[field]) {
+        delete vm.data[field];
+      }
+      else {
+        vm.data[field] = true;
       }
     }
   }

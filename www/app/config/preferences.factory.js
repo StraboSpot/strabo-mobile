@@ -5,60 +5,41 @@
     .module('app')
     .factory('PreferencesFactory', PreferencesFactory);
 
-  PreferencesFactory.$inject = ['LocalStorageFactory'];
+  PreferencesFactory.$inject = ['$log', '$q', 'LocalStorageFactory'];
 
-  function PreferencesFactory(LocalStorageFactory) {
+  function PreferencesFactory($log, $q, LocalStorageFactory) {
     return {
-      'getNamePrefix': getNamePrefix,
-      'getNameRoot': getNameRoot,
-      'getNameSuffix': getNameSuffix,
-      'getPrefixIncrement': getPrefixIncrement,
-      'getSuffixIncrement': getSuffixIncrement,
-      'setNamePrefix': setNamePrefix,
-      'setNameRoot': setNameRoot,
-      'setNameSuffix': setNameSuffix,
-      'setPrefixIncrement': setPrefixIncrement,
-      'setSuffixIncrement': setSuffixIncrement
+      'all': all,
+      'save': save
     };
 
-    function getNamePrefix() {
-      return LocalStorageFactory.configDb.getItem('name_prefix');
+    /**
+     * Public Functions
+     */
+
+    function all() {
+      var deferred = $q.defer(); // init promise
+
+      var config = {};
+
+      LocalStorageFactory.configDb.iterate(function (value, key) {
+        config[key] = value;
+      }, function () {
+        deferred.resolve(config);
+      });
+
+      return deferred.promise;
     }
 
-    function getNameRoot() {
-      return LocalStorageFactory.configDb.getItem('name_root');
-    }
-
-    function getNameSuffix() {
-      return LocalStorageFactory.configDb.getItem('name_suffix');
-    }
-
-    function getPrefixIncrement() {
-      return LocalStorageFactory.configDb.getItem('prefix_increment');
-    }
-
-    function getSuffixIncrement() {
-      return LocalStorageFactory.configDb.getItem('suffix_increment');
-    }
-
-    function setNamePrefix(name_prefix) {
-      return LocalStorageFactory.configDb.setItem('name_prefix', name_prefix);
-    }
-
-    function setNameRoot(name_root) {
-      return LocalStorageFactory.configDb.setItem('name_root', name_root);
-    }
-
-    function setNameSuffix(name_suffix) {
-      return LocalStorageFactory.configDb.setItem('name_suffix', name_suffix);
-    }
-
-    function setPrefixIncrement(increment) {
-      return LocalStorageFactory.configDb.setItem('prefix_increment', increment);
-    }
-
-    function setSuffixIncrement(increment) {
-      return LocalStorageFactory.configDb.setItem('suffix_increment', increment);
+    function save(data) {
+      $log.log('Save: ', data);
+      LocalStorageFactory.configDb.clear().then(
+        function () {
+          _.forEach(data, function (value, key, list) {
+            LocalStorageFactory.configDb.setItem(key, value);
+          });
+        }
+      );
     }
   }
 }());

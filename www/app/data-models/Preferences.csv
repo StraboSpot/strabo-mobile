@@ -1,0 +1,12 @@
+name,type,label,required
+orientation,acknowledge,Orientations,false
+_3_d_structures,acknowledge,3-D Structures,false
+images,acknowledge,Images,false
+samples,acknowledge,Samples,false
+inferences,acknowledge,Inferences,false
+nesting,acknowledge,Nesting,false
+right_hand_rule,acknowledge,Right-hand Rule,false
+drop_down_to_finish_typing,acknowledge,Drop Down to Finish Typing,false
+student_mode,acknowledge,Student Mode,false
+start,start,,
+end,end,,

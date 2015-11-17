@@ -1,67 +1,18 @@
-<ion-view title='Settings'>
-  <ion-nav-buttons side='left'>
-    <button menu-toggle='left' class='button button-icon icon ion-navicon'></button>
-  </ion-nav-buttons>
-  <ion-content class='has-header'>
-    <div class='item item-divider'>
-      Spot Name Default Prefix
-    </div>
-    <div>
-      <label class='item item-input item-select item-stacked-label item-text-wrap'>
-        <span class='input-label'>Prefix Type</span>
-        <select ng-model='vm.prefix_type' ng-change='vm.typeChange("prefix")'>
-          <option>None</option>
-          <option>Text</option>
-          <option>Counter</option>
-        </select>
-      </label>
-      <label class='item item-input item-stacked-label item-text-wrap' ng-show='vm.prefix_type=="Text"'>
-        <span class='input-label'>Text Prefix</span>
-        <input type='text' ng-model='vm.text_prefix'>
-      </label>
-      <label class='item item-input item-stacked-label item-text-wrap' ng-show='vm.prefix_type=="Counter"'>
-        <span class='input-label'>Counter Starting Integer</span>
-        <input type='number' ng-model='vm.counter_prefix'>
-      </label>
-      <label class='item item-input item-stacked-label item-text-wrap' ng-show='vm.prefix_type=="Counter"'>
-        <span class='input-label'>Counter Integer Increment</span>
-        <input type='number' ng-model='vm.prefix_increment'>
-      </label>
-    </div>
-
-    <div class='item item-divider'>
-      Spot Name Default Root
-    </div>
-    <label class='item item-input item-stacked-label item-text-wrap'>
-      <span class='input-label'>Root</span>
-      <input type='text' ng-model='vm.text_root'>
-    </label>
-
-    <div class='item item-divider'>
-      Spot Name Default Suffix
-    </div>
-    <div>
-      <label class='item item-input item-select item-stacked-label item-text-wrap'>
-        <span class='input-label'>Suffix Type</span>
-        <select ng-model='vm.suffix_type' ng-change='vm.typeChange("suffix")'>
-          <option>None</option>
-          <option>Text</option>
-          <option>Counter</option>
-        </select>
-      </label>
-      <label class='item item-input item-stacked-label item-text-wrap' ng-show='vm.suffix_type=="Text"'>
-        <span class='input-label'>Text Suffix</span>
-        <input type='text' ng-model='vm.text_suffix'>
-      </label>
-      <label class='item item-input item-stacked-label item-text-wrap' ng-show='vm.suffix_type=="Counter"'>
-        <span class='input-label'>Counter Starting Integer</span>
-        <input type='number' ng-model='vm.counter_suffix'>
-      </label>
-      <label class='item item-input item-stacked-label item-text-wrap' ng-show='vm.suffix_type=="Counter"'>
-        <span class='input-label'>Counter Integer Increment</span>
-        <input type='number' ng-model='vm.suffix_increment'>
-      </label>
-    </div>
-    <button ng-click='vm.save()' class='button icon-left icon ion-checkmark-circled button-positive'>Save</button>
-  </ion-content>
-</ion-view>
+<form name='straboForm' novalidate=''>
+  <ion-view title='Preferences'>
+    <ion-nav-buttons side='left'>
+      <button menu-toggle='left' class='button button-icon icon ion-navicon'></button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side='right'>
+      <div ng-if='vm.pristine || !vm.valid'>
+        <button ng-click='vm.submit();' class='button disabled button-icon icon ion-checkmark-circled'></button>
+      </div>
+      <div ng-if='!vm.pristine && vm.valid'>
+        <button ng-click='vm.submit();' class='button button-icon icon ion-checkmark-circled'></button>
+      </div>
+    </ion-nav-buttons>
+    <ion-content class='has-header'>
+      <auto-fields/>
+    </ion-content>
+  </ion-view>
+</form>

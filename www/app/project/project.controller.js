@@ -5,9 +5,9 @@
     .module('app')
     .controller('ProjectController', ProjectController);
 
-  ProjectController.$inject = ['$log', '$http', '$scope', 'FormFactory', 'ProjectFactory'];
+  ProjectController.$inject = ['$log', '$http', '$scope', 'DataModelsFactory', 'FormFactory', 'ProjectFactory'];
 
-  function ProjectController($log, $http, $scope, FormFactory, ProjectFactory) {
+  function ProjectController($log, $http, $scope, DataModelsFactory, FormFactory, ProjectFactory) {
     var vm = this;
     var csvFile = 'app/data-models/ProjectsPage.csv';
 
@@ -28,7 +28,7 @@
      */
 
     function activate() {
-      readCSV();
+      DataModelsFactory.readCSV(csvFile, setSurvey);
       getData();
 
       // Watch whether form has been modified or not
@@ -52,15 +52,6 @@
       return !$scope.straboForm.$invalid;
     }
 
-    // Remove objects created without a label and name (that is objects created from blank lines
-    // as well as the default start and end objects)
-    function cleanJson(json) {
-      $log.log('Parsed csv: ', json);
-      vm.survey = _.filter(json.data, function (obj) {
-        return obj.name && obj.label;
-      });
-    }
-
     function getData() {
       ProjectFactory.all().then(function (data) {
         // Convert date string to Date type
@@ -73,17 +64,9 @@
       });
     }
 
-    // Read the CSV file
-    function readCSV() {
-      $http.get(
-        csvFile, {
-          'transformResponse': function (csv) {
-            Papa.parse(csv, {
-              'header': true,
-              'complete': cleanJson
-            });
-          }
-        });
+    function setSurvey(survey) {
+      vm.survey = survey;
+      $log.log('Survey: ', vm.survey);
     }
 
     /**
