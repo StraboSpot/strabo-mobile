@@ -256,8 +256,8 @@
           }
         }
         else {
+          spots = getMapSpots(spots);
           if (spots.length > 0) {
-            spots = getMapSpots(spots);
             doFlyByAnimation();
             setNewMapView(spots);
           }

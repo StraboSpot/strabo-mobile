@@ -26,6 +26,7 @@
     /**
      * Private Functions
      */
+
     function activate() {
       checkForLogin();
     }

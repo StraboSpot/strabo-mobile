@@ -11,6 +11,7 @@ globals:
   turf: true
   Camera: true
   Base64: true
+  Papa: true
 
 env:
   browser: true

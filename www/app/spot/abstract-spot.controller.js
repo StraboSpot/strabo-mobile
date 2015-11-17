@@ -5,14 +5,14 @@
     .module('app')
     .controller('SpotController', SpotController);
 
-  SpotController.$inject = ['$scope', '$rootScope', '$state', '$stateParams', '$location', '$ionicHistory',
-    '$ionicPopup', '$ionicModal', '$ionicActionSheet', '$log', 'SpotsFactory', 'SettingsFactory', 'NewSpotFactory',
-    'CurrentSpotFactory', 'ImageMapFactory', 'ContentModelSurveyFactory'];
+  SpotController.$inject = ['$ionicModal', '$ionicPopup', '$location', '$log', '$rootScope', '$scope', '$state',
+    'ContentModelSurveyFactory', 'CurrentSpotFactory', 'ImageMapFactory', 'NewSpotFactory', 'ProjectFactory',
+    'SpotsFactory'];
 
   // this scope is the parent scope for the SpotController that all child SpotController will inherit
-  function SpotController($scope, $rootScope, $state, $stateParams, $location, $ionicHistory,
-                          $ionicPopup, $ionicModal, $ionicActionSheet, $log, SpotsFactory, SettingsFactory, NewSpotFactory,
-                          CurrentSpotFactory, ImageMapFactory, ContentModelSurveyFactory) {
+  function SpotController($ionicModal, $ionicPopup, $location, $log, $rootScope, $scope, $state,
+                          ContentModelSurveyFactory, CurrentSpotFactory, ImageMapFactory, NewSpotFactory,
+                          ProjectFactory, SpotsFactory) {
     var vm = this;
 
     $rootScope.$state = $state;
@@ -196,36 +196,13 @@
         NewSpotFactory.clearNewSpot();
 
         // Set default name
-        SettingsFactory.getNamePrefix().then(function (prefix) {
-          if (!prefix) {
-            prefix = '';
-          }
-          if (prefix && !isNaN(prefix)) {
-            SettingsFactory.getPrefixIncrement().then(function (prefix_increment) {
-              SettingsFactory.setNamePrefix(prefix + prefix_increment);
-              prefix = prefix.toString();
-            });
-          }
-          SettingsFactory.getNameRoot().then(function (root) {
-            SettingsFactory.getNameSuffix().then(function (suffix) {
-              if (!suffix) {
-                suffix = '';
-              }
-              if (suffix && !isNaN(suffix)) {
-                SettingsFactory.getSuffixIncrement().then(function (suffix_increment) {
-                  SettingsFactory.setNameSuffix(suffix + suffix_increment);
-                  suffix = suffix.toString();
-                });
-              }
-              if (root) {
-                vm.spot.properties.name = prefix + root + suffix;
-              }
-              else {
-                vm.spot.properties.name = prefix + new Date().getTime().toString() + suffix;
-              }
-              $log.log('attempting to set properties');
-              setProperties();
-            });
+        ProjectFactory.getSpotPrefix().then(function (prefix) {
+          if (!prefix) prefix = new Date().getTime().toString();
+          ProjectFactory.getSpotNumber().then(function (number) {
+            if (!number) number = '';
+            vm.spot.properties.name = prefix + number;
+            $log.log('attempting to set properties');
+            setProperties();
           });
         });
       }
@@ -541,6 +518,7 @@
       SpotsFactory.save(vm.spot).then(function (data) {
         $log.log('spot saved: ', data);
         CurrentSpotFactory.clearCurrentSpot();
+        ProjectFactory.incrementSpotNumber();
         $location.path('/app/spots');
         // $ionicHistory.goBack();
       });

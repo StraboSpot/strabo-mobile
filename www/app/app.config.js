@@ -36,8 +36,8 @@
           'url': '/tools',
           'views': {
             'menuContent': {
-              'templateUrl': 'app/project/tools.html',
-              'controller': 'ProjectController as vm'
+              'templateUrl': 'app/project/tools.html'/* ,
+               'controller': 'ToolsController as vm'*/
             }
           }
         })

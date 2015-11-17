@@ -14,7 +14,7 @@
             <div ng-show='vm.loggedIn'>
               <img src='img/ninja.png'>
               <br>
-              <span class='user-name'>{{vm.userName}}</span>
+              <span class='user-name'>{{ vm.userName }}</span>
             </div>
             <div ng-show='!vm.loggedIn'>
               <button class='button icon-left icon button-clear ion-log-in'>Login
@@ -24,7 +24,7 @@
           <td class='project'>
             <span class='project-name-header'>Project</span>
             <br>
-            The name of the project goes in this area
+            {{ vm.projectName }}
           </td>
         </tr>
         <tr>

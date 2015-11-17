@@ -5,16 +5,18 @@
     .module('app')
     .controller('MenuController', MenuController);
 
-  MenuController.$inject = ['$log', '$scope', '$state', 'UserFactory'];
+  MenuController.$inject = ['$log', '$scope', '$state', 'ProjectFactory', 'UserFactory'];
 
-  function MenuController($log, $scope, $state, UserFactory) {
+  function MenuController($log, $scope, $state, ProjectFactory, UserFactory) {
     var vm = this;
     vm.editProject = editProject;
     vm.editUser = editUser;
+    vm.getProjectNameVar = getProjectNameVar;
     vm.getUserNameVar = getUserNameVar;
     vm.loggedIn = false;
     vm.isLoggedIn = isLoggedIn;
     vm.openTools = openTools;
+    vm.projectName = '';
     vm.userName = '';
 
     activate();
@@ -32,10 +34,16 @@
         }
       });
 
-      // For user name changes
+      // Watch for user name changes
       $scope.$watch('vm.getUserNameVar()', function (userName) {
         vm.userName = userName;
         $log.log('User name: ', userName);
+      });
+
+      // Watch for project name changes
+      $scope.$watch('vm.getProjectNameVar()', function (projectName) {
+        vm.projectName = projectName;
+        $log.log('Project name: ', projectName);
       });
     }
 
@@ -62,6 +70,10 @@
 
     function editUser() {
       $state.go('app.user');
+    }
+
+    function getProjectNameVar() {
+      return ProjectFactory.getProjectNameVar();
     }
 
     function getUserNameVar() {

@@ -10,6 +10,7 @@
     var mapNamesDb = {};       // global LF for map names
     var spotsDb = {};          // global LF for spot data
     var configDb = {};         // global LF for configuration data
+    var projectDb = {};         // global LF for configuration data
 
     activate();
 
@@ -17,7 +18,8 @@
       'mapTilesDb': mapTilesDb,
       'mapNamesDb': mapNamesDb,
       'spotsDb': spotsDb,
-      'configDb': configDb
+      'configDb': configDb,
+      'projectDb': projectDb
     };
 
     function activate() {
@@ -25,6 +27,7 @@
       setMapNamesDb();
       setSpotsDb();
       setConfigDb();
+      setProjectDb();
     }
 
     function setMapTilesDb() {
@@ -52,6 +55,13 @@
       configDb = localforage.createInstance({
         // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
         'name': 'Config'
+      });
+    }
+
+    function setProjectDb() {
+      projectDb = localforage.createInstance({
+        // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
+        'name': 'Project'
       });
     }
   }
