@@ -204,27 +204,19 @@
 
     function checkForLogin() {
       // is the user logged in from before?
-      UserFactory.getLogin().then(
-        function (login) {
-          if (login !== null) {
-            // we do have a login -- lets set the authentication
-            $log.log('we have a login!', login);
-            vm.loggedIn = true;
-            // Encode the login string
-            vm.encodedLogin = Base64.encode(login.email + ':' + login.password);
-
-            // set the email to the login email
-            vm.loginEmail = login.email;
-
-            vm.getDatasets();
-          }
-          else {
-            // nope, dont have a login
-            $log.log('no login!');
-            vm.loggedIn = false;
-          }
-        }
-      );
+      var login = UserFactory.getLogin();
+      if (login) {
+        $log.log('Logged in as: ', login);
+        vm.loggedIn = true;
+        // Encode the login string
+        vm.encodedLogin = Base64.encode(login.email + ':' + login.password);
+        vm.loginEmail = login.email; // set the email to the login email
+        vm.getDatasets();
+      }
+      else {
+        $log.log('Not logged in!');
+        vm.loggedIn = false;
+      }
     }
 
     // Create a new dataset

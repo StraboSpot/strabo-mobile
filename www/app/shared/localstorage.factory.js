@@ -6,34 +6,37 @@
     .factory('LocalStorageFactory', LocalStorageFactory);
 
   function LocalStorageFactory() {
-    var mapTilesDb = {};       // LocalForage is the global for offline map tiles
-    var mapNamesDb = {};       // global LF for map names
-    var spotsDb = {};          // global LF for spot data
-    var configDb = {};         // global LF for configuration data
-    var projectDb = {};         // global LF for configuration data
+    var configDb = {};        // global LocalForage for configuration data
+    var mapNamesDb = {};      // global LocalForage for map names
+    var mapTilesDb = {};      // global LocalForage for offline map tiles
+    var projectDb = {};       // global LocalForage for configuration data
+    var spotsDb = {};         // global LocalForage for spot data
+    var userDb = {};          // global LocalForage for user data
 
     activate();
 
     return {
-      'mapTilesDb': mapTilesDb,
-      'mapNamesDb': mapNamesDb,
-      'spotsDb': spotsDb,
       'configDb': configDb,
-      'projectDb': projectDb
+      'mapNamesDb': mapNamesDb,
+      'mapTilesDb': mapTilesDb,
+      'projectDb': projectDb,
+      'spotsDb': spotsDb,
+      'userDb': userDb
     };
 
     function activate() {
-      setMapTilesDb();
-      setMapNamesDb();
-      setSpotsDb();
       setConfigDb();
+      setMapNamesDb();
+      setMapTilesDb();
       setProjectDb();
+      setSpotsDb();
+      setUserDb();
     }
 
-    function setMapTilesDb() {
-      mapTilesDb = localforage.createInstance({
+    function setConfigDb() {
+      configDb = localforage.createInstance({
         // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
-        'name': 'offlineMapTiles'
+        'name': 'Config'
       });
     }
 
@@ -44,17 +47,10 @@
       });
     }
 
-    function setSpotsDb() {
-      spotsDb = localforage.createInstance({
+    function setMapTilesDb() {
+      mapTilesDb = localforage.createInstance({
         // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
-        'name': 'Spots'
-      });
-    }
-
-    function setConfigDb() {
-      configDb = localforage.createInstance({
-        // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
-        'name': 'Config'
+        'name': 'offlineMapTiles'
       });
     }
 
@@ -62,6 +58,20 @@
       projectDb = localforage.createInstance({
         // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
         'name': 'Project'
+      });
+    }
+
+    function setSpotsDb() {
+      spotsDb = localforage.createInstance({
+        // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
+        'name': 'Spots'
+      });
+    }
+
+    function setUserDb() {
+      userDb = localforage.createInstance({
+        // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
+        'name': 'User'
       });
     }
   }

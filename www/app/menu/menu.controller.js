@@ -12,7 +12,7 @@
     vm.editProject = editProject;
     vm.editUser = editUser;
     vm.getProjectName = getProjectName;
-    vm.getUserNameVar = getUserNameVar;
+    vm.getUserName = getUserName;
     vm.loggedIn = false;
     vm.isLoggedIn = isLoggedIn;
     vm.openTools = openTools;
@@ -29,13 +29,11 @@
       // Watch whether we have a login or not
       $scope.$watch('vm.isLoggedIn()', function (loggedIn) {
         vm.loggedIn = loggedIn;
-        if (loggedIn) {
-          getUserName();
-        }
+        if (loggedIn) getUserName();
       });
 
       // Watch for user name changes
-      $scope.$watch('vm.getUserNameVar()', function (userName) {
+      $scope.$watch('vm.getUserName()', function (userName) {
         vm.userName = userName;
         $log.log('Watch user name: ', userName);
       });
@@ -44,19 +42,6 @@
       $scope.$watch('vm.getProjectName()', function (projectName) {
         vm.projectName = projectName;
         $log.log('Watch project name: ', projectName);
-      });
-    }
-
-    function getUserName() {
-      UserFactory.getUserName().then(function (userName) {
-        if (userName) {
-          vm.userName = userName;
-        }
-        else {
-          UserFactory.getLogin().then(function (login) {
-            vm.userName = login.email;
-          });
-        }
       });
     }
 
@@ -76,8 +61,8 @@
       return ProjectFactory.getProjectName();
     }
 
-    function getUserNameVar() {
-      return UserFactory.getUserNameVar();
+    function getUserName() {
+      return UserFactory.getUserName();
     }
 
     function isLoggedIn() {

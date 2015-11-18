@@ -5,11 +5,14 @@
     .module('app')
     .controller('UserController', UserController);
 
-  UserController.$inject = ['$ionicPopup', '$log', 'RemoteServerFactory', 'UserFactory'];
+  UserController.$inject = ['$ionicPopup', '$log', '$scope', 'RemoteServerFactory', 'UserFactory'];
 
-  function UserController($ionicPopup, $log, RemoteServerFactory, UserFactory) {
+  function UserController($ionicPopup, $log, $scope, RemoteServerFactory, UserFactory) {
     var vm = this;
 
+    vm.data = {};
+    vm.dataOriginal = {};
+    vm.isPristine = isPristine;
     vm.doLogin = doLogin;
     vm.doLogout = doLogout;
     vm.hideActionButtons = {
@@ -17,9 +20,7 @@
       'logout': true
     };
     vm.loggedIn = false;
-    vm.loginData = {};                  // Form data for the login modal
-    vm.save = save;
-    vm.userName = '';
+    vm.submit = submit;
 
     activate();
 
@@ -28,36 +29,28 @@
      */
 
     function activate() {
-      checkForLogin();
-    }
+      vm.data = UserFactory.getUserData();
+      if (vm.data.login) {
+        $log.log('Logged in as: ', vm.data.login);
+        vm.loggedIn = true;
+        vm.dataOriginal = vm.data;
+        hideLoginButton();
+      }
+      else {
+        $log.log('No login!');
+        vm.loggedIn = false;
+        hideLogoutButton();
+      }
 
-    function checkForLogin() {
-      // is the user logged in from before?
-      UserFactory.getLogin().then(
-        function (login) {
-          if (login !== null) {
-            // we do have a login -- lets set the authentication
-            $log.log('we have a login!', login);
-
-            // set the email to the login email
-            vm.loginData.email = login.email;
-            hideLoginButton();
-            vm.loggedIn = true;
-            getUserName();
-          }
-          else {
-            // nope, dont have a login
-            $log.log('no login!');
-            hideLogoutButton();
-            vm.loggedIn = false;
-          }
-        });
-    }
-
-    function getUserName() {
-      UserFactory.getUserName().then(function (userName) {
-        vm.userName = userName;
+      // Watch whether form has been modified or not
+      $scope.$watch('vm.isPristine()', function (pristine) {
+        vm.pristine = pristine;
       });
+    }
+
+    function isPristine() {
+      vm.data = _.pick(vm.data, _.identity);
+      return _.isEqual(vm.dataOriginal, vm.data);
     }
 
     function hideLoginButton() {
@@ -76,15 +69,15 @@
 
     // Perform the login action when the user presses the login icon
     function doLogin() {
-      vm.loginData.email = vm.loginData.email.toLowerCase();
+      vm.data.login.email = vm.data.login.email.toLowerCase();
       // Authenticate user login
       if (navigator.onLine) {
-        RemoteServerFactory.authenticateUser(vm.loginData).then(
+        RemoteServerFactory.authenticateUser(vm.data.login).then(
           function (response) {
             if (response.status === 200 && response.data.valid === 'true') {
               $log.log('Logged in successfully.');
               hideLoginButton();
-              UserFactory.setLogin(vm.loginData);
+              UserFactory.setLogin(vm.data.login);
               vm.loggedIn = true;
             }
             else {
@@ -110,27 +103,18 @@
       }
     }
 
-    // Perform the logout action when the user presses the logout icon
+    // Destory the user data on when the logout button pressed
     function doLogout() {
-      $log.log('Logged out');
-      // we do have a login so we should destroy the login because the user wants to logout
       UserFactory.destroyLogin();
-      vm.loginData = {
-        'email': null,
-        'password': null
-      };
-      hideLogoutButton();
+      vm.data = {};
       vm.loggedIn = false;
-      vm.userName = null;
+      hideLogoutButton();
+      $log.log('Logged out');
     }
 
-    function save() {
-      UserFactory.setUserName(vm.userName).then(function () {
-        $ionicPopup.alert({
-          'title': 'User Profile!',
-          'template': 'Saved user profile.<br>User Name: ' + vm.userName
-        });
-      });
+    function submit() {
+      UserFactory.save(vm.data);
+      vm.dataOriginal = vm.data;
     }
   }
 }());

@@ -5,22 +5,24 @@
     .module('app')
     .factory('UserFactory', UserFactory);
 
-  UserFactory.$inject = ['$log', 'LocalStorageFactory'];
+  UserFactory.$inject = ['$log', '$q', 'LocalStorageFactory'];
 
-  function UserFactory($log, LocalStorageFactory) {
+  function UserFactory($log, $q, LocalStorageFactory) {
+    var data = {};
+    var dataPromise;
     var loggedIn = false;
-    var userName;
 
     activate();
 
     return {
+      'dataPromise': dataPromise,
       'destroyLogin': destroyLogin,
       'getLogin': getLogin,
+      'getUserData': getUserData,
       'getUserName': getUserName,
-      'getUserNameVar': getUserNameVar,
       'isLoggedIn': isLoggedIn,
-      'setLogin': setLogin,
-      'setUserName': setUserName
+      'save': save,
+      'setLogin': setLogin
     };
 
     /**
@@ -28,28 +30,28 @@
      */
 
     function activate() {
-      checkForLogin();
-    }
-
-    function checkForLogin() {
-      getLogin().then(function (login) {
-        loggedIn = login !== null;
-        $log.log('Is logged in? ', loggedIn, login);
-        if (loggedIn) {
-          getUserProfile();
+      $log.log('Loading user data ....');
+      dataPromise = all().then(function (savedData) {
+        data = savedData;
+        if (data && data.login) {
+          $log.log('Logged in as: ', data.login);
+          loggedIn = angular.isDefined(data.login);
         }
+        $log.log('Finished loading user data: ', data);
       });
     }
 
-    function clearUser() {
-      userName = null;
-      LocalStorageFactory.configDb.removeItem('user_name');
-    }
+    // Load all user data from local storage
+    function all() {
+      var deferred = $q.defer(); // init promise
+      var config = {};
 
-    function getUserProfile() {
-      LocalStorageFactory.configDb.getItem('user_name').then(function (inUserName) {
-        userName = inUserName;
+      LocalStorageFactory.userDb.iterate(function (value, key) {
+        config[key] = value;
+      }, function () {
+        deferred.resolve(config);
       });
+      return deferred.promise;
     }
 
     /**
@@ -58,20 +60,24 @@
 
     function destroyLogin() {
       loggedIn = false;
-      LocalStorageFactory.configDb.removeItem('login');
-      clearUser();
+      data = {};
+      LocalStorageFactory.userDb.clear().then(function () {
+        $log.log('Cleared user data from local storage');
+      });
     }
 
     function getLogin() {
-      return LocalStorageFactory.configDb.getItem('login');
+      return data.login;
+    }
+
+    function getUserData() {
+      return data;
     }
 
     function getUserName() {
-      return LocalStorageFactory.configDb.getItem('user_name');
-    }
-
-    function getUserNameVar() {
-      return userName;
+      if (data.user_name) return data.user_name;
+      if (data.login) return data.login.email;
+      return null;
     }
 
     function isLoggedIn() {
@@ -80,12 +86,19 @@
 
     function setLogin(login) {
       loggedIn = true;
-      return LocalStorageFactory.configDb.setItem('login', login);
+      data.login = login;
+      return LocalStorageFactory.userDb.setItem('login', login);
     }
 
-    function setUserName(inUserName) {
-      userName = inUserName;
-      return LocalStorageFactory.configDb.setItem('user_name', userName);
+    // Save all user data in local storage
+    function save(newData) {
+      LocalStorageFactory.userDb.clear().then(function () {
+        data = newData;
+        _.forEach(data, function (value, key, list) {
+          LocalStorageFactory.userDb.setItem(key, value);
+        });
+        $log.log('Saved user: ', data);
+      });
     }
   }
 }());

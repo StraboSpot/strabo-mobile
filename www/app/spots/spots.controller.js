@@ -36,20 +36,8 @@
       // Make sure the current spot is empty
       CurrentSpotFactory.clearCurrentSpot();
       loadSpots();
-      checkLoggedIn();
       createModals();
       cleanupModals();
-    }
-
-    function checkLoggedIn() {
-      // Is the user logged in
-      UserFactory.getLogin().then(
-        function (login) {
-          if (login !== null) {
-            vm.loggedIn = true;
-          }
-        }
-      );
     }
 
     function cleanupModals() {
@@ -330,7 +318,7 @@
 
     // Is the user online and logged in
     function isOnlineLoggedIn() {
-      return navigator.onLine && vm.loggedIn;
+      return navigator.onLine && UserFactory.getLogin();
     }
 
     // Create a new Spot
@@ -370,11 +358,11 @@
     }
 
     function sync() {
-      if (navigator.onLine && vm.loggedIn) {
+      if (isOnlineLoggedIn()) {
         vm.openModal('syncModal');
       }
       else {
-        if (!navigator.onLine && !vm.loggedIn) {
+        if (!navigator.onLine && !UserFactory.getLogin()) {
           $ionicPopup.alert({
             'title': 'Get Online and Log In!',
             'template': 'You must be online and logged in to sync with the Strabo database.'

@@ -58,6 +58,11 @@
               'templateUrl': 'app/user/user.html',
               'controller': 'UserController as vm'
             }
+          },
+          'resolve': {
+            'UserData': function (UserFactory) {
+              return UserFactory.dataPromise;
+            }
           }
         })
 
@@ -140,6 +145,11 @@
             'menuContent': {
               'templateUrl': 'app/spots/spots.html',
               'controller': 'SpotsController as vm'
+            }
+          },
+          'resolve': {
+            'UserData': function (UserFactory) {
+              return UserFactory.dataPromise;
             }
           }
         })

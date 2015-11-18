@@ -17,14 +17,13 @@
     activate();
 
     return {
-      'all': all,
+      'dataPromise': dataPromise,
       'getProjectData': getProjectData,
       'getProjectName': getProjectName,
       'getSpotNumber': getSpotNumber,
       'getSpotPrefix': getSpotPrefix,
       'getSurvey': getSurvey,
       'incrementSpotNumber': incrementSpotNumber,
-      'dataPromise': dataPromise,
       'save': save,
       'surveyPromise': surveyPromise
     };
@@ -43,15 +42,6 @@
       surveyPromise = DataModelsFactory.readCSV(csvFile, setSurvey);
     }
 
-    function setSurvey(inSurvey) {
-      survey = inSurvey;
-      $log.log('Finished loading project survey: ', survey);
-    }
-
-    /**
-     * Public Functions
-     */
-
     // Load all project properties from local storage
     function all() {
       var deferred = $q.defer(); // init promise
@@ -64,6 +54,15 @@
       });
       return deferred.promise;
     }
+
+    function setSurvey(inSurvey) {
+      survey = inSurvey;
+      $log.log('Finished loading project survey: ', survey);
+    }
+
+    /**
+     * Public Functions
+     */
 
     function getProjectData() {
       return data;
@@ -97,15 +96,13 @@
 
     // Save all project properties in local storage
     function save(newData) {
-      LocalStorageFactory.projectDb.clear().then(
-        function () {
-          data = newData;
-          _.forEach(data, function (value, key, list) {
-            LocalStorageFactory.projectDb.setItem(key, value);
-          });
-          $log.log('Saved project properties: ', data);
-        }
-      );
+      LocalStorageFactory.projectDb.clear().then(function () {
+        data = newData;
+        _.forEach(data, function (value, key, list) {
+          LocalStorageFactory.projectDb.setItem(key, value);
+        });
+        $log.log('Saved project properties: ', data);
+      });
     }
   }
 }());

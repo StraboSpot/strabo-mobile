@@ -5,7 +5,7 @@
     </ion-nav-buttons>
     <ion-nav-buttons side='right'>
       <div ng-if='vm.pristine || !vm.valid'>
-        <button ng-click='vm.submit();' class='button disabled button-icon icon ion-checkmark-circled'></button>
+        <button class='button disabled button-icon icon ion-checkmark-circled'></button>
       </div>
       <div ng-if='!vm.pristine && vm.valid'>
         <button ng-click='vm.submit();' class='button button-icon icon ion-checkmark-circled'></button>

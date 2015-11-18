@@ -17,7 +17,6 @@
     activate();
 
     return {
-      'all': all,
       'dataPromise': dataPromise,
       'getPreferencesData': getPreferencesData,
       'getSurvey': getSurvey,
@@ -40,15 +39,6 @@
       surveyPromise = DataModelsFactory.readCSV(csvFile, setSurvey);
     }
 
-    function setSurvey(inSurvey) {
-      survey = inSurvey;
-      $log.log('Finished loading preferences survey: ', survey);
-    }
-
-    /**
-     * Public Functions
-     */
-
     function all() {
       var deferred = $q.defer(); // init promise
       var config = {};
@@ -61,6 +51,15 @@
       return deferred.promise;
     }
 
+    function setSurvey(inSurvey) {
+      survey = inSurvey;
+      $log.log('Finished loading preferences survey: ', survey);
+    }
+
+    /**
+     * Public Functions
+     */
+
     function getPreferencesData() {
       return data;
     }
@@ -70,15 +69,13 @@
     }
 
     function save(newData) {
-      LocalStorageFactory.configDb.clear().then(
-        function () {
-          data = newData;
-          _.forEach(data, function (value, key, list) {
-            LocalStorageFactory.configDb.setItem(key, value);
-          });
-          $log.log('Saved preferences: ', data);
-        }
-      );
+      LocalStorageFactory.configDb.clear().then(function () {
+        data = newData;
+        _.forEach(data, function (value, key, list) {
+          LocalStorageFactory.configDb.setItem(key, value);
+        });
+        $log.log('Saved preferences: ', data);
+      });
     }
   }
 }());

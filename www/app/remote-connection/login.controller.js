@@ -21,15 +21,11 @@
     }
 
     function checkForLogin() {
-      // is the user logged in from before?
-      UserFactory.getLogin()
-        .then(function (login) {
-          if (login !== null) {
-            // we do have a login -- lets set the authentication
-            $log.log('we have a login already, skipping login page', login);
-            vm.skip();
-          }
-        });
+      var login = UserFactory.getLogin();
+      if (login) {
+        $log.log('Skipping login page, already logged in as: ', login);
+        vm.skip();
+      }
     }
 
     // Perform the login action
