@@ -39,6 +39,8 @@
       vm.spot.properties.date = new Date(vm.spot.properties.date);
       vm.spot.properties.time = new Date(vm.spot.properties.time);
 
+      $log.log('Starting to set set spot properties: ', vm.spot.properties);
+
       // Push spots from linked spots list into selected and unselected arrays so we know which checkboxes to turn on
       vm.links_selected = [];
       vm.links_unselected = [];
@@ -196,15 +198,12 @@
         NewSpotFactory.clearNewSpot();
 
         // Set default name
-        ProjectFactory.getSpotPrefix().then(function (prefix) {
-          if (!prefix) prefix = new Date().getTime().toString();
-          ProjectFactory.getSpotNumber().then(function (number) {
-            if (!number) number = '';
-            vm.spot.properties.name = prefix + number;
-            $log.log('attempting to set properties');
-            setProperties();
-          });
-        });
+        var prefix = ProjectFactory.getSpotPrefix();
+        if (!prefix) prefix = new Date().getTime().toString();
+        var number = ProjectFactory.getSpotNumber();
+        if (!number) number = '';
+        vm.spot.properties.name = prefix + number;
+        setProperties();
       }
       else {
         if (CurrentSpotFactory.getCurrentSpot()) {

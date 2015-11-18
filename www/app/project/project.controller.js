@@ -57,10 +57,9 @@
         // Convert date string to Date type
         if (data.start_date) data.start_date = new Date(data.start_date);
         if (data.end_date) data.end_date = new Date(data.end_date);
-        ProjectFactory.setProjectName(data.project_name);
         vm.dataOriginal = data;
         vm.data = data;
-        $log.log(data);
+        $log.log('Loaded project properties into Project Controller: ', data);
       });
     }
 
@@ -81,7 +80,6 @@
     function submit() {
       var valid = FormFactory.validate(vm.survey, vm.data);
       if (valid) {
-        ProjectFactory.setProjectName(vm.data.project_name);
         ProjectFactory.save(vm.data);
         vm.dataOriginal = vm.data;
       }

@@ -8,18 +8,18 @@
   ProjectFactory.$inject = ['$log', '$q', 'LocalStorageFactory'];
 
   function ProjectFactory($log, $q, LocalStorageFactory) {
-    var projectName;
+    var project = {};
 
     activate();
 
     return {
       'all': all,
-      'getProjectNameVar': getProjectNameVar,
+      'getProject': getProject,
+      'getProjectName': getProjectName,
       'getSpotNumber': getSpotNumber,
       'getSpotPrefix': getSpotPrefix,
       'incrementSpotNumber': incrementSpotNumber,
-      'save': save,
-      'setProjectName': setProjectName
+      'save': save
     };
 
     /**
@@ -27,12 +27,10 @@
      */
 
     function activate() {
-      getProjectName();
-    }
-
-    function getProjectName() {
-      LocalStorageFactory.projectDb.getItem('project_name').then(function (inProjectName) {
-        projectName = inProjectName;
+      $log.log('Loading project properties ....');
+      all().then(function (inProject) {
+        project = inProject;
+        $log.log('Finished loading project properties: ', project);
       });
     }
 
@@ -40,9 +38,9 @@
      * Public Functions
      */
 
+    // Load all project properties from local storage
     function all() {
       var deferred = $q.defer(); // init promise
-
       var config = {};
 
       LocalStorageFactory.projectDb.iterate(function (value, key) {
@@ -50,44 +48,47 @@
       }, function () {
         deferred.resolve(config);
       });
-
       return deferred.promise;
     }
 
-    function getProjectNameVar() {
-      return projectName;
+    function getProject() {
+      return project;
+    }
+
+    function getProjectName() {
+      return project.project_name;
     }
 
     function getSpotPrefix() {
-      return LocalStorageFactory.projectDb.getItem('spot_prefix');
+      return project.spot_prefix;
     }
 
     function getSpotNumber() {
-      return LocalStorageFactory.projectDb.getItem('starting_number_for_spot');
+      return project.starting_number_for_spot;
     }
 
+    // Increment starting spot number by 1
     function incrementSpotNumber() {
-      getSpotNumber().then(function (number) {
-        if (number) {
-          number += 1;
-          return LocalStorageFactory.projectDb.setItem('starting_number_for_spot', number);
-        }
-      });
+      var start_number = getSpotNumber();
+      if (start_number) {
+        start_number += 1;
+        project.starting_number_for_spot = start_number;
+        LocalStorageFactory.projectDb.setItem('starting_number_for_spot', start_number);
+      }
     }
 
+    // Save all project properties in local storage
     function save(data) {
       $log.log('Save: ', data);
       LocalStorageFactory.projectDb.clear().then(
         function () {
+          project = data;
           _.forEach(data, function (value, key, list) {
             LocalStorageFactory.projectDb.setItem(key, value);
           });
+          $log.log('Saved project properties: ', project);
         }
       );
-    }
-
-    function setProjectName(inProjectName) {
-      projectName = inProjectName;
     }
   }
 }());

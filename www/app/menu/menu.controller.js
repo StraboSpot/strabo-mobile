@@ -11,7 +11,7 @@
     var vm = this;
     vm.editProject = editProject;
     vm.editUser = editUser;
-    vm.getProjectNameVar = getProjectNameVar;
+    vm.getProjectName = getProjectName;
     vm.getUserNameVar = getUserNameVar;
     vm.loggedIn = false;
     vm.isLoggedIn = isLoggedIn;
@@ -37,13 +37,13 @@
       // Watch for user name changes
       $scope.$watch('vm.getUserNameVar()', function (userName) {
         vm.userName = userName;
-        $log.log('User name: ', userName);
+        $log.log('Watch user name: ', userName);
       });
 
       // Watch for project name changes
-      $scope.$watch('vm.getProjectNameVar()', function (projectName) {
+      $scope.$watch('vm.getProjectName()', function (projectName) {
         vm.projectName = projectName;
-        $log.log('Project name: ', projectName);
+        $log.log('Watch project name: ', projectName);
       });
     }
 
@@ -72,8 +72,8 @@
       $state.go('app.user');
     }
 
-    function getProjectNameVar() {
-      return ProjectFactory.getProjectNameVar();
+    function getProjectName() {
+      return ProjectFactory.getProjectName();
     }
 
     function getUserNameVar() {
