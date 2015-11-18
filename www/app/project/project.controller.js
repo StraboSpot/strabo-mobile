@@ -5,11 +5,10 @@
     .module('app')
     .controller('ProjectController', ProjectController);
 
-  ProjectController.$inject = ['$log', '$http', '$scope', 'DataModelsFactory', 'FormFactory', 'ProjectFactory'];
+  ProjectController.$inject = ['$scope', 'FormFactory', 'ProjectFactory'];
 
-  function ProjectController($log, $http, $scope, DataModelsFactory, FormFactory, ProjectFactory) {
+  function ProjectController($scope, FormFactory, ProjectFactory) {
     var vm = this;
-    var csvFile = 'app/data-models/ProjectsPage.csv';
 
     vm.data = {};
     vm.dataOriginal = {};
@@ -28,8 +27,10 @@
      */
 
     function activate() {
-      DataModelsFactory.readCSV(csvFile, setSurvey);
-      getData();
+      vm.survey = ProjectFactory.getSurvey();
+      vm.data = ProjectFactory.getProjectData();
+      vm.data = fixDates(vm.data);
+      vm.dataOriginal = vm.data;
 
       // Watch whether form has been modified or not
       $scope.$watch('vm.isPristine()', function (pristine) {
@@ -39,8 +40,14 @@
       // Watch whether form is valid
       $scope.$watch('vm.isValid()', function (valid) {
         vm.valid = valid;
-        $log.log('valid ', valid);
       });
+    }
+
+    // Convert date string to Date type
+    function fixDates(data) {
+      if (data.start_date) data.start_date = new Date(data.start_date);
+      if (data.end_date) data.end_date = new Date(data.end_date);
+      return data;
     }
 
     function isPristine() {
@@ -50,22 +57,6 @@
 
     function isValid() {
       return !$scope.straboForm.$invalid;
-    }
-
-    function getData() {
-      ProjectFactory.all().then(function (data) {
-        // Convert date string to Date type
-        if (data.start_date) data.start_date = new Date(data.start_date);
-        if (data.end_date) data.end_date = new Date(data.end_date);
-        vm.dataOriginal = data;
-        vm.data = data;
-        $log.log('Loaded project properties into Project Controller: ', data);
-      });
-    }
-
-    function setSurvey(survey) {
-      vm.survey = survey;
-      $log.log('Survey: ', vm.survey);
     }
 
     /**

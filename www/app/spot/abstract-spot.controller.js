@@ -39,7 +39,6 @@
       vm.spot.properties.date = new Date(vm.spot.properties.date);
       vm.spot.properties.time = new Date(vm.spot.properties.time);
 
-      $log.log('Starting to set set spot properties: ', vm.spot.properties);
 
       // Push spots from linked spots list into selected and unselected arrays so we know which checkboxes to turn on
       vm.links_selected = [];

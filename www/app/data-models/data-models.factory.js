@@ -35,7 +35,7 @@
             Papa.parse(csv, {
               'header': true,
               'complete': function (json) {
-                $log.log('Parsed csv: ', json);
+                // $log.log('Parsed csv: ', json);
                 callback(cleanJson(json));
               }
             });

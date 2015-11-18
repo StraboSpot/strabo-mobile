@@ -28,6 +28,14 @@
               'templateUrl': 'app/project/project.html',
               'controller': 'ProjectController as vm'
             }
+          },
+          'resolve': {
+            'ProjectData': function (ProjectFactory) {
+              return ProjectFactory.dataPromise;
+            },
+            'ProjectSurvey': function (ProjectFactory) {
+              return ProjectFactory.surveyPromise;
+            }
           }
         })
 
@@ -91,6 +99,14 @@
             'menuContent': {
               'templateUrl': 'app/config/preferences.html',
               'controller': 'PreferencesController as vm'
+            }
+          },
+          'resolve': {
+            'PreferencesData': function (PreferencesFactory) {
+              return PreferencesFactory.dataPromise;
+            },
+            'PreferencesSurvey': function (PreferencesFactory) {
+              return PreferencesFactory.surveyPromise;
             }
           }
         })

@@ -5,21 +5,28 @@
     .module('app')
     .factory('ProjectFactory', ProjectFactory);
 
-  ProjectFactory.$inject = ['$log', '$q', 'LocalStorageFactory'];
+  ProjectFactory.$inject = ['$log', '$q', 'DataModelsFactory', 'LocalStorageFactory'];
 
-  function ProjectFactory($log, $q, LocalStorageFactory) {
-    var project = {};
+  function ProjectFactory($log, $q, DataModelsFactory, LocalStorageFactory) {
+    var csvFile = 'app/data-models/ProjectsPage.csv';
+    var data = {};
+    var dataPromise;
+    var survey = {};
+    var surveyPromise;
 
     activate();
 
     return {
       'all': all,
-      'getProject': getProject,
+      'getProjectData': getProjectData,
       'getProjectName': getProjectName,
       'getSpotNumber': getSpotNumber,
       'getSpotPrefix': getSpotPrefix,
+      'getSurvey': getSurvey,
       'incrementSpotNumber': incrementSpotNumber,
-      'save': save
+      'dataPromise': dataPromise,
+      'save': save,
+      'surveyPromise': surveyPromise
     };
 
     /**
@@ -28,10 +35,17 @@
 
     function activate() {
       $log.log('Loading project properties ....');
-      all().then(function (inProject) {
-        project = inProject;
-        $log.log('Finished loading project properties: ', project);
+      dataPromise = all().then(function (savedData) {
+        data = savedData;
+        $log.log('Finished loading project properties: ', data);
       });
+      $log.log('Loading project survey ....');
+      surveyPromise = DataModelsFactory.readCSV(csvFile, setSurvey);
+    }
+
+    function setSurvey(inSurvey) {
+      survey = inSurvey;
+      $log.log('Finished loading project survey: ', survey);
     }
 
     /**
@@ -51,20 +65,24 @@
       return deferred.promise;
     }
 
-    function getProject() {
-      return project;
+    function getProjectData() {
+      return data;
     }
 
     function getProjectName() {
-      return project.project_name;
+      return data.project_name;
     }
 
     function getSpotPrefix() {
-      return project.spot_prefix;
+      return data.spot_prefix;
     }
 
     function getSpotNumber() {
-      return project.starting_number_for_spot;
+      return data.starting_number_for_spot;
+    }
+
+    function getSurvey() {
+      return survey;
     }
 
     // Increment starting spot number by 1
@@ -72,21 +90,20 @@
       var start_number = getSpotNumber();
       if (start_number) {
         start_number += 1;
-        project.starting_number_for_spot = start_number;
+        data.starting_number_for_spot = start_number;
         LocalStorageFactory.projectDb.setItem('starting_number_for_spot', start_number);
       }
     }
 
     // Save all project properties in local storage
-    function save(data) {
-      $log.log('Save: ', data);
+    function save(newData) {
       LocalStorageFactory.projectDb.clear().then(
         function () {
-          project = data;
+          data = newData;
           _.forEach(data, function (value, key, list) {
             LocalStorageFactory.projectDb.setItem(key, value);
           });
-          $log.log('Saved project properties: ', project);
+          $log.log('Saved project properties: ', data);
         }
       );
     }

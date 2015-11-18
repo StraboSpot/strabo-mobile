@@ -5,11 +5,10 @@
     .module('app')
     .controller('PreferencesController', PreferencesController);
 
-  PreferencesController.$inject = ['$log', '$scope', 'DataModelsFactory', 'FormFactory', 'PreferencesFactory'];
+  PreferencesController.$inject = ['$scope', 'FormFactory', 'PreferencesFactory'];
 
-  function PreferencesController($log, $scope, DataModelsFactory, FormFactory, PreferencesFactory) {
+  function PreferencesController($scope, FormFactory, PreferencesFactory) {
     var vm = this;
-    var csvFile = 'app/data-models/Preferences.csv';
 
     vm.data = {};
     vm.dataOriginal = {};
@@ -29,8 +28,9 @@
      */
 
     function activate() {
-      DataModelsFactory.readCSV(csvFile, setSurvey);
-      getData();
+      vm.survey = PreferencesFactory.getSurvey();
+      vm.data = PreferencesFactory.getPreferencesData();
+      vm.dataOriginal = vm.data;
 
       // Watch whether form has been modified or not
       $scope.$watch('vm.isPristine()', function (pristine) {
@@ -40,7 +40,6 @@
       // Watch whether form is valid
       $scope.$watch('vm.isValid()', function (valid) {
         vm.valid = valid;
-        $log.log('valid ', valid);
       });
     }
 
@@ -51,19 +50,6 @@
 
     function isValid() {
       return !$scope.straboForm.$invalid;
-    }
-
-    function getData() {
-      PreferencesFactory.all().then(function (data) {
-        vm.dataOriginal = data;
-        vm.data = data;
-        $log.log(data);
-      });
-    }
-
-    function setSurvey(survey) {
-      vm.survey = survey;
-      $log.log('Survey: ', vm.survey);
     }
 
     /**
