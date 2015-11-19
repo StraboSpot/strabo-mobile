@@ -168,22 +168,6 @@ Online & Offline Notification Circles
 }
 
 /*--------------------
-Spots Accordion List Style
---------------------*/
-.list .item.group-title {
-  line-height: 35px;
-  padding-top: 0;
-  padding-bottom: 0;
-}
-
-.list .item.item-accordion {
-  line-height: 9px;
-  padding-top: 0;
-  padding-bottom: 0;
-  transition: 0.09s all linear;
-}
-
-/*--------------------
 Tabs Style
 --------------------*/
 .tabs {
