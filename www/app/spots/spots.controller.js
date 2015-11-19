@@ -14,17 +14,13 @@
 
     vm.clearAllSpots = clearAllSpots;
     vm.closeModal = closeModal;
-    vm.createAccordionGroups = createAccordionGroups;
     vm.exportToCSV = exportToCSV;
-    vm.groups = [];
-    vm.isGroupShown = isGroupShown;
     vm.isOnlineLoggedIn = isOnlineLoggedIn;
     vm.newSpot = newSpot;
     vm.openModal = openModal;
     vm.showActionsheet = showActionsheet;
     vm.spots = [];
     vm.sync = sync;
-    vm.toggleGroup = toggleGroup;
 
     activate();
 
@@ -33,8 +29,7 @@
      */
 
     function activate() {
-      // Make sure the current spot is empty
-      CurrentSpotFactory.clearCurrentSpot();
+      CurrentSpotFactory.clearCurrentSpot();            // Make sure the current spot is empty
       loadSpots();
       createModals();
       cleanupModals();
@@ -71,7 +66,6 @@
       SpotsFactory.all().then(
         function (spots) {
           vm.spots = spots;
-          vm.createAccordionGroups(spots);
         }
       );
     }
@@ -95,7 +89,6 @@
                 SpotsFactory.all().then(
                   function (spots) {
                     vm.spots = spots;
-                    vm.createAccordionGroups(spots);
                   }
                 );
                 // Remove all of the image maps
@@ -111,36 +104,7 @@
       vm[modal].hide();
       SpotsFactory.all().then(function (spots) {
         vm.spots = spots;
-        vm.createAccordionGroups(spots);
       });
-    }
-
-    function createAccordionGroups(spots) {
-      var spotTypesTitle = [
-        {'title': 'MEASUREMENTS & OBSERVATIONS', 'type': 'point', 'tab': 'spot'},
-        {'title': 'CONTACTS & TRACES', 'type': 'line', 'tab': 'spot'},
-        {'title': 'ROCK DESCRIPTIONS', 'type': 'polygon', 'tab': 'spot'},
-        {'title': '3D STRUCTURES', 'type': 'volume', 'tab': 'spot'}
-      ];
-
-      for (var i = 0; i < spotTypesTitle.length; i++) {
-        vm.groups[i] = {
-          'name': spotTypesTitle[i].title,
-          'tab': spotTypesTitle[i].tab,
-          'items': []
-        };
-        for (var j = 0; j < spots.length; j++) {
-          if (spots[j].properties.type === spotTypesTitle[i].type) {
-            vm.groups[i].items.push(spots[j]);
-          }
-        }
-        vm.groups[i].items.reverse(); // Move newest to top
-        if (spotTypesTitle[i].type === 'volume') {
-          vm.groups[i].items.push({'properties': {'name': '3D Structures have not been implemented yet'}});
-        }
-      }
-
-      vm.shownGroup = vm.groups[0];
     }
 
     // Export data to CSV
@@ -312,10 +276,6 @@
       );
     }
 
-    function isGroupShown(group) {
-      return vm.shownGroup === group;
-    }
-
     // Is the user online and logged in
     function isOnlineLoggedIn() {
       return navigator.onLine && UserFactory.getLogin();
@@ -380,16 +340,6 @@
             'template': 'You must be logged in to sync with the Strabo database.'
           });
         }
-      }
-    }
-
-    // If given group is the selected group, deselect it, else, select the given group
-    function toggleGroup(group) {
-      if (vm.isGroupShown(group)) {
-        vm.shownGroup = null;
-      }
-      else {
-        vm.shownGroup = group;
       }
     }
   }
