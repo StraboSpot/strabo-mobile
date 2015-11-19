@@ -254,7 +254,7 @@
       if (feature && layer.get('name') !== 'geolocationLayer') {
         // popup content
         var content = '';
-        content += '<a href="#/spotTab/' + feature.get('id') + '/notes"><b>' + feature.get('name') + '</b></a>';
+        content += '<a href="#/spotTab/' + feature.get('id') + '/spot"><b>' + feature.get('name') + '</b></a>';
         content += '<br>';
         content += '<small>' + _.findWhere(spotTypes, {'value': feature.get('type')}).label + '</small>';
 

@@ -69,9 +69,10 @@
         vm.spot.properties.type = 'Custom';
       }
 
+      vm.spotTitle = vm.spot.properties.name;
+
       switch (vm.spot.properties.type) {
         case 'point':
-          vm.spotTitle = 'Measurement or Observation';
           vm.showDynamicFields = true;
           vm.showRockDescription = true;
           vm.showRockSample = true;
@@ -80,14 +81,12 @@
           vm.showGroupMembers = false;
           break;
         case 'line':
-          vm.spotTitle = 'Contact or Trace';
           vm.showDynamicFields = true;
           vm.survey = ContentModelSurveyFactory.contacts_and_traces_survey;
           vm.choices = ContentModelSurveyFactory.contacts_and_traces_choices;
           vm.showGroupMembers = false;
           break;
         case 'polygon':
-          vm.spotTitle = 'Rock Description';
           vm.showDynamicFields = false;
           vm.survey = undefined;
           vm.choices = undefined;
@@ -95,7 +94,6 @@
           vm.showGroupMembers = false;
           break;
         case 'group':
-          vm.spotTitle = 'Station or Group';
           vm.showDynamicFields = true;
           vm.survey = ContentModelSurveyFactory.spot_grouping_survey;
           vm.choices = ContentModelSurveyFactory.spot_grouping_choices;
