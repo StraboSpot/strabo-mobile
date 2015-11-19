@@ -46,7 +46,7 @@
       }
 
       function getAllLocalSpots() {
-        return SpotFactory.all();
+        return SpotFactory.getSpots();
       }
 
       function uploadImages(spot) {

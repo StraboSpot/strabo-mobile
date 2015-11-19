@@ -31,7 +31,7 @@
 
     function activate() {
       CurrentSpotFactory.clearCurrentSpot();            // Make sure the current spot is empty
-      loadSpots();
+      vm.spots = SpotFactory.getSpots();
       createModals();
       cleanupModals();
     }
@@ -53,14 +53,6 @@
       });
     }
 
-    function loadSpots() {
-      SpotFactory.all().then(
-        function (spots) {
-          vm.spots = spots;
-        }
-      );
-    }
-
     /**
      * Public Functions
      */
@@ -74,18 +66,13 @@
       confirmPopup.then(
         function (res) {
           if (res) {
-            SpotFactory.clear(
-              function () {
-                // update the spots list
-                SpotFactory.all().then(
-                  function (spots) {
-                    vm.spots = spots;
-                  }
-                );
-                // Remove all of the image maps
-                ImageMapFactory.clearAllImageMaps();
-              }
-            );
+            SpotFactory.clear().then(function () {
+              // update the spots list
+              vm.spots = SpotFactory.getSpots();
+
+              // Remove all of the image maps
+              ImageMapFactory.clearAllImageMaps();
+            });
           }
         }
       );
@@ -93,9 +80,7 @@
 
     function closeModal(modal) {
       vm[modal].hide();
-      SpotFactory.all().then(function (spots) {
-        vm.spots = spots;
-      });
+      vm.spots = SpotFactory.getSpots();
     }
 
     // Export data to CSV

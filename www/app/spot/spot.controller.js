@@ -214,11 +214,11 @@
       }
 
       // Create checkbox list of other spots for selected as related spots
-      SpotFactory.all().then(function (spots) {
-        vm.spots = spots;
-        vm.other_spots = [];
-        vm.groups = [];
-        spots.forEach(function (obj, i) {
+      vm.spots = SpotFactory.getSpots();
+      vm.other_spots = [];
+      vm.groups = [];
+      if (!_.isEmpty(vm.spots)) {
+        vm.spots.forEach(function (obj, i) {
           if (vm.spot.properties.id !== obj.properties.id) {
             vm.other_spots.push({
               'name': obj.properties.name,
@@ -245,10 +245,10 @@
             }
           });
         });
-        // Don't show links or groups until there are other spots to link to or groups to join
-        vm.showLinks = vm.other_spots.length;
-        vm.showGroups = vm.groups.length;
-      });
+      }
+      // Don't show links or groups until there are other spots to link to or groups to join
+      vm.showLinks = vm.other_spots.length;
+      vm.showGroups = vm.groups.length;
     }
 
     /**
@@ -595,7 +595,7 @@
 
       // Save the spot
       SpotFactory.save(vm.spot).then(function (data) {
-        $log.log('spot saved: ', data);
+        vm.spots = data;
         CurrentSpotFactory.clearCurrentSpot();
         ProjectFactory.incrementSpotNumber();
         $location.path('/app/spots');

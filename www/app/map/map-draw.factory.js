@@ -258,60 +258,59 @@
             // contains all the lassoed objects
             var isLassoed = [];
 
-            SpotFactory.all().then(function (spots) {
-              var mappedSpots = _.filter(spots, function (spot) {
-                return spot.geometry;
-              });
-              _.each(mappedSpots, function (spot) {
-                // if the spot is a point, we test using turf.inside
-                // if the spot is a polygon or line, we test using turf.intersect
-
-                var spotType = spot.properties.type;
-
-                if (spotType === 'point') {
-                  // is the point inside the drawn polygon?
-                  if (turf.inside(spot, geojsonObj)) {
-                    isLassoed.push({
-                      'id': spot.properties.id,
-                      'name': spot.properties.name,
-                      'type': spot.properties.type
-                    });
-                  }
-                }
-
-                if (spotType === 'line' || spotType === 'polygon' || spotType === 'group') {
-                  // is the line or polygon within/intersected in the drawn polygon?
-                  if (turf.intersect(spot, geojsonObj)) {
-                    isLassoed.push({
-                      'id': spot.properties.id,
-                      'name': spot.properties.name,
-                      'type': spot.properties.type
-                    });
-                  }
-                }
-              });
-
-              $log.log('isLassoed, ', isLassoed);
-
-              if (isLassoed.length === 0) {
-                $ionicPopup.alert({
-                  'title': 'Empty Group!',
-                  'template': 'No spots are within or intersect the drawn poloygon.'
-                });
-                return;
-              }
-
-              geojsonObj.properties = {
-                'type': 'group',
-                'group_members': isLassoed
-              };
-              if (imageMap) {
-                geojsonObj.properties.image_map = imageMap.id;
-              }
-
-              NewSpotFactory.setNewSpot(geojsonObj);
-              $state.go('spotTab.orientation');
+            var spots = SpotFactory.getSpots();
+            var mappedSpots = _.filter(spots, function (spot) {
+              return spot.geometry;
             });
+            _.each(mappedSpots, function (spot) {
+              // if the spot is a point, we test using turf.inside
+              // if the spot is a polygon or line, we test using turf.intersect
+
+              var spotType = spot.properties.type;
+
+              if (spotType === 'point') {
+                // is the point inside the drawn polygon?
+                if (turf.inside(spot, geojsonObj)) {
+                  isLassoed.push({
+                    'id': spot.properties.id,
+                    'name': spot.properties.name,
+                    'type': spot.properties.type
+                  });
+                }
+              }
+
+              if (spotType === 'line' || spotType === 'polygon' || spotType === 'group') {
+                // is the line or polygon within/intersected in the drawn polygon?
+                if (turf.intersect(spot, geojsonObj)) {
+                  isLassoed.push({
+                    'id': spot.properties.id,
+                    'name': spot.properties.name,
+                    'type': spot.properties.type
+                  });
+                }
+              }
+            });
+
+            $log.log('isLassoed, ', isLassoed);
+
+            if (isLassoed.length === 0) {
+              $ionicPopup.alert({
+                'title': 'Empty Group!',
+                'template': 'No spots are within or intersect the drawn poloygon.'
+              });
+              return;
+            }
+
+            geojsonObj.properties = {
+              'type': 'group',
+              'group_members': isLassoed
+            };
+            if (imageMap) {
+              geojsonObj.properties.image_map = imageMap.id;
+            }
+
+            NewSpotFactory.setNewSpot(geojsonObj);
+            $state.go('spotTab.orientation');
           }
           else {
             // contains a kink, aka self-intersecting polygon

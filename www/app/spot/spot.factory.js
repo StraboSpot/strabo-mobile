@@ -5,25 +5,32 @@
     .module('app')
     .factory('SpotFactory', SpotFactory);
 
-  SpotFactory.$inject = ['$q', 'LocalStorageFactory'];
+  SpotFactory.$inject = ['$log', '$q', 'LocalStorageFactory'];
 
-  function SpotFactory($q, LocalStorageFactory) {
+  function SpotFactory($log, $q, LocalStorageFactory) {
+    var data = {};
+
     return {
-      'all': all,
       'clear': clear,
       'destroy': destroy,
       'getCenter': getCenter,
       'getFirstSpot': getFirstSpot,
       'getSpotCount': getSpotCount,
       'getSpotId': getSpotId,
+      'getSpots': getSpots,
+      'loadSpots': loadSpots,
       'read': read,
       'save': save,
       'write': write
     };
 
+    /**
+     * Private Functions
+     */
+
+    // Load all spots from local storage
     function all() {
       var deferred = $q.defer(); // init promise
-
       var spots = [];
 
       LocalStorageFactory.spotsDb.iterate(function (value, key) {
@@ -31,20 +38,22 @@
       }, function () {
         deferred.resolve(spots);
       });
-
       return deferred.promise;
     }
 
+    /**
+     * Public Functions
+     */
+
     // wipes the spots database
-    function clear(callback) {
-      LocalStorageFactory.spotsDb.clear(function (err) {
-        if (err) {
-          callback(err);
-        }
-        else {
-          callback();
-        }
+    function clear() {
+      var deferred = $q.defer(); // init promise
+      LocalStorageFactory.spotsDb.clear().then(function () {
+        data = {};
+        deferred.notify();
+        deferred.resolve(data);
       });
+      return deferred.promise;
     }
 
     // delete the spot
@@ -98,6 +107,21 @@
       return LocalStorageFactory.spotsDb.getItem(spotId);
     }
 
+    function getSpots() {
+      return data;
+    }
+
+    function loadSpots() {
+      if (_.isEmpty(data)) {
+        $log.log('Loading spots ....');
+        var dataPromise = all().then(function (savedData) {
+          data = savedData;
+          $log.log('Finished loading spots: ', data);
+        });
+        return dataPromise;
+      }
+    }
+
     // read from storage
     function read(key, callback) {
       LocalStorageFactory.spotsDb.getItem(key).then(function (value) {
@@ -105,17 +129,19 @@
       });
     }
 
-    function save(value) {
-      value.properties.modified_timestamp = new Date().getTime();
+    function save(saveSpot) {
+      saveSpot.properties.modified_timestamp = new Date().getTime();
 
-      var self = this;
       var deferred = $q.defer(); // init promise
-
-      self.write(value.properties.id, value).then(function (data) {
-        deferred.notify();
-        deferred.resolve(data);
+      LocalStorageFactory.spotsDb.setItem(saveSpot.properties.id, saveSpot).then(function () {
+        $log.log('Saved spot: ', saveSpot);
+        all().then(function (savedData) {
+          data = savedData;
+          $log.log('All spots: ', data);
+          deferred.notify();
+          deferred.resolve(data);
+        });
       });
-
       return deferred.promise;
     }
 

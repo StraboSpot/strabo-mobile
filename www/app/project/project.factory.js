@@ -80,14 +80,16 @@
     }
 
     function loadProject() {
-      $log.log('Loading project properties ....');
-      var dataPromise = all().then(function (savedData) {
-        data = savedData;
-        $log.log('Finished loading project properties: ', data);
-      });
-      $log.log('Loading project survey ....');
-      DataModelsFactory.readCSV(csvFile, setSurvey);
-      return dataPromise;
+      if (_.isEmpty(data)) {
+        $log.log('Loading project properties ....');
+        var dataPromise = all().then(function (savedData) {
+          data = savedData;
+          $log.log('Finished loading project properties: ', data);
+        });
+        $log.log('Loading project survey ....');
+        DataModelsFactory.readCSV(csvFile, setSurvey);
+        return dataPromise;
+      }
     }
 
     // Save all project properties in local storage

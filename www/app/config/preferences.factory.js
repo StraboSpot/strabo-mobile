@@ -54,14 +54,16 @@
 
     // Load the preferences data and survey
     function loadPreferences() {
-      $log.log('Loading preferences ....');
-      var dataPromise = all().then(function (savedData) {
-        data = savedData;
-        $log.log('Finished loading preferences: ', data);
-      });
-      $log.log('Loading preferences survey ....');
-      DataModelsFactory.readCSV(csvFile, setSurvey);
-      return dataPromise;
+      if (_.isEmpty(data)) {
+        $log.log('Loading preferences ....');
+        var dataPromise = all().then(function (savedData) {
+          data = savedData;
+          $log.log('Finished loading preferences: ', data);
+        });
+        $log.log('Loading preferences survey ....');
+        DataModelsFactory.readCSV(csvFile, setSurvey);
+        return dataPromise;
+      }
     }
 
     function save(newData) {

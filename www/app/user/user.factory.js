@@ -70,16 +70,18 @@
     }
 
     function loadUser() {
-      $log.log('Loading user data ....');
-      var dataPromise = all().then(function (savedData) {
-        data = savedData;
-        if (data && data.login) {
-          $log.log('Logged in as: ', data.login);
-          loggedIn = angular.isDefined(data.login);
-        }
-        $log.log('Finished loading user data: ', data);
-      });
-      return dataPromise;
+      if (_.isEmpty(data)) {
+        $log.log('Loading user data ....');
+        var dataPromise = all().then(function (savedData) {
+          data = savedData;
+          if (data && data.login) {
+            $log.log('Logged in as: ', data.login);
+            loggedIn = angular.isDefined(data.login);
+          }
+          $log.log('Finished loading user data: ', data);
+        });
+        return dataPromise;
+      }
     }
 
     // Save all user data in local storage

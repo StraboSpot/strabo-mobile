@@ -247,58 +247,57 @@
       }
 
       // Loop through all spots and create ol vector layers
-      SpotFactory.all().then(function (spots) {
-        if (isImageMap) {
-          spots = getImageMapSpots(spots);
-          if (spots.length > 0) {
-            doFlyByAnimation();
-            setNewImageMapView(spots);
-          }
+      var spots = SpotFactory.getSpots();
+      if (isImageMap) {
+        spots = getImageMapSpots(spots);
+        if (spots.length > 0) {
+          doFlyByAnimation();
+          setNewImageMapView(spots);
+        }
+      }
+      else {
+        spots = getMapSpots(spots);
+        if (spots.length > 0) {
+          doFlyByAnimation();
+          setNewMapView(spots);
         }
         else {
-          spots = getMapSpots(spots);
-          if (spots.length > 0) {
-            doFlyByAnimation();
-            setNewMapView(spots);
-          }
-          else {
-            $log.log('No spots found, attempting to geolocate and center on the that.');
-            // attempt to geolocate instead
-            $cordovaGeolocation.getCurrentPosition({
-              'maximumAge': 0,
-              'timeout': 10000,
-              'enableHighAccuracy': true
-            }).then(
-              function (position) {
-                var lat = position.coords.latitude;
-                var lng = position.coords.longitude;
+          $log.log('No spots found, attempting to geolocate and center on the that.');
+          // attempt to geolocate instead
+          $cordovaGeolocation.getCurrentPosition({
+            'maximumAge': 0,
+            'timeout': 10000,
+            'enableHighAccuracy': true
+          }).then(
+            function (position) {
+              var lat = position.coords.latitude;
+              var lng = position.coords.longitude;
 
-                $log.log('initial getLocation ', [lat, lng]);
+              $log.log('initial getLocation ', [lat, lng]);
 
-                var newView = new ol.View({
-                  'center': ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
-                  'zoom': 17,
-                  'minZoom': 4
-                });
-                map.setView(newView);
-              },
-              function (err) {
-                // uh oh, cannot geolocate, nor have any spots
-                $ionicPopup.alert({
-                  'title': 'Alert!',
-                  'template': 'Could not geolocate your position.  Defaulting you to 0,0'
-                });
-                var newView = new ol.View({
-                  'center': ol.proj.transform([0, 0], 'EPSG:4326', 'EPSG:3857'),
-                  'zoom': 4,
-                  'minZoom': 4
-                });
-                map.setView(newView);
-              }
-            );
-          }
+              var newView = new ol.View({
+                'center': ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
+                'zoom': 17,
+                'minZoom': 4
+              });
+              map.setView(newView);
+            },
+            function (err) {
+              // uh oh, cannot geolocate, nor have any spots
+              $ionicPopup.alert({
+                'title': 'Alert!',
+                'template': 'Could not geolocate your position.  Defaulting you to 0,0'
+              });
+              var newView = new ol.View({
+                'center': ol.proj.transform([0, 0], 'EPSG:4326', 'EPSG:3857'),
+                'zoom': 4,
+                'minZoom': 4
+              });
+              map.setView(newView);
+            }
+          );
         }
-      });
+      }
     }
   }
 }());

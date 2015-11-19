@@ -24,7 +24,8 @@
         'controller': 'MenuController as vm',
         'resolve': {
           'prepProjectFactory': prepProjectFactory,
-          'prepUserFactory': prepUserFactory
+          'prepUserFactory': prepUserFactory,
+          'prepSpotFactory': prepSpotFactory
         }
       })
       .state('app.project', {
@@ -272,6 +273,10 @@
 
   function prepProjectFactory(ProjectFactory) {
     return ProjectFactory.loadProject();
+  }
+
+  function prepSpotFactory(SpotFactory) {
+    return SpotFactory.loadSpots();
   }
 
   function prepUserFactory(UserFactory) {

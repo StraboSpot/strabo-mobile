@@ -67,9 +67,7 @@
           }
         };
 
-        SpotFactory.save(geojsonPoint).then(function (data) {
-          $log.log('wrote: ', data);
-        });
+        SpotFactory.save(geojsonPoint);
       }
     }
   }

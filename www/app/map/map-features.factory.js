@@ -18,57 +18,56 @@
 
     function createFeatureLayer(map, imageMap) {
       // Loop through all spots and create ol vector layers
-      SpotFactory.all().then(function (spots) {
-        var featureLayer = MapLayerFactory.getFeatureLayer();
-        // wipe the array because we want to avoid duplicating the feature in the ol.Collection
-        featureLayer.getLayers().clear();
+      var spots = SpotFactory.getSpots();
+      var featureLayer = MapLayerFactory.getFeatureLayer();
+      // wipe the array because we want to avoid duplicating the feature in the ol.Collection
+      featureLayer.getLayers().clear();
 
-        var mappableSpots;
-        if (map.getView().getProjection().getUnits() === 'pixels') {
-          ImageMapFactory.clearCurrentImageMap();
+      var mappableSpots;
+      if (map.getView().getProjection().getUnits() === 'pixels') {
+        ImageMapFactory.clearCurrentImageMap();
 
-          mappableSpots = _.filter(spots, function (spot) {
-            return spot.properties.image_map === imageMap.id;
-          });
-        }
-        else {
-          // Remove spots that don't have a geometry defined or
-          // are mapped on an image
-          mappableSpots = _.reject(spots, function (spot) {
-            return !_.has(spot, 'geometry') || _.has(spot.properties, 'image_map');
-          });
-        }
-
-        // get distinct groups and aggregate spots by group type
-        var spotGroup = _.groupBy(mappableSpots, function (spot) {
-          return spot.properties.type;
+        mappableSpots = _.filter(spots, function (spot) {
+          return spot.properties.image_map === imageMap.id;
         });
+      }
+      else {
+        // Remove spots that don't have a geometry defined or
+        // are mapped on an image
+        mappableSpots = _.reject(spots, function (spot) {
+          return !_.has(spot, 'geometry') || _.has(spot.properties, 'image_map');
+        });
+      }
 
-        var spotTypes = {
-          'point': 'Measurements & Observations',
-          'line': 'Contacts & Traces',
-          'polygon': 'Rock Descriptions',
-          'group': 'Stations'
-        };
-
-        // Go through each group and assign all the aggregates to the geojson feature
-        for (var key in spotGroup) {
-          if (spotGroup.hasOwnProperty(key)) {
-            // Create a geojson to hold all the spots that fit the same spot type
-            var spotTypeLayer = {
-              'type': 'FeatureCollection',
-              'features': spotGroup[key],
-              'properties': {
-                'name': spotTypes[key] + ' (' + spotGroup[key].length + ')'
-              }
-            };
-
-            // Add the feature collection layer to the map
-            featureLayer.getLayers().push(
-              geojsonToVectorLayer(spotTypeLayer, map.getView().getProjection()));
-          }
-        }
+      // get distinct groups and aggregate spots by group type
+      var spotGroup = _.groupBy(mappableSpots, function (spot) {
+        return spot.properties.type;
       });
+
+      var spotTypes = {
+        'point': 'Measurements & Observations',
+        'line': 'Contacts & Traces',
+        'polygon': 'Rock Descriptions',
+        'group': 'Stations'
+      };
+
+      // Go through each group and assign all the aggregates to the geojson feature
+      for (var key in spotGroup) {
+        if (spotGroup.hasOwnProperty(key)) {
+          // Create a geojson to hold all the spots that fit the same spot type
+          var spotTypeLayer = {
+            'type': 'FeatureCollection',
+            'features': spotGroup[key],
+            'properties': {
+              'name': spotTypes[key] + ' (' + spotGroup[key].length + ')'
+            }
+          };
+
+          // Add the feature collection layer to the map
+          featureLayer.getLayers().push(
+            geojsonToVectorLayer(spotTypeLayer, map.getView().getProjection()));
+        }
+      }
     }
 
     // We want to load all the geojson markers from the persistence storage onto the map
