@@ -21,7 +21,11 @@
         'url': '/app',
         'abstract': true,
         'templateUrl': 'app/menu/menu.html',
-        'controller': 'MenuController as vm'
+        'controller': 'MenuController as vm',
+        'resolve': {
+          'prepProjectFactory': prepProjectFactory,
+          'prepUserFactory': prepUserFactory
+        }
       })
       .state('app.project', {
         'cache': false,
@@ -30,14 +34,6 @@
           'menuContent': {
             'templateUrl': 'app/project/project.html',
             'controller': 'ProjectController as vm'
-          }
-        },
-        'resolve': {
-          'ProjectData': function (ProjectFactory) {
-            return ProjectFactory.dataPromise;
-          },
-          'ProjectSurvey': function (ProjectFactory) {
-            return ProjectFactory.surveyPromise;
           }
         }
       })
@@ -58,11 +54,6 @@
           'menuContent': {
             'templateUrl': 'app/user/user.html',
             'controller': 'UserController as vm'
-          }
-        },
-        'resolve': {
-          'UserData': function (UserFactory) {
-            return UserFactory.dataPromise;
           }
         }
       })
@@ -104,12 +95,7 @@
           }
         },
         'resolve': {
-          'PreferencesData': function (PreferencesFactory) {
-            return PreferencesFactory.dataPromise;
-          },
-          'PreferencesSurvey': function (PreferencesFactory) {
-            return PreferencesFactory.surveyPromise;
-          }
+          'prepPreferencesFactory': prepPreferencesFactory
         }
       })
       .state('app.image-maps', {
@@ -139,11 +125,6 @@
           'menuContent': {
             'templateUrl': 'app/spots/spots.html',
             'controller': 'SpotsController as vm'
-          }
-        },
-        'resolve': {
-          'UserData': function (UserFactory) {
-            return UserFactory.dataPromise;
           }
         }
       })
@@ -283,5 +264,17 @@
 
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/login');
+  }
+
+  function prepPreferencesFactory(PreferencesFactory) {
+    return PreferencesFactory.loadPreferences();
+  }
+
+  function prepProjectFactory(ProjectFactory) {
+    return ProjectFactory.loadProject();
+  }
+
+  function prepUserFactory(UserFactory) {
+    return UserFactory.loadUser();
   }
 }());

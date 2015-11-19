@@ -9,18 +9,15 @@
 
   function UserFactory($log, $q, LocalStorageFactory) {
     var data = {};
-    var dataPromise;
     var loggedIn = false;
 
-    activate();
-
     return {
-      'dataPromise': dataPromise,
       'destroyLogin': destroyLogin,
       'getLogin': getLogin,
       'getUserData': getUserData,
       'getUserName': getUserName,
       'isLoggedIn': isLoggedIn,
+      'loadUser': loadUser,             // Run from app config
       'save': save,
       'setLogin': setLogin
     };
@@ -28,18 +25,6 @@
     /**
      * Private Functions
      */
-
-    function activate() {
-      $log.log('Loading user data ....');
-      dataPromise = all().then(function (savedData) {
-        data = savedData;
-        if (data && data.login) {
-          $log.log('Logged in as: ', data.login);
-          loggedIn = angular.isDefined(data.login);
-        }
-        $log.log('Finished loading user data: ', data);
-      });
-    }
 
     // Load all user data from local storage
     function all() {
@@ -84,10 +69,17 @@
       return loggedIn;
     }
 
-    function setLogin(login) {
-      loggedIn = true;
-      data.login = login;
-      return LocalStorageFactory.userDb.setItem('login', login);
+    function loadUser() {
+      $log.log('Loading user data ....');
+      var dataPromise = all().then(function (savedData) {
+        data = savedData;
+        if (data && data.login) {
+          $log.log('Logged in as: ', data.login);
+          loggedIn = angular.isDefined(data.login);
+        }
+        $log.log('Finished loading user data: ', data);
+      });
+      return dataPromise;
     }
 
     // Save all user data in local storage
@@ -99,6 +91,12 @@
         });
         $log.log('Saved user: ', data);
       });
+    }
+
+    function setLogin(login) {
+      loggedIn = true;
+      data.login = login;
+      return LocalStorageFactory.userDb.setItem('login', login);
     }
   }
 }());

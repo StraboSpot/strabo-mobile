@@ -10,37 +10,22 @@
   function ProjectFactory($log, $q, DataModelsFactory, LocalStorageFactory) {
     var csvFile = 'app/data-models/ProjectsPage.csv';
     var data = {};
-    var dataPromise;
     var survey = {};
-    var surveyPromise;
-
-    activate();
 
     return {
-      'dataPromise': dataPromise,
       'getProjectData': getProjectData,
       'getProjectName': getProjectName,
       'getSpotNumber': getSpotNumber,
       'getSpotPrefix': getSpotPrefix,
       'getSurvey': getSurvey,
       'incrementSpotNumber': incrementSpotNumber,
-      'save': save,
-      'surveyPromise': surveyPromise
+      'loadProject': loadProject,                     // Run from app config
+      'save': save
     };
 
     /**
      * Private Functions
      */
-
-    function activate() {
-      $log.log('Loading project properties ....');
-      dataPromise = all().then(function (savedData) {
-        data = savedData;
-        $log.log('Finished loading project properties: ', data);
-      });
-      $log.log('Loading project survey ....');
-      surveyPromise = DataModelsFactory.readCSV(csvFile, setSurvey);
-    }
 
     // Load all project properties from local storage
     function all() {
@@ -92,6 +77,17 @@
         data.starting_number_for_spot = start_number;
         LocalStorageFactory.projectDb.setItem('starting_number_for_spot', start_number);
       }
+    }
+
+    function loadProject() {
+      $log.log('Loading project properties ....');
+      var dataPromise = all().then(function (savedData) {
+        data = savedData;
+        $log.log('Finished loading project properties: ', data);
+      });
+      $log.log('Loading project survey ....');
+      DataModelsFactory.readCSV(csvFile, setSurvey);
+      return dataPromise;
     }
 
     // Save all project properties in local storage

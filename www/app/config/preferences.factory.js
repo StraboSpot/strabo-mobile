@@ -10,34 +10,18 @@
   function PreferencesFactory($log, $q, DataModelsFactory, LocalStorageFactory) {
     var csvFile = 'app/data-models/Preferences.csv';
     var data = {};
-    var dataPromise;
     var survey = {};
-    var surveyPromise;
-
-    activate();
 
     return {
-      'dataPromise': dataPromise,
       'getPreferencesData': getPreferencesData,
       'getSurvey': getSurvey,
-      'save': save,
-      'surveyPromise': surveyPromise
+      'loadPreferences': loadPreferences,         // Run from app config
+      'save': save
     };
 
     /**
      * Private Functions
      */
-
-    // Load the preferences data and survey
-    function activate() {
-      $log.log('Loading preferences ....');
-      dataPromise = all().then(function (savedData) {
-        data = savedData;
-        $log.log('Finished loading preferences: ', data);
-      });
-      $log.log('Loading preferences survey ....');
-      surveyPromise = DataModelsFactory.readCSV(csvFile, setSurvey);
-    }
 
     function all() {
       var deferred = $q.defer(); // init promise
@@ -66,6 +50,18 @@
 
     function getSurvey() {
       return survey;
+    }
+
+    // Load the preferences data and survey
+    function loadPreferences() {
+      $log.log('Loading preferences ....');
+      var dataPromise = all().then(function (savedData) {
+        data = savedData;
+        $log.log('Finished loading preferences: ', data);
+      });
+      $log.log('Loading preferences survey ....');
+      DataModelsFactory.readCSV(csvFile, setSurvey);
+      return dataPromise;
     }
 
     function save(newData) {
