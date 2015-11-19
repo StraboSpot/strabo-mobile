@@ -11,6 +11,14 @@
     var vmParent = $scope.vm;
     vmParent.load($stateParams);  // Need to load current state into parent
 
-    $log.log('In OrientationTabController');
+    activate();
+
+    /**
+     * Private Functions
+     */
+
+    function activate() {
+      $log.log('In OrientationTabController');
+    }
   }
 }());

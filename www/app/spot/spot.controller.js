@@ -9,32 +9,102 @@
     'ContentModelSurveyFactory', 'CurrentSpotFactory', 'ImageMapFactory', 'NewSpotFactory', 'ProjectFactory',
     'SpotsFactory'];
 
-  // this scope is the parent scope for the SpotController that all child SpotController will inherit
+  // This scope is the parent scope for the SpotController that all child SpotController will inherit
   function SpotController($ionicModal, $ionicPopup, $location, $log, $rootScope, $scope, $state,
                           ContentModelSurveyFactory, CurrentSpotFactory, ImageMapFactory, NewSpotFactory,
                           ProjectFactory, SpotsFactory) {
     var vm = this;
 
-    $rootScope.$state = $state;
-
+    vm.closeModal = closeModal;
+    vm.copySpot = copySpot;
+    vm.deleteSpot = deleteSpot;
+    vm.getMax = getMax;
+    vm.getMin = getMin;
+    vm.goToSpots = goToSpots;
+    vm.isAcknowledgeChecked = isAcknowledgeChecked;
+    vm.isChecked = isChecked;
+    vm.isGroupChecked = isGroupChecked;
+    vm.isMemberChecked = isMemberChecked;
+    vm.isOptionChecked = isOptionChecked;
+    vm.link_relationship = {
+      'choices': [
+        {'type': 'has', 'inverse': 'describes'},
+        {'type': 'describes', 'inverse': 'has'},
+        {'type': 'cross-cuts', 'inverse': 'is cross cut by'},
+        {'type': 'is cross-cut by', 'inverse': 'cross-cuts'},
+        {'type': 'is younger than', 'inverse': 'is older than'},
+        {'type': 'is older than', 'inverse': 'is younger than'},
+        {'type': 'is a lower metamorphic grade than', 'inverse': 'is a higher metamorphic grade than'},
+        {'type': 'is a higher metamorphic grade than', 'inverse': 'is a lower metamorphic grade than'},
+        {'type': 'is included within', 'inverse': 'includes'},
+        {'type': 'includes', 'inverse': 'is included within'},
+        {'type': 'is otherwise related to', 'inverse': 'is otherwise related to'}
+      ]
+    };
+    vm.load = load;
+    vm.openModal = openModal;
+    vm.openSpot = openSpot;
+    vm.setSelMultClass = setSelMultClass;
+    vm.showField = showField;
     vm.spotTypes = {
       'point': 'Measument or Observation',
       'line': 'Contact or Trace',
       'polygon': 'Rock Description',
       'group': 'Station or Group'
     };
+    vm.submit = submit;
+    vm.switchTabs = switchTabs;
+    vm.toggleAcknowledgeChecked = toggleAcknowledgeChecked;
+    vm.toggleChecked = toggleChecked;
+    vm.toggleSelection = toggleSelection;
+    vm.validateFields = validateFields;
+    vm.validateForm = validateForm;
 
-    vm.goToSpots = function () {
-      $state.go('app.spots');
-    };
+    activate();
 
-    vm.openSpot = function (id) {
-      CurrentSpotFactory.clearCurrentSpot();
-      $location.path('/spotTab/' + id + '/notes');
-    };
+    /**
+     * Private Functions
+     */
+
+    function activate() {
+      $rootScope.$state = $state;
+
+      $ionicModal.fromTemplateUrl('app/spot/links-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up'
+      }).then(function (modal) {
+        vm.linkModal = modal;
+      });
+
+      $ionicModal.fromTemplateUrl('app/spot/groups-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up'
+      }).then(function (modal) {
+        vm.groupModal = modal;
+      });
+
+      $ionicModal.fromTemplateUrl('app/spot/groupmembers-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up'
+      }).then(function (modal) {
+        vm.groupMembersModal = modal;
+      });
+
+      // Cleanup the modal when we're done with it!
+      // Execute action on hide modal
+      $scope.$on('linkModal.hidden', function () {
+        vm.linkModal.remove();
+      });
+      $scope.$on('groupModal.hidden', function () {
+        vm.groupModal.remove();
+      });
+      $scope.$on('groupMembersModal.hidden', function () {
+        vm.groupMembersModal.remove();
+      });
+    }
 
     // Set or cleanup some of the properties of the vm
-    var setProperties = function () {
+    function setProperties() {
       // Convert date string to Date type
       vm.spot.properties.date = new Date(vm.spot.properties.date);
       vm.spot.properties.time = new Date(vm.spot.properties.time);
@@ -179,9 +249,113 @@
         vm.showLinks = vm.other_spots.length;
         vm.showGroups = vm.groups.length;
       });
-    };
+    }
 
-    vm.load = function (params) {
+    /**
+     * Public Functions
+     */
+
+    function closeModal(modal) {
+      vm[modal].hide();
+    }
+
+    // Create a new spot with the details from this spot
+    function copySpot() {
+      var copySpot = _.omit(vm.spot, 'properties');
+      copySpot.properties = _.omit(vm.spot.properties,
+        ['id', 'date', 'time', 'links', 'groups', 'group_members']);
+      NewSpotFactory.setNewSpot(copySpot);
+      $location.path('/spotTab//notes');
+    }
+
+    // Delete the spot
+    function deleteSpot() {
+      var confirmPopup = $ionicPopup.confirm({
+        'title': 'Delete Spot',
+        'template': 'Are you sure you want to delete this spot?'
+      });
+      confirmPopup.then(function (res) {
+        if (res) {
+          SpotsFactory.destroy(vm.spot.properties.id);
+          $location.path('/app/spots');
+        }
+      });
+    }
+
+    // Get the max value allowed for a number field
+    function getMax(constraint) {
+      try {
+        // Look for <= in constraint, followed by a space and then a number
+        var regexMax = /<=\s(\d*)/i;
+        // Return just the number
+        return regexMax.exec(constraint)[1];
+      }
+      catch (e) {
+        return undefined;
+      }
+    }
+
+    // Get the min value allowed for a number field
+    function getMin(constraint) {
+      try {
+        // Look for >= in constraint, followed by a space and any number of digits
+        var regexMin = />=\s(\d*)/i;
+        // Return just the number
+        return regexMin.exec(constraint)[1];
+      }
+      catch (e) {
+        return undefined;
+      }
+    }
+
+    function goToSpots() {
+      $state.go('app.spots');
+    }
+
+    // Is the other_spot is this spot's links list?
+    function isAcknowledgeChecked(field) {
+      if (vm.spot) {
+        if (vm.spot.properties[field]) {
+          return true;
+        }
+      }
+      else {
+        return false;
+      }
+    }
+
+    // Is the other_spot is this spot's links list?
+    function isChecked(id) {
+      return _.find(vm.spot.properties.links, function (rel_spot) {
+        return rel_spot.id === id;
+      });
+    }
+
+    function isGroupChecked(id) {
+      return _.find(vm.spot.properties.groups, function (rel_spot) {
+        return rel_spot.id === id;
+      });
+    }
+
+    function isMemberChecked(id) {
+      return _.find(vm.spot.properties.group_members, function (rel_spot) {
+        return rel_spot.id === id;
+      });
+    }
+
+    // Is the other_spot is this spot's links list?
+    function isOptionChecked(field, choice) {
+      if (vm.spot) {
+        if (vm.spot.properties[field]) {
+          return vm.spot.properties[field].indexOf(choice) !== -1;
+        }
+      }
+      else {
+        return false;
+      }
+    }
+
+    function load(params) {
       // Get the current spot
       if (NewSpotFactory.getNewSpot()) {
         // Load spot stored in the NewSpotFactory factory
@@ -213,145 +387,58 @@
           });
         }
       }
-    };
+    }
 
-    // Toggle selected for links or groups or group members selected
-    vm.toggleSelection = function toggleSelection(ref_spot, type_selected, type_unselected) {
-      var selected_spot = _.findWhere(vm[type_selected], {'id': ref_spot.id});
+    function openModal(modal) {
+      vm[modal].show();
+    }
 
-      // If selected spot is not already in the links_selected object
-      if (!selected_spot) {
-        vm[type_selected].push(ref_spot);
-      }
-      // This spot has been unselected so remove it
-      else {
-        vm[type_selected] = _.reject(vm[type_selected], function (spot) {
-          return spot.id === ref_spot.id;
-        });
-        vm[type_unselected].push(ref_spot);
-      }
-    };
+    function openSpot(id) {
+      CurrentSpotFactory.clearCurrentSpot();
+      $location.path('/spotTab/' + id + '/notes');
+    }
 
-    // Validate the fields in the given form
-    vm.validateFields = function (form) {
-      $log.log('Validating form with spot:', vm.spot);
-      var errorMessages = '';
-
-      // If a field is visible and required but empty give the user an error message and return to the form
-      _.each(form, function (field) {
-        var ele = document.getElementById(field.name);
-        if (getComputedStyle(ele).display !== 'none' && angular.isUndefined(vm.spot.properties[field.name])) {
-          if (field.required === 'true') {
-            errorMessages += '<b>' + field.label + '</b> Required!<br>';
-          }
-          else if (field.name in vm.spot.properties) {
-            errorMessages += '<b>' + field.label + '</b> ' + field.constraint_message + '<br>';
+    // Set the class for the select_multiple fields here because it is not working
+    // to set the class in the html the same way as for the other fields
+    function setSelMultClass(field) {
+      if (field.required === 'true') {
+        if (vm.spot.properties[field.name]) {
+          if (vm.spot.properties[field.name].length > 0) {
+            return 'no-errors';
           }
         }
-        else if (getComputedStyle(ele).display === 'none') {
-          delete vm.spot.properties[field.name];
+        else {
+          return 'has-errors';
         }
-      });
-
-      if (errorMessages) {
-        $ionicPopup.alert({
-          'title': 'Validation Error!',
-          'template': 'Fix the following errors before continuing:<br>' + errorMessages
-        });
-        return false;
       }
-      else {
+      return 'no-errors';
+    }
+
+    // Determine if the field should be shown or not by looking at the relevant key-value pair
+    function showField(relevant) {
+      if (!relevant) {
         return true;
       }
-    };
 
-    // Validate the current form
-    vm.validateForm = function () {
-      switch ($state.current.url.split('/').pop()) {
-        case 'details':
-          if (!vm.validateFields(vm.survey)) {
-            return false;
-          }
-          break;
-        case 'notes':
-          if (!vm.spot.properties.name) {
-            $ionicPopup.alert({
-              'title': 'Validation Error!',
-              'template': '<b>Spot Name</b> is required.'
-            });
-            return false;
-          }
-          break;
-        case 'georeference':
-          if (vm.spot.geometry) {
-            if (vm.spot.geometry.type === 'Point') {
-              var geoError;
-              if (!vm.spot.geometry.coordinates[0] && !vm.spot.geometry.coordinates[1]) {
-                geoError = '<b>Latitude</b> and <b>longitude</b> are required.';
-              }
-              else if (!vm.spot.geometry.coordinates[0]) {
-                geoError = '<b>Longitude</b> is required.';
-              }
-              else if (!vm.spot.geometry.coordinates[1]) {
-                geoError = '<b>Latitude</b> is required.';
-              }
-              if (geoError) {
-                $ionicPopup.alert({
-                  'title': 'Validation Error!',
-                  'template': geoError
-                });
-                return false;
-              }
-            }
-          }
-          break;
-        case 'rockdescription':
-          if (!vm.validateFields(ContentModelSurveyFactory.rock_description_survey)) {
-            return false;
-          }
-          break;
-        case 'rocksample':
-          if (!vm.validateFields(ContentModelSurveyFactory.rock_sample_survey)) {
-            return false;
-          }
-          break;
+      relevant = relevant.replace(/selected\(\$/g, '_.contains(');
+      relevant = relevant.replace(/\$/g, '');
+      relevant = relevant.replace(/{/g, 'vm.spot.properties.');
+      relevant = relevant.replace(/}/g, '');
+      relevant = relevant.replace(/''/g, 'undefined');
+      relevant = relevant.replace(/ = /g, ' == ');
+      relevant = relevant.replace(/ or /g, ' || ');
+      relevant = relevant.replace(/ and /g, ' && ');
+
+      try {
+        return eval(relevant);
       }
-      return true;
-    };
-
-    // When switching tabs validate the form first (if the tab is based on a form),
-    // save the properties for the current spot temporarily, then go to the new tab
-    vm.switchTabs = function (toTab) {
-      // has the rock description form been touched?
-      if ($scope.$$childTail.rockDescriptionForm && !$scope.$$childTail.rockDescriptionForm.$pristine) {
-        // yes
-        if (!vm.validateForm()) {
-          return 0;
-        }
+      catch (e) {
+        return false;
       }
-
-      // has the rock sample form been touched?
-      if ($scope.$$childTail.SampleTabForm && !$scope.$$childTail.SampleTabForm.$pristine) {
-        // yes
-        if (!vm.validateForm()) {
-          return 0;
-        }
-      }
-
-      // If the pristine variable is undefined or true don't validate the form,
-      // but always validate if the spot is a rock description
-      if (vm.spot.properties.type === 'polygon') {
-        if (!vm.validateForm()) {
-          return 0;
-        }
-      }
-
-      CurrentSpotFactory.setCurrentSpot(vm.spot);
-      $location.path('/spotTab/' + vm.spot.properties.id + '/' + toTab);
-    };
+    }
 
     // Add or modify Spot
-    vm.submit = function () {
+    function submit() {
       // Validate the form first
       if (!vm.validateForm()) {
         return 0;
@@ -514,74 +601,49 @@
         $location.path('/app/spots');
         // $ionicHistory.goBack();
       });
-    };
+    }
 
-    // Determine if the field should be shown or not by looking at the relevant key-value pair
-    vm.showField = function (relevant) {
-      if (!relevant) {
-        return true;
-      }
-
-      relevant = relevant.replace(/selected\(\$/g, '_.contains(');
-      relevant = relevant.replace(/\$/g, '');
-      relevant = relevant.replace(/{/g, 'vm.spot.properties.');
-      relevant = relevant.replace(/}/g, '');
-      relevant = relevant.replace(/''/g, 'undefined');
-      relevant = relevant.replace(/ = /g, ' == ');
-      relevant = relevant.replace(/ or /g, ' || ');
-      relevant = relevant.replace(/ and /g, ' && ');
-
-      try {
-        return eval(relevant);
-      }
-      catch (e) {
-        return false;
-      }
-    };
-
-    // Get the min value allowed for a number field
-    vm.getMin = function (constraint) {
-      try {
-        // Look for >= in constraint, followed by a space and any number of digits
-        var regexMin = />=\s(\d*)/i;
-        // Return just the number
-        return regexMin.exec(constraint)[1];
-      }
-      catch (e) {
-        return undefined;
-      }
-    };
-
-    // Get the max value allowed for a number field
-    vm.getMax = function (constraint) {
-      try {
-        // Look for <= in constraint, followed by a space and then a number
-        var regexMax = /<=\s(\d*)/i;
-        // Return just the number
-        return regexMax.exec(constraint)[1];
-      }
-      catch (e) {
-        return undefined;
-      }
-    };
-
-    // Set the class for the select_multiple fields here because it is not working
-    // to set the class in the html the same way as for the other fields
-    vm.setSelMultClass = function (field) {
-      if (field.required === 'true') {
-        if (vm.spot.properties[field.name]) {
-          if (vm.spot.properties[field.name].length > 0) {
-            return 'no-errors';
-          }
-        }
-        else {
-          return 'has-errors';
+    // When switching tabs validate the form first (if the tab is based on a form),
+    // save the properties for the current spot temporarily, then go to the new tab
+    function switchTabs(toTab) {
+      // has the rock description form been touched?
+      if ($scope.$$childTail.rockDescriptionForm && !$scope.$$childTail.rockDescriptionForm.$pristine) {
+        // yes
+        if (!vm.validateForm()) {
+          return 0;
         }
       }
-      return 'no-errors';
-    };
 
-    vm.toggleChecked = function (field, choice) {
+      // has the rock sample form been touched?
+      if ($scope.$$childTail.SampleTabForm && !$scope.$$childTail.SampleTabForm.$pristine) {
+        // yes
+        if (!vm.validateForm()) {
+          return 0;
+        }
+      }
+
+      // If the pristine variable is undefined or true don't validate the form,
+      // but always validate if the spot is a rock description
+      if (vm.spot.properties.type === 'polygon') {
+        if (!vm.validateForm()) {
+          return 0;
+        }
+      }
+
+      CurrentSpotFactory.setCurrentSpot(vm.spot);
+      $location.path('/spotTab/' + vm.spot.properties.id + '/' + toTab);
+    }
+
+    function toggleAcknowledgeChecked(field) {
+      if (vm.spot.properties[field]) {
+        delete vm.spot.properties[field];
+      }
+      else {
+        vm.spot.properties[field] = true;
+      }
+    }
+
+    function toggleChecked(field, choice) {
       var i = -1;
       if (vm.spot.properties[field]) {
         i = vm.spot.properties[field].indexOf(choice);
@@ -601,146 +663,110 @@
           delete vm.spot.properties[field];
         }
       }
-    };
+    }
 
-    // Is the other_spot is this spot's links list?
-    vm.isOptionChecked = function (field, choice) {
-      if (vm.spot) {
-        if (vm.spot.properties[field]) {
-          return vm.spot.properties[field].indexOf(choice) !== -1;
-        }
+    // Toggle selected for links or groups or group members selected
+    function toggleSelection(ref_spot, type_selected, type_unselected) {
+      var selected_spot = _.findWhere(vm[type_selected], {'id': ref_spot.id});
+
+      // If selected spot is not already in the links_selected object
+      if (!selected_spot) {
+        vm[type_selected].push(ref_spot);
       }
+      // This spot has been unselected so remove it
       else {
+        vm[type_selected] = _.reject(vm[type_selected], function (spot) {
+          return spot.id === ref_spot.id;
+        });
+        vm[type_unselected].push(ref_spot);
+      }
+    }
+
+    // Validate the fields in the given form
+    function validateFields(form) {
+      $log.log('Validating form with spot:', vm.spot);
+      var errorMessages = '';
+
+      // If a field is visible and required but empty give the user an error message and return to the form
+      _.each(form, function (field) {
+        var ele = document.getElementById(field.name);
+        if (getComputedStyle(ele).display !== 'none' && angular.isUndefined(vm.spot.properties[field.name])) {
+          if (field.required === 'true') {
+            errorMessages += '<b>' + field.label + '</b> Required!<br>';
+          }
+          else if (field.name in vm.spot.properties) {
+            errorMessages += '<b>' + field.label + '</b> ' + field.constraint_message + '<br>';
+          }
+        }
+        else if (getComputedStyle(ele).display === 'none') {
+          delete vm.spot.properties[field.name];
+        }
+      });
+
+      if (errorMessages) {
+        $ionicPopup.alert({
+          'title': 'Validation Error!',
+          'template': 'Fix the following errors before continuing:<br>' + errorMessages
+        });
         return false;
       }
-    };
-
-    // Is the other_spot is this spot's links list?
-    vm.isAcknowledgeChecked = function (field) {
-      if (vm.spot) {
-        if (vm.spot.properties[field]) {
-          return true;
-        }
-      }
       else {
-        return false;
+        return true;
       }
-    };
+    }
 
-    vm.toggleAcknowledgeChecked = function (field) {
-      if (vm.spot.properties[field]) {
-        delete vm.spot.properties[field];
+    // Validate the current form
+    function validateForm() {
+      switch ($state.current.url.split('/').pop()) {
+        case 'details':
+          if (!vm.validateFields(vm.survey)) {
+            return false;
+          }
+          break;
+        case 'notes':
+          if (!vm.spot.properties.name) {
+            $ionicPopup.alert({
+              'title': 'Validation Error!',
+              'template': '<b>Spot Name</b> is required.'
+            });
+            return false;
+          }
+          break;
+        case 'georeference':
+          if (vm.spot.geometry) {
+            if (vm.spot.geometry.type === 'Point') {
+              var geoError;
+              if (!vm.spot.geometry.coordinates[0] && !vm.spot.geometry.coordinates[1]) {
+                geoError = '<b>Latitude</b> and <b>longitude</b> are required.';
+              }
+              else if (!vm.spot.geometry.coordinates[0]) {
+                geoError = '<b>Longitude</b> is required.';
+              }
+              else if (!vm.spot.geometry.coordinates[1]) {
+                geoError = '<b>Latitude</b> is required.';
+              }
+              if (geoError) {
+                $ionicPopup.alert({
+                  'title': 'Validation Error!',
+                  'template': geoError
+                });
+                return false;
+              }
+            }
+          }
+          break;
+        case 'rockdescription':
+          if (!vm.validateFields(ContentModelSurveyFactory.rock_description_survey)) {
+            return false;
+          }
+          break;
+        case 'rocksample':
+          if (!vm.validateFields(ContentModelSurveyFactory.rock_sample_survey)) {
+            return false;
+          }
+          break;
       }
-      else {
-        vm.spot.properties[field] = true;
-      }
-    };
-
-    // Is the other_spot is this spot's links list?
-    vm.isChecked = function (id) {
-      return _.find(vm.spot.properties.links, function (rel_spot) {
-        return rel_spot.id === id;
-      });
-    };
-
-    vm.isGroupChecked = function (id) {
-      return _.find(vm.spot.properties.groups, function (rel_spot) {
-        return rel_spot.id === id;
-      });
-    };
-
-    vm.isMemberChecked = function (id) {
-      return _.find(vm.spot.properties.group_members, function (rel_spot) {
-        return rel_spot.id === id;
-      });
-    };
-
-    // Delete the spot
-    vm.deleteSpot = function () {
-      var confirmPopup = $ionicPopup.confirm({
-        'title': 'Delete Spot',
-        'template': 'Are you sure you want to delete this spot?'
-      });
-      confirmPopup.then(function (res) {
-        if (res) {
-          SpotsFactory.destroy(vm.spot.properties.id);
-          $location.path('/app/spots');
-        }
-      });
-    };
-
-    // Create a new spot with the details from this spot
-    vm.copySpot = function () {
-      var copySpot = _.omit(vm.spot, 'properties');
-      copySpot.properties = _.omit(vm.spot.properties,
-        ['id', 'date', 'time', 'links', 'groups', 'group_members']);
-      NewSpotFactory.setNewSpot(copySpot);
-      $location.path('/spotTab//notes');
-    };
-
-    /**
-     * MODALS
-     */
-
-    $ionicModal.fromTemplateUrl('app/spot/links-modal.html', {
-      'scope': $scope,
-      'animation': 'slide-in-up'
-    }).then(function (modal) {
-      vm.linkModal = modal;
-    });
-
-    $ionicModal.fromTemplateUrl('app/spot/groups-modal.html', {
-      'scope': $scope,
-      'animation': 'slide-in-up'
-    }).then(function (modal) {
-      vm.groupModal = modal;
-    });
-
-    $ionicModal.fromTemplateUrl('app/spot/groupmembers-modal.html', {
-      'scope': $scope,
-      'animation': 'slide-in-up'
-    }).then(function (modal) {
-      vm.groupMembersModal = modal;
-    });
-
-    vm.openModal = function (modal) {
-      vm[modal].show();
-    };
-
-    vm.closeModal = function (modal) {
-      vm[modal].hide();
-    };
-
-    // Cleanup the modal when we're done with it!
-    // Execute action on hide modal
-    $scope.$on('linkModal.hidden', function () {
-      vm.linkModal.remove();
-    });
-    $scope.$on('groupModal.hidden', function () {
-      vm.groupModal.remove();
-    });
-    $scope.$on('groupMembersModal.hidden', function () {
-      vm.groupMembersModal.remove();
-    });
-
-    /**
-     * Links
-     */
-
-    vm.link_relationship = {
-      'choices': [
-        {'type': 'has', 'inverse': 'describes'},
-        {'type': 'describes', 'inverse': 'has'},
-        {'type': 'cross-cuts', 'inverse': 'is cross cut by'},
-        {'type': 'is cross-cut by', 'inverse': 'cross-cuts'},
-        {'type': 'is younger than', 'inverse': 'is older than'},
-        {'type': 'is older than', 'inverse': 'is younger than'},
-        {'type': 'is a lower metamorphic grade than', 'inverse': 'is a higher metamorphic grade than'},
-        {'type': 'is a higher metamorphic grade than', 'inverse': 'is a lower metamorphic grade than'},
-        {'type': 'is included within', 'inverse': 'includes'},
-        {'type': 'includes', 'inverse': 'is included within'},
-        {'type': 'is otherwise related to', 'inverse': 'is otherwise related to'}
-      ]
-    };
+      return true;
+    }
   }
 }());

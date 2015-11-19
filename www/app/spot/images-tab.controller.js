@@ -3,35 +3,19 @@
 
   angular
     .module('app')
-    .controller('SpotTabImagesController', SpotTabImagesController);
+    .controller('ImagesTabController', ImagesTabController);
 
-  SpotTabImagesController.$inject = ['$scope', '$stateParams', '$log', '$cordovaCamera', '$ionicPopup', '$ionicModal',
+  ImagesTabController.$inject = ['$scope', '$stateParams', '$log', '$cordovaCamera', '$ionicPopup', '$ionicModal',
     '$location', '$window', 'SpotsFactory', 'ImageMapFactory'];
 
-  function SpotTabImagesController($scope, $stateParams, $log, $cordovaCamera, $ionicPopup, $ionicModal,
-                                   $location, $window, SpotsFactory, ImageMapFactory) {
+  function ImagesTabController($scope, $stateParams, $log, $cordovaCamera, $ionicPopup, $ionicModal,
+                               $location, $window, SpotsFactory, ImageMapFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.load($stateParams);  // Need to load current state into parent
 
-    $log.log('inside spot tab images Controller');
-
-    vm.showImages = function (index) {
-      vm.activeSlide = index;
-      $ionicModal.fromTemplateUrl('app/spot/images-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up'
-      }).then(function (modal) {
-        vm.imageModal = modal;
-        vm.imageModal.show();
-      });
-    };
-
-    vm.closeImageModal = function () {
-      vm.imageModal.hide();
-      vm.imageModal.remove();
-    };
-
+    vm.annotateChecked = annotateChecked;
+    vm.cameraModal = cameraModal;
     vm.cameraSource = [{
       'text': 'Photo Library',
       'value': 'PHOTOLIBRARY'
@@ -42,43 +26,26 @@
       'text': 'Saved Photo Album',
       'value': 'SAVEDPHOTOALBUM'
     }];
-
+    vm.closeImageModal = closeImageModal;
+    vm.goToImageMap = goToImageMap;
+    vm.isAnnotated = isAnnotated;
     vm.selectedCameraSource = {
       // default is always camera
       'source': 'CAMERA'
     };
+    vm.showImages = showImages;
 
-    vm.cameraModal = function (source) {
-      // camera modal popup
-      var myPopup = $ionicPopup.show({
-        'template': '<ion-radio ng-repeat="source in vmChild.cameraSource" ng-value="source.value" ng-model="vmChild.selectedCameraSource.source">{{ source.text }}</ion-radio>',
-        'title': 'Select an image source',
-        'scope': $scope,
-        'buttons': [{
-          'text': 'Cancel'
-        }, {
-          'text': '<b>Go</b>',
-          'type': 'button-positive',
-          'onTap': function (e) {
-            if (!vm.selectedCameraSource.source) {
-              // don't allow the user to close unless a value is set
-              e.preventDefault();
-            }
-            else {
-              return vm.selectedCameraSource.source;
-            }
-          }
-        }]
-      });
+    activate();
 
-      myPopup.then(function (cameraSource) {
-        if (cameraSource) {
-          launchCamera(cameraSource);
-        }
-      });
-    };
+    /**
+     * Private Functions
+     */
 
-    var launchCamera = function (source) {
+    function activate() {
+      $log.log('In ImagesTabController');
+    }
+
+    function launchCamera(source) {
       // all plugins must be wrapped in a ready function
       document.addEventListener('deviceready', function () {
         if (source === 'PHOTOLIBRARY') {
@@ -198,17 +165,52 @@
           $log.log('error: ', err);
         });
       });
-    };
+    }
 
-    vm.isAnnotated = function (image) {
-      return image.annotated;
-    };
+    /**
+     * Public Functions
+     */
 
-    vm.annotateChecked = function (image) {
+    function annotateChecked(image) {
       image.annotated = !image.annotated;
-    };
+    }
 
-    vm.goToImageMap = function (image) {
+    function cameraModal(source) {
+      // camera modal popup
+      var myPopup = $ionicPopup.show({
+        'template': '<ion-radio ng-repeat="source in vmChild.cameraSource" ng-value="source.value" ng-model="vmChild.selectedCameraSource.source">{{ source.text }}</ion-radio>',
+        'title': 'Select an image source',
+        'scope': $scope,
+        'buttons': [{
+          'text': 'Cancel'
+        }, {
+          'text': '<b>Go</b>',
+          'type': 'button-positive',
+          'onTap': function (e) {
+            if (!vm.selectedCameraSource.source) {
+              // don't allow the user to close unless a value is set
+              e.preventDefault();
+            }
+            else {
+              return vm.selectedCameraSource.source;
+            }
+          }
+        }]
+      });
+
+      myPopup.then(function (cameraSource) {
+        if (cameraSource) {
+          launchCamera(cameraSource);
+        }
+      });
+    }
+
+    function closeImageModal() {
+      vm.imageModal.hide();
+      vm.imageModal.remove();
+    }
+
+    function goToImageMap(image) {
       SpotsFactory.read(vmParent.spot.properties.id, (function (savedSpot) {
         savedSpot.properties.date = new Date(savedSpot.properties.date);
         savedSpot.properties.time = new Date(savedSpot.properties.time);
@@ -229,6 +231,21 @@
           });
         }
       }));
-    };
+    }
+
+    function isAnnotated(image) {
+      return image.annotated;
+    }
+
+    function showImages(index) {
+      vm.activeSlide = index;
+      $ionicModal.fromTemplateUrl('app/spot/images-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up'
+      }).then(function (modal) {
+        vm.imageModal = modal;
+        vm.imageModal.show();
+      });
+    }
   }
 }());

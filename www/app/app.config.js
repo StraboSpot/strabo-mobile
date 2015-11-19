@@ -191,7 +191,7 @@
         'views': {
           'spottab-childview': {
             'templateUrl': 'app/spot/images-tab.html',
-            'controller': 'SpotTabImagesController as vmChild'
+            'controller': 'ImagesTabController as vmChild'
           }
         }
       })
