@@ -73,7 +73,6 @@
         case 'point':
           vm.spotTitle = 'Measurement or Observation';
           vm.showDynamicFields = true;
-          vm.showDetails = true;
           vm.showRockDescription = true;
           vm.showRockSample = true;
           vm.survey = ContentModelSurveyFactory.measurements_and_observations_survey;
@@ -83,7 +82,6 @@
         case 'line':
           vm.spotTitle = 'Contact or Trace';
           vm.showDynamicFields = true;
-          vm.showDetails = true;
           vm.survey = ContentModelSurveyFactory.contacts_and_traces_survey;
           vm.choices = ContentModelSurveyFactory.contacts_and_traces_choices;
           vm.showGroupMembers = false;
@@ -91,7 +89,6 @@
         case 'polygon':
           vm.spotTitle = 'Rock Description';
           vm.showDynamicFields = false;
-          vm.showDetails = false;
           vm.survey = undefined;
           vm.choices = undefined;
           vm.showRockDescription = true;
@@ -100,7 +97,6 @@
         case 'group':
           vm.spotTitle = 'Station or Group';
           vm.showDynamicFields = true;
-          vm.showDetails = true;
           vm.survey = ContentModelSurveyFactory.spot_grouping_survey;
           vm.choices = ContentModelSurveyFactory.spot_grouping_choices;
           vm.showGroupMembers = true;
@@ -337,7 +333,7 @@
       }
 
       // has the rock sample form been touched?
-      if ($scope.$$childTail.rockSampleForm && !$scope.$$childTail.rockSampleForm.$pristine) {
+      if ($scope.$$childTail.SampleTabForm && !$scope.$$childTail.SampleTabForm.$pristine) {
         // yes
         if (!vm.validateForm()) {
           return 0;

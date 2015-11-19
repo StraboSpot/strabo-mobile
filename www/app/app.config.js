@@ -158,7 +158,7 @@
         .state('spotTab', {
           'url': '/spotTab',
           'abstract': true,
-          'templateUrl': 'app/spot/abstract-spot.html',
+          'templateUrl': 'app/spot/spot.html',
           'controller': 'SpotController as vm'
         })
 
@@ -172,13 +172,13 @@
             }
           }
         })
-        .state('spotTab.details', {
+        .state('spotTab.orientation', {
           'cache': false,
-          'url': '/:spotId/details',
+          'url': '/:spotId/orientation',
           'views': {
             'spottab-childview': {
-              'templateUrl': 'app/spot/details-tab.html',
-              'controller': 'SpotTabDetailController as vmChild'
+              'templateUrl': 'app/spot/orientation-tab.html',
+              'controller': 'OrientationTabController as vmChild'
             }
           }
         })
@@ -232,13 +232,13 @@
             }
           }
         })
-        .state('spotTab.notes', {
+        .state('spotTab.spot', {
           'cache': false,
-          'url': '/:spotId/notes',
+          'url': '/:spotId/spot',
           'views': {
             'spottab-childview': {
-              'templateUrl': 'app/spot/notes-tab.html',
-              'controller': 'SpotTabNotesController as vmChild'
+              'templateUrl': 'app/spot/spot-tab.html',
+              'controller': 'SpotTabController as vmChild'
             }
           }
         })
@@ -252,13 +252,13 @@
             }
           }
         })
-        .state('spotTab.rocksample', {
+        .state('spotTab.sample', {
           'cache': false,
-          'url': '/:spotId/rocksample',
+          'url': '/:spotId/sample',
           'views': {
             'spottab-childview': {
-              'templateUrl': 'app/spot/rocksample-tab.html',
-              'controller': 'SpotTabRocksampleController as vmChild'
+              'templateUrl': 'app/spot/sample-tab.html',
+              'controller': 'SampleTabController as vmChild'
             }
           }
         })

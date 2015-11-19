@@ -285,7 +285,7 @@
               }
 
               NewSpotFactory.setNewSpot(geojsonObj);
-              $state.go('spotTab.details');
+              $state.go('spotTab.orientation');
             });
           }
           else {
@@ -360,7 +360,7 @@
           }
           // Initialize new Spot
           else {
-            var goTo = 'spotTab.details';
+            var goTo = 'spotTab.orientation';
             switch (drawButtonActive) {
               case 'Point':
                 geojsonObj.properties = {'type': 'point'};

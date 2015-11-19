@@ -42,7 +42,7 @@
         <ion-list>
           <ion-item class='item-accordion'
                     ng-repeat='spot in vm.spots | filter: {"properties": {"type": "group"}}'
-                    href='#/spotTab/{{spot.properties.id}}/details'>
+                    href='#/spotTab/{{spot.properties.id}}/spot'>
             {{spot.properties.name}}
           </ion-item>
         </ion-list>
@@ -52,7 +52,7 @@
         <ion-list>
           <ion-item class='item-accordion'
                     ng-repeat='spot in vm.spots | filter: {"properties": {"type": "group"}}'
-                    href='#/spotTab/{{spot.properties.id}}/details'>
+                    href='#/spotTab/{{spot.properties.id}}/spot'>
             {{spot.properties.name}}
           </ion-item>
         </ion-list>

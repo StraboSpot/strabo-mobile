@@ -1,4 +1,4 @@
-<form name='rockSampleForm' novalidate=''>
+<form name='SampleTabForm' novalidate=''>
   <ion-view>
     <ion-content>
       <div ng-repeat='field in vm.rock_sample_survey'>
@@ -6,7 +6,7 @@
           <div data-ng-switch on='field.type.split(" ")[0]'>
             <div ng-switch-when='integer'>
               <label class='item item-input item-stacked-label item-text-wrap'
-                     ng-class='{ "has-errors" : rockSampleForm[field.name].$invalid, "no-errors" : rockSampleForm[field.name].$valid }'>
+                     ng-class='{ "has-errors" : SampleTabForm[field.name].$invalid, "no-errors" : SampleTabForm[field.name].$valid }'>
                 <span class='input-label'>{{field.label}}</span>
                 <input type='number'
                        name='{{ field.name }}'
@@ -19,7 +19,7 @@
             </div>
             <div ng-switch-when='decimal'>
               <label class='item item-input item-stacked-label item-text-wrap'
-                     ng-class='{ "has-errors" : rockSampleForm[field.name].$invalid, "no-errors" : rockSampleForm[field.name].$valid }'>
+                     ng-class='{ "has-errors" : SampleTabForm[field.name].$invalid, "no-errors" : SampleTabForm[field.name].$valid }'>
                 <span class='input-label'>{{field.label}}</span>
                 <input type='number'
                        name='{{ field.name }}'
@@ -32,7 +32,7 @@
             </div>
             <div ng-switch-when='text'>
               <label class='item item-input item-stacked-label item-text-wrap'
-                     ng-class='{ "has-errors" : rockSampleForm[field.name].$invalid, "no-errors" : rockSampleForm[field.name].$valid }'>
+                     ng-class='{ "has-errors" : SampleTabForm[field.name].$invalid, "no-errors" : SampleTabForm[field.name].$valid }'>
                 <span class='input-label'>{{field.label}}</span>
                 <input type='text'
                        name='{{ field.name }}'
@@ -43,7 +43,7 @@
             </div>
             <div ng-switch-when='note'>
               <label class='item item-input item-stacked-label item-text-wrap'
-                     ng-class='{ "has-errors" : rockSampleForm[field.name].$invalid, "no-errors" : rockSampleForm[field.name].$valid }'>
+                     ng-class='{ "has-errors" : SampleTabForm[field.name].$invalid, "no-errors" : SampleTabForm[field.name].$valid }'>
                 <span class='input-label'>{{ field.label }}</span>
                 <textarea name='{{ field.name }}'
                           rows='4'
@@ -55,7 +55,7 @@
             </div>
             <div ng-switch-when='select_one'>
               <label class='item item-input item-select item-stacked-label item-text-wrap'
-                     ng-class='{ "has-errors" : rockSampleForm[field.name].$invalid, "no-errors" : rockSampleForm[field.name].$valid }'>
+                     ng-class='{ "has-errors" : SampleTabForm[field.name].$invalid, "no-errors" : SampleTabForm[field.name].$valid }'>
                 <span class='input-label'>{{ field.label }}</span>
                 <span class='item-placeholder'><small>{{ field.hint }}</small></span><br>
                 <select name='{{ field.name }}'
@@ -92,8 +92,8 @@
                 </ion-checkbox>
               </label>
             </div>
-            <div ng-if='rockSampleForm[field.name].$touched'>
-              <div ng-messages='rockSampleForm[field.name].$error'>
+            <div ng-if='SampleTabForm[field.name].$touched'>
+              <div ng-messages='SampleTabForm[field.name].$error'>
                 <div ng-messages-include='app/form/error-messages.html'></div>
               </div>
             </div>

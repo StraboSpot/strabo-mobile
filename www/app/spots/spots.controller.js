@@ -117,10 +117,10 @@
 
     function createAccordionGroups(spots) {
       var spotTypesTitle = [
-        {'title': 'MEASUREMENTS & OBSERVATIONS', 'type': 'point', 'tab': 'details'},
-        {'title': 'CONTACTS & TRACES', 'type': 'line', 'tab': 'details'},
-        {'title': 'ROCK DESCRIPTIONS', 'type': 'polygon', 'tab': 'rockdescription'},
-        {'title': '3D STRUCTURES', 'type': 'volume', 'tab': 'notes'}
+        {'title': 'MEASUREMENTS & OBSERVATIONS', 'type': 'point', 'tab': 'spot'},
+        {'title': 'CONTACTS & TRACES', 'type': 'line', 'tab': 'spot'},
+        {'title': 'ROCK DESCRIPTIONS', 'type': 'polygon', 'tab': 'spot'},
+        {'title': '3D STRUCTURES', 'type': 'volume', 'tab': 'spot'}
       ];
 
       for (var i = 0; i < spotTypesTitle.length; i++) {
