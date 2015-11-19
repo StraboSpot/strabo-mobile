@@ -11,20 +11,16 @@
 
   function NewSpotFactory() {
     var newSpot;
-    var getSpotTypes = [];
-
-    activate();
 
     return {
       'clearNewSpot': clearNewSpot,
       'getNewSpot': getNewSpot,
-      'setNewSpot': setNewSpot,
-      'getSpotTypes': getSpotTypes
+      'setNewSpot': setNewSpot
     };
 
-    function activate() {
-      setSpotTypes();
-    }
+    /**
+     * Public Functions
+     */
 
     function clearNewSpot() {
       newSpot = null;
@@ -32,16 +28,6 @@
 
     function getNewSpot() {
       return newSpot;
-    }
-
-    function setSpotTypes() {
-      getSpotTypes = [
-        {'label': 'Station (spatial)', 'value': 'group', 'tab': 'details'},
-        {'label': 'Group (conceptual)', 'value': 'group', 'tab': 'details'},
-        {'label': 'Measurement or Observation', 'value': 'point', 'tab': 'details'},
-        {'label': 'Contact or Trace', 'value': 'line', 'tab': 'details'},
-        {'label': 'Rock Description', 'value': 'polygon', 'tab': 'rockdescription'}
-      ];
     }
 
     // Initialize a new Spot

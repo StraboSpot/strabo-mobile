@@ -6,10 +6,11 @@
     .controller('SpotsController', Spots);
 
   Spots.$inject = ['$cordovaDevice', '$cordovaFile', '$document', '$ionicActionSheet', '$ionicModal', '$ionicPopup',
-    '$log', '$scope', '$window', 'CurrentSpotFactory', 'ImageMapFactory', 'SpotsFactory', 'UserFactory'];
+    '$log', '$scope', '$state', '$window', 'CurrentSpotFactory', 'ImageMapFactory', 'NewSpotFactory', 'SpotsFactory',
+    'UserFactory'];
 
   function Spots($cordovaDevice, $cordovaFile, $document, $ionicActionSheet, $ionicModal, $ionicPopup, $log, $scope,
-                 $window, CurrentSpotFactory, ImageMapFactory, SpotsFactory, UserFactory) {
+                 $state, $window, CurrentSpotFactory, ImageMapFactory, NewSpotFactory, SpotsFactory, UserFactory) {
     var vm = this;
 
     vm.clearAllSpots = clearAllSpots;
@@ -38,9 +39,6 @@
     function cleanupModals() {
       // Cleanup the modal when we're done with it!
       // Execute action on hide modal
-      $scope.$on('allModal.hidden', function () {
-        vm.allModal.remove();
-      });
       $scope.$on('syncModal.hidden', function () {
         vm.syncModal.remove();
       });
@@ -52,13 +50,6 @@
         'animation': 'slide-in-up'
       }).then(function (modal) {
         vm.syncModal = modal;
-      });
-
-      $ionicModal.fromTemplateUrl('app/spots/spot-types-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up'
-      }).then(function (modal) {
-        vm.allModal = modal;
       });
     }
 
@@ -283,7 +274,13 @@
 
     // Create a new Spot
     function newSpot() {
-      vm.openModal('allModal');
+      var jsonTemplate = {
+        'properties': {
+          'type': 'point'  // Todo Just create as default point type for now but this should be removed
+        }
+      };
+      NewSpotFactory.setNewSpot(jsonTemplate);
+      $state.go('spotTab.spot');
     }
 
     function openModal(modal) {

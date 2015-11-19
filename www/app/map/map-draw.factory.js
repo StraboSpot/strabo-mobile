@@ -22,6 +22,31 @@
       'startDraw': startDraw
     };
 
+    /**
+     * Private Functions
+     */
+
+    function createNewSpot(geojsonObj) {
+      switch (drawButtonActive) {
+        case 'Point':
+          geojsonObj.properties = {'type': 'point'};
+          break;
+        case 'LineString':
+          geojsonObj.properties = {'type': 'line'};
+          break;
+        case 'Polygon':
+          geojsonObj.properties = {'type': 'polygon'};
+          break;
+      }
+      if (imageMap) geojsonObj.properties.image_map = imageMap.id;
+      NewSpotFactory.setNewSpot(geojsonObj);
+      $state.go('spotTab.spot');
+    }
+
+    /**
+     * Public Functions
+     */
+
     function cancelDraw() {
       if (draw === null) return;
       map.removeInteraction(draw);
@@ -358,26 +383,8 @@
                 break;
             }
           }
-          // Initialize new Spot
           else {
-            var goTo = 'spotTab.orientation';
-            switch (drawButtonActive) {
-              case 'Point':
-                geojsonObj.properties = {'type': 'point'};
-                break;
-              case 'LineString':
-                geojsonObj.properties = {'type': 'line'};
-                break;
-              case 'Polygon':
-                geojsonObj.properties = {'type': 'polygon'};
-                goTo = 'spotTab.rockdescription';
-                break;
-            }
-            if (imageMap) {
-              geojsonObj.properties.image_map = imageMap.id;
-            }
-            NewSpotFactory.setNewSpot(geojsonObj);
-            $state.go(goTo);
+            createNewSpot(geojsonObj);
           }
         }
       });
