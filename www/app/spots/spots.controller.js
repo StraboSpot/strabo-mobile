@@ -6,11 +6,11 @@
     .controller('SpotsController', Spots);
 
   Spots.$inject = ['$cordovaDevice', '$cordovaFile', '$document', '$ionicActionSheet', '$ionicModal', '$ionicPopup',
-    '$log', '$scope', '$state', '$window', 'CurrentSpotFactory', 'ImageMapFactory', 'NewSpotFactory', 'SpotsFactory',
+    '$log', '$scope', '$state', '$window', 'CurrentSpotFactory', 'ImageMapFactory', 'NewSpotFactory', 'SpotFactory',
     'UserFactory'];
 
   function Spots($cordovaDevice, $cordovaFile, $document, $ionicActionSheet, $ionicModal, $ionicPopup, $log, $scope,
-                 $state, $window, CurrentSpotFactory, ImageMapFactory, NewSpotFactory, SpotsFactory, UserFactory) {
+                 $state, $window, CurrentSpotFactory, ImageMapFactory, NewSpotFactory, SpotFactory, UserFactory) {
     var vm = this;
 
     vm.clearAllSpots = clearAllSpots;
@@ -54,7 +54,7 @@
     }
 
     function loadSpots() {
-      SpotsFactory.all().then(
+      SpotFactory.all().then(
         function (spots) {
           vm.spots = spots;
         }
@@ -74,10 +74,10 @@
       confirmPopup.then(
         function (res) {
           if (res) {
-            SpotsFactory.clear(
+            SpotFactory.clear(
               function () {
                 // update the spots list
-                SpotsFactory.all().then(
+                SpotFactory.all().then(
                   function (spots) {
                     vm.spots = spots;
                   }
@@ -93,7 +93,7 @@
 
     function closeModal(modal) {
       vm[modal].hide();
-      SpotsFactory.all().then(function (spots) {
+      SpotFactory.all().then(function (spots) {
         vm.spots = spots;
       });
     }

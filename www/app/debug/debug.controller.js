@@ -5,9 +5,9 @@
     .module('app')
     .controller('DebugController', DebugController);
 
-  DebugController.$inject = ['$log', 'SpotsFactory'];
+  DebugController.$inject = ['$log', 'SpotFactory'];
 
-  function DebugController($log, SpotsFactory) {
+  function DebugController($log, SpotFactory) {
     var vm = this;
 
     vm.pointsToGenerate = '';
@@ -67,7 +67,7 @@
           }
         };
 
-        SpotsFactory.save(geojsonPoint).then(function (data) {
+        SpotFactory.save(geojsonPoint).then(function (data) {
           $log.log('wrote: ', data);
         });
       }

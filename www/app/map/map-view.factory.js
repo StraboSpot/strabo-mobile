@@ -6,10 +6,10 @@
     .factory('MapViewFactory', MapViewFactory);
 
   MapViewFactory.$inject = ['$cordovaGeolocation', '$ionicPopup', '$log', 'CoordinateRangeFactory', 'MapLayerFactory',
-    'MapSetupFactory', 'OfflineTilesFactory', 'SpotsFactory'];
+    'MapSetupFactory', 'OfflineTilesFactory', 'SpotFactory'];
 
   function MapViewFactory($cordovaGeolocation, $ionicPopup, $log, CoordinateRangeFactory, MapLayerFactory, MapSetupFactory,
-                          OfflineTilesFactory, SpotsFactory) {
+                          OfflineTilesFactory, SpotFactory) {
     var mapView;
     var viewExtent;
 
@@ -247,7 +247,7 @@
       }
 
       // Loop through all spots and create ol vector layers
-      SpotsFactory.all().then(function (spots) {
+      SpotFactory.all().then(function (spots) {
         if (isImageMap) {
           spots = getImageMapSpots(spots);
           if (spots.length > 0) {

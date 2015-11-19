@@ -3,11 +3,11 @@
 
   angular
     .module('app')
-    .factory('SpotsFactory', SpotsFactory);
+    .factory('SpotFactory', SpotFactory);
 
-  SpotsFactory.$inject = ['$q', 'LocalStorageFactory'];
+  SpotFactory.$inject = ['$q', 'LocalStorageFactory'];
 
-  function SpotsFactory($q, LocalStorageFactory) {
+  function SpotFactory($q, LocalStorageFactory) {
     return {
       'all': all,
       'clear': clear,

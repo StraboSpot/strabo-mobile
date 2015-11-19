@@ -5,9 +5,9 @@
     .module('app')
     .controller('SyncModalController', SyncModalController);
 
-  SyncModalController.$inject = ['$ionicPopup', '$log', '$scope', 'SpotsFactory', 'RemoteServerFactory', 'UserFactory'];
+  SyncModalController.$inject = ['$ionicPopup', '$log', '$scope', 'SpotFactory', 'RemoteServerFactory', 'UserFactory'];
 
-  function SyncModalController($ionicPopup, $log, $scope, SpotsFactory, RemoteServerFactory, UserFactory) {
+  function SyncModalController($ionicPopup, $log, $scope, SpotFactory, RemoteServerFactory, UserFactory) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -46,7 +46,7 @@
       }
 
       function getAllLocalSpots() {
-        return SpotsFactory.all();
+        return SpotFactory.all();
       }
 
       function uploadImages(spot) {
@@ -121,7 +121,7 @@
                   $log.log('Create Feature server response: ', response);
                   if (response.status === 201) {
                     spot.properties.self = response.data.properties.self;
-                    SpotsFactory.save(spot);
+                    SpotFactory.save(spot);
                     $log.log('Created spot ', i, '/', spotsCount);
                     uploadImages(spot);
 
@@ -159,7 +159,7 @@
               $log.log('Create Feature server response: ', response);
               if (response.status === 201) {
                 spot.properties.self = response.data.properties.self;
-                SpotsFactory.save(spot);
+                SpotFactory.save(spot);
                 $log.log('Created spot ', i, '/', spotsCount);
                 uploadImages(spot);
 
@@ -298,7 +298,7 @@
             })[0]) {
           vmParent.spots.push(spot);
         }
-        SpotsFactory.save(spot);
+        SpotFactory.save(spot);
       }
 
       // Get the dataset id

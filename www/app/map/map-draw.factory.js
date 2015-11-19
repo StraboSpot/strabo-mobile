@@ -5,9 +5,9 @@
     .module('app')
     .factory('DrawFactory', DrawFactory);
 
-  DrawFactory.$inject = ['$document', '$ionicPopup', '$log', '$state', 'CurrentSpotFactory', 'NewSpotFactory', 'SpotsFactory'];
+  DrawFactory.$inject = ['$document', '$ionicPopup', '$log', '$state', 'CurrentSpotFactory', 'NewSpotFactory', 'SpotFactory'];
 
-  function DrawFactory($document, $ionicPopup, $log, $state, CurrentSpotFactory, NewSpotFactory, SpotsFactory) {
+  function DrawFactory($document, $ionicPopup, $log, $state, CurrentSpotFactory, NewSpotFactory, SpotFactory) {
     var draw;               // draw is a ol3 drawing interaction
     var drawButtonActive;   // drawButtonActive used to keep state of which selected drawing tool is active
     var drawLayer;
@@ -258,7 +258,7 @@
             // contains all the lassoed objects
             var isLassoed = [];
 
-            SpotsFactory.all().then(function (spots) {
+            SpotFactory.all().then(function (spots) {
               var mappedSpots = _.filter(spots, function (spot) {
                 return spot.geometry;
               });

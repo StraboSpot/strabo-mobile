@@ -6,10 +6,10 @@
     .controller('ImagesTabController', ImagesTabController);
 
   ImagesTabController.$inject = ['$scope', '$stateParams', '$log', '$cordovaCamera', '$ionicPopup', '$ionicModal',
-    '$location', '$window', 'SpotsFactory', 'ImageMapFactory'];
+    '$location', '$window', 'SpotFactory', 'ImageMapFactory'];
 
   function ImagesTabController($scope, $stateParams, $log, $cordovaCamera, $ionicPopup, $ionicModal,
-                               $location, $window, SpotsFactory, ImageMapFactory) {
+                               $location, $window, SpotFactory, ImageMapFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.load($stateParams);  // Need to load current state into parent
@@ -211,7 +211,7 @@
     }
 
     function goToImageMap(image) {
-      SpotsFactory.read(vmParent.spot.properties.id, (function (savedSpot) {
+      SpotFactory.read(vmParent.spot.properties.id, (function (savedSpot) {
         savedSpot.properties.date = new Date(savedSpot.properties.date);
         savedSpot.properties.time = new Date(savedSpot.properties.time);
         if (_.isEqual(vmParent.spot, savedSpot)) {    // User angular.copy to get rid of angular's $$hashKey

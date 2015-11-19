@@ -5,9 +5,9 @@
     .module('app')
     .controller('ImageMapsController', ImageMapsController);
 
-  ImageMapsController.$inject = ['$location', '$log', 'ImageMapFactory', 'SpotsFactory'];
+  ImageMapsController.$inject = ['$location', '$log', 'ImageMapFactory', 'SpotFactory'];
 
-  function ImageMapsController($location, $log, ImageMapFactory, SpotsFactory) {
+  function ImageMapsController($location, $log, ImageMapFactory, SpotFactory) {
     var vm = this;
     vm.goToImageMap = goToImageMap;
 
@@ -22,7 +22,7 @@
      */
 
     function getImageMaps() {
-      SpotsFactory.all().then(function (spots) {
+      SpotFactory.all().then(function (spots) {
         var spotsWithImages = _.filter(spots, function (spot) {
           return spot.images;
         });

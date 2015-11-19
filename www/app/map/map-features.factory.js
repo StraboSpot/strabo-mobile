@@ -5,10 +5,10 @@
     .module('app')
     .factory('MapFeaturesFactory', MapFeatures);
 
-  MapFeatures.$inject = ['HelpersFactory', 'ImageMapFactory', 'MapLayerFactory', 'MapSetupFactory', 'SpotsFactory',
+  MapFeatures.$inject = ['HelpersFactory', 'ImageMapFactory', 'MapLayerFactory', 'MapSetupFactory', 'SpotFactory',
     'SymbologyFactory'];
 
-  function MapFeatures(HelpersFactory, ImageMapFactory, MapLayerFactory, MapSetupFactory, SpotsFactory,
+  function MapFeatures(HelpersFactory, ImageMapFactory, MapLayerFactory, MapSetupFactory, SpotFactory,
                        SymbologyFactory) {
     return {
       'createFeatureLayer': createFeatureLayer,
@@ -18,7 +18,7 @@
 
     function createFeatureLayer(map, imageMap) {
       // Loop through all spots and create ol vector layers
-      SpotsFactory.all().then(function (spots) {
+      SpotFactory.all().then(function (spots) {
         var featureLayer = MapLayerFactory.getFeatureLayer();
         // wipe the array because we want to avoid duplicating the feature in the ol.Collection
         featureLayer.getLayers().clear();

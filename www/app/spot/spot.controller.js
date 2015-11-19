@@ -7,12 +7,12 @@
 
   SpotController.$inject = ['$ionicModal', '$ionicPopup', '$location', '$log', '$rootScope', '$scope', '$state',
     'ContentModelSurveyFactory', 'CurrentSpotFactory', 'ImageMapFactory', 'NewSpotFactory', 'ProjectFactory',
-    'SpotsFactory'];
+    'SpotFactory'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
   function SpotController($ionicModal, $ionicPopup, $location, $log, $rootScope, $scope, $state,
                           ContentModelSurveyFactory, CurrentSpotFactory, ImageMapFactory, NewSpotFactory,
-                          ProjectFactory, SpotsFactory) {
+                          ProjectFactory, SpotFactory) {
     var vm = this;
 
     vm.closeModal = closeModal;
@@ -214,7 +214,7 @@
       }
 
       // Create checkbox list of other spots for selected as related spots
-      SpotsFactory.all().then(function (spots) {
+      SpotFactory.all().then(function (spots) {
         vm.spots = spots;
         vm.other_spots = [];
         vm.groups = [];
@@ -276,7 +276,7 @@
       });
       confirmPopup.then(function (res) {
         if (res) {
-          SpotsFactory.destroy(vm.spot.properties.id);
+          SpotFactory.destroy(vm.spot.properties.id);
           $location.path('/app/spots');
         }
       });
@@ -380,7 +380,7 @@
         }
         else {
           // Load spot from local storage
-          SpotsFactory.read(params.spotId, function (spot) {
+          SpotFactory.read(params.spotId, function (spot) {
             vm.spot = spot;
             $log.log('attempting to set properties3');
             setProperties();
@@ -504,7 +504,7 @@
         });
 
         // Save the linked spot
-        SpotsFactory.save(linked_spot).then(function (data) {
+        SpotFactory.save(linked_spot).then(function (data) {
           $log.log('updated inverse spot', data);
         });
       });
@@ -515,7 +515,7 @@
         var linked_spot = cleanRefs('links', obj.id);
 
         // Save the linked spot
-        SpotsFactory.save(linked_spot).then(function (data) {
+        SpotFactory.save(linked_spot).then(function (data) {
           $log.log('updated inverse spot', data);
         });
       });
@@ -536,7 +536,7 @@
         });
 
         // Save the group
-        SpotsFactory.save(group).then(function (data) {
+        SpotFactory.save(group).then(function (data) {
           $log.log('added group member', data);
         });
       });
@@ -547,7 +547,7 @@
         var group = cleanRefs('groups', obj.id);
 
         // Save the group
-        SpotsFactory.save(group).then(function (data) {
+        SpotFactory.save(group).then(function (data) {
           $log.log('removed group member', data);
         });
       });
@@ -568,7 +568,7 @@
         });
 
         // Save the group
-        SpotsFactory.save(group).then(function (data) {
+        SpotFactory.save(group).then(function (data) {
           $log.log('added group', data);
         });
       });
@@ -579,7 +579,7 @@
         var group = cleanRefs('group_members', obj.id);
 
         // Save the group
-        SpotsFactory.save(group).then(function (data) {
+        SpotFactory.save(group).then(function (data) {
           $log.log('removed group', data);
         });
       });
@@ -594,7 +594,7 @@
       });
 
       // Save the spot
-      SpotsFactory.save(vm.spot).then(function (data) {
+      SpotFactory.save(vm.spot).then(function (data) {
         $log.log('spot saved: ', data);
         CurrentSpotFactory.clearCurrentSpot();
         ProjectFactory.incrementSpotNumber();
