@@ -8,7 +8,6 @@
   ProjectFactory.$inject = ['$log', '$q', 'DataModelsFactory', 'LocalStorageFactory'];
 
   function ProjectFactory($log, $q, DataModelsFactory, LocalStorageFactory) {
-    var csvFile = 'app/data-models/ProjectsPage.csv';
     var data = {};
     var survey = {};
 
@@ -87,6 +86,7 @@
           $log.log('Finished loading project properties: ', data);
         });
         $log.log('Loading project survey ....');
+        var csvFile = DataModelsFactory.dataModels.project;
         DataModelsFactory.readCSV(csvFile, setSurvey);
         return dataPromise;
       }

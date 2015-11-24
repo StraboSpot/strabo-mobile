@@ -8,7 +8,13 @@
   DataModelsFactory.$inject = ['$log', '$http'];
 
   function DataModelsFactory($log, $http) {
+    var dataModels = {
+      'preferences': 'app/data-models/Preferences.csv',
+      'project': 'app/data-models/ProjectsPage.csv'
+    };
+
     return {
+      'dataModels': dataModels,
       'readCSV': readCSV
     };
 

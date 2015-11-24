@@ -8,7 +8,6 @@
   PreferencesFactory.$inject = ['$log', '$q', 'DataModelsFactory', 'LocalStorageFactory'];
 
   function PreferencesFactory($log, $q, DataModelsFactory, LocalStorageFactory) {
-    var csvFile = 'app/data-models/Preferences.csv';
     var data = {};
     var survey = {};
 
@@ -61,6 +60,7 @@
           $log.log('Finished loading preferences: ', data);
         });
         $log.log('Loading preferences survey ....');
+        var csvFile = DataModelsFactory.dataModels.preferences;
         DataModelsFactory.readCSV(csvFile, setSurvey);
         return dataPromise;
       }
