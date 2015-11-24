@@ -6,13 +6,11 @@
     .controller('SpotController', SpotController);
 
   SpotController.$inject = ['$ionicModal', '$ionicPopup', '$location', '$log', '$rootScope', '$scope', '$state',
-    'ContentModelSurveyFactory', 'CurrentSpotFactory', 'ImageMapFactory', 'NewSpotFactory', 'ProjectFactory',
-    'SpotFactory'];
+    'ContentModelSurveyFactory', 'ImageMapFactory', 'NewSpotFactory', 'ProjectFactory', 'SpotFactory'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
   function SpotController($ionicModal, $ionicPopup, $location, $log, $rootScope, $scope, $state,
-                          ContentModelSurveyFactory, CurrentSpotFactory, ImageMapFactory, NewSpotFactory,
-                          ProjectFactory, SpotFactory) {
+                          ContentModelSurveyFactory, ImageMapFactory, NewSpotFactory, ProjectFactory, SpotFactory) {
     var vm = this;
 
     vm.closeModal = closeModal;
@@ -360,7 +358,7 @@
       if (NewSpotFactory.getNewSpot()) {
         // Load spot stored in the NewSpotFactory factory
         vm.spot = NewSpotFactory.getNewSpot();
-        CurrentSpotFactory.setCurrentSpot(vm.spot);
+        SpotFactory.setCurrentSpot(vm.spot);
         // now clear the new spot from the factory because we have the info in our current scope
         NewSpotFactory.clearNewSpot();
 
@@ -373,8 +371,8 @@
         setProperties();
       }
       else {
-        if (CurrentSpotFactory.getCurrentSpot()) {
-          vm.spot = CurrentSpotFactory.getCurrentSpot();
+        if (SpotFactory.getCurrentSpot()) {
+          vm.spot = SpotFactory.getCurrentSpot();
           $log.log('attempting to set properties2');
           setProperties();
         }
@@ -394,7 +392,7 @@
     }
 
     function openSpot(id) {
-      CurrentSpotFactory.clearCurrentSpot();
+      SpotFactory.clearCurrentSpot();
       $location.path('/spotTab/' + id + '/notes');
     }
 
@@ -596,7 +594,7 @@
       // Save the spot
       SpotFactory.save(vm.spot).then(function (data) {
         vm.spots = data;
-        CurrentSpotFactory.clearCurrentSpot();
+        SpotFactory.clearCurrentSpot();
         ProjectFactory.incrementSpotNumber();
         $location.path('/app/spots');
         // $ionicHistory.goBack();
@@ -630,7 +628,7 @@
         }
       }
 
-      CurrentSpotFactory.setCurrentSpot(vm.spot);
+      SpotFactory.setCurrentSpot(vm.spot);
       $location.path('/spotTab/' + vm.spot.properties.id + '/' + toTab);
     }
 

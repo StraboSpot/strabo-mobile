@@ -6,10 +6,10 @@
     .controller('SpotTabGeoreferenceController', SpotTabGeoreferenceController);
 
   SpotTabGeoreferenceController.$inject = ['$scope', '$stateParams', '$cordovaGeolocation', '$ionicPopup', '$location',
-    '$log', 'CurrentSpotFactory', 'ImageMapFactory', 'SpotFactory', 'MapViewFactory'];
+    '$log', 'ImageMapFactory', 'SpotFactory', 'MapViewFactory'];
 
   function SpotTabGeoreferenceController($scope, $stateParams, $cordovaGeolocation, $ionicPopup, $location,
-                                         $log, CurrentSpotFactory, ImageMapFactory, SpotFactory, MapViewFactory) {
+                                         $log, ImageMapFactory, SpotFactory, MapViewFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.load($stateParams);  // Need to load current state into parent
@@ -105,7 +105,7 @@
 
     // Open the map so the user can set the location for the spot
     function setFromMap() {
-      CurrentSpotFactory.setCurrentSpot(vmParent.spot);    // Save current spot
+      SpotFactory.setCurrentSpot(vmParent.spot);    // Save current spot
       if (_.has(vmParent.spot.properties, 'image_map')) {
         var image = _.findWhere(ImageMapFactory.getImageMaps(), {'id': vmParent.spot.properties.image_map});
         ImageMapFactory.setCurrentImageMap(image);    // Save referenced image map

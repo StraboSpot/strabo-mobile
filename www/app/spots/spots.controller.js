@@ -6,11 +6,11 @@
     .controller('SpotsController', Spots);
 
   Spots.$inject = ['$cordovaDevice', '$cordovaFile', '$document', '$ionicActionSheet', '$ionicModal', '$ionicPopup',
-    '$log', '$scope', '$state', '$window', 'CurrentSpotFactory', 'ImageMapFactory', 'NewSpotFactory', 'SpotFactory',
+    '$log', '$scope', '$state', '$window', 'ImageMapFactory', 'NewSpotFactory', 'SpotFactory',
     'UserFactory'];
 
   function Spots($cordovaDevice, $cordovaFile, $document, $ionicActionSheet, $ionicModal, $ionicPopup, $log, $scope,
-                 $state, $window, CurrentSpotFactory, ImageMapFactory, NewSpotFactory, SpotFactory, UserFactory) {
+                 $state, $window, ImageMapFactory, NewSpotFactory, SpotFactory, UserFactory) {
     var vm = this;
 
     vm.clearAllSpots = clearAllSpots;
@@ -30,7 +30,7 @@
      */
 
     function activate() {
-      CurrentSpotFactory.clearCurrentSpot();            // Make sure the current spot is empty
+      SpotFactory.clearCurrentSpot();            // Make sure the current spot is empty
       vm.spots = SpotFactory.getSpots();
       createModals();
       cleanupModals();

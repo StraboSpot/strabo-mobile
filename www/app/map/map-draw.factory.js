@@ -5,9 +5,9 @@
     .module('app')
     .factory('DrawFactory', DrawFactory);
 
-  DrawFactory.$inject = ['$document', '$ionicPopup', '$log', '$state', 'CurrentSpotFactory', 'NewSpotFactory', 'SpotFactory'];
+  DrawFactory.$inject = ['$document', '$ionicPopup', '$log', '$state', 'NewSpotFactory', 'SpotFactory'];
 
-  function DrawFactory($document, $ionicPopup, $log, $state, CurrentSpotFactory, NewSpotFactory, SpotFactory) {
+  function DrawFactory($document, $ionicPopup, $log, $state, NewSpotFactory, SpotFactory) {
     var draw;               // draw is a ol3 drawing interaction
     var drawButtonActive;   // drawButtonActive used to keep state of which selected drawing tool is active
     var drawLayer;
@@ -325,13 +325,13 @@
 
           // If there is already a current spot only update the geometry if the draw tool used
           // matches the required geometry for the Spot type
-          if (CurrentSpotFactory.getCurrentSpot()) {
-            var curSpot = CurrentSpotFactory.getCurrentSpot();
+          if (SpotFactory.getCurrentSpot()) {
+            var curSpot = SpotFactory.getCurrentSpot();
             switch (curSpot.properties.type) {
               case 'point':
                 if (drawButtonActive === 'Point') {
                   curSpot.geometry = geojsonObj.geometry;
-                  CurrentSpotFactory.setCurrentSpot(curSpot);
+                  SpotFactory.setCurrentSpot(curSpot);
                 }
                 else {
                   $ionicPopup.alert({
@@ -344,7 +344,7 @@
               case 'line':
                 if (drawButtonActive === 'LineString') {
                   curSpot.geometry = geojsonObj.geometry;
-                  CurrentSpotFactory.setCurrentSpot(curSpot);
+                  SpotFactory.setCurrentSpot(curSpot);
                 }
                 else {
                   $ionicPopup.alert({
@@ -357,7 +357,7 @@
               case 'polygon':
                 if (drawButtonActive === 'Polygon') {
                   curSpot.geometry = geojsonObj.geometry;
-                  CurrentSpotFactory.setCurrentSpot(curSpot);
+                  SpotFactory.setCurrentSpot(curSpot);
                 }
                 else {
                   $ionicPopup.alert({
@@ -370,7 +370,7 @@
               case 'group':
                 if (drawButtonActive === 'Polygon') {
                   curSpot.geometry = geojsonObj.geometry;
-                  CurrentSpotFactory.setCurrentSpot(curSpot);
+                  SpotFactory.setCurrentSpot(curSpot);
                 }
                 else {
                   $ionicPopup.alert({

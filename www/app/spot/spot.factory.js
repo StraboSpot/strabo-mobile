@@ -9,11 +9,14 @@
 
   function SpotFactory($log, $q, LocalStorageFactory) {
     var data = {};
+    var currentSpot;
 
     return {
       'clear': clear,
+      'clearCurrentSpot': clearCurrentSpot,
       'destroy': destroy,
       'getCenter': getCenter,
+      'getCurrentSpot': getCurrentSpot,
       'getFirstSpot': getFirstSpot,
       'getSpotCount': getSpotCount,
       'getSpotId': getSpotId,
@@ -21,6 +24,7 @@
       'loadSpots': loadSpots,
       'read': read,
       'save': save,
+      'setCurrentSpot': setCurrentSpot,
       'write': write
     };
 
@@ -56,6 +60,10 @@
       return deferred.promise;
     }
 
+    function clearCurrentSpot() {
+      currentSpot = null;
+    }
+
     // delete the spot
     function destroy(key) {
       return LocalStorageFactory.spotsDb.removeItem(key);
@@ -80,6 +88,10 @@
         'lon': lon,
         'lat': lat
       };
+    }
+
+    function getCurrentSpot() {
+      return currentSpot;
     }
 
     // gets the first spot in the db (if exists) -- used to set the map view
@@ -143,6 +155,10 @@
         });
       });
       return deferred.promise;
+    }
+
+    function setCurrentSpot(geojsonObj) {
+      currentSpot = geojsonObj;
     }
 
     // write to storage
