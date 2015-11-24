@@ -6,11 +6,10 @@
     .controller('SpotsController', Spots);
 
   Spots.$inject = ['$cordovaDevice', '$cordovaFile', '$document', '$ionicActionSheet', '$ionicModal', '$ionicPopup',
-    '$log', '$scope', '$state', '$window', 'ImageMapFactory', 'NewSpotFactory', 'SpotFactory',
-    'UserFactory'];
+    '$log', '$scope', '$state', '$window', 'ImageMapFactory', 'SpotFactory', 'UserFactory'];
 
   function Spots($cordovaDevice, $cordovaFile, $document, $ionicActionSheet, $ionicModal, $ionicPopup, $log, $scope,
-                 $state, $window, ImageMapFactory, NewSpotFactory, SpotFactory, UserFactory) {
+                 $state, $window, ImageMapFactory, SpotFactory, UserFactory) {
     var vm = this;
 
     vm.clearAllSpots = clearAllSpots;
@@ -264,7 +263,7 @@
           'type': 'point'  // Todo Just create as default point type for now but this should be removed
         }
       };
-      NewSpotFactory.setNewSpot(jsonTemplate);
+      SpotFactory.setNewSpot(jsonTemplate);
       $state.go('spotTab.spot');
     }
 

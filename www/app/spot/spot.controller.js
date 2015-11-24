@@ -6,11 +6,11 @@
     .controller('SpotController', SpotController);
 
   SpotController.$inject = ['$ionicModal', '$ionicPopup', '$location', '$log', '$rootScope', '$scope', '$state',
-    'ContentModelSurveyFactory', 'ImageMapFactory', 'NewSpotFactory', 'ProjectFactory', 'SpotFactory'];
+    'ContentModelSurveyFactory', 'ImageMapFactory', 'ProjectFactory', 'SpotFactory'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
   function SpotController($ionicModal, $ionicPopup, $location, $log, $rootScope, $scope, $state,
-                          ContentModelSurveyFactory, ImageMapFactory, NewSpotFactory, ProjectFactory, SpotFactory) {
+                          ContentModelSurveyFactory, ImageMapFactory, ProjectFactory, SpotFactory) {
     var vm = this;
 
     vm.closeModal = closeModal;
@@ -262,7 +262,7 @@
       var copySpot = _.omit(vm.spot, 'properties');
       copySpot.properties = _.omit(vm.spot.properties,
         ['id', 'date', 'time', 'links', 'groups', 'group_members']);
-      NewSpotFactory.setNewSpot(copySpot);
+      SpotFactory.setNewSpot(copySpot);
       $location.path('/spotTab//notes');
     }
 
@@ -355,12 +355,12 @@
 
     function load(params) {
       // Get the current spot
-      if (NewSpotFactory.getNewSpot()) {
-        // Load spot stored in the NewSpotFactory factory
-        vm.spot = NewSpotFactory.getNewSpot();
+      if (SpotFactory.getNewSpot()) {
+        // Load spot stored in the SpotFactory factory
+        vm.spot = SpotFactory.getNewSpot();
         SpotFactory.setCurrentSpot(vm.spot);
         // now clear the new spot from the factory because we have the info in our current scope
-        NewSpotFactory.clearNewSpot();
+        SpotFactory.clearNewSpot();
 
         // Set default name
         var prefix = ProjectFactory.getSpotPrefix();

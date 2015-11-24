@@ -5,9 +5,9 @@
     .module('app')
     .factory('DrawFactory', DrawFactory);
 
-  DrawFactory.$inject = ['$document', '$ionicPopup', '$log', '$state', 'NewSpotFactory', 'SpotFactory'];
+  DrawFactory.$inject = ['$document', '$ionicPopup', '$log', '$state', 'SpotFactory'];
 
-  function DrawFactory($document, $ionicPopup, $log, $state, NewSpotFactory, SpotFactory) {
+  function DrawFactory($document, $ionicPopup, $log, $state, SpotFactory) {
     var draw;               // draw is a ol3 drawing interaction
     var drawButtonActive;   // drawButtonActive used to keep state of which selected drawing tool is active
     var drawLayer;
@@ -39,7 +39,7 @@
           break;
       }
       if (imageMap) geojsonObj.properties.image_map = imageMap.id;
-      NewSpotFactory.setNewSpot(geojsonObj);
+      SpotFactory.setNewSpot(geojsonObj);
       $state.go('spotTab.spot');
     }
 
@@ -309,7 +309,7 @@
               geojsonObj.properties.image_map = imageMap.id;
             }
 
-            NewSpotFactory.setNewSpot(geojsonObj);
+            SpotFactory.setNewSpot(geojsonObj);
             $state.go('spotTab.orientation');
           }
           else {

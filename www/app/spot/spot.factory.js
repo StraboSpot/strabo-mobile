@@ -8,16 +8,19 @@
   SpotFactory.$inject = ['$log', '$q', 'LocalStorageFactory'];
 
   function SpotFactory($log, $q, LocalStorageFactory) {
-    var data = {};
     var currentSpot;
+    var data = {};
+    var newSpot;
 
     return {
       'clear': clear,
       'clearCurrentSpot': clearCurrentSpot,
+      'clearNewSpot': clearNewSpot,
       'destroy': destroy,
       'getCenter': getCenter,
       'getCurrentSpot': getCurrentSpot,
       'getFirstSpot': getFirstSpot,
+      'getNewSpot': getNewSpot,
       'getSpotCount': getSpotCount,
       'getSpotId': getSpotId,
       'getSpots': getSpots,
@@ -25,6 +28,7 @@
       'read': read,
       'save': save,
       'setCurrentSpot': setCurrentSpot,
+      'setNewSpot': setNewSpot,
       'write': write
     };
 
@@ -62,6 +66,10 @@
 
     function clearCurrentSpot() {
       currentSpot = null;
+    }
+
+    function clearNewSpot() {
+      newSpot = null;
     }
 
     // delete the spot
@@ -108,6 +116,10 @@
       });
 
       return deferred.promise;
+    }
+
+    function getNewSpot() {
+      return newSpot;
     }
 
     // gets the number of spots
@@ -159,6 +171,31 @@
 
     function setCurrentSpot(geojsonObj) {
       currentSpot = geojsonObj;
+    }
+
+    // Initialize a new Spot
+    function setNewSpot(jsonObj) {
+      newSpot = {
+        'type': 'Feature',
+        'properties': {}
+      };
+
+      // Set the geometry if the spot has been mapped
+      if (jsonObj.geometry) {
+        newSpot.geometry = jsonObj.geometry;
+      }
+
+      // Set the properties
+      newSpot.properties = jsonObj.properties;
+
+      // Set the date and time to now
+      var d = new Date(Date.now());
+      d.setMilliseconds(0);
+      newSpot.properties.date = d;
+      newSpot.properties.time = d;
+
+      // Set id from the timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id)
+      newSpot.properties.id = Math.floor((new Date().getTime() + Math.random()) * 10);
     }
 
     // write to storage
