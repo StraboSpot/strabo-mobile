@@ -1,6 +1,9 @@
 <div ng-repeat='field in vm.survey'>
   <div id='{{ field.name }}' ng-show='vm.showField(field.relevant)'>
     <div data-ng-switch on='field.type.split(" ")[0]'>
+      <div class='field-group' ng-switch-when='begin'>
+        {{ field.label }}
+      </div>
       <div ng-switch-when='integer'>
         <label class='item item-input item-stacked-label item-text-wrap'
                ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
@@ -30,7 +33,7 @@
       <div ng-switch-when='text'>
         <label class='item item-input item-stacked-label item-text-wrap'
                ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
-          <span class='input-label'>{{field.label}}</span>
+          <span class='input-label'>{{ field.label }}</span>
           <input type='text'
                  name='{{ field.name }}'
                  placeholder='{{ field.hint }}'
@@ -98,7 +101,6 @@
                      ng-checked='vm.data[field.name]'
                      ng-click='vm.toggleChecked(field.name)'
                      ng-required='{{ field.required }}'>
-
               <div class="track">
                 <div class="handle"></div>
               </div>

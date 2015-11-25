@@ -228,6 +228,12 @@ Image Modal Style: used for image active-slider when choosing spot images
 /*--------------------
 Input Fields Style
 --------------------*/
+.field-group {
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 6px;
+}
+
 .input-label {
   max-width: 100% !important;
   width: 100% !important;
