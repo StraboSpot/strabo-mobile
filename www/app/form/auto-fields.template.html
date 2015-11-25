@@ -1,7 +1,7 @@
 <div ng-repeat='field in vm.survey'>
   <div id='{{ field.name }}' ng-show='vm.showField(field.relevant)'>
     <div data-ng-switch on='field.type.split(" ")[0]'>
-      <div class='field-group' ng-switch-when='begin'>
+      <div class='field-group item item-divider' ng-switch-when='begin'>
         {{ field.label }}
       </div>
       <div ng-switch-when='integer'>
