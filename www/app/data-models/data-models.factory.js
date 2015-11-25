@@ -10,7 +10,9 @@
   function DataModelsFactory($log, $http) {
     var dataModels = {
       'preferences': 'app/data-models/Preferences.csv',
-      'project': 'app/data-models/ProjectsPage.csv'
+      'project': 'app/data-models/ProjectsPage.csv',
+      'sample_survey': 'app/data-models/TabSample.csv',
+      'sample_choices': 'app/data-models/TabSample-choices.csv'
     };
 
     return {

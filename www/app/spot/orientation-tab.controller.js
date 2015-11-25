@@ -5,11 +5,11 @@
     .module('app')
     .controller('OrientationTabController', OrientationTabController);
 
-  OrientationTabController.$inject = ['$scope', '$stateParams', '$log'];
+  OrientationTabController.$inject = ['$log', '$scope', '$state'];
 
-  function OrientationTabController($scope, $stateParams, $log) {
+  function OrientationTabController($log, $scope, $state) {
     var vmParent = $scope.vm;
-    vmParent.load($stateParams);  // Need to load current state into parent
+    vmParent.loadTab($state);  // Need to load current state into parent
 
     activate();
 

@@ -5,14 +5,14 @@
     .module('app')
     .controller('ImagesTabController', ImagesTabController);
 
-  ImagesTabController.$inject = ['$scope', '$stateParams', '$log', '$cordovaCamera', '$ionicPopup', '$ionicModal',
-    '$location', '$window', 'SpotFactory', 'ImageMapFactory'];
+  ImagesTabController.$inject = ['$cordovaCamera', '$ionicModal', '$ionicPopup', '$location', '$log', '$scope',
+    '$state', '$window', 'ImageMapFactory', 'SpotFactory'];
 
-  function ImagesTabController($scope, $stateParams, $log, $cordovaCamera, $ionicPopup, $ionicModal,
-                               $location, $window, SpotFactory, ImageMapFactory) {
+  function ImagesTabController($cordovaCamera, $ionicModal, $ionicPopup, $location, $log, $scope, $state, $window,
+                               ImageMapFactory, SpotFactory) {
     var vm = this;
     var vmParent = $scope.vm;
-    vmParent.load($stateParams);  // Need to load current state into parent
+    vmParent.loadTab($state);  // Need to load current state into parent
 
     vm.annotateChecked = annotateChecked;
     vm.cameraModal = cameraModal;

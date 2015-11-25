@@ -13,6 +13,12 @@
       'validate': validate
     };
 
+    /**
+     * Public Functions
+     */
+
+    // Determine if the field should be shown or not by looking at the relevant key-value pair
+    // The 2nd param, properties, is used in the eval method
     function isRelevant(relevant, properties) {
       if (!relevant) return true;
 

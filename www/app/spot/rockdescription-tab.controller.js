@@ -5,11 +5,11 @@
     .module('app')
     .controller('SpotTabRockdescriptionController', SpotTabRockdescriptionController);
 
-  SpotTabRockdescriptionController.$inject = ['$scope', '$stateParams', '$log'];
+  SpotTabRockdescriptionController.$inject = ['$log', '$scope', '$state'];
 
-  function SpotTabRockdescriptionController($scope, $stateParams, $log) {
+  function SpotTabRockdescriptionController($log, $scope, $state) {
     var vmParent = $scope.vm;
-    vmParent.load($stateParams);  // Need to load current state into parent
+    vmParent.loadTab($state);  // Need to load current state into parent
 
     $log.log('inside spot tab rock description Controller');
   }

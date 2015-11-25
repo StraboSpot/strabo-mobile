@@ -5,14 +5,14 @@
     .module('app')
     .controller('SpotTabController', SpotTabController);
 
-  SpotTabController.$inject = ['$log', '$cordovaGeolocation', '$ionicPopup', '$location', '$scope', '$stateParams',
+  SpotTabController.$inject = ['$cordovaGeolocation', '$ionicPopup', '$location', '$log', '$scope', '$state',
     'ImageMapFactory', 'MapViewFactory', 'SpotFactory'];
 
-  function SpotTabController($log, $cordovaGeolocation, $ionicPopup, $location, $scope, $stateParams, ImageMapFactory,
+  function SpotTabController($cordovaGeolocation, $ionicPopup, $location, $log, $scope, $state, ImageMapFactory,
                              MapViewFactory, SpotFactory) {
     var vm = this;
     var vmParent = $scope.vm;
-    vmParent.load($stateParams);  // Need to load current state into parent
+    vmParent.loadTab($state);  // Need to load current state into parent
 
     vm.getCurrentLocation = getCurrentLocation;
     vm.getGeometryType = getGeometryType;

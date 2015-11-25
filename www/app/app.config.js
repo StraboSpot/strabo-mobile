@@ -134,7 +134,10 @@
         'url': '/spotTab',
         'abstract': true,
         'templateUrl': 'app/spot/spot.html',
-        'controller': 'SpotController as vm'
+        'controller': 'SpotController as vm',
+        'resolve': {
+          'prepSpotFactory': prepSpotFactory
+        }
       })
       .state('spotTab.custom', {
         'cache': false,
@@ -204,9 +207,6 @@
             'templateUrl': 'app/spot/spot-tab.html',
             'controller': 'SpotTabController as vmChild'
           }
-        },
-        'resolve': {
-          'prepSpotFactory': prepSpotFactory
         }
       })
       .state('spotTab.rockdescription', {

@@ -5,11 +5,11 @@
     .module('app')
     .controller('SampleTabController', SampleTabController);
 
-  SampleTabController.$inject = ['$scope', '$stateParams', '$log'];
+  SampleTabController.$inject = ['$log', '$scope', '$state'];
 
-  function SampleTabController($scope, $stateParams, $log) {
+  function SampleTabController($log, $scope, $state) {
     var vmParent = $scope.vm;
-    vmParent.load($stateParams);  // Need to load current state into parent
+    vmParent.loadTab($state);     // Need to load current state into parent
 
     activate();
 

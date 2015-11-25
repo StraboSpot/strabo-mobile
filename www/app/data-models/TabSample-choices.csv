@@ -1,0 +1,17 @@
+label,name,list name,order
+Yes,yes,hz9zw76,
+No,no,hz9zw76,
+intact rock,intact_rock,jq8qd30,
+fragmented rock,fragmented_roc,jq8qd30,
+sediment,sediment,jq8qd30,
+other,other,jq8qd30,
+fabric / microstructure,fabric___micro,to0mv13,0
+petrology,petrology,to0mv13,1
+geochronology,geochronology,to0mv13,2
+geochemistry,geochemistry,to0mv13,3
+other,other,to0mv13,4
+5 - definitely in place,5___definitely,fc6dz57,
+4,4,fc6dz57,
+3,3,fc6dz57,
+2,2,fc6dz57,
+1 - float,1___float,fc6dz57,

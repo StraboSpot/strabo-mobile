@@ -6,16 +6,23 @@
     .controller('SpotController', SpotController);
 
   SpotController.$inject = ['$ionicModal', '$ionicPopup', '$location', '$log', '$rootScope', '$scope', '$state',
-    'ContentModelSurveyFactory', 'ImageMapFactory', 'ProjectFactory', 'SpotFactory'];
+    'ContentModelSurveyFactory', 'DataModelsFactory', 'FormFactory', 'ImageMapFactory', 'ProjectFactory',
+    'SpotFactory'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
   function SpotController($ionicModal, $ionicPopup, $location, $log, $rootScope, $scope, $state,
-                          ContentModelSurveyFactory, ImageMapFactory, ProjectFactory, SpotFactory) {
+                          ContentModelSurveyFactory, DataModelsFactory, FormFactory, ImageMapFactory, ProjectFactory,
+                          SpotFactory) {
     var vm = this;
 
     vm.closeModal = closeModal;
     vm.copySpot = copySpot;
+    vm.data = {};
     vm.deleteSpot = deleteSpot;
+    vm.fields = {
+      'sample_survey': {},
+      'sample_choices': {}
+    };
     vm.getMax = getMax;
     vm.getMin = getMin;
     vm.goToSpots = goToSpots;
@@ -39,11 +46,12 @@
         {'type': 'is otherwise related to', 'inverse': 'is otherwise related to'}
       ]
     };
-    vm.load = load;
+    vm.loadTab = loadTab;
     vm.openModal = openModal;
     vm.openSpot = openSpot;
     vm.setSelMultClass = setSelMultClass;
     vm.showField = showField;
+    vm.spot = {};
     vm.spotTypes = {
       'point': 'Measument or Observation',
       'line': 'Contact or Trace',
@@ -66,6 +74,9 @@
 
     function activate() {
       $log.log('In SpotController');
+
+      // Load fields for all forms
+      _.forEach(vm.fields, getFields);
 
       $rootScope.$state = $state;
 
@@ -101,6 +112,96 @@
       $scope.$on('groupMembersModal.hidden', function () {
         vm.groupMembersModal.remove();
       });
+    }
+
+    // Get the form fields
+    function getFields(value, key) {
+      $log.log('Loading ' + key + ' ....');
+      var csvFile = DataModelsFactory.dataModels[key];
+      DataModelsFactory.readCSV(csvFile, function (fields) {
+        $log.log('Finished loading ' + key + ' : ', fields);
+        vm.fields[key] = fields;
+      });
+    }
+
+    // Load the form survey (and choices, if applicable)
+    function loadForm(tab) {
+      if (tab === 'spotTab.sample') {
+        switch (tab) {
+          case 'spotTab.sample':
+            vm.survey = vm.fields.sample_survey;
+            vm.choices = vm.fields.sample_choices;
+        }
+      }
+      else {
+        switch (vm.spot.properties.type) {
+          case 'point':
+            vm.showDynamicFields = true;
+            vm.showRockDescription = true;
+            vm.showRockSample = true;
+            vm.survey = ContentModelSurveyFactory.measurements_and_observations_survey;
+            vm.choices = ContentModelSurveyFactory.measurements_and_observations_choices;
+            vm.showGroupMembers = false;
+            break;
+          case 'line':
+            vm.showDynamicFields = true;
+            vm.survey = ContentModelSurveyFactory.contacts_and_traces_survey;
+            vm.choices = ContentModelSurveyFactory.contacts_and_traces_choices;
+            vm.showGroupMembers = false;
+            break;
+          case 'polygon':
+            vm.showDynamicFields = false;
+            vm.survey = undefined;
+            vm.choices = undefined;
+            vm.showRockDescription = true;
+            vm.showGroupMembers = false;
+            break;
+          case 'group':
+            vm.showDynamicFields = true;
+            vm.survey = ContentModelSurveyFactory.spot_grouping_survey;
+            vm.choices = ContentModelSurveyFactory.spot_grouping_choices;
+            vm.showGroupMembers = true;
+            break;
+          default:
+            vm.showCustomFields = true;
+        }
+      }
+
+      vm.rock_description_survey = ContentModelSurveyFactory.rock_description_survey;
+      vm.rock_description_choices = ContentModelSurveyFactory.rock_description_choices;
+      vm.rock_sample_survey = ContentModelSurveyFactory.rock_sample_survey;
+      vm.rock_sample_choices = ContentModelSurveyFactory.rock_sample_choices;
+    }
+
+    // Get the current spot
+    function loadSpot(id) {
+      if (SpotFactory.getNewSpot()) {
+        // Load spot stored in the SpotFactory factory
+        vm.spot = SpotFactory.getNewSpot();
+        SpotFactory.setCurrentSpot(vm.spot);
+        // now clear the new spot from the factory because we have the info in our current scope
+        SpotFactory.clearNewSpot();
+
+        // Set default name
+        var prefix = ProjectFactory.getSpotPrefix();
+        if (!prefix) prefix = new Date().getTime().toString();
+        var number = ProjectFactory.getSpotNumber();
+        if (!number) number = '';
+        vm.spot.properties.name = prefix + number;
+        setProperties();
+      }
+      else {
+        if (SpotFactory.getCurrentSpot()) {
+          vm.spot = SpotFactory.getCurrentSpot();
+          $log.log('attempting to set properties2');
+          setProperties();
+        }
+        else {
+          vm.spot = SpotFactory.getSpot(id);
+          $log.log('attempting to set properties3');
+          setProperties();
+        }
+      }
     }
 
     // Set or cleanup some of the properties of the vm
@@ -140,43 +241,6 @@
       }
 
       vm.spotTitle = vm.spot.properties.name;
-
-      switch (vm.spot.properties.type) {
-        case 'point':
-          vm.showDynamicFields = true;
-          vm.showRockDescription = true;
-          vm.showRockSample = true;
-          vm.survey = ContentModelSurveyFactory.measurements_and_observations_survey;
-          vm.choices = ContentModelSurveyFactory.measurements_and_observations_choices;
-          vm.showGroupMembers = false;
-          break;
-        case 'line':
-          vm.showDynamicFields = true;
-          vm.survey = ContentModelSurveyFactory.contacts_and_traces_survey;
-          vm.choices = ContentModelSurveyFactory.contacts_and_traces_choices;
-          vm.showGroupMembers = false;
-          break;
-        case 'polygon':
-          vm.showDynamicFields = false;
-          vm.survey = undefined;
-          vm.choices = undefined;
-          vm.showRockDescription = true;
-          vm.showGroupMembers = false;
-          break;
-        case 'group':
-          vm.showDynamicFields = true;
-          vm.survey = ContentModelSurveyFactory.spot_grouping_survey;
-          vm.choices = ContentModelSurveyFactory.spot_grouping_choices;
-          vm.showGroupMembers = true;
-          break;
-        default:
-          vm.showCustomFields = true;
-      }
-
-      vm.rock_description_survey = ContentModelSurveyFactory.rock_description_survey;
-      vm.rock_description_choices = ContentModelSurveyFactory.rock_description_choices;
-      vm.rock_sample_survey = ContentModelSurveyFactory.rock_sample_survey;
-      vm.rock_sample_choices = ContentModelSurveyFactory.rock_sample_choices;
 
       // Set default values for the spot
       if (vm.survey) {
@@ -245,6 +309,7 @@
             }
           });
         });
+        vm.data = vm.spot.properties;
       }
       // Don't show links or groups until there are other spots to link to or groups to join
       vm.showLinks = vm.other_spots.length;
@@ -355,35 +420,9 @@
       }
     }
 
-    function load(params) {
-      // Get the current spot
-      if (SpotFactory.getNewSpot()) {
-        // Load spot stored in the SpotFactory factory
-        vm.spot = SpotFactory.getNewSpot();
-        SpotFactory.setCurrentSpot(vm.spot);
-        // now clear the new spot from the factory because we have the info in our current scope
-        SpotFactory.clearNewSpot();
-
-        // Set default name
-        var prefix = ProjectFactory.getSpotPrefix();
-        if (!prefix) prefix = new Date().getTime().toString();
-        var number = ProjectFactory.getSpotNumber();
-        if (!number) number = '';
-        vm.spot.properties.name = prefix + number;
-        setProperties();
-      }
-      else {
-        if (SpotFactory.getCurrentSpot()) {
-          vm.spot = SpotFactory.getCurrentSpot();
-          $log.log('attempting to set properties2');
-          setProperties();
-        }
-        else {
-          vm.spot = SpotFactory.getSpot(params.spotId);
-          $log.log('attempting to set properties3');
-          setProperties();
-        }
-      }
+    function loadTab(state) {
+      loadSpot(state.params.spotId);
+      loadForm(state.current.name);
     }
 
     function openModal(modal) {
@@ -413,25 +452,8 @@
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair
     function showField(relevant) {
-      if (!relevant) {
-        return true;
-      }
-
-      relevant = relevant.replace(/selected\(\$/g, '_.contains(');
-      relevant = relevant.replace(/\$/g, '');
-      relevant = relevant.replace(/{/g, 'vm.spot.properties.');
-      relevant = relevant.replace(/}/g, '');
-      relevant = relevant.replace(/''/g, 'undefined');
-      relevant = relevant.replace(/ = /g, ' == ');
-      relevant = relevant.replace(/ or /g, ' || ');
-      relevant = relevant.replace(/ and /g, ' && ');
-
-      try {
-        return eval(relevant);
-      }
-      catch (e) {
-        return false;
-      }
+      if (!vm.data) vm.data = vm.spot;
+      return FormFactory.isRelevant(relevant, vm.data);
     }
 
     // Add or modify Spot

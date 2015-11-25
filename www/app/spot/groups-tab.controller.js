@@ -5,12 +5,12 @@
     .module('app')
     .controller('SpotTabGroupsController', SpotTabGroupsController);
 
-  SpotTabGroupsController.$inject = ['$scope', '$stateParams', '$log', 'SpotFactory'];
+  SpotTabGroupsController.$inject = ['$log', '$scope', '$state', 'SpotFactory'];
 
-  function SpotTabGroupsController($scope, $stateParams, $log, SpotFactory) {
+  function SpotTabGroupsController($log, $scope, $state, SpotFactory) {
     var vm = this;
     var vmParent = $scope.vm;
-    vmParent.load($stateParams);  // Need to load current state into parent
+    vmParent.loadTab($state);  // Need to load current state into parent
 
     $log.log('inside spot tab groups Controller');
 
