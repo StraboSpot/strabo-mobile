@@ -339,7 +339,7 @@
                     'template': 'Measurements and observations must be drawn as points. Draw Again.'
                   });
                 }
-                $state.go('spotTab.georeference');
+                $state.go('spotTab.spot');
                 break;
               case 'line':
                 if (drawButtonActive === 'LineString') {
@@ -352,7 +352,7 @@
                     'template': 'Contacts and traces must be drawn as lines. Draw Again.'
                   });
                 }
-                $state.go('spotTab.georeference');
+                $state.go('spotTab.spot');
                 break;
               case 'polygon':
                 if (drawButtonActive === 'Polygon') {
@@ -365,7 +365,7 @@
                     'template': 'Rock descriptions must be drawn as polygons. Draw Again.'
                   });
                 }
-                $state.go('spotTab.georeference');
+                $state.go('spotTab.spot');
                 break;
               case 'group':
                 if (drawButtonActive === 'Polygon') {
@@ -378,7 +378,7 @@
                     'template': 'Stations must be drawn as polygons. Draw Again.'
                   });
                 }
-                $state.go('spotTab.georeference');
+                $state.go('spotTab.spot');
                 break;
             }
           }

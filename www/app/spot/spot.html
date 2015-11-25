@@ -35,11 +35,6 @@ navigation history that also transitions its views in and out.
        ng-click='vm.switchTabs("images");'>
       Images
     </a>
-    <a class='button button-clear spot-tab-inactive'
-       ng-class='{ "spot-tab-active": $state.current.name == "spotTab.georeference"}'
-       ng-click='vm.switchTabs("georeference");'>
-      Georeference
-    </a>
   <span ng-show='vm.showLinks'>
     <a class='button button-clear spot-tab-inactive'
        ng-class='{ "spot-tab-active": $state.current.name == "spotTab.links"}'

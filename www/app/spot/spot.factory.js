@@ -22,7 +22,7 @@
       'getFirstSpot': getFirstSpot,
       'getNewSpot': getNewSpot,
       'getSpotCount': getSpotCount,
-      'getSpotId': getSpotId,
+      'getSpot': getSpot,
       'getSpots': getSpots,
       'loadSpots': loadSpots,
       'read': read,
@@ -127,8 +127,11 @@
       return LocalStorageFactory.spotsDb.length();
     }
 
-    function getSpotId(spotId) {
-      return LocalStorageFactory.spotsDb.getItem(spotId);
+    function getSpot(id) {
+      var spotMatches = _.filter(data, function (spot) {
+        return String(spot.properties.id) === id;
+      });
+      return spotMatches[0];      // Should only be one match
     }
 
     function getSpots() {
@@ -146,7 +149,7 @@
       }
     }
 
-    // read from storage
+    // Read from local storage
     function read(key, callback) {
       LocalStorageFactory.spotsDb.getItem(key).then(function (value) {
         callback(value);
@@ -198,7 +201,7 @@
       newSpot.properties.id = Math.floor((new Date().getTime() + Math.random()) * 10);
     }
 
-    // write to storage
+    // Write to local storage
     function write(key, value) {
       return LocalStorageFactory.spotsDb.setItem(key, value);
     }

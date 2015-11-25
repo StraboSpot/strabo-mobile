@@ -156,16 +156,6 @@
           }
         }
       })
-      .state('spotTab.georeference', {
-        'cache': false,
-        'url': '/:spotId/georeference',
-        'views': {
-          'spottab-childview': {
-            'templateUrl': 'app/spot/georeference-tab.html',
-            'controller': 'SpotTabGeoreferenceController as vmChild'
-          }
-        }
-      })
       .state('spotTab.groupmembers', {
         'cache': false,
         'url': '/:spotId/groupmembers',
@@ -214,6 +204,9 @@
             'templateUrl': 'app/spot/spot-tab.html',
             'controller': 'SpotTabController as vmChild'
           }
+        },
+        'resolve': {
+          'prepSpotFactory': prepSpotFactory
         }
       })
       .state('spotTab.rockdescription', {

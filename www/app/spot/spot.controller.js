@@ -65,6 +65,8 @@
      */
 
     function activate() {
+      $log.log('In SpotController');
+
       $rootScope.$state = $state;
 
       $ionicModal.fromTemplateUrl('app/spot/links-modal.html', {
@@ -377,12 +379,9 @@
           setProperties();
         }
         else {
-          // Load spot from local storage
-          SpotFactory.read(params.spotId, function (spot) {
-            vm.spot = spot;
-            $log.log('attempting to set properties3');
-            setProperties();
-          });
+          vm.spot = SpotFactory.getSpot(params.spotId);
+          $log.log('attempting to set properties3');
+          setProperties();
         }
       }
     }
@@ -716,12 +715,12 @@
     // Validate the current form
     function validateForm() {
       switch ($state.current.url.split('/').pop()) {
-        case 'details':
+        case 'orientation':
           if (!vm.validateFields(vm.survey)) {
             return false;
           }
           break;
-        case 'notes':
+        case 'spot':
           if (!vm.spot.properties.name) {
             $ionicPopup.alert({
               'title': 'Validation Error!',
@@ -729,8 +728,6 @@
             });
             return false;
           }
-          break;
-        case 'georeference':
           if (vm.spot.geometry) {
             if (vm.spot.geometry.type === 'Point') {
               var geoError;

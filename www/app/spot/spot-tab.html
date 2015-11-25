@@ -1,27 +1,118 @@
-<ion-view>
-  <ion-content>
-    <label class='item item-input item-stacked-label item-text-wrap'>
-      <span class='input-label'>Spot Name</span>
-      <input type='text' placeholder='Name this Spot' ng-model='vm.spot.properties.name'>
-    </label>
-    <label class='item item-input item-stacked-label item-text-wrap'>
-      <span class='input-label'>ID</span>
-      <input type='number' disabled ng-model='vm.spot.properties.id'>
-    </label>
-    <label class='item item-input item-stacked-label item-text-wrap'>
-      <span class='input-label'>Date</span>
-      <input type='date' ng-model='vm.spot.properties.date'>
-    </label>
-    <label class='item item-input item-stacked-label item-text-wrap'>
-      <span class='input-label'>Time</span>
-      <input type='time' ng-model='vm.spot.properties.time'>
-    </label>
+<form name='geoForm' novalidate=''>
+  <ion-view>
+    <ion-content>
+      <label class='item item-input item-stacked-label item-text-wrap'>
+        <span class='input-label'>Spot Name</span>
+        <input type='text' placeholder='Name this Spot' ng-model='vm.spot.properties.name'>
+      </label>
+      <label class='item item-input item-stacked-label item-text-wrap'>
+        <span class='input-label'>ID</span>
+        <input type='number' disabled ng-model='vm.spot.properties.id'>
+      </label>
+      <label class='item item-input item-stacked-label item-text-wrap'>
+        <span class='input-label'>Date</span>
+        <input type='date' ng-model='vm.spot.properties.date'>
+      </label>
+      <label class='item item-input item-stacked-label item-text-wrap'>
+        <span class='input-label'>Time</span>
+        <input type='time' ng-model='vm.spot.properties.time'>
+      </label>
 
-    <div class='item item-divider'>
-      Notes
-    </div>
-    <label class='item item-input'>
-      <textarea placeholder='Notes about this Spot' rows='12' ng-model='vm.spot.properties.notes'></textarea>
-    </label>
-  </ion-content>
-</ion-view>
+      <div ng-if='vmChild.mapped'>
+        <label class='item item-input item-stacked-label item-text-wrap'>
+          <span class='input-label'>Label</span>
+          <input type='text' placeholder='Label on Map' ng-model='vm.spot.properties.label'>
+        </label>
+        <label class='item item-input item-stacked-label item-text-wrap'>
+          <span class='input-label'>Geometry</span>
+          <input type='text' disabled ng-model='vm.spot.geometry.type'>
+        </label>
+        <!-- Latitude and Longitude text boxes for Point features -->
+        <label ng-show='vmChild.showLatLng'
+               class='item item-input item-stacked-label item-text-wrap'
+               ng-class='{ "has-errors": geoForm["lat"].$invalid, "no-errors": geoForm["lat"].$valid }'>
+          <span class='input-label'>Latitude</span>
+          <input type='number' name='lat' ng-model='vmChild.lat' ng-change='vmChild.updateLatitude(vmChild.lat)'
+                 required min='-90' max='90'>
+        </label>
+
+        <div ng-if='geoForm["lat"].$touched'>
+          <div ng-messages='geoForm["lat"].$error'>
+            <div ng-messages-include='app/form/error-messages.html'></div>
+          </div>
+        </div>
+
+        <label ng-show='vmChild.showLatLng'
+               class='item item-input item-stacked-label item-text-wrap'
+               ng-class='{ "has-errors": geoForm["lng"].$invalid, "no-errors": geoForm["lng"].$valid }'>
+          <span class='input-label'>Longitude</span>
+          <input type='number' name='lng' ng-model='vmChild.lng' ng-change='vmChild.updateLongitude(vmChild.lng)'
+                 required min='-180' max='180'>
+        </label>
+
+        <div ng-if='geoForm["lng"].$touched'>
+          <div ng-messages='geoForm["lng"].$error'>
+            <div ng-messages-include='app/form/error-messages.html'></div>
+          </div>
+        </div>
+      </div>
+      <!-- X and Y text boxes for Point features mapped on an image -->
+      <label ng-show='vmChild.showXY'
+             class='item item-input item-stacked-label item-text-wrap'
+             ng-class='{ "has-errors": geoForm["x"].$invalid, "no-errors": geoForm["y"].$valid }'>
+        <span class='input-label'>Pixels in the X direction</span>
+        <input type='number' name='x' ng-model='vmChild.x' ng-change='vmChild.updateX(vmChild.x)'
+               required min='0'>
+      </label>
+
+      <div ng-if='geoForm["x"].$touched'>
+        <div ng-messages='geoForm["x"].$error'>
+          <div ng-messages-include='app/form/error-messages.html'></div>
+        </div>
+      </div>
+      <label ng-show='vmChild.showXY'
+             class='item item-input item-stacked-label item-text-wrap'
+             ng-class='{ "has-errors": geoForm["y"].$invalid, "no-errors": geoForm["y"].$valid }'>
+        <span class='input-label'>Pixels in the Y direction</span>
+        <input type='number' name='y' ng-model='vmChild.y' ng-change='vmChild.updateY(vmChild.y)'
+               required min='0'>
+      </label>
+
+      <div ng-if='geoForm["y"].$touched'>
+        <div ng-messages='geoForm["y"].$error'>
+          <div ng-messages-include='app/form/error-messages.html'></div>
+        </div>
+      </div>
+      <div ng-if='!vmChild.mapped' class='padding'>
+        This spot has not been mapped yet. Click on the Set from Map button below and be sure to map this feature as a
+        {{vmChild.getGeometryType()}}.
+      </div>
+      <!-- Map Interaction -->
+      <div class='row responsive-sm'>
+        <div class='col'>
+          <button ng-click='vmChild.viewSpot();' ng-disabled='!vmChild.viewOnMapButton'
+                  class='button button-positive icon-left icon ion-eye'>
+            View on Map
+          </button>
+        </div>
+        <div class='col'>
+          <button ng-click='vmChild.getCurrentLocation();' ng-disabled='!vmChild.showMyLocationButton'
+                  class='button button-positive icon-left ion-pinpoint'>Set to My Location
+          </button>
+        </div>
+        <div class='col'>
+          <button ng-click='vmChild.setFromMap();' ng-disabled='!vmChild.showSetFromMapButton'
+                  class='button button-positive icon-left icon ion-map'>Set From Map
+          </button>
+        </div>
+      </div>
+
+      <div class='item item-divider'>
+        Notes
+      </div>
+      <label class='item item-input'>
+        <textarea placeholder='Notes about this Spot' rows='12' ng-model='vm.spot.properties.notes'></textarea>
+      </label>
+    </ion-content>
+  </ion-view>
+</form>
