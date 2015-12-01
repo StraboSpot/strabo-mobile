@@ -15,7 +15,6 @@
     $log.log('inside spot tab groups Controller');
 
     vm.linkGroup = function () {
-      SpotFactory.setCurrentSpot(vmParent.spot);
       vmParent.openModal('groupModal');
     };
   }

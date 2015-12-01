@@ -64,8 +64,10 @@
      */
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair
-    function showField(relevant) {
-      return FormFactory.isRelevant(relevant, vm.data);
+    function showField(field) {
+      var show = FormFactory.isRelevant(field.relevant, vm.data);
+      if (!show) delete vm.data[field.name];
+      return show;
     }
 
     function submit() {

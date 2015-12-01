@@ -17,7 +17,7 @@
     vm.pristine = true;
     vm.showField = showField;
     vm.survey = [];
-    vm.toggleChecked = toggleChecked;
+    vm.toggleAcknowledgeChecked = toggleAcknowledgeChecked;
     vm.submit = submit;
     vm.valid = true;
 
@@ -57,8 +57,10 @@
      */
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair
-    function showField(relevant) {
-      return FormFactory.isRelevant(relevant, vm.data);
+    function showField(field) {
+      var show = FormFactory.isRelevant(field.relevant, vm.data);
+      if (!show) delete vm.data[field.name];
+      return show;
     }
 
     function submit() {
@@ -69,13 +71,8 @@
       }
     }
 
-    function toggleChecked(field) {
-      if (vm.data[field]) {
-        delete vm.data[field];
-      }
-      else {
-        vm.data[field] = true;
-      }
+    function toggleAcknowledgeChecked(field) {
+      vm.data = FormFactory.toggleAcknowledgeChecked(vm.data, field);
     }
   }
 }());

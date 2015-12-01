@@ -2,7 +2,7 @@
   <ion-view>
     <ion-content>
       <div ng-repeat='field in vm.rock_description_survey'>
-        <div id='{{ field.name }}' ng-show='vm.showField(field.relevant)'>
+        <div id='{{ field.name }}' ng-show='vm.showField(field)'>
           <div data-ng-switch on='field.type.split(" ")[0]'>
             <div ng-switch-when='integer'>
               <label class='item item-input item-stacked-label item-text-wrap'

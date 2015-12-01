@@ -8,9 +8,9 @@
   SpotFactory.$inject = ['$log', '$q', 'LocalStorageFactory'];
 
   function SpotFactory($log, $q, LocalStorageFactory) {
-    var currentSpot;
-    var data = {};
-    var newSpot;
+    var currentSpot = {};
+    var newSpot = {};
+    var spots = {};
 
     return {
       'clear': clear,
@@ -22,12 +22,12 @@
       'getFirstSpot': getFirstSpot,
       'getNewSpot': getNewSpot,
       'getSpotCount': getSpotCount,
-      'getSpot': getSpot,
       'getSpots': getSpots,
       'loadSpots': loadSpots,
       'read': read,
       'save': save,
       'setCurrentSpot': setCurrentSpot,
+      'setCurrentSpotById': setCurrentSpotById,
       'setNewSpot': setNewSpot,
       'write': write
     };
@@ -57,9 +57,9 @@
     function clear() {
       var deferred = $q.defer(); // init promise
       LocalStorageFactory.spotsDb.clear().then(function () {
-        data = {};
+        spots = {};
         deferred.notify();
-        deferred.resolve(data);
+        deferred.resolve(spots);
       });
       return deferred.promise;
     }
@@ -127,23 +127,16 @@
       return LocalStorageFactory.spotsDb.length();
     }
 
-    function getSpot(id) {
-      var spotMatches = _.filter(data, function (spot) {
-        return String(spot.properties.id) === id;
-      });
-      return spotMatches[0];      // Should only be one match
-    }
-
     function getSpots() {
-      return data;
+      return spots;
     }
 
     function loadSpots() {
-      if (_.isEmpty(data)) {
+      if (_.isEmpty(spots)) {
         $log.log('Loading spots ....');
         var dataPromise = all().then(function (savedData) {
-          data = savedData;
-          $log.log('Finished loading spots: ', data);
+          spots = savedData;
+          $log.log('Finished loading spots: ', spots);
         });
         return dataPromise;
       }
@@ -163,17 +156,24 @@
       LocalStorageFactory.spotsDb.setItem(saveSpot.properties.id, saveSpot).then(function () {
         $log.log('Saved spot: ', saveSpot);
         all().then(function (savedData) {
-          data = savedData;
-          $log.log('All spots: ', data);
+          spots = savedData;
+          $log.log('All spots: ', spots);
           deferred.notify();
-          deferred.resolve(data);
+          deferred.resolve(spots);
         });
       });
       return deferred.promise;
     }
 
-    function setCurrentSpot(geojsonObj) {
-      currentSpot = geojsonObj;
+    function setCurrentSpot(spot) {
+      currentSpot = spot;
+    }
+
+    function setCurrentSpotById(id) {
+      var match = _.filter(spots, function (spot) {
+        return String(spot.properties.id) === id;
+      })[0];  // Should only be one match
+      currentSpot = JSON.parse(JSON.stringify(match));  // Deep clone
     }
 
     // Initialize a new Spot

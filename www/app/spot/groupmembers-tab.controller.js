@@ -15,7 +15,6 @@
     $log.log('inside spot tab group members Controller');
 
     vm.addGroupMember = function () {
-      SpotFactory.setCurrentSpot(vmParent.spot);
       vmParent.openModal('groupMembersModal');
     };
   }

@@ -12,7 +12,9 @@
       'preferences': 'app/data-models/Preferences.csv',
       'project': 'app/data-models/ProjectsPage.csv',
       'sample_survey': 'app/data-models/TabSample.csv',
-      'sample_choices': 'app/data-models/TabSample-choices.csv'
+      'sample_choices': 'app/data-models/TabSample-choices.csv',
+      'threedstructures_survey': 'app/data-models/Tab3DStructures.csv',
+      'threedstructures_choices': 'app/data-models/Tab3DStructures-choices.csv'
     };
 
     return {
@@ -24,11 +26,10 @@
      * Private Functions
      */
 
-    // Remove objects created without a label and name (that is objects created from blank lines
-    // as well as the default start and end objects)
+    // Remove the default start and end objects
     function cleanJson(json) {
-      return _.filter(json.data, function (obj) {
-        return obj.name && obj.label;
+      return _.reject(json.data, function (obj) {
+        return ((obj.name === 'start' && obj.type === 'start') || (obj.name === 'end' && obj.type === 'end'));
       });
     }
 
@@ -42,6 +43,7 @@
           'transformResponse': function (csv) {
             Papa.parse(csv, {
               'header': true,
+              'skipEmptyLines': true,
               'complete': function (json) {
                 // $log.log('Parsed csv: ', json);
                 callback(cleanJson(json));

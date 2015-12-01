@@ -15,7 +15,6 @@
     $log.log('inside spot tab links Controller');
 
     vm.linkSpot = function () {
-      SpotFactory.setCurrentSpot(vmParent.spot);
       vmParent.openModal('linkModal');
     };
 

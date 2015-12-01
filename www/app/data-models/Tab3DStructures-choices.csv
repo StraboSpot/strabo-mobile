@@ -1,0 +1,95 @@
+label,order,name,list name
+anticline,0,anticline,wg6ry31
+syncline,1,syncline,wg6ry31
+monocline,2,monocline,wg6ry31
+antiform,3,antiform,wg6ry31
+synform,4,synform,wg6ry31
+s-fold,5,s_fold,wg6ry31
+z-fold,6,z_fold,wg6ry31
+m-fold,7,m_fold,wg6ry31
+sheath,,sheath,wg6ry31
+single-layer buckle,,single_layer_b,wg6ry31
+ptygmatic,,ptygmatic,wg6ry31
+crenulation,,crenulation,wg6ry31
+chevron,0,chevron,fa6tb91
+cuspate,1,cuspate,fa6tb91
+circular,2,circular,fa6tb91
+elliptical,3,elliptical,fa6tb91
+upright,0,upright,iq4bx64
+overturned,1,overturned,iq4bx64
+vertical,2,vertical,iq4bx64
+horizontal,3,horizontal,iq4bx64
+recumbent,4,recumbent,iq4bx64
+inclined,5,inclined,iq4bx64
+gentle   (180º –120º),,gentle,ao3ks66
+open   (120º–70º),,open,ao3ks66
+close   (70º–30º),,close,ao3ks66
+tight   (30º–10º),,tight,ao3ks66
+isoclinal   (10º–0º),,isoclinal,ao3ks66
+North,1,north,iu9ug45
+NE,3,ne,iu9ug45
+East,5,east,iu9ug45
+SE,7,se,iu9ug45
+South,9,south,iu9ug45
+SW,11,sw,iu9ug45
+West,13,west,iu9ug45
+NW,15,nw,iu9ug45
+accurate,,accurate,gl2mf38
+approximate,,approximate,gl2mf38
+irregular,,irregular,gl2mf38
+axial planar,,axial_planar,xi7el52
+fanning-convergent,,fanning_conver,xi7el52
+fanning-divergent,,fanning_diverg,xi7el52
+transected,,transected,xi7el52
+unidirectional,,unidirectional,hm3vv92
+bidirectional,,bidirectional,hm3vv92
+symmetrical,,symmetrical,cf1so76
+asymmetrical,,asymmetrical,cf1so76
+north,,north,rz7bs81
+NE,,ne,rz7bs81
+east,,east,rz7bs81
+SE,,se,rz7bs81
+south,,south,rz7bs81
+SW,,sw,rz7bs81
+west,,west,rz7bs81
+NW,,nw,rz7bs81
+5 - best - accurate,0,5,ex15z66
+4,1,4,ex15z66
+3 - approximate,2,3,ex15z66
+2,3,2,ex15z66
+1 - poor - irregular - uncertain,4,1,ex15z66
+S tectonite,1,s_tectonite,su3eo23
+SL tectonite,2,sl_tectonite,su3eo23
+LS tectonite,3,ls_tectonite,su3eo23
+L tectonite,4,l_tectonite,su3eo23
+S only,,s_only,yd4gc48
+S >> L,,s___l,yd4gc48
+S > L,,s___l_1,yd4gc48
+S = L,,s___l_2,yd4gc48
+L > S,,l___s,yd4gc48
+L >> S,,l___s_1,yd4gc48
+L only,,l_only,yd4gc48
+unidirectional,,unidirectional,jl7aw25
+bidirectional,,bidirectional,jl7aw25
+symmetrical,,symmetrical,tl3qt96
+asymmetrical,,asymmetrical,tl3qt96
+finite strain,,finite_strain,za4pc84
+shape preferred orientation,,shape_preferred_orientation,za4pc84
+anisotropy of magnetic suspectibility,,anisotropy_of_magnetic_suspect,za4pc84
+stress,,stress,za4pc84
+infinitesimal strain,,infinitesimal_strain,za4pc84
+other,,other,za4pc84
+5 - best,,5___best,zz1pg14
+4,,4,zz1pg14
+3,,3,zz1pg14
+2,,2,zz1pg14
+1 - worst,,1___worst,zz1pg14
+Flow Apophyses,,flow_apophyses,ub43c80
+Displacements,,displacements,ub43c80
+Other,,other,ub43c80
+finite strain,,finite_strain,rj1ox37
+preferred shape orientation,,preferred_shap,rj1ox37
+other,,other,rj1ox37
+accurate,,accurate,sq9gr31
+approximate,,approximate,sq9gr31
+irregular,,irregular,sq9gr31

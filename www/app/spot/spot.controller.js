@@ -5,12 +5,12 @@
     .module('app')
     .controller('SpotController', SpotController);
 
-  SpotController.$inject = ['$ionicModal', '$ionicPopup', '$location', '$log', '$rootScope', '$scope', '$state',
+  SpotController.$inject = ['$document', '$ionicModal', '$ionicPopup', '$location', '$log', '$rootScope', '$scope', '$state',
     'ContentModelSurveyFactory', 'DataModelsFactory', 'FormFactory', 'ImageMapFactory', 'ProjectFactory',
     'SpotFactory'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
-  function SpotController($ionicModal, $ionicPopup, $location, $log, $rootScope, $scope, $state,
+  function SpotController($document, $ionicModal, $ionicPopup, $location, $log, $rootScope, $scope, $state,
                           ContentModelSurveyFactory, DataModelsFactory, FormFactory, ImageMapFactory, ProjectFactory,
                           SpotFactory) {
     var vm = this;
@@ -21,7 +21,9 @@
     vm.deleteSpot = deleteSpot;
     vm.fields = {
       'sample_survey': {},
-      'sample_choices': {}
+      'sample_choices': {},
+      'threedstructures_survey': {},
+      'threedstructures_choices': {}
     };
     vm.getMax = getMax;
     vm.getMin = getMin;
@@ -78,8 +80,6 @@
       // Load fields for all forms
       _.forEach(vm.fields, getFields);
 
-      $rootScope.$state = $state;
-
       $ionicModal.fromTemplateUrl('app/spot/links-modal.html', {
         'scope': $scope,
         'animation': 'slide-in-up'
@@ -126,11 +126,16 @@
 
     // Load the form survey (and choices, if applicable)
     function loadForm(tab) {
-      if (tab === 'spotTab.sample') {
+      if (tab === 'spotTab.sample' || tab === 'spotTab.threedstructures') {
         switch (tab) {
           case 'spotTab.sample':
             vm.survey = vm.fields.sample_survey;
             vm.choices = vm.fields.sample_choices;
+            break;
+          case 'spotTab.threedstructures':
+            vm.survey = vm.fields.threedstructures_survey;
+            vm.choices = vm.fields.threedstructures_choices;
+            break;
         }
       }
       else {
@@ -175,10 +180,11 @@
 
     // Get the current spot
     function loadSpot(id) {
-      if (SpotFactory.getNewSpot()) {
+      if (!_.isEmpty(SpotFactory.getNewSpot())) {
         // Load spot stored in the SpotFactory factory
         vm.spot = SpotFactory.getNewSpot();
         SpotFactory.setCurrentSpot(vm.spot);
+        vm.spot = SpotFactory.getCurrentSpot();
         // now clear the new spot from the factory because we have the info in our current scope
         SpotFactory.clearNewSpot();
 
@@ -191,13 +197,14 @@
         setProperties();
       }
       else {
-        if (SpotFactory.getCurrentSpot()) {
+        if (!_.isEmpty(SpotFactory.getCurrentSpot())) {
           vm.spot = SpotFactory.getCurrentSpot();
           $log.log('attempting to set properties2');
           setProperties();
         }
         else {
-          vm.spot = SpotFactory.getSpot(id);
+          SpotFactory.setCurrentSpotById(id);
+          vm.spot = SpotFactory.getCurrentSpot();
           $log.log('attempting to set properties3');
           setProperties();
         }
@@ -245,7 +252,7 @@
       // Set default values for the spot
       if (vm.survey) {
         vm.survey = _.reject(vm.survey, function (field) {
-          return (field.type === 'start' || field.type === 'end');
+          return ((field.type === 'start' && field.name === 'start') || (field.type === 'end' && field.name === 'end'));
         });
 
         _.each(vm.survey, function (field) {
@@ -314,6 +321,8 @@
       // Don't show links or groups until there are other spots to link to or groups to join
       vm.showLinks = vm.other_spots.length;
       vm.showGroups = vm.groups.length;
+
+      $log.log('Spot loaded: ', vm.spot);
     }
 
     /**
@@ -451,9 +460,10 @@
     }
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair
-    function showField(relevant) {
-      if (!vm.data) vm.data = vm.spot;
-      return FormFactory.isRelevant(relevant, vm.data);
+    function showField(field) {
+      var show = FormFactory.isRelevant(field.relevant, vm.data);
+      if (!show) delete vm.data[field.name];
+      return show;
     }
 
     // Add or modify Spot
@@ -649,16 +659,26 @@
         }
       }
 
-      SpotFactory.setCurrentSpot(vm.spot);
       $location.path('/spotTab/' + vm.spot.properties.id + '/' + toTab);
     }
 
     function toggleAcknowledgeChecked(field) {
       if (vm.spot.properties[field]) {
-        delete vm.spot.properties[field];
+        var confirmPopup = $ionicPopup.confirm({
+          'title': 'Close Group?',
+          'template': 'By closing this group you will be clearing any data in this group. Continue?'
+        });
+        confirmPopup.then(function (res) {
+          if (res) {
+            vm.spot.properties = FormFactory.toggleAcknowledgeChecked(vm.spot.properties, field);
+          }
+          else {
+            $document[0].getElementById(field + 'Toggle').checked = true;
+          }
+        });
       }
       else {
-        vm.spot.properties[field] = true;
+        vm.spot.properties = FormFactory.toggleAcknowledgeChecked(vm.spot.properties, field);
       }
     }
 

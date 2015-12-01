@@ -1,5 +1,5 @@
 name,type,label,required
-group_xl0qr87,begin group,Tab Control,
+group_tab_control,begin group,Tab Control,
 orientation,acknowledge,Orientations,false
 _3_d_structures,acknowledge,3-D Structures,false
 images,acknowledge,Images,false
@@ -7,7 +7,7 @@ samples,acknowledge,Samples,false
 inferences,acknowledge,Inferences,false
 nesting,acknowledge,Nesting,false
 ,end group,,
-group_zp4an47,begin group,Other Preferences,
+group_other_preferences,begin group,Other Preferences,
 right_hand_rule,acknowledge,Right-hand Rule,false
 drop_down_to_finish_typing,acknowledge,Drop Down to Finish Typing,false
 student_mode,acknowledge,Student Mode,false

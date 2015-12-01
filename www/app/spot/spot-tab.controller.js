@@ -105,7 +105,6 @@
 
     // Open the map so the user can set the location for the spot
     function setFromMap() {
-      SpotFactory.setCurrentSpot(vmParent.spot);    // Save current spot
       if (_.has(vmParent.spot.properties, 'image_map')) {
         var image = _.findWhere(ImageMapFactory.getImageMaps(), {'id': vmParent.spot.properties.image_map});
         ImageMapFactory.setCurrentImageMap(image);    // Save referenced image map

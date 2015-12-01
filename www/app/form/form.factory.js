@@ -10,6 +10,7 @@
   function FormFactory($document, $ionicPopup, $log) {
     return {
       'isRelevant': isRelevant,
+      'toggleAcknowledgeChecked': toggleAcknowledgeChecked,
       'validate': validate
     };
 
@@ -39,23 +40,35 @@
       }
     }
 
+    function toggleAcknowledgeChecked(data, field) {
+      if (data[field]) {
+        delete data[field];
+      }
+      else {
+        data[field] = true;
+      }
+      return data;
+    }
+
     function validate(survey, data) {
       $log.log('Validating form with data:', data);
       var errorMessages = '';
 
       // If a field is visible and required but empty give the user an error message and return to the form
       _.each(survey, function (field) {
-        var ele = $document[0].getElementById(field.name);
-        if (getComputedStyle(ele).display !== 'none' && angular.isUndefined(data[field.name])) {
-          if (field.required === 'true') {
-            errorMessages += '<b>' + field.label + '</b> Required!<br>';
+        if (field.name) {
+          var ele = $document[0].getElementById(field.name);
+          if (getComputedStyle(ele).display !== 'none' && angular.isUndefined(data[field.name])) {
+            if (field.required === 'true') {
+              errorMessages += '<b>' + field.label + '</b> Required!<br>';
+            }
+            else if (field.name in data) {
+              errorMessages += '<b>' + field.label + '</b> ' + field.constraint_message + '<br>';
+            }
           }
-          else if (field.name in data) {
-            errorMessages += '<b>' + field.label + '</b> ' + field.constraint_message + '<br>';
+          else if (getComputedStyle(ele).display === 'none') {
+            delete data[field.name];
           }
-        }
-        else if (getComputedStyle(ele).display === 'none') {
-          delete data[field.name];
         }
       });
 

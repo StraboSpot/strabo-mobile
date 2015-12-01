@@ -11,6 +11,6 @@ sample_prefix,text,Sample Prefix Label,false,Short label based on location or IG
 instruments,text,Instruments Used,false,
 gps_datum,text,GPS Datum,false,default to WGS84
 magnetic_declination,text,Magnetic Declination,false,Enter range for high latitude areas
-notes,text,Notes,false,Logistics or other important information
+Notes,note,Notes,false,
 start,start,,,
 end,end,,,

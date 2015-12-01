@@ -1,5 +1,5 @@
 <div ng-repeat='field in vm.survey'>
-  <div id='{{ field.name }}' ng-show='vm.showField(field.relevant)'>
+  <div id='{{ field.name }}' ng-show='vm.showField(field)'>
     <div data-ng-switch on='field.type.split(" ")[0]'>
       <div class='field-group item item-divider' ng-switch-when='begin'>
         {{ field.label }}
@@ -99,7 +99,8 @@
               <input type='checkbox'
                      name='{{ field.name }}'
                      ng-checked='vm.data[field.name]'
-                     ng-click='vm.toggleChecked(field.name)'
+                     ng-click='vm.toggleAcknowledgeChecked(field.name)'
+                     id='{{ field.name }}Toggle'
                      ng-required='{{ field.required }}'>
               <div class="track">
                 <div class="handle"></div>

@@ -31,6 +31,11 @@ navigation history that also transitions its views in and out.
       Orientation
     </a>
     <a class='button button-clear spot-tab-inactive'
+       ng-class='{ "spot-tab-active": $state.current.name == "spotTab.threedstructures"}'
+       ng-click='vm.switchTabs("threedstructures");'>
+      3D Structures
+    </a>
+    <a class='button button-clear spot-tab-inactive'
        ng-class='{ "spot-tab-active": $state.current.name == "spotTab.images"}'
        ng-click='vm.switchTabs("images");'>
       Images

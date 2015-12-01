@@ -229,6 +229,16 @@
           }
         }
       })
+      .state('spotTab.threedstructures', {
+        'cache': false,
+        'url': '/:spotId/threedstructures',
+        'views': {
+          'spottab-childview': {
+            'templateUrl': 'app/spot/3dstructures-tab.html',
+            'controller': 'ThreeDStructuresTabController as vmChild'
+          }
+        }
+      })
       .state('app.archiveTiles', {
         'url': '/map/archiveTiles',
         'views': {
