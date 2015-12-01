@@ -30,7 +30,7 @@
 
     function activate() {
       SpotFactory.clearCurrentSpot();            // Make sure the current spot is empty
-      vm.spots = SpotFactory.getSpots();
+      vm.spots = SpotFactory.getSpots().reverse();  // Move newest to top
       createModals();
       cleanupModals();
     }
