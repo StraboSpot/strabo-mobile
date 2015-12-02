@@ -5,14 +5,14 @@
     .module('app')
     .controller('SpotController', SpotController);
 
-  SpotController.$inject = ['$document', '$ionicModal', '$ionicPopup', '$location', '$log', '$rootScope', '$scope', '$state',
-    'ContentModelSurveyFactory', 'DataModelsFactory', 'FormFactory', 'ImageMapFactory', 'ProjectFactory',
-    'SpotFactory'];
+  SpotController.$inject = ['$document', '$ionicModal', '$ionicPopup', '$location', '$log', '$scope', '$state',
+    'ContentModelSurveyFactory', 'DataModelsFactory', 'FormFactory', 'ImageMapFactory', 'PreferencesFactory',
+    'ProjectFactory', 'SpotFactory'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
-  function SpotController($document, $ionicModal, $ionicPopup, $location, $log, $rootScope, $scope, $state,
-                          ContentModelSurveyFactory, DataModelsFactory, FormFactory, ImageMapFactory, ProjectFactory,
-                          SpotFactory) {
+  function SpotController($document, $ionicModal, $ionicPopup, $location, $log, $scope, $state,
+                          ContentModelSurveyFactory, DataModelsFactory, FormFactory, ImageMapFactory,
+                          PreferencesFactory, ProjectFactory, SpotFactory) {
     var vm = this;
 
     vm.closeModal = closeModal;
@@ -22,8 +22,8 @@
     vm.fields = {
       'sample_survey': {},
       'sample_choices': {},
-      'threedstructures_survey': {},
-      'threedstructures_choices': {}
+      '_3dstructures_survey': {},
+      '_3dstructures_choices': {}
     };
     vm.getMax = getMax;
     vm.getMin = getMin;
@@ -52,7 +52,9 @@
     vm.openModal = openModal;
     vm.openSpot = openSpot;
     vm.setSelMultClass = setSelMultClass;
+    vm.showDynamicFields = true;
     vm.showField = showField;
+    vm.showTab = showTab;
     vm.spot = {};
     vm.spotTypes = {
       'point': 'Measument or Observation',
@@ -63,6 +65,7 @@
     vm.submit = submit;
     vm.switchTabs = switchTabs;
     vm.toggleAcknowledgeChecked = toggleAcknowledgeChecked;
+    vm.toggleAcknowledgeCheckedOrig = toggleAcknowledgeCheckedOrig;
     vm.toggleChecked = toggleChecked;
     vm.toggleSelection = toggleSelection;
     vm.validateFields = validateFields;
@@ -126,15 +129,15 @@
 
     // Load the form survey (and choices, if applicable)
     function loadForm(tab) {
-      if (tab === 'spotTab.sample' || tab === 'spotTab.threedstructures') {
+      if (tab === 'spotTab.sample' || tab === 'spotTab._3dstructures') {
         switch (tab) {
           case 'spotTab.sample':
             vm.survey = vm.fields.sample_survey;
             vm.choices = vm.fields.sample_choices;
             break;
-          case 'spotTab.threedstructures':
-            vm.survey = vm.fields.threedstructures_survey;
-            vm.choices = vm.fields.threedstructures_choices;
+          case 'spotTab._3dstructures':
+            vm.survey = vm.fields._3dstructures_survey;
+            vm.choices = vm.fields._3dstructures_choices;
             break;
         }
       }
@@ -142,8 +145,6 @@
         switch (vm.spot.properties.type) {
           case 'point':
             vm.showDynamicFields = true;
-            vm.showRockDescription = true;
-            vm.showRockSample = true;
             vm.survey = ContentModelSurveyFactory.measurements_and_observations_survey;
             vm.choices = ContentModelSurveyFactory.measurements_and_observations_choices;
             vm.showGroupMembers = false;
@@ -158,7 +159,6 @@
             vm.showDynamicFields = false;
             vm.survey = undefined;
             vm.choices = undefined;
-            vm.showRockDescription = true;
             vm.showGroupMembers = false;
             break;
           case 'group':
@@ -466,6 +466,11 @@
       return show;
     }
 
+    function showTab(tab) {
+      var preferences = PreferencesFactory.getPreferencesData();
+      return preferences[tab];
+    }
+
     // Add or modify Spot
     function submit() {
       // Validate the form first
@@ -679,6 +684,15 @@
       }
       else {
         vm.spot.properties = FormFactory.toggleAcknowledgeChecked(vm.spot.properties, field);
+      }
+    }
+
+    function toggleAcknowledgeCheckedOrig(field) {
+      if (vm.spot.properties[field]) {
+        delete vm.spot.properties[field];
+      }
+      else {
+        vm.spot.properties[field] = true;
       }
     }
 

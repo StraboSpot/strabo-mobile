@@ -1,9 +1,9 @@
 name,type,label,required
 group_tab_control,begin group,Tab Control,
-orientation,acknowledge,Orientations,false
-_3_d_structures,acknowledge,3-D Structures,false
+orientation,acknowledge,Orientation,false
+_3dstructures,acknowledge,3D Structures,false
 images,acknowledge,Images,false
-samples,acknowledge,Samples,false
+sample,acknowledge,Sample,false
 inferences,acknowledge,Inferences,false
 nesting,acknowledge,Nesting,false
 ,end group,,

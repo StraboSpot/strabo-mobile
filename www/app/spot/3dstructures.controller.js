@@ -3,11 +3,11 @@
 
   angular
     .module('app')
-    .controller('ThreeDStructuresTabController', ThreeDStructuresTabController);
+    .controller('_3DStructuresTabController', _3DStructuresTabController);
 
-  ThreeDStructuresTabController.$inject = ['$log', '$scope', '$state'];
+  _3DStructuresTabController.$inject = ['$log', '$scope', '$state'];
 
-  function ThreeDStructuresTabController($log, $scope, $state) {
+  function _3DStructuresTabController($log, $scope, $state) {
     var vmParent = $scope.vm;
     vmParent.loadTab($state);     // Need to load current state into parent
 
@@ -18,7 +18,7 @@
      */
 
     function activate() {
-      $log.log('In ThreeDStructuresTabController');
+      $log.log('In 3DStructuresTabController');
     }
   }
 }());

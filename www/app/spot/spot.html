@@ -25,56 +25,60 @@ navigation history that also transitions its views in and out.
        ng-click='vm.switchTabs("spot");'>
       Spot
     </a>
-    <a class='button button-clear spot-tab-inactive'
-       ng-class='{ "spot-tab-active": $state.current.name == "spotTab.orientation"}'
-       ng-click='vm.switchTabs("orientation")'>
-      Orientation
-    </a>
-    <a class='button button-clear spot-tab-inactive'
-       ng-class='{ "spot-tab-active": $state.current.name == "spotTab.threedstructures"}'
-       ng-click='vm.switchTabs("threedstructures");'>
-      3D Structures
-    </a>
-    <a class='button button-clear spot-tab-inactive'
-       ng-class='{ "spot-tab-active": $state.current.name == "spotTab.images"}'
-       ng-click='vm.switchTabs("images");'>
-      Images
-    </a>
-  <span ng-show='vm.showLinks'>
-    <a class='button button-clear spot-tab-inactive'
-       ng-class='{ "spot-tab-active": $state.current.name == "spotTab.links"}'
-       ng-click='vm.switchTabs("links");'>
-      Links
-    </a>
-  </span>
-  <span ng-show='vm.showGroups'>
-    <a class='button button-clear spot-tab-inactive'
-       ng-class='{ "spot-tab-active": $state.current.name == "spotTab.groups"}'
-       ng-click='vm.switchTabs("groups");'>
-      Groups
-    </a>
-  </span>
-  <span ng-show='vm.showGroupMembers'>
-    <a class='button button-clear spot-tab-inactive'
-       ng-class='{ "spot-tab-active": $state.current.name == "spotTab.groupmemebers"}'
-       ng-click='vm.switchTabs("groupmembers");'>
-      Group Members
-    </a>
-  </span>
-  <span ng-show='vm.showRockDescription'>
+    <span ng-show='vm.showTab("orientation")'>
+      <a class='button button-clear spot-tab-inactive'
+         ng-class='{ "spot-tab-active": $state.current.name == "spotTab.orientation"}'
+         ng-click='vm.switchTabs("orientation")'>
+        Orientation
+      </a>
+    </span>
+    <span ng-show='vm.showTab("_3dstructures")'>
+      <a class='button button-clear spot-tab-inactive'
+         ng-class='{ "spot-tab-active": $state.current.name == "spotTab._3dstructures"}'
+         ng-click='vm.switchTabs("_3dstructures");'>
+        3D Structures
+      </a>
+    </span>
+    <span ng-show='vm.showTab("images")'>
+      <a class='button button-clear spot-tab-inactive'
+         ng-class='{ "spot-tab-active": $state.current.name == "spotTab.images"}'
+         ng-click='vm.switchTabs("images");'>
+        Images
+      </a>
+    </span>
+    <span ng-show='vm.showLinks'>
+      <a class='button button-clear spot-tab-inactive'
+         ng-class='{ "spot-tab-active": $state.current.name == "spotTab.links"}'
+         ng-click='vm.switchTabs("links");'>
+        Links
+      </a>
+    </span>
+    <span ng-show='vm.showGroups'>
+      <a class='button button-clear spot-tab-inactive'
+         ng-class='{ "spot-tab-active": $state.current.name == "spotTab.groups"}'
+         ng-click='vm.switchTabs("groups");'>
+        Groups
+      </a>
+    </span>
+    <span ng-show='vm.showGroupMembers'>
+      <a class='button button-clear spot-tab-inactive'
+         ng-class='{ "spot-tab-active": $state.current.name == "spotTab.groupmemebers"}'
+         ng-click='vm.switchTabs("groupmembers");'>
+        Group Members
+      </a>
+    </span>
     <a class='button button-clear spot-tab-inactive'
        ng-class='{ "spot-tab-active": $state.current.name == "spotTab.rockdescription"}'
        ng-click='vm.switchTabs("rockdescription");'>
       Rock Description
     </a>
-  </span>
-  <span ng-show='vm.showRockSample'>
-    <a class='button button-clear spot-tab-inactive'
-       ng-class='{ "spot-tab-active": $state.current.name == "spotTab.sample"}'
-       ng-click='vm.switchTabs("sample");'>
-      Sample
-    </a>
-  </span>
+    <span ng-show='vm.showTab("sample")'>
+      <a class='button button-clear spot-tab-inactive'
+         ng-class='{ "spot-tab-active": $state.current.name == "spotTab.sample"}'
+         ng-click='vm.switchTabs("sample");'>
+        Sample
+      </a>
+    </span>
     <a class='button button-clear spot-tab-inactive'
        ng-class='{ "spot-tab-active": $state.current.name == "spotTab.custom"}'
        ng-click='vm.switchTabs("custom");'>

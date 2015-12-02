@@ -87,7 +87,7 @@
                   <span class='item-placeholder'><small>{{ field.hint }}</small></span>
                   <ion-checkbox name='{{ field.name }}'
                                 ng-checked='vm.isAcknowledgeChecked(field.name)'
-                                ng-click='vm.toggleAcknowledgeChecked(field.name)'
+                                ng-click='vm.toggleAcknowledgeCheckedOrig(field.name)'
                                 ng-required='{{ field.required }}'>
                     Yes
                   </ion-checkbox>

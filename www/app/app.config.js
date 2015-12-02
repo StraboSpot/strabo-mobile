@@ -23,6 +23,7 @@
         'templateUrl': 'app/menu/menu.html',
         'controller': 'MenuController as vm',
         'resolve': {
+          'prepPreferencesFactory': prepPreferencesFactory,
           'prepProjectFactory': prepProjectFactory,
           'prepUserFactory': prepUserFactory,
           'prepSpotFactory': prepSpotFactory
@@ -94,9 +95,6 @@
             'templateUrl': 'app/config/preferences.html',
             'controller': 'PreferencesController as vm'
           }
-        },
-        'resolve': {
-          'prepPreferencesFactory': prepPreferencesFactory
         }
       })
       .state('app.image-maps', {
@@ -229,13 +227,13 @@
           }
         }
       })
-      .state('spotTab.threedstructures', {
+      .state('spotTab._3dstructures', {
         'cache': false,
-        'url': '/:spotId/threedstructures',
+        'url': '/:spotId/_3dstructures',
         'views': {
           'spottab-childview': {
             'templateUrl': 'app/spot/3dstructures-tab.html',
-            'controller': 'ThreeDStructuresTabController as vmChild'
+            'controller': '_3DStructuresTabController as vmChild'
           }
         }
       })

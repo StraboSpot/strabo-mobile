@@ -13,8 +13,8 @@
       'project': 'app/data-models/ProjectsPage.csv',
       'sample_survey': 'app/data-models/TabSample.csv',
       'sample_choices': 'app/data-models/TabSample-choices.csv',
-      'threedstructures_survey': 'app/data-models/Tab3DStructures.csv',
-      'threedstructures_choices': 'app/data-models/Tab3DStructures-choices.csv'
+      '_3dstructures_survey': 'app/data-models/Tab3DStructures.csv',
+      '_3dstructures_choices': 'app/data-models/Tab3DStructures-choices.csv'
     };
 
     return {

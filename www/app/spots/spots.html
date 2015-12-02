@@ -12,7 +12,7 @@
   </ion-nav-buttons>
   <ion-content class='has-header'>
     <ion-list>
-      <ion-item ng-repeat='spot in vm.spots'
+      <ion-item ng-repeat='spot in vm.spots track by spot.properties.id'
                 href='#/spotTab/{{spot.properties.id}}/spot'>
         {{spot.properties.name}}
       </ion-item>

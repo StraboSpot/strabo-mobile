@@ -173,7 +173,7 @@
       var match = _.filter(spots, function (spot) {
         return String(spot.properties.id) === id;
       })[0];  // Should only be one match
-      currentSpot = JSON.parse(JSON.stringify(match));  // Deep clone
+      currentSpot = angular.fromJson(angular.toJson(match));  // Deep clone
     }
 
     // Initialize a new Spot
