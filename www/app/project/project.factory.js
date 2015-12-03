@@ -10,6 +10,7 @@
   function ProjectFactory($log, $q, DataModelsFactory, LocalStorageFactory) {
     var data = {};
     var survey = {};
+    var toolsSurvey = {};
 
     return {
       'getProjectData': getProjectData,
@@ -17,6 +18,7 @@
       'getSpotNumber': getSpotNumber,
       'getSpotPrefix': getSpotPrefix,
       'getSurvey': getSurvey,
+      'getToolsSurvey': getToolsSurvey,
       'incrementSpotNumber': incrementSpotNumber,
       'loadProject': loadProject,                     // Run from app config
       'save': save
@@ -41,7 +43,12 @@
 
     function setSurvey(inSurvey) {
       survey = inSurvey;
-      $log.log('Finished loading project survey: ', survey);
+      $log.log('Finished loading project description survey: ', survey);
+    }
+
+    function setToolsSurvey(inSurvey) {
+      toolsSurvey = inSurvey;
+      $log.log('Finished loading project tools survey: ', toolsSurvey);
     }
 
     /**
@@ -68,6 +75,10 @@
       return survey;
     }
 
+    function getToolsSurvey() {
+      return toolsSurvey;
+    }
+
     // Increment starting spot number by 1
     function incrementSpotNumber() {
       var start_number = getSpotNumber();
@@ -85,9 +96,9 @@
           data = savedData;
           $log.log('Finished loading project properties: ', data);
         });
-        $log.log('Loading project survey ....');
-        var csvFile = DataModelsFactory.dataModels.project;
-        DataModelsFactory.readCSV(csvFile, setSurvey);
+        $log.log('Loading project surveys ....');
+        DataModelsFactory.readCSV(DataModelsFactory.dataModels.project, setSurvey);
+        DataModelsFactory.readCSV(DataModelsFactory.dataModels.tools, setToolsSurvey);
         return dataPromise;
       }
     }
@@ -104,4 +115,3 @@
     }
   }
 }());
-

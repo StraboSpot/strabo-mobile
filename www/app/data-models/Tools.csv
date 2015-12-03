@@ -1,0 +1,9 @@
+name,type,label,required,relevant
+group_calc_mean_pole_to_plane,begin repeat,Calculate Averages for Plane Measurements,,
+Strike,integer,Strike,true,
+Dip,integer,Dip,true,
+Add_another_plane_measurement,note,Add another plane measurement?,false,${Strike} != '' and ${Dip} != ''
+,end repeat,,,
+output_average_of_strike,note,Output running average of strike and dip for this calculation,false,
+start,start,,,
+end,end,,,

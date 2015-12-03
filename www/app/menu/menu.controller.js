@@ -9,13 +9,12 @@
 
   function MenuController($log, $scope, $state, ProjectFactory, UserFactory) {
     var vm = this;
-    vm.editProject = editProject;
     vm.editUser = editUser;
     vm.getProjectName = getProjectName;
     vm.getUserName = getUserName;
     vm.loggedIn = false;
     vm.isLoggedIn = isLoggedIn;
-    vm.openTools = openTools;
+    vm.switchProject = switchProject;
     vm.projectName = '';
     vm.userName = '';
 
@@ -49,10 +48,6 @@
      * Public Functions
      */
 
-    function editProject() {
-      $state.go('app.project');
-    }
-
     function editUser() {
       $state.go('app.user');
     }
@@ -69,8 +64,8 @@
       return UserFactory.isLoggedIn();
     }
 
-    function openTools() {
-      $state.go('app.tools');
+    function switchProject() {
+      $state.go('app.projects');
     }
   }
 }());

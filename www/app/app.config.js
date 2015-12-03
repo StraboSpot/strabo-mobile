@@ -29,6 +29,16 @@
           'prepSpotFactory': prepSpotFactory
         }
       })
+      .state('app.projects', {
+        'cache': false,
+        'url': '/projects',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/project/projects.html',
+            'controller': 'ProjectsController as vm'
+          }
+        }
+      })
       .state('app.project', {
         'cache': false,
         'url': '/project',
@@ -39,13 +49,31 @@
           }
         }
       })
+      .state('app.daily-setup', {
+        'cache': false,
+        'url': '/daily-setup',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/project/daily-setup.html'
+          }
+        }
+      })
+      .state('app.rock-units', {
+        'cache': false,
+        'url': '/rock-units',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/project/rock-units.html'
+          }
+        }
+      })
       .state('app.tools', {
         'cache': false,
         'url': '/tools',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/project/tools.html'/* ,
-             'controller': 'ToolsController as vm'*/
+            'templateUrl': 'app/project/tools.html',
+            'controller': 'ToolsController as vm'
           }
         }
       })
@@ -76,14 +104,6 @@
           'menuContent': {
             'templateUrl': 'app/map/offline-map.html',
             'controller': 'OfflineMapController as vm'
-          }
-        }
-      })
-      .state('app.search', {
-        'url': '/search',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/layout/search.html'
           }
         }
       })

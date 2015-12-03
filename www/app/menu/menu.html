@@ -30,12 +30,8 @@
         </tr>
         <tr>
           <td class='project-buttons'>
-            <button menu-close ng-click='vm.editProject();' class='button button-small button-clear icon-left ion-edit'>
-              Edit
-              Project
-            </button>
-            <button menu-close ng-click='vm.openTools();'
-                    class='button button-small button-clear icon-left ion-settings'>Tools
+            <button menu-close ng-click='vm.switchProject();' class='button button-small button-clear icon-left ion-arrow-swap'>
+              Switch Projects
             </button>
           </td>
         </tr>
@@ -45,8 +41,11 @@
         <ion-item nav-clear menu-close href='#/app/spots'>
           Spots
         </ion-item>
+        <div class='field-group item item-divider'>
+          Maps
+        </div>
         <ion-item nav-clear menu-close href='#/app/map'>
-          Map
+          Main Map
         </ion-item>
         <ion-item nav-clear menu-close href='#/app/image-maps'>
           Image Maps
@@ -54,12 +53,27 @@
         <ion-item nav-clear menu-close href='#/app/offlinemap'>
           Offline Maps
         </ion-item>
-        <ion-item nav-clear menu-close href='#/app/search'>
-          Search
+        <div class='field-group item item-divider'>
+          Project
+        </div>
+        <ion-item nav-clear menu-close href='#/app/project'>
+          Description
+        </ion-item>
+        <ion-item nav-clear menu-close href='#/app/daily-setup'>
+          Daily Setup
+        </ion-item>
+        <ion-item nav-clear menu-close href='#/app/rock-units'>
+          Rock Units
+        </ion-item>
+        <ion-item nav-clear menu-close href='#/app/tools'>
+          Tools
         </ion-item>
         <ion-item nav-clear menu-close href='#/app/preferences'>
           Preferences
         </ion-item>
+        <div class='field-group item item-divider'>
+          Help
+        </div>
         <ion-item nav-clear menu-close href='#/app/debug'>
           Random Points (testing only)
         </ion-item>

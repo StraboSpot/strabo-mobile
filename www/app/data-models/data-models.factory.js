@@ -9,12 +9,13 @@
 
   function DataModelsFactory($log, $http) {
     var dataModels = {
+      '_3dstructures_survey': 'app/data-models/Tab3DStructures.csv',
+      '_3dstructures_choices': 'app/data-models/Tab3DStructures-choices.csv',
       'preferences': 'app/data-models/Preferences.csv',
       'project': 'app/data-models/ProjectsPage.csv',
       'sample_survey': 'app/data-models/TabSample.csv',
       'sample_choices': 'app/data-models/TabSample-choices.csv',
-      '_3dstructures_survey': 'app/data-models/Tab3DStructures.csv',
-      '_3dstructures_choices': 'app/data-models/Tab3DStructures-choices.csv'
+      'tools': 'app/data-models/Tools.csv'
     };
 
     return {
