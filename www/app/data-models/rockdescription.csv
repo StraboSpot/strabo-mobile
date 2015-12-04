@@ -1,0 +1,33 @@
+name,type,label,required,appearance,relevant
+unit_label_abbreviation,text,Unit Label (abbreviation),true,,
+map_unit_name,text,Unit or Formation Name,false,,
+member_name,text,Member Name,false,,
+submember_name,text,Submember Name,false,,
+absolute_age_of_geologic_unit,decimal,Absolute Age of Geologic Unit (Ma),false,,
+age_uncertainty,decimal,Age Uncertainty (Ma),false,,
+group_unit_type,begin group,Unit Type,,,
+rock_type,select_one rm0pv08,Rock Type,true,horizontal,
+sediment_type,select_one ej6zw88,Sediment Type,false,horizontal,${rock_type} = 'sediment'
+other_sediment_type,text,Other Sediment Type,true,,${sediment_type} = 'other'
+sedimentary_rock_type,select_one bt4yo56,Sedimentary Rock Type,false,horizontal,${rock_type} = 'sedimentary'
+other_sedimentary_rock_type,text,Other Sedimentary Rock Type,true,,${sedimentary_rock_type} = 'other'
+igneous_rock_class,select_one nm4yc64,Igneous Rock Class,false,horizontal,${rock_type} = 'igneous'
+volcanic_rock_type,select_one gw1hp47,Volcanic Rock Type,false,horizontal,${igneous_rock_class} = 'volcanic' or ${igneous_rock_class} = 'hypabyssal'
+other_volcanic_rock_type,text,Other Volcanic Rock Type,true,,${volcanic_rock_type} = 'other'
+plutonic_rock_types,select_one pu9hj08,Plutonic Rock Types,false,horizontal,${igneous_rock_class} = 'plutonic'
+other_plutonic_rock_type,text,Other Plutonic Rock Type,true,,${plutonic_rock_types} = 'other'
+metamorphic_rock_types,select_one yg0ew35,Metamorphic Rock Types,false,,${rock_type} = 'metamorphic'
+other_metamorphic_rock_type,text,Other Metamorphic Rock Type,true,,${metamorphic_rock_types} = 'other'
+,end group,,,,
+group_geologic_age,begin group,Geologic Age,,,
+epoch,select_one kf0mi66,Epoch,false,horizontal,
+other_epoch,text,Other Epoch,true,,${epoch} = 'other'
+period,select_one xw5wu04,Period,false,horizontal,
+era,select_one kb2cc45,Era,false,horizontal,
+eon,select_one fy5ep25,Eon,false,horizontal,
+age_modifier,select_one ns6qv42,Age Modifier,false,horizontal-compact,
+,end group,,,,
+description,text,Description,false,,
+Notes,note,Notes,false,,
+start,start,,,,
+end,end,,,,

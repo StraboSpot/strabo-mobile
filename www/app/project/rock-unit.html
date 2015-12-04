@@ -1,0 +1,19 @@
+<form name='straboForm' novalidate=''>
+  <ion-view title='Rock Description'>
+    <ion-nav-buttons side='left'>
+      <button ng-click='vm.goToRockUnits();' class='button button-icon icon ion-arrow-left-c'></button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side='right'>
+      <button ng-click='vm.deleteRockUnit();' class='button button-icon icon ion-trash-b'></button>
+      <div ng-if='vm.pristine'>
+        <button class='button disabled button-icon icon ion-checkmark-circled'></button>
+      </div>
+      <div ng-if='!vm.pristine'>
+        <button ng-click='vm.submit();' class='button button-icon icon ion-checkmark-circled'></button>
+      </div>
+    </ion-nav-buttons>
+    <ion-content class='has-header'>
+      <auto-fields/>
+    </ion-content>
+  </ion-view>
+</form>

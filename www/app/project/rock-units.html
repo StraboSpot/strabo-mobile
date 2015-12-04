@@ -1,16 +1,20 @@
-<ion-view title='Projects'>
+<ion-view title='Rock Units'>
   <ion-nav-buttons side='left'>
     <button menu-toggle='left' class='button button-icon icon ion-navicon'></button>
   </ion-nav-buttons>
   <ion-nav-buttons side='right'>
-    <div ng-if='vm.pristine || !vm.valid'>
-      <button class='button disabled button-icon icon ion-checkmark-circled'></button>
-    </div>
-    <div ng-if='!vm.pristine && vm.valid'>
-      <button ng-click='vm.submit();' class='button button-icon icon ion-checkmark-circled'></button>
-    </div>
+    <button class='button button-icon ion-plus' ng-click='vm.newRockUnit()'></button>
   </ion-nav-buttons>
-  <ion-content class='has-header padding'>
-    List of Rock Units
+  <ion-content class='has-header'>
+    <ion-list>
+      <div class='padding' ng-show='vm.rockUnits.length === 0'>
+        No rock units added yet. Add rock units using the '+' button in the top right.
+      </div>
+      <ion-item
+        ng-repeat='rockUnit in vm.rockUnits | orderBy:"unit_label_abbreviation" track by rockUnit.unit_label_abbreviation'
+        href='#/app/rock-units/{{ rockUnit.unit_label_abbreviation }}'>
+        {{ rockUnit.unit_label_abbreviation }}: {{ rockUnit.map_unit_name }}
+      </ion-item>
+    </ion-list>
   </ion-content>
 </ion-view>

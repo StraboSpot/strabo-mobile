@@ -9,19 +9,26 @@
 
   function ProjectFactory($log, $q, DataModelsFactory, LocalStorageFactory) {
     var data = {};
+    var rockDescriptionSurvey = {};
+    var rockDescriptionChoices = {};
     var survey = {};
     var toolsSurvey = {};
 
     return {
+      'destroyRockUnit': destroyRockUnit,
       'getProjectData': getProjectData,
       'getProjectName': getProjectName,
+      'getRockUnits': getRockUnits,
+      'getRockUnitsChoices': getRockUnitsChoices,
+      'getRockUnitsSurvey': getRockUnitsSurvey,
       'getSpotNumber': getSpotNumber,
       'getSpotPrefix': getSpotPrefix,
       'getSurvey': getSurvey,
       'getToolsSurvey': getToolsSurvey,
       'incrementSpotNumber': incrementSpotNumber,
       'loadProject': loadProject,                     // Run from app config
-      'save': save
+      'save': save,
+      'saveRockUnits': saveRockUnits
     };
 
     /**
@@ -51,9 +58,30 @@
       $log.log('Finished loading project tools survey: ', toolsSurvey);
     }
 
+    function setRockDescriptionSurvey(inSurvey) {
+      rockDescriptionSurvey = inSurvey;
+      $log.log('Finished loading rock description survey: ', rockDescriptionSurvey);
+    }
+
+    function setRockDescriptionChoices(inChoices) {
+      rockDescriptionChoices = inChoices;
+      $log.log('Finished loading rock description choices: ', rockDescriptionChoices);
+    }
+
     /**
      * Public Functions
      */
+
+    function destroyRockUnit(key, value) {
+      data.rock_units = _.reject(data.rock_units, function (obj) {
+        return obj[key] === value;
+      });
+
+      LocalStorageFactory.projectDb.removeItem('rock_units', function () {
+        LocalStorageFactory.projectDb.setItem('rock_units', data.rock_units);
+        $log.log('Saved rock units: ', data.rock_units);
+      });
+    }
 
     function getProjectData() {
       return data;
@@ -67,12 +95,24 @@
       return data.spot_prefix;
     }
 
+    function getRockUnits() {
+      return data.rock_units || [];
+    }
+
     function getSpotNumber() {
       return data.starting_number_for_spot;
     }
 
     function getSurvey() {
       return survey;
+    }
+
+    function getRockUnitsSurvey() {
+      return rockDescriptionSurvey;
+    }
+
+    function getRockUnitsChoices() {
+      return rockDescriptionChoices;
     }
 
     function getToolsSurvey() {
@@ -99,6 +139,8 @@
         $log.log('Loading project surveys ....');
         DataModelsFactory.readCSV(DataModelsFactory.dataModels.project, setSurvey);
         DataModelsFactory.readCSV(DataModelsFactory.dataModels.tools, setToolsSurvey);
+        DataModelsFactory.readCSV(DataModelsFactory.dataModels.rock_description_survey, setRockDescriptionSurvey);
+        DataModelsFactory.readCSV(DataModelsFactory.dataModels.rock_description_choices, setRockDescriptionChoices);
         return dataPromise;
       }
     }
@@ -111,6 +153,14 @@
           LocalStorageFactory.projectDb.setItem(key, value);
         });
         $log.log('Saved project properties: ', data);
+      });
+    }
+
+    function saveRockUnits(rock_units) {
+      LocalStorageFactory.projectDb.removeItem('rock_units', function () {
+        data.rock_units = rock_units;
+        LocalStorageFactory.projectDb.setItem('rock_units', rock_units);
+        $log.log('Saved rock units: ', rock_units);
       });
     }
   }

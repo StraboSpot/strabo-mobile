@@ -5,10 +5,12 @@
     .module('app')
     .controller('RockUnitsController', RockUnitsController);
 
-  RockUnitsController.$inject = [];
+  RockUnitsController.$inject = ['$log', '$state', 'ProjectFactory'];
 
-  function RockUnitsController() {
+  function RockUnitsController($log, $state, ProjectFactory) {
     var vm = this;
+    vm.rockUnits = [];
+    vm.newRockUnit = newRockUnit;
 
     activate();
 
@@ -17,10 +19,15 @@
      */
 
     function activate() {
+      vm.rockUnits = ProjectFactory.getRockUnits();
     }
 
     /**
      * Public Functions
      */
+
+    function newRockUnit() {
+      $state.go('app.new-rock-unit');
+    }
   }
 }());

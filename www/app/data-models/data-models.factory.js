@@ -13,6 +13,8 @@
       '_3dstructures_choices': 'app/data-models/Tab3DStructures-choices.csv',
       'preferences': 'app/data-models/Preferences.csv',
       'project': 'app/data-models/ProjectsPage.csv',
+      'rock_description_survey': 'app/data-models/rockdescription.csv',
+      'rock_description_choices': 'app/data-models/rockdescription-choices.csv',
       'sample_survey': 'app/data-models/TabSample.csv',
       'sample_choices': 'app/data-models/TabSample-choices.csv',
       'tools': 'app/data-models/Tools.csv'

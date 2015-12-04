@@ -63,7 +63,28 @@
         'url': '/rock-units',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/project/rock-units.html'
+            'templateUrl': 'app/project/rock-units.html',
+            'controller': 'RockUnitsController as vm'
+          }
+        }
+      })
+      .state('app.rock-unit', {
+        'cache': false,
+        'url': '/rock-units/:unit_label_abbreviation',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/project/rock-unit.html',
+            'controller': 'RockUnitController as vm'
+          }
+        }
+      })
+      .state('app.new-rock-unit', {
+        'cache': false,
+        'url': '/rock-units/new-rock-unit',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/project/rock-unit.html',
+            'controller': 'RockUnitController as vm'
           }
         }
       })
