@@ -6,17 +6,20 @@
     .controller('SpotTabController', SpotTabController);
 
   SpotTabController.$inject = ['$cordovaGeolocation', '$ionicPopup', '$location', '$log', '$scope', '$state',
-    'ImageMapFactory', 'MapViewFactory', 'SpotFactory'];
+    'ImageMapFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory'];
 
   function SpotTabController($cordovaGeolocation, $ionicPopup, $location, $log, $scope, $state, ImageMapFactory,
-                             MapViewFactory, SpotFactory) {
+                             MapViewFactory, ProjectFactory, SpotFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.loadTab($state);  // Need to load current state into parent
 
     vm.getCurrentLocation = getCurrentLocation;
     vm.getGeometryType = getGeometryType;
+    vm.rockUnit = {};
+    vm.rockUnits = ProjectFactory.getRockUnits();
     vm.setFromMap = setFromMap;
+    vm.setRockUnit = setRockUnit;
     // Only allow set location to user's location if geometry type is Point
     vm.showMyLocationButton = vmParent.spot.properties.type === 'point' && !vm.showXY;
     vm.showSetFromMapButton = true;
@@ -34,6 +37,8 @@
 
     function activate() {
       $log.log('In SpotTabController');
+
+      getRockUnit();
 
       // Has the spot been mapped yet?
       if (vmParent.spot.geometry) {
@@ -64,6 +69,18 @@
             }
           }
         }
+      }
+    }
+
+    function getRockUnit() {
+      if (vmParent.spot.properties.rock_unit) {
+        var selectedRockUnitIndex;
+        _.each(vm.rockUnits, function (rockUnit, i) {
+          if (rockUnit.unit_label_abbreviation === vmParent.spot.properties.rock_unit.unit_label_abbreviation) {
+            selectedRockUnitIndex = i;
+          }
+        });
+        vm.rockUnit = vm.rockUnits[selectedRockUnitIndex];
       }
     }
 
@@ -113,6 +130,10 @@
       else {
         $location.path('/app/map');
       }
+    }
+
+    function setRockUnit() {
+      vmParent.spot.properties.rock_unit = vm.rockUnit;
     }
 
     // Update the value for the Latitude from the user input

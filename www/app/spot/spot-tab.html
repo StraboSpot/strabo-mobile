@@ -1,4 +1,4 @@
-<form name='geoForm' novalidate=''>
+<form name='straboForm' novalidate=''>
   <ion-view>
     <ion-content>
       <label class='item item-input item-stacked-label item-text-wrap'>
@@ -30,28 +30,28 @@
         <!-- Latitude and Longitude text boxes for Point features -->
         <label ng-show='vmChild.showLatLng'
                class='item item-input item-stacked-label item-text-wrap'
-               ng-class='{ "has-errors": geoForm["lat"].$invalid, "no-errors": geoForm["lat"].$valid }'>
+               ng-class='{ "has-errors": straboForm["lat"].$invalid, "no-errors": straboForm["lat"].$valid }'>
           <span class='input-label'>Latitude</span>
           <input type='number' name='lat' ng-model='vmChild.lat' ng-change='vmChild.updateLatitude(vmChild.lat)'
                  required min='-90' max='90'>
         </label>
 
-        <div ng-if='geoForm["lat"].$touched'>
-          <div ng-messages='geoForm["lat"].$error'>
+        <div ng-if='straboForm["lat"].$touched'>
+          <div ng-messages='straboForm["lat"].$error'>
             <div ng-messages-include='app/form/error-messages.html'></div>
           </div>
         </div>
 
         <label ng-show='vmChild.showLatLng'
                class='item item-input item-stacked-label item-text-wrap'
-               ng-class='{ "has-errors": geoForm["lng"].$invalid, "no-errors": geoForm["lng"].$valid }'>
+               ng-class='{ "has-errors": straboForm["lng"].$invalid, "no-errors": straboForm["lng"].$valid }'>
           <span class='input-label'>Longitude</span>
           <input type='number' name='lng' ng-model='vmChild.lng' ng-change='vmChild.updateLongitude(vmChild.lng)'
                  required min='-180' max='180'>
         </label>
 
-        <div ng-if='geoForm["lng"].$touched'>
-          <div ng-messages='geoForm["lng"].$error'>
+        <div ng-if='straboForm["lng"].$touched'>
+          <div ng-messages='straboForm["lng"].$error'>
             <div ng-messages-include='app/form/error-messages.html'></div>
           </div>
         </div>
@@ -59,27 +59,27 @@
       <!-- X and Y text boxes for Point features mapped on an image -->
       <label ng-show='vmChild.showXY'
              class='item item-input item-stacked-label item-text-wrap'
-             ng-class='{ "has-errors": geoForm["x"].$invalid, "no-errors": geoForm["y"].$valid }'>
+             ng-class='{ "has-errors": straboForm["x"].$invalid, "no-errors": straboForm["y"].$valid }'>
         <span class='input-label'>Pixels in the X direction</span>
         <input type='number' name='x' ng-model='vmChild.x' ng-change='vmChild.updateX(vmChild.x)'
                required min='0'>
       </label>
 
-      <div ng-if='geoForm["x"].$touched'>
-        <div ng-messages='geoForm["x"].$error'>
+      <div ng-if='straboForm["x"].$touched'>
+        <div ng-messages='straboForm["x"].$error'>
           <div ng-messages-include='app/form/error-messages.html'></div>
         </div>
       </div>
       <label ng-show='vmChild.showXY'
              class='item item-input item-stacked-label item-text-wrap'
-             ng-class='{ "has-errors": geoForm["y"].$invalid, "no-errors": geoForm["y"].$valid }'>
+             ng-class='{ "has-errors": straboForm["y"].$invalid, "no-errors": straboForm["y"].$valid }'>
         <span class='input-label'>Pixels in the Y direction</span>
         <input type='number' name='y' ng-model='vmChild.y' ng-change='vmChild.updateY(vmChild.y)'
                required min='0'>
       </label>
 
-      <div ng-if='geoForm["y"].$touched'>
-        <div ng-messages='geoForm["y"].$error'>
+      <div ng-if='straboForm["y"].$touched'>
+        <div ng-messages='straboForm["y"].$error'>
           <div ng-messages-include='app/form/error-messages.html'></div>
         </div>
       </div>
@@ -106,6 +106,19 @@
           </button>
         </div>
       </div>
+
+      <div class='item item-divider'>
+        Rock Unit
+      </div>
+      <label class='item item-input item-select item-stacked-label item-text-wrap'>
+        <span class='input-label'>Unit Label Abbreviation</span>
+        <select ng-model='vmChild.rockUnit'
+                ng-options='rockUnit as rockUnit.unit_label_abbreviation for rockUnit in vmChild.rockUnits |
+                 orderBy: "unit_label_abbreviation"'
+                ng-change="vmChild.setRockUnit()">
+          <option value=''></option>
+        </select>
+      </label>
 
       <div class='item item-divider'>
         Notes
