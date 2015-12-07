@@ -211,7 +211,7 @@
         // Encode the login string
         vm.encodedLogin = Base64.encode(login.email + ':' + login.password);
         vm.loginEmail = login.email; // set the email to the login email
-        vm.getDatasets();
+        if (navigator.onLine) vm.getDatasets();
       }
       else {
         $log.log('Not logged in!');

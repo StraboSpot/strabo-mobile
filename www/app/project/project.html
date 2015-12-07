@@ -1,7 +1,10 @@
 <form name='straboForm' novalidate=''>
   <ion-view title='Project Description'>
   <ion-nav-buttons side='left'>
-    <button menu-toggle='left' class='button button-icon icon ion-navicon'></button>
+    <button ng-hide='vm.isNewProject' menu-toggle='left'
+            class='button button-icon icon ion-navicon'></button>
+    <button ng-show='vm.isNewProject' ng-click='vm.goToProjects()'
+            class='button button-icon icon ion-arrow-left-c'></button>
   </ion-nav-buttons>
   <ion-nav-buttons side='right'>
     <div ng-if='vm.pristine || !vm.valid'>

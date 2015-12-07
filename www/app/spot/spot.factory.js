@@ -8,7 +8,7 @@
   SpotFactory.$inject = ['$log', '$q', 'LocalStorageFactory'];
 
   function SpotFactory($log, $q, LocalStorageFactory) {
-    var currentSpot = {};
+    var currentSpot = null;
     var newSpot = {};
     var spots = {};
 

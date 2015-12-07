@@ -5,17 +5,21 @@
     .module('app')
     .factory('ProjectFactory', ProjectFactory);
 
-  ProjectFactory.$inject = ['$log', '$q', 'DataModelsFactory', 'LocalStorageFactory'];
+  ProjectFactory.$inject = ['$ionicPopup', '$log', '$q', 'DataModelsFactory', 'LocalStorageFactory'];
 
-  function ProjectFactory($log, $q, DataModelsFactory, LocalStorageFactory) {
+  function ProjectFactory($ionicPopup, $log, $q, DataModelsFactory, LocalStorageFactory) {
     var data = {};
+    var projectKey = 'project_name';
     var rockDescriptionSurvey = {};
     var rockDescriptionChoices = {};
     var survey = {};
     var toolsSurvey = {};
+    var projects = [];
 
     return {
+      'addNewProject': addNewProject,
       'destroyRockUnit': destroyRockUnit,
+      'getProjects': getProjects,
       'getProjectData': getProjectData,
       'getProjectName': getProjectName,
       'getRockUnits': getRockUnits,
@@ -72,6 +76,24 @@
      * Public Functions
      */
 
+    function addNewProject(project) {
+      // Check if project name is already being used
+      var validKey = true;
+      _.each(projects, function (obj) {
+        if (obj[projectKey] === project[projectKey]) validKey = false;
+      });
+      if (validKey) {
+        projects.push(project);
+        $log.log('Added new project: ', project);
+        return true;
+      }
+      $ionicPopup.alert({
+        'title': 'Duplicate Project Name!',
+        'template': 'The project name ' + project[projectKey] + ' is already being used for another project. Use a different name.'
+      });
+      return false;
+    }
+
     function destroyRockUnit(key, value) {
       data.rock_units = _.reject(data.rock_units, function (obj) {
         return obj[key] === value;
@@ -81,6 +103,10 @@
         LocalStorageFactory.projectDb.setItem('rock_units', data.rock_units);
         $log.log('Saved rock units: ', data.rock_units);
       });
+    }
+
+    function getProjects() {
+      return projects;
     }
 
     function getProjectData() {

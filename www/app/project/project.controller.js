@@ -5,13 +5,15 @@
     .module('app')
     .controller('ProjectController', ProjectController);
 
-  ProjectController.$inject = ['$scope', 'FormFactory', 'ProjectFactory'];
+  ProjectController.$inject = ['$scope', '$state', 'FormFactory', 'ProjectFactory'];
 
-  function ProjectController($scope, FormFactory, ProjectFactory) {
+  function ProjectController($scope, $state, FormFactory, ProjectFactory) {
     var vm = this;
 
     vm.data = {};
     vm.dataOriginal = {};
+    vm.goToProjects = goToProjects;
+    vm.isNewProject = null;
     vm.isPristine = isPristine;
     vm.isValid = isValid;
     vm.pristine = true;
@@ -28,9 +30,15 @@
 
     function activate() {
       vm.survey = ProjectFactory.getSurvey();
-      vm.data = ProjectFactory.getProjectData();
-      vm.data = fixDates(vm.data);
-      vm.dataOriginal = vm.data;
+      if ($state.current.name === 'app.new-project') {
+        vm.isNewProject = true;
+      }
+      else {
+        vm.isNewProject = false;
+        vm.data = ProjectFactory.getProjectData();
+        vm.data = fixDates(vm.data);
+        vm.dataOriginal = vm.data;
+      }
 
       // Watch whether form has been modified or not
       $scope.$watch('vm.isPristine()', function (pristine) {
@@ -63,6 +71,10 @@
      * Public Functions
      */
 
+    function goToProjects() {
+      $state.go('app.projects');
+    }
+
     // Determine if the field should be shown or not by looking at the relevant key-value pair
     function showField(field) {
       var show = FormFactory.isRelevant(field.relevant, vm.data);
@@ -73,8 +85,14 @@
     function submit() {
       var valid = FormFactory.validate(vm.survey, vm.data);
       if (valid) {
-        ProjectFactory.save(vm.data);
-        vm.dataOriginal = vm.data;
+        if ($state.current.name === 'app.new-project') {
+          var added = ProjectFactory.addNewProject(vm.data);
+          if (added) $state.go('app.projects');
+        }
+        else {
+          ProjectFactory.save(vm.data);
+          vm.dataOriginal = vm.data;
+        }
       }
     }
   }

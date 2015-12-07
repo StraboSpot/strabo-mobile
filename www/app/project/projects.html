@@ -3,14 +3,21 @@
     <button menu-toggle='left' class='button button-icon icon ion-navicon'></button>
   </ion-nav-buttons>
   <ion-nav-buttons side='right'>
-    <div ng-if='vm.pristine || !vm.valid'>
-      <button class='button disabled button-icon icon ion-checkmark-circled'></button>
-    </div>
-    <div ng-if='!vm.pristine && vm.valid'>
-      <button ng-click='vm.submit();' class='button button-icon icon ion-checkmark-circled'></button>
-    </div>
+    <button ng-click='vm.newProject();' class='button button-icon ion-plus'></button>
   </ion-nav-buttons>
-  <ion-content class='has-header padding'>
-    List of Projects
+  <ion-content class='has-header'>
+    <ion-list>
+      <div class='padding' ng-show='vm.projects.length === 0'>
+        No projects added yet. Add a project using the '+' button in the top right.
+      </div>
+      <div class='padding' ng-hide='vm.projects.length === 0'>
+        Select a project name to switch to that project.
+      </div>
+      <ion-item
+        ng-repeat='project in vm.projects | orderBy:"project_name" track by project.project_name'
+        ng-click='vm.switchProject(project)'>
+        {{ project.project_name }}
+      </ion-item>
+    </ion-list>
   </ion-content>
 </ion-view>

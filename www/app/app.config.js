@@ -49,6 +49,16 @@
           }
         }
       })
+      .state('app.new-project', {
+        'cache': false,
+        'url': '/new-project',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/project/project.html',
+            'controller': 'ProjectController as vm'
+          }
+        }
+      })
       .state('app.daily-setup', {
         'cache': false,
         'url': '/daily-setup',
