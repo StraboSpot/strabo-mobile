@@ -118,6 +118,7 @@
         if (valid) {
           vm.rockUnits.push(vm.data);
           ProjectFactory.saveRockUnits(vm.rockUnits).then(function () {
+            SpotFactory.updateSpotsWithRockUnit(key, vm.data);
             if (vm.currentSpot) {
               vm.currentSpot.properties.rock_unit = vm.data;
               SpotFactory.setCurrentSpot(vm.currentSpot);

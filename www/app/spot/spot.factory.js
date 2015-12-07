@@ -30,6 +30,7 @@
       'setCurrentSpot': setCurrentSpot,
       'setCurrentSpotById': setCurrentSpotById,
       'setNewSpot': setNewSpot,
+      'updateSpotsWithRockUnit': updateSpotsWithRockUnit,
       'write': write
     };
 
@@ -206,6 +207,15 @@
 
       // Set id from the timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id)
       newSpot.properties.id = Math.floor((new Date().getTime() + Math.random()) * 10);
+    }
+
+    function updateSpotsWithRockUnit(key, rock_unit) {
+      _.each(spots, function (spot) {
+        if (spot.properties.rock_unit && spot.properties.rock_unit[key] === rock_unit[key]) {
+          spot.properties.rock_unit = rock_unit;
+          $log.log('Updated Spot using modified rock unit: ', spot);
+        }
+      });
     }
 
     // Write to local storage
