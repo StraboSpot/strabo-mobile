@@ -1,10 +1,14 @@
 <form name='straboForm' novalidate=''>
   <ion-view title='Rock Description'>
     <ion-nav-buttons side='left'>
-      <button ng-click='vm.goToRockUnits();' class='button button-icon icon ion-arrow-left-c'></button>
+      <button ng-hide='vm.currentSpot' ng-click='vm.goToRockUnits();'
+              class='button button-icon icon ion-arrow-left-c'></button>
+      <button ng-show='vm.currentSpot' ng-click='vm.returnToSpot();'
+              class='button button-icon icon ion-close-round'></button>
     </ion-nav-buttons>
     <ion-nav-buttons side='right'>
-      <button ng-click='vm.deleteRockUnit();' class='button button-icon icon ion-trash-b'></button>
+      <button ng-hide='vm.currentSpot' ng-click='vm.deleteRockUnit();'
+              class='button button-icon icon ion-trash-b'></button>
       <div ng-if='vm.pristine'>
         <button class='button disabled button-icon icon ion-checkmark-circled'></button>
       </div>

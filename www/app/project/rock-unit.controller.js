@@ -5,19 +5,22 @@
     .module('app')
     .controller('RockUnitController', RockUnitController);
 
-  RockUnitController.$inject = ['$ionicPopup', '$log', '$scope', '$state', 'FormFactory', 'ProjectFactory'];
+  RockUnitController.$inject = ['$ionicPopup', '$log', '$scope', '$state', 'FormFactory', 'ProjectFactory',
+    'SpotFactory'];
 
-  function RockUnitController($ionicPopup, $log, $scope, $state, FormFactory, ProjectFactory) {
+  function RockUnitController($ionicPopup, $log, $scope, $state, FormFactory, ProjectFactory, SpotFactory) {
     var vm = this;
     var key = 'unit_label_abbreviation';
 
     vm.choices = {};
+    vm.currentSpot = SpotFactory.getCurrentSpot();
     vm.data = {};
     vm.dataOriginal = {};
     vm.deleteRockUnit = deleteRockUnit;
     vm.goToRockUnits = goToRockUnits;
     vm.isPristine = isPristine;
     vm.newRockUnit = newRockUnit;
+    vm.returnToSpot = returnToSpot;
     vm.rockUnits = [];
     vm.showField = showField;
     vm.survey = {};
@@ -84,6 +87,10 @@
       $log.log('new');
     }
 
+    function returnToSpot() {
+      $state.go('spotTab.spot');
+    }
+
     // Determine if the field should be shown or not by looking at the relevant key-value pair
     function showField(field) {
       var show = FormFactory.isRelevant(field.relevant, vm.data);
@@ -101,7 +108,14 @@
         if (valid) {
           vm.rockUnits.push(vm.data);
           ProjectFactory.saveRockUnits(vm.rockUnits);
-          $state.go('app.rock-units');
+          if (vm.currentSpot) {
+            vm.currentSpot.properties.rock_unit = vm.data;
+            SpotFactory.setCurrentSpot(vm.currentSpot);
+            $state.go('spotTab.spot');
+          }
+          else {
+            $state.go('app.rock-units');
+          }
         }
       }
       else {

@@ -17,7 +17,8 @@
     vm.getCurrentLocation = getCurrentLocation;
     vm.getGeometryType = getGeometryType;
     vm.rockUnit = {};
-    vm.rockUnits = ProjectFactory.getRockUnits();
+    vm.rockUnits = {};
+    vm.getRockUnits = getRockUnits;
     vm.setFromMap = setFromMap;
     vm.setRockUnit = setRockUnit;
     // Only allow set location to user's location if geometry type is Point
@@ -31,6 +32,11 @@
 
     activate();
 
+    function getRockUnits() {
+      vm.rockUnits = _.clone(ProjectFactory.getRockUnits());
+      vm.rockUnits.push({'unit_label_abbreviation': '-- new rock unit --'});
+    }
+
     /**
      * Private Functions
      */
@@ -38,6 +44,7 @@
     function activate() {
       $log.log('In SpotTabController');
 
+      getRockUnits();
       getRockUnit();
 
       // Has the spot been mapped yet?
@@ -133,7 +140,15 @@
     }
 
     function setRockUnit() {
-      vmParent.spot.properties.rock_unit = vm.rockUnit;
+      if (!vm.rockUnit) {
+        delete vmParent.spot.properties.rock_unit;
+      }
+      else if (vm.rockUnit.unit_label_abbreviation === '-- new rock unit --') {
+        $state.go('app.new-rock-unit');
+      }
+      else {
+        vmParent.spot.properties.rock_unit = vm.rockUnit;
+      }
     }
 
     // Update the value for the Latitude from the user input
