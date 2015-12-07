@@ -23,6 +23,7 @@
       'getNewSpot': getNewSpot,
       'getSpotCount': getSpotCount,
       'getSpots': getSpots,
+      'isRockUnitUsed': isRockUnitUsed,
       'loadSpots': loadSpots,
       'read': read,
       'save': save,
@@ -129,6 +130,12 @@
 
     function getSpots() {
       return spots;
+    }
+
+    function isRockUnitUsed(key, value) {
+      return _.find(spots, function (spot) {
+        if (spot.properties.rock_unit) return spot.properties.rock_unit[key] === value;
+      });
     }
 
     function loadSpots() {

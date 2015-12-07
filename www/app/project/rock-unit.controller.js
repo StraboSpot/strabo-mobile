@@ -67,16 +67,26 @@
      */
 
     function deleteRockUnit() {
-      var confirmPopup = $ionicPopup.confirm({
-        'title': 'Delete Rock Unit',
-        'template': 'Are you sure you want to delete this rock unit?'
-      });
-      confirmPopup.then(function (res) {
-        if (res) {
-          ProjectFactory.destroyRockUnit(key, vm.data[key]);
-          $state.go('app.rock-units');
-        }
-      });
+      var used = SpotFactory.isRockUnitUsed(key, vm.data[key]);
+      if (!used) {
+        var confirmPopup = $ionicPopup.confirm({
+          'title': 'Delete Rock Unit',
+          'template': 'Are you sure you want to delete this rock unit?'
+        });
+        confirmPopup.then(function (res) {
+          if (res) {
+            ProjectFactory.destroyRockUnit(key, vm.data[key]);
+            $state.go('app.rock-units');
+          }
+        });
+      }
+      else {
+        $ionicPopup.alert({
+          'title': 'Unable to Delete',
+          'template': 'This rock unit is being used in Spot ' + used.properties.name +
+          '. Remove the rock unit from this Spot first.'
+        });
+      }
     }
 
     function goToRockUnits() {
@@ -107,15 +117,16 @@
         valid = FormFactory.validate(vm.survey, vm.data);
         if (valid) {
           vm.rockUnits.push(vm.data);
-          ProjectFactory.saveRockUnits(vm.rockUnits);
-          if (vm.currentSpot) {
-            vm.currentSpot.properties.rock_unit = vm.data;
-            SpotFactory.setCurrentSpot(vm.currentSpot);
-            $state.go('spotTab.spot');
-          }
-          else {
-            $state.go('app.rock-units');
-          }
+          ProjectFactory.saveRockUnits(vm.rockUnits).then(function () {
+            if (vm.currentSpot) {
+              vm.currentSpot.properties.rock_unit = vm.data;
+              SpotFactory.setCurrentSpot(vm.currentSpot);
+              $state.go('spotTab.spot');
+            }
+            else {
+              $state.go('app.rock-units');
+            }
+          });
         }
       }
       else {

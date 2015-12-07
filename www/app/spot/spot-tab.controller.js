@@ -28,14 +28,10 @@
     vm.updateLongitude = updateLongitude;
     vm.updateX = updateX;
     vm.updateY = updateY;
+    vm.viewRockUnit = viewRockUnit;
     vm.viewSpot = viewSpot;
 
     activate();
-
-    function getRockUnits() {
-      vm.rockUnits = _.clone(ProjectFactory.getRockUnits());
-      vm.rockUnits.push({'unit_label_abbreviation': '-- new rock unit --'});
-    }
 
     /**
      * Private Functions
@@ -139,6 +135,11 @@
       }
     }
 
+    function getRockUnits() {
+      vm.rockUnits = _.clone(ProjectFactory.getRockUnits());
+      vm.rockUnits.push({'unit_label_abbreviation': '-- new rock unit --'});
+    }
+
     function setRockUnit() {
       if (!vm.rockUnit) {
         delete vmParent.spot.properties.rock_unit;
@@ -169,6 +170,10 @@
     // Update the value for the Longitude from the user input
     function updateY(y) {
       vmParent.spot.geometry.coordinates[1] = y;
+    }
+
+    function viewRockUnit() {
+      $location.path('/app/rock-units/' + vmParent.spot.properties.rock_unit.unit_label_abbreviation);
     }
 
     // View the spot on the map

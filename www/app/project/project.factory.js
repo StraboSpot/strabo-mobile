@@ -157,11 +157,15 @@
     }
 
     function saveRockUnits(rock_units) {
+      var deferred = $q.defer(); // init promise
       LocalStorageFactory.projectDb.removeItem('rock_units', function () {
         data.rock_units = rock_units;
-        LocalStorageFactory.projectDb.setItem('rock_units', rock_units);
-        $log.log('Saved rock units: ', rock_units);
+        LocalStorageFactory.projectDb.setItem('rock_units', rock_units).then(function () {
+          $log.log('Saved rock units: ', rock_units);
+          deferred.resolve();
+        });
       });
+      return deferred.promise;
     }
   }
 }());
