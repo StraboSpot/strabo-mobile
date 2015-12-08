@@ -143,7 +143,7 @@
         'url': '/preferences',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/config/preferences.html',
+            'templateUrl': 'app/project/preferences.html',
             'controller': 'PreferencesController as vm'
           }
         }
