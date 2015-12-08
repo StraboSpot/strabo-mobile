@@ -173,7 +173,7 @@
         'url': '/spots',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/spots/spots.html',
+            'templateUrl': 'app/spot/spots.html',
             'controller': 'SpotsController as vm'
           }
         }
