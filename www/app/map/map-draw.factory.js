@@ -11,7 +11,7 @@
     var draw;               // draw is a ol3 drawing interaction
     var drawButtonActive;   // drawButtonActive used to keep state of which selected drawing tool is active
     var drawLayer;
-    var imageMap;           // id of an image map if an image map is being used
+    var imageBasemap;           // id of an image basemap if an image basemap is being used
     var map;
 
     return {
@@ -38,7 +38,7 @@
           geojsonObj.properties = {'type': 'polygon'};
           break;
       }
-      if (imageMap) geojsonObj.properties.image_map = imageMap.id;
+      if (imageBasemap) geojsonObj.properties.image_basemap = imageBasemap.id;
       SpotFactory.setNewSpot(geojsonObj);
       $state.go('spotTab.spot');
     }
@@ -56,7 +56,7 @@
       var options = opt_options || {};
       map = opt_options.map;
       drawLayer = opt_options.drawLayer;
-      imageMap = opt_options.imageMap || null;
+      imageBasemap = opt_options.imageBasemap || null;
       draw = null;
       drawButtonActive = null;
 
@@ -212,8 +212,8 @@
 
         // the actual geojson object that was drawn
         var geojsonObj;
-        if (imageMap) {
-          // Drawing on an image map
+        if (imageBasemap) {
+          // Drawing on an image basemap
           geojsonObj = geojson.writeFeatureObject(e.feature);
 
           if (_.find(_.flatten(geojsonObj.geometry.coordinates),
@@ -242,7 +242,7 @@
           map.addControl(new DrawControls({
             'map': map,
             'drawLayer': drawLayer,
-            'imageMap': imageMap
+            'imageBasemap': imageBasemap
           }));
 
           // add the layer switcher controls back
@@ -305,8 +305,8 @@
               'type': 'group',
               'group_members': isLassoed
             };
-            if (imageMap) {
-              geojsonObj.properties.image_map = imageMap.id;
+            if (imageBasemap) {
+              geojsonObj.properties.image_basemap = imageBasemap.id;
             }
 
             SpotFactory.setNewSpot(geojsonObj);

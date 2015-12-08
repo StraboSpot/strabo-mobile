@@ -6,10 +6,10 @@
     .controller('ImagesTabController', ImagesTabController);
 
   ImagesTabController.$inject = ['$cordovaCamera', '$ionicModal', '$ionicPopup', '$location', '$log', '$scope',
-    '$state', '$window', 'ImageMapFactory', 'SpotFactory'];
+    '$state', '$window', 'ImageBasemapFactory', 'SpotFactory'];
 
   function ImagesTabController($cordovaCamera, $ionicModal, $ionicPopup, $location, $log, $scope, $state, $window,
-                               ImageMapFactory, SpotFactory) {
+                               ImageBasemapFactory, SpotFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.loadTab($state);  // Need to load current state into parent
@@ -27,7 +27,7 @@
       'value': 'SAVEDPHOTOALBUM'
     }];
     vm.closeImageModal = closeImageModal;
-    vm.goToImageMap = goToImageMap;
+    vm.goToImageBasemap = goToImageBasemap;
     vm.isAnnotated = isAnnotated;
     vm.selectedCameraSource = {
       // default is always camera
@@ -210,24 +210,24 @@
       vm.imageModal.remove();
     }
 
-    function goToImageMap(image) {
+    function goToImageBasemap(image) {
       SpotFactory.read(vmParent.spot.properties.id, (function (savedSpot) {
         savedSpot.properties.date = new Date(savedSpot.properties.date);
         savedSpot.properties.time = new Date(savedSpot.properties.time);
         if (_.isEqual(vmParent.spot, savedSpot)) {    // User angular.copy to get rid of angular's $$hashKey
-          ImageMapFactory.setCurrentImageMap(image);              // Save referenced image map
-          $location.path('/app/image-maps/' + image.id);
+          ImageBasemapFactory.setCurrentImageBasemap(image);              // Save referenced image basemap
+          $location.path('/app/image-basemaps/' + image.id);
           $scope.$apply();
         }
         else if (_.isEqual(angular.copy(vmParent.spot), savedSpot)) {    // User angular.copy to get rid of angular's $$hashKey
-          ImageMapFactory.setCurrentImageMap(image);              // Save referenced image map
-          $location.path('/app/image-maps/' + image.id);
+          ImageBasemapFactory.setCurrentImageBasemap(image);              // Save referenced image basemap
+          $location.path('/app/image-basemaps/' + image.id);
           $scope.$apply();
         }
         else {
           $ionicPopup.alert({
             'title': 'Save First!',
-            'template': 'There have been changes to this Spot. Please save this Spot before opening the Image Map.'
+            'template': 'There have been changes to this Spot. Please save this Spot before opening the Image Basemap.'
           });
         }
       }));

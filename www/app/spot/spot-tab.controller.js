@@ -6,9 +6,9 @@
     .controller('SpotTabController', SpotTabController);
 
   SpotTabController.$inject = ['$cordovaGeolocation', '$ionicPopup', '$location', '$log', '$scope', '$state',
-    'ImageMapFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory'];
+    'ImageBasemapFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory'];
 
-  function SpotTabController($cordovaGeolocation, $ionicPopup, $location, $log, $scope, $state, ImageMapFactory,
+  function SpotTabController($cordovaGeolocation, $ionicPopup, $location, $log, $scope, $state, ImageBasemapFactory,
                              MapViewFactory, ProjectFactory, SpotFactory) {
     var vm = this;
     var vmParent = $scope.vm;
@@ -59,7 +59,7 @@
 
             // Only show Latitude and Longitude input boxes if the geometry type is Point
             if (vmParent.spot.geometry.type === 'Point') {
-              if (_.has(vmParent.spot.properties, 'image_map')) {
+              if (_.has(vmParent.spot.properties, 'image_basemap')) {
                 vm.showXY = true;
                 vm.y = vmParent.spot.geometry.coordinates[1];
                 vm.x = vmParent.spot.geometry.coordinates[0];
@@ -125,10 +125,10 @@
 
     // Open the map so the user can set the location for the spot
     function setFromMap() {
-      if (_.has(vmParent.spot.properties, 'image_map')) {
-        var image = _.findWhere(ImageMapFactory.getImageMaps(), {'id': vmParent.spot.properties.image_map});
-        ImageMapFactory.setCurrentImageMap(image);    // Save referenced image map
-        $location.path('/app/image-maps/' + vmParent.spot.properties.image_map);
+      if (_.has(vmParent.spot.properties, 'image_basemap')) {
+        var image = _.findWhere(ImageBasemapFactory.getImageBasemaps(), {'id': vmParent.spot.properties.image_basemap});
+        ImageBasemapFactory.setCurrentImageBasemap(image);    // Save referenced image basemap
+        $location.path('/app/image-basemaps/' + vmParent.spot.properties.image_basemap);
       }
       else {
         $location.path('/app/map');
@@ -178,10 +178,10 @@
 
     // View the spot on the map
     function viewSpot() {
-      if (_.has(vmParent.spot.properties, 'image_map')) {
-        var image = _.findWhere(ImageMapFactory.getImageMaps(), {'id': vmParent.spot.properties.image_map});
-        ImageMapFactory.setCurrentImageMap(image);    // Save referenced image map
-        $location.path('/app/image-maps/' + vmParent.spot.properties.image_map);
+      if (_.has(vmParent.spot.properties, 'image_basemap')) {
+        var image = _.findWhere(ImageBasemapFactory.getImageBasemaps(), {'id': vmParent.spot.properties.image_basemap});
+        ImageBasemapFactory.setCurrentImageBasemap(image);    // Save referenced image basemap
+        $location.path('/app/image-basemaps/' + vmParent.spot.properties.image_basemap);
       }
       else {
         var center = SpotFactory.getCenter(vmParent.spot);

@@ -3,16 +3,16 @@
 
   angular
     .module('app')
-    .controller('ImageMapController', ImageMapController);
+    .controller('ImageBasemapController', ImageBasemapController);
 
-  ImageMapController.$inject = ['$ionicActionSheet', '$ionicSideMenuDelegate', '$log', '$state', 'DrawFactory',
-    'ImageMapFactory', 'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory'];
+  ImageBasemapController.$inject = ['$ionicActionSheet', '$ionicSideMenuDelegate', '$log', '$state', 'DrawFactory',
+    'ImageBasemapFactory', 'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory'];
 
-  function ImageMapController($ionicActionSheet, $ionicSideMenuDelegate, $log, $state, DrawFactory, ImageMapFactory,
-                              MapFeaturesFactory, MapSetupFactory, MapViewFactory) {
+  function ImageBasemapController($ionicActionSheet, $ionicSideMenuDelegate, $log, $state, DrawFactory, ImageBasemapFactory,
+                                  MapFeaturesFactory, MapSetupFactory, MapViewFactory) {
     var vm = this;
-    vm.goToImageMaps = goToImageMaps;
-    vm.imageMap = ImageMapFactory.getCurrentImageMap();
+    vm.goToImageBasemaps = goToImageBasemaps;
+    vm.imageBasemap = ImageBasemapFactory.getCurrentImageBasemap();
     vm.showActionsheet = showActionsheet;
 
     var map;
@@ -23,7 +23,7 @@
       // Disable dragging back to ionic side menu because this affects drawing tools
       $ionicSideMenuDelegate.canDragContent(false);
 
-      MapSetupFactory.setImageMap(vm.imageMap);
+      MapSetupFactory.setImageBasemap(vm.imageBasemap);
       MapSetupFactory.setInitialMapView();
       MapSetupFactory.setMap();
       MapSetupFactory.setLayers();
@@ -32,7 +32,7 @@
 
       map = MapSetupFactory.getMap();
 
-      MapFeaturesFactory.createFeatureLayer(map, vm.imageMap);
+      MapFeaturesFactory.createFeatureLayer(map, vm.imageBasemap);
 
       // When the map is moved update the zoom control
       map.on('moveend', function (evt) {
@@ -55,8 +55,8 @@
       });
     }
 
-    function goToImageMaps() {
-      $state.go('app.image-maps');
+    function goToImageBasemaps() {
+      $state.go('app.image-basemaps');
     }
 
     function showActionsheet() {
@@ -75,7 +75,7 @@
           $log.log('BUTTON CLICKED', index);
           switch (index) {
             case 0:
-              MapViewFactory.zoomToSpotsExtent(map, vm.imageMap);
+              MapViewFactory.zoomToSpotsExtent(map, vm.imageBasemap);
               break;
             case 1:
               DrawFactory.groupSpots();

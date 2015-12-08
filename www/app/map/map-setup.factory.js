@@ -11,7 +11,7 @@
     // Map Properties
     var map;
     var extent;
-    var imageMap;
+    var imageBasemap;
     var initialMapView;
     var projection;
 
@@ -23,7 +23,7 @@
       'getMap': getMap,
       'getPopupOverlay': getPopupOverlay,
 
-      'setImageMap': setImageMap,
+      'setImageBasemap': setImageBasemap,
       'setInitialMapView': setInitialMapView,
       'setLayers': setLayers,
       'setMap': setMap,
@@ -44,44 +44,44 @@
     }
 
     function setLayers() {
-      if (!imageMap) {
+      if (!imageBasemap) {
         map.addLayer(MapLayerFactory.getGeolocationLayer());
       }
       else {
-        var imageMapLayer = new ol.layer.Image({
+        var imageBasemapLayer = new ol.layer.Image({
           'source': new ol.source.ImageStatic({
             'attributions': [
               new ol.Attribution({
                 'html': '&copy; <a href="">Need image source here.</a>'
               })
             ],
-            'url': imageMap.src,
+            'url': imageBasemap.src,
             'projection': projection,
             'imageExtent': extent
           })
         });
-        map.addLayer(imageMapLayer);
+        map.addLayer(imageBasemapLayer);
       }
 
       map.addLayer(MapLayerFactory.getFeatureLayer());
       map.addLayer(MapLayerFactory.getDrawLayer());
     }
 
-    function setImageMap(im) {
-      imageMap = im;
+    function setImageBasemap(im) {
+      imageBasemap = im;
     }
 
     function setInitialMapView() {
       var zoom;
       var center;
 
-      if (!imageMap) {
+      if (!imageBasemap) {
         projection = 'EPSG:3857';
         center = [-11000000, 4600000];
         zoom = 4;
       }
       else {
-        extent = [0, 0, imageMap.width, imageMap.height];
+        extent = [0, 0, imageBasemap.width, imageBasemap.height];
         projection = new ol.proj.Projection({
           'code': 'map-image',
           'units': 'pixels',
@@ -118,10 +118,10 @@
       var drawControlProps = {
         'map': map,
         'drawLayer': MapLayerFactory.getDrawLayer(),
-        'imageMap': imageMap      // null if not using an image map
+        'imageBasemap': imageBasemap      // null if not using an image basemap
       };
 
-      if (!imageMap) {
+      if (!imageBasemap) {
         map.addControl(new ol.control.ScaleLine());
       }
 

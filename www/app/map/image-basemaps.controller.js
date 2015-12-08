@@ -3,25 +3,25 @@
 
   angular
     .module('app')
-    .controller('ImageMapsController', ImageMapsController);
+    .controller('ImageBasemapsController', ImageBasemapsController);
 
-  ImageMapsController.$inject = ['$location', '$log', 'ImageMapFactory', 'SpotFactory'];
+  ImageBasemapsController.$inject = ['$location', '$log', 'ImageBasemapFactory', 'SpotFactory'];
 
-  function ImageMapsController($location, $log, ImageMapFactory, SpotFactory) {
+  function ImageBasemapsController($location, $log, ImageBasemapFactory, SpotFactory) {
     var vm = this;
-    vm.goToImageMap = goToImageMap;
+    vm.goToImageBasemap = goToImageBasemap;
 
     activate();
 
     function activate() {
-      getImageMaps();
+      getImageBasemaps();
     }
 
     /**
      *  Private Functions
      */
 
-    function getImageMaps() {
+    function getImageBasemaps() {
       var spots = SpotFactory.getSpots();
       var spotsWithImages = _.filter(spots, function (spot) {
         return spot.images;
@@ -32,25 +32,25 @@
             image);
           if (image.annotated) {
             image.annotated = true;
-            ImageMapFactory.addImageMap(image);
+            ImageBasemapFactory.addImageBasemap(image);
           }
           else {
             image.annotated = false;
-            ImageMapFactory.removeImageMap(image);
+            ImageBasemapFactory.removeImageBasemap(image);
           }
         });
       });
-      vm.imageMaps = ImageMapFactory.getImageMaps();
-      $log.log(vm.imageMaps);
+      vm.imageBasemaps = ImageBasemapFactory.getImageBasemaps();
+      $log.log(vm.imageBasemaps);
     }
 
     /**
      *  Public Functions
      */
 
-    function goToImageMap(imageMap) {
-      ImageMapFactory.setCurrentImageMap(imageMap);
-      $location.path('/app/image-maps/' + imageMap.id);
+    function goToImageBasemap(imageBasemap) {
+      ImageBasemapFactory.setCurrentImageBasemap(imageBasemap);
+      $location.path('/app/image-basemaps/' + imageBasemap.id);
     }
   }
 }());

@@ -148,23 +148,23 @@
           }
         }
       })
-      .state('app.image-maps', {
+      .state('app.image-basemaps', {
         'cache': false,
-        'url': '/image-maps',
+        'url': '/image-basemaps',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/map/image-maps.html',
-            'controller': 'ImageMapsController as vm'
+            'templateUrl': 'app/map/image-basemaps.html',
+            'controller': 'ImageBasemapsController as vm'
           }
         }
       })
-      .state('app.image-map', {
+      .state('app.image-basemap', {
         'cache': false,
-        'url': '/image-maps/:imagemapId',
+        'url': '/image-basemaps/:imagebasemapId',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/map/image-map.html',
-            'controller': 'ImageMapController as vm'
+            'templateUrl': 'app/map/image-basemap.html',
+            'controller': 'ImageBasemapController as vm'
           }
         }
       })

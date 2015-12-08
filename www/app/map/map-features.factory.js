@@ -5,10 +5,10 @@
     .module('app')
     .factory('MapFeaturesFactory', MapFeatures);
 
-  MapFeatures.$inject = ['HelpersFactory', 'ImageMapFactory', 'MapLayerFactory', 'MapSetupFactory', 'SpotFactory',
+  MapFeatures.$inject = ['HelpersFactory', 'ImageBasemapFactory', 'MapLayerFactory', 'MapSetupFactory', 'SpotFactory',
     'SymbologyFactory'];
 
-  function MapFeatures(HelpersFactory, ImageMapFactory, MapLayerFactory, MapSetupFactory, SpotFactory,
+  function MapFeatures(HelpersFactory, ImageBasemapFactory, MapLayerFactory, MapSetupFactory, SpotFactory,
                        SymbologyFactory) {
     return {
       'createFeatureLayer': createFeatureLayer,
@@ -16,7 +16,7 @@
       'showPopup': showPopup
     };
 
-    function createFeatureLayer(map, imageMap) {
+    function createFeatureLayer(map, imageBasemap) {
       // Loop through all spots and create ol vector layers
       var spots = SpotFactory.getSpots();
       var featureLayer = MapLayerFactory.getFeatureLayer();
@@ -25,17 +25,17 @@
 
       var mappableSpots;
       if (map.getView().getProjection().getUnits() === 'pixels') {
-        ImageMapFactory.clearCurrentImageMap();
+        ImageBasemapFactory.clearCurrentImageBasemap();
 
         mappableSpots = _.filter(spots, function (spot) {
-          return spot.properties.image_map === imageMap.id;
+          return spot.properties.image_basemap === imageBasemap.id;
         });
       }
       else {
         // Remove spots that don't have a geometry defined or
         // are mapped on an image
         mappableSpots = _.reject(spots, function (spot) {
-          return !_.has(spot, 'geometry') || _.has(spot.properties, 'image_map');
+          return !_.has(spot, 'geometry') || _.has(spot.properties, 'image_basemap');
         });
       }
 

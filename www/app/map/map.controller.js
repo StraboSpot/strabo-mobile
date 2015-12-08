@@ -24,7 +24,7 @@
       // Disable dragging back to ionic side menu because this affects drawing tools
       $ionicSideMenuDelegate.canDragContent(false);
 
-      MapSetupFactory.setImageMap(null);
+      MapSetupFactory.setImageBasemap(null);
       MapSetupFactory.setInitialMapView();
       MapSetupFactory.setMap();
       MapSetupFactory.setLayers();

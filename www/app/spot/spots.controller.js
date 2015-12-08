@@ -6,10 +6,10 @@
     .controller('SpotsController', Spots);
 
   Spots.$inject = ['$cordovaDevice', '$cordovaFile', '$document', '$ionicActionSheet', '$ionicModal', '$ionicPopup',
-    '$log', '$scope', '$state', '$window', 'ImageMapFactory', 'SpotFactory', 'UserFactory'];
+    '$log', '$scope', '$state', '$window', 'ImageBasemapFactory', 'SpotFactory', 'UserFactory'];
 
   function Spots($cordovaDevice, $cordovaFile, $document, $ionicActionSheet, $ionicModal, $ionicPopup, $log, $scope,
-                 $state, $window, ImageMapFactory, SpotFactory, UserFactory) {
+                 $state, $window, ImageBasemapFactory, SpotFactory, UserFactory) {
     var vm = this;
 
     vm.clearAllSpots = clearAllSpots;
@@ -60,7 +60,7 @@
     function clearAllSpots() {
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete Spots',
-        'template': 'Are you sure you want to delete <b>ALL</b> spots?'
+        'template': 'Are you sure you want to delete <b>ALL</b> spots? This will also delete any associated image basemaps.'
       });
       confirmPopup.then(
         function (res) {
@@ -69,8 +69,8 @@
               // update the spots list
               vm.spots = SpotFactory.getSpots();
 
-              // Remove all of the image maps
-              ImageMapFactory.clearAllImageMaps();
+              // Remove all of the image basemaps
+              ImageBasemapFactory.clearAllImageBasemaps();
             });
           }
         }

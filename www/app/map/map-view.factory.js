@@ -180,21 +180,21 @@
       mapView = view;
     }
 
-    function zoomToSpotsExtent(map, imageMap) {
+    function zoomToSpotsExtent(map, imageBasemap) {
       // nope, we have NO mapview set, so...
-      var isImageMap = angular.isDefined(imageMap);
+      var isImageBasemap = angular.isDefined(imageBasemap);
 
       // Remove spots that don't have a geometry defined or are mapped on an image
       function getMapSpots(spots) {
         return _.reject(spots, function (spot) {
-          return !_.has(spot, 'geometry') || _.has(spot.properties, 'image_map');
+          return !_.has(spot, 'geometry') || _.has(spot.properties, 'image_basemap');
         });
       }
 
       // Get only the spots mapped on this image
-      function getImageMapSpots(spots) {
+      function getImageBasemapSpots(spots) {
         return _.filter(spots, function (spot) {
-          return spot.properties.image_map === imageMap.id;
+          return spot.properties.image_basemap === imageBasemap.id;
         });
       }
 
@@ -223,7 +223,7 @@
       }
 
       // Fit the extent of the spots
-      function setNewImageMapView(spots) {
+      function setNewImageBasemapView(spots) {
         $log.log('Fitting the map view to the extent of the spots.');
         CoordinateRangeFactory.setAllCoordinates(spots);
         var newExtent = ol.extent.boundingExtent(_.compact(CoordinateRangeFactory.getAllCoordinates()));
@@ -248,11 +248,11 @@
 
       // Loop through all spots and create ol vector layers
       var spots = SpotFactory.getSpots();
-      if (isImageMap) {
-        spots = getImageMapSpots(spots);
+      if (isImageBasemap) {
+        spots = getImageBasemapSpots(spots);
         if (spots.length > 0) {
           doFlyByAnimation();
-          setNewImageMapView(spots);
+          setNewImageBasemapView(spots);
         }
       }
       else {

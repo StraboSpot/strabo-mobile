@@ -6,12 +6,12 @@
     .controller('SpotController', SpotController);
 
   SpotController.$inject = ['$document', '$ionicModal', '$ionicPopup', '$location', '$log', '$scope', '$state',
-    'ContentModelSurveyFactory', 'DataModelsFactory', 'FormFactory', 'ImageMapFactory', 'PreferencesFactory',
+    'ContentModelSurveyFactory', 'DataModelsFactory', 'FormFactory', 'ImageBasemapFactory', 'PreferencesFactory',
     'ProjectFactory', 'SpotFactory', 'SpotFormsFactory'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
   function SpotController($document, $ionicModal, $ionicPopup, $location, $log, $scope, $state,
-                          ContentModelSurveyFactory, DataModelsFactory, FormFactory, ImageMapFactory,
+                          ContentModelSurveyFactory, DataModelsFactory, FormFactory, ImageBasemapFactory,
                           PreferencesFactory, ProjectFactory, SpotFactory, SpotFormsFactory) {
     var vm = this;
 
@@ -306,15 +306,15 @@
               });
             }
           }
-          // Check for Image Maps
+          // Check for image basemaps
           _.forEach(obj.images, function (image) {
             if (image.annotated) {
               image.annotated = true;
-              ImageMapFactory.addImageMap(image);
+              ImageBasemapFactory.addImageBasemap(image);
             }
             else {
               image.annotated = false;
-              ImageMapFactory.removeImageMap(image);
+              ImageBasemapFactory.removeImageBasemap(image);
             }
           });
         });
@@ -622,10 +622,10 @@
 
       _.forEach(vm.spot.images, function (image) {
         if (image.annotated) {
-          ImageMapFactory.addImageMap(image);
+          ImageBasemapFactory.addImageBasemap(image);
         }
         else {
-          ImageMapFactory.removeImageMap(image);
+          ImageBasemapFactory.removeImageBasemap(image);
         }
       });
 
