@@ -20,7 +20,7 @@
               </div>
               <div ng-switch-when='decimal'>
                 <label class='item item-input item-stacked-label item-text-wrap'
-                       ng-class='{ "has-errors" : rockDescriptionForm[field.name].$invalid, "no-errors" : rockDescriptionForm[field.name].$valid }'>
+                       ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
                   <span class='input-label'>{{field.label}}</span>
                   <input type='number'
                          name='{{ field.name }}'

@@ -10,8 +10,8 @@
   function ProjectFactory($ionicPopup, $log, $q, DataModelsFactory, LocalStorageFactory) {
     var data = {};
     var projectKey = 'project_name';
-    var rockDescriptionSurvey = {};
-    var rockDescriptionChoices = {};
+    var rockUnitSurvey = {};
+    var rockUnitChoices = {};
     var survey = {};
     var toolsSurvey = {};
     var projects = [];
@@ -54,7 +54,7 @@
 
     function setSurvey(inSurvey) {
       survey = inSurvey;
-      $log.log('Finished loading project description survey: ', survey);
+      $log.log('Finished loading project unit survey: ', survey);
     }
 
     function setToolsSurvey(inSurvey) {
@@ -62,14 +62,14 @@
       $log.log('Finished loading project tools survey: ', toolsSurvey);
     }
 
-    function setRockDescriptionSurvey(inSurvey) {
-      rockDescriptionSurvey = inSurvey;
-      $log.log('Finished loading rock description survey: ', rockDescriptionSurvey);
+    function setRockUnitSurvey(inSurvey) {
+      rockUnitSurvey = inSurvey;
+      $log.log('Finished loading rock unit survey: ', rockUnitSurvey);
     }
 
-    function setRockDescriptionChoices(inChoices) {
-      rockDescriptionChoices = inChoices;
-      $log.log('Finished loading rock description choices: ', rockDescriptionChoices);
+    function setRockUnitChoices(inChoices) {
+      rockUnitChoices = inChoices;
+      $log.log('Finished loading rock unit choices: ', rockUnitChoices);
     }
 
     /**
@@ -134,11 +134,11 @@
     }
 
     function getRockUnitsSurvey() {
-      return rockDescriptionSurvey;
+      return rockUnitSurvey;
     }
 
     function getRockUnitsChoices() {
-      return rockDescriptionChoices;
+      return rockUnitChoices;
     }
 
     function getToolsSurvey() {
@@ -165,8 +165,8 @@
         $log.log('Loading project surveys ....');
         DataModelsFactory.readCSV(DataModelsFactory.dataModels.project, setSurvey);
         DataModelsFactory.readCSV(DataModelsFactory.dataModels.tools, setToolsSurvey);
-        DataModelsFactory.readCSV(DataModelsFactory.dataModels.rock_description_survey, setRockDescriptionSurvey);
-        DataModelsFactory.readCSV(DataModelsFactory.dataModels.rock_description_choices, setRockDescriptionChoices);
+        DataModelsFactory.readCSV(DataModelsFactory.dataModels.rock_unit_survey, setRockUnitSurvey);
+        DataModelsFactory.readCSV(DataModelsFactory.dataModels.rock_unit_choices, setRockUnitChoices);
         return dataPromise;
       }
     }

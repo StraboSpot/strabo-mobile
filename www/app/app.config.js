@@ -259,16 +259,6 @@
           }
         }
       })
-      .state('spotTab.rockdescription', {
-        'cache': false,
-        'url': '/:spotId/rockdescription',
-        'views': {
-          'spottab-childview': {
-            'templateUrl': 'app/spot/rockdescription-tab.html',
-            'controller': 'SpotTabRockdescriptionController as vmChild'
-          }
-        }
-      })
       .state('spotTab.sample', {
         'cache': false,
         'url': '/:spotId/sample',
