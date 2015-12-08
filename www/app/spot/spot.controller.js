@@ -629,11 +629,15 @@
         }
       });
 
+      var found = _.find(vm.spots, function (spot) {
+        return spot.properties.id === vm.spot.properties.id;
+      });
+
       // Save the spot
       SpotFactory.save(vm.spot).then(function (data) {
         vm.spots = data;
         SpotFactory.clearCurrentSpot();
-        ProjectFactory.incrementSpotNumber();
+        if (!found) ProjectFactory.incrementSpotNumber();
         $location.path('/app/spots');
         // $ionicHistory.goBack();
       });
