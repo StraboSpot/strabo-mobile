@@ -76,6 +76,9 @@
 
     // delete the spot
     function destroy(key) {
+      spots = _.reject(spots, function (spot) {
+        return spot.properties.id === key;
+      });
       return LocalStorageFactory.spotsDb.removeItem(key);
     }
 
