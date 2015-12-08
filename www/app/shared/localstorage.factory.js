@@ -11,7 +11,7 @@
     var mapTilesDb = {};      // global LocalForage for offline map tiles
     var projectDb = {};       // global LocalForage for configuration data
     var spotsDb = {};         // global LocalForage for spot data
-    var userDb = {};          // global LocalForage for user data
+    var usersDb = {};         // global LocalForage for users data
 
     activate();
 
@@ -21,7 +21,7 @@
       'mapTilesDb': mapTilesDb,
       'projectDb': projectDb,
       'spotsDb': spotsDb,
-      'userDb': userDb
+      'usersDb': usersDb
     };
 
     function activate() {
@@ -30,7 +30,7 @@
       setMapTilesDb();
       setProjectDb();
       setSpotsDb();
-      setUserDb();
+      setUsersDb();
     }
 
     function setConfigDb() {
@@ -68,10 +68,10 @@
       });
     }
 
-    function setUserDb() {
-      userDb = localforage.createInstance({
+    function setUsersDb() {
+      usersDb = localforage.createInstance({
         // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
-        'name': 'User'
+        'name': 'Users'
       });
     }
   }

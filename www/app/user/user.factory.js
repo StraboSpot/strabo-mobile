@@ -5,21 +5,23 @@
     .module('app')
     .factory('UserFactory', UserFactory);
 
-  UserFactory.$inject = ['$log', '$q', 'LocalStorageFactory'];
+  UserFactory.$inject = ['$ionicPopup', '$log', '$q', 'LocalStorageFactory', 'RemoteServerFactory'];
 
-  function UserFactory($log, $q, LocalStorageFactory) {
-    var data = {};
-    var loggedIn = false;
+  function UserFactory($ionicPopup, $log, $q, LocalStorageFactory, RemoteServerFactory) {
+    var currentUser = null;
+    var currentUserData = null;
+    var users = {};
 
     return {
-      'destroyLogin': destroyLogin,
-      'getLogin': getLogin,
-      'getUserData': getUserData,
+      'clearCurrentUser': clearCurrentUser,
+      'doLogin': doLogin,
+      'getCurrentUser': getCurrentUser,
+      'getCurrentUserData': getCurrentUserData,
       'getUserName': getUserName,
-      'isLoggedIn': isLoggedIn,
-      'loadUser': loadUser,             // Run from app config
-      'save': save,
-      'setLogin': setLogin
+      'loadUsers': loadUsers,             // Run from app config
+      'saveCurrentUser': saveCurrentUser,
+      'saveUser': saveUser
+
     };
 
     /**
@@ -27,11 +29,11 @@
      */
 
     // Load all user data from local storage
-    function all() {
+    function allUsers() {
       var deferred = $q.defer(); // init promise
       var config = {};
 
-      LocalStorageFactory.userDb.iterate(function (value, key) {
+      LocalStorageFactory.usersDb.iterate(function (value, key) {
         config[key] = value;
       }, function () {
         deferred.resolve(config);
@@ -43,62 +45,79 @@
      * Public Functions
      */
 
-    function destroyLogin() {
-      loggedIn = false;
-      data = {};
-      LocalStorageFactory.userDb.clear().then(function () {
-        $log.log('Cleared user data from local storage');
+    function clearCurrentUser() {
+      currentUser = null;
+      currentUserData = null;
+      LocalStorageFactory.usersDb.removeItem('currentUser').then(function () {
+        $log.log('Cleared current user data from local storage');
       });
     }
 
-    function getLogin() {
-      return data.login;
+    // Authenticate user login
+    function doLogin(login) {
+      var deferred = $q.defer(); // init promise
+      RemoteServerFactory.authenticateUser(login).then(function (response) {
+        if (response.status === 200 && response.data.valid === 'true') {
+          $log.log('Logged in successfully.');
+          saveCurrentUser(login.email);
+          currentUser = login.email;
+          currentUserData = users[currentUser];
+        }
+        else {
+          $ionicPopup.alert({
+            'title': 'Login Failure!',
+            'template': 'Incorrect username or password.'
+          });
+        }
+        deferred.resolve();
+      });
+      return deferred.promise;
     }
 
-    function getUserData() {
-      return data;
+    function getCurrentUser() {
+      return currentUser;
+    }
+
+    function getCurrentUserData() {
+      return users[currentUser] || null;
     }
 
     function getUserName() {
-      if (data.user_name) return data.user_name;
-      if (data.login) return data.login.email;
+      if (currentUserData) return currentUserData.user_name || currentUserData.email;
       return null;
     }
 
-    function isLoggedIn() {
-      return loggedIn;
-    }
-
-    function loadUser() {
-      if (_.isEmpty(data)) {
-        $log.log('Loading user data ....');
-        var dataPromise = all().then(function (savedData) {
-          data = savedData;
-          if (data && data.login) {
-            $log.log('Logged in as: ', data.login);
-            loggedIn = angular.isDefined(data.login);
+    function loadUsers() {
+      if (_.isEmpty(users)) {
+        $log.log('Loading users ....');
+        return allUsers().then(function (savedData) {
+          users = savedData;
+          $log.log('Finished loading users: ', users);
+          if (users.currentUser) {
+            currentUser = users.currentUser;
+            currentUserData = users[currentUser];
+            if (currentUserData) {
+              $log.log('Loaded current user data: ', currentUserData);
+            }
+            else {
+              $log.log('No current user data.');
+            }
           }
-          $log.log('Finished loading user data: ', data);
         });
-        return dataPromise;
       }
     }
 
-    // Save all user data in local storage
-    function save(newData) {
-      LocalStorageFactory.userDb.clear().then(function () {
-        data = newData;
-        _.forEach(data, function (value, key, list) {
-          LocalStorageFactory.userDb.setItem(key, value);
-        });
-        $log.log('Saved user: ', data);
-      });
+    function saveCurrentUser(userEmail) {
+      LocalStorageFactory.usersDb.setItem('currentUser', userEmail);
     }
 
-    function setLogin(login) {
-      loggedIn = true;
-      data.login = login;
-      return LocalStorageFactory.userDb.setItem('login', login);
+    // Save all user data in local storage
+    function saveUser(userData) {
+      currentUserData = userData;
+      users[userData.email] = userData;
+      LocalStorageFactory.usersDb.setItem(userData.email, userData).then(function (savedData) {
+        $log.log('Saved user: ', savedData);
+      });
     }
   }
 }());

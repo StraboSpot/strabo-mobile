@@ -204,13 +204,12 @@
 
     function checkForLogin() {
       // is the user logged in from before?
-      var login = UserFactory.getLogin();
-      if (login) {
-        $log.log('Logged in as: ', login);
+      var currentUserData = UserFactory.getCurrentUserData();
+      if (currentUserData) {
+        $log.log('Logged in as: ', currentUserData.email);
         vm.loggedIn = true;
-        // Encode the login string
-        vm.encodedLogin = Base64.encode(login.email + ':' + login.password);
-        vm.loginEmail = login.email; // set the email to the login email
+        vm.encodedLogin = currentUserData.encodedLogin;
+        vm.loginEmail = currentUserData.email; // set the email to the login email
         if (navigator.onLine) vm.getDatasets();
       }
       else {

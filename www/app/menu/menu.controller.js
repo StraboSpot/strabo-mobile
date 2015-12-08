@@ -12,11 +12,9 @@
     vm.editUser = editUser;
     vm.getProjectName = getProjectName;
     vm.getUserName = getUserName;
-    vm.loggedIn = false;
-    vm.isLoggedIn = isLoggedIn;
     vm.switchProject = switchProject;
     vm.projectName = '';
-    vm.userName = '';
+    vm.userName = null;
 
     activate();
 
@@ -25,12 +23,6 @@
      */
 
     function activate() {
-      // Watch whether we have a login or not
-      $scope.$watch('vm.isLoggedIn()', function (loggedIn) {
-        vm.loggedIn = loggedIn;
-        if (loggedIn) getUserName();
-      });
-
       // Watch for user name changes
       $scope.$watch('vm.getUserName()', function (userName) {
         vm.userName = userName;
@@ -58,10 +50,6 @@
 
     function getUserName() {
       return UserFactory.getUserName();
-    }
-
-    function isLoggedIn() {
-      return UserFactory.isLoggedIn();
     }
 
     function switchProject() {

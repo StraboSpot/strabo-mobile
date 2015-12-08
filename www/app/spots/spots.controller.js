@@ -253,7 +253,7 @@
 
     // Is the user online and logged in
     function isOnlineLoggedIn() {
-      return navigator.onLine && UserFactory.getLogin();
+      return navigator.onLine && UserFactory.getCurrentUser();
     }
 
     // Create a new Spot

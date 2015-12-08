@@ -332,6 +332,6 @@
   }
 
   function prepUserFactory(UserFactory) {
-    return UserFactory.loadUser();
+    return UserFactory.loadUsers();
   }
 }());

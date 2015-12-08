@@ -8,6 +8,8 @@
   RemoteServerFactory.$inject = ['$http'];
 
   function RemoteServerFactory($http) {
+    var baseUrl = 'http://strabospot.org';
+
     // Return public API
     return {
       'addDatasetSpot': addDatasetSpot,
@@ -34,7 +36,7 @@
     function addDatasetSpot(spot, dataset_id, encodedLogin) {
       var request = $http({
         'method': 'post',
-        'url': 'http://strabospot.org/db/datasetSpots/' + dataset_id,
+        'url': baseUrl + '/db/datasetSpots/' + dataset_id,
         'headers': {
           'Authorization': 'Basic ' + encodedLogin,
           'Content-Type': 'application/json'
@@ -48,7 +50,7 @@
     function addSpotToDataset(id, dataset_id, encodedLogin) {
       var request = $http({
         'method': 'post',
-        'url': 'http://strabospot.org/db/datasetSpots/' + dataset_id,
+        'url': baseUrl + '/db/datasetSpots/' + dataset_id,
         'headers': {
           'Authorization': 'Basic ' + encodedLogin,
           'Content-Type': 'application/json'
@@ -64,7 +66,7 @@
     function authenticateUser(loginData) {
       var request = $http({
         'method': 'post',
-        'url': 'http://strabospot.org/userAuthenticate',
+        'url': baseUrl + '/userAuthenticate',
         'headers': {
           'Content-Type': 'application/json'
         },
@@ -80,7 +82,7 @@
     function createDataset(name, encodedLogin) {
       var request = $http({
         'method': 'post',
-        'url': 'http://strabospot.org/db/dataset',
+        'url': baseUrl + '/db/dataset',
         'headers': {
           'Authorization': 'Basic ' + encodedLogin,
           'Content-Type': 'application/json'
@@ -94,7 +96,7 @@
     function createFeature(spot, encodedLogin) {
       var request = $http({
         'method': 'post',
-        'url': 'http://strabospot.org/db/feature',
+        'url': baseUrl + '/db/feature',
         'headers': {
           'Authorization': 'Basic ' + encodedLogin,
           'Content-Type': 'application/json'
@@ -121,7 +123,7 @@
     function deleteSpots(encodedLogin) {
       var request = $http({
         'method': 'delete',
-        'url': 'http://strabospot.org/db/myFeatures',
+        'url': baseUrl + '/db/myFeatures',
         'headers': {
           'Authorization': 'Basic ' + encodedLogin,
           'Content-Type': 'application/json'
@@ -134,7 +136,7 @@
     function deleteAllDatasetSpots(dataset_id, encodedLogin) {
       var request = $http({
         'method': 'delete',
-        'url': 'http://strabospot.org/db/datasetSpots/' + dataset_id,
+        'url': baseUrl + '/db/datasetSpots/' + dataset_id,
         'headers': {
           'Authorization': 'Basic ' + encodedLogin,
           'Content-Type': 'application/json'
@@ -160,7 +162,7 @@
     function getDatasets(encodedLogin) {
       var request = $http({
         'method': 'get',
-        'url': 'http://strabospot.org/db/myDatasets',
+        'url': baseUrl + '/db/myDatasets',
         'headers': {
           'Authorization': 'Basic ' + encodedLogin
         }
@@ -172,7 +174,7 @@
     function getDatasetSpots(dataset_id, encodedLogin) {
       var request = $http({
         'method': 'get',
-        'url': 'http://www.strabospot.org/db/datasetSpots/' + dataset_id,
+        'url': baseUrl + '/db/datasetSpots/' + dataset_id,
         'headers': {
           'Authorization': 'Basic ' + encodedLogin
         }
@@ -184,7 +186,7 @@
     function getImages(dataset_id, encodedLogin) {
       var request = $http({
         'method': 'get',
-        'url': 'http://www.strabospot.org/db/featureImages/' + dataset_id,
+        'url': baseUrl + '/db/featureImages/' + dataset_id,
         'headers': {
           'Authorization': 'Basic ' + encodedLogin + '\''
         }
@@ -236,7 +238,7 @@
 
       var request = $http({
         'method': 'post',
-        'url': 'http://strabospot.org/db/image',
+        'url': baseUrl + '/db/image',
         'transformRequest': angular.identity,
         'headers': {
           'Authorization': 'Basic ' + encodedLogin,

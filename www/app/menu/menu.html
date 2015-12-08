@@ -11,12 +11,12 @@
       <table class='project-info'>
         <tr>
           <td menu-close class='user' rowspan="2" ng-click='vm.editUser();'>
-            <div ng-show='vm.loggedIn'>
+            <div ng-show='vm.userName'>
               <img src='img/ninja.png'>
               <br>
               <span class='user-name'>{{ vm.userName }}</span>
             </div>
-            <div ng-show='!vm.loggedIn'>
+            <div ng-show='!vm.userName'>
               <br>
               <button class='button button-small icon-left icon button-clear ion-log-in'>Login
               </button>

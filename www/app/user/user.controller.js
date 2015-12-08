@@ -5,21 +5,17 @@
     .module('app')
     .controller('UserController', UserController);
 
-  UserController.$inject = ['$ionicPopup', '$log', '$scope', 'RemoteServerFactory', 'UserFactory'];
+  UserController.$inject = ['$ionicPopup', '$log', '$scope', 'UserFactory'];
 
-  function UserController($ionicPopup, $log, $scope, RemoteServerFactory, UserFactory) {
+  function UserController($ionicPopup, $log, $scope, UserFactory) {
     var vm = this;
 
+    vm.currentUser = null;
     vm.data = {};
     vm.dataOriginal = {};
     vm.isPristine = isPristine;
     vm.doLogin = doLogin;
     vm.doLogout = doLogout;
-    vm.hideActionButtons = {
-      'login': false,
-      'logout': true
-    };
-    vm.loggedIn = false;
     vm.submit = submit;
 
     activate();
@@ -29,17 +25,10 @@
      */
 
     function activate() {
-      vm.data = UserFactory.getUserData();
-      if (vm.data.login) {
-        $log.log('Logged in as: ', vm.data.login);
-        vm.loggedIn = true;
+      vm.currentUser = UserFactory.getCurrentUser();
+      if (vm.currentUser) {
+        vm.data = UserFactory.getCurrentUserData();
         vm.dataOriginal = vm.data;
-        hideLoginButton();
-      }
-      else {
-        $log.log('No login!');
-        vm.loggedIn = false;
-        hideLogoutButton();
       }
 
       // Watch whether form has been modified or not
@@ -53,47 +42,29 @@
       return _.isEqual(vm.dataOriginal, vm.data);
     }
 
-    function hideLoginButton() {
-      vm.hideActionButtons.login = true;
-      vm.hideActionButtons.logout = false;
-    }
-
-    function hideLogoutButton() {
-      vm.hideActionButtons.login = false;
-      vm.hideActionButtons.logout = true;
-    }
-
     /**
      * Public Functions
      */
 
     // Perform the login action when the user presses the login icon
     function doLogin() {
-      vm.data.login.email = vm.data.login.email.toLowerCase();
-      // Authenticate user login
       if (navigator.onLine) {
-        RemoteServerFactory.authenticateUser(vm.data.login).then(
-          function (response) {
-            if (response.status === 200 && response.data.valid === 'true') {
-              $log.log('Logged in successfully.');
-              hideLoginButton();
-              UserFactory.setLogin(vm.data.login);
-              vm.loggedIn = true;
+        vm.data.login.email = vm.data.login.email.toLowerCase();
+        UserFactory.doLogin(vm.data.login).then(function () {
+          vm.currentUser = UserFactory.getCurrentUser();
+          // As long as a current user has been set login was successful
+          if (vm.currentUser) {
+            var encodedLogin = Base64.encode(vm.data.login.email + ':' + vm.data.login.password);
+            vm.data = UserFactory.getCurrentUserData();
+            if (!vm.data) {
+              vm.data = {'email': vm.currentUser, 'encodedLogin': encodedLogin};
             }
             else {
-              $ionicPopup.alert({
-                'title': 'Login Failure!',
-                'template': 'Incorrect username or password.'
-              });
+              vm.data.encodedLogin = encodedLogin;
             }
-          },
-          function (errorMessage) {
-            $ionicPopup.alert({
-              'title': 'Alert!',
-              'template': errorMessage
-            });
+            UserFactory.saveUser(vm.data);
           }
-        );
+        });
       }
       else {
         $ionicPopup.alert({
@@ -105,15 +76,14 @@
 
     // Destory the user data on when the logout button pressed
     function doLogout() {
-      UserFactory.destroyLogin();
+      vm.currentUser = null;
       vm.data = {};
-      vm.loggedIn = false;
-      hideLogoutButton();
+      UserFactory.clearCurrentUser();
       $log.log('Logged out');
     }
 
     function submit() {
-      UserFactory.save(vm.data);
+      UserFactory.saveUser(vm.data);
       vm.dataOriginal = vm.data;
     }
   }
