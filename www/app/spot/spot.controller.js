@@ -52,12 +52,6 @@
     vm.showField = showField;
     vm.showTab = showTab;
     vm.spot = {};
-    vm.spotTypes = {
-      'point': 'Measument or Observation',
-      'line': 'Contact or Trace',
-      'polygon': 'Rock Description',
-      'group': 'Station or Group'
-    };
     vm.submit = submit;
     vm.survey = null;
     vm.switchTabs = switchTabs;
@@ -170,11 +164,6 @@
             vm.showCustomFields = true;
         }
       }
-
-      vm.rock_description_survey = ContentModelSurveyFactory.rock_description_survey;
-      vm.rock_description_choices = ContentModelSurveyFactory.rock_description_choices;
-      vm.rock_sample_survey = ContentModelSurveyFactory.rock_sample_survey;
-      vm.rock_sample_choices = ContentModelSurveyFactory.rock_sample_choices;
     }
 
     function loadForms() {
@@ -653,29 +642,14 @@
     // When switching tabs validate the form first (if the tab is based on a form),
     // save the properties for the current spot temporarily, then go to the new tab
     function switchTabs(toTab) {
-      // has the rock description form been touched?
-      if ($scope.$$childTail.rockDescriptionForm && !$scope.$$childTail.rockDescriptionForm.$pristine) {
-        // yes
-        if (!vm.validateForm()) {
-          return 0;
-        }
-      }
-      // has the rock sample form been touched?
-      else if ($scope.$$childTail.SampleTabForm && !$scope.$$childTail.SampleTabForm.$pristine) {
+      // Has the rock sample form been touched?
+      if ($scope.$$childTail.SampleTabForm && !$scope.$$childTail.SampleTabForm.$pristine) {
         // yes
         if (!vm.validateForm()) {
           return 0;
         }
       }
       else {
-        if (!vm.validateForm()) {
-          return 0;
-        }
-      }
-
-      // If the pristine variable is undefined or true don't validate the form,
-      // but always validate if the spot is a rock description
-      if (vm.spot.properties.type === 'polygon') {
         if (!vm.validateForm()) {
           return 0;
         }
@@ -824,16 +798,6 @@
                 return false;
               }
             }
-          }
-          break;
-        case 'rockdescription':
-          if (!vm.validateFields(ContentModelSurveyFactory.rock_description_survey)) {
-            return false;
-          }
-          break;
-        case 'rocksample':
-          if (!vm.validateFields(ContentModelSurveyFactory.rock_sample_survey)) {
-            return false;
           }
           break;
       }

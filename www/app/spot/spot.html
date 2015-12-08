@@ -67,11 +67,6 @@ navigation history that also transitions its views in and out.
         Group Members
       </a>
     </span>
-    <a class='button button-clear spot-tab-inactive'
-       ng-class='{ "spot-tab-active": $state.current.name == "spotTab.rockdescription"}'
-       ng-click='vm.switchTabs("rockdescription");'>
-      Rock Description
-    </a>
     <span ng-show='vm.showTab("sample")'>
       <a class='button button-clear spot-tab-inactive'
          ng-class='{ "spot-tab-active": $state.current.name == "spotTab.sample"}'
