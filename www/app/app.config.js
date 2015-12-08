@@ -185,7 +185,8 @@
         'templateUrl': 'app/spot/spot.html',
         'controller': 'SpotController as vm',
         'resolve': {
-          'prepSpotFactory': prepSpotFactory
+          'prepSpotFactory': prepSpotFactory,
+          'prepSpotForms': prepSpotForms
         }
       })
       .state('spotTab.custom', {
@@ -329,6 +330,10 @@
 
   function prepSpotFactory(SpotFactory) {
     return SpotFactory.loadSpots();
+  }
+
+  function prepSpotForms(SpotFormsFactory) {
+    return SpotFormsFactory.loadTracesForm();
   }
 
   function prepUserFactory(UserFactory) {

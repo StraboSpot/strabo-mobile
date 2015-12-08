@@ -1,0 +1,100 @@
+label,order,name,list name
+Contact,0,contact,pl5yo85
+Geologic Structure,1,geologic_struc,pl5yo85
+Geomorphic Feature,2,geomorphic_fea,pl5yo85
+Anthropogenic Feature,3,anthropenic_fe,pl5yo85
+Other Features,4,other_features,pl5yo85
+depositional,0,depositional,lx9ax28
+intrusive,1,intrusive,lx9ax28
+metamorphic,2,metamorphic,lx9ax28
+marker layer,3,marker_layer,lx9ax28
+other,4,unknown,lx9ax28
+stratigraphic,0,stratigraphic,bi4sw60
+alluvial,1,alluvial,bi4sw60
+unconformity,2,unconformity,bi4sw60
+angular unconformity,3,option_7,bi4sw60
+disconformity,4,option_8,bi4sw60
+nonconformity,5,nonconformity,bi4sw60
+volcanic,6,volcanic,bi4sw60
+other,7,other,bi4sw60
+dike,0,dike,cj4zw02
+sill,1,sill,cj4zw02
+pluton,2,pluton,cj4zw02
+migmatite,3,migmatite,cj4zw02
+injectite,4,injectite,cj4zw02
+other,5,unknown,cj4zw02
+between different metamorphic rocks,0,btwn_2_dif_mm,pb5wo52
+isograd,2,isograd,pb5wo52
+other,,other,pb5wo52
+fault,0,fault,iz4fr14
+shear zone,1,shear_zone,iz4fr14
+deformation zone,2,deformation_zo,iz4fr14
+fold axial trace,3,fold_axial_tra,iz4fr14
+other structural zone,4,other_structur,iz4fr14
+dextral strike-slip,1,dextral,os1df47
+sinistral strike-slip,2,sinistral,os1df47
+normal,3,normal,os1df47
+low-angle normal,4,low_angle_norm,os1df47
+reverse,5,reverse,os1df47
+thrust,6,thrust,os1df47
+dextral reverse,7,dextral_reverse,os1df47
+dextral normal,8,dextral_normal,os1df47
+sinistral reverse,9,sinistral_reverse,os1df47
+sinistral normal,10,sinistral_normal,os1df47
+high-angle,,high_angle,os1df47
+other,,other,os1df47
+deformation band,,deformation_ba,hz6ha86
+fracture zone,,fracture_zone,hz6ha86
+damage zone,,damage_zone,hz6ha86
+alteration zone,,alteration_zon,hz6ha86
+structural domain boundary,,structural_dom,hz6ha86
+other,,other,hz6ha86
+syncline,0,syncline,wg6ry31
+anticline,1,anticline,wg6ry31
+monocline,2,monocline,wg6ry31
+antiformal syncline,3,option_11,wg6ry31
+synformal anticline,4,option_12,wg6ry31
+synform,5,synform,wg6ry31
+antiform,6,antiform,wg6ry31
+s-fold,7,s_fold,wg6ry31
+z-fold,8,z_fold,wg6ry31
+m-fold,9,m_fold,wg6ry31
+sheath,10,sheath,wg6ry31
+ptygmatic,11,ptygmatic,wg6ry31
+other,12,unknown,wg6ry31
+plunging,0,plunging,iq4bx64
+upright,1,upright,iq4bx64
+overturned,2,overturned,iq4bx64
+vertical,3,vertical,iq4bx64
+unknown,4,unknown,iq4bx64
+horizontal,5,horizontal,iq4bx64
+recumbent,6,recumbent,iq4bx64
+inclined,7,inclined,iq4bx64
+reclined,8,reclined,iq4bx64
+other,9,other,iq4bx64
+gulley,0,gulley,er5hu03
+ridge,1,ridge,er5hu03
+striation,2,striation,er5hu03
+rill,3,rill,er5hu03
+stream bed,4,stream_bed,er5hu03
+shoreline/strandline,5,shoreline_stra,er5hu03
+other,6,other,er5hu03
+fence line,,fence_line,gw8je20
+property line,,property_line,gw8je20
+other,,other,gw8je20
+extent of mapping,,extent_of_mapp,lh87q41
+extent of biological marker,,extent_of_biol,lh87q41
+other,,other,lh87q41
+known,0,known,wb5nf41
+approximate,1,approximate,wb5nf41
+questionable approximate,2,approximate(?),wb5nf41
+inferred,3,inferred,wb5nf41
+questionable inferred,4,inferred(?),wb5nf41
+concealed,5,concealed,wb5nf41
+other,,other,wb5nf41
+sharp,,sharp,rd1pp06
+gradational,,gradational,rd1pp06
+chilled,,chilled,rd1pp06
+brecciated,,brecciated,rd1pp06
+unknown,,unknown,rd1pp06
+other,,other,rd1pp06

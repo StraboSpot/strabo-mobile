@@ -17,7 +17,9 @@
       'rock_description_choices': 'app/data-models/rockdescription-choices.csv',
       'sample_survey': 'app/data-models/TabSample.csv',
       'sample_choices': 'app/data-models/TabSample-choices.csv',
-      'tools': 'app/data-models/Tools.csv'
+      'tools': 'app/data-models/Tools.csv',
+      'traces_survey': 'app/data-models/traces.csv',
+      'traces_choices': 'app/data-models/traces-choices.csv'
     };
 
     return {

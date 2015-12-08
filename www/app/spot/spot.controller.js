@@ -7,24 +7,20 @@
 
   SpotController.$inject = ['$document', '$ionicModal', '$ionicPopup', '$location', '$log', '$scope', '$state',
     'ContentModelSurveyFactory', 'DataModelsFactory', 'FormFactory', 'ImageMapFactory', 'PreferencesFactory',
-    'ProjectFactory', 'SpotFactory'];
+    'ProjectFactory', 'SpotFactory', 'SpotFormsFactory'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
   function SpotController($document, $ionicModal, $ionicPopup, $location, $log, $scope, $state,
                           ContentModelSurveyFactory, DataModelsFactory, FormFactory, ImageMapFactory,
-                          PreferencesFactory, ProjectFactory, SpotFactory) {
+                          PreferencesFactory, ProjectFactory, SpotFactory, SpotFormsFactory) {
     var vm = this;
 
+    vm.choices = null;
     vm.closeModal = closeModal;
     vm.copySpot = copySpot;
     vm.data = {};
     vm.deleteSpot = deleteSpot;
-    vm.fields = {
-      'sample_survey': {},
-      'sample_choices': {},
-      '_3dstructures_survey': {},
-      '_3dstructures_choices': {}
-    };
+    vm.fields = {};
     vm.getMax = getMax;
     vm.getMin = getMin;
     vm.goToSpots = goToSpots;
@@ -63,6 +59,7 @@
       'group': 'Station or Group'
     };
     vm.submit = submit;
+    vm.survey = null;
     vm.switchTabs = switchTabs;
     vm.toggleAcknowledgeChecked = toggleAcknowledgeChecked;
     vm.toggleAcknowledgeCheckedOrig = toggleAcknowledgeCheckedOrig;
@@ -79,9 +76,7 @@
 
     function activate() {
       $log.log('In SpotController');
-
-      // Load fields for all forms
-      _.forEach(vm.fields, getFields);
+      loadForms();
 
       $ionicModal.fromTemplateUrl('app/spot/links-modal.html', {
         'scope': $scope,
@@ -129,7 +124,7 @@
 
     // Load the form survey (and choices, if applicable)
     function loadForm(tab) {
-      if (tab === 'spotTab.sample' || tab === 'spotTab._3dstructures') {
+      if (tab === 'spotTab.sample' || tab === 'spotTab._3dstructures' || tab === 'spotTab.spot') {
         switch (tab) {
           case 'spotTab.sample':
             vm.survey = vm.fields.sample_survey;
@@ -138,6 +133,10 @@
           case 'spotTab._3dstructures':
             vm.survey = vm.fields._3dstructures_survey;
             vm.choices = vm.fields._3dstructures_choices;
+            break;
+          case 'spotTab.spot':
+            vm.survey = vm.fields.traces_survey;
+            vm.choices = vm.fields.traces_choices;
             break;
         }
       }
@@ -176,6 +175,20 @@
       vm.rock_description_choices = ContentModelSurveyFactory.rock_description_choices;
       vm.rock_sample_survey = ContentModelSurveyFactory.rock_sample_survey;
       vm.rock_sample_choices = ContentModelSurveyFactory.rock_sample_choices;
+    }
+
+    function loadForms() {
+      // Start loading fields for all forms except traces form in first tab
+      vm.fields.sample_survey = {};
+      vm.fields.sample_choices = {};
+      vm.fields._3dstructures_survey = {};
+      vm.fields._3dstructures_choices = {};
+      _.forEach(vm.fields, getFields);
+
+      // Loaded traces form in factory before controller since traces are on the first tab
+      // Load traces fields
+      vm.fields.traces_survey = SpotFormsFactory.getTracesSurvey();
+      vm.fields.traces_choices = SpotFormsFactory.getTracesChoices();
     }
 
     // Get the current spot
@@ -647,10 +660,14 @@
           return 0;
         }
       }
-
       // has the rock sample form been touched?
-      if ($scope.$$childTail.SampleTabForm && !$scope.$$childTail.SampleTabForm.$pristine) {
+      else if ($scope.$$childTail.SampleTabForm && !$scope.$$childTail.SampleTabForm.$pristine) {
         // yes
+        if (!vm.validateForm()) {
+          return 0;
+        }
+      }
+      else {
         if (!vm.validateForm()) {
           return 0;
         }
@@ -782,6 +799,9 @@
               'title': 'Validation Error!',
               'template': '<b>Spot Name</b> is required.'
             });
+            return false;
+          }
+          if (!vm.validateFields(vm.survey)) {
             return false;
           }
           if (vm.spot.geometry) {
