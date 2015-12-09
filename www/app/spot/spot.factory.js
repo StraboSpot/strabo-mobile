@@ -10,7 +10,7 @@
   function SpotFactory($log, $q, LocalStorageFactory) {
     var currentSpot = null;
     var newSpot = {};
-    var spots = {};
+    var spots = null;
 
     return {
       'clear': clear,
@@ -59,7 +59,7 @@
     function clear() {
       var deferred = $q.defer(); // init promise
       LocalStorageFactory.spotsDb.clear().then(function () {
-        spots = {};
+        spots = null;
         deferred.notify();
         deferred.resolve(spots);
       });
@@ -133,7 +133,7 @@
     }
 
     function getSpots() {
-      return spots;
+      return spots || [];
     }
 
     function isRockUnitUsed(key, value) {

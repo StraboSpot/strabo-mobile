@@ -56,7 +56,6 @@
           },
           'type': 'Feature',
           'properties': {
-            'type': 'point',
             'measured_plane': true,
             'planar_feature_type': feature_types[Math.floor(Math.random() * feature_types.length)],
             'date': d,

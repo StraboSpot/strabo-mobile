@@ -9,8 +9,7 @@
       <ion-item ng-repeat='item in vm.links_selected'>
         <a ng-click='vm.openSpot(item.id);' style="text-decoration:none">{{item.name}}</a>
         <small>({{ vm.spotTypes[item.type] }})</small>
-        &nbsp;&nbsp;&nbsp;&nbsp;<b>{{ item.relationship }}</b> this {{ vm.spotTypes[vm.spot.properties.type] }}
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;<b>{{ item.relationship }}</b> this spot
         <select ng-model='relationship'
                 ng-options='link_relationships.type for link_relationships in vm.link_relationship.choices'
                 ng-change='vmChild.setLinkRelationship(item, relationship)'>

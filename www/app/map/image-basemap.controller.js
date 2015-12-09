@@ -5,12 +5,13 @@
     .module('app')
     .controller('ImageBasemapController', ImageBasemapController);
 
-  ImageBasemapController.$inject = ['$ionicActionSheet', '$ionicSideMenuDelegate', '$log', '$state', 'DrawFactory',
+  ImageBasemapController.$inject = ['$ionicActionSheet', '$ionicSideMenuDelegate', '$log', '$state', 'MapDrawFactory',
     'ImageBasemapFactory', 'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory'];
 
-  function ImageBasemapController($ionicActionSheet, $ionicSideMenuDelegate, $log, $state, DrawFactory, ImageBasemapFactory,
+  function ImageBasemapController($ionicActionSheet, $ionicSideMenuDelegate, $log, $state, MapDrawFactory, ImageBasemapFactory,
                                   MapFeaturesFactory, MapSetupFactory, MapViewFactory) {
     var vm = this;
+
     vm.goToImageBasemaps = goToImageBasemaps;
     vm.imageBasemap = ImageBasemapFactory.getCurrentImageBasemap();
     vm.showActionsheet = showActionsheet;
@@ -49,7 +50,7 @@
         $log.log('map clicked');
 
         // are we in draw mode?  If so we dont want to display any popovers during draw mode
-        if (!DrawFactory.isDrawMode()) {
+        if (!MapDrawFactory.isDrawMode()) {
           MapFeaturesFactory.showPopup(map, evt);
         }
       });
@@ -78,7 +79,7 @@
               MapViewFactory.zoomToSpotsExtent(map, vm.imageBasemap);
               break;
             case 1:
-              DrawFactory.groupSpots();
+              MapDrawFactory.groupSpots();
               break;
           }
           return true;

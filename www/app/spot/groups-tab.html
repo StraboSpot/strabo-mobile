@@ -9,7 +9,6 @@
       <ion-list>
         <ion-item ng-repeat='item in vm.groups_selected' ng-click='vm.openSpot(item.id);'>
           {{item.name}}
-          <small>({{ vm.spotTypes[item.type] }})</small>
         </ion-item>
       </ion-list>
     </div>

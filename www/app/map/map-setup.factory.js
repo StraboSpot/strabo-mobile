@@ -5,9 +5,9 @@
     .module('app')
     .factory('MapSetupFactory', MapSetupFactory);
 
-  MapSetupFactory.$inject = ['DrawFactory', 'MapLayerFactory'];
+  MapSetupFactory.$inject = ['MapDrawFactory', 'MapLayerFactory'];
 
-  function MapSetupFactory(DrawFactory, MapLayerFactory) {
+  function MapSetupFactory(MapDrawFactory, MapLayerFactory) {
     // Map Properties
     var map;
     var extent;
@@ -125,8 +125,8 @@
         map.addControl(new ol.control.ScaleLine());
       }
 
-      ol.inherits(DrawFactory.DrawControls, ol.control.Control);
-      map.addControl(new DrawFactory.DrawControls(drawControlProps));
+      ol.inherits(MapDrawFactory.DrawControls, ol.control.Control);
+      map.addControl(new MapDrawFactory.DrawControls(drawControlProps));
       map.addControl(new ol.control.LayerSwitcher());
     }
 

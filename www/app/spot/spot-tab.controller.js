@@ -15,15 +15,12 @@
     vmParent.loadTab($state);  // Need to load current state into parent
 
     vm.getCurrentLocation = getCurrentLocation;
-    vm.getGeometryType = getGeometryType;
+    vm.getRockUnits = getRockUnits;
     vm.rockUnit = {};
     vm.rockUnits = {};
-    vm.getRockUnits = getRockUnits;
     vm.setFromMap = setFromMap;
     vm.setRockUnit = setRockUnit;
-    // Only allow set location to user's location if geometry type is Point
-    vm.showMyLocationButton = vmParent.spot.properties.type === 'point' && !vm.showXY;
-    vm.showSetFromMapButton = true;
+    vm.showXY = false;
     vm.updateLatitude = updateLatitude;
     vm.updateLongitude = updateLongitude;
     vm.updateX = updateX;
@@ -52,11 +49,6 @@
           }
           else {
             vm.mapped = true;
-            vm.viewOnMapButton = true;
-
-            // Only allow set location from map if geometry type is not MultiPoint, MultiLineString or MultiPolygon
-            vm.showSetFromMapButton = !(vmParent.spot.geometry.type === 'MultiPoint' || vmParent.spot.geometry.type === 'MultiLineString' || vmParent.spot.geometry.type === 'MultiPolygon');
-
             // Only show Latitude and Longitude input boxes if the geometry type is Point
             if (vmParent.spot.geometry.type === 'Point') {
               if (_.has(vmParent.spot.properties, 'image_basemap')) {
@@ -108,19 +100,6 @@
           'template': 'Unable to get location: ' + err.message
         });
       });
-    }
-
-    function getGeometryType() {
-      switch (vmParent.spot.properties.type) {
-        case 'point':
-          return 'Point';
-        case 'line':
-          return 'LineString';
-        case 'polygon':
-          return 'Polygon';
-        case 'group':
-          return 'Polygon';
-      }
     }
 
     // Open the map so the user can set the location for the spot

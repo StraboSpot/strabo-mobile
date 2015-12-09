@@ -3,11 +3,11 @@
 
   angular
     .module('app')
-    .factory('DrawFactory', DrawFactory);
+    .factory('MapDrawFactory', MapDrawFactory);
 
-  DrawFactory.$inject = ['$document', '$ionicPopup', '$log', '$state', 'SpotFactory'];
+  MapDrawFactory.$inject = ['$document', '$ionicPopup', '$log', '$state', 'SpotFactory'];
 
-  function DrawFactory($document, $ionicPopup, $log, $state, SpotFactory) {
+  function MapDrawFactory($document, $ionicPopup, $log, $state, SpotFactory) {
     var draw;               // draw is a ol3 drawing interaction
     var drawButtonActive;   // drawButtonActive used to keep state of which selected drawing tool is active
     var drawLayer;
@@ -27,17 +27,7 @@
      */
 
     function createNewSpot(geojsonObj) {
-      switch (drawButtonActive) {
-        case 'Point':
-          geojsonObj.properties = {'type': 'point'};
-          break;
-        case 'LineString':
-          geojsonObj.properties = {'type': 'line'};
-          break;
-        case 'Polygon':
-          geojsonObj.properties = {'type': 'polygon'};
-          break;
-      }
+      geojsonObj.properties = {};
       if (imageBasemap) geojsonObj.properties.image_basemap = imageBasemap.id;
       SpotFactory.setNewSpot(geojsonObj);
       $state.go('spotTab.spot');
@@ -143,7 +133,7 @@
 
       $ionicPopup.alert({
         'title': 'Create a Station',
-        'template': 'Draw a polygon around the features you would like to add to a new station.'
+        'template': 'Draw a polygon around the features you would like to add to a new Spot.'
       });
 
       // start the draw with freehand enabled
@@ -266,26 +256,24 @@
               // if the spot is a point, we test using turf.inside
               // if the spot is a polygon or line, we test using turf.intersect
 
-              var spotType = spot.properties.type;
+              var spotType = spot.geometry.type;
 
-              if (spotType === 'point') {
+              if (spotType === 'Point') {
                 // is the point inside the drawn polygon?
                 if (turf.inside(spot, geojsonObj)) {
                   isLassoed.push({
                     'id': spot.properties.id,
-                    'name': spot.properties.name,
-                    'type': spot.properties.type
+                    'name': spot.properties.name
                   });
                 }
               }
 
-              if (spotType === 'line' || spotType === 'polygon' || spotType === 'group') {
+              if (spotType === 'LineString' || spotType === 'Polygon') {
                 // is the line or polygon within/intersected in the drawn polygon?
                 if (turf.intersect(spot, geojsonObj)) {
                   isLassoed.push({
                     'id': spot.properties.id,
-                    'name': spot.properties.name,
-                    'type': spot.properties.type
+                    'name': spot.properties.name
                   });
                 }
               }
@@ -302,7 +290,6 @@
             }
 
             geojsonObj.properties = {
-              'type': 'group',
               'group_members': isLassoed
             };
             if (imageBasemap) {
@@ -310,7 +297,7 @@
             }
 
             SpotFactory.setNewSpot(geojsonObj);
-            $state.go('spotTab.orientation');
+            $state.go('spotTab.spot');
           }
           else {
             // contains a kink, aka self-intersecting polygon
@@ -322,69 +309,15 @@
         }
         else {
           $log.log('Drawend: Normal (not freehand)');
-
-          // If there is already a current spot only update the geometry if the draw tool used
-          // matches the required geometry for the Spot type
-          if (SpotFactory.getCurrentSpot()) {
-            var curSpot = SpotFactory.getCurrentSpot();
-            switch (curSpot.properties.type) {
-              case 'point':
-                if (drawButtonActive === 'Point') {
-                  curSpot.geometry = geojsonObj.geometry;
-                  SpotFactory.setCurrentSpot(curSpot);
-                }
-                else {
-                  $ionicPopup.alert({
-                    'title': 'Geometry Mismatch!',
-                    'template': 'Measurements and observations must be drawn as points. Draw Again.'
-                  });
-                }
-                $state.go('spotTab.spot');
-                break;
-              case 'line':
-                if (drawButtonActive === 'LineString') {
-                  curSpot.geometry = geojsonObj.geometry;
-                  SpotFactory.setCurrentSpot(curSpot);
-                }
-                else {
-                  $ionicPopup.alert({
-                    'title': 'Geometry Mismatch!',
-                    'template': 'Contacts and traces must be drawn as lines. Draw Again.'
-                  });
-                }
-                $state.go('spotTab.spot');
-                break;
-              case 'polygon':
-                if (drawButtonActive === 'Polygon') {
-                  curSpot.geometry = geojsonObj.geometry;
-                  SpotFactory.setCurrentSpot(curSpot);
-                }
-                else {
-                  $ionicPopup.alert({
-                    'title': 'Geometry Mismatch!',
-                    'template': 'Rock descriptions must be drawn as polygons. Draw Again.'
-                  });
-                }
-                $state.go('spotTab.spot');
-                break;
-              case 'group':
-                if (drawButtonActive === 'Polygon') {
-                  curSpot.geometry = geojsonObj.geometry;
-                  SpotFactory.setCurrentSpot(curSpot);
-                }
-                else {
-                  $ionicPopup.alert({
-                    'title': 'Geometry Mismatch!',
-                    'template': 'Stations must be drawn as polygons. Draw Again.'
-                  });
-                }
-                $state.go('spotTab.spot');
-                break;
-            }
+          var curSpot = SpotFactory.getCurrentSpot();
+          if (curSpot) {
+            curSpot.geometry = geojsonObj.geometry;
+            SpotFactory.setCurrentSpot(curSpot);
           }
           else {
             createNewSpot(geojsonObj);
           }
+          $state.go('spotTab.spot');
         }
       });
       map.addInteraction(draw);

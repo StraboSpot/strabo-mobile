@@ -20,10 +20,6 @@
 
       <div ng-if='vmChild.mapped'>
         <label class='item item-input item-stacked-label item-text-wrap'>
-          <span class='input-label'>Label</span>
-          <input type='text' placeholder='Label on Map' ng-model='vm.spot.properties.label'>
-        </label>
-        <label class='item item-input item-stacked-label item-text-wrap'>
           <span class='input-label'>Geometry</span>
           <input type='text' disabled ng-model='vm.spot.geometry.type'>
         </label>
@@ -84,28 +80,20 @@
         </div>
       </div>
       <div ng-if='!vmChild.mapped' class='padding'>
-        This spot has not been mapped yet. Click on the Set from Map button below and be sure to map this feature as a
-        {{vmChild.getGeometryType()}}.
+        This spot has not been mapped yet.
       </div>
       <!-- Map Interaction -->
-      <div class='row responsive-sm'>
-        <div class='col'>
-          <button ng-click='vmChild.viewSpot();' ng-disabled='!vmChild.viewOnMapButton'
-                  class='button button-positive icon-left icon ion-eye'>
-            View on Map
-          </button>
-        </div>
-        <div class='col'>
-          <button ng-click='vmChild.getCurrentLocation();' ng-disabled='!vmChild.showMyLocationButton'
-                  class='button button-positive icon-left ion-pinpoint'>Set to My Location
-          </button>
-        </div>
-        <div class='col'>
-          <button ng-click='vmChild.setFromMap();' ng-disabled='!vmChild.showSetFromMapButton'
-                  class='button button-positive icon-left icon ion-map'>Set From Map
-          </button>
-        </div>
-      </div>
+      <button ng-click='vmChild.viewSpot();' ng-show='vmChild.mapped'
+              class='button button-small button-positive icon-left icon ion-eye'>
+        View on Map
+      </button>
+      <button ng-click='vmChild.getCurrentLocation();' ng-hide='vmChild.showXY'
+              class='button button-small button-positive icon-left ion-pinpoint'>
+        Set to My Location
+      </button>
+      <button ng-click='vmChild.setFromMap();' class='button button-small button-positive icon-left icon ion-map'>
+        Set From Map
+      </button>
 
       <div class='item item-divider'>
         Rock Unit

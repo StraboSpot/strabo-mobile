@@ -39,35 +39,15 @@
         });
       }
 
-      // get distinct groups and aggregate spots by group type
-      var spotGroup = _.groupBy(mappableSpots, function (spot) {
-        return spot.properties.type;
-      });
-
-      var spotTypes = {
-        'point': 'Measurements & Observations',
-        'line': 'Contacts & Traces',
-        'polygon': 'Rock Descriptions',
-        'group': 'Stations'
+      var spotsLayer = {
+        'type': 'FeatureCollection',
+        'features': mappableSpots,
+        'properties': {
+          'name': 'Spots (' + mappableSpots.length + ')'
+        }
       };
 
-      // Go through each group and assign all the aggregates to the geojson feature
-      for (var key in spotGroup) {
-        if (spotGroup.hasOwnProperty(key)) {
-          // Create a geojson to hold all the spots that fit the same spot type
-          var spotTypeLayer = {
-            'type': 'FeatureCollection',
-            'features': spotGroup[key],
-            'properties': {
-              'name': spotTypes[key] + ' (' + spotGroup[key].length + ')'
-            }
-          };
-
-          // Add the feature collection layer to the map
-          featureLayer.getLayers().push(
-            geojsonToVectorLayer(spotTypeLayer, map.getView().getProjection()));
-        }
-      }
+      featureLayer.getLayers().push(geojsonToVectorLayer(spotsLayer, map.getView().getProjection()));
     }
 
     // We want to load all the geojson markers from the persistence storage onto the map
@@ -127,72 +107,46 @@
       // Set styles for points, lines and polygon and groups
       function styleFunction(feature, resolution) {
         var styles = [];
-        var pointText = angular.isDefined(feature.get('plunge')) ? feature.get('plunge').toString() : feature.get(
-          'label');
-        pointText = angular.isDefined(feature.get('dip')) ? feature.get('dip').toString() : pointText;
-
         var rotation = feature.get('strike') || feature.get('trend') || 0;
 
-        switch (feature.get('type')) {
-          case 'point':
-            var pointStyle = [
-              new ol.style.Style({
-                'image': getIconForFeature(feature),
-                'text': textStylePoint(pointText, rotation)
-              })
-            ];
-            styles.Point = pointStyle;
-            styles.MultiPoint = pointStyle;
-            break;
-          case 'line':
-            var lineStyle = [
-              new ol.style.Style({
-                'stroke': new ol.style.Stroke({
-                  'color': 'rgba(204, 0, 0, 0.7)',
-                  'width': 3
-                }),
-                'text': textStyle(feature.get('label'))
-              })
-            ];
-            styles.LineString = lineStyle;
-            styles.MultiLineString = lineStyle;
-            break;
-          case 'polygon':
-            var polyText = feature.get('unit_label_abbreviation') ? feature.get(
-              'unit_label_abbreviation') : feature.get('label');
-            var polyStyle = [
-              new ol.style.Style({
-                'stroke': new ol.style.Stroke({
-                  'color': '#000000',
-                  'width': 0.5
-                }),
-                'fill': new ol.style.Fill({
-                  'color': 'rgba(102, 0, 204, 0.4)'
-                }),
-                'text': textStyle(polyText)
-              })
-            ];
-            styles.Polygon = polyStyle;
-            styles.MultiPolygon = polyStyle;
-            break;
-          case 'group':
-            var groupText = feature.get('group_name') ? feature.get('group_name') : feature.get('label');
-            var groupStyle = [
-              new ol.style.Style({
-                'stroke': new ol.style.Stroke({
-                  'color': '#000000',
-                  'width': 0.5
-                }),
-                'fill': new ol.style.Fill({
-                  'color': 'rgba(255, 128, 0, 0.4)'
-                }),
-                'text': textStyle(groupText)
-              })
-            ];
-            styles.Polygon = groupStyle;
-            styles.MultiPolygon = groupStyle;
-            break;
-        }
+        var pointText = angular.isDefined(feature.get('plunge')) ? feature.get('plunge').toString() : feature.get(
+          'name');
+        pointText = angular.isDefined(feature.get('dip')) ? feature.get('dip').toString() : pointText;
+        var pointStyle = [
+          new ol.style.Style({
+            'image': getIconForFeature(feature),
+            'text': textStylePoint(pointText, rotation)
+          })
+        ];
+        var lineStyle = [
+          new ol.style.Style({
+            'stroke': new ol.style.Stroke({
+              'color': 'rgba(204, 0, 0, 0.7)',
+              'width': 3
+            }),
+            'text': textStyle(feature.get('name'))
+          })
+        ];
+        var polyText = feature.get('name');
+        var polyStyle = [
+          new ol.style.Style({
+            'stroke': new ol.style.Stroke({
+              'color': '#000000',
+              'width': 0.5
+            }),
+            'fill': new ol.style.Fill({
+              'color': 'rgba(102, 0, 204, 0.4)'
+            }),
+            'text': textStyle(polyText)
+          })
+        ];
+        styles.Point = pointStyle;
+        styles.MultiPoint = pointStyle;
+        styles.LineString = lineStyle;
+        styles.MultiLineString = lineStyle;
+        styles.Polygon = polyStyle;
+        styles.MultiPolygon = polyStyle;
+
         return styles[feature.getGeometry().getType()];
       }
 
@@ -235,41 +189,15 @@
             'name') !== 'geolocationLayer';
       });
 
-      var spotTypes = [{
-        'label': 'Measurement or Observation',
-        'value': 'point'
-      }, {
-        'label': 'Contact or Trace',
-        'value': 'line'
-      }, {
-        'label': 'Rock Description',
-        'value': 'polygon'
-      }, {
-        'label': 'Station',
-        'value': 'group'
-      }];
-
       // we need to check that we're not clicking on the geolocation layer
       if (feature && layer.get('name') !== 'geolocationLayer') {
         // popup content
         var content = '';
         content += '<a href="#/spotTab/' + feature.get('id') + '/spot"><b>' + feature.get('name') + '</b></a>';
-        content += '<br>';
-        content += '<small>' + _.findWhere(spotTypes, {'value': feature.get('type')}).label + '</small>';
 
         if (feature.get('planar_feature_type')) {
           content += '<br>';
           content += '<small>' + feature.get('planar_feature_type') + '</small>';
-        }
-
-        if (feature.get('contact_type')) {
-          content += '<br>';
-          content += '<small>' + feature.get('contact_type') + '</small>';
-        }
-
-        if (feature.get('rock_type')) {
-          content += '<br>';
-          content += '<small>' + feature.get('rock_type') + '</small>';
         }
 
         if (feature.get('strike') && feature.get('dip')) {

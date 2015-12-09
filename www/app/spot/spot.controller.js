@@ -48,8 +48,10 @@
     vm.openModal = openModal;
     vm.openSpot = openSpot;
     vm.setSelMultClass = setSelMultClass;
+    vm.showCustomFields = false;
     vm.showDynamicFields = true;
     vm.showField = showField;
+    vm.showGroupMembers = true;
     vm.showTab = showTab;
     vm.spot = {};
     vm.submit = submit;
@@ -118,51 +120,24 @@
 
     // Load the form survey (and choices, if applicable)
     function loadForm(tab) {
-      if (tab === 'spotTab.sample' || tab === 'spotTab._3dstructures' || tab === 'spotTab.spot') {
-        switch (tab) {
-          case 'spotTab.sample':
-            vm.survey = vm.fields.sample_survey;
-            vm.choices = vm.fields.sample_choices;
-            break;
-          case 'spotTab._3dstructures':
-            vm.survey = vm.fields._3dstructures_survey;
-            vm.choices = vm.fields._3dstructures_choices;
-            break;
-          case 'spotTab.spot':
-            vm.survey = vm.fields.traces_survey;
-            vm.choices = vm.fields.traces_choices;
-            break;
-        }
-      }
-      else {
-        switch (vm.spot.properties.type) {
-          case 'point':
-            vm.showDynamicFields = true;
-            vm.survey = ContentModelSurveyFactory.measurements_and_observations_survey;
-            vm.choices = ContentModelSurveyFactory.measurements_and_observations_choices;
-            vm.showGroupMembers = false;
-            break;
-          case 'line':
-            vm.showDynamicFields = true;
-            vm.survey = ContentModelSurveyFactory.contacts_and_traces_survey;
-            vm.choices = ContentModelSurveyFactory.contacts_and_traces_choices;
-            vm.showGroupMembers = false;
-            break;
-          case 'polygon':
-            vm.showDynamicFields = false;
-            vm.survey = undefined;
-            vm.choices = undefined;
-            vm.showGroupMembers = false;
-            break;
-          case 'group':
-            vm.showDynamicFields = true;
-            vm.survey = ContentModelSurveyFactory.spot_grouping_survey;
-            vm.choices = ContentModelSurveyFactory.spot_grouping_choices;
-            vm.showGroupMembers = true;
-            break;
-          default:
-            vm.showCustomFields = true;
-        }
+      switch (tab) {
+        case 'spotTab.sample':
+          vm.survey = vm.fields.sample_survey;
+          vm.choices = vm.fields.sample_choices;
+          break;
+        case 'spotTab._3dstructures':
+          vm.survey = vm.fields._3dstructures_survey;
+          vm.choices = vm.fields._3dstructures_choices;
+          break;
+        case 'spotTab.orientation':
+          vm.showDynamicFields = true;
+          vm.survey = ContentModelSurveyFactory.measurements_and_observations_survey;
+          vm.choices = ContentModelSurveyFactory.measurements_and_observations_choices;
+          break;
+        case 'spotTab.spot':
+          vm.survey = vm.fields.traces_survey;
+          vm.choices = vm.fields.traces_choices;
+          break;
       }
     }
 
@@ -245,10 +220,6 @@
         });
       }
 
-      if (!vm.spot.properties.type) {
-        vm.spot.properties.type = 'Custom';
-      }
-
       vm.spotTitle = vm.spot.properties.name;
 
       // Set default values for the spot
@@ -295,16 +266,12 @@
           if (vm.spot.properties.id !== obj.properties.id) {
             vm.other_spots.push({
               'name': obj.properties.name,
-              'id': obj.properties.id,
-              'type': obj.properties.type
+              'id': obj.properties.id
             });
-            if (obj.properties.type === 'group') {
-              vm.groups.push({
-                'name': obj.properties.name,
-                'id': obj.properties.id,
-                'type': obj.properties.type
-              });
-            }
+            vm.groups.push({
+              'name': obj.properties.name,
+              'id': obj.properties.id
+            });
           }
           // Check for image basemaps
           _.forEach(obj.images, function (image) {
@@ -535,7 +502,6 @@
         linked_spot.properties.links.push({
           'name': vm.spot.properties.name,
           'id': vm.spot.properties.id,
-          'type': vm.spot.properties.type,
           'relationship': link_relationship_inverse
         });
 
@@ -567,8 +533,7 @@
         // Add the new/updated spot reference to the group references for this group
         group.properties.group_members.push({
           'name': vm.spot.properties.name,
-          'id': vm.spot.properties.id,
-          'type': vm.spot.properties.type
+          'id': vm.spot.properties.id
         });
 
         // Save the group
@@ -599,8 +564,7 @@
         // Add the new/updated spot reference to the group references for this group
         group.properties.groups.push({
           'name': vm.spot.properties.name,
-          'id': vm.spot.properties.id,
-          'type': vm.spot.properties.type
+          'id': vm.spot.properties.id
         });
 
         // Save the group

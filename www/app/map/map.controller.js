@@ -6,11 +6,14 @@
     .controller('MapController', MapController);
 
   MapController.$inject = ['$ionicActionSheet', '$ionicPopup', '$ionicSideMenuDelegate', '$location', '$log', '$scope',
-    'DrawFactory', 'MapFeaturesFactory', 'MapLayerFactory', 'MapSetupFactory', 'MapViewFactory', 'OfflineTilesFactory'];
+    'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory', 'MapSetupFactory', 'MapViewFactory',
+    'OfflineTilesFactory'];
 
-  function MapController($ionicActionSheet, $ionicPopup, $ionicSideMenuDelegate, $location, $log, $scope, DrawFactory,
-                         MapFeaturesFactory, MapLayerFactory, MapSetupFactory, MapViewFactory, OfflineTilesFactory) {
+  function MapController($ionicActionSheet, $ionicPopup, $ionicSideMenuDelegate, $location, $log, $scope,
+                         MapDrawFactory, MapFeaturesFactory, MapLayerFactory, MapSetupFactory, MapViewFactory,
+                         OfflineTilesFactory) {
     var vm = this;
+
     vm.cacheOfflineTiles = cacheOfflineTiles;
     vm.isOnline = isOnline;
     vm.showActionsheet = showActionsheet;
@@ -52,7 +55,7 @@
         $log.log('map clicked');
 
         // Are we in draw mode?  If so we don't want to display any popovers during draw mode
-        if (!DrawFactory.isDrawMode()) {
+        if (!MapDrawFactory.isDrawMode()) {
           MapFeaturesFactory.showPopup(map, evt);
         }
       });
@@ -119,7 +122,7 @@
         }, {
           'text': '<i class="icon ion-archive"></i>Save Map for Offline Use'
         }, {
-          'text': '<i class="icon ion-grid"></i> Add Features to a New Station'
+          'text': '<i class="icon ion-grid"></i> Add Features to a New Spot'
         }],
         'cancelText': 'Cancel',
         'cancel': function () {
@@ -135,7 +138,7 @@
               vm.cacheOfflineTiles();
               break;
             case 2:
-              DrawFactory.groupSpots();
+              MapDrawFactory.groupSpots();
               break;
           }
           return true;
