@@ -14,8 +14,11 @@
       .state('login', {
         'cache': false,
         'url': '/login',
-        'templateUrl': 'app/remote-connection/login.html',
-        'controller': 'LoginController as vm'
+        'templateUrl': 'app/user/login.html',
+        'controller': 'LoginController as vm',
+        'resolve': {
+          'prepUserFactory': prepUserFactory
+        }
       })
       .state('app', {
         'url': '/app',
@@ -327,6 +330,6 @@
   }
 
   function prepUserFactory(UserFactory) {
-    return UserFactory.loadUsers();
+    return UserFactory.loadUser();
   }
 }());

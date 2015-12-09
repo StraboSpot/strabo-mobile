@@ -8,18 +8,14 @@
   UserFactory.$inject = ['$ionicPopup', '$log', '$q', 'LocalStorageFactory', 'RemoteServerFactory'];
 
   function UserFactory($ionicPopup, $log, $q, LocalStorageFactory, RemoteServerFactory) {
-    var currentUser = null;
-    var currentUserData = null;
-    var users = {};
+    var user = null;
 
     return {
-      'clearCurrentUser': clearCurrentUser,
+      'clearUser': clearUser,
       'doLogin': doLogin,
-      'getCurrentUser': getCurrentUser,
-      'getCurrentUserData': getCurrentUserData,
+      'getUser': getUser,
       'getUserName': getUserName,
-      'loadUsers': loadUsers,             // Run from app config
-      'saveCurrentUser': saveCurrentUser,
+      'loadUser': loadUser,             // Run from app config
       'saveUser': saveUser
 
     };
@@ -28,40 +24,29 @@
      * Private Functions
      */
 
-    // Load all user data from local storage
-    function allUsers() {
-      var deferred = $q.defer(); // init promise
-      var config = {};
-
-      LocalStorageFactory.usersDb.iterate(function (value, key) {
-        config[key] = value;
-      }, function () {
-        deferred.resolve(config);
-      });
-      return deferred.promise;
-    }
-
     /**
      * Public Functions
      */
 
-    function clearCurrentUser() {
-      currentUser = null;
-      currentUserData = null;
-      LocalStorageFactory.usersDb.removeItem('currentUser').then(function () {
-        $log.log('Cleared current user data from local storage');
+    function clearUser() {
+      user = null;
+      LocalStorageFactory.config2Db.removeItem('user').then(function () {
+        $log.log('Cleared user data from local storage');
       });
     }
 
     // Authenticate user login
     function doLogin(login) {
       var deferred = $q.defer(); // init promise
+      login.email = login.email.toLowerCase();
       RemoteServerFactory.authenticateUser(login).then(function (response) {
         if (response.status === 200 && response.data.valid === 'true') {
-          $log.log('Logged in successfully.');
-          saveCurrentUser(login.email);
-          currentUser = login.email;
-          currentUserData = users[currentUser];
+          $log.log('Logged in successfully as ' + login.email);
+          user = {
+            'email': login.email,
+            'encoded_login': Base64.encode(login.email + ':' + login.password)
+          };
+          saveUser(user);
         }
         else {
           $ionicPopup.alert({
@@ -74,48 +59,40 @@
       return deferred.promise;
     }
 
-    function getCurrentUser() {
-      return currentUser;
-    }
-
-    function getCurrentUserData() {
-      return users[currentUser] || null;
-    }
-
     function getUserName() {
-      if (currentUserData) return currentUserData.user_name || currentUserData.email;
+      if (user) return user.name || user.email;
       return null;
     }
 
-    function loadUsers() {
-      if (_.isEmpty(users)) {
-        $log.log('Loading users ....');
-        return allUsers().then(function (savedData) {
-          users = savedData;
-          $log.log('Finished loading users: ', users);
-          if (users.currentUser) {
-            currentUser = users.currentUser;
-            currentUserData = users[currentUser];
-            if (currentUserData) {
-              $log.log('Loaded current user data: ', currentUserData);
-            }
-            else {
-              $log.log('No current user data.');
-            }
-          }
-        });
-      }
+    function getUser() {
+      return user;
     }
 
-    function saveCurrentUser(userEmail) {
-      LocalStorageFactory.usersDb.setItem('currentUser', userEmail);
+    function loadUser() {
+      var deferred = $q.defer(); // init promise
+      if (!user) {
+        $log.log('Loading user ....');
+        LocalStorageFactory.config2Db.getItem('user').then(function (savedUser) {
+          if (savedUser) {
+            user = savedUser;
+            $log.log('Loaded saved user: ', savedUser);
+          }
+          else {
+            $log.log('No saved user.');
+          }
+          deferred.resolve();
+        });
+      }
+      else {
+        deferred.resolve();
+      }
+      return deferred.promise;
     }
 
     // Save all user data in local storage
     function saveUser(userData) {
-      currentUserData = userData;
-      users[userData.email] = userData;
-      LocalStorageFactory.usersDb.setItem(userData.email, userData).then(function (savedData) {
+      user = userData;
+      LocalStorageFactory.config2Db.setItem('user', userData).then(function (savedData) {
         $log.log('Saved user: ', savedData);
       });
     }

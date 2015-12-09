@@ -253,7 +253,7 @@
 
     // Is the user online and logged in
     function isOnlineLoggedIn() {
-      return navigator.onLine && UserFactory.getCurrentUser();
+      return navigator.onLine && UserFactory.getUser();
     }
 
     // Create a new Spot
@@ -302,25 +302,23 @@
       if (isOnlineLoggedIn()) {
         vm.openModal('syncModal');
       }
+      else if (!navigator.onLine && !UserFactory.getUser()) {
+        $ionicPopup.alert({
+          'title': 'Get Online and Log In!',
+          'template': 'You must be online and logged in to sync with the Strabo database.'
+        });
+      }
+      else if (!navigator.onLine) {
+        $ionicPopup.alert({
+          'title': 'Not Online!',
+          'template': 'You must be online to sync with the Strabo database.'
+        });
+      }
       else {
-        if (!navigator.onLine && !UserFactory.getLogin()) {
-          $ionicPopup.alert({
-            'title': 'Get Online and Log In!',
-            'template': 'You must be online and logged in to sync with the Strabo database.'
-          });
-        }
-        else if (!navigator.onLine) {
-          $ionicPopup.alert({
-            'title': 'Not Online!',
-            'template': 'You must be online to sync with the Strabo database.'
-          });
-        }
-        else {
-          $ionicPopup.alert({
-            'title': 'Not Logged In!',
-            'template': 'You must be logged in to sync with the Strabo database.'
-          });
-        }
+        $ionicPopup.alert({
+          'title': 'Not Logged In!',
+          'template': 'You must be logged in to sync with the Strabo database.'
+        });
       }
     }
   }

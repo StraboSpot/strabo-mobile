@@ -10,12 +10,13 @@
   function UserController($ionicPopup, $log, $scope, UserFactory) {
     var vm = this;
 
-    vm.currentUser = null;
-    vm.data = {};
-    vm.dataOriginal = {};
+    vm.data = null;
+    vm.dataOriginal = null;
     vm.isPristine = isPristine;
+    vm.login = null;
     vm.doLogin = doLogin;
     vm.doLogout = doLogout;
+    vm.pristine = true;
     vm.submit = submit;
 
     activate();
@@ -25,11 +26,8 @@
      */
 
     function activate() {
-      vm.currentUser = UserFactory.getCurrentUser();
-      if (vm.currentUser) {
-        vm.data = UserFactory.getCurrentUserData();
-        vm.dataOriginal = vm.data;
-      }
+      vm.data = UserFactory.getUser();
+      vm.dataOriginal = vm.data;
 
       // Watch whether form has been modified or not
       $scope.$watch('vm.isPristine()', function (pristine) {
@@ -39,6 +37,7 @@
 
     function isPristine() {
       vm.data = _.pick(vm.data, _.identity);
+      if (_.isEmpty(vm.data)) vm.data = null;
       return _.isEqual(vm.dataOriginal, vm.data);
     }
 
@@ -49,21 +48,9 @@
     // Perform the login action when the user presses the login icon
     function doLogin() {
       if (navigator.onLine) {
-        vm.data.login.email = vm.data.login.email.toLowerCase();
-        UserFactory.doLogin(vm.data.login).then(function () {
-          vm.currentUser = UserFactory.getCurrentUser();
-          // As long as a current user has been set login was successful
-          if (vm.currentUser) {
-            var encodedLogin = Base64.encode(vm.data.login.email + ':' + vm.data.login.password);
-            vm.data = UserFactory.getCurrentUserData();
-            if (!vm.data) {
-              vm.data = {'email': vm.currentUser, 'encodedLogin': encodedLogin};
-            }
-            else {
-              vm.data.encodedLogin = encodedLogin;
-            }
-            UserFactory.saveUser(vm.data);
-          }
+        UserFactory.doLogin(vm.login).then(function () {
+          vm.data = UserFactory.getUser();
+          vm.dataOriginal = vm.data;
         });
       }
       else {
@@ -76,9 +63,10 @@
 
     // Destory the user data on when the logout button pressed
     function doLogout() {
-      vm.currentUser = null;
-      vm.data = {};
-      UserFactory.clearCurrentUser();
+      vm.login = null;
+      vm.data = null;
+      vm.dataOriginal = null;
+      UserFactory.clearUser();
       $log.log('Logged out');
     }
 

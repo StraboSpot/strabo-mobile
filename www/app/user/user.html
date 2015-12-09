@@ -3,33 +3,35 @@
     <button menu-toggle='left' class='button button-icon icon ion-navicon'></button>
   </ion-nav-buttons>
   <ion-nav-buttons side='right'>
-    <div ng-if='vm.currentUser && !vm.pristine'>
+    <div ng-if='vm.data && !vm.pristine'>
       <button ng-click='vm.submit();' class='button button-icon icon ion-checkmark-circled'></button>
     </div>
-    <div ng-if='vm.currentUser && vm.pristine'>
+    <div ng-if='vm.data && vm.pristine'>
       <button class='button disabled button-icon icon ion-checkmark-circled'></button>
     </div>
   </ion-nav-buttons>
   <ion-content class='has-header'>
-    <h6 ng-show='vm.currentUser'>You are currently logged in as: {{ vm.currentUser }}</h6>
-    <label class='item item-input' ng-hide='vm.currentUser'>
-      <input type='text' placeholder='Email' ng-model='vm.data.login.email'>
+    <h6 ng-show='vm.data.email'>You are currently logged in as: {{ vm.data.email }}</h6>
+    <label class='item item-input' ng-hide='vm.data.email'>
+      <input type='text' placeholder='Email' ng-model='vm.login.email'>
     </label>
-    <label class='item item-input' ng-hide='vm.currentUser'>
-      <input type='text' placeholder='Password' ng-model='vm.data.login.password'>
+    <label class='item item-input' ng-hide='vm.data.email'>
+      <input type='password' placeholder='Password' ng-model='vm.login.password'>
     </label>
-    <button ng-click='vm.doLogin();' ng-hide='vm.currentUser'
-            ng-disabled='!(vm.data.login.email && vm.data.login.password)'
-            class='button icon-left icon ion-log-in button-balanced'>Login
+    <button ng-click='vm.doLogin();' ng-hide='vm.data.email'
+            ng-disabled='!(vm.login.email && vm.login.password)'
+            class='button icon-left icon ion-log-in button-balanced'>
+      Login
     </button>
-    <button ng-click='vm.doLogout();' ng-show='vm.currentUser'
-            class='button icon-left icon ion-log-out button-assertive'>Logout
+    <button ng-click='vm.doLogout();' ng-show='vm.data.email'
+            class='button icon-left icon ion-log-out button-assertive'>
+      Logout
     </button>
-    <div ng-show='vm.currentUser'>
+    <div ng-show='vm.data.email'>
       <br>
       <label class='item item-input item-stacked-label'>
         <span class='input-label'>Name</span>
-        <input type='text' placeholder='John Doe' ng-model='vm.data.user_name'>
+        <input type='text' placeholder='John Doe' ng-model='vm.data.name'>
       </label>
     </div>
   </ion-content>

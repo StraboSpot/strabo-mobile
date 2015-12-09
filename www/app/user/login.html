@@ -6,14 +6,16 @@
 
         <div class='list list-inset'>
           <label class='item item-input logininput'>
-            <input type='text' placeholder='Username' ng-model='vm.data.login.email'>
+            <input type='text' placeholder='Username' ng-model='vm.login.email'>
           </label>
           <label class='item item-input'>
-            <input type='password' placeholder='Password' ng-model='vm.data.login.password'>
+            <input type='password' placeholder='Password' ng-model='vm.login.password'>
           </label>
         </div>
         <div class='padding'>
-          <button class='button button-block button-positive' ng-click='vm.doLogin()'>Login</button>
+          <button class='button button-block button-positive' ng-click='vm.doLogin()'
+                  ng-disabled='!(vm.login.email && vm.login.password)'>Login
+          </button>
         </div>
         <div align='center'>
           <a href='#' onclick='window.open("http://strabospot.org/register", "_system", "location=yes"); return false;'>

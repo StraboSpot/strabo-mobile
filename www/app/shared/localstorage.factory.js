@@ -7,36 +7,43 @@
 
   function LocalStorageFactory() {
     var configDb = {};        // global LocalForage for configuration data
+    var config2Db = {};       // global LocalForage for user and project data
     var mapNamesDb = {};      // global LocalForage for map names
     var mapTilesDb = {};      // global LocalForage for offline map tiles
     var projectDb = {};       // global LocalForage for configuration data
     var spotsDb = {};         // global LocalForage for spot data
-    var usersDb = {};         // global LocalForage for users data
 
     activate();
 
     return {
       'configDb': configDb,
+      'config2Db': config2Db,
       'mapNamesDb': mapNamesDb,
       'mapTilesDb': mapTilesDb,
       'projectDb': projectDb,
-      'spotsDb': spotsDb,
-      'usersDb': usersDb
+      'spotsDb': spotsDb
     };
 
     function activate() {
       setConfigDb();
+      setConfig2Db();
       setMapNamesDb();
       setMapTilesDb();
       setProjectDb();
       setSpotsDb();
-      setUsersDb();
     }
 
     function setConfigDb() {
       configDb = localforage.createInstance({
         // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
         'name': 'Config'
+      });
+    }
+
+    function setConfig2Db() {
+      config2Db = localforage.createInstance({
+        // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
+        'name': 'Config2'
       });
     }
 
@@ -65,13 +72,6 @@
       spotsDb = localforage.createInstance({
         // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
         'name': 'Spots'
-      });
-    }
-
-    function setUsersDb() {
-      usersDb = localforage.createInstance({
-        // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
-        'name': 'Users'
       });
     }
   }

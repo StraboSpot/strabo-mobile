@@ -19,6 +19,7 @@
     vm.encodedLogin = null;           // base64 encoded login
     vm.getDatasets = getDatasets;
     vm.getDatasetSpots = getDatasetSpots;
+    vm.loginEmail = null;
     vm.progress = {                   // upload progress
       'showProgress': false,
       'showUploadDone': false,
@@ -204,12 +205,12 @@
 
     function checkForLogin() {
       // is the user logged in from before?
-      var currentUserData = UserFactory.getCurrentUserData();
-      if (currentUserData) {
-        $log.log('Logged in as: ', currentUserData.email);
+      var user = UserFactory.getUser();
+      if (user) {
+        $log.log('Logged in as: ', user.email);
         vm.loggedIn = true;
-        vm.encodedLogin = currentUserData.encodedLogin;
-        vm.loginEmail = currentUserData.email; // set the email to the login email
+        vm.encodedLogin = user.encoded_login;
+        vm.loginEmail = user.email; // set the email to the login email
         if (navigator.onLine) vm.getDatasets();
       }
       else {
