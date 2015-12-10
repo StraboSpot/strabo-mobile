@@ -5,9 +5,9 @@
     .module('app')
     .controller('PreferencesController', PreferencesController);
 
-  PreferencesController.$inject = ['$scope', 'FormFactory', 'PreferencesFactory'];
+  PreferencesController.$inject = ['$ionicSideMenuDelegate', '$scope', 'FormFactory', 'PreferencesFactory'];
 
-  function PreferencesController($scope, FormFactory, PreferencesFactory) {
+  function PreferencesController($ionicSideMenuDelegate, $scope, FormFactory, PreferencesFactory) {
     var vm = this;
 
     vm.data = {};
@@ -68,6 +68,7 @@
       if (valid) {
         PreferencesFactory.save(vm.data);
         vm.dataOriginal = vm.data;
+        $ionicSideMenuDelegate.toggleLeft();
       }
     }
 

@@ -5,9 +5,9 @@
     .module('app')
     .controller('ProjectController', ProjectController);
 
-  ProjectController.$inject = ['$scope', '$state', 'FormFactory', 'ProjectFactory'];
+  ProjectController.$inject = ['$ionicSideMenuDelegate', '$scope', '$state', 'FormFactory', 'ProjectFactory'];
 
-  function ProjectController($scope, $state, FormFactory, ProjectFactory) {
+  function ProjectController($ionicSideMenuDelegate, $scope, $state, FormFactory, ProjectFactory) {
     var vm = this;
 
     vm.data = {};
@@ -92,6 +92,7 @@
         else {
           ProjectFactory.save(vm.data);
           vm.dataOriginal = vm.data;
+          $ionicSideMenuDelegate.toggleLeft();
         }
       }
     }
