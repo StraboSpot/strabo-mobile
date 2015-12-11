@@ -1,0 +1,18 @@
+name,type,label,hint,required,constraint,constraint_message,relevant,appearance
+line_trend,integer,Trend,Azimuth in degrees,false,. >= 0 and . <= 360,Values must be between 0-360.,,
+line_plunge,integer,Plunge,,false,. >= 0 and . <= 90,Plunge must be between 0-90.,,
+line_rake,integer,Rake,angle from strike on plane (0-180)?,false,,,,
+line_rake_calc,select_one hq7tk98,Rake Calculated?,,false,,,${line_rake} != '',
+line_meas_qual,select_one ex15z66,Linear Measurement Quality,,false,,,,likert
+line_feat,select_one wa7uq58,Linear Feature Type,,false,,,,horizontal
+line_vort,select_one ip7ah36,Vorticity Type,,true,,,${line_feat} = 'vorticity_axis',
+line_other_lin_feat,text,Other Linear Feature,,true,,,${line_feat} = 'other',
+line_lin_def_by,text,Lineation Defined by,,false,,,,
+line_min_age,decimal,Minimum Age of Structure (Ma),,false,,,,
+line_min_age_just,text,Justification of Minimum Age,,false,,,${line_min_age} != '',
+line_max_age,decimal,Maximum Age of Structure (Ma),,false,,,,
+line_max_age_just,text,Justification of Maximum Age,,false,,,${line_max_age} != '',
+line_geo_age,text,Geologic Age of Structure,,false,,,,
+line_notes,note,Line Notes,,false,,,,
+start,start,,,,,,,
+end,end,,,,,,,

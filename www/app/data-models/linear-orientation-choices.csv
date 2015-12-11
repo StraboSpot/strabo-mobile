@@ -1,0 +1,31 @@
+label,name,list name,order
+yes,yes,hq7tk98,
+no,no,hq7tk98,
+5 - best - accurate,5,ex15z66,0
+4,4,ex15z66,1
+3 - approximate,3,ex15z66,2
+2,2,ex15z66,3
+1 - poor - irregular - uncertain,1,ex15z66,4
+groove marks,groove_marks,wa7uq58,0
+parting lineations,parting_lineat,wa7uq58,1
+magmatic mineral alignment,magmatic_miner_1,wa7uq58,2
+xenolith/enclave alignment,xenolith_encla,wa7uq58,3
+intersection,intersection,wa7uq58,4
+pencil cleavage,pencil_cleav,wa7uq58,5
+mineral alignment,mineral_align,wa7uq58,6
+deformed marker,deformed_marke,wa7uq58,7
+rodding,rodding,wa7uq58,8
+boudin,boudin,wa7uq58,9
+mullions,mullions,wa7uq58,10
+fold hinge,fold_hinge,wa7uq58,11
+striations,striations,wa7uq58,12
+slickenlines,slickenlines,wa7uq58,13
+slickenfibers,slickenfibers,wa7uq58,14
+mineral streaks,mineral_streak,wa7uq58,15
+vorticity axis,vorticity_axis,wa7uq58,16
+flow/transport direction,flow_transport,wa7uq58,17
+vergence,vergence,wa7uq58,18
+vector,vector,wa7uq58,19
+other,other,wa7uq58,20
+clockwise,clockwise,ip7ah36,
+counterclockwise,counterclockwi,ip7ah36,

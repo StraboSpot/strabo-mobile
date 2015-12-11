@@ -212,6 +212,16 @@
           }
         }
       })
+      .state('spotTab.orientation2', {
+        'cache': false,
+        'url': '/:spotId/orientation2',
+        'views': {
+          'spottab-childview': {
+            'templateUrl': 'app/spot/orientation2-tab.html',
+            'controller': 'Orientation2TabController as vmChild'
+          }
+        }
+      })
       .state('spotTab.groupmembers', {
         'cache': false,
         'url': '/:spotId/groupmembers',
@@ -279,6 +289,66 @@
           'spottab-childview': {
             'templateUrl': 'app/spot/3dstructures-tab.html',
             'controller': '_3DStructuresTabController as vmChild'
+          }
+        }
+      })
+      .state('app.linear-orientation', {
+        'cache': false,
+        'url': '/linear-orientation',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/spot/orientation-form.html',
+            'controller': 'OrientationFormController as vm'
+          }
+        }
+      })
+      .state('app.new-linear-orientation', {
+        'cache': false,
+        'url': '/new-linear-orientation',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/spot/orientation-form.html',
+            'controller': 'OrientationFormController as vm'
+          }
+        }
+      })
+      .state('app.planar-orientation', {
+        'cache': false,
+        'url': '/planar-orientation',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/spot/orientation-form.html',
+            'controller': 'OrientationFormController as vm'
+          }
+        }
+      })
+      .state('app.new-planar-orientation', {
+        'cache': false,
+        'url': '/new-planar-orientation',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/spot/orientation-form.html',
+            'controller': 'OrientationFormController as vm'
+          }
+        }
+      })
+      .state('app.tabular-zone-orientation', {
+        'cache': false,
+        'url': '/tabular-zone-orientation',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/spot/orientation-form.html',
+            'controller': 'OrientationFormController as vm'
+          }
+        }
+      })
+      .state('app.new-tabular-zone-orientation', {
+        'cache': false,
+        'url': '/new-tabular-zone-orientation',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/spot/orientation-form.html',
+            'controller': 'OrientationFormController as vm'
           }
         }
       })

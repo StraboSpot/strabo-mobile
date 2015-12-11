@@ -32,6 +32,13 @@ navigation history that also transitions its views in and out.
         Orientation
       </a>
     </span>
+        <span ng-show='vm.showTab("orientation")'>
+      <a class='button button-clear spot-tab-inactive'
+         ng-class='{ "spot-tab-active": $state.current.name == "spotTab.orientation2"}'
+         ng-click='vm.switchTabs("orientation2")'>
+        Orientation2
+      </a>
+    </span>
     <span ng-show='vm.showTab("_3dstructures")'>
       <a class='button button-clear spot-tab-inactive'
          ng-class='{ "spot-tab-active": $state.current.name == "spotTab._3dstructures"}'

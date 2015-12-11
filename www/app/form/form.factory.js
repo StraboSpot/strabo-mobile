@@ -5,18 +5,66 @@
     .module('app')
     .factory('FormFactory', FormFactory);
 
-  FormFactory.$inject = ['$document', '$ionicPopup', '$log'];
+  FormFactory.$inject = ['$document', '$ionicPopup', '$log', 'DataModelsFactory'];
 
-  function FormFactory($document, $ionicPopup, $log) {
+  function FormFactory($document, $ionicPopup, $log, DataModelsFactory) {
+    var forms = {
+      'linear_orientation_survey': {},
+      'linear_orientation_choices': {},
+      'planar_orientation_survey': {},
+      'planar_orientation_choices': {},
+      'tabular_orientation_survey': {},
+      'tabular_orientation_choices': {}
+    };
+
+    activate();
+
     return {
+      'getLinearOrientationForm': getLinearOrientationForm,
+      'getPlanarOrientationForm': getPlanarOrientationForm,
+      'getTabularOrientationForm': getTabularOrientationForm,
       'isRelevant': isRelevant,
       'toggleAcknowledgeChecked': toggleAcknowledgeChecked,
       'validate': validate
     };
 
+    function activate() {
+      _.each(forms, loadForm);
+    }
+
+    function loadForm(value, key) {
+      $log.log('Loading ' + key + ' ....');
+      var csvFile = DataModelsFactory.dataModels[key];
+      DataModelsFactory.readCSV(csvFile, function (fields) {
+        $log.log('Finished loading ' + key + ' : ', fields);
+        forms[key] = fields;
+      });
+    }
+
     /**
      * Public Functions
      */
+
+    function getLinearOrientationForm() {
+      return {
+        'survey': forms.linear_orientation_survey,
+        'choices': forms.linear_orientation_choices
+      };
+    }
+
+    function getPlanarOrientationForm() {
+      return {
+        'survey': forms.planar_orientation_survey,
+        'choices': forms.planar_orientation_choices
+      };
+    }
+
+    function getTabularOrientationForm() {
+      return {
+        'survey': forms.tabular_orientation_survey,
+        'choices': forms.tabular_orientation_choices
+      };
+    }
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair
     // The 2nd param, properties, is used in the eval method

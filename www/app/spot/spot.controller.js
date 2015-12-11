@@ -121,10 +121,6 @@
     // Load the form survey (and choices, if applicable)
     function loadForm(tab) {
       switch (tab) {
-        case 'spotTab.sample':
-          vm.survey = vm.fields.sample_survey;
-          vm.choices = vm.fields.sample_choices;
-          break;
         case 'spotTab._3dstructures':
           vm.survey = vm.fields._3dstructures_survey;
           vm.choices = vm.fields._3dstructures_choices;
@@ -133,6 +129,10 @@
           vm.showDynamicFields = true;
           vm.survey = ContentModelSurveyFactory.measurements_and_observations_survey;
           vm.choices = ContentModelSurveyFactory.measurements_and_observations_choices;
+          break;
+        case 'spotTab.sample':
+          vm.survey = vm.fields.sample_survey;
+          vm.choices = vm.fields.sample_choices;
           break;
         case 'spotTab.spot':
           vm.survey = vm.fields.traces_survey;
@@ -143,10 +143,10 @@
 
     function loadForms() {
       // Start loading fields for all forms except traces form in first tab
-      vm.fields.sample_survey = {};
-      vm.fields.sample_choices = {};
       vm.fields._3dstructures_survey = {};
       vm.fields._3dstructures_choices = {};
+      vm.fields.sample_survey = {};
+      vm.fields.sample_choices = {};
       _.forEach(vm.fields, getFields);
 
       // Loaded traces form in factory before controller since traces are on the first tab

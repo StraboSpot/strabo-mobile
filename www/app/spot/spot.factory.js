@@ -21,6 +21,7 @@
       'getCurrentSpot': getCurrentSpot,
       'getFirstSpot': getFirstSpot,
       'getNewSpot': getNewSpot,
+      'getOrientations': getOrientations,
       'getSpotCount': getSpotCount,
       'getSpots': getSpots,
       'isRockUnitUsed': isRockUnitUsed,
@@ -125,6 +126,10 @@
 
     function getNewSpot() {
       return newSpot;
+    }
+
+    function getOrientations() {
+      return currentSpot.properties.orientation || [];
     }
 
     // gets the number of spots

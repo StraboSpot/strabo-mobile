@@ -1,0 +1,132 @@
+label,name,order,list name
+upright,upright,0,to1en66
+overturned,overturned,1,to1en66
+vertical,vertical,2,to1en66
+uncertain,uncertain,3,to1en66
+not applicable,not_applicable,4,to1en66
+stratigraphy,stratigraphy,,bl4bp16
+facing indicator,facing_indicat,,bl4bp16
+assumed,assumed,,bl4bp16
+other,other,,bl4bp16
+5 - best - accurate,5,0,xn9nf56
+4,4,1,xn9nf56
+3 - approximate,3,2,xn9nf56
+2,2,3,xn9nf56
+1 - poor - irregular - uncertain,1,4,xn9nf56
+stratigraphic,stratigraphic,,pr4xf92
+intrusive body,intrusive,,pr4xf92
+injection structure,injection,,pr4xf92
+vein,vein,,pr4xf92
+vein array,vein_array,,pr4xf92
+zone of fracturing,zone_fracturin,,pr4xf92
+zone of faulting,zone_faulting,,pr4xf92
+shear zone,shear_zone,,pr4xf92
+damage zone,damage_zone,,pr4xf92
+alteration zone,alteration_zone,,pr4xf92
+enveloping surface,enveloping_surface,,pr4xf92
+other,other,,pr4xf92
+bedded rock,bedded_rock,,kk7zi98
+volcanic flows or deposits,volcanic_flows,,kk7zi98
+dike,dike,,ts5su86
+sill,sill,,ts5su86
+tabular migmatite,migmatite,,ts5su86
+injectite,injectite,,ts5su86
+schlieren,schlieren,,ts5su86
+other,other,,ts5su86
+clastic dike,clastic_dike,,vc5ce46
+injectite,injectite,,vc5ce46
+pseudotachylite,pseudotachylit,,vc5ce46
+normal opening,normal_opening,,py8ss97
+oblique opening,oblique_openin,,py8ss97
+antitaxial,antitaxial,,py8ss97
+syntaxial,syntaxial,,py8ss97
+unknown,unknown,,py8ss97
+quartz,quartz,,pa42s24
+calcite,calcite,,pa42s24
+other,other,,pa42s24
+en echelon,en_echelon,,kl8yo32
+general,general,,kl8yo32
+other,other,,kl8yo32
+joints,joints,,hy9rz06
+opening mode fractures,opening_mode,,hy9rz06
+shear fractures,shear_fracture,,hy9rz06
+filled fractures,filled_fractur,,hy9rz06
+other,other,,hy9rz06
+dextral strike-slip,dextral,1,kk9ik41
+sinistral strike-slip,sinistral,2,kk9ik41
+normal,oblique,3,kk9ik41
+reverse,reverse,4,kk9ik41
+thrust,thrust,5,kk9ik41
+low-angle normal,low_angle_normal,6,kk9ik41
+dextral reverse,dextral_reverse,7,kk9ik41
+dextral normal,dextral_normal,8,kk9ik41
+sinistral reverse,sinistral_reverse,9,kk9ik41
+sinistral normal,sinistral_normal,10,kk9ik41
+high-angle,high_angle,,kk9ik41
+low-angle,low_angle,,kk9ik41
+scissor,scissor,,kk9ik41
+other,other,,kk9ik41
+N side up,n_side_up,,ia36i83
+NE side up,ne_side_up,,ia36i83
+E side up,e_side_up,,ia36i83
+SE side up,se_side_up,,ia36i83
+S side up,s_side_up,,ia36i83
+SW side up,sw_side_up,,ia36i83
+W side up,w_side_up,,ia36i83
+NW side up,nw_side_up,,ia36i83
+top to N,top_to_n,,ia36i83
+top to NE,top_to_ne,,ia36i83
+top to E,top_to_e,,ia36i83
+top to SE,top_to_se,,ia36i83
+top to S,top_to_s,,ia36i83
+top to SW,top_to_sw,,ia36i83
+top to W,top_to_w,,ia36i83
+top to NW,top_to_nw,,ia36i83
+other,other,,ia36i83
+not specified,not_specified,0,gq4wq38
+offset bedding,offset_bedding,1,gq4wq38
+offset intrusion,offset_intrusion,2,gq4wq38
+offset foliation,offset_foliation,3,gq4wq38
+offset compostional banding,offset_compostional_banding,4,gq4wq38
+igneous feature,igneous_feature,5,gq4wq38
+sedimentary feature,sedimentary_fe,6,gq4wq38
+fossil,fossil,7,gq4wq38
+geomorphic feature,geomorphic_fea,8,gq4wq38
+other,other,9,gq4wq38
+riedel shear,riedel_shear,,tj67x48
+gouge fill,gouge_fill,,tj67x48
+crescentic fractures,crescentic_fra,,tj67x48
+slickenfibers,slickenfibers,,tj67x48
+oblique gouge foliation,oblique_gouge,,tj67x48
+drag folds,drag_folds,,tj67x48
+rotated clasts,rotated_clasts,,tj67x48
+domino texture,domino_texture,,tj67x48
+vein arrays,vein_arrays,,tj67x48
+P shear array,p_shear_array,,tj67x48
+asymmetric folds,asymm_folds,,tj67x48
+microstructures,microstructure,,tj67x48
+S-C-C' fabrics,s_c_c__fabrics,,tj67x48
+foliation deflection,fol_deflect,,tj67x48
+porphyroclast system,porphyroclast_,,tj67x48
+porphyroblast system,porphyroblast_,,tj67x48
+strain assymetry,strain_assym,,tj67x48
+flanking structures,flanking_struc,,tj67x48
+other,other,,tj67x48
+vein formation,vein_formation,,se5kx99
+fractures,fractures,,se5kx99
+faulting,faulting,,se5kx99
+deformation bands,def_bands,,se5kx99
+defined by other,defined_by_other,,se5kx99
+fractures,fractures,,pb5nf39
+veins,veins,,pb5nf39
+faults,faults,,pb5nf39
+shear zones,shear_zones,,pb5nf39
+folds,folds,,pb5nf39
+planar,planar,,ni1sn96
+en echelon,en_echelon,,ni1sn96
+random,random,,ni1sn96
+other,other,,ni1sn96
+constant,constant,,sm74i02
+semi-constant,semi_constant,,sm74i02
+variable,variable,,sm74i02
+highly variable,highly_variabl,,sm74i02
