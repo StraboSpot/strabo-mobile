@@ -51,7 +51,9 @@
           break;
         case 'app.orientation':
           var i = SpotFactory.getCurrentOrientationIndex();
+          var aI = SpotFactory.getCurrentAssociatedOrientationIndex();
           vm.data = vm.currentSpot.properties.orientation_data[i];
+          if (angular.isDefined(aI)) vm.data = vm.data.associated_orientation[aI];
           switch (vm.data.orientation_type) {
             case 'linear_orientation':
               form = FormFactory.getLinearOrientationForm();
@@ -121,8 +123,24 @@
         // If there is an index for a current orientation remove that orientation and
         // add the modifed data back in. If not, just push the new orientation data.
         var i = SpotFactory.getCurrentOrientationIndex();
-        if (i) {
-          vm.currentSpot.properties.orientation_data.splice(i, 1, vm.data);
+        if (angular.isDefined(i)) {
+          if ($state.current.name === 'app.new-linear-orientation' ||
+            $state.current.name === 'app.new-planar-orientation' ||
+            $state.current.name === 'app.new-tabular-zone-orientation') {
+            if (!vm.currentSpot.properties.orientation_data[i].associated_orientation) {
+              vm.currentSpot.properties.orientation_data[i].associated_orientation = [];
+            }
+            vm.currentSpot.properties.orientation_data[i].associated_orientation.push(vm.data);
+          }
+          else {
+            var aI = SpotFactory.getCurrentAssociatedOrientationIndex();
+            if (angular.isDefined(aI)) {
+              vm.currentSpot.properties.orientation_data[i].associated_orientation.splice(aI, 1, vm.data);
+            }
+            else {
+              vm.currentSpot.properties.orientation_data.splice(i, 1, vm.data);
+            }
+          }
         }
         else {
           if (!vm.currentSpot.properties.orientation_data) vm.currentSpot.properties.orientation_data = [];

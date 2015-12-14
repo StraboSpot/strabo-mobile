@@ -2,27 +2,91 @@
   <ion-view>
     <ion-content>
       <div class="padding">
-        <button ng-click='vmChild.addPlane();'
-                class='button button-small button-clear icon-left button-dark icon ion-ios-photos-outline'>
-          Add a Plane
+        <button ng-click='vmChild.addPlane();' class='button button-clear button-balanced'>
+          <i class='icon ion-plus-circled'></i>
+          <span class='button-text-color'>Add a Plane</span>
         </button>
-        <button ng-click='vmChild.addLine();'
-                class='button button-small button-clear icon-left button-dark icon ion-ios-minus-empty'>
-          Add a Line
+        <button ng-click='vmChild.addLine();' class='button button-clear button-balanced'>
+          <i class='icon ion-plus-circled'></i>
+          <span class='button-text-color'>Add a Line</span>
         </button>
-        <button ng-click='vmChild.addTabularZone();'
-                class='button button-small button-clear button-dark icon-left icon ion-ios-grid-view-outline'>
-          Add a Tabular Zone
+        <button ng-click='vmChild.addTabularZone();' class='button button-clear button-balanced'>
+          <i class='icon ion-plus-circled'></i>
+          <span class='button-text-color'>Add a Tabular Zone</span>
         </button>
       </div>
       <ion-list>
         <div class='padding' ng-show='vm.rockUnits.length === 0'>
           No rock units added yet. Add rock units using the '+' button in the top right.
         </div>
-        <ion-item
-          ng-click='vmChild.goToOrientation(orientation, $index)'
-          ng-repeat='orientation in vm.spot.properties.orientation_data track by $index'>
-          {{ orientation }}
+        <ion-item ng-repeat='orientation in vm.spot.properties.orientation_data track by $index'
+                  ng-init='orientationIndex = $index'>
+          <div ng-click='vmChild.goToOrientation(orientationIndex)'>
+            <span ng-if='orientation.orientation_type === "linear_orientation"' class='orientation-text'>
+              {{ orientationIndex+1 }}: Measured Line</span>
+            <span ng-if='orientation.orientation_type === "planar_orientation"' class='orientation-text'>
+              {{ orientationIndex+1 }}: Measured Plane</span>
+            <span ng-if='orientation.orientation_type === "tabular_zone_orientation"' class='orientation-text'>
+              {{ orientationIndex+1 }}: Measured Tabular Zone</span>
+            <br>
+            <span ng-if='orientation.line_trend'>Trend: {{ orientation.line_trend }}</span>
+            <span ng-if='orientation.planar_strike'>Strike: {{ orientation.planar_strike }}</span>
+            <span ng-if='orientation.tabular_zone_strike'>Strike: {{ orientation.tabular_zone_strike }}</span>
+            <span ng-if='orientation.planar_dip_direction'>Dip Direction: {{ orientation.planar_dip_direction }}</span>
+            <span ng-if='orientation.tabular_zone_dip_dir'>Dip Direction: {{ orientation.tabular_zone_dip_dir }}</span>
+            <span ng-if='orientation.line_plunge'>Plunge: {{ orientation.line_plunge }}</span>
+            <span ng-if='orientation.planar_dip'>Dip: {{ orientation.planar_dip }}</span>
+            <span ng-if='orientation.tabular_zone_dip'>Dip: {{ orientation.tabular_zone_dip }}</span>
+            <span ng-if='orientation.line_feat'>Feature Type: {{ orientation.line_feat }}</span>
+            <span ng-if='orientation.planar_feature_type'>Feature Type: {{ orientation.planar_feature_type }}</span>
+            <span
+              ng-if='orientation.tabular_zone_tab_feature'>Feature Type: {{ orientation.tabular_zone_tab_feature }}</span>
+          </div>
+          <div ng-if='orientation.associated_orientation'>
+            <ion-item ng-repeat='associated_orientation in orientation.associated_orientation track by $index'
+                      ng-init='associatedOrienationIndex = $index'>
+              <div ng-click='vmChild.goToAssociatedOrientation(orientationIndex, associatedOrienationIndex)'>
+                <span ng-if='associated_orientation.orientation_type === "linear_orientation"' class='orientation-text'>
+                  Associated Measured Line</span>
+                <span ng-if='associated_orientation.orientation_type === "planar_orientation"' class='orientation-text'>
+                  Associated Measured Plane</span>
+                <span ng-if='associated_orientation.orientation_type === "tabular_zone_orientation"'
+                      class='orientation-text'>
+                  Associated Measured Tabular Zone</span>
+                <br>
+                <span ng-if='associated_orientation.line_trend'>Trend: {{ associated_orientation.line_trend }}</span>
+                <span
+                  ng-if='associated_orientation.planar_strike'>Strike: {{ associated_orientation.planar_strike }}</span>
+                <span ng-if='associated_orientation.tabular_zone_strike'>Strike: {{ associated_orientation.tabular_zone_strike }}</span>
+                <span ng-if='associated_orientation.planar_dip_direction'>Dip Direction: {{ associated_orientation.planar_dip_direction }}</span>
+                <span ng-if='associated_orientation.tabular_zone_dip_dir'>Dip Direction: {{ associated_orientation.tabular_zone_dip_dir }}</span>
+                <span ng-if='associated_orientation.line_plunge'>Plunge: {{ associated_orientation.line_plunge }}</span>
+                <span ng-if='associated_orientation.planar_dip'>Dip: {{ associated_orientation.planar_dip }}</span>
+                <span
+                  ng-if='associated_orientation.tabular_zone_dip'>Dip: {{ associated_orientation.tabular_zone_dip }}</span>
+                <span
+                  ng-if='associated_orientation.line_feat'>Feature Type: {{ associated_orientation.line_feat }}</span>
+                <span ng-if='associated_orientation.planar_feature_type'>Feature Type: {{ associated_orientation.planar_feature_type }}</span>
+                <span ng-if='associated_orientation.tabular_zone_tab_feature'>Feature Type: {{ associated_orientation.tabular_zone_tab_feature }}</span>
+              </div>
+            </ion-item>
+          </div>
+
+          <div ng-if='orientation.orientation_type === "linear_orientation"'>
+            <button ng-click='vmChild.addAssociatedPlane(orientationIndex);'
+                    class='button button-small button-clear button-balanced'>
+              <i class='icon ion-plus-circled'></i>
+              <span class='button-text-color'>Add an Associated Planar Feature</span>
+            </button>
+          </div>
+          <div ng-if='orientation.orientation_type === "planar_orientation" ||
+           orientation.orientation_type === "tabular_zone_orientation" '>
+            <button ng-click='vmChild.addAssociatedLine(orientationIndex);'
+                    class='button button-small button-clear button-balanced'>
+              <i class='icon ion-plus-circled'></i>
+              <span class='button-text-color'>Add an Associated Linear Feature</span>
+            </button>
+          </div>
         </ion-item>
       </ion-list>
     </ion-content>

@@ -151,6 +151,19 @@ Right buttons in a list
 }
 
 /*--------------------
+Orientation Tab Style
+--------------------*/
+.button-text-color {
+  color: black;
+  font-weight: bold;
+}
+
+.orientation-text {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/*--------------------
 Online & Offline Notification Circles
 --------------------*/
 .online{
