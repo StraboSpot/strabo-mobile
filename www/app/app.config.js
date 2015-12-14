@@ -202,23 +202,23 @@
           }
         }
       })
-      .state('spotTab.orientation', {
+      .state('spotTab.orientation-old', {
         'cache': false,
-        'url': '/:spotId/orientation',
+        'url': '/:spotId/orientation-old',
         'views': {
           'spottab-childview': {
-            'templateUrl': 'app/spot/orientation-tab.html',
-            'controller': 'OrientationTabController as vmChild'
+            'templateUrl': 'app/spot/orientation-old-tab.html',
+            'controller': 'OrientationOldTabController as vmChild'
           }
         }
       })
-      .state('spotTab.orientation2', {
+      .state('spotTab.orientation-data', {
         'cache': false,
-        'url': '/:spotId/orientation2',
+        'url': '/:spotId/orientation-data',
         'views': {
           'spottab-childview': {
-            'templateUrl': 'app/spot/orientation2-tab.html',
-            'controller': 'Orientation2TabController as vmChild'
+            'templateUrl': 'app/spot/orientation-data-tab.html',
+            'controller': 'OrientationDataTabController as vmChild'
           }
         }
       })
@@ -292,13 +292,13 @@
           }
         }
       })
-      .state('app.linear-orientation', {
+      .state('app.orientation', {
         'cache': false,
-        'url': '/linear-orientation',
+        'url': '/orientation',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/spot/orientation-form.html',
-            'controller': 'OrientationFormController as vm'
+            'templateUrl': 'app/spot/orientation.html',
+            'controller': 'OrientationController as vm'
           }
         }
       })
@@ -307,18 +307,8 @@
         'url': '/new-linear-orientation',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/spot/orientation-form.html',
-            'controller': 'OrientationFormController as vm'
-          }
-        }
-      })
-      .state('app.planar-orientation', {
-        'cache': false,
-        'url': '/planar-orientation',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/spot/orientation-form.html',
-            'controller': 'OrientationFormController as vm'
+            'templateUrl': 'app/spot/orientation.html',
+            'controller': 'OrientationController as vm'
           }
         }
       })
@@ -327,18 +317,8 @@
         'url': '/new-planar-orientation',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/spot/orientation-form.html',
-            'controller': 'OrientationFormController as vm'
-          }
-        }
-      })
-      .state('app.tabular-zone-orientation', {
-        'cache': false,
-        'url': '/tabular-zone-orientation',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/spot/orientation-form.html',
-            'controller': 'OrientationFormController as vm'
+            'templateUrl': 'app/spot/orientation.html',
+            'controller': 'OrientationController as vm'
           }
         }
       })
@@ -347,8 +327,8 @@
         'url': '/new-tabular-zone-orientation',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/spot/orientation-form.html',
-            'controller': 'OrientationFormController as vm'
+            'templateUrl': 'app/spot/orientation.html',
+            'controller': 'OrientationController as vm'
           }
         }
       })

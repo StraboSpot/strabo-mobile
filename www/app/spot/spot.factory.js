@@ -10,6 +10,7 @@
   function SpotFactory($log, $q, LocalStorageFactory) {
     var currentSpot = null;
     var newSpot = {};
+    var currentOrientationIndex;
     var spots = null;
 
     return {
@@ -18,6 +19,7 @@
       'clearNewSpot': clearNewSpot,
       'destroy': destroy,
       'getCenter': getCenter,
+      'getCurrentOrientationIndex': getCurrentOrientationIndex,
       'getCurrentSpot': getCurrentSpot,
       'getFirstSpot': getFirstSpot,
       'getNewSpot': getNewSpot,
@@ -28,6 +30,7 @@
       'loadSpots': loadSpots,
       'read': read,
       'save': save,
+      'setCurrentOrientationIndex': setCurrentOrientationIndex,
       'setCurrentSpot': setCurrentSpot,
       'setCurrentSpotById': setCurrentSpotById,
       'setNewSpot': setNewSpot,
@@ -102,6 +105,10 @@
         'lon': lon,
         'lat': lat
       };
+    }
+
+    function getCurrentOrientationIndex() {
+      return currentOrientationIndex;
     }
 
     function getCurrentSpot() {
@@ -179,6 +186,10 @@
         });
       });
       return deferred.promise;
+    }
+
+    function setCurrentOrientationIndex(index) {
+      currentOrientationIndex = index;
     }
 
     function setCurrentSpot(spot) {

@@ -3,12 +3,12 @@
 
   angular
     .module('app')
-    .controller('OrientationFormController', OrientationFormController);
+    .controller('OrientationController', OrientationController);
 
-  OrientationFormController.$inject = ['$ionicPopup', '$log', '$scope', '$state', 'FormFactory', 'ProjectFactory',
+  OrientationController.$inject = ['$ionicPopup', '$log', '$scope', '$state', 'FormFactory', 'ProjectFactory',
     'SpotFactory'];
 
-  function OrientationFormController($ionicPopup, $log, $scope, $state, FormFactory, ProjectFactory, SpotFactory) {
+  function OrientationController($ionicPopup, $log, $scope, $state, FormFactory, ProjectFactory, SpotFactory) {
     var vm = this;
     var key = 'unit_label_abbreviation';
 
@@ -20,8 +20,6 @@
     vm.isPristine = isPristine;
     vm.newOrientation = newOrientation;
     vm.returnToSpot = returnToSpot;
-    vm.orientationType = '';
-    vm.orientations = [];
     vm.showField = showField;
     vm.survey = {};
     vm.submit = submit;
@@ -38,40 +36,40 @@
       switch ($state.current.name) {
         case 'app.new-linear-orientation':
           form = FormFactory.getLinearOrientationForm();
-          vm.title = 'Add Line';
-          vm.orientationType = 'linear_orientation';
-          break;
-        case 'app.linear-orientation':
-          form = FormFactory.getLinearOrientationForm();
-          vm.title = 'Add Line';
-          vm.orientationType = 'linear_orientation';
+          vm.title = 'New Linear Orienation';
+          vm.data.orientation_type = 'linear_orientation';
           break;
         case 'app.new-planar-orientation':
           form = FormFactory.getPlanarOrientationForm();
-          vm.title = 'Add Plane';
-          vm.orientationType = 'planar_orientation';
-          break;
-        case 'app.planar-orientation':
-          form = FormFactory.getPlanarOrientationForm();
-          vm.title = 'Add Plane';
-          vm.orientationType = 'planar_orientation';
+          vm.title = 'New Planar Orientation';
+          vm.data.orientation_type = 'planar_orientation';
           break;
         case 'app.new-tabular-zone-orientation':
           form = FormFactory.getTabularOrientationForm();
-          vm.title = 'Add Tabular Zone';
-          vm.orientationType = 'tabular_zone_orientation';
+          vm.title = 'New Tabular Zone Orientation';
+          vm.data.orientation_type = 'tabular_zone_orientation';
           break;
-        case 'app.tabular-zone-orientation':
-          form = FormFactory.getTabularOrientationForm();
-          vm.title = 'Add Tabular Zone';
-          vm.orientationType = 'tabular_zone_orientation';
+        case 'app.orientation':
+          var i = SpotFactory.getCurrentOrientationIndex();
+          vm.data = vm.currentSpot.properties.orientation_data[i];
+          switch (vm.data.orientation_type) {
+            case 'linear_orientation':
+              form = FormFactory.getLinearOrientationForm();
+              vm.title = 'Linear Orientation';
+              break;
+            case 'planar_orientation':
+              form = FormFactory.getPlanarOrientationForm();
+              vm.title = 'Planar Orientation';
+              break;
+            case 'tabular_zone_orientation':
+              form = FormFactory.getTabularOrientationForm();
+              vm.title = 'Tabular Zone Orientation';
+              break;
+          }
           break;
       }
-
       vm.survey = form.survey;
       vm.choices = form.choices;
-      vm.orientations = SpotFactory.getOrientations();
-      //vm.data = loadOrientation();
       vm.dataOriginal = vm.data;
 
       // Watch whether form has been modified or not
@@ -83,16 +81,6 @@
     function isPristine() {
       vm.data = _.pick(vm.data, _.identity);
       return _.isEqual(vm.dataOriginal, vm.data);
-    }
-
-    // Get the current orientation and remove this from the current list of all orientations
-    function loadOrientation() {
-      var orientation = [];
-      vm.orientations = _.reject(vm.orientations, function (obj) {
-        if (obj[key] === $state.params[key]) orientation = obj;
-        return obj[key] === $state.params[key];
-      });
-      return orientation;
     }
 
     /**
@@ -107,7 +95,7 @@
       confirmPopup.then(function (res) {
         if (res) {
           ProjectFactory.destroyRockUnit(key, vm.data[key]);
-          $state.go('spotTab.orientation2');
+          $state.go('spotTab.orientation-data');
         }
       });
     }
@@ -117,7 +105,7 @@
     }
 
     function returnToSpot() {
-      $state.go('spotTab.orientation2');
+      $state.go('spotTab.orientation-data');
     }
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair
@@ -130,11 +118,18 @@
     function submit() {
       var valid = FormFactory.validate(vm.survey, vm.data);
       if (valid) {
-        vm.data.orientation_type = vm.orientationType;
-        vm.orientations.push(vm.data);
-        vm.currentSpot.properties.orientation = vm.orientations;
+        // If there is an index for a current orientation remove that orientation and
+        // add the modifed data back in. If not, just push the new orientation data.
+        var i = SpotFactory.getCurrentOrientationIndex();
+        if (i) {
+          vm.currentSpot.properties.orientation_data.splice(i, 1, vm.data);
+        }
+        else {
+          if (!vm.currentSpot.properties.orientation_data) vm.currentSpot.properties.orientation_data = [];
+          vm.currentSpot.properties.orientation_data.push(vm.data);
+        }
         SpotFactory.setCurrentSpot(vm.currentSpot);
-        $state.go('spotTab.orientation2');
+        $state.go('spotTab.orientation-data');
       }
     }
   }

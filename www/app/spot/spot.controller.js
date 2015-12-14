@@ -125,7 +125,7 @@
           vm.survey = vm.fields._3dstructures_survey;
           vm.choices = vm.fields._3dstructures_choices;
           break;
-        case 'spotTab.orientation':
+        case 'spotTab.orientation-old':
           vm.showDynamicFields = true;
           vm.survey = ContentModelSurveyFactory.measurements_and_observations_survey;
           vm.choices = ContentModelSurveyFactory.measurements_and_observations_choices;
@@ -730,7 +730,7 @@
     // Validate the current form
     function validateForm() {
       switch ($state.current.url.split('/').pop()) {
-        case 'orientation':
+        case 'orientation-old':
           if (!vm.validateFields(vm.survey)) {
             return false;
           }

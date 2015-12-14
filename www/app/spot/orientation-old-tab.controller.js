@@ -3,11 +3,11 @@
 
   angular
     .module('app')
-    .controller('OrientationTabController', OrientationTabController);
+    .controller('OrientationOldTabController', OrientationOldTabController);
 
-  OrientationTabController.$inject = ['$log', '$scope', '$state'];
+  OrientationOldTabController.$inject = ['$log', '$scope', '$state'];
 
-  function OrientationTabController($log, $scope, $state) {
+  function OrientationOldTabController($log, $scope, $state) {
     var vmParent = $scope.vm;
     vmParent.loadTab($state);  // Need to load current state into parent
 
@@ -18,7 +18,7 @@
      */
 
     function activate() {
-      $log.log('In OrientationTabController');
+      $log.log('In OrientationOldTabController');
     }
   }
 }());

@@ -3,15 +3,15 @@
     <ion-content>
       <div class="padding">
         <button ng-click='vmChild.addPlane();'
-                class='button button-small button-outline icon-left button-dark icon ion-ios-photos-outline'>
+                class='button button-small button-clear icon-left button-dark icon ion-ios-photos-outline'>
           Add a Plane
         </button>
         <button ng-click='vmChild.addLine();'
-                class='button button-small button-outline icon-left button-dark icon ion-ios-minus-empty'>
+                class='button button-small button-clear icon-left button-dark icon ion-ios-minus-empty'>
           Add a Line
         </button>
         <button ng-click='vmChild.addTabularZone();'
-                class='button button-small button-outline button-dark icon-left icon ion-ios-grid-view-outline'>
+                class='button button-small button-clear button-dark icon-left icon ion-ios-grid-view-outline'>
           Add a Tabular Zone
         </button>
       </div>
@@ -20,8 +20,8 @@
           No rock units added yet. Add rock units using the '+' button in the top right.
         </div>
         <ion-item
-          ng-repeat='orientation in vm.spot.properties.orientation'
-          href='#/app/rock-units/{{ rockUnit.unit_label_abbreviation }}'>
+          ng-click='vmChild.goToOrientation(orientation, $index)'
+          ng-repeat='orientation in vm.spot.properties.orientation_data track by $index'>
           {{ orientation }}
         </ion-item>
       </ion-list>
