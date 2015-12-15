@@ -19,6 +19,7 @@
       'clearCurrentSpot': clearCurrentSpot,
       'clearNewSpot': clearNewSpot,
       'destroy': destroy,
+      'destroyOrientation': destroyOrientation,
       'getCenter': getCenter,
       'getCurrentAssociatedOrientationIndex': getCurrentAssociatedOrientationIndex,
       'getCurrentOrientationIndex': getCurrentOrientationIndex,
@@ -86,6 +87,19 @@
         return spot.properties.id === key;
       });
       return LocalStorageFactory.spotsDb.removeItem(key);
+    }
+
+    function destroyOrientation(i, j) {
+      if (angular.isNumber(j)) {
+        currentSpot.properties.orientation_data[i].associated_orientation.splice(j, 1);
+        if (currentSpot.properties.orientation_data[i].associated_orientation.length === 0) {
+          delete currentSpot.properties.orientation_data[i].associated_orientation;
+        }
+      }
+      else {
+        currentSpot.properties.orientation_data.splice(i, 1);
+        if (currentSpot.properties.orientation_data.length === 0) delete currentSpot.properties.orientation_data;
+      }
     }
 
     // Get the center of a geoshape

@@ -42,6 +42,11 @@
             <span
               ng-if='orientation.tabular_zone_tab_feature'>Feature Type: {{ orientation.tabular_zone_tab_feature }}</span>
           </div>
+          <div class=" item-button-right">
+            <button class='button button-clear button-dark' ng-click='vmChild.deleteOrientation(orientationIndex)'>
+              <i class='ion-trash-b'></i>
+            </button>
+          </div>
           <div ng-if='orientation.associated_orientation'>
             <ion-item ng-repeat='associated_orientation in orientation.associated_orientation track by $index'
                       ng-init='associatedOrienationIndex = $index'>
@@ -68,6 +73,12 @@
                   ng-if='associated_orientation.line_feat'>Feature Type: {{ associated_orientation.line_feat }}</span>
                 <span ng-if='associated_orientation.planar_feature_type'>Feature Type: {{ associated_orientation.planar_feature_type }}</span>
                 <span ng-if='associated_orientation.tabular_zone_tab_feature'>Feature Type: {{ associated_orientation.tabular_zone_tab_feature }}</span>
+              </div>
+              <div class=" item-button-right">
+                <button class='button button-clear button-dark'
+                        ng-click='vmChild.deleteAssociatedOrientation(orientationIndex, associatedOrienationIndex)'>
+                  <i class='ion-trash-b'></i>
+                </button>
               </div>
             </ion-item>
           </div>

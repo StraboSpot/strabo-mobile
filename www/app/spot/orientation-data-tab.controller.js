@@ -5,9 +5,9 @@
     .module('app')
     .controller('OrientationDataTabController', OrientationDataTabController);
 
-  OrientationDataTabController.$inject = ['$log', '$scope', '$state', 'SpotFactory'];
+  OrientationDataTabController.$inject = ['$ionicPopup', '$log', '$scope', '$state', 'SpotFactory'];
 
-  function OrientationDataTabController($log, $scope, $state, SpotFactory) {
+  function OrientationDataTabController($ionicPopup, $log, $scope, $state, SpotFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.loadTab($state);  // Need to load current state into parent
@@ -17,6 +17,8 @@
     vm.addLine = addLine;
     vm.addPlane = addPlane;
     vm.addTabularZone = addTabularZone;
+    vm.deleteAssociatedOrientation = deleteAssociatedOrientation;
+    vm.deleteOrientation = deleteOrientation;
     vm.goToAssociatedOrientation = goToAssociatedOrientation;
     vm.goToOrientation = goToOrientation;
 
@@ -57,6 +59,26 @@
     function addTabularZone() {
       SpotFactory.setCurrentOrientationIndex(undefined, undefined);
       $state.go('app.new-tabular-zone-orientation');
+    }
+
+    function deleteAssociatedOrientation(index, associatedIndex) {
+      var confirmPopup = $ionicPopup.confirm({
+        'title': 'Delete Associated Orientation',
+        'template': 'Are you sure you want to delete this  associated orientation?'
+      });
+      confirmPopup.then(function (res) {
+        if (res) SpotFactory.destroyOrientation(index, associatedIndex);
+      });
+    }
+
+    function deleteOrientation(index) {
+      var confirmPopup = $ionicPopup.confirm({
+        'title': 'Delete Orientation',
+        'template': 'Are you sure you want to delete this orientation?'
+      });
+      confirmPopup.then(function (res) {
+        if (res) SpotFactory.destroyOrientation(index, undefined);
+      });
     }
 
     function goToAssociatedOrientation(index, associatedIndex) {
