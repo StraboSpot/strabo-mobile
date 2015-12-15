@@ -15,6 +15,7 @@
     var vm = this;
 
     vm.cacheOfflineTiles = cacheOfflineTiles;
+    vm.currentZoom = '';
     vm.isOnline = isOnline;
     vm.showActionsheet = showActionsheet;
     vm.toggleLocation = toggleLocation;
@@ -43,6 +44,7 @@
       map.on('moveend', function (evt) {
         MapViewFactory.setMapView(map.getView());
         vm.currentZoom = evt.map.getView().getZoom();
+        $scope.$apply();
       });
 
       map.on('touchstart', function (event) {

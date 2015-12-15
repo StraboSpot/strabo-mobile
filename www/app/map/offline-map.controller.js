@@ -5,9 +5,9 @@
     .module('app')
     .controller('OfflineMapController', OfflineMapController);
 
-  OfflineMapController.$inject = ['$ionicPopup', '$scope', 'OfflineTilesFactory'];
+  OfflineMapController.$inject = ['$ionicLoading', '$ionicPopup', '$scope', 'OfflineTilesFactory'];
 
-  function OfflineMapController($ionicPopup, $scope, OfflineTilesFactory) {
+  function OfflineMapController($ionicLoading, $ionicPopup, $scope, OfflineTilesFactory) {
     var vm = this;
 
     vm.clearOfflineTile = clearOfflineTile;
@@ -55,8 +55,12 @@
       });
       confirmPopup.then(function (res) {
         if (res) {
+          $ionicLoading.show({
+            'template': '<ion-spinner></ion-spinner>'
+          });
           OfflineTilesFactory.deleteMap(map).then(function () {
             // console.log('this map has been deleted');
+            $ionicLoading.hide();
             refreshAndUpdateCount();
           });
         }

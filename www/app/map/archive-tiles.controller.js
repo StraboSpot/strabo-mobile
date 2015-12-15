@@ -5,10 +5,10 @@
     .module('app')
     .controller('ArchiveTilesController', ArchiveTilesController);
 
-  ArchiveTilesController.$inject = ['$ionicHistory', '$log', '$state', 'MapViewFactory', 'OfflineTilesFactory',
+  ArchiveTilesController.$inject = ['$ionicLoading', '$log', '$state', 'MapViewFactory', 'OfflineTilesFactory',
     'SlippyTileNamesFactory'];
 
-  function ArchiveTilesController($ionicHistory, $log, $state, MapViewFactory, OfflineTilesFactory,
+  function ArchiveTilesController($ionicLoading, $log, $state, MapViewFactory, OfflineTilesFactory,
                                   SlippyTileNamesFactory) {
     var vm = this;
     var maxZoomToDownload = 18;  // the maximum allowable zoom download for any given map
@@ -76,6 +76,9 @@
       }
 
       // are we downloading macrostrat tiles?
+      $ionicLoading.show({
+        'template': '<ion-spinner></ion-spinner>'
+      });
       if (vm.map.downloadMacrostrat) {
         // yes
         downloadMapTile()
@@ -86,9 +89,9 @@
             vm.map.percentDownload = Math.ceil((notify1[0] / notify1[1]) * 100);
           })
           .then(function () {
-            // everything has been downloaded, so lets go back a screen
-            var backView = $ionicHistory.backView();
-            backView.go();
+            // Finished downloading all tiles
+            $ionicLoading.hide();
+            $state.go('app.map');
           }, null, function (notify2) {
             // $log.log('***archiveTiles-notify: ', notify);
             // has the second notification kicked in yet?
@@ -102,10 +105,11 @@
         // no -- are not downloading macrostrat tiles
         downloadMapTile()
           .then(function () {
-            // everything has been downloaded, so lets go back a screen
-            var backView = $ionicHistory.backView();
-            backView.go();
+            // Finished downloading all tiles
+            $ionicLoading.hide();
+            $state.go('app.map');
           }, function (error) {
+            $ionicLoading.hide();
             $log.log('error at downloadMapTile', error);
           }, function (notify) {
             // update the progress bar once we receive notifications
