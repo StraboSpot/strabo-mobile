@@ -4,8 +4,8 @@
   </ion-nav-buttons>
   <ion-nav-buttons side='right'>
     <button
-        ng-class='{"button button-icon ion-loop": vm.isOnlineLoggedIn(), "button button-icon ion-alert-circled": !vm.isOnlineLoggedIn()}'
-        ng-click='vm.sync()'>
+      ng-class='{"button button-icon ion-loop": vm.isOnlineLoggedIn(), "button button-icon ion-alert-circled": !vm.isOnlineLoggedIn()}'
+      ng-click='vm.sync()'>
     </button>
     <button class='button button-icon ion-plus' ng-click='vm.newSpot()'></button>
     <button ng-click='vm.showActionsheet()' class='button button-icon icon ion-arrow-up-b'></button>
@@ -16,9 +16,16 @@
       Main Map page.
     </div>
     <ion-list>
-      <ion-item ng-repeat='spot in vm.spots | orderBy:"-properties.modified_timestamp" track by spot.properties.id'
-                href='#/spotTab/{{spot.properties.id}}/spot'>
-        {{spot.properties.name}}
+      <ion-item ng-repeat='spot in vm.spots | orderBy:"-properties.modified_timestamp" track by spot.properties.id'>
+        <div ng-click='vm.goToSpot(spot.properties.id)'>
+          {{spot.properties.name}}
+        </div>
+        <div class=" item-button-right">
+          <button class='button button-clear button-dark'
+                  ng-click='vm.deleteSpot(spot.properties.id)'>
+            <i class='ion-trash-b'></i>
+          </button>
+        </div>
       </ion-item>
     </ion-list>
   </ion-content>

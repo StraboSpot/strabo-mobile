@@ -219,7 +219,7 @@
 
     function setCurrentSpotById(id) {
       var match = _.filter(spots, function (spot) {
-        return String(spot.properties.id) === id;
+        return String(spot.properties.id) === String(id);
       })[0];  // Should only be one match
       currentSpot = angular.fromJson(angular.toJson(match));  // Deep clone
     }

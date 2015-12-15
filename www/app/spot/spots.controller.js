@@ -14,7 +14,9 @@
 
     vm.clearAllSpots = clearAllSpots;
     vm.closeModal = closeModal;
+    vm.deleteSpot = deleteSpot;
     vm.exportToCSV = exportToCSV;
+    vm.goToSpot = goToSpot;
     vm.isOnlineLoggedIn = isOnlineLoggedIn;
     vm.newSpot = newSpot;
     vm.openModal = openModal;
@@ -80,6 +82,19 @@
     function closeModal(modal) {
       vm[modal].hide();
       vm.spots = SpotFactory.getSpots();
+    }
+
+    function deleteSpot(id) {
+      var confirmPopup = $ionicPopup.confirm({
+        'title': 'Delete Spot',
+        'template': 'Are you sure you want to delete this spot?'
+      });
+      confirmPopup.then(function (res) {
+        if (res) {
+          SpotFactory.destroy(id);
+          vm.spots = SpotFactory.getSpots();
+        }
+      });
     }
 
     // Export data to CSV
@@ -249,6 +264,11 @@
           );
         }
       );
+    }
+
+    function goToSpot(id) {
+      SpotFactory.setCurrentSpotById(id);
+      $state.go('spotTab.spot');
     }
 
     // Is the user online and logged in
