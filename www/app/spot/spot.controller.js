@@ -5,21 +5,19 @@
     .module('app')
     .controller('SpotController', SpotController);
 
-  SpotController.$inject = ['$document', '$ionicModal', '$ionicPopup', '$location', '$log', '$scope', '$state',
-    'ContentModelSurveyFactory', 'DataModelsFactory', 'FormFactory', 'ImageBasemapFactory', 'PreferencesFactory',
-    'ProjectFactory', 'SpotFactory', 'SpotFormsFactory'];
+  SpotController.$inject = ['$document', '$ionicActionSheet', '$ionicModal', '$ionicPopup', '$location', '$log',
+    '$scope', '$state', 'ContentModelSurveyFactory', 'DataModelsFactory', 'FormFactory', 'ImageBasemapFactory',
+    'PreferencesFactory', 'ProjectFactory', 'SpotFactory', 'SpotFormsFactory'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
-  function SpotController($document, $ionicModal, $ionicPopup, $location, $log, $scope, $state,
+  function SpotController($document, $ionicActionSheet, $ionicModal, $ionicPopup, $location, $log, $scope, $state,
                           ContentModelSurveyFactory, DataModelsFactory, FormFactory, ImageBasemapFactory,
                           PreferencesFactory, ProjectFactory, SpotFactory, SpotFormsFactory) {
     var vm = this;
 
     vm.choices = null;
     vm.closeModal = closeModal;
-    vm.copySpot = copySpot;
     vm.data = {};
-    vm.deleteSpot = deleteSpot;
     vm.fields = {};
     vm.getMax = getMax;
     vm.getMin = getMin;
@@ -48,6 +46,7 @@
     vm.openModal = openModal;
     vm.openSpot = openSpot;
     vm.setSelMultClass = setSelMultClass;
+    vm.showActionsheet = showActionsheet;
     vm.showCustomFields = false;
     vm.showDynamicFields = true;
     vm.showField = showField;
@@ -105,6 +104,29 @@
       });
       $scope.$on('groupMembersModal.hidden', function () {
         vm.groupMembersModal.remove();
+      });
+    }
+
+    // Create a new spot with the details from this spot
+    function copySpot() {
+      var newSpot = _.omit(vm.spot, 'properties');
+      newSpot.properties = _.omit(vm.spot.properties,
+        ['name', 'id', 'date', 'time', 'links', 'groups', 'group_members', 'modified_timestamp']);
+      SpotFactory.setNewSpot(newSpot);
+      loadSpot(undefined);
+    }
+
+    // Delete the spot
+    function deleteSpot() {
+      var confirmPopup = $ionicPopup.confirm({
+        'title': 'Delete Spot',
+        'template': 'Are you sure you want to delete this spot?'
+      });
+      confirmPopup.then(function (res) {
+        if (res) {
+          SpotFactory.destroy(vm.spot.properties.id);
+          $location.path('/app/spots');
+        }
       });
     }
 
@@ -302,29 +324,6 @@
       vm[modal].hide();
     }
 
-    // Create a new spot with the details from this spot
-    function copySpot() {
-      var copySpot = _.omit(vm.spot, 'properties');
-      copySpot.properties = _.omit(vm.spot.properties,
-        ['id', 'date', 'time', 'links', 'groups', 'group_members']);
-      SpotFactory.setNewSpot(copySpot);
-      $location.path('/spotTab//notes');
-    }
-
-    // Delete the spot
-    function deleteSpot() {
-      var confirmPopup = $ionicPopup.confirm({
-        'title': 'Delete Spot',
-        'template': 'Are you sure you want to delete this spot?'
-      });
-      confirmPopup.then(function (res) {
-        if (res) {
-          SpotFactory.destroy(vm.spot.properties.id);
-          $location.path('/app/spots');
-        }
-      });
-    }
-
     // Get the max value allowed for a number field
     function getMax(constraint) {
       try {
@@ -426,6 +425,33 @@
         }
       }
       return 'no-errors';
+    }
+
+    function showActionsheet() {
+      $ionicActionSheet.show({
+        'titleText': 'Spot Actions',
+        'buttons': [{
+          'text': '<i class="icon ion-trash-b"></i>Delete this Spot'
+        }, {
+          'text': '<i class="icon ion-ios-copy"></i>Copy this Spot to a New Spot'
+        }],
+        'cancelText': 'Cancel',
+        'cancel': function () {
+          $log.log('CANCELLED');
+        },
+        'buttonClicked': function (index) {
+          $log.log('BUTTON CLICKED', index);
+          switch (index) {
+            case 0:
+              deleteSpot();
+              break;
+            case 1:
+              copySpot();
+              break;
+          }
+          return true;
+        }
+      });
     }
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair
