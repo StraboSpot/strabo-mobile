@@ -95,24 +95,31 @@
         Set From Map
       </button>
 
-      <div class='item item-divider'>
-        Rock Unit
-      </div>
-      <label class='item item-input item-select item-stacked-label item-text-wrap'>
-        <span class='input-label'>Unit Label Abbreviation</span>
-        <select ng-model='vmChild.rockUnit'
-                ng-options='rockUnit as rockUnit.unit_label_abbreviation for rockUnit in vmChild.rockUnits |
+      <div ng-show='vm.showRockUnit'>
+        <div class='item item-divider'>
+          Rock Unit
+        </div>
+        <label class='item item-input item-select item-stacked-label item-text-wrap'>
+          <span class='input-label'>Unit Label Abbreviation</span>
+          <select ng-model='vmChild.rockUnit'
+                  ng-options='rockUnit as rockUnit.unit_label_abbreviation for rockUnit in vmChild.rockUnits |
                  orderBy: "unit_label_abbreviation"'
-                ng-change="vmChild.setRockUnit()">
-          <option value=''></option>
-        </select>
-      </label>
-      <button ng-click='vmChild.viewRockUnit();' ng-show='vm.spot.properties.rock_unit'
-              class='button button-clear icon-left icon ion-eye'>View/Edit Rock Unit
-      </button>
+                  ng-change="vmChild.setRockUnit()">
+            <option value=''></option>
+          </select>
+        </label>
+        <button ng-click='vmChild.viewRockUnit();' ng-show='vm.spot.properties.rock_unit'
+                class='button button-clear icon-left icon ion-eye'>View/Edit Rock Unit
+        </button>
+      </div>
 
-      <div>
-        <auto-fields/>
+      <div ng-show='vm.showTrace'>
+        <div class='item item-divider'>
+          Trace/Line Feature
+        </div>
+        <div>
+          <auto-fields/>
+        </div>
       </div>
 
       <div class='item item-divider'>

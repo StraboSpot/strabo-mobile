@@ -51,7 +51,9 @@
     vm.showDynamicFields = true;
     vm.showField = showField;
     vm.showGroupMembers = true;
+    vm.showRockUnit = true;
     vm.showTab = showTab;
+    vm.showTrace = false;
     vm.spot = {};
     vm.submit = submit;
     vm.survey = null;
@@ -400,6 +402,13 @@
     function loadTab(state) {
       loadSpot(state.params.spotId);
       loadForm(state.current.name);
+
+      vm.showTrace = false;
+      vm.showRockUnit = true;
+      if (vm.spot.geometry.type === 'LineString') {
+        vm.showTrace = true;
+        vm.showRockUnit = false;
+      }
     }
 
     function openModal(modal) {
@@ -408,7 +417,7 @@
 
     function openSpot(id) {
       SpotFactory.clearCurrentSpot();
-      $location.path('/spotTab/' + id + '/notes');
+      $location.path('/spotTab/' + id + '/spot');
     }
 
     // Set the class for the select_multiple fields here because it is not working
