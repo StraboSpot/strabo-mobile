@@ -98,7 +98,7 @@
           'anchorXUnits': 'fraction',
           'anchorYUnits': 'fraction',
           'opacity': 1,
-          'rotation': HelpersFactory.toRadians(rotation) * (-1),
+          'rotation': HelpersFactory.toRadians(rotation),
           'src': SymbologyFactory.getSymbolPath(feature_type, pORl, orientation),
           'scale': 0.05
         });
