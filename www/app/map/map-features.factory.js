@@ -39,15 +39,49 @@
         });
       }
 
-      var spotsLayer = {
-        'type': 'FeatureCollection',
-        'features': mappableSpots,
-        'properties': {
-          'name': 'Spots (' + mappableSpots.length + ')'
+      // Create features to map from the mappable spots.
+      // Create a deep clone of each mappable spot. For spots with orientation data, create a clone of the entire spot
+      // for each orienation measurement, add the orientation measurement to a new element called orientation and
+      // then delete the orientation_data element
+      var mappedFeatures = [];
+      _.each(mappableSpots, function (spot) {
+        if (spot.properties.orientation_data) {
+          _.each(spot.properties.orientation_data, function (orientation) {
+            var feature = angular.fromJson(angular.toJson(spot));
+            delete feature.properties.orientation_data;
+            feature.properties.orientation = orientation;
+            mappedFeatures.push(feature);
+          });
         }
-      };
+        else {
+          mappedFeatures.push(angular.fromJson(angular.toJson(spot)));
+        }
+      });
 
-      featureLayer.getLayers().push(geojsonToVectorLayer(spotsLayer, map.getView().getProjection()));
+      // get distinct groups and aggregate spots by group type
+      var featureGroup = _.groupBy(mappedFeatures, function (feature) {
+        if (feature.properties.orientation) {
+          return feature.properties.orientation.feature_type || 'no type';
+        }
+        return 'no type';
+      });
+
+      // Go through each group and assign all the aggregates to the geojson feature
+      for (var key in featureGroup) {
+        if (featureGroup.hasOwnProperty(key)) {
+          // Create a geojson to hold all the spots that fit the same spot type
+          var spotTypeLayer = {
+            'type': 'FeatureCollection',
+            'features': featureGroup[key],
+            'properties': {
+              'name': key + ' (' + featureGroup[key].length + ')'
+            }
+          };
+
+          // Add the feature collection layer to the map
+          featureLayer.getLayers().push(geojsonToVectorLayer(spotTypeLayer, map.getView().getProjection()));
+        }
+      }
     }
 
     // We want to load all the geojson markers from the persistence storage onto the map
@@ -73,7 +107,7 @@
           'font': '12px Calibri,sans-serif',
           'text': '          ' + text,  // we pad with spaces due to rotational offset
           'textAlign': 'center',
-          'rotation': HelpersFactory.toRadians(rotation) * (-1),
+          'rotation': HelpersFactory.toRadians(rotation),
           'fill': new ol.style.Fill({
             'color': '#000'
           }),
@@ -85,37 +119,42 @@
       }
 
       function getIconForFeature(feature) {
-        var rotation = feature.get('strike') || feature.get('trend') || 0;
-        var orientation = feature.get('dip') || feature.get('plunge') || 0;
-        var feature_type = feature.get('planar_feature_type') || feature.get('linear_feature_type');
-
-        // Is this a planar or linear feature? If both use planar.
-        var pORl = feature.get('planar_feature_type') ? 'planar' : 'linear';
-        // If feature_type is undefined use planar as default so get the default planar symbol
-        pORl = feature_type ? pORl : 'planar';
+        var feature_type = 'none';
+        var rotation = 0;
+        var symbol_orientation = 0;
+        var orientation_type = 'none';
+        var orientation = feature.get('orientation');
+        if (orientation) {
+          rotation = orientation.strike || orientation.trend || rotation;
+          symbol_orientation = orientation.dip || orientation.plunge || symbol_orientation;
+          feature_type = orientation.feature_type || feature_type;
+          orientation_type = orientation.orientation_type || orientation_type;
+        }
 
         return new ol.style.Icon({
           'anchorXUnits': 'fraction',
           'anchorYUnits': 'fraction',
           'opacity': 1,
           'rotation': HelpersFactory.toRadians(rotation),
-          'src': SymbologyFactory.getSymbolPath(feature_type, pORl, orientation),
+          'src': SymbologyFactory.getSymbolPath(feature_type, symbol_orientation, orientation_type),
           'scale': 0.05
         });
       }
 
       // Set styles for points, lines and polygon and groups
       function styleFunction(feature, resolution) {
-        var styles = [];
-        var rotation = feature.get('strike') || feature.get('trend') || 0;
+        var rotation = 0;
+        var pointText = feature.get('name');
+        var orientation = feature.get('orientation');
+        if (orientation) {
+          rotation = orientation.strike || orientation.trend || rotation;
+          pointText = orientation.dip || orientation.plunge || pointText;
+        }
 
-        var pointText = angular.isDefined(feature.get('plunge')) ? feature.get('plunge').toString() : feature.get(
-          'name');
-        pointText = angular.isDefined(feature.get('dip')) ? feature.get('dip').toString() : pointText;
         var pointStyle = [
           new ol.style.Style({
             'image': getIconForFeature(feature),
-            'text': textStylePoint(pointText, rotation)
+            'text': textStylePoint(pointText.toString(), rotation)
           })
         ];
         var lineStyle = [
@@ -140,6 +179,7 @@
             'text': textStyle(polyText)
           })
         ];
+        var styles = [];
         styles.Point = pointStyle;
         styles.MultiPoint = pointStyle;
         styles.LineString = lineStyle;
@@ -195,27 +235,27 @@
         var content = '';
         content += '<a href="#/spotTab/' + feature.get('id') + '/spot"><b>' + feature.get('name') + '</b></a>';
 
-        if (feature.get('planar_feature_type')) {
-          content += '<br>';
-          content += '<small>' + feature.get('planar_feature_type') + '</small>';
-        }
+        var orientation = feature.get('orientation');
 
-        if (feature.get('strike') && feature.get('dip')) {
+        if (orientation) {
           content += '<br>';
-          content += '<small>' + feature.get('strike') + '&deg; strike / ' + feature.get('dip') + '&deg; dip</small>';
-        }
+          content += '<small>' + orientation.orientation_type + '</small>';
 
-        if (feature.get('linear_feature_type')) {
-          content += '<br>';
-          content += '<small>' + feature.get('linear_feature_type') + '</small>';
-        }
+          if (orientation.strike && orientation.dip) {
+            content += '<br>';
+            content += '<small>' + orientation.strike + '&deg; strike / ' + orientation.dip + '&deg; dip</small>';
+          }
 
-        if (feature.get('trend') && feature.get('plunge')) {
-          content += '<br>';
-          content += '<small>' + feature.get('trend') + '&deg; trend / ' + feature.get(
-              'plunge') + '&deg; plunge</small>';
-        }
+          if (orientation.trend && orientation.plunge) {
+            content += '<br>';
+            content += '<small>' + orientation.trend + '&deg; trend / ' + orientation.plunge + '&deg; plunge</small>';
+          }
 
+          if (orientation.feature_type) {
+            content += '<br>';
+            content += '<small>' + orientation.feature_type + '</small>';
+          }
+        }
         if (feature.get('group_relationship')) {
           content += '<br>';
           content += '<small>Grouped by: ' + feature.get('group_relationship').join(', ') + '</small>';
