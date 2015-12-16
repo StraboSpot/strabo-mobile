@@ -26,13 +26,6 @@ navigation history that also transitions its views in and out.
     </a>
     <span ng-show='vm.showTab("orientation")'>
       <a class='button button-clear spot-tab-inactive'
-         ng-class='{ "spot-tab-active": $state.current.name == "spotTab.orientation-old"}'
-         ng-click='vm.switchTabs("orientation-old")'>
-        Orientation (Old)
-      </a>
-    </span>
-        <span ng-show='vm.showTab("orientation")'>
-      <a class='button button-clear spot-tab-inactive'
          ng-class='{ "spot-tab-active": $state.current.name == "spotTab.orientation-data"}'
          ng-click='vm.switchTabs("orientation-data")'>
         Orientation
@@ -52,27 +45,6 @@ navigation history that also transitions its views in and out.
         Images
       </a>
     </span>
-    <span ng-show='vm.showLinks'>
-      <a class='button button-clear spot-tab-inactive'
-         ng-class='{ "spot-tab-active": $state.current.name == "spotTab.links"}'
-         ng-click='vm.switchTabs("links");'>
-        Links
-      </a>
-    </span>
-    <span ng-show='vm.showGroups'>
-      <a class='button button-clear spot-tab-inactive'
-         ng-class='{ "spot-tab-active": $state.current.name == "spotTab.groups"}'
-         ng-click='vm.switchTabs("groups");'>
-        Groups
-      </a>
-    </span>
-    <span ng-show='vm.showGroupMembers'>
-      <a class='button button-clear spot-tab-inactive'
-         ng-class='{ "spot-tab-active": $state.current.name == "spotTab.groupmemebers"}'
-         ng-click='vm.switchTabs("groupmembers");'>
-        Group Members
-      </a>
-    </span>
     <span ng-show='vm.showTab("sample")'>
       <a class='button button-clear spot-tab-inactive'
          ng-class='{ "spot-tab-active": $state.current.name == "spotTab.sample"}'
@@ -80,11 +52,6 @@ navigation history that also transitions its views in and out.
         Sample
       </a>
     </span>
-    <a class='button button-clear spot-tab-inactive'
-       ng-class='{ "spot-tab-active": $state.current.name == "spotTab.custom"}'
-       ng-click='vm.switchTabs("custom");'>
-      Custom
-    </a>
   </ion-scroll>
 </ion-header-bar>
 

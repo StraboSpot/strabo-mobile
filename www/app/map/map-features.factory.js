@@ -256,10 +256,6 @@
             content += '<small>' + orientation.feature_type + '</small>';
           }
         }
-        if (feature.get('group_relationship')) {
-          content += '<br>';
-          content += '<small>Grouped by: ' + feature.get('group_relationship').join(', ') + '</small>';
-        }
         content = content.replace(/_/g, ' ');
 
         // setup the popup position

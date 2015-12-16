@@ -151,22 +151,8 @@
                 // If the value is actually an object
                 var i = _.indexOf(allHeaders, key);
                 if (_.isObject(value)) {
-                  // Get all the custom field values
-                  if (key === 'custom') {
-                    _.each(value,
-                      function (customValue, customKey) {
-                        i = _.indexOf(allHeaders, 'custom_' + customKey);
-                        row[i] = '\'' + customValue + '\'';
-                      }
-                    );
-                  }
-                  // Get just a string of the ids for groups, group_members and links
-                  else if (key === 'groups' || key === 'group_members' || key === 'links') {
-                    value = _.pluck(value, 'id');
-                    row[i] = '\'' + value.join(', ') + '\'';
-                  }
                   // Separate date parts
-                  else if (value instanceof Date) {
+                  if (value instanceof Date) {
                     if (key === 'time') {
                       row[i] = value.toLocaleTimeString();
                     }

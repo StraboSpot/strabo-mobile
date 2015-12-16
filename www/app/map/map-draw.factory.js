@@ -290,7 +290,7 @@
             }
 
             geojsonObj.properties = {
-              'group_members': isLassoed
+              'nest_members': isLassoed
             };
             if (imageBasemap) {
               geojsonObj.properties.image_basemap = imageBasemap.id;

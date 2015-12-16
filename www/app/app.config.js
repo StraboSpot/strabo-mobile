@@ -192,26 +192,6 @@
           'prepSpotForms': prepSpotForms
         }
       })
-      .state('spotTab.custom', {
-        'cache': false,
-        'url': '/:spotId/custom',
-        'views': {
-          'spottab-childview': {
-            'templateUrl': 'app/spot/custom-tab.html',
-            'controller': 'SpotTabCustomController as vmChild'
-          }
-        }
-      })
-      .state('spotTab.orientation-old', {
-        'cache': false,
-        'url': '/:spotId/orientation-old',
-        'views': {
-          'spottab-childview': {
-            'templateUrl': 'app/spot/orientation-old-tab.html',
-            'controller': 'OrientationOldTabController as vmChild'
-          }
-        }
-      })
       .state('spotTab.orientation-data', {
         'cache': false,
         'url': '/:spotId/orientation-data',
@@ -222,26 +202,6 @@
           }
         }
       })
-      .state('spotTab.groupmembers', {
-        'cache': false,
-        'url': '/:spotId/groupmembers',
-        'views': {
-          'spottab-childview': {
-            'templateUrl': 'app/spot/groupmembers-tab.html',
-            'controller': 'SpotTabGroupmembersController as vmChild'
-          }
-        }
-      })
-      .state('spotTab.groups', {
-        'cache': false,
-        'url': '/:spotId/groups',
-        'views': {
-          'spottab-childview': {
-            'templateUrl': 'app/spot/groups-tab.html',
-            'controller': 'SpotTabGroupsController as vmChild'
-          }
-        }
-      })
       .state('spotTab.images', {
         'cache': false,
         'url': '/:spotId/images',
@@ -249,16 +209,6 @@
           'spottab-childview': {
             'templateUrl': 'app/spot/images-tab.html',
             'controller': 'ImagesTabController as vmChild'
-          }
-        }
-      })
-      .state('spotTab.links', {
-        'cache': false,
-        'url': '/:spotId/links',
-        'views': {
-          'spottab-childview': {
-            'templateUrl': 'app/spot/links-tab.html',
-            'controller': 'SpotTabLinksController as vmChild'
           }
         }
       })
