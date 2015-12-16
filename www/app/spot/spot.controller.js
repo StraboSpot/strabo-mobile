@@ -405,7 +405,7 @@
 
       vm.showTrace = false;
       vm.showRockUnit = true;
-      if (vm.spot.geometry.type === 'LineString') {
+      if (vm.spot.geometry && vm.spot.geometry.type === 'LineString') {
         vm.showTrace = true;
         vm.showRockUnit = false;
       }

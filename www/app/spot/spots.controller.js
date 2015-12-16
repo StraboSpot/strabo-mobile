@@ -6,14 +6,15 @@
     .controller('SpotsController', Spots);
 
   Spots.$inject = ['$cordovaDevice', '$cordovaFile', '$document', '$ionicActionSheet', '$ionicModal', '$ionicPopup',
-    '$log', '$scope', '$state', '$window', 'ImageBasemapFactory', 'SpotFactory', 'UserFactory'];
+    '$location', '$log', '$scope', '$state', '$window', 'ImageBasemapFactory', 'SpotFactory', 'UserFactory'];
 
-  function Spots($cordovaDevice, $cordovaFile, $document, $ionicActionSheet, $ionicModal, $ionicPopup, $log, $scope,
-                 $state, $window, ImageBasemapFactory, SpotFactory, UserFactory) {
+  function Spots($cordovaDevice, $cordovaFile, $document, $ionicActionSheet, $ionicModal, $ionicPopup, $location, $log,
+                 $scope, $state, $window, ImageBasemapFactory, SpotFactory, UserFactory) {
     var vm = this;
 
     vm.clearAllSpots = clearAllSpots;
     vm.closeModal = closeModal;
+    vm.deleteSelected = false;
     vm.deleteSpot = deleteSpot;
     vm.exportToCSV = exportToCSV;
     vm.goToSpot = goToSpot;
@@ -85,6 +86,7 @@
     }
 
     function deleteSpot(id) {
+      vm.deleteSelected = true;
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete Spot',
         'template': 'Are you sure you want to delete this spot?'
@@ -94,6 +96,7 @@
           SpotFactory.destroy(id);
           vm.spots = SpotFactory.getSpots();
         }
+        vm.deleteSelected = false;
       });
     }
 
@@ -267,8 +270,11 @@
     }
 
     function goToSpot(id) {
-      SpotFactory.setCurrentSpotById(id);
-      $state.go('spotTab.spot');
+      if (!vm.deleteSelected) {
+        SpotFactory.setCurrentSpotById(id);
+        $location.path('/spotTab/' + id + '/spot');
+        // $state.go('spotTab.spot');
+      }
     }
 
     // Is the user online and logged in

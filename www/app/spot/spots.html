@@ -16,10 +16,9 @@
       Main Map page.
     </div>
     <ion-list>
-      <ion-item ng-repeat='spot in vm.spots | orderBy:"-properties.modified_timestamp" track by spot.properties.id'>
-        <div ng-click='vm.goToSpot(spot.properties.id)'>
+      <ion-item ng-repeat='spot in vm.spots | orderBy:"-properties.modified_timestamp" track by spot.properties.id'
+                ng-click='vm.goToSpot(spot.properties.id)'>
           {{spot.properties.name}}
-        </div>
         <div class=" item-button-right">
           <button class='button button-clear button-dark'
                   ng-click='vm.deleteSpot(spot.properties.id)'>
