@@ -11,7 +11,7 @@
   function ArchiveTilesController($ionicLoading, $log, $state, MapViewFactory, OfflineTilesFactory,
                                   SlippyTileNamesFactory) {
     var vm = this;
-    var maxZoomToDownload = 18;  // the maximum allowable zoom download for any given map
+    var maxZoomToDownload = 19;  // the maximum allowable zoom download for any given map
     var mapExtent = MapViewFactory.getExtent();
 
     vm.goToMap = goToMap;

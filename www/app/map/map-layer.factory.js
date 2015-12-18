@@ -108,7 +108,21 @@
         'title': 'Offline Maps',
         'layers': [
           new ol.layer.Tile({
-            'title': 'Satellite',
+            'title': 'Mapbox Satellite',
+            'id': 'mbSat',
+            'type': 'base',
+            'visible': false,
+            'source': new ol.source.OSM({       // Think this should by XYZ but then tileLoadFunction never called
+              'attributions': [
+                new ol.Attribution({
+                  'html': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                })
+              ],
+              'tileLoadFunction': tileLoadFunction('mbSat', false)
+            })
+          }),
+          new ol.layer.Tile({
+            'title': 'MapQuest Satellite',
             'id': 'mqSat',
             'type': 'base',
             'visible': false,
@@ -157,7 +171,21 @@
         'title': 'Online Maps',
         'layers': [
           new ol.layer.Tile({
-            'title': 'Satellite',
+            'title': 'Mapbox Satellite',
+            'id': 'mbSat',
+            'type': 'base',
+            'visible': false,
+            'source': new ol.source.XYZ({
+              'attributions': [
+                new ol.Attribution({
+                  'html': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                })
+              ],
+              'url': 'http://api.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYXpncyIsImEiOiJjaWljNmFqZm8wMDVjdHZrcnQ0NXBrMWxkIn0.U6A6zQQ5Xkgq1Q4Aw1FoOQ'
+            })
+          }),
+          new ol.layer.Tile({
+            'title': 'MapQuest Satellite',
             'id': 'mqSat',
             'type': 'base',
             'visible': false,

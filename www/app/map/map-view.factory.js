@@ -87,9 +87,9 @@
             var heading = position.coords.heading;
             var speed = position.coords.speed;
 
-            $log.log('getLocation-watch ', [lat, lng],
+            /*$log.log('getLocation-watch ', [lat, lng],
               '(accuracy: ' + accuracy + ') (altitude: ' + altitude + ') (heading: ' + heading + ') (speed: ' + speed + ')');
-
+             */
             // create a point feature and assign the lat/long to its geometry
             var iconFeature = new ol.Feature({
               'geometry': new ol.geom.Point(ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'))
@@ -114,7 +114,7 @@
         $log.log('toggleLocation is now false');
 
         // clear geolocation watch
-        geolocationWatchId.clearWatch();
+        if (geolocationWatchId) geolocationWatchId.clearWatch();
 
         // clear the geolocation marker
         geolocationLayer.setSource(new ol.source.Vector({}));

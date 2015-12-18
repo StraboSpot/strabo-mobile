@@ -68,6 +68,7 @@
       var mime = mapTileProvider.mime;
 
       var imageUrl = url + tile + '.' + mapTileProvider.imageType;
+      if (mapTileProvider.key) imageUrl = imageUrl + '?' + mapTileProvider.key;
 
       var xhr = new XMLHttpRequest();
       xhr.open('GET', imageUrl, true);
@@ -177,6 +178,18 @@
         ],
         'imageType': 'png',
         'mime': 'image/png'
+      }, {
+        'id': 'mbSat',
+        'name': 'Mapbox Satellite',
+        'url': [
+          'http://a.tiles.mapbox.com/v4/mapbox.satellite/',
+          'http://b.tiles.mapbox.com/v4/mapbox.satellite/',
+          'http://c.tiles.mapbox.com/v4/mapbox.satellite/',
+          'http://d.tiles.mapbox.com/v4/mapbox.satellite/'
+        ],
+        'imageType': 'jpg',
+        'mime': 'image/jpeg',
+        'key': 'access_token=pk.eyJ1IjoiYXpncyIsImEiOiJjaWljNmFqZm8wMDVjdHZrcnQ0NXBrMWxkIn0.U6A6zQQ5Xkgq1Q4Aw1FoOQ'
       }];
     }
 
@@ -330,7 +343,7 @@
     function read(mapProvider, tile, callback) {
       // note that tileId is prefixed with mapProvider, tile itself is not
       var tileId = mapProvider + '/' + tile;
-      $log.log('factory, ', tileId);
+      //$log.log('factory, ', tileId);
 
       LocalStorageFactory.mapTilesDb.getItem(tileId).then(function (blob) {
         callback(blob);
