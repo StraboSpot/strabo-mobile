@@ -108,6 +108,20 @@
         'title': 'Offline Maps',
         'layers': [
           new ol.layer.Tile({
+            'title': 'Mapbox Topo',
+            'id': 'mbTopo',
+            'type': 'base',
+            'visible': false,
+            'source': new ol.source.OSM({       // Think this should by XYZ but then tileLoadFunction never called
+              'attributions': [
+                new ol.Attribution({
+                  'html': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                })
+              ],
+              'tileLoadFunction': tileLoadFunction('mbTopo', false)
+            })
+          }),
+          new ol.layer.Tile({
             'title': 'Mapbox Satellite',
             'id': 'mbSat',
             'type': 'base',
@@ -171,6 +185,20 @@
         'title': 'Online Maps',
         'layers': [
           new ol.layer.Tile({
+            'title': 'Mapbox Topo',
+            'id': 'mbTopo',
+            'type': 'base',
+            'visible': false,
+            'source': new ol.source.XYZ({
+              'attributions': [
+                new ol.Attribution({
+                  'html': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                })
+              ],
+              'url': 'http://api.tiles.mapbox.com/v4/strabo-geology.of9ia83k/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic3RyYWJvLWdlb2xvZ3kiLCJhIjoiY2lpYzdhbzEwMDA1ZnZhbTEzcTV3Z3ZnOSJ9.myyChr6lmmHfP8LYwhH5Sg'
+            })
+          }),
+          new ol.layer.Tile({
             'title': 'Mapbox Satellite',
             'id': 'mbSat',
             'type': 'base',
@@ -181,7 +209,7 @@
                   'html': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 })
               ],
-              'url': 'http://api.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYXpncyIsImEiOiJjaWljNmFqZm8wMDVjdHZrcnQ0NXBrMWxkIn0.U6A6zQQ5Xkgq1Q4Aw1FoOQ'
+              'url': 'http://api.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic3RyYWJvLWdlb2xvZ3kiLCJhIjoiY2lpYzdhbzEwMDA1ZnZhbTEzcTV3Z3ZnOSJ9.myyChr6lmmHfP8LYwhH5Sg'
             })
           }),
           new ol.layer.Tile({

@@ -189,7 +189,19 @@
         ],
         'imageType': 'jpg',
         'mime': 'image/jpeg',
-        'key': 'access_token=pk.eyJ1IjoiYXpncyIsImEiOiJjaWljNmFqZm8wMDVjdHZrcnQ0NXBrMWxkIn0.U6A6zQQ5Xkgq1Q4Aw1FoOQ'
+        'key': 'access_token=pk.eyJ1Ijoic3RyYWJvLWdlb2xvZ3kiLCJhIjoiY2lpYzdhbzEwMDA1ZnZhbTEzcTV3Z3ZnOSJ9.myyChr6lmmHfP8LYwhH5Sg'
+      }, {
+        'id': 'mbTopo',
+        'name': 'Mapbox Topo',
+        'url': [
+          'http://a.tiles.mapbox.com/v4/strabo-geology.of9ia83k/',
+          'http://b.tiles.mapbox.com/v4/strabo-geology.of9ia83k/',
+          'http://c.tiles.mapbox.com/v4/strabo-geology.of9ia83k/',
+          'http://d.tiles.mapbox.com/v4/strabo-geology.of9ia83k/'
+        ],
+        'imageType': 'jpg',
+        'mime': 'image/jpeg',
+        'key': 'access_token=pk.eyJ1Ijoic3RyYWJvLWdlb2xvZ3kiLCJhIjoiY2lpYzdhbzEwMDA1ZnZhbTEzcTV3Z3ZnOSJ9.myyChr6lmmHfP8LYwhH5Sg'
       }];
     }
 
