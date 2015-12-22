@@ -1,6 +1,6 @@
 name,type,label,required,relevant,appearance,default,hint,constraint
-trace_line_feature,acknowledge,Trace/Line Feature,false,,,,,
-trace_type,select_one pl5yo85,Trace Type,true,${trace_line_feature} != '',,,,
+trace_feature,acknowledge,Trace Feature,false,,,,,
+trace_type,select_one pl5yo85,Trace Type,true,${trace_feature} != '',,,,
 contact_type,select_one lx9ax28,Contact Type,false,${trace_type} = 'contact',horizontal,,,
 other_contact_type,text,Other Contact Type,true,${contact_type} = 'unknown',,,,
 depositional_contact_type,select_one bi4sw60,Depositional Contact Type,false,${contact_type} = 'depositional',horizontal,,,
@@ -29,6 +29,6 @@ trace_quality,select_one wb5nf41,Trace Quality,false,${contact_type} = 'depositi
 other_trace_quality,text,Other Trace Quality,true,${trace_quality} = 'other',,,,
 trace_character,select_one rd1pp06,Trace Character,false,${contact_type} = 'depositional' or ${contact_type} = 'intrusive' or ${contact_type} = 'metamorphic',horizontal,,,
 other_trace_character,text,Other Trace Character,true,${trace_character} = 'other',,,,
-trace_notes,note,Trace Notes,false,${trace_line_feature} != '',,,,. != ''
+trace_notes,note,Trace Notes,false,${trace_feature} != '',,,,. = ''
 start,start,,,,,,,
 end,end,,,,,,,
