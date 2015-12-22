@@ -94,7 +94,7 @@
       <div ng-switch-when='acknowledge'>
         <ul class="list">
           <li class="item item-toggle">
-            {{field.label}}
+            <span>{{field.label}}</span>
             <label class='toggle'>
               <input type='checkbox'
                      name='{{ field.name }}'
@@ -109,19 +109,6 @@
           </li>
         </ul>
       </div>
-      <!--
-      <div ng-switch-when='acknowledge'>
-        <label class='item item-stacked-label item-text-wrap' ng-class='vm.setSelMultClass(field)'>
-          <span class='input-label'>{{field.label}}</span><br>
-          <span class='item-placeholder'><small>{{ field.hint }}</small></span>
-          <ion-checkbox name='{{ field.name }}'
-                        ng-checked='vm.isAcknowledgeChecked(field.name)'
-                        ng-click='vm.toggleAcknowledgeChecked(field.name)'
-                        ng-required='{{ field.required }}'>
-            Yes
-          </ion-checkbox>
-        </label>
-      </div>-->
       <div ng-if='straboForm[field.name].$touched'>
         <div ng-messages='straboForm[field.name].$error'>
           <div ng-messages-include='app/form/error-messages.html'></div>

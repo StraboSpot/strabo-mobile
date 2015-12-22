@@ -21,7 +21,6 @@
     vm.fields = {};
     vm.getMax = getMax;
     vm.getMin = getMin;
-    vm.isAcknowledgeChecked = isAcknowledgeChecked;
     vm.isOptionChecked = isOptionChecked;
     vm.loadTab = loadTab;
     vm.openSpot = openSpot;
@@ -176,17 +175,6 @@
       }
       catch (e) {
         return undefined;
-      }
-    }
-
-    function isAcknowledgeChecked(field) {
-      if (vm.spot) {
-        if (vm.data[field]) {
-          return true;
-        }
-      }
-      else {
-        return false;
       }
     }
 

@@ -279,6 +279,14 @@ Input Fields Style
   left: 0px;
 }
 
+.item-toggle .toggle {
+  left: 16px !important;
+}
+
+.item-toggle .ng-binding {
+  margin-left: 65px !important;
+}
+
 /*--------------------
 Style fields for input errors and no-errors
 --------------------*/
