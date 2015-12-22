@@ -3,19 +3,19 @@
     <ion-content>
       <label class='item item-input item-stacked-label item-text-wrap'>
         <span class='input-label'>Spot Name</span>
-        <input type='text' placeholder='Name this Spot' ng-model='vm.spot.properties.name'>
+        <input type='text' placeholder='Name this Spot' ng-model='vm.data.name'>
       </label>
       <label class='item item-input item-stacked-label item-text-wrap'>
         <span class='input-label'>ID</span>
-        <input type='number' disabled ng-model='vm.spot.properties.id'>
+        <input type='number' disabled ng-model='vm.data.id'>
       </label>
       <label class='item item-input item-stacked-label item-text-wrap'>
         <span class='input-label'>Date</span>
-        <input type='date' ng-model='vm.spot.properties.date'>
+        <input type='date' ng-model='vm.data.date'>
       </label>
       <label class='item item-input item-stacked-label item-text-wrap'>
         <span class='input-label'>Time</span>
-        <input type='time' ng-model='vm.spot.properties.time'>
+        <input type='time' ng-model='vm.data.time'>
       </label>
 
       <div ng-if='vmChild.mapped'>
@@ -108,7 +108,7 @@
             <option value=''></option>
           </select>
         </label>
-        <button ng-click='vmChild.viewRockUnit();' ng-show='vm.spot.properties.rock_unit'
+        <button ng-click='vmChild.viewRockUnit();' ng-show='vm.data.rock_unit'
                 class='button button-clear icon-left icon ion-eye'>View/Edit Rock Unit
         </button>
       </div>
@@ -126,7 +126,7 @@
         Notes
       </div>
       <label class='item item-input'>
-        <textarea placeholder='Notes about this Spot' rows='12' ng-model='vm.spot.properties.notes'></textarea>
+        <textarea placeholder='Notes about this Spot' rows='12' ng-model='vm.data.notes'></textarea>
       </label>
     </ion-content>
   </ion-view>

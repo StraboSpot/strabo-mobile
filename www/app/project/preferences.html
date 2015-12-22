@@ -1,15 +1,8 @@
 <form name='straboForm' novalidate=''>
   <ion-view title='Preferences'>
     <ion-nav-buttons side='left'>
-      <button menu-toggle='left' class='button button-icon icon ion-navicon'></button>
-    </ion-nav-buttons>
-    <ion-nav-buttons side='right'>
-      <div ng-if='vm.pristine || !vm.valid'>
-        <button class='button disabled button-icon icon ion-checkmark-circled'></button>
-      </div>
-      <div ng-if='!vm.pristine && vm.valid'>
-        <button ng-click='vm.submit();' class='button button-icon icon ion-checkmark-circled'></button>
-      </div>
+      <button menu-toggle='left' ng-click='vm.submit();'
+              class='button button-icon icon ion-navicon'></button>
     </ion-nav-buttons>
     <ion-content class='has-header'>
       <auto-fields/>

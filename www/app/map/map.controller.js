@@ -7,16 +7,18 @@
 
   MapController.$inject = ['$ionicActionSheet', '$ionicPopup', '$ionicSideMenuDelegate', '$location', '$log', '$scope',
     'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory', 'MapSetupFactory', 'MapViewFactory',
-    'OfflineTilesFactory'];
+    'SpotFactory', 'OfflineTilesFactory'];
 
   function MapController($ionicActionSheet, $ionicPopup, $ionicSideMenuDelegate, $location, $log, $scope,
                          MapDrawFactory, MapFeaturesFactory, MapLayerFactory, MapSetupFactory, MapViewFactory,
-                         OfflineTilesFactory) {
+                         SpotFactory, OfflineTilesFactory) {
     var vm = this;
 
     vm.cacheOfflineTiles = cacheOfflineTiles;
+    vm.currentSpot = SpotFactory.getCurrentSpot();
     vm.currentZoom = '';
     vm.isOnline = isOnline;
+    vm.returnToSpot = returnToSpot;
     vm.showActionsheet = showActionsheet;
     vm.toggleLocation = toggleLocation;
 
@@ -114,6 +116,10 @@
 
     function isOnline() {
       return navigator.onLine;
+    }
+
+    function returnToSpot() {
+      $location.path('/spotTab/' + vm.currentSpot.properties.id + '/spot');
     }
 
     function showActionsheet() {

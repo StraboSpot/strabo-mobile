@@ -5,18 +5,14 @@
     .module('app')
     .controller('ProjectController', ProjectController);
 
-  ProjectController.$inject = ['$ionicSideMenuDelegate', '$scope', '$state', 'FormFactory', 'ProjectFactory'];
+  ProjectController.$inject = ['$state', 'FormFactory', 'ProjectFactory'];
 
-  function ProjectController($ionicSideMenuDelegate, $scope, $state, FormFactory, ProjectFactory) {
+  function ProjectController($state, FormFactory, ProjectFactory) {
     var vm = this;
 
     vm.data = {};
-    vm.dataOriginal = {};
     vm.goToProjects = goToProjects;
     vm.isNewProject = null;
-    vm.isPristine = isPristine;
-    vm.isValid = isValid;
-    vm.pristine = true;
     vm.showField = showField;
     vm.survey = [];
     vm.submit = submit;
@@ -37,18 +33,7 @@
         vm.isNewProject = false;
         vm.data = ProjectFactory.getProjectData();
         vm.data = fixDates(vm.data);
-        vm.dataOriginal = vm.data;
       }
-
-      // Watch whether form has been modified or not
-      $scope.$watch('vm.isPristine()', function (pristine) {
-        vm.pristine = pristine;
-      });
-
-      // Watch whether form is valid
-      $scope.$watch('vm.isValid()', function (valid) {
-        vm.valid = valid;
-      });
     }
 
     // Convert date string to Date type
@@ -56,15 +41,6 @@
       if (data.start_date) data.start_date = new Date(data.start_date);
       if (data.end_date) data.end_date = new Date(data.end_date);
       return data;
-    }
-
-    function isPristine() {
-      vm.data = _.pick(vm.data, _.identity);
-      return _.isEqual(vm.dataOriginal, vm.data);
-    }
-
-    function isValid() {
-      return !$scope.straboForm.$invalid;
     }
 
     /**
@@ -91,8 +67,6 @@
         }
         else {
           ProjectFactory.save(vm.data);
-          vm.dataOriginal = vm.data;
-          $ionicSideMenuDelegate.toggleLeft();
         }
       }
     }

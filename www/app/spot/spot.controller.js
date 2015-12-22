@@ -5,22 +5,22 @@
     .module('app')
     .controller('SpotController', SpotController);
 
-  SpotController.$inject = ['$document', '$ionicActionSheet', '$ionicPopup', '$location', '$log', '$scope', '$state',
+  SpotController.$inject = ['$document', '$ionicActionSheet', '$ionicPopup', '$location', '$log', '$state',
     'DataModelsFactory', 'FormFactory', 'ImageBasemapFactory', 'PreferencesFactory', 'ProjectFactory', 'SpotFactory',
     'SpotFormsFactory'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
-  function SpotController($document, $ionicActionSheet, $ionicPopup, $location, $log, $scope, $state, DataModelsFactory,
+  function SpotController($document, $ionicActionSheet, $ionicPopup, $location, $log, $state, DataModelsFactory,
                           FormFactory, ImageBasemapFactory, PreferencesFactory, ProjectFactory, SpotFactory,
                           SpotFormsFactory) {
     var vm = this;
 
-    vm.choices = null;
+    vm.copySpot = false;
+    vm.choices = undefined;
     vm.data = {};
     vm.fields = {};
     vm.getMax = getMax;
     vm.getMin = getMin;
-    vm.goToSpots = goToSpots;
     vm.isAcknowledgeChecked = isAcknowledgeChecked;
     vm.isOptionChecked = isOptionChecked;
     vm.loadTab = loadTab;
@@ -32,12 +32,11 @@
     vm.showTab = showTab;
     vm.showTrace = false;
     vm.spot = {};
+    vm.stateName = $state.current.name;
     vm.submit = submit;
-    vm.survey = null;
-    vm.switchTabs = switchTabs;
+    vm.survey = undefined;
     vm.toggleAcknowledgeChecked = toggleAcknowledgeChecked;
     vm.toggleChecked = toggleChecked;
-    vm.validateFields = validateFields;
     vm.validateForm = validateForm;
 
     activate();
@@ -54,10 +53,11 @@
     // Create a new spot with the details from this spot
     function copySpot() {
       var newSpot = _.omit(vm.spot, 'properties');
-      newSpot.properties = _.omit(vm.spot.properties,
+      newSpot.properties = _.omit(vm.data,
         ['name', 'id', 'date', 'time', 'modified_timestamp']);
-      SpotFactory.setNewSpot(newSpot);
-      loadSpot(undefined);
+      var id = SpotFactory.setNewSpot(newSpot);
+      vm.copySpot = true;
+      submit('/spotTab/' + id + '/spot');
     }
 
     // Delete the spot
@@ -68,7 +68,7 @@
       });
       confirmPopup.then(function (res) {
         if (res) {
-          SpotFactory.destroy(vm.spot.properties.id);
+          SpotFactory.destroy(vm.data.id);
           $location.path('/app/spots');
         }
       });
@@ -82,24 +82,6 @@
         $log.log('Finished loading ' + key + ' : ', fields);
         vm.fields[key] = fields;
       });
-    }
-
-    // Load the form survey (and choices, if applicable)
-    function loadForm(tab) {
-      switch (tab) {
-        case 'spotTab._3dstructures':
-          vm.survey = vm.fields._3dstructures_survey;
-          vm.choices = vm.fields._3dstructures_choices;
-          break;
-        case 'spotTab.sample':
-          vm.survey = vm.fields.sample_survey;
-          vm.choices = vm.fields.sample_choices;
-          break;
-        case 'spotTab.spot':
-          vm.survey = vm.fields.traces_survey;
-          vm.choices = vm.fields.traces_choices;
-          break;
-      }
     }
 
     function loadForms() {
@@ -116,80 +98,36 @@
       vm.fields.traces_choices = SpotFormsFactory.getTracesChoices();
     }
 
-    // Get the current spot
-    function loadSpot(id) {
-      if (!_.isEmpty(SpotFactory.getNewSpot())) {
-        // Load spot stored in the SpotFactory factory
-        vm.spot = SpotFactory.getNewSpot();
-        SpotFactory.setCurrentSpot(vm.spot);
-        vm.spot = SpotFactory.getCurrentSpot();
-        // now clear the new spot from the factory because we have the info in our current scope
-        SpotFactory.clearNewSpot();
-
-        // Set default name
-        var prefix = ProjectFactory.getSpotPrefix();
-        if (!prefix) prefix = new Date().getTime().toString();
-        var number = ProjectFactory.getSpotNumber();
-        if (!number) number = '';
-        vm.spot.properties.name = prefix + number;
-        setProperties();
-      }
-      else {
-        if (!_.isEmpty(SpotFactory.getCurrentSpot())) {
-          vm.spot = SpotFactory.getCurrentSpot();
-          $log.log('attempting to set properties2');
-          setProperties();
-        }
-        else {
-          SpotFactory.setCurrentSpotById(id);
-          vm.spot = SpotFactory.getCurrentSpot();
-          $log.log('attempting to set properties3');
-          setProperties();
-        }
+    // Set the form survey (and choices, if applicable)
+    function setForm(tab) {
+      switch (tab) {
+        case 'spotTab._3dstructures':
+          vm.survey = vm.fields._3dstructures_survey;
+          vm.choices = vm.fields._3dstructures_choices;
+          break;
+        case 'spotTab.sample':
+          vm.survey = vm.fields.sample_survey;
+          vm.choices = vm.fields.sample_choices;
+          break;
+        case 'spotTab.spot':
+          vm.survey = vm.fields.traces_survey;
+          vm.choices = vm.fields.traces_choices;
+          break;
       }
     }
 
-    // Set or cleanup some of the properties of the vm
-    function setProperties() {
+    // Set the current spot
+    function setSpot(id) {
+      vm.spot = SpotFactory.getCurrentSpot();
+      if (!vm.spot) {
+        SpotFactory.setCurrentSpotById(id);
+        vm.spot = SpotFactory.getCurrentSpot();
+      }
+
       // Convert date string to Date type
       vm.spot.properties.date = new Date(vm.spot.properties.date);
       vm.spot.properties.time = new Date(vm.spot.properties.time);
       vm.spotTitle = vm.spot.properties.name;
-
-      // Set default values for the spot
-      if (vm.survey) {
-        vm.survey = _.reject(vm.survey, function (field) {
-          return ((field.type === 'start' && field.name === 'start') || (field.type === 'end' && field.name === 'end'));
-        });
-
-        _.each(vm.survey, function (field) {
-          if (!vm.spot.properties[field.name] && field.default) {
-            if (field.type === 'text' || field.type === 'note') {
-              vm.spot.properties[field.name] = field.default;
-            }
-            else if (field.type === 'integer' && !isNaN(parseInt(field.default))) {
-              vm.spot.properties[field.name] = parseInt(field.default);
-            }
-            else if (field.type.split(' ')[0] === 'select_one' || field.type.split(' ')[0] === 'select_multiple') {
-              var curChoices = _.filter(vm.choices,
-                function (choice) {
-                  return choice['list name'] === field.type.split(' ')[1];
-                }
-              );
-              // Check that default is in the list of choices for field
-              if (_.findWhere(curChoices, {'name': field.default})) {
-                if (field.type.split(' ')[0] === 'select_one') {
-                  vm.spot.properties[field.name] = field.default;
-                }
-                else {
-                  vm.spot.properties[field.name] = [];
-                  vm.spot.properties[field.name].push(field.default);
-                }
-              }
-            }
-          }
-        });
-      }
 
       vm.spots = SpotFactory.getSpots();
       if (!_.isEmpty(vm.spots)) {
@@ -206,8 +144,8 @@
             }
           });
         });
-        vm.data = vm.spot.properties;
       }
+      vm.data = vm.spot.properties;
       $log.log('Spot loaded: ', vm.spot);
     }
 
@@ -241,13 +179,9 @@
       }
     }
 
-    function goToSpots() {
-      $state.go('app.spots');
-    }
-
     function isAcknowledgeChecked(field) {
       if (vm.spot) {
-        if (vm.spot.properties[field]) {
+        if (vm.data[field]) {
           return true;
         }
       }
@@ -258,8 +192,8 @@
 
     function isOptionChecked(field, choice) {
       if (vm.spot) {
-        if (vm.spot.properties[field]) {
-          return vm.spot.properties[field].indexOf(choice) !== -1;
+        if (vm.data[field]) {
+          return vm.data[field].indexOf(choice) !== -1;
         }
       }
       else {
@@ -268,8 +202,12 @@
     }
 
     function loadTab(state) {
-      loadSpot(state.params.spotId);
-      loadForm(state.current.name);
+      vm.stateName = state.current.name;
+      vm.survey = undefined;
+      vm.choices = undefined;
+      vm.copySpot = false;
+      setSpot(state.params.spotId);
+      setForm(vm.stateName);
 
       vm.showTrace = false;
       vm.showRockUnit = true;
@@ -288,8 +226,8 @@
     // to set the class in the html the same way as for the other fields
     function setSelMultClass(field) {
       if (field.required === 'true') {
-        if (vm.spot.properties[field.name]) {
-          if (vm.spot.properties[field.name].length > 0) {
+        if (vm.data[field.name]) {
+          if (vm.data[field.name].length > 0) {
             return 'no-errors';
           }
         }
@@ -330,7 +268,12 @@
     // Determine if the field should be shown or not by looking at the relevant key-value pair
     function showField(field) {
       var show = FormFactory.isRelevant(field.relevant, vm.data);
-      if (!show) delete vm.data[field.name];
+      if (show && field.default) {
+        if (!vm.data[field.name]) vm.data[field.name] = field.default;
+      }
+      if (!show) {
+        if (vm.data[field.name]) delete vm.data[field.name];
+      }
       return show;
     }
 
@@ -340,68 +283,48 @@
     }
 
     // Add or modify Spot
-    function submit() {
+    function submit(toPath) {
       // Validate the form first
-      if (!vm.validateForm()) {
-        return 0;
+      if (vm.validateForm()) {
+        $log.log('spot to save: ', vm.spot);
+
+        // define the geojson feature type
+        vm.spot.type = 'Feature';
+
+        _.forEach(vm.spot.images, function (image) {
+          if (image.annotated) {
+            ImageBasemapFactory.addImageBasemap(image);
+          }
+          else {
+            ImageBasemapFactory.removeImageBasemap(image);
+          }
+        });
+
+        var found = _.find(vm.spots, function (spot) {
+          return spot.properties.id === vm.data.id;
+        });
+
+        vm.spot.properties = vm.data;
+        // Save the spot
+        SpotFactory.save(vm.spot).then(function (data) {
+          vm.spots = data;
+          if (vm.copySpot) SpotFactory.clearCurrentSpot();
+          if (!found) ProjectFactory.incrementSpotNumber();
+          $location.path(toPath);
+        });
       }
-
-      $log.log('spot to save: ', vm.spot);
-
-      // define the geojson feature type
-      vm.spot.type = 'Feature';
-
-      _.forEach(vm.spot.images, function (image) {
-        if (image.annotated) {
-          ImageBasemapFactory.addImageBasemap(image);
-        }
-        else {
-          ImageBasemapFactory.removeImageBasemap(image);
-        }
-      });
-
-      var found = _.find(vm.spots, function (spot) {
-        return spot.properties.id === vm.spot.properties.id;
-      });
-
-      // Save the spot
-      SpotFactory.save(vm.spot).then(function (data) {
-        vm.spots = data;
-        SpotFactory.clearCurrentSpot();
-        if (!found) ProjectFactory.incrementSpotNumber();
-        $location.path('/app/spots');
-        // $ionicHistory.goBack();
-      });
-    }
-
-    // When switching tabs validate the form first (if the tab is based on a form),
-    // save the properties for the current spot temporarily, then go to the new tab
-    function switchTabs(toTab) {
-      // Has the rock sample form been touched?
-      if ($scope.$$childTail.SampleTabForm && !$scope.$$childTail.SampleTabForm.$pristine) {
-        // yes
-        if (!vm.validateForm()) {
-          return 0;
-        }
-      }
-      else {
-        if (!vm.validateForm()) {
-          return 0;
-        }
-      }
-
-      $location.path('/spotTab/' + vm.spot.properties.id + '/' + toTab);
+      vm.copySpot = false;
     }
 
     function toggleAcknowledgeChecked(field) {
-      if (vm.spot.properties[field]) {
+      if (vm.data[field]) {
         var confirmPopup = $ionicPopup.confirm({
           'title': 'Close Group?',
           'template': 'By closing this group you will be clearing any data in this group. Continue?'
         });
         confirmPopup.then(function (res) {
           if (res) {
-            vm.spot.properties = FormFactory.toggleAcknowledgeChecked(vm.spot.properties, field);
+            vm.data = FormFactory.toggleAcknowledgeChecked(vm.data, field);
           }
           else {
             $document[0].getElementById(field + 'Toggle').checked = true;
@@ -409,77 +332,41 @@
         });
       }
       else {
-        vm.spot.properties = FormFactory.toggleAcknowledgeChecked(vm.spot.properties, field);
+        vm.data = FormFactory.toggleAcknowledgeChecked(vm.data, field);
       }
     }
 
     function toggleChecked(field, choice) {
       var i = -1;
-      if (vm.spot.properties[field]) {
-        i = vm.spot.properties[field].indexOf(choice);
+      if (vm.data[field]) {
+        i = vm.data[field].indexOf(choice);
       }
       else {
-        vm.spot.properties[field] = [];
+        vm.data[field] = [];
       }
 
       // If choice not already selected
       if (i === -1) {
-        vm.spot.properties[field].push(choice);
+        vm.data[field].push(choice);
       }
       // Choice has been unselected so remove it and delete if empty
       else {
-        vm.spot.properties[field].splice(i, 1);
-        if (vm.spot.properties[field].length === 0) {
-          delete vm.spot.properties[field];
+        vm.data[field].splice(i, 1);
+        if (vm.data[field].length === 0) {
+          delete vm.data[field];
         }
-      }
-    }
-
-    // Validate Trace/Line Feature Form
-    function validateFields(form) {
-      $log.log('Validating form with spot:', vm.spot);
-      var errorMessages = '';
-
-      // If a field is visible and required but empty give the user an error message and return to the form
-      _.each(form, function (field) {
-        var ele = document.getElementById(field.name);
-        if (getComputedStyle(ele).display !== 'none' && angular.isUndefined(vm.spot.properties[field.name])) {
-          if (field.required === 'true') {
-            errorMessages += '<b>' + field.label + '</b> Required!<br>';
-          }
-          else if (field.name in vm.spot.properties) {
-            errorMessages += '<b>' + field.label + '</b> ' + field.constraint_message + '<br>';
-          }
-        }
-        else if (getComputedStyle(ele).display === 'none') {
-          delete vm.spot.properties[field.name];
-        }
-      });
-
-      if (errorMessages) {
-        $ionicPopup.alert({
-          'title': 'Validation Error!',
-          'template': 'Fix the following errors before continuing:<br>' + errorMessages
-        });
-        return false;
-      }
-      else {
-        return true;
       }
     }
 
     // Validate Spot Tab
     function validateForm() {
-      switch ($state.current.url.split('/').pop()) {
-        case 'spot':
-          if (!vm.spot.properties.name) {
+      switch (vm.stateName) {
+        case 'spotTab.spot':
+          if (!vm.data.name) {
             $ionicPopup.alert({
               'title': 'Validation Error!',
               'template': '<b>Spot Name</b> is required.'
             });
-            return false;
-          }
-          if (!vm.validateFields(vm.survey)) {
             return false;
           }
           if (vm.spot.geometry) {
@@ -504,8 +391,18 @@
             }
           }
           break;
+        case 'spotTab.sample':
+          // Don't validate the sample tab if no sample fields are filled in
+          var validateSample = false;
+          _.each(vm.survey, function (field) {
+            if (vm.data[field.name]) {
+              validateSample = true;
+            }
+          });
+          if (!validateSample) return true;
       }
-      return true;
+      if (!vm.survey) return true;
+      return vm.survey && FormFactory.validate(vm.survey, vm.data);
     }
   }
 }());

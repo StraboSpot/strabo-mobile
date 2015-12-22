@@ -11,12 +11,9 @@
     var vm = this;
 
     vm.data = null;
-    vm.dataOriginal = null;
-    vm.isPristine = isPristine;
     vm.login = null;
     vm.doLogin = doLogin;
     vm.doLogout = doLogout;
-    vm.pristine = true;
     vm.submit = submit;
 
     activate();
@@ -27,18 +24,6 @@
 
     function activate() {
       vm.data = UserFactory.getUser();
-      vm.dataOriginal = vm.data;
-
-      // Watch whether form has been modified or not
-      $scope.$watch('vm.isPristine()', function (pristine) {
-        vm.pristine = pristine;
-      });
-    }
-
-    function isPristine() {
-      vm.data = _.pick(vm.data, _.identity);
-      if (_.isEmpty(vm.data)) vm.data = null;
-      return _.isEqual(vm.dataOriginal, vm.data);
     }
 
     /**
@@ -50,7 +35,6 @@
       if (navigator.onLine) {
         UserFactory.doLogin(vm.login).then(function () {
           vm.data = UserFactory.getUser();
-          vm.dataOriginal = vm.data;
         });
       }
       else {
@@ -65,14 +49,12 @@
     function doLogout() {
       vm.login = null;
       vm.data = null;
-      vm.dataOriginal = null;
       UserFactory.clearUser();
       $log.log('Logged out');
     }
 
     function submit() {
       UserFactory.saveUser(vm.data);
-      vm.dataOriginal = vm.data;
     }
   }
 }());

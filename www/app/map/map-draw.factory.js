@@ -5,13 +5,13 @@
     .module('app')
     .factory('MapDrawFactory', MapDrawFactory);
 
-  MapDrawFactory.$inject = ['$document', '$ionicPopup', '$log', '$state', 'SpotFactory'];
+  MapDrawFactory.$inject = ['$document', '$ionicPopup', '$location', '$log', '$rootScope', 'SpotFactory'];
 
-  function MapDrawFactory($document, $ionicPopup, $log, $state, SpotFactory) {
+  function MapDrawFactory($document, $ionicPopup, $location, $log, $rootScope, SpotFactory) {
     var draw;               // draw is a ol3 drawing interaction
     var drawButtonActive;   // drawButtonActive used to keep state of which selected drawing tool is active
     var drawLayer;
-    var imageBasemap;           // id of an image basemap if an image basemap is being used
+    var imageBasemap;       // id of an image basemap if an image basemap is being used
     var map;
 
     return {
@@ -21,17 +21,6 @@
       'isDrawMode': isDrawMode,
       'startDraw': startDraw
     };
-
-    /**
-     * Private Functions
-     */
-
-    function createNewSpot(geojsonObj) {
-      geojsonObj.properties = {};
-      if (imageBasemap) geojsonObj.properties.image_basemap = imageBasemap.id;
-      SpotFactory.setNewSpot(geojsonObj);
-      $state.go('spotTab.spot');
-    }
 
     /**
      * Public Functions
@@ -197,6 +186,8 @@
         // clear the drawing
         drawLayer.setSource(new ol.source.Vector());
 
+        var id = '';
+
         // we want a geojson object when the user finishes drawing
         var geojson = new ol.format.GeoJSON();
 
@@ -205,6 +196,9 @@
         if (imageBasemap) {
           // Drawing on an image basemap
           geojsonObj = geojson.writeFeatureObject(e.feature);
+          geojsonObj.properties = {
+            'image_basemap': imageBasemap.id
+          };
 
           if (_.find(_.flatten(geojsonObj.geometry.coordinates),
               function (num) {
@@ -296,8 +290,9 @@
               geojsonObj.properties.image_basemap = imageBasemap.id;
             }
 
-            SpotFactory.setNewSpot(geojsonObj);
-            $state.go('spotTab.spot');
+            id = SpotFactory.setNewSpot(geojsonObj);
+            $location.path('/spotTab/' + id + '/spot');
+            $rootScope.$apply();
           }
           else {
             // contains a kink, aka self-intersecting polygon
@@ -312,12 +307,14 @@
           var curSpot = SpotFactory.getCurrentSpot();
           if (curSpot) {
             curSpot.geometry = geojsonObj.geometry;
+            id = curSpot.properties.id;
             SpotFactory.setCurrentSpot(curSpot);
           }
           else {
-            createNewSpot(geojsonObj);
+            id = SpotFactory.setNewSpot(geojsonObj);
           }
-          $state.go('spotTab.spot');
+          $location.path('/spotTab/' + id + '/spot');
+          $rootScope.$apply();
         }
       });
       map.addInteraction(draw);

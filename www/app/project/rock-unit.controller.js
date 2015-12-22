@@ -5,22 +5,18 @@
     .module('app')
     .controller('RockUnitController', RockUnitController);
 
-  RockUnitController.$inject = ['$ionicPopup', '$log', '$scope', '$state', 'FormFactory', 'ProjectFactory',
+  RockUnitController.$inject = ['$ionicPopup', '$location', '$log', '$state', 'FormFactory', 'ProjectFactory',
     'SpotFactory'];
 
-  function RockUnitController($ionicPopup, $log, $scope, $state, FormFactory, ProjectFactory, SpotFactory) {
+  function RockUnitController($ionicPopup, $location, $log, $state, FormFactory, ProjectFactory, SpotFactory) {
     var vm = this;
     var key = 'unit_label_abbreviation';
 
     vm.choices = {};
     vm.currentSpot = SpotFactory.getCurrentSpot();
     vm.data = {};
-    vm.dataOriginal = {};
     vm.deleteRockUnit = deleteRockUnit;
-    vm.goToRockUnits = goToRockUnits;
-    vm.isPristine = isPristine;
     vm.newRockUnit = newRockUnit;
-    vm.returnToSpot = returnToSpot;
     vm.rockUnits = [];
     vm.showField = showField;
     vm.survey = {};
@@ -38,17 +34,6 @@
       vm.rockUnits = ProjectFactory.getRockUnits();
 
       if ($state.current.name !== 'app.new-rock-unit') vm.data = loadRockUnit();
-      vm.dataOriginal = vm.data;
-
-      // Watch whether form has been modified or not
-      $scope.$watch('vm.isPristine()', function (pristine) {
-        vm.pristine = pristine;
-      });
-    }
-
-    function isPristine() {
-      vm.data = _.pick(vm.data, _.identity);
-      return _.isEqual(vm.dataOriginal, vm.data);
     }
 
     // Get the rock unit description for current rock unit and remove this
@@ -89,16 +74,8 @@
       }
     }
 
-    function goToRockUnits() {
-      $state.go('app.rock-units');
-    }
-
     function newRockUnit() {
       $log.log('new');
-    }
-
-    function returnToSpot() {
-      $state.go('spotTab.spot');
     }
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair
@@ -108,33 +85,45 @@
       return show;
     }
 
-    function submit() {
-      var valid = true;
-      _.each(vm.rockUnits, function (obj) {
-        if (obj[key] === vm.data[key]) valid = false;
-      });
-      if (valid) {
-        valid = FormFactory.validate(vm.survey, vm.data);
-        if (valid) {
-          vm.rockUnits.push(vm.data);
-          ProjectFactory.saveRockUnits(vm.rockUnits).then(function () {
-            SpotFactory.updateSpotsWithRockUnit(key, vm.data);
-            if (vm.currentSpot) {
-              vm.currentSpot.properties.rock_unit = vm.data;
-              SpotFactory.setCurrentSpot(vm.currentSpot);
-              $state.go('spotTab.spot');
-            }
-            else {
-              $state.go('app.rock-units');
-            }
-          });
+    function submit(toPath) {
+      // Don't validate if no fields are filled in
+      var validate = false;
+      _.each(vm.survey, function (field) {
+        if (vm.data[field.name]) {
+          validate = true;
         }
+      });
+      if (!validate) {
+        $location.path(toPath);
       }
       else {
-        $ionicPopup.alert({
-          'title': 'Duplicate Label Error!',
-          'template': 'The label ' + vm.data[key] + ' is already being used for another rock unit. Use a different label.'
+        var validLabel = true;
+        _.each(vm.rockUnits, function (obj) {
+          if (obj[key] === vm.data[key]) validLabel = false;
         });
+        if (validLabel) {
+          var valid = FormFactory.validate(vm.survey, vm.data);
+          if (valid) {
+            vm.rockUnits.push(vm.data);
+            ProjectFactory.saveRockUnits(vm.rockUnits).then(function () {
+              SpotFactory.updateSpotsWithRockUnit(key, vm.data);
+              if (vm.currentSpot) {
+                vm.currentSpot.properties.rock_unit = vm.data;
+                SpotFactory.setCurrentSpot(vm.currentSpot);
+                $location.path(toPath);
+              }
+              else {
+                $location.path(toPath);
+              }
+            });
+          }
+        }
+        else {
+          $ionicPopup.alert({
+            'title': 'Duplicate Label Error!',
+            'template': 'The label ' + vm.data[key] + ' is already being used for another rock unit. Use a different label.'
+          });
+        }
       }
     }
   }

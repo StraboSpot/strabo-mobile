@@ -5,11 +5,10 @@
     .module('app')
     .factory('SpotFactory', SpotFactory);
 
-  SpotFactory.$inject = ['$log', '$q', 'LocalStorageFactory'];
+  SpotFactory.$inject = ['$log', '$q', 'LocalStorageFactory', 'ProjectFactory'];
 
-  function SpotFactory($log, $q, LocalStorageFactory) {
+  function SpotFactory($log, $q, LocalStorageFactory, ProjectFactory) {
     var currentSpot = null;
-    var newSpot = {};
     var currentAssociatedOrientationIndex;
     var currentOrientationIndex;
     var spots = null;
@@ -17,7 +16,6 @@
     return {
       'clear': clear,
       'clearCurrentSpot': clearCurrentSpot,
-      'clearNewSpot': clearNewSpot,
       'destroy': destroy,
       'destroyOrientation': destroyOrientation,
       'getCenter': getCenter,
@@ -25,7 +23,6 @@
       'getCurrentOrientationIndex': getCurrentOrientationIndex,
       'getCurrentSpot': getCurrentSpot,
       'getFirstSpot': getFirstSpot,
-      'getNewSpot': getNewSpot,
       'getOrientations': getOrientations,
       'getSpotCount': getSpotCount,
       'getSpots': getSpots,
@@ -75,10 +72,6 @@
 
     function clearCurrentSpot() {
       currentSpot = null;
-    }
-
-    function clearNewSpot() {
-      newSpot = null;
     }
 
     // delete the spot
@@ -149,10 +142,6 @@
       });
 
       return deferred.promise;
-    }
-
-    function getNewSpot() {
-      return newSpot;
     }
 
     function getOrientations() {
@@ -226,27 +215,27 @@
 
     // Initialize a new Spot
     function setNewSpot(jsonObj) {
-      newSpot = {
-        'type': 'Feature',
-        'properties': {}
-      };
-
-      // Set the geometry if the spot has been mapped
-      if (jsonObj.geometry) {
-        newSpot.geometry = jsonObj.geometry;
-      }
-
-      // Set the properties
-      newSpot.properties = jsonObj.properties;
+      currentSpot = jsonObj;
+      currentSpot.type = 'Feature';
+      if (!currentSpot.properties) currentSpot.properties = {};
 
       // Set the date and time to now
       var d = new Date(Date.now());
       d.setMilliseconds(0);
-      newSpot.properties.date = d;
-      newSpot.properties.time = d;
+      currentSpot.properties.date = d;
+      currentSpot.properties.time = d;
 
       // Set id from the timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id)
-      newSpot.properties.id = Math.floor((new Date().getTime() + Math.random()) * 10);
+      currentSpot.properties.id = Math.floor((new Date().getTime() + Math.random()) * 10);
+
+      // Set default name
+      var prefix = ProjectFactory.getSpotPrefix();
+      if (!prefix) prefix = new Date().getTime().toString();
+      var number = ProjectFactory.getSpotNumber();
+      if (!number) number = '';
+      currentSpot.properties.name = prefix + number;
+
+      return currentSpot.properties.id;
     }
 
     function updateSpotsWithRockUnit(key, rock_unit) {

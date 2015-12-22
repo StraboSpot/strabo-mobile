@@ -11,15 +11,11 @@
     var vm = this;
 
     vm.data = {};
-    vm.dataOriginal = {};
-    vm.isPristine = isPristine;
-    vm.isValid = isValid;
     vm.pristine = true;
     vm.showField = showField;
     vm.survey = [];
     vm.toggleAcknowledgeChecked = toggleAcknowledgeChecked;
     vm.submit = submit;
-    vm.valid = true;
 
     activate();
 
@@ -30,26 +26,6 @@
     function activate() {
       vm.survey = PreferencesFactory.getSurvey();
       vm.data = PreferencesFactory.getPreferencesData();
-      vm.dataOriginal = vm.data;
-
-      // Watch whether form has been modified or not
-      $scope.$watch('vm.isPristine()', function (pristine) {
-        vm.pristine = pristine;
-      });
-
-      // Watch whether form is valid
-      $scope.$watch('vm.isValid()', function (valid) {
-        vm.valid = valid;
-      });
-    }
-
-    function isPristine() {
-      vm.data = _.pick(vm.data, _.identity);
-      return _.isEqual(vm.dataOriginal, vm.data);
-    }
-
-    function isValid() {
-      return !$scope.straboForm.$invalid;
     }
 
     /**

@@ -6,10 +6,10 @@
     .controller('SpotsController', Spots);
 
   Spots.$inject = ['$cordovaDevice', '$cordovaFile', '$document', '$ionicActionSheet', '$ionicModal', '$ionicPopup',
-    '$location', '$log', '$scope', '$state', '$window', 'ImageBasemapFactory', 'SpotFactory', 'UserFactory'];
+    '$location', '$log', '$scope', '$window', 'ImageBasemapFactory', 'SpotFactory', 'UserFactory'];
 
   function Spots($cordovaDevice, $cordovaFile, $document, $ionicActionSheet, $ionicModal, $ionicPopup, $location, $log,
-                 $scope, $state, $window, ImageBasemapFactory, SpotFactory, UserFactory) {
+                 $scope, $window, ImageBasemapFactory, SpotFactory, UserFactory) {
     var vm = this;
 
     vm.clearAllSpots = clearAllSpots;
@@ -257,9 +257,7 @@
 
     function goToSpot(id) {
       if (!vm.deleteSelected) {
-        SpotFactory.setCurrentSpotById(id);
         $location.path('/spotTab/' + id + '/spot');
-        // $state.go('spotTab.spot');
       }
     }
 
@@ -270,13 +268,8 @@
 
     // Create a new Spot
     function newSpot() {
-      var jsonTemplate = {
-        'properties': {
-          'type': 'point'  // Todo Just create as default point type for now but this should be removed
-        }
-      };
-      SpotFactory.setNewSpot(jsonTemplate);
-      $state.go('spotTab.spot');
+      var id = SpotFactory.setNewSpot({});
+      $location.path('/spotTab/' + id + '/spot');
     }
 
     function openModal(modal) {

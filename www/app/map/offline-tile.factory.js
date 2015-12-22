@@ -194,10 +194,10 @@
         'id': 'mbTopo',
         'name': 'Mapbox Topo',
         'url': [
-          'http://a.tiles.mapbox.com/v4/strabo-geology.of9ia83k/',
-          'http://b.tiles.mapbox.com/v4/strabo-geology.of9ia83k/',
-          'http://c.tiles.mapbox.com/v4/strabo-geology.of9ia83k/',
-          'http://d.tiles.mapbox.com/v4/strabo-geology.of9ia83k/'
+          'http://a.tiles.mapbox.com/v4/mapbox.outdoors/',
+          'http://b.tiles.mapbox.com/v4/mapbox.outdoors/',
+          'http://c.tiles.mapbox.com/v4/mapbox.outdoors/',
+          'http://d.tiles.mapbox.com/v4/mapbox.outdoors/'
         ],
         'imageType': 'jpg',
         'mime': 'image/jpeg',

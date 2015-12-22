@@ -9,10 +9,9 @@ navigation history that also transitions its views in and out.
   </ion-nav-back-button> -->
   <ion-nav-title>{{ vm.spotTitle }}</ion-nav-title>
   <ion-nav-buttons side='left'>
-    <button ng-click='vm.goToSpots();' class='button button-icon icon ion-arrow-left-c'></button>
+    <button ng-click='vm.submit("app/spots");' class='button button-icon icon ion-arrow-left-c'></button>
   </ion-nav-buttons>
   <ion-nav-buttons side='right'>
-    <button ng-click='vm.submit();' class='button button-icon icon ion-checkmark-circled'></button>
     <button ng-click='vm.showActionsheet();' class='button button-icon icon ion-arrow-up-b'></button>
   </ion-nav-buttons>
 </ion-nav-bar>
@@ -20,35 +19,35 @@ navigation history that also transitions its views in and out.
 <ion-header-bar class='bar-subheader'>
   <ion-scroll direction='x' class='wide-as-needed'>
     <a class='button button-clear spot-tab-inactive'
-       ng-class='{ "spot-tab-active": $state.current.name == "spotTab.spot"}'
-       ng-click='vm.switchTabs("spot");'>
+       ng-class='{ "spot-tab-active": vm.stateName == "spotTab.spot"}'
+       ng-click='vm.submit("/spotTab/" + vm.data.id + "/spot")'>
       Spot
     </a>
     <span ng-show='vm.showTab("orientation")'>
       <a class='button button-clear spot-tab-inactive'
-         ng-class='{ "spot-tab-active": $state.current.name == "spotTab.orientation-data"}'
-         ng-click='vm.switchTabs("orientation-data")'>
+         ng-class='{ "spot-tab-active": vm.stateName == "spotTab.orientation-data"}'
+         ng-click='vm.submit("/spotTab/" + vm.data.id + "/orientation-data")'>
         Orientation
       </a>
     </span>
     <span ng-show='vm.showTab("_3dstructures")'>
       <a class='button button-clear spot-tab-inactive'
-         ng-class='{ "spot-tab-active": $state.current.name == "spotTab._3dstructures"}'
-         ng-click='vm.switchTabs("_3dstructures");'>
+         ng-class='{ "spot-tab-active": vm.stateName == "spotTab._3dstructures"}'
+         ng-click='vm.submit("/spotTab/" + vm.data.id + "/_3dstructures");'>
         3D Structures
       </a>
     </span>
     <span ng-show='vm.showTab("images")'>
       <a class='button button-clear spot-tab-inactive'
-         ng-class='{ "spot-tab-active": $state.current.name == "spotTab.images"}'
-         ng-click='vm.switchTabs("images");'>
+         ng-class='{ "spot-tab-active": vm.stateName == "spotTab.images"}'
+         ng-click='vm.submit("/spotTab/" + vm.data.id + "/images");'>
         Images
       </a>
     </span>
     <span ng-show='vm.showTab("sample")'>
       <a class='button button-clear spot-tab-inactive'
-         ng-class='{ "spot-tab-active": $state.current.name == "spotTab.sample"}'
-         ng-click='vm.switchTabs("sample");'>
+         ng-class='{ "spot-tab-active": vm.stateName == "spotTab.sample"}'
+         ng-click='vm.submit("/spotTab/" + vm.data.id + "/sample");'>
         Sample
       </a>
     </span>
