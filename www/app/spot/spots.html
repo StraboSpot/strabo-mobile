@@ -19,12 +19,12 @@
       <ion-item ng-repeat='spot in vm.spots | orderBy:"-properties.modified_timestamp" track by spot.properties.id'
                 ng-click='vm.goToSpot(spot.properties.id)'>
           {{spot.properties.name}}
-        <div class=" item-button-right">
+        <span class='item-button-right'>
           <button class='button button-clear button-dark'
                   ng-click='vm.deleteSpot(spot.properties.id)'>
             <i class='ion-trash-b'></i>
           </button>
-        </div>
+        </span>
       </ion-item>
     </ion-list>
   </ion-content>

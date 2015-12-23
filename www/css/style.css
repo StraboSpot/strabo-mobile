@@ -247,15 +247,47 @@ Input Fields Style
   padding: 6px;
 }
 
+.item-divider {
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 6px;
+}
+
 .input-label {
   max-width: 100% !important;
   width: 100% !important;
   font-weight: bold;
+  text-transform: uppercase;
+  font-size: small;
+}
+
+textarea {
+  font-size: small;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="tel"],
+input[type="color"] {
+  font-size: small;
+  line-height: 25px;
+  height: 25px;
+  padding-top: 1px;
 }
 
 .item-input {
-  padding-top: 6px;
-  padding-bottom: 6px;
+  padding-top: 1px;
+  padding-bottom: 1px;
 }
 
 .item-select select {
