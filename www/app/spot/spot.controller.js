@@ -18,6 +18,7 @@
     vm.copySpot = false;
     vm.choices = undefined;
     vm.data = {};
+    vm.deleteSpot = deleteSpot;
     vm.fields = {};
     vm.getMax = getMax;
     vm.getMin = getMin;
@@ -57,20 +58,6 @@
       var id = SpotFactory.setNewSpot(newSpot);
       vm.copySpot = true;
       submit('/spotTab/' + id + '/spot');
-    }
-
-    // Delete the spot
-    function deleteSpot() {
-      var confirmPopup = $ionicPopup.confirm({
-        'title': 'Delete Spot',
-        'template': 'Are you sure you want to delete this spot?'
-      });
-      confirmPopup.then(function (res) {
-        if (res) {
-          SpotFactory.destroy(vm.data.id);
-          $location.path('/app/spots');
-        }
-      });
     }
 
     // Get the form fields
@@ -151,6 +138,20 @@
     /**
      * Public Functions
      */
+
+    // Delete the spot
+    function deleteSpot() {
+      var confirmPopup = $ionicPopup.confirm({
+        'title': 'Delete Spot',
+        'template': 'Are you sure you want to delete this spot?'
+      });
+      confirmPopup.then(function (res) {
+        if (res) {
+          SpotFactory.destroy(vm.data.id);
+          $location.path('/app/spots');
+        }
+      });
+    }
 
     // Get the max value allowed for a number field
     function getMax(constraint) {
