@@ -230,9 +230,9 @@
       $ionicActionSheet.show({
         'titleText': 'Spot Actions',
         'buttons': [{
-          'text': '<i class="icon ion-trash-b"></i>Delete this Spot'
-        }, {
           'text': '<i class="icon ion-ios-copy"></i>Copy this Spot to a New Spot'
+        }, {
+          'text': '<i class="icon ion-help-circled"></i>What other Spot actions do we need here?'
         }],
         'cancelText': 'Cancel',
         'cancel': function () {
@@ -242,10 +242,9 @@
           $log.log('BUTTON CLICKED', index);
           switch (index) {
             case 0:
-              deleteSpot();
+              copySpot();
               break;
             case 1:
-              copySpot();
               break;
           }
           return true;
