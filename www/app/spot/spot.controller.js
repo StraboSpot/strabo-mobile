@@ -57,7 +57,7 @@
         ['name', 'id', 'date', 'time', 'modified_timestamp']);
       var id = SpotFactory.setNewSpot(newSpot);
       vm.copySpot = true;
-      submit('/spotTab/' + id + '/spot');
+      submit('/app/spotTab/' + id + '/spot');
     }
 
     // Get the form fields
@@ -87,15 +87,15 @@
     // Set the form survey (and choices, if applicable)
     function setForm(tab) {
       switch (tab) {
-        case 'spotTab._3dstructures':
+        case 'app.spotTab._3dstructures':
           vm.survey = vm.fields._3dstructures_survey;
           vm.choices = vm.fields._3dstructures_choices;
           break;
-        case 'spotTab.sample':
+        case 'app.spotTab.sample':
           vm.survey = vm.fields.sample_survey;
           vm.choices = vm.fields.sample_choices;
           break;
-        case 'spotTab.spot':
+        case 'app.spotTab.spot':
           vm.survey = vm.fields.traces_survey;
           vm.choices = vm.fields.traces_choices;
           break;
@@ -208,7 +208,7 @@
 
     function openSpot(id) {
       SpotFactory.clearCurrentSpot();
-      $location.path('/spotTab/' + id + '/spot');
+      $location.path('/app/spotTab/' + id + '/spot');
     }
 
     // Set the class for the select_multiple fields here because it is not working
@@ -349,7 +349,7 @@
     // Validate Spot Tab
     function validateForm() {
       switch (vm.stateName) {
-        case 'spotTab.spot':
+        case 'app.spotTab.spot':
           if (!vm.data.name) {
             $ionicPopup.alert({
               'title': 'Validation Error!',
@@ -379,7 +379,7 @@
             }
           }
           break;
-        case 'spotTab.sample':
+        case 'app.spotTab.sample':
           // Don't validate the sample tab if no sample fields are filled in
           var validateSample = false;
           _.each(vm.survey, function (field) {

@@ -5,10 +5,10 @@
     .module('app')
     .controller('SpotTabController', SpotTabController);
 
-  SpotTabController.$inject = ['$cordovaGeolocation', '$ionicPopup', '$location', '$log', '$scope', '$state',
-    'ImageBasemapFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory'];
+  SpotTabController.$inject = ['$cordovaGeolocation', '$ionicPopup', '$log', '$scope', '$state', 'ImageBasemapFactory',
+    'MapViewFactory', 'ProjectFactory', 'SpotFactory'];
 
-  function SpotTabController($cordovaGeolocation, $ionicPopup, $location, $log, $scope, $state, ImageBasemapFactory,
+  function SpotTabController($cordovaGeolocation, $ionicPopup, $log, $scope, $state, ImageBasemapFactory,
                              MapViewFactory, ProjectFactory, SpotFactory) {
     var vm = this;
     var vmParent = $scope.vm;
@@ -107,10 +107,10 @@
       if (_.has(vmParent.spot.properties, 'image_basemap')) {
         var image = _.findWhere(ImageBasemapFactory.getImageBasemaps(), {'id': vmParent.spot.properties.image_basemap});
         ImageBasemapFactory.setCurrentImageBasemap(image);    // Save referenced image basemap
-        $location.path('/app/image-basemaps/' + vmParent.spot.properties.image_basemap);
+        vmParent.submit('/app/image-basemaps/' + vmParent.spot.properties.image_basemap);
       }
       else {
-        $location.path('/app/map');
+        vmParent.submit('/app/map');
       }
     }
 
@@ -152,7 +152,7 @@
     }
 
     function viewRockUnit() {
-      $location.path('/app/rock-units/' + vmParent.spot.properties.rock_unit.unit_label_abbreviation);
+      vmParent.submit('/app/rock-units/' + vmParent.spot.properties.rock_unit.unit_label_abbreviation);
     }
 
     // View the spot on the map
@@ -160,7 +160,7 @@
       if (_.has(vmParent.spot.properties, 'image_basemap')) {
         var image = _.findWhere(ImageBasemapFactory.getImageBasemaps(), {'id': vmParent.spot.properties.image_basemap});
         ImageBasemapFactory.setCurrentImageBasemap(image);    // Save referenced image basemap
-        $location.path('/app/image-basemaps/' + vmParent.spot.properties.image_basemap);
+        vmParent.submit('/app/image-basemaps/' + vmParent.spot.properties.image_basemap);
       }
       else {
         var center = SpotFactory.getCenter(vmParent.spot);
@@ -169,7 +169,7 @@
           'center': spotCenter,
           'zoom': 16
         }));
-        $location.path('/app/map');
+        vmParent.submit('/app/map');
       }
     }
   }

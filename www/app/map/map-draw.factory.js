@@ -291,7 +291,7 @@
             }
 
             id = SpotFactory.setNewSpot(geojsonObj);
-            $location.path('/spotTab/' + id + '/spot');
+            $location.path('app/spotTab/' + id + '/spot');
             $rootScope.$apply();
           }
           else {
@@ -313,7 +313,7 @@
           else {
             id = SpotFactory.setNewSpot(geojsonObj);
           }
-          $location.path('/spotTab/' + id + '/spot');
+          $location.path('/app/spotTab/' + id + '/spot');
           $rootScope.$apply();
         }
       });

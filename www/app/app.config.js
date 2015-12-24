@@ -182,17 +182,21 @@
         }
       })
       // setup an abstract state for the spot tabs directive
-      .state('spotTab', {
+      .state('app.spotTab', {
         'url': '/spotTab',
         'abstract': true,
-        'templateUrl': 'app/spot/spot.html',
-        'controller': 'SpotController as vm',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/spot/spot.html',
+            'controller': 'SpotController as vm'
+          }
+        },
         'resolve': {
           'prepSpotFactory': prepSpotFactory,
           'prepSpotForms': prepSpotForms
         }
       })
-      .state('spotTab.orientation-data', {
+      .state('app.spotTab.orientation-data', {
         'cache': false,
         'url': '/:spotId/orientation-data',
         'views': {
@@ -202,7 +206,7 @@
           }
         }
       })
-      .state('spotTab.images', {
+      .state('app.spotTab.images', {
         'cache': false,
         'url': '/:spotId/images',
         'views': {
@@ -212,7 +216,7 @@
           }
         }
       })
-      .state('spotTab.spot', {
+      .state('app.spotTab.spot', {
         'cache': false,
         'url': '/:spotId/spot',
         'views': {
@@ -222,7 +226,7 @@
           }
         }
       })
-      .state('spotTab.sample', {
+      .state('app.spotTab.sample', {
         'cache': false,
         'url': '/:spotId/sample',
         'views': {
@@ -232,7 +236,7 @@
           }
         }
       })
-      .state('spotTab._3dstructures', {
+      .state('app.spotTab._3dstructures', {
         'cache': false,
         'url': '/:spotId/_3dstructures',
         'views': {

@@ -20,35 +20,35 @@ navigation history that also transitions its views in and out.
 <ion-header-bar class='bar-subheader'>
   <ion-scroll direction='x' class='wide-as-needed'>
     <a class='button button-clear spot-tab-inactive'
-       ng-class='{ "spot-tab-active": vm.stateName == "spotTab.spot"}'
-       ng-click='vm.submit("/spotTab/" + vm.data.id + "/spot")'>
+       ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab.spot"}'
+       ng-click='vm.submit("/app/spotTab/" + vm.data.id + "/spot")'>
       Spot
     </a>
     <span ng-show='vm.showTab("orientation")'>
       <a class='button button-clear spot-tab-inactive'
-         ng-class='{ "spot-tab-active": vm.stateName == "spotTab.orientation-data"}'
-         ng-click='vm.submit("/spotTab/" + vm.data.id + "/orientation-data")'>
+         ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab.orientation-data"}'
+         ng-click='vm.submit("/app/spotTab/" + vm.data.id + "/orientation-data")'>
         Orientation
       </a>
     </span>
     <span ng-show='vm.showTab("_3dstructures")'>
       <a class='button button-clear spot-tab-inactive'
-         ng-class='{ "spot-tab-active": vm.stateName == "spotTab._3dstructures"}'
-         ng-click='vm.submit("/spotTab/" + vm.data.id + "/_3dstructures");'>
+         ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab._3dstructures"}'
+         ng-click='vm.submit("/app/spotTab/" + vm.data.id + "/_3dstructures");'>
         3D Structures
       </a>
     </span>
     <span ng-show='vm.showTab("images")'>
       <a class='button button-clear spot-tab-inactive'
-         ng-class='{ "spot-tab-active": vm.stateName == "spotTab.images"}'
-         ng-click='vm.submit("/spotTab/" + vm.data.id + "/images");'>
+         ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab.images"}'
+         ng-click='vm.submit("/app/spotTab/" + vm.data.id + "/images");'>
         Images
       </a>
     </span>
     <span ng-show='vm.showTab("sample")'>
       <a class='button button-clear spot-tab-inactive'
-         ng-class='{ "spot-tab-active": vm.stateName == "spotTab.sample"}'
-         ng-click='vm.submit("/spotTab/" + vm.data.id + "/sample");'>
+         ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab.sample"}'
+         ng-click='vm.submit("/app/spotTab/" + vm.data.id + "/sample");'>
         Sample
       </a>
     </span>

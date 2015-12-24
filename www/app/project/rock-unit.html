@@ -3,7 +3,7 @@
     <ion-nav-buttons side='left'>
       <button ng-hide='vm.currentSpot' ng-click='vm.submit("/app/rock-units");'
               class='button button-icon icon ion-arrow-left-c'></button>
-      <button ng-show='vm.currentSpot' ng-click='vm.submit("/spotTab/" + vm.currentSpot.properties.id + "/spot");'
+      <button ng-show='vm.currentSpot' ng-click='vm.submit("/app/spotTab/" + vm.currentSpot.properties.id + "/spot");'
               class='button button-icon icon ion-arrow-left-c'></button>
     </ion-nav-buttons>
     <ion-nav-buttons side='right'>

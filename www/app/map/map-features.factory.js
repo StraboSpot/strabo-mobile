@@ -233,7 +233,7 @@
       if (feature && layer.get('name') !== 'geolocationLayer') {
         // popup content
         var content = '';
-        content += '<a href="#/spotTab/' + feature.get('id') + '/spot"><b>' + feature.get('name') + '</b></a>';
+        content += '<a href="#/app/spotTab/' + feature.get('id') + '/spot"><b>' + feature.get('name') + '</b></a>';
 
         var orientation = feature.get('orientation');
 

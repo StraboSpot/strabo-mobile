@@ -119,7 +119,7 @@
     }
 
     function returnToSpot() {
-      $location.path('/spotTab/' + vm.currentSpot.properties.id + '/spot');
+      $location.path('/app/spotTab/' + vm.currentSpot.properties.id + '/spot');
     }
 
     function showActionsheet() {

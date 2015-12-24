@@ -79,7 +79,7 @@
     }
 
     function returnToSpot() {
-      $location.path('/spotTab/' + vm.currentSpot.properties.id + '/orientation-data');
+      $location.path('/app/spotTab/' + vm.currentSpot.properties.id + '/orientation-data');
     }
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair
@@ -98,7 +98,7 @@
         }
       });
       if (!validate) {
-        $location.path('/spotTab/' + vm.currentSpot.properties.id + '/orientation-data');
+        $location.path('/app/spotTab/' + vm.currentSpot.properties.id + '/orientation-data');
       }
       else {
         var valid = FormFactory.validate(vm.survey, vm.data);
@@ -130,7 +130,7 @@
             vm.currentSpot.properties.orientation_data.push(vm.data);
           }
           SpotFactory.setCurrentSpot(vm.currentSpot);
-          $location.path('/spotTab/' + vm.currentSpot.properties.id + '/orientation-data');
+          $location.path('/app/spotTab/' + vm.currentSpot.properties.id + '/orientation-data');
         }
       }
     }

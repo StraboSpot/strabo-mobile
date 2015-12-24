@@ -257,7 +257,7 @@
 
     function goToSpot(id) {
       if (!vm.deleteSelected) {
-        $location.path('/spotTab/' + id + '/spot');
+        $location.path('/app/spotTab/' + id + '/spot');
       }
     }
 
@@ -269,7 +269,7 @@
     // Create a new Spot
     function newSpot() {
       var id = SpotFactory.setNewSpot({});
-      $location.path('/spotTab/' + id + '/spot');
+      $location.path('/app/spotTab/' + id + '/spot');
     }
 
     function openModal(modal) {
