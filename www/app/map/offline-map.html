@@ -12,6 +12,7 @@
         <div class='row'>
           <div class='col'>
             <b>{{map.name}}</b>  <small>({{map.tileArray.length}} tiles, {{map.size | normalizeBytes}}, {{map.mapProvider}})</small>
+            <span ng-if='map.date'><br><small>Map tiles downloaded: {{ map.date }}</small></span>
           </div>
           <div class='col item-button-right'>
             <button class='button button-second icon-left button-small button-calm ion-edit ' ng-click='vm.edit(map)'>

@@ -127,11 +127,12 @@
       var mapNameData = {
         'mapProvider': mapProvider,
         'tileArray': data,
-        'size': size
+        'size': size,
+        'date': new Date().toLocaleString()
       };
 
       LocalStorageFactory.mapNamesDb.setItem(mapName, mapNameData).then(function () {
-        // $log.log('saved map name ', mapName);
+        $log.log('saved map name ', mapName);
         deferred.resolve();
       });
       return deferred.promise;
@@ -336,7 +337,8 @@
           'name': key,
           'mapProvider': value.mapProvider,
           'tileArray': value.tileArray,
-          'size': value.size
+          'size': value.size,
+          'date': value.date
         });
       }, function () {
         deferred.resolve(maps);
