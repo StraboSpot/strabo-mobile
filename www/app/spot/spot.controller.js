@@ -5,23 +5,25 @@
     .module('app')
     .controller('SpotController', SpotController);
 
-  SpotController.$inject = ['$document', '$ionicActionSheet', '$ionicPopup', '$location', '$log', '$state',
-    'DataModelsFactory', 'FormFactory', 'ImageBasemapFactory', 'PreferencesFactory', 'ProjectFactory', 'SpotFactory',
-    'SpotFormsFactory'];
+  SpotController.$inject = ['$document', '$ionicActionSheet', '$ionicHistory', '$ionicPopup', '$location', '$log',
+    '$state', 'DataModelsFactory', 'FormFactory', 'ImageBasemapFactory', 'PreferencesFactory', 'ProjectFactory',
+    'SpotFactory', 'SpotFormsFactory'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
-  function SpotController($document, $ionicActionSheet, $ionicPopup, $location, $log, $state, DataModelsFactory,
-                          FormFactory, ImageBasemapFactory, PreferencesFactory, ProjectFactory, SpotFactory,
-                          SpotFormsFactory) {
+  function SpotController($document, $ionicActionSheet, $ionicHistory, $ionicPopup, $location, $log, $state,
+                          DataModelsFactory, FormFactory, ImageBasemapFactory, PreferencesFactory, ProjectFactory,
+                          SpotFactory, SpotFormsFactory) {
     var vm = this;
+    var copySpot = false;
+    var returnToMap = false;
 
-    vm.copySpot = false;
     vm.choices = undefined;
     vm.data = {};
     vm.deleteSpot = deleteSpot;
     vm.fields = {};
     vm.getMax = getMax;
     vm.getMin = getMin;
+    vm.goBack = goBack;
     vm.isOptionChecked = isOptionChecked;
     vm.loadTab = loadTab;
     vm.openSpot = openSpot;
@@ -51,12 +53,12 @@
     }
 
     // Create a new spot with the details from this spot
-    function copySpot() {
+    function copyThisSpot() {
       var newSpot = _.omit(vm.spot, 'properties');
       newSpot.properties = _.omit(vm.data,
         ['name', 'id', 'date', 'time', 'modified_timestamp']);
       var id = SpotFactory.setNewSpot(newSpot);
-      vm.copySpot = true;
+      copySpot = true;
       submit('/app/spotTab/' + id + '/spot');
     }
 
@@ -179,6 +181,17 @@
       }
     }
 
+    function goBack() {
+      SpotFactory.clearCurrentSpot();
+      if (returnToMap) {
+        submit('app/map');
+      }
+      else {
+        submit('app/spots');
+      }
+      returnToMap = false;
+    }
+
     function isOptionChecked(field, choice) {
       if (vm.spot) {
         if (vm.data[field]) {
@@ -191,10 +204,11 @@
     }
 
     function loadTab(state) {
+      if ($ionicHistory.backView().stateName === 'app.map') returnToMap = true;
       vm.stateName = state.current.name;
       vm.survey = undefined;
       vm.choices = undefined;
-      vm.copySpot = false;
+      copySpot = false;
       setSpot(state.params.spotId);
       setForm(vm.stateName);
 
@@ -243,7 +257,7 @@
           $log.log('BUTTON CLICKED', index);
           switch (index) {
             case 0:
-              copySpot();
+              copyThisSpot();
               break;
             case 1:
               break;
@@ -296,12 +310,12 @@
         // Save the spot
         SpotFactory.save(vm.spot).then(function (data) {
           vm.spots = data;
-          if (vm.copySpot) SpotFactory.clearCurrentSpot();
+          if (copySpot) SpotFactory.clearCurrentSpot();
           if (!found) ProjectFactory.incrementSpotNumber();
           $location.path(toPath);
         });
       }
-      vm.copySpot = false;
+      copySpot = false;
     }
 
     function toggleAcknowledgeChecked(field) {
