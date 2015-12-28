@@ -5,13 +5,14 @@
     .module('app')
     .controller('ImageBasemapController', ImageBasemapController);
 
-  ImageBasemapController.$inject = ['$ionicActionSheet', '$ionicSideMenuDelegate', '$log', '$state', 'MapDrawFactory',
-    'ImageBasemapFactory', 'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory'];
+  ImageBasemapController.$inject = ['$ionicActionSheet', '$ionicSideMenuDelegate', '$location', '$log', '$state',
+    'MapDrawFactory', 'ImageBasemapFactory', 'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory', 'SpotFactory'];
 
-  function ImageBasemapController($ionicActionSheet, $ionicSideMenuDelegate, $log, $state, MapDrawFactory, ImageBasemapFactory,
-                                  MapFeaturesFactory, MapSetupFactory, MapViewFactory) {
+  function ImageBasemapController($ionicActionSheet, $ionicSideMenuDelegate, $location, $log, $state, MapDrawFactory,
+                                  ImageBasemapFactory, MapFeaturesFactory, MapSetupFactory, MapViewFactory, SpotFactory) {
     var vm = this;
 
+    vm.goBack = goBack;
     vm.goToImageBasemaps = goToImageBasemaps;
     vm.imageBasemap = ImageBasemapFactory.getCurrentImageBasemap();
     vm.showActionsheet = showActionsheet;
@@ -54,6 +55,17 @@
           MapFeaturesFactory.showPopup(map, evt);
         }
       });
+    }
+
+
+    function goBack() {
+      if (SpotFactory.getCurrentSpot()) {
+        $location.path('/app/spotTab/' + SpotFactory.getCurrentSpot().properties.id + '/spot');
+      }
+      else {
+        ImageBasemapFactory.clearCurrentImageBasemap();
+        $location.path('/app/image-basemaps');
+      }
     }
 
     function goToImageBasemaps() {

@@ -183,7 +183,10 @@
 
     function goBack() {
       SpotFactory.clearCurrentSpot();
-      if (returnToMap) {
+      if (returnToMap && vm.data.image_basemap) {
+        submit('app/image-basemaps/' + vm.data.image_basemap);
+      }
+      else if (returnToMap && !vm.data.image_basemap) {
         submit('app/map');
       }
       else {
@@ -204,7 +207,10 @@
     }
 
     function loadTab(state) {
-      if ($ionicHistory.backView().stateName === 'app.map') returnToMap = true;
+      if ($ionicHistory.backView().stateName === 'app.map' ||
+        $ionicHistory.backView().stateName === 'app.image-basemap') {
+        returnToMap = true;
+      }
       vm.stateName = state.current.name;
       vm.survey = undefined;
       vm.choices = undefined;
@@ -306,7 +312,6 @@
           return spot.properties.id === vm.data.id;
         });
 
-        vm.spot.properties = vm.data;
         // Save the spot
         SpotFactory.save(vm.spot).then(function (data) {
           vm.spots = data;

@@ -25,15 +25,12 @@
 
       var mappableSpots;
       if (map.getView().getProjection().getUnits() === 'pixels') {
-        ImageBasemapFactory.clearCurrentImageBasemap();
-
         mappableSpots = _.filter(spots, function (spot) {
           return spot.properties.image_basemap === imageBasemap.id;
         });
       }
       else {
-        // Remove spots that don't have a geometry defined or
-        // are mapped on an image
+        // Remove spots that don't have a geometry defined or are mapped on an image
         mappableSpots = _.reject(spots, function (spot) {
           return !_.has(spot, 'geometry') || _.has(spot.properties, 'image_basemap');
         });
