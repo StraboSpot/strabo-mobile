@@ -57,7 +57,8 @@
     function setMapTilesDb() {
       mapTilesDb = localforage.createInstance({
         // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
-        'name': 'offlineMapTiles'
+        'name': 'offlineMapTiles',
+        'size': 2000000000              // Default size is just under 5MB, changed here to 2GB
       });
     }
 
@@ -71,7 +72,8 @@
     function setSpotsDb() {
       spotsDb = localforage.createInstance({
         // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
-        'name': 'Spots'
+        'name': 'Spots',
+        'size': 2000000000              // Default size is just under 5MB, changed here to 2GB
       });
     }
   }
