@@ -17,7 +17,7 @@
         'templateUrl': 'app/user/login.html',
         'controller': 'LoginController as vm',
         'resolve': {
-          'prepUserFactory': prepUserFactory
+          'prepLogin': prepLogin
         }
       })
       .state('app', {
@@ -26,10 +26,7 @@
         'templateUrl': 'app/menu/menu.html',
         'controller': 'MenuController as vm',
         'resolve': {
-          'prepPreferencesFactory': prepPreferencesFactory,
-          'prepProjectFactory': prepProjectFactory,
-          'prepUserFactory': prepUserFactory,
-          'prepSpotFactory': prepSpotFactory
+          'prepMenu': prepMenu
         }
       })
       .state('app.projects', {
@@ -190,10 +187,6 @@
             'templateUrl': 'app/spot/spot.html',
             'controller': 'SpotController as vm'
           }
-        },
-        'resolve': {
-          'prepSpotFactory': prepSpotFactory,
-          'prepSpotForms': prepSpotForms
         }
       })
       .state('app.spotTab.orientation-data', {
@@ -317,25 +310,23 @@
     $urlRouterProvider.otherwise('/login');
   }
 
-  function prepPreferencesFactory(PreferencesFactory) {
-    return PreferencesFactory.loadPreferences();
-  }
-
-  function prepProjectFactory(ProjectFactory) {
-    return ProjectFactory.loadProject();
-  }
-
-  function prepSpotFactory(SpotFactory) {
-    return SpotFactory.loadSpots();
-  }
-
-  function prepSpotForms(SpotFormsFactory) {
-    return SpotFormsFactory.loadTracesForm();
-  }
-
-  function prepUserFactory(LocalStorageFactory, UserFactory) {
+  function prepLogin(LocalStorageFactory, UserFactory) {
     return LocalStorageFactory.setupLocalforage().then(function () {
-      UserFactory.loadUser();
+      return UserFactory.loadUser();
+    });
+  }
+
+  function prepMenu(LocalStorageFactory, FormFactory, PreferencesFactory, ProjectFactory, SpotFactory, UserFactory) {
+    return LocalStorageFactory.setupLocalforage().then(function () {
+      return FormFactory.loadForms().then(function () {
+        return PreferencesFactory.loadPreferences().then(function () {
+          return ProjectFactory.loadProject().then(function () {
+            return SpotFactory.loadSpots().then(function () {
+              return UserFactory.loadUser();
+            });
+          });
+        });
+      });
     });
   }
 }());

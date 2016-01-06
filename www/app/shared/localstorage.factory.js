@@ -27,33 +27,42 @@
 
     function setupLocalforage() {
       var deferred = $q.defer(); // init promise
-      try {
-        localforage.defineDriver(window.cordovaSQLiteDriver).then(function () {
-          return localforage.setDriver([
-            window.cordovaSQLiteDriver._driver,
-            localforage.INDEXEDDB,
-            localforage.WEBSQL,
-            localforage.LOCALSTORAGE
-          ]);
-        }).then(function () {
-          $log.log('Db driver: ', localforage.driver());
-          _.each(dbs, function (db, key) {
-            dbs[key] = localforage.createInstance({
-              'driver': localforage.driver(),
-              'name': key
+      var doInitialize = _.some(dbs, function (db) {
+        return _.isEmpty(db);
+      });
+      if (doInitialize) {
+        try {
+          localforage.defineDriver(window.cordovaSQLiteDriver).then(function () {
+            return localforage.setDriver([
+              window.cordovaSQLiteDriver._driver,
+              localforage.INDEXEDDB,
+              localforage.WEBSQL,
+              localforage.LOCALSTORAGE
+            ]);
+          }).then(function () {
+            $log.log('Creating', localforage.driver(), 'databases ... ');
+            _.each(dbs, function (db, key) {
+              dbs[key] = localforage.createInstance({
+                'driver': localforage.driver(),
+                'name': key
+              });
+              $log.log('Created db', key, ':', dbs[key]);
             });
-            $log.log('Created db ', key, ' :', dbs[key]);
+            deferred.resolve(true);
+          }).catch(function (err) {
+            $log.log(err);
+            deferred.resolve(false);
           });
-          deferred.resolve(true);
-        }).catch(function (err) {
-          $log.log(err);
+        }
+        catch (e) {
+          $log.log(e);
           deferred.resolve(false);
-        });
+        }
       }
-      catch (e) {
-        $log.log(e);
-        deferred.resolve(false);
+      else {
+        deferred.resolve(true);
       }
+
       return deferred.promise;
     }
   }

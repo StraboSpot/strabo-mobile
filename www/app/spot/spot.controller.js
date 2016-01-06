@@ -6,13 +6,11 @@
     .controller('SpotController', SpotController);
 
   SpotController.$inject = ['$document', '$ionicActionSheet', '$ionicHistory', '$ionicPopup', '$location', '$log',
-    '$state', 'DataModelsFactory', 'FormFactory', 'ImageBasemapFactory', 'PreferencesFactory', 'ProjectFactory',
-    'SpotFactory', 'SpotFormsFactory'];
+    '$state', 'FormFactory', 'ImageBasemapFactory', 'PreferencesFactory', 'ProjectFactory', 'SpotFactory'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
   function SpotController($document, $ionicActionSheet, $ionicHistory, $ionicPopup, $location, $log, $state,
-                          DataModelsFactory, FormFactory, ImageBasemapFactory, PreferencesFactory, ProjectFactory,
-                          SpotFactory, SpotFormsFactory) {
+                          FormFactory, ImageBasemapFactory, PreferencesFactory, ProjectFactory, SpotFactory) {
     var vm = this;
     var copySpot = false;
     var returnToMap = false;
@@ -20,7 +18,6 @@
     vm.choices = undefined;
     vm.data = {};
     vm.deleteSpot = deleteSpot;
-    vm.fields = {};
     vm.getMax = getMax;
     vm.getMin = getMin;
     vm.goBack = goBack;
@@ -49,7 +46,6 @@
 
     function activate() {
       $log.log('In SpotController');
-      loadForms();
     }
 
     // Create a new spot with the details from this spot
@@ -62,44 +58,24 @@
       submit('/app/spotTab/' + id + '/spot');
     }
 
-    // Get the form fields
-    function getFields(value, key) {
-      $log.log('Loading ' + key + ' ....');
-      var csvFile = DataModelsFactory.dataModels[key];
-      DataModelsFactory.readCSV(csvFile, function (fields) {
-        $log.log('Finished loading ' + key + ' : ', fields);
-        vm.fields[key] = fields;
-      });
-    }
-
-    function loadForms() {
-      // Start loading fields for all forms except traces form in first tab
-      vm.fields._3dstructures_survey = {};
-      vm.fields._3dstructures_choices = {};
-      vm.fields.sample_survey = {};
-      vm.fields.sample_choices = {};
-      _.forEach(vm.fields, getFields);
-
-      // Loaded traces form in factory before controller since traces are on the first tab
-      // Load traces fields
-      vm.fields.traces_survey = SpotFormsFactory.getTracesSurvey();
-      vm.fields.traces_choices = SpotFormsFactory.getTracesChoices();
-    }
-
     // Set the form survey (and choices, if applicable)
     function setForm(tab) {
       switch (tab) {
         case 'app.spotTab._3dstructures':
-          vm.survey = vm.fields._3dstructures_survey;
-          vm.choices = vm.fields._3dstructures_choices;
+          vm.survey = FormFactory.getForm()._3dstructures_survey;
+          vm.choices = FormFactory.getForm()._3dstructures_choices;
           break;
         case 'app.spotTab.sample':
-          vm.survey = vm.fields.sample_survey;
-          vm.choices = vm.fields.sample_choices;
+          vm.survey = FormFactory.getForm().sample_survey;
+          vm.choices = FormFactory.getForm().sample_choices;
           break;
         case 'app.spotTab.spot':
-          vm.survey = vm.fields.traces_survey;
-          vm.choices = vm.fields.traces_choices;
+          vm.survey = FormFactory.getForm().traces_survey;
+          vm.choices = FormFactory.getForm().traces_choices;
+          break;
+        default:
+          vm.survey = undefined;
+          vm.choices = undefined;
           break;
       }
     }
@@ -207,9 +183,11 @@
     }
 
     function loadTab(state) {
-      if ($ionicHistory.backView().stateName === 'app.map' ||
-        $ionicHistory.backView().stateName === 'app.image-basemap') {
-        returnToMap = true;
+      if ($ionicHistory.backView()) {
+        if ($ionicHistory.backView().stateName === 'app.map' ||
+          $ionicHistory.backView().stateName === 'app.image-basemap') {
+          returnToMap = true;
+        }
       }
       vm.stateName = state.current.name;
       vm.survey = undefined;

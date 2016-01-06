@@ -71,7 +71,7 @@ Install this for the localForage dependencies
     ionic-plugin-keyboard: 1.0.7
     nodejs: 5.0.0
     npm: 2.12.1
-    bower: 1.6.5
+    bower: 1.7.2
 
 ### Run
 

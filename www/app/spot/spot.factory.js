@@ -8,10 +8,10 @@
   SpotFactory.$inject = ['$log', '$q', 'LocalStorageFactory', 'ProjectFactory'];
 
   function SpotFactory($log, $q, LocalStorageFactory, ProjectFactory) {
-    var currentSpot = null;
+    var currentSpot;
     var currentAssociatedOrientationIndex;
     var currentOrientationIndex;
-    var spots = null;
+    var spots;
 
     return {
       'clear': clear,
@@ -164,14 +164,17 @@
     }
 
     function loadSpots() {
-      if (_.isEmpty(spots)) {
-        $log.log('Loading spots ....');
-        var dataPromise = all().then(function (savedData) {
+      var deferred = $q.defer(); // init promise
+      if (!spots) {
+        $log.log('Loading Spots ....');
+        all().then(function (savedData) {
           spots = savedData;
-          $log.log('Finished loading spots: ', spots);
+          $log.log('Finished loading Spots: ', spots);
+          deferred.resolve();
         });
-        return dataPromise;
       }
+      else deferred.resolve();
+      return deferred.promise;
     }
 
     // Read from local storage

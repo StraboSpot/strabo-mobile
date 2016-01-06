@@ -8,7 +8,7 @@
   UserFactory.$inject = ['$ionicPopup', '$log', '$q', 'LocalStorageFactory', 'RemoteServerFactory'];
 
   function UserFactory($ionicPopup, $log, $q, LocalStorageFactory, RemoteServerFactory) {
-    var user = null;
+    var user;
 
     return {
       'clearUser': clearUser,
@@ -29,7 +29,7 @@
      */
 
     function clearUser() {
-      user = null;
+      user = undefined;
       LocalStorageFactory.getDb().config2Db.removeItem('user').then(function () {
         $log.log('Cleared user data from local storage');
       });

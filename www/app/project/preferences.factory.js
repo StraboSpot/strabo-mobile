@@ -8,7 +8,7 @@
   PreferencesFactory.$inject = ['$log', '$q', 'DataModelsFactory', 'LocalStorageFactory'];
 
   function PreferencesFactory($log, $q, DataModelsFactory, LocalStorageFactory) {
-    var data = {};
+    var data;
     var survey = {};
 
     return {
@@ -53,17 +53,20 @@
 
     // Load the preferences data and survey
     function loadPreferences() {
-      if (_.isEmpty(data)) {
+      var deferred = $q.defer(); // init promise
+      if (!data) {
         $log.log('Loading preferences ....');
-        var dataPromise = all().then(function (savedData) {
+        all().then(function (savedData) {
           data = savedData;
           $log.log('Finished loading preferences: ', data);
+          deferred.resolve();
         });
         $log.log('Loading preferences survey ....');
         var csvFile = DataModelsFactory.dataModels.preferences;
         DataModelsFactory.readCSV(csvFile, setSurvey);
-        return dataPromise;
       }
+      else deferred.resolve();
+      return deferred.promise;
     }
 
     function save(newData) {

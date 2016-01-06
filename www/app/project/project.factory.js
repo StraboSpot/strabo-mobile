@@ -8,7 +8,7 @@
   ProjectFactory.$inject = ['$ionicPopup', '$log', '$q', 'DataModelsFactory', 'LocalStorageFactory'];
 
   function ProjectFactory($ionicPopup, $log, $q, DataModelsFactory, LocalStorageFactory) {
-    var data = {};
+    var data;
     var projectKey = 'project_name';
     var rockUnitSurvey = {};
     var rockUnitChoices = {};
@@ -54,7 +54,7 @@
 
     function setSurvey(inSurvey) {
       survey = inSurvey;
-      $log.log('Finished loading project unit survey: ', survey);
+      $log.log('Finished loading project survey: ', survey);
     }
 
     function setToolsSurvey(inSurvey) {
@@ -156,19 +156,24 @@
     }
 
     function loadProject() {
-      if (_.isEmpty(data)) {
+      var deferred = $q.defer(); // init promise
+      if (!data) {
         $log.log('Loading project properties ....');
-        var dataPromise = all().then(function (savedData) {
+        all().then(function (savedData) {
           data = savedData;
           $log.log('Finished loading project properties: ', data);
+          deferred.resolve();
         });
         $log.log('Loading project surveys ....');
         DataModelsFactory.readCSV(DataModelsFactory.dataModels.project, setSurvey);
         DataModelsFactory.readCSV(DataModelsFactory.dataModels.tools, setToolsSurvey);
         DataModelsFactory.readCSV(DataModelsFactory.dataModels.rock_unit_survey, setRockUnitSurvey);
         DataModelsFactory.readCSV(DataModelsFactory.dataModels.rock_unit_choices, setRockUnitChoices);
-        return dataPromise;
       }
+      else {
+        deferred.resolve();
+      }
+      return deferred.promise;
     }
 
     // Save all project properties in local storage
