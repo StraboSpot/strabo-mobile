@@ -41,7 +41,7 @@
   <gap:plugin name="cordova-plugin-whitelist" version="1.0.0" source="npm"/>
   <gap:plugin name="ionic-plugin-keyboard" version="1.0.7" source="npm"/>
   <gap:plugin name="cordova-plugin-filepath" version="1.0.0" source="npm"/>
-  <gap:plugin name="npm i cordova-sqlite-storage" version="0.7.14" source="npm"/>
+  <gap:plugin name="cordova-sqlite-storage" version="0.7.14" source="npm"/>
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
   </feature>
