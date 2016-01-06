@@ -21,9 +21,10 @@
     }
 
     function checkForLogin() {
-      var login = UserFactory.getUser();
-      if (login) {
-        $log.log('Skipping login page. Already logged in as: ', login);
+      vm.login = UserFactory.getUser();
+      if (vm.login) {
+        vm.login.password = '**********';
+        $log.log('Skipping login page. Already logged in as: ', vm.login);
         vm.skip();
       }
     }

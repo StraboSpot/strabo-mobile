@@ -17,7 +17,6 @@
       'getUserName': getUserName,
       'loadUser': loadUser,             // Run from app config
       'saveUser': saveUser
-
     };
 
     /**

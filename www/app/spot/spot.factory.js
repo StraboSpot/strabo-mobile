@@ -45,7 +45,7 @@
     // Load all spots from local storage
     function all() {
       var deferred = $q.defer(); // init promise
-      var spots = [];
+      spots = [];
 
       LocalStorageFactory.getDb().spotsDb.iterate(function (value, key) {
         spots.push(value);
