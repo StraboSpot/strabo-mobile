@@ -5,76 +5,65 @@
     .module('app')
     .factory('LocalStorageFactory', LocalStorageFactory);
 
-  function LocalStorageFactory() {
-    var configDb = {};        // global LocalForage for configuration data
-    var config2Db = {};       // global LocalForage for user and project data
-    var mapNamesDb = {};      // global LocalForage for map names
-    var mapTilesDb = {};      // global LocalForage for offline map tiles
-    var projectDb = {};       // global LocalForage for configuration data
-    var spotsDb = {};         // global LocalForage for spot data
+  LocalStorageFactory.$inject = ['$log', '$q'];
 
-    activate();
+  function LocalStorageFactory($log, $q) {
+    var dbs = {};
+    dbs.configDb = {};
+    dbs.config2Db = {};       // global LocalForage for user and project data
+    dbs.mapNamesDb = {};      // global LocalForage for map names
+    dbs.mapTilesDb = {};      // global LocalForage for offline map tiles
+    dbs.projectDb = {};       // global LocalForage for configuration data
+    dbs.spotsDb = {};         // global LocalForage for spot data
 
     return {
-      'configDb': configDb,
-      'config2Db': config2Db,
-      'mapNamesDb': mapNamesDb,
-      'mapTilesDb': mapTilesDb,
-      'projectDb': projectDb,
-      'spotsDb': spotsDb
+      'setupLocalforage': setupLocalforage,
+      'getDb': getDb
     };
 
-    function activate() {
-      setConfigDb();
-      setConfig2Db();
-      setMapNamesDb();
-      setMapTilesDb();
-      setProjectDb();
-      setSpotsDb();
+    function getDb() {
+      return dbs;
     }
 
-    function setConfigDb() {
-      configDb = localforage.createInstance({
-        // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
-        'name': 'Config'
+    function setupLocalforage() {
+      var deferred = $q.defer(); // init promise
+      var doInitialize = _.some(dbs, function (db) {
+        return _.isEmpty(db);
       });
-    }
+      if (doInitialize) {
+        try {
+          localforage.defineDriver(window.cordovaSQLiteDriver).then(function () {
+            return localforage.setDriver([
+              window.cordovaSQLiteDriver._driver,
+              localforage.INDEXEDDB,
+              localforage.WEBSQL,
+              localforage.LOCALSTORAGE
+            ]);
+          }).then(function () {
+            $log.log('Creating', localforage.driver(), 'databases ... ');
+            _.each(dbs, function (db, key) {
+              dbs[key] = localforage.createInstance({
+                'driver': localforage.driver(),
+                'name': key
+              });
+              $log.log('Created db', key, ':', dbs[key]);
+            });
+            deferred.resolve(true);
+          }).catch(function (err) {
+            $log.log(err);
+            deferred.resolve(false);
+          });
+        }
+        catch (e) {
+          $log.log(e);
+          deferred.resolve(false);
+        }
+      }
+      else {
+        deferred.resolve(true);
+      }
 
-    function setConfig2Db() {
-      config2Db = localforage.createInstance({
-        // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
-        'name': 'Config2'
-      });
-    }
-
-    function setMapNamesDb() {
-      mapNamesDb = localforage.createInstance({
-        // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
-        'name': 'MapNames'
-      });
-    }
-
-    function setMapTilesDb() {
-      mapTilesDb = localforage.createInstance({
-        // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
-        'name': 'offlineMapTiles',
-        'size': 2000000000              // Default size is just under 5MB, changed here to 2GB
-      });
-    }
-
-    function setProjectDb() {
-      projectDb = localforage.createInstance({
-        // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
-        'name': 'Project'
-      });
-    }
-
-    function setSpotsDb() {
-      spotsDb = localforage.createInstance({
-        // driver: localforage.WEBSQL,  // removing the driver lets localforage choose the best driver available to that platform
-        'name': 'Spots',
-        'size': 2000000000              // Default size is just under 5MB, changed here to 2GB
-      });
+      return deferred.promise;
     }
   }
 }());

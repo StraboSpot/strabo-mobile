@@ -8,7 +8,7 @@
   UserFactory.$inject = ['$ionicPopup', '$log', '$q', 'LocalStorageFactory', 'RemoteServerFactory'];
 
   function UserFactory($ionicPopup, $log, $q, LocalStorageFactory, RemoteServerFactory) {
-    var user = null;
+    var user;
 
     return {
       'clearUser': clearUser,
@@ -17,7 +17,6 @@
       'getUserName': getUserName,
       'loadUser': loadUser,             // Run from app config
       'saveUser': saveUser
-
     };
 
     /**
@@ -29,8 +28,8 @@
      */
 
     function clearUser() {
-      user = null;
-      LocalStorageFactory.config2Db.removeItem('user').then(function () {
+      user = undefined;
+      LocalStorageFactory.getDb().config2Db.removeItem('user').then(function () {
         $log.log('Cleared user data from local storage');
       });
     }
@@ -72,7 +71,7 @@
       var deferred = $q.defer(); // init promise
       if (!user) {
         $log.log('Loading user ....');
-        LocalStorageFactory.config2Db.getItem('user').then(function (savedUser) {
+        LocalStorageFactory.getDb().config2Db.getItem('user').then(function (savedUser) {
           if (savedUser) {
             user = savedUser;
             $log.log('Loaded saved user: ', savedUser);
@@ -92,7 +91,7 @@
     // Save all user data in local storage
     function saveUser(userData) {
       user = userData;
-      LocalStorageFactory.config2Db.setItem('user', userData).then(function (savedData) {
+      LocalStorageFactory.getDb().config2Db.setItem('user', userData).then(function (savedData) {
         $log.log('Saved user: ', savedData);
       });
     }

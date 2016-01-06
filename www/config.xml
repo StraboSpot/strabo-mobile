@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget
     id="gov.az.azgs.strabomobile"
-    version="0.8.2"
+    version="0.8.3"
     xmlns="http://www.w3.org/ns/widgets"
     xmlns:cdv="http://cordova.apache.org/ns/1.0"
     xmlns:gap="http://phonegap.com/ns/1.0">
@@ -41,6 +41,7 @@
   <gap:plugin name="cordova-plugin-whitelist" version="1.0.0" source="npm"/>
   <gap:plugin name="ionic-plugin-keyboard" version="1.0.7" source="npm"/>
   <gap:plugin name="cordova-plugin-filepath" version="1.0.0" source="npm"/>
+  <gap:plugin name="cordova-sqlite-storage" version="0.7.14" source="npm"/>
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
   </feature>

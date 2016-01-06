@@ -9,6 +9,7 @@ Build Stack:
 - MVC: [Angular JS](https://angularjs.org/)
 - Map Library: [OpenLayers 3](http://openlayers.org/)
 - AngularJS Extensions for Cordova API: [ngCordova](http://ngcordova.com/)
+- Local Storage: [localForage with Cordova SQLite Driver](https://github.com/thgreasi/localForage-cordovaSQLiteDriver)
 - Testing Framework: [Jasmine](http://jasmine.github.io/)
 - Test Runner: [Karma](karma-runner.github.io/)
 - Linting Utility: [ESLint](http://eslint.org/)
@@ -48,12 +49,17 @@ In the `strabo-mobile` folder:
 Also need to install this plugin due to Cordova bug with Android and content schema
 
     cordova plugin add cordova-plugin-filepath
+    
+Install this for the localForage dependencies
+
+    cordova plugin add https://github.com/litehelpers/Cordova-sqlite-storage.git
+    install localForage-cordovaSQLiteDriver bower install --save localForage-cordovaSQLiteDriver
 
 ### Tested Environment
 
     ionic library: 1.1.1
     ionic cli : 1.7.12
-    cordova: 5.4.0
+    cordova: 5.4.1
     cordova-plugin-camera: 1.2.0
     cordova-plugin-console: 1.0.1
     cordova-plugin-device: 1.0.1
@@ -65,7 +71,7 @@ Also need to install this plugin due to Cordova bug with Android and content sch
     ionic-plugin-keyboard: 1.0.7
     nodejs: 5.0.0
     npm: 2.12.1
-    bower: 1.6.5
+    bower: 1.7.2
 
 ### Run
 

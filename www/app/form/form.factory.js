@@ -5,41 +5,34 @@
     .module('app')
     .factory('FormFactory', FormFactory);
 
-  FormFactory.$inject = ['$document', '$ionicPopup', '$log', 'DataModelsFactory'];
+  FormFactory.$inject = ['$document', '$ionicPopup', '$log', '$q', 'DataModelsFactory'];
 
-  function FormFactory($document, $ionicPopup, $log, DataModelsFactory) {
+  function FormFactory($document, $ionicPopup, $log, $q, DataModelsFactory) {
     var forms = {
+      '_3dstructures_survey': {},
+      '_3dstructures_choices': {},
       'linear_orientation_survey': {},
       'linear_orientation_choices': {},
       'planar_orientation_survey': {},
       'planar_orientation_choices': {},
+      'sample_survey': {},
+      'sample_choices': {},
       'tabular_orientation_survey': {},
-      'tabular_orientation_choices': {}
+      'tabular_orientation_choices': {},
+      'traces_survey': {},
+      'traces_choices': {}
     };
-
-    activate();
 
     return {
       'getLinearOrientationForm': getLinearOrientationForm,
       'getPlanarOrientationForm': getPlanarOrientationForm,
       'getTabularOrientationForm': getTabularOrientationForm,
+      'getForm': getForm,
       'isRelevant': isRelevant,
+      'loadForms': loadForms,
       'toggleAcknowledgeChecked': toggleAcknowledgeChecked,
       'validate': validate
     };
-
-    function activate() {
-      _.each(forms, loadForm);
-    }
-
-    function loadForm(value, key) {
-      $log.log('Loading ' + key + ' ....');
-      var csvFile = DataModelsFactory.dataModels[key];
-      DataModelsFactory.readCSV(csvFile, function (fields) {
-        $log.log('Finished loading ' + key + ' : ', fields);
-        forms[key] = fields;
-      });
-    }
 
     /**
      * Public Functions
@@ -66,6 +59,10 @@
       };
     }
 
+    function getForm() {
+      return forms;
+    }
+
     // Determine if the field should be shown or not by looking at the relevant key-value pair
     // The 2nd param, properties, is used in the eval method
     function isRelevant(relevant, properties) {
@@ -86,6 +83,35 @@
       catch (e) {
         return false;
       }
+    }
+
+    function loadForms() {
+      var deferred = $q.defer(); // init promise
+      var promises = [];
+      var doInitialize = _.some(forms, function (form) {
+        return _.isEmpty(form);
+      });
+      if (doInitialize) {
+        $log.log('Loading forms for Spots (survey + choices) ...');
+        _.each(forms, function (value, key) {
+          var deferred2 = $q.defer(); // init promise
+          $log.log('Loading ' + key + ' ....');
+          var csvFile = DataModelsFactory.dataModels[key];
+          DataModelsFactory.readCSV(csvFile, function (fields) {
+            $log.log('Finished loading ' + key + ' : ', fields);
+            forms[key] = fields;
+            deferred2.resolve();
+          });
+          promises.push(deferred2.promise);
+        });
+        $q.all(promises).then(function () {
+          deferred.resolve();
+        });
+      }
+      else {
+        deferred.resolve();
+      }
+      return deferred.promise;
     }
 
     function toggleAcknowledgeChecked(data, field) {

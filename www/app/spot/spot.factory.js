@@ -8,10 +8,10 @@
   SpotFactory.$inject = ['$log', '$q', 'LocalStorageFactory', 'ProjectFactory'];
 
   function SpotFactory($log, $q, LocalStorageFactory, ProjectFactory) {
-    var currentSpot = null;
+    var currentSpot;
     var currentAssociatedOrientationIndex;
     var currentOrientationIndex;
-    var spots = null;
+    var spots;
 
     return {
       'clear': clear,
@@ -45,9 +45,9 @@
     // Load all spots from local storage
     function all() {
       var deferred = $q.defer(); // init promise
-      var spots = [];
+      spots = [];
 
-      LocalStorageFactory.spotsDb.iterate(function (value, key) {
+      LocalStorageFactory.getDb().spotsDb.iterate(function (value, key) {
         spots.push(value);
       }, function () {
         deferred.resolve(spots);
@@ -62,7 +62,7 @@
     // wipes the spots database
     function clear() {
       var deferred = $q.defer(); // init promise
-      LocalStorageFactory.spotsDb.clear().then(function () {
+      LocalStorageFactory.getDb().spotsDb.clear().then(function () {
         spots = null;
         deferred.notify();
         deferred.resolve(spots);
@@ -79,7 +79,7 @@
       spots = _.reject(spots, function (spot) {
         return spot.properties.id === key;
       });
-      return LocalStorageFactory.spotsDb.removeItem(key);
+      return LocalStorageFactory.getDb().spotsDb.removeItem(key);
     }
 
     function destroyOrientation(i, j) {
@@ -132,12 +132,12 @@
     function getFirstSpot() {
       var deferred = $q.defer(); // init promise
 
-      LocalStorageFactory.spotsDb.keys().then(function (keys, err) {
+      LocalStorageFactory.getDb().spotsDb.keys().then(function (keys, err) {
         if (angular.isUndefined(keys[0])) {
           deferred.resolve(undefined);
         }
         else {
-          deferred.resolve(LocalStorageFactory.spotsDb.getItem(keys[0]));
+          deferred.resolve(LocalStorageFactory.getDb().spotsDb.getItem(keys[0]));
         }
       });
 
@@ -150,7 +150,7 @@
 
     // gets the number of spots
     function getSpotCount() {
-      return LocalStorageFactory.spotsDb.length();
+      return LocalStorageFactory.getDb().spotsDb.length();
     }
 
     function getSpots() {
@@ -164,19 +164,22 @@
     }
 
     function loadSpots() {
-      if (_.isEmpty(spots)) {
-        $log.log('Loading spots ....');
-        var dataPromise = all().then(function (savedData) {
+      var deferred = $q.defer(); // init promise
+      if (!spots) {
+        $log.log('Loading Spots ....');
+        all().then(function (savedData) {
           spots = savedData;
-          $log.log('Finished loading spots: ', spots);
+          $log.log('Finished loading Spots: ', spots);
+          deferred.resolve();
         });
-        return dataPromise;
       }
+      else deferred.resolve();
+      return deferred.promise;
     }
 
     // Read from local storage
     function read(key, callback) {
-      LocalStorageFactory.spotsDb.getItem(key).then(function (value) {
+      LocalStorageFactory.getDb().spotsDb.getItem(key).then(function (value) {
         callback(value);
       });
     }
@@ -185,7 +188,7 @@
       saveSpot.properties.modified_timestamp = new Date().getTime();
 
       var deferred = $q.defer(); // init promise
-      LocalStorageFactory.spotsDb.setItem(saveSpot.properties.id, saveSpot).then(function () {
+      LocalStorageFactory.getDb().spotsDb.setItem(saveSpot.properties.id, saveSpot).then(function () {
         $log.log('Saved spot: ', saveSpot);
         all().then(function (savedData) {
           spots = savedData;
@@ -249,7 +252,7 @@
 
     // Write to local storage
     function write(key, value) {
-      return LocalStorageFactory.spotsDb.setItem(key, value);
+      return LocalStorageFactory.getDb().spotsDb.setItem(key, value);
     }
   }
 }());

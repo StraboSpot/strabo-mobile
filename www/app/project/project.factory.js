@@ -8,7 +8,7 @@
   ProjectFactory.$inject = ['$ionicPopup', '$log', '$q', 'DataModelsFactory', 'LocalStorageFactory'];
 
   function ProjectFactory($ionicPopup, $log, $q, DataModelsFactory, LocalStorageFactory) {
-    var data = {};
+    var data;
     var projectKey = 'project_name';
     var rockUnitSurvey = {};
     var rockUnitChoices = {};
@@ -44,7 +44,7 @@
       var deferred = $q.defer(); // init promise
       var config = {};
 
-      LocalStorageFactory.projectDb.iterate(function (value, key) {
+      LocalStorageFactory.getDb().projectDb.iterate(function (value, key) {
         config[key] = value;
       }, function () {
         deferred.resolve(config);
@@ -54,7 +54,7 @@
 
     function setSurvey(inSurvey) {
       survey = inSurvey;
-      $log.log('Finished loading project unit survey: ', survey);
+      $log.log('Finished loading project survey: ', survey);
     }
 
     function setToolsSurvey(inSurvey) {
@@ -99,8 +99,8 @@
         return obj[key] === value;
       });
 
-      LocalStorageFactory.projectDb.removeItem('rock_units', function () {
-        LocalStorageFactory.projectDb.setItem('rock_units', data.rock_units);
+      LocalStorageFactory.getDb().projectDb.removeItem('rock_units', function () {
+        LocalStorageFactory.getDb().projectDb.setItem('rock_units', data.rock_units);
         $log.log('Saved rock units: ', data.rock_units);
       });
     }
@@ -151,32 +151,37 @@
       if (start_number) {
         start_number += 1;
         data.starting_number_for_spot = start_number;
-        LocalStorageFactory.projectDb.setItem('starting_number_for_spot', start_number);
+        LocalStorageFactory.getDb().projectDb.setItem('starting_number_for_spot', start_number);
       }
     }
 
     function loadProject() {
-      if (_.isEmpty(data)) {
+      var deferred = $q.defer(); // init promise
+      if (!data) {
         $log.log('Loading project properties ....');
-        var dataPromise = all().then(function (savedData) {
+        all().then(function (savedData) {
           data = savedData;
           $log.log('Finished loading project properties: ', data);
+          deferred.resolve();
         });
         $log.log('Loading project surveys ....');
         DataModelsFactory.readCSV(DataModelsFactory.dataModels.project, setSurvey);
         DataModelsFactory.readCSV(DataModelsFactory.dataModels.tools, setToolsSurvey);
         DataModelsFactory.readCSV(DataModelsFactory.dataModels.rock_unit_survey, setRockUnitSurvey);
         DataModelsFactory.readCSV(DataModelsFactory.dataModels.rock_unit_choices, setRockUnitChoices);
-        return dataPromise;
       }
+      else {
+        deferred.resolve();
+      }
+      return deferred.promise;
     }
 
     // Save all project properties in local storage
     function save(newData) {
-      LocalStorageFactory.projectDb.clear().then(function () {
+      LocalStorageFactory.getDb().projectDb.clear().then(function () {
         data = newData;
         _.forEach(data, function (value, key, list) {
-          LocalStorageFactory.projectDb.setItem(key, value);
+          LocalStorageFactory.getDb().projectDb.setItem(key, value);
         });
         $log.log('Saved project properties: ', data);
       });
@@ -184,9 +189,9 @@
 
     function saveRockUnits(rock_units) {
       var deferred = $q.defer(); // init promise
-      LocalStorageFactory.projectDb.removeItem('rock_units', function () {
+      LocalStorageFactory.getDb().projectDb.removeItem('rock_units', function () {
         data.rock_units = rock_units;
-        LocalStorageFactory.projectDb.setItem('rock_units', rock_units).then(function () {
+        LocalStorageFactory.getDb().projectDb.setItem('rock_units', rock_units).then(function () {
           $log.log('Saved rock units: ', rock_units);
           deferred.resolve();
         });
