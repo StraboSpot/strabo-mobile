@@ -26,7 +26,7 @@
       var deferred = $q.defer(); // init promise
       var config = {};
 
-      LocalStorageFactory.configDb.iterate(function (value, key) {
+      LocalStorageFactory.getDb().configDb.iterate(function (value, key) {
         config[key] = value;
       }, function () {
         deferred.resolve(config);
@@ -67,10 +67,10 @@
     }
 
     function save(newData) {
-      LocalStorageFactory.configDb.clear().then(function () {
+      LocalStorageFactory.getDb().configDb.clear().then(function () {
         data = newData;
         _.forEach(data, function (value, key, list) {
-          LocalStorageFactory.configDb.setItem(key, value);
+          LocalStorageFactory.getDb().configDb.setItem(key, value);
         });
         $log.log('Saved preferences: ', data);
       });

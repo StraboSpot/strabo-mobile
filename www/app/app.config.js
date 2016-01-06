@@ -333,7 +333,9 @@
     return SpotFormsFactory.loadTracesForm();
   }
 
-  function prepUserFactory(UserFactory) {
-    return UserFactory.loadUser();
+  function prepUserFactory(LocalStorageFactory, UserFactory) {
+    return LocalStorageFactory.setupLocalforage().then(function () {
+      UserFactory.loadUser();
+    });
   }
 }());
