@@ -5,117 +5,79 @@
     .module('app')
     .controller('ArchiveTilesController', ArchiveTilesController);
 
-  ArchiveTilesController.$inject = ['$ionicLoading', '$log', '$state', 'MapViewFactory', 'OfflineTilesFactory',
-    'SlippyTileNamesFactory'];
+  ArchiveTilesController.$inject = ['$log', '$state', '$q', 'LocalStorageFactory', 'MapViewFactory',
+    'OfflineTilesFactory', 'SlippyTileNamesFactory'];
 
-  function ArchiveTilesController($ionicLoading, $log, $state, MapViewFactory, OfflineTilesFactory,
-                                  SlippyTileNamesFactory) {
+  function ArchiveTilesController($log, $state, $q, LocalStorageFactory, MapViewFactory,
+                                  OfflineTilesFactory, SlippyTileNamesFactory) {
     var vm = this;
-    var maxZoomToDownload = 19;  // the maximum allowable zoom download for any given map
     var mapExtent = MapViewFactory.getExtent();
 
+    vm.downloading = false;
     vm.goToMap = goToMap;
     vm.map = {
-      'name': null,             // name of the map
-      'tiles': null,            // tiles array of the map region
+      'curentZoom': undefined,
+      'name': null,               // name of the map
       'showDownloadMacrostrat': mapExtent.zoom >= 4 && mapExtent.zoom <= 12,
       'downloadMacrostrat': false,
-      'showDownloadInnerZooms': mapExtent.zoom >= 12, // Too much data if allow download of inner zooms less than 12
+      'showDownloadInnerZooms': false,
       'downloadZooms': false,
-      'percentDownload': 0,
-      'overLayPercentDownload': 0,
-      'showProgressBar': false,
-      'showOverlayProgressBar': false
+      'downloadError': '',
+      'percentDownload': -1,
+      'progress': {}
     };
     vm.numOfflineTiles = 0;  // number of tiles we have in offline storage
-    vm.onChangeDownloadZooms = estimateArchiveTile;
+    vm.estimateArchiveTile = estimateArchiveTile;
     vm.submit = submit;
-    vm.updateOfflineTileCount = updateOfflineTileCount;
+    vm.submitBtnText = '';
+    vm.tiles = {};
 
     activate();
 
     function activate() {
+      vm.downloading = false;
+      vm.map.currentZoom = mapExtent.zoom;
+      vm.map.maxZoom = _.findWhere(OfflineTilesFactory.getMapProviders(), {'id': mapExtent.mapProvider}).maxZoom;
+      vm.map.showDownloadInnerZooms = mapExtent.zoom >= 14 && mapExtent.zoom < vm.map.maxZoom;
       estimateArchiveTile();
       updateOfflineTileCount();
     }
 
-    function goToMap() {
-      $state.go('app.map');
-    }
+    /**
+     * Private Functions
+     */
 
-    function submit(event) {
-      // tell the user that we're downloading tiles
-      event.target.innerHTML = 'Downloading tiles . . . please wait.';
-      // disable the download button
-      event.target.disabled = true;
-
-      vm.map.showProgressBar = true;
-
-      if (vm.map.downloadMacrostrat) {
-        vm.map.showOverlayProgressBar = true;
-      }
-
+    function downloadMapTiles() {
+      var deferred = $q.defer(); // init promise
       var downloadTileOptions = {
         'mapName': vm.map.name,
-        'mapProvider': mapExtent.mapProvider,
-        'tiles': vm.map.tiles
+        'tiles': vm.tiles
       };
-
-      var downloadMacrostratGeologicOptions = {
-        'mapName': vm.map.name + '-macrostratGeologic',
-        'mapProvider': 'macrostratGeologic',
-        'tiles': vm.map.tiles
-      };
-
-      function downloadMapTile() {
-        return OfflineTilesFactory.downloadTileToStorage(downloadTileOptions);
-      }
-
-      function downloadMacrostratGeologic() {
-        return OfflineTilesFactory.downloadTileToStorage(downloadMacrostratGeologicOptions);
-      }
-
-      // are we downloading macrostrat tiles?
-      $ionicLoading.show({
-        'template': '<ion-spinner></ion-spinner>'
+      OfflineTilesFactory.downloadTileToStorage(downloadTileOptions).then(function () {
+        // Success downloading tiles
+        deferred.resolve();
+      }, function () {
+        vm.map.downloadError = 'No tiles successfully downloaded. Strabo may be unable to contact the tile host or unable to write to local storage.';
+        deferred.resolve();
+      }, function (notify) {
+        // Update the progress bar once we receive notifications
+        vm.map.percentDownload = Math.ceil(((notify.success + notify.failed) / vm.tiles.need.length) * 100) || 0;
+        vm.map.progress = {
+          'success': notify.success,
+          'failed': notify.failed,
+          'total': vm.tiles.need.length
+        };
       });
-      if (vm.map.downloadMacrostrat) {
-        // yes
-        downloadMapTile()
-          .then(downloadMacrostratGeologic, null, function (notify1) {
-            // $log.log('notify1 ', notify1);
-            // $log.log('***archiveTiles-notify: ', notify);
-            // update the progress bar once we receive notifications
-            vm.map.percentDownload = Math.ceil((notify1[0] / notify1[1]) * 100);
-          })
-          .then(function () {
-            // Finished downloading all tiles
-            $ionicLoading.hide();
-            $state.go('app.map');
-          }, null, function (notify2) {
-            // $log.log('***archiveTiles-notify: ', notify);
-            // has the second notification kicked in yet?
-            if (notify2) {
-              // update the progress bar once we receive notifications
-              vm.map.overLayPercentDownload = Math.ceil((notify2[0] / notify2[1]) * 100);
-            }
-          });
-      }
-      else {
-        // no -- are not downloading macrostrat tiles
-        downloadMapTile()
-          .then(function () {
-            // Finished downloading all tiles
-            $ionicLoading.hide();
-            $state.go('app.map');
-          }, function (error) {
-            $ionicLoading.hide();
-            $log.log('error at downloadMapTile', error);
-          }, function (notify) {
-            // update the progress bar once we receive notifications
-            vm.map.percentDownload = Math.ceil((notify[0] / notify[1]) * 100);
-          });
-      }
+      return deferred.promise;
+    }
+
+    function isSavedTile(namedTile) {
+      var deferred = $q.defer(); // init promise
+      LocalStorageFactory.getDb().mapTilesDb.getItem(namedTile).then(function (savedTile) {
+        if (savedTile) deferred.resolve(savedTile.size);
+        else deferred.resolve(undefined);
+      });
+      return deferred.promise;
     }
 
     function updateOfflineTileCount() {
@@ -126,17 +88,22 @@
       });
     }
 
-    /* *********************** LOCAL FUNCTIONS *********************** */
+    /**
+     * Public Functions
+     */
 
-    // Estimate how many tiles would be downloaded
+    // Determine tiles to be downloaded
     function estimateArchiveTile() {
+      var promises = [];
       var tileArray = [];
       var zoom = mapExtent.zoom;
+      vm.tiles.need = [];
+      vm.tiles.saved = [];
 
       // are we downloading inner zooms?
       if (vm.map.downloadZooms) {
         // yes, then loop through all the zoom levels and build our tile array
-        while (zoom <= maxZoomToDownload) {
+        while (zoom <= vm.map.maxZoom) {
           var currentZoomTileArray = SlippyTileNamesFactory.getTileIds(mapExtent.topRight, mapExtent.bottomLeft, zoom);
           tileArray.push(currentZoomTileArray);
           zoom++;
@@ -146,8 +113,48 @@
         // no, get just this zoom level
         tileArray = SlippyTileNamesFactory.getTileIds(mapExtent.topRight, mapExtent.bottomLeft, zoom);
       }
-      // update the tile array to the scope
-      vm.map.tiles = _.flatten(tileArray);
+
+      _.each(_.flatten(tileArray), function (tile) {
+        var deferred = $q.defer(); // init promise
+        isSavedTile(mapExtent.mapProvider + '/' + tile).then(function (savedTileSize) {
+          if (savedTileSize) vm.tiles.saved.push({'tile_provider': mapExtent.mapProvider, 'tile_id': tile, 'size': savedTileSize});
+          else vm.tiles.need.push({'tile_provider': mapExtent.mapProvider, 'tile_id': tile});
+          if (vm.map.downloadMacrostrat) {
+            isSavedTile('macrostratGeologic/' + tile).then(function (savedGeologicTileSize) {
+              if (savedGeologicTileSize) vm.tiles.saved.push({'tile_provider': 'macrostratGeologic', 'tile_id': tile, 'size': savedGeologicTileSize});
+              else vm.tiles.need.push({'tile_provider': 'macrostratGeologic', 'tile_id': tile});
+              deferred.resolve();
+            });
+          }
+          else deferred.resolve();
+        });
+        promises.push(deferred.promise);
+      });
+
+      $q.all(promises).then(function () {
+        if (!_.isEmpty(vm.tiles.saved)) {
+          $log.log('Have', vm.tiles.saved.length, 'of these tiles already:', vm.tiles.saved);
+        }
+        if (!_.isEmpty(vm.tiles.need)) {
+          $log.log('Need', vm.tiles.need.length, 'of these tiles:', vm.tiles.need);
+        }
+        vm.submitBtnText = 'Save this Map';
+      });
+    }
+
+    function goToMap() {
+      $state.go('app.map');
+    }
+
+    function submit() {
+      // tell the user that we're downloading tiles
+      vm.submitBtnText = 'Downloading tiles . . . please wait.';
+      vm.map.progress = '';
+      vm.downloading = true;
+
+      downloadMapTiles().then(function () {
+        activate();
+      });
     }
   }
 }());

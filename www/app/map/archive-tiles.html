@@ -5,40 +5,49 @@
   <ion-content class='padding has-header'>
 
     <label class='item item-input item-stacked-label item-text-wrap'>
-      <span class='input-label'><b>Map Name:</b></span>
+      <span class='input-label'><b>Map Name</b></span>
       <input type='text' ng-model='vm.map.name' autofocus>
     </label>
 
-    <ion-checkbox ng-model='vm.map.downloadMacrostrat' ng-show='vm.map.showDownloadMacrostrat'>
+    <ion-checkbox ng-model='vm.map.downloadMacrostrat' ng-show='vm.map.showDownloadMacrostrat'
+                  ng-change='vm.estimateArchiveTile()'>
       Download Macrostrat-Geologic tiles too?
     </ion-checkbox>
 
     <ion-checkbox ng-model='vm.map.downloadZooms' ng-show='vm.map.showDownloadInnerZooms'
-                  ng-change='vm.onChangeDownloadZooms()'>
-      Download inner zooms?
+                  ng-change='vm.estimateArchiveTile()'>
+      Download inner zooms to zoom {{ vm.map.maxZoom }}?
     </ion-checkbox>
 
     <br>
+    Current zoom level: {{ vm.map.currentZoom }}<br>
+    Total number of saved offline tiles: {{vm.numOfflineTiles}}<br>
+    Total number of tiles requested: {{ vm.tiles.saved.length + vm.tiles.need.length }} <br>
+    Number of requested tiles already saved: {{ vm.tiles.saved.length }} <br>
+    <br>
+    <b>Number of tiles to download: {{ vm.tiles.need.length }} <br></b>
 
-    <p>Current number of offline tiles: {{vm.numOfflineTiles}}</p>
-
-    <p>Estimated number of tiles to download: {{ (vm.map.downloadMacrostrat) ? vm.map.tiles.length * 2 :
-      vm.map.tiles.length}}</p>
-
-    <button class='button button-block button-positive' ng-disabled='!vm.map.name' ng-click='vm.submit($event)'>Save
+    <button class='button button-block button-positive' ng-click='vm.submit()'
+            ng-disabled='!vm.map.name || vm.tiles.need.length == 0 || vm.downloading'>
+      {{ vm.submitBtnText }}
     </button>
-
     *Offline Maps are loaded automatically when offline. Edit and delete options for Saved Maps will be available under the Offline Maps menu item.
-    <!--
-        <div ng-show='vm.map.showProgressBar'>
-          Downloading basemap tiles:
-          <progress ng-value='vm.map.percentDownload' max='100'></progress>
-        </div>
 
-        <div ng-show='vm.map.showOverlayProgressBar'>
-          Downloading geologic map overlay tiles:
-          <progress ng-value='vm.map.overLayPercentDownload' max='100'></progress>
-        </div>
-    -->
+    <div ng-show='vm.map.percentDownload >= 0'>
+      <br>
+      <hr>
+      <br>
+      Attempting to download and save basemap tiles:
+      <progress ng-value='vm.map.percentDownload' max='100'></progress>
+      Number of tiles sucessful: {{ vm.map.progress.success }} / {{ vm.map.progress.total }}
+      <br>
+      Number of tiles failed: {{ vm.map.progress.failed }} / {{ vm.map.progress.total }}
+      <div ng-show='vm.map.downloadError'>
+        <br><br>
+        <b>ERROR!</b><br>
+        {{ vm.map.downloadError }}
+      </div>
+    </div>
+
   </ion-content>
 </ion-view>
