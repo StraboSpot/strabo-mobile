@@ -5,10 +5,10 @@
     .module('app')
     .factory('OfflineTilesFactory', OfflineTilesFactory);
 
-  OfflineTilesFactory.$inject = ['$http', '$log', '$q', 'LocalStorageFactory'];
+  OfflineTilesFactory.$inject = ['$http', '$ionicPopup', '$log', '$q', 'LocalStorageFactory'];
 
   // used to determine what the map provider is before we archive a tileset
-  function OfflineTilesFactory($http, $log, $q, LocalStorageFactory) {
+  function OfflineTilesFactory($http, $ionicPopup, $log, $q, LocalStorageFactory) {
     var currentMapProvider = null;
     var mapProviders;
     var downloadErrors = 0;
@@ -16,9 +16,9 @@
     activate();
 
     return {
+      'checkValidMapName': checkValidMapName,
       'clear': clear,
       'deleteMap': deleteMap,
-      'downloadTileToStorage': downloadTileToStorage,
       'getCurrentMapProvider': getCurrentMapProvider,
       'getMapProviders': getMapProviders,
       'getMaps': getMaps,
@@ -26,8 +26,8 @@
       'getOfflineTileSize': getOfflineTileSize,
       'read': read,
       'renameMap': renameMap,
-      'setCurrentMapProvider': setCurrentMapProvider,
-      'write': write
+      'saveMaps': saveMaps,
+      'setCurrentMapProvider': setCurrentMapProvider
     };
 
     /**
@@ -38,11 +38,12 @@
       setMapProviders();
     }
 
-    function downloadAndSave(mapProviderInfo, tile) {
+    function downloadTile(tile) {
       var deferred = $q.defer(); // init promise
 
+      var mapProviderInfo = _.findWhere(mapProviders, {'id': tile.tile_provider});
       var url = _.sample(mapProviderInfo.url);
-      var imageUrl = url + tile + '.' + mapProviderInfo.imageType;
+      var imageUrl = url + tile.tile_id + '.' + mapProviderInfo.imageType;
       if (mapProviderInfo.key) imageUrl = imageUrl + '?' + mapProviderInfo.key;
 
       var request = $http({
@@ -52,47 +53,17 @@
       });
       request.then(function (response) {
         // Request Success
-        // $log.log('Downloaded tile', mapProviderInfo.id + '/' + tile, 'Response: ', response);
+        // $log.log('Downloaded tile', mapProviderInfo.id + '/' + tile.tile_id, 'Response: ', response);
         var blob = new Blob([response.data], {
           'type': mapProviderInfo.mime
         });
-        write(mapProviderInfo.id, tile, blob).then(function (size) {
+        writeTile(mapProviderInfo.id, tile.tile_id, blob).then(function (size) {
           deferred.resolve(size);
         });
       }, function (response) {
         // Request Failure
         downloadErrors += 1;
         deferred.reject(response);
-      });
-      return deferred.promise;
-    }
-
-    function mapNameWrite(mapName, tileProvider, allTiles) {
-      var deferred = $q.defer(); // init promise
-
-      // Get map tiles requested only for this provider
-      var thisMapTiles = _.filter(allTiles, function (tile) {
-        return tile.tile_provider === tileProvider;
-      });
-      // Get map tiles for this provider that are actually in storage (this is, have the 'save' key)
-      var savedMapTiles = _.filter(thisMapTiles, function (tile) {
-        return _.has(tile, 'size');
-      });
-      // Calculate the size of tiles we have in storage for this map
-      var totalSize = _.reduce(_.pluck(savedMapTiles, 'size'), function (memo, num) {
-        return memo + num;
-      }, 0);
-
-      var mapNameData = {
-        'mapProvider': tileProvider,
-        'tileArray': savedMapTiles,
-        'size': totalSize,
-        'date': new Date().toLocaleString()
-      };
-
-      LocalStorageFactory.getDb().mapNamesDb.setItem(mapName, mapNameData).then(function () {
-        $log.log('saved map name ', mapName);
-        deferred.resolve();
       });
       return deferred.promise;
     }
@@ -170,9 +141,69 @@
       }];
     }
 
+    function writeMap(mapName, mapProvider, mapSize, tiles) {
+      var deferred = $q.defer(); // init promise
+      var mapNameData = {
+        'mapProvider': mapProvider,
+        'tileArray': tiles,
+        'size': mapSize,
+        'date': new Date().toLocaleString()
+      };
+
+      LocalStorageFactory.getDb().mapNamesDb.setItem(mapName, mapNameData).then(function () {
+        deferred.resolve();
+      });
+      return deferred.promise;
+    }
+
+    // Write tile to storage
+    function writeTile(mapProvider, tile, blob) {
+      var deferred = $q.defer(); // init promise
+
+      // note that tileId is prefixed with mapProvider, tile itself is not
+      var tileId = mapProvider + '/' + tile;
+      LocalStorageFactory.getDb().mapTilesDb.setItem(tileId, blob).then(function () {
+        deferred.resolve(blob.size);
+      });
+      return deferred.promise;
+    }
+
     /**
      * Public Functions
      */
+
+    function checkValidMapName(map) {
+      var deferred = $q.defer(); // init promise
+      LocalStorageFactory.getDb().mapNamesDb.getItem(map.name).then(function (savedMap) {
+        if (!savedMap) deferred.resolve(true, null);
+        else if (savedMap && map.mapProvider !== savedMap.mapProvider) {
+          $ionicPopup.alert({
+            'title': 'Duplicate Map Name!',
+            'template': 'There is already a saved map with the name ' + map.name + ' and this map uses a different ' +
+            'tile provider. Delete the saved map  ' + map.name + ' before trying to save a map with the same name.'
+          });
+          deferred.resolve(false, null);
+        }
+        else {
+          var confirmPopup = $ionicPopup.confirm({
+            'title': 'Duplicate Map Name!',
+            'template': 'There is already a saved map with the name ' + map.name + '. Append the current tiles to saved map?'
+          });
+          confirmPopup.then(function (res) {
+            if (res) {
+              // console.log(savedMap.tileArray);
+              // $log.log(map.tiles.saved);
+              var savedTilesUnion = _.union(map.tiles.saved, savedMap.tileArray);
+              map.tiles.saved = _.uniq(savedTilesUnion, false, 'tile_id');
+              // $log.log(map.tiles.saved);
+              deferred.resolve(true, map.tiles.saved);
+            }
+            else deferred.resolve(false, null);
+          });
+        }
+      });
+      return deferred.promise;
+    }
 
     // Wipe the offline database
     function clear(callback) {
@@ -226,78 +257,6 @@
             // Map is deleted, and this is now fully resolved
             deferred.resolve();
           });
-      });
-      return deferred.promise;
-    }
-
-    function downloadTileToStorage(options, callback) {
-      var deferred = $q.defer(); // init promise
-      var tiles = options.tiles;
-      $log.log('Requesting to download', tiles.need.length, 'tiles ...');
-
-      var tilesSuccess = [];
-      var tilesFailed = [];
-      downloadErrors = 0;
-
-      // array of promises
-      var promises = [];
-      _.each(tiles.need, function (tile) {
-        var deferred2 = $q.defer(); // init promise
-        var mapProviderInfo = _.findWhere(mapProviders, {'id': tile.tile_provider});
-        // now save all the tiles -- loop through the tiles arrays
-        // stash each tile download as a promise
-        var promise = downloadAndSave(mapProviderInfo, tile.tile_id).then(function (size) {
-          tile.size = size;
-          // $log.log('Finished downloading and saving tile', tile.tile_id + '/' + tile.tile_id, 'size:', tile.size);
-          tilesSuccess.push(tile);
-          deferred.notify({'success': tilesSuccess.length, 'failed': tilesFailed.length});
-          deferred2.resolve();
-        }, function (err) {
-          $log.log('Error downloading tile:', err);
-          tilesFailed.push(tile);
-          deferred.notify({'success': tilesSuccess.length, 'failed': tilesFailed.length});
-          deferred2.reject(err);
-        });
-        // our promise is now built -- push this promise onto the promises array
-        promises.push(promise);
-      });
-
-      // When all promises have been fulfilled
-      $q.all(promises).then(function () {
-        if (downloadErrors > 0) $log.log('Number of errors:', downloadErrors);
-        var downloaded = _.compact(_.pluck(tiles.need, 'size'));
-        if (!_.isEmpty(downloaded)) {
-          var allTiles = _.union(tiles.need, tiles.saved);
-          var tileProviders = _.uniq(_.pluck(allTiles, 'tile_provider'));
-          _.each(tileProviders, function (tileProvider) {
-            var mapName = (tileProvider === 'macrostratGeologic') ? options.mapName + '-macrostratGeologic' : options.mapName;
-
-            LocalStorageFactory.getDb().mapNamesDb.getItem(mapName).then(function (value) {
-              if (value) {
-                // Delete the map of the same name first then write the new map properties
-                value.name = mapName;
-                deleteMap(value).then(function () {
-                  mapNameWrite(mapName, tileProvider, allTiles)
-                    .then(function () {
-                      // Everything is fully downloaded
-                      deferred.resolve();
-                    });
-                });
-              }
-              else {
-                // Write the new map properties
-                mapNameWrite(mapName, tileProvider, allTiles)
-                  .then(function () {
-                    // Everything is fully downloaded
-                    deferred.resolve();
-                  });
-              }
-            });
-          });
-        }
-        else {
-          deferred.reject();
-        }
       });
       return deferred.promise;
     }
@@ -370,20 +329,54 @@
       return deferred.promise;
     }
 
-    function setCurrentMapProvider(mapProvider) {
-      currentMapProvider = mapProvider;
-    }
-
-    // Write to storage
-    function write(mapProvider, tile, blob) {
+    function saveMaps(mapsToSave) {
       var deferred = $q.defer(); // init promise
 
-      // note that tileId is prefixed with mapProvider, tile itself is not
-      var tileId = mapProvider + '/' + tile;
-      LocalStorageFactory.getDb().mapTilesDb.setItem(tileId, blob).then(function () {
-        deferred.resolve(blob.size);
+      // array of promises
+      var promises = [];
+      _.each(mapsToSave, function (mapToSave) {
+        if (mapToSave.tiles.need.length > 0) {
+          $log.log('Requesting to download', mapToSave.tiles.need.length, 'tiles from ', mapToSave.mapProvider, 'for map', mapToSave.name);
+          mapToSave.tiles.downloaded = {'success': [], 'failed': []};
+          _.each(mapToSave.tiles.need, function (tile) {
+            var deferred2 = $q.defer(); // init promise
+            var promise = downloadTile(tile).then(function (size) {
+              tile.size = size;
+              // $log.log('Finished downloading and saving tile', tile.tile_id + '/' + tile.tile_id, 'size:', tile.size);
+              mapToSave.tiles.downloaded.success.push(tile);
+              mapToSave.tiles.saved.push(tile);
+              deferred.notify(mapToSave.tiles.downloaded);
+              deferred2.resolve();
+            }, function (err) {
+              $log.log('Error downloading tile:', err);
+              mapToSave.tiles.downloaded.failed.push(tile);
+              deferred.notify(mapToSave.tiles.downloaded);
+              deferred2.reject(err);
+            });
+            promises.push(promise);
+          });
+        }
+      });
+
+      // When all promises have been fulfilled
+      $q.all(promises).then(function () {
+        if (downloadErrors > 0) $log.log('Number of errors:', downloadErrors);
+        _.each(mapsToSave, function (mapToSave) {
+          // Calculate the size of tiles we have in storage for this map
+          var mapSize = _.reduce(_.pluck(mapToSave.tiles.saved, 'size'), function (memo, num) {
+            return memo + num;
+          }, 0);
+          writeMap(mapToSave.name, mapToSave.mapProvider, mapSize, mapToSave.tiles.saved).then(function () {
+            $log.log('Saved map:', mapToSave.name, 'from', mapToSave.mapProvider, 'with size', mapSize, ':', mapToSave.tiles.saved);
+            deferred.resolve();
+          });
+        });
       });
       return deferred.promise;
+    }
+
+    function setCurrentMapProvider(mapProvider) {
+      currentMapProvider = mapProvider;
     }
   }
 }());

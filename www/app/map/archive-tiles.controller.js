@@ -5,11 +5,11 @@
     .module('app')
     .controller('ArchiveTilesController', ArchiveTilesController);
 
-  ArchiveTilesController.$inject = ['$log', '$state', '$q', 'LocalStorageFactory', 'MapViewFactory',
+  ArchiveTilesController.$inject = ['$log', '$q', '$state', 'LocalStorageFactory', 'MapViewFactory',
     'OfflineTilesFactory', 'SlippyTileNamesFactory'];
 
-  function ArchiveTilesController($log, $state, $q, LocalStorageFactory, MapViewFactory,
-                                  OfflineTilesFactory, SlippyTileNamesFactory) {
+  function ArchiveTilesController($log, $q, $state, LocalStorageFactory, MapViewFactory, OfflineTilesFactory,
+                                  SlippyTileNamesFactory) {
     var vm = this;
     var mapExtent = MapViewFactory.getExtent();
 
@@ -22,9 +22,9 @@
       'downloadMacrostrat': false,
       'showDownloadInnerZooms': false,
       'downloadZooms': false,
-      'downloadError': '',
       'percentDownload': -1,
-      'progress': {}
+      'progress': {},
+      'status': ''
     };
     vm.numOfflineTiles = 0;  // number of tiles we have in offline storage
     vm.estimateArchiveTile = estimateArchiveTile;
@@ -47,35 +47,48 @@
      * Private Functions
      */
 
-    function downloadMapTiles() {
-      var deferred = $q.defer(); // init promise
-      var downloadTileOptions = {
-        'mapName': vm.map.name,
-        'tiles': vm.tiles
-      };
-      OfflineTilesFactory.downloadTileToStorage(downloadTileOptions).then(function () {
-        // Success downloading tiles
-        deferred.resolve();
-      }, function () {
-        vm.map.downloadError = 'No tiles successfully downloaded. Strabo may be unable to contact the tile host or unable to write to local storage.';
-        deferred.resolve();
-      }, function (notify) {
-        // Update the progress bar once we receive notifications
-        vm.map.percentDownload = Math.ceil(((notify.success + notify.failed) / vm.tiles.need.length) * 100) || 0;
-        vm.map.progress = {
-          'success': notify.success,
-          'failed': notify.failed,
-          'total': vm.tiles.need.length
-        };
-      });
-      return deferred.promise;
-    }
-
     function isSavedTile(namedTile) {
       var deferred = $q.defer(); // init promise
       LocalStorageFactory.getDb().mapTilesDb.getItem(namedTile).then(function (savedTile) {
         if (savedTile) deferred.resolve(savedTile.size);
         else deferred.resolve(undefined);
+      });
+      return deferred.promise;
+    }
+
+    function saveMaps(mapsToSave) {
+      var deferred = $q.defer(); // init promise
+      OfflineTilesFactory.saveMaps(mapsToSave).then(function () {
+        if (mapsToSave.length === 1 && vm.map.progress.failed === 0) vm.map.saveStatus = 'SUCCESS! Map saved!';
+        else if (mapsToSave.length > 1 && vm.map.progress.failed === 0) vm.map.saveStatus = 'SUCCESS! Maps saved!';
+        else if (mapsToSave.length === 1 && vm.map.progress.failed === 1) {
+          vm.map.saveStatus = 'Map saved, however 1 tile was not downloaded. ' +
+            'Try saving the map again with the same name to download the missing tile.';
+        }
+        else if (mapsToSave.length === 1 && vm.map.progress.failed > 1) {
+          vm.map.saveStatus = 'Map saved, however ' + vm.map.progress.failed + ' tiles were not downloaded. ' +
+            'Try saving the maps again with the same name to download the missing tiles.';
+        }
+        else if (mapsToSave.length > 1 && vm.map.progress.failed === 1) {
+          vm.map.saveStatus = 'Maps saved, however 1 tile was not downloaded. ' +
+            'Try saving the maps again with the same name to download the missing tile.';
+        }
+        else if (mapsToSave.length > 1 && vm.map.progress.failed > 1) {
+          vm.map.saveStatus = 'Maps saved, however, ' + vm.map.progress.failed + ' tiles were not downloaded.' +
+            'Try saving the maps again with the same name to download the missing tiles.';
+        }
+        deferred.resolve();
+      }, function () {
+        vm.map.saveStatus = 'ERROR! No tiles successfully downloaded. Strabo may be unable to contact the tile host or unable to write to local storage.';
+        deferred.resolve();
+      }, function (notify) {
+        // Update the progress bar once we receive notifications
+        vm.map.percentDownload = Math.ceil(((notify.success.length + notify.failed.length) / vm.tiles.need.length) * 100) || 0;
+        vm.map.progress = {
+          'success': notify.success.length,
+          'failed': notify.failed.length,
+          'total': vm.tiles.need.length
+        };
       });
       return deferred.promise;
     }
@@ -117,11 +130,13 @@
       _.each(_.flatten(tileArray), function (tile) {
         var deferred = $q.defer(); // init promise
         isSavedTile(mapExtent.mapProvider + '/' + tile).then(function (savedTileSize) {
-          if (savedTileSize) vm.tiles.saved.push({'tile_provider': mapExtent.mapProvider, 'tile_id': tile, 'size': savedTileSize});
+          if (savedTileSize) vm.tiles.saved.push(
+            {'tile_provider': mapExtent.mapProvider, 'tile_id': tile, 'size': savedTileSize});
           else vm.tiles.need.push({'tile_provider': mapExtent.mapProvider, 'tile_id': tile});
           if (vm.map.downloadMacrostrat) {
             isSavedTile('macrostratGeologic/' + tile).then(function (savedGeologicTileSize) {
-              if (savedGeologicTileSize) vm.tiles.saved.push({'tile_provider': 'macrostratGeologic', 'tile_id': tile, 'size': savedGeologicTileSize});
+              if (savedGeologicTileSize) vm.tiles.saved.push(
+                {'tile_provider': 'macrostratGeologic', 'tile_id': tile, 'size': savedGeologicTileSize});
               else vm.tiles.need.push({'tile_provider': 'macrostratGeologic', 'tile_id': tile});
               deferred.resolve();
             });
@@ -147,13 +162,55 @@
     }
 
     function submit() {
-      // tell the user that we're downloading tiles
-      vm.submitBtnText = 'Downloading tiles . . . please wait.';
-      vm.map.progress = '';
-      vm.downloading = true;
+      var mapsToSave = [];
+      mapsToSave.push({
+        'name': vm.map.name,
+        'mapProvider': mapExtent.mapProvider,
+        'tiles': {
+          'need': _.filter(vm.tiles.need, function (tile) {
+            return tile.tile_provider === mapExtent.mapProvider;
+          }),
+          'saved': _.filter(vm.tiles.saved, function (tile) {
+            return tile.tile_provider === mapExtent.mapProvider;
+          })
+        }
+      });
+      if (vm.map.downloadMacrostrat) {
+        mapsToSave.push({
+          'name': vm.map.name + '-macrostratGeologic',
+          'mapProvider': 'macrostratGeologic',
+          'tiles': {
+            'need': _.filter(vm.tiles.need, function (tile) {
+              return tile.tile_provider === 'macrostratGeologic';
+            }),
+            'saved': _.filter(vm.tiles.saved, function (tile) {
+              return tile.tile_provider === 'macrostratGeologic';
+            })
+          }
+        });
+      }
 
-      downloadMapTiles().then(function () {
-        activate();
+      var promises = [];
+      _.each(mapsToSave, function (mapToSave, i) {
+        var deferred = $q.defer(); // init promise
+        OfflineTilesFactory.checkValidMapName(mapToSave).then(function (valid, newTiles) {
+          if (!valid) mapsToSave.splice(i, 1);
+          else if (valid && newTiles) mapToSave.tiles.saved = newTiles;
+          deferred.resolve();
+        });
+        promises.push(deferred.promise);
+      });
+
+      $q.all(promises).then(function () {
+        if (_.size(mapsToSave) > 0) {
+          // tell the user that we're saving the map
+          vm.submitBtnText = 'Saving map . . . please wait.';
+          vm.map.progress = '';
+          vm.downloading = true;
+          saveMaps(mapsToSave).then(function () {
+            activate();
+          });
+        }
       });
     }
   }

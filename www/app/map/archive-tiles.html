@@ -28,25 +28,28 @@
     <b>Number of tiles to download: {{ vm.tiles.need.length }} <br></b>
 
     <button class='button button-block button-positive' ng-click='vm.submit()'
-            ng-disabled='!vm.map.name || vm.tiles.need.length == 0 || vm.downloading'>
+            ng-disabled='!vm.map.name || vm.downloading'>
       {{ vm.submitBtnText }}
     </button>
     *Offline Maps are loaded automatically when offline. Edit and delete options for Saved Maps will be available under the Offline Maps menu item.
 
-    <div ng-show='vm.map.percentDownload >= 0'>
+    <div ng-show='vm.map.percentDownload >= 0 || vm.map.saveStatus'>
       <br>
       <hr>
+    </div>
+
+    <div ng-show='vm.map.percentDownload >= 0'>
       <br>
       Attempting to download and save basemap tiles:
       <progress ng-value='vm.map.percentDownload' max='100'></progress>
       Number of tiles sucessful: {{ vm.map.progress.success }} / {{ vm.map.progress.total }}
       <br>
       Number of tiles failed: {{ vm.map.progress.failed }} / {{ vm.map.progress.total }}
-      <div ng-show='vm.map.downloadError'>
-        <br><br>
-        <b>ERROR!</b><br>
-        {{ vm.map.downloadError }}
-      </div>
+    </div>
+
+    <div ng-show='vm.map.saveStatus'>
+      <br>
+      <b>{{ vm.map.saveStatus }}</b>
     </div>
 
   </ion-content>
