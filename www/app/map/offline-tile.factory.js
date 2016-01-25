@@ -331,26 +331,26 @@
 
     function saveMaps(mapsToSave) {
       var deferred = $q.defer(); // init promise
+      var tilesDownloaded = {'success': [], 'failed': []};
 
       // array of promises
       var promises = [];
       _.each(mapsToSave, function (mapToSave) {
         if (mapToSave.tiles.need.length > 0) {
           $log.log('Requesting to download', mapToSave.tiles.need.length, 'tiles from ', mapToSave.mapProvider, 'for map', mapToSave.name);
-          mapToSave.tiles.downloaded = {'success': [], 'failed': []};
           _.each(mapToSave.tiles.need, function (tile) {
             var deferred2 = $q.defer(); // init promise
             var promise = downloadTile(tile).then(function (size) {
               tile.size = size;
               // $log.log('Finished downloading and saving tile', tile.tile_id + '/' + tile.tile_id, 'size:', tile.size);
-              mapToSave.tiles.downloaded.success.push(tile);
+              tilesDownloaded.success.push(tile);
               mapToSave.tiles.saved.push(tile);
-              deferred.notify(mapToSave.tiles.downloaded);
+              deferred.notify(tilesDownloaded);
               deferred2.resolve();
             }, function (err) {
               $log.log('Error downloading tile:', err);
-              mapToSave.tiles.downloaded.failed.push(tile);
-              deferred.notify(mapToSave.tiles.downloaded);
+              tilesDownloaded.failed.push(tile);
+              deferred.notify(tilesDownloaded);
               deferred2.reject(err);
             });
             promises.push(promise);
