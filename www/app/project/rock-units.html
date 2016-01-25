@@ -10,10 +10,10 @@
       <div class='padding' ng-show='vm.rockUnits.length === 0'>
         No rock units added yet. Add rock units using the '+' button in the top right.
       </div>
-      <ion-item
-        ng-repeat='rockUnit in vm.rockUnits | orderBy:"unit_label_abbreviation" track by rockUnit.unit_label_abbreviation'
-        href='#/app/rock-units/{{ rockUnit.unit_label_abbreviation }}'>
-        {{ rockUnit.unit_label_abbreviation }}: {{ rockUnit.map_unit_name }}
+      <ion-item class='item-text-wrap'
+                ng-repeat='rockUnit in vm.rockUnits | orderBy:"unit_label_abbreviation" track by rockUnit.unit_label_abbreviation'
+                href='#/app/rock-units/{{ rockUnit.unit_label_abbreviation }}'>
+        {{ rockUnit.unit_label_abbreviation }}<span ng-if='rockUnit.map_unit_name'>: {{ rockUnit.map_unit_name }}</span>
       </ion-item>
     </ion-list>
   </ion-content>

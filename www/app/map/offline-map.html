@@ -7,24 +7,24 @@
             ng-hide='vm.numOfflineTiles === 0'></button>
   </ion-nav-buttons>
   <ion-content class='has-header'>
-    <div class='padding' ng-show='vm.numOfflineTiles === 0'> There are no saved maps.</div>
+    <div class='padding' ng-show='vm.numOfflineTiles === 0'>
+      There are no saved maps.
+    </div>
     <div ng-hide='vm.numOfflineTiles === 0'>
       <ion-list>
-        <ion-item ng-repeat='map in vm.maps.maps'>
-          <div class='row'>
-            <div class='col'>
-              <b>{{map.name}}</b>  <small>({{map.tileArray.length}} tiles, {{map.size | normalizeBytes}}, {{map.mapProvider}})</small>
-              <span ng-if='map.date'><br><small>Map tiles downloaded: {{ map.date }}</small></span>
-            </div>
-            <div class='col item-button-right'>
-              <button class='button button-second icon-left button-small button-calm ion-edit ' ng-click='vm.edit(map)'>
-                Edit
-              </button>
-              <button class='button icon-left button-small button button-assertive ion-trash-b'
-                      ng-click='vm.deleteTiles(map)'>
-                Delete
-              </button>
-            </div>
+        <ion-item class='item-text-wrap item-button-right' ng-repeat='map in vm.maps.maps'>
+          <b>{{map.name}}</b><br>
+          <small>{{map.tileArray.length}} tiles, {{map.size | normalizeBytes}}, {{map.mapProvider}}<span
+            ng-if='map.date'>, Saved: {{ map.date }}</span></small>
+          <div class='buttons'>
+            <button class='button button-clear button-dark'
+                    ng-click='vm.edit(map)'>
+              <i class='ion-edit'></i>
+            </button>
+            <button class='button button-clear button-dark'
+                    ng-click='vm.deleteTiles(map)'>
+              <i class='ion-trash-b'></i>
+            </button>
           </div>
         </ion-item>
       </ion-list>
@@ -33,7 +33,8 @@
         Total Size of Saved Tiles: {{ vm.offlineTilesSize }} <br>
         <small>Note some tiles may be used in more than one saved map so the total number and total size of saved tiles
           is not simply a sum of the individual map properties. Deleting an individual map will only delete those tiles
-          not used in any other map.</small>
+          not used in any other map.
+        </small>
       </div>
     </div>
   </ion-content>

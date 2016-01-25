@@ -16,15 +16,14 @@
       Main Map page.
     </div>
     <ion-list>
-      <ion-item ng-repeat='spot in vm.spots | orderBy:"-properties.modified_timestamp" track by spot.properties.id'
+      <ion-item class='item-text-wrap item-button-right'
+                ng-repeat='spot in vm.spots | orderBy:"-properties.modified_timestamp" track by spot.properties.id'
                 ng-click='vm.goToSpot(spot.properties.id)'>
-          {{spot.properties.name}}
-        <span class='item-button-right'>
-          <button class='button button-clear button-dark'
-                  ng-click='vm.deleteSpot(spot.properties.id)'>
-            <i class='ion-trash-b'></i>
-          </button>
-        </span>
+        {{spot.properties.name}}
+        <button class='button button-clear button-dark'
+                ng-click='vm.deleteSpot(spot.properties.id)'>
+          <i class='ion-trash-b'></i>
+        </button>
       </ion-item>
     </ion-list>
   </ion-content>
