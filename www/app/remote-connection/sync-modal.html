@@ -23,7 +23,7 @@
           </ion-input>
 
           <!-- Create New Dataset -->
-          <div  class='item item-input-inset' ng-show='vmChild.dataset.name=="-- new dataset --"'>
+          <div class='item item-input-inset' ng-show='vmChild.dataset.name=="-- new dataset --"'>
             <ion-input class='item-input-wrapper item-stacked-label item-text-wrap'>
               <ion-label>New Dataset Name</ion-label>
               <input type='text'
@@ -33,7 +33,7 @@
                     class='button button-positive button-small'>
               Create Dataset
             </button>
-          </div >
+          </div>
           <!-- Show Dataset Operations -->
           <div ng-hide='vmChild.dataset.name=="-- new dataset --"'>
             <ion-radio ng-model='vmChild.operation' value='download'>

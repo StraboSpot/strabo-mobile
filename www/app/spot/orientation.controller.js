@@ -14,12 +14,14 @@
     vm.choices = {};
     vm.currentSpot = SpotFactory.getCurrentSpot();
     vm.data = {};
+    vm.isOptionChecked = isOptionChecked;
     vm.newOrientation = newOrientation;
     vm.returnToSpot = returnToSpot;
     vm.showField = showField;
     vm.survey = {};
     vm.submit = submit;
     vm.title = '';
+    vm.toggleChecked = toggleChecked;
 
     activate();
 
@@ -73,6 +75,17 @@
     /**
      * Public Functions
      */
+
+    function isOptionChecked(field, choice) {
+      if (vm.data) {
+        if (vm.data[field]) {
+          return vm.data[field].indexOf(choice) !== -1;
+        }
+      }
+      else {
+        return false;
+      }
+    }
 
     function newOrientation() {
       $log.log('new');
@@ -131,6 +144,28 @@
           }
           SpotFactory.setCurrentSpot(vm.currentSpot);
           $location.path('/app/spotTab/' + vm.currentSpot.properties.id + '/orientation-data');
+        }
+      }
+    }
+
+    function toggleChecked(field, choice) {
+      var i = -1;
+      if (vm.data[field]) {
+        i = vm.data[field].indexOf(choice);
+      }
+      else {
+        vm.data[field] = [];
+      }
+
+      // If choice not already selected
+      if (i === -1) {
+        vm.data[field].push(choice);
+      }
+      // Choice has been unselected so remove it and delete if empty
+      else {
+        vm.data[field].splice(i, 1);
+        if (vm.data[field].length === 0) {
+          delete vm.data[field];
         }
       }
     }
