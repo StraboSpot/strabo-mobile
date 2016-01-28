@@ -1,19 +1,17 @@
 <ion-view>
   <ion-content>
-    <div class="padding">
-      <button ng-click='vmChild.addPlane();' class='button button-clear button-balanced'>
-        <i class='icon ion-plus-circled'></i>
-        <span class='button-text-color'>Add a Plane</span>
-      </button>
-      <button ng-click='vmChild.addLine();' class='button button-clear button-balanced'>
-        <i class='icon ion-plus-circled'></i>
-        <span class='button-text-color'>Add a Line</span>
-      </button>
-      <button ng-click='vmChild.addTabularZone();' class='button button-clear button-balanced'>
-        <i class='icon ion-plus-circled'></i>
-        <span class='button-text-color'>Add a Tabular Zone</span>
-      </button>
-    </div>
+    <button ng-click='vmChild.addPlane();' class='button button-clear button-balanced'>
+      <i class='icon ion-plus-circled'></i>
+      <span class='button-text-color'>Add a Plane</span>
+    </button>
+    <button ng-click='vmChild.addLine();' class='button button-clear button-balanced'>
+      <i class='icon ion-plus-circled'></i>
+      <span class='button-text-color'>Add a Line</span>
+    </button>
+    <button ng-click='vmChild.addTabularZone();' class='button button-clear button-balanced'>
+      <i class='icon ion-plus-circled'></i>
+      <span class='button-text-color'>Add a Tabular Zone</span>
+    </button>
     <ion-list>
       <ion-item ng-repeat='orientation in vm.spot.properties.orientation_data track by $index'
                 ng-init='orientationIndex = $index'>

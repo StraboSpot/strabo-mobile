@@ -18,6 +18,28 @@
         <input type='time' ng-model='vm.data.time'>
       </ion-input>
 
+      <div class='item item-divider'>
+        Geography
+      </div>
+
+      <!-- Map Interaction -->
+      <div class='padding' ng-if='!vmChild.mapped'>
+        This spot has not been mapped yet.
+      </div>
+      <button ng-click='vmChild.viewSpot();' ng-show='vmChild.mapped' class='button button-clear button-positive'>
+        <i class='icon ion-eye'></i>
+        <span class='button-text-color'>View on Map</span>
+      </button>
+      <button ng-click='vmChild.getCurrentLocation();' ng-hide='vmChild.showXY'
+              class='button button-clear button-positive'>
+        <i class='icon ion-pinpoint'></i>
+        <span class='button-text-color'>Set to My Location</span>
+      </button>
+      <button ng-click='vmChild.setFromMap();' class='button button-clear button-positive'>
+        <i class='icon ion-map'></i>
+        <span class='button-text-color'>Set From Map</span>
+      </button>
+
       <div ng-if='vmChild.mapped'>
         <ion-input class='item item-input item-stacked-label item-text-wrap'>
           <ion-label>Geometry</ion-label>
@@ -25,8 +47,8 @@
         </ion-input>
         <!-- Latitude and Longitude text boxes for Point features -->
         <ion-input ng-show='vmChild.showLatLng'
-               class='item item-input item-stacked-label item-text-wrap'
-               ng-class='{ "has-errors": straboForm["lat"].$invalid, "no-errors": straboForm["lat"].$valid }'>
+                   class='item item-input item-stacked-label item-text-wrap'
+                   ng-class='{ "has-errors": straboForm["lat"].$invalid, "no-errors": straboForm["lat"].$valid }'>
           <ion-label>Latitude</ion-label>
           <input type='number' name='lat' ng-model='vmChild.lat' ng-change='vmChild.updateLatitude(vmChild.lat)'
                  required min='-90' max='90'>
@@ -39,8 +61,8 @@
         </div>
 
         <ion-input ng-show='vmChild.showLatLng'
-               class='item item-input item-stacked-label item-text-wrap'
-               ng-class='{ "has-errors": straboForm["lng"].$invalid, "no-errors": straboForm["lng"].$valid }'>
+                   class='item item-input item-stacked-label item-text-wrap'
+                   ng-class='{ "has-errors": straboForm["lng"].$invalid, "no-errors": straboForm["lng"].$valid }'>
           <ion-label>Longitude</ion-label>
           <input type='number' name='lng' ng-model='vmChild.lng' ng-change='vmChild.updateLongitude(vmChild.lng)'
                  required min='-180' max='180'>
@@ -54,8 +76,8 @@
       </div>
       <!-- X and Y text boxes for Point features mapped on an image -->
       <ion-input ng-show='vmChild.showXY'
-             class='item item-input item-stacked-label item-text-wrap'
-             ng-class='{ "has-errors": straboForm["x"].$invalid, "no-errors": straboForm["y"].$valid }'>
+                 class='item item-input item-stacked-label item-text-wrap'
+                 ng-class='{ "has-errors": straboForm["x"].$invalid, "no-errors": straboForm["y"].$valid }'>
         <ion-label>Pixels in the X direction</ion-label>
         <input type='number' name='x' ng-model='vmChild.x' ng-change='vmChild.updateX(vmChild.x)'
                required min='0'>
@@ -67,8 +89,8 @@
         </div>
       </div>
       <ion-input ng-show='vmChild.showXY'
-             class='item item-input item-stacked-label item-text-wrap'
-             ng-class='{ "has-errors": straboForm["y"].$invalid, "no-errors": straboForm["y"].$valid }'>
+                 class='item item-input item-stacked-label item-text-wrap'
+                 ng-class='{ "has-errors": straboForm["y"].$invalid, "no-errors": straboForm["y"].$valid }'>
         <ion-label>Pixels in the Y direction</ion-label>
         <input type='number' name='y' ng-model='vmChild.y' ng-change='vmChild.updateY(vmChild.y)'
                required min='0'>
@@ -79,21 +101,23 @@
           <div ng-messages-include='app/form/error-messages.html'></div>
         </div>
       </div>
-      <div ng-if='!vmChild.mapped' class='padding'>
-        This spot has not been mapped yet.
+
+      <div ng-show='vm.showRadius'>
+        <ion-input class='item item-input item-stacked-label item-text-wrap'>
+          <ion-label>Radius of Spot</ion-label>
+          <input type='number' ng-model='vm.data.spot_radius'>
+        </ion-input>
+        <ion-input class='item item-input item-select item-text-wrap'>
+          <ion-label>Spot Radius Units</ion-label>
+          <select ng-model='vm.data.spot_radius_units'>
+            <option>kilometer</option>
+            <option>meter</option>
+            <option>milimeter</option>
+            <option>micrometer</option>
+            <option value=''></option>
+          </select>
+        </ion-input>
       </div>
-      <!-- Map Interaction -->
-      <button ng-click='vmChild.viewSpot();' ng-show='vmChild.mapped'
-              class='button button-small button-positive icon-left icon ion-eye'>
-        View on Map
-      </button>
-      <button ng-click='vmChild.getCurrentLocation();' ng-hide='vmChild.showXY'
-              class='button button-small button-positive icon-left ion-pinpoint'>
-        Set to My Location
-      </button>
-      <button ng-click='vmChild.setFromMap();' class='button button-small button-positive icon-left icon ion-map'>
-        Set From Map
-      </button>
 
       <div ng-show='vm.showRockUnit'>
         <div class='item item-divider'>
@@ -109,7 +133,9 @@
           </select>
         </ion-input>
         <button ng-click='vmChild.viewRockUnit();' ng-show='vm.data.rock_unit'
-                class='button button-clear icon-left icon ion-eye'>View/Edit Rock Unit
+                class='button button-clear button-positive'>
+          <i class='icon ion-eye'></i>
+          <span class='button-text-color'>View/Edit Rock Unit</span>
         </button>
       </div>
 

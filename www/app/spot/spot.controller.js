@@ -27,6 +27,7 @@
     vm.setSelMultClass = setSelMultClass;
     vm.showActionsheet = showActionsheet;
     vm.showField = showField;
+    vm.showRadius = true;
     vm.showRockUnit = true;
     vm.showTab = showTab;
     vm.showTrace = false;
@@ -201,6 +202,9 @@
       if (vm.spot.geometry && vm.spot.geometry.type === 'LineString') {
         vm.showTrace = true;
         vm.showRockUnit = false;
+      }
+      if (vm.spot.geometry && vm.spot.geometry.type === 'Polygon') {
+        vm.showRadius = false;
       }
     }
 

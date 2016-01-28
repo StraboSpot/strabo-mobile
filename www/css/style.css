@@ -155,7 +155,7 @@ Orientation Tab Style
 --------------------*/
 .button-text-color {
   color: black;
-  font-weight: bold;
+  font-size: small;
 }
 
 .orientation-text {
