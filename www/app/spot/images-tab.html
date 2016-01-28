@@ -1,8 +1,10 @@
 <ion-view>
   <ion-content>
-    <div class='padding'>
-      <button ng-click='vmChild.cameraModal()' class='button button-positive icon-left ion-camera'>Add Photo</button>
-    </div>
+    <button ng-click='vmChild.cameraModal();'
+            class='button button-clear button-positive'>
+      <i class='icon ion-camera'></i>
+      <span class='button-text-big'>Add Photo</span>
+    </button>
     <div class='row'>
       <ul>
         <li ng-repeat='image in vm.spot.images' class='images-container'>

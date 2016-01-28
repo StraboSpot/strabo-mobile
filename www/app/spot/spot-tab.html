@@ -28,16 +28,16 @@
       </div>
       <button ng-click='vmChild.viewSpot();' ng-show='vmChild.mapped' class='button button-clear button-positive'>
         <i class='icon ion-eye'></i>
-        <span class='button-text-color'>View on Map</span>
+        <span class='button-text-small'>View on Map</span>
       </button>
       <button ng-click='vmChild.getCurrentLocation();' ng-hide='vmChild.showXY'
               class='button button-clear button-positive'>
         <i class='icon ion-pinpoint'></i>
-        <span class='button-text-color'>Set to My Location</span>
+        <span class='button-text-small'>Set to My Location</span>
       </button>
       <button ng-click='vmChild.setFromMap();' class='button button-clear button-positive'>
         <i class='icon ion-map'></i>
-        <span class='button-text-color'>Set From Map</span>
+        <span class='button-text-small'>Set From Map</span>
       </button>
 
       <div ng-if='vmChild.mapped'>
@@ -135,7 +135,7 @@
         <button ng-click='vmChild.viewRockUnit();' ng-show='vm.data.rock_unit'
                 class='button button-clear button-positive'>
           <i class='icon ion-eye'></i>
-          <span class='button-text-color'>View/Edit Rock Unit</span>
+          <span class='button-text-small'>View/Edit Rock Unit</span>
         </button>
       </div>
 

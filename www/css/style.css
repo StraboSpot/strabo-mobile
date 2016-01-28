@@ -144,19 +144,27 @@ Map Layer Switcher Style
 }
 
 /*--------------------
-Right buttons in a list
+Buttons
 --------------------*/
+
+/* Right buttons in a list */
 .button-second{
   right:95px !important;
+}
+
+.button-text-small {
+  color: black;
+  font-size: small;
+}
+
+.button-text-big {
+  color: black;
+  font-weight: bold;
 }
 
 /*--------------------
 Orientation Tab Style
 --------------------*/
-.button-text-color {
-  color: black;
-  font-size: small;
-}
 
 .orientation-text {
   font-weight: bold;

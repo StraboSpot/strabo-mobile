@@ -1,16 +1,16 @@
 <ion-view>
   <ion-content>
-    <button ng-click='vmChild.addPlane();' class='button button-clear button-balanced'>
+    <button ng-click='vmChild.addPlane();' class='button button-clear button-positive'>
       <i class='icon ion-plus-circled'></i>
-      <span class='button-text-color'>Add a Plane</span>
+      <span class='button-text-big'>Add a Plane</span>
     </button>
-    <button ng-click='vmChild.addLine();' class='button button-clear button-balanced'>
+    <button ng-click='vmChild.addLine();' class='button button-clear button-positive'>
       <i class='icon ion-plus-circled'></i>
-      <span class='button-text-color'>Add a Line</span>
+      <span class='button-text-big'>Add a Line</span>
     </button>
-    <button ng-click='vmChild.addTabularZone();' class='button button-clear button-balanced'>
+    <button ng-click='vmChild.addTabularZone();' class='button button-clear button-positive'>
       <i class='icon ion-plus-circled'></i>
-      <span class='button-text-color'>Add a Tabular Zone</span>
+      <span class='button-text-big'>Add a Tabular Zone</span>
     </button>
     <ion-list>
       <ion-item ng-repeat='orientation in vm.spot.properties.orientation_data track by $index'
@@ -66,17 +66,17 @@
 
         <div ng-if='orientation.orientation_type === "linear_orientation"'>
           <button ng-click='vmChild.addAssociatedPlane(orientationIndex);'
-                  class='button button-small button-clear button-balanced'>
+                  class='button button-small button-clear button-positive'>
             <i class='icon ion-plus-circled'></i>
-            <span class='button-text-color'>Add an Associated Planar Feature</span>
+            <span class='button-text-small'>Add an Associated Planar Feature</span>
           </button>
         </div>
         <div ng-if='orientation.orientation_type === "planar_orientation" ||
            orientation.orientation_type === "tabular_zone_orientation" '>
           <button ng-click='vmChild.addAssociatedLine(orientationIndex);'
-                  class='button button-small button-clear button-balanced'>
+                  class='button button-small button-clear button-positive'>
             <i class='icon ion-plus-circled'></i>
-            <span class='button-text-color'>Add an Associated Linear Feature</span>
+            <span class='button-text-small'>Add an Associated Linear Feature</span>
           </button>
         </div>
       </ion-item>
