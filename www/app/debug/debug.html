@@ -5,10 +5,10 @@
   </ion-nav-buttons>
 
   <ion-content class='has-header'>
-    <label class='item item-input item-stacked-label'>
-      <span class='input-label'>Number of points to generate</span>
+    <ion-input class='item item-input item-stacked-label'>
+      <ion-label>Number of points to generate</ion-label>
       <input type='number' ng-model='vm.pointsToGenerate' value={{vm.pointsToGenerate}} placeholder='How many points?'>
-    </label>
+    </ion-input>
     <button class='button button-block button-positive' ng-click='vm.submit(vm.pointsToGenerate)'>Generate Points
     </button>
   </ion-content>

@@ -15,27 +15,25 @@
       <div class='list'>
         <div>
           <!-- List Current Datasets -->
-          <label class='item item-input item-select item-stacked-label item-text-wrap'>
-            <div class='input-label'>
-              Select a Dataset
-            </div>
+          <ion-input class='item item-input item-select item-text-wrap'>
+            <ion-label>Select a Dataset</ion-label>
             <select ng-model='vmChild.dataset'
                     ng-options='item.name for item in vmChild.datasets'>
             </select>
-          </label>
+          </ion-input>
 
           <!-- Create New Dataset -->
-          <div class='item item-input-inset' ng-show='vmChild.dataset.name=="-- new dataset --"'>
-            <label class='item-input-wrapper item-stacked-label item-text-wrap'>
-              <span class='input-label'>New Dataset Name</span>
+          <div  class='item item-input-inset' ng-show='vmChild.dataset.name=="-- new dataset --"'>
+            <ion-input class='item-input-wrapper item-stacked-label item-text-wrap'>
+              <ion-label>New Dataset Name</ion-label>
               <input type='text'
                      ng-model='vmChild.dataset_name'>
-            </label>
+            </ion-input>
             <button ng-click='vmChild.createDataset()' ng-disabled='!vmChild.dataset_name'
                     class='button button-positive button-small'>
               Create Dataset
             </button>
-          </div>
+          </div >
           <!-- Show Dataset Operations -->
           <div ng-hide='vmChild.dataset.name=="-- new dataset --"'>
             <ion-radio ng-model='vmChild.operation' value='download'>

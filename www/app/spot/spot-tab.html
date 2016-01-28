@@ -1,36 +1,36 @@
 <form name='straboForm' novalidate=''>
   <ion-view>
     <ion-content>
-      <label class='item item-input item-stacked-label item-text-wrap'>
-        <span class='input-label'>Spot Name</span>
+      <ion-input class='item item-input item-stacked-label item-text-wrap'>
+        <ion-label>Spot Name</ion-label>
         <input type='text' placeholder='Name this Spot' ng-model='vm.data.name'>
-      </label>
-      <label class='item item-input item-stacked-label item-text-wrap'>
-        <span class='input-label'>ID</span>
+      </ion-input>
+      <ion-input class='item item-input item-stacked-label item-text-wrap'>
+        <ion-label>ID</ion-label>
         <input type='number' disabled ng-model='vm.data.id'>
-      </label>
-      <label class='item item-input item-stacked-label item-text-wrap'>
-        <span class='input-label'>Date</span>
+      </ion-input>
+      <ion-input class='item item-input item-stacked-label item-text-wrap'>
+        <ion-label>Date</ion-label>
         <input type='date' ng-model='vm.data.date'>
-      </label>
-      <label class='item item-input item-stacked-label item-text-wrap'>
-        <span class='input-label'>Time</span>
+      </ion-input>
+      <ion-input class='item item-input item-stacked-label item-text-wrap'>
+        <ion-label>Time</ion-label>
         <input type='time' ng-model='vm.data.time'>
-      </label>
+      </ion-input>
 
       <div ng-if='vmChild.mapped'>
-        <label class='item item-input item-stacked-label item-text-wrap'>
-          <span class='input-label'>Geometry</span>
+        <ion-input class='item item-input item-stacked-label item-text-wrap'>
+          <ion-label>Geometry</ion-label>
           <input type='text' disabled ng-model='vm.spot.geometry.type'>
-        </label>
+        </ion-input>
         <!-- Latitude and Longitude text boxes for Point features -->
-        <label ng-show='vmChild.showLatLng'
+        <ion-input ng-show='vmChild.showLatLng'
                class='item item-input item-stacked-label item-text-wrap'
                ng-class='{ "has-errors": straboForm["lat"].$invalid, "no-errors": straboForm["lat"].$valid }'>
-          <span class='input-label'>Latitude</span>
+          <ion-label>Latitude</ion-label>
           <input type='number' name='lat' ng-model='vmChild.lat' ng-change='vmChild.updateLatitude(vmChild.lat)'
                  required min='-90' max='90'>
-        </label>
+        </ion-input>
 
         <div ng-if='straboForm["lat"].$touched'>
           <div ng-messages='straboForm["lat"].$error'>
@@ -38,13 +38,13 @@
           </div>
         </div>
 
-        <label ng-show='vmChild.showLatLng'
+        <ion-input ng-show='vmChild.showLatLng'
                class='item item-input item-stacked-label item-text-wrap'
                ng-class='{ "has-errors": straboForm["lng"].$invalid, "no-errors": straboForm["lng"].$valid }'>
-          <span class='input-label'>Longitude</span>
+          <ion-label>Longitude</ion-label>
           <input type='number' name='lng' ng-model='vmChild.lng' ng-change='vmChild.updateLongitude(vmChild.lng)'
                  required min='-180' max='180'>
-        </label>
+        </ion-input>
 
         <div ng-if='straboForm["lng"].$touched'>
           <div ng-messages='straboForm["lng"].$error'>
@@ -53,26 +53,26 @@
         </div>
       </div>
       <!-- X and Y text boxes for Point features mapped on an image -->
-      <label ng-show='vmChild.showXY'
+      <ion-input ng-show='vmChild.showXY'
              class='item item-input item-stacked-label item-text-wrap'
              ng-class='{ "has-errors": straboForm["x"].$invalid, "no-errors": straboForm["y"].$valid }'>
-        <span class='input-label'>Pixels in the X direction</span>
+        <ion-label>Pixels in the X direction</ion-label>
         <input type='number' name='x' ng-model='vmChild.x' ng-change='vmChild.updateX(vmChild.x)'
                required min='0'>
-      </label>
+      </ion-input>
 
       <div ng-if='straboForm["x"].$touched'>
         <div ng-messages='straboForm["x"].$error'>
           <div ng-messages-include='app/form/error-messages.html'></div>
         </div>
       </div>
-      <label ng-show='vmChild.showXY'
+      <ion-input ng-show='vmChild.showXY'
              class='item item-input item-stacked-label item-text-wrap'
              ng-class='{ "has-errors": straboForm["y"].$invalid, "no-errors": straboForm["y"].$valid }'>
-        <span class='input-label'>Pixels in the Y direction</span>
+        <ion-label>Pixels in the Y direction</ion-label>
         <input type='number' name='y' ng-model='vmChild.y' ng-change='vmChild.updateY(vmChild.y)'
                required min='0'>
-      </label>
+      </ion-input>
 
       <div ng-if='straboForm["y"].$touched'>
         <div ng-messages='straboForm["y"].$error'>
@@ -99,15 +99,15 @@
         <div class='item item-divider'>
           Rock Unit
         </div>
-        <label class='item item-input item-select item-stacked-label item-text-wrap'>
-          <span class='input-label'>Unit Label Abbreviation</span>
+        <ion-input class='item item-input item-select item-text-wrap'>
+          <ion-label>Unit Label Abbreviation</ion-label>
           <select ng-model='vmChild.rockUnit'
                   ng-options='rockUnit as rockUnit.unit_label_abbreviation for rockUnit in vmChild.rockUnits |
                  orderBy: "unit_label_abbreviation"'
                   ng-change="vmChild.setRockUnit()">
             <option value=''></option>
           </select>
-        </label>
+        </ion-input>
         <button ng-click='vmChild.viewRockUnit();' ng-show='vm.data.rock_unit'
                 class='button button-clear icon-left icon ion-eye'>View/Edit Rock Unit
         </button>
@@ -125,9 +125,9 @@
       <div class='item item-divider'>
         Notes
       </div>
-      <label class='item item-input'>
+      <ion-input class='item item-input'>
         <textarea placeholder='Notes about this Spot' rows='12' ng-model='vm.data.notes'></textarea>
-      </label>
+      </ion-input>
     </ion-content>
   </ion-view>
 </form>

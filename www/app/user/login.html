@@ -1,16 +1,16 @@
 <ion-view view-title='Login' name='login-view'>
   <ion-content>
-    <div class='login scroll' align='center'>
-      <div class='logininset'>
-        <h1 class='logintext'>strabo</h1>
+    <div class='login-page scroll' align='center'>
+      <div class='login-inset'>
+        <h1 class='login-title-text'>strabo</h1>
 
         <div class='list list-inset'>
-          <label class='item item-input logininput'>
-            <input type='text' placeholder='Username' ng-model='vm.login.email'>
-          </label>
-          <label class='item item-input'>
-            <input type='password' placeholder='Password' ng-model='vm.login.password'>
-          </label>
+          <ion-input class='item item-input'>
+            <input class='login-input' type='text' placeholder='Username' ng-model='vm.login.email'>
+          </ion-input>
+          <ion-input class='item item-input'>
+            <input class='login-input' type='password' placeholder='Password' ng-model='vm.login.password'>
+          </ion-input>
         </div>
         <div class='padding'>
           <button class='button button-block button-positive' ng-click='vm.doLogin()'

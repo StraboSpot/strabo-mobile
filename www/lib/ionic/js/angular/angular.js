@@ -46,7 +46,7 @@ function minErr(module, ErrorConstructor) {
       template = templateArgs[1],
       paramPrefix, i;
 
-    message += template.replace(/\{\d+\}/g, function (match) {
+    message += template.replace(/\{\d+\}/g, function(match) {
       var index = +match.slice(1, -1),
         shiftedIndex = index + SKIP_INDEXES;
 
@@ -96,16 +96,16 @@ function minErr(module, ErrorConstructor) {
   nextUid: true,
   setHashKey: true,
   extend: true,
- toInt: true,
+  toInt: true,
   inherit: true,
- merge: true,
+  merge: true,
   noop: true,
   identity: true,
   valueFn: true,
   isUndefined: true,
   isDefined: true,
   isObject: true,
- isBlankObject: true,
+  isBlankObject: true,
   isString: true,
   isNumber: true,
   isDate: true,
@@ -129,15 +129,15 @@ function minErr(module, ErrorConstructor) {
   shallowCopy: true,
   equals: true,
   csp: true,
- jq: true,
+  jq: true,
   concat: true,
   sliceArgs: true,
   bind: true,
   toJsonReplacer: true,
   toJson: true,
   fromJson: true,
- convertTimezoneToLocal: true,
- timezoneToOffset: true,
+  convertTimezoneToLocal: true,
+  timezoneToOffset: true,
   startingTag: true,
   tryDecodeURIComponent: true,
   parseKeyValue: true,
@@ -158,7 +158,7 @@ function minErr(module, ErrorConstructor) {
   createMap: true,
 
   NODE_TYPE_ELEMENT: true,
- NODE_TYPE_ATTRIBUTE: true,
+  NODE_TYPE_ATTRIBUTE: true,
   NODE_TYPE_TEXT: true,
   NODE_TYPE_COMMENT: true,
   NODE_TYPE_DOCUMENT: true,
@@ -245,7 +245,7 @@ var
     splice            = [].splice,
     push              = [].push,
     toString          = Object.prototype.toString,
-  getPrototypeOf = Object.getPrototypeOf,
+    getPrototypeOf    = Object.getPrototypeOf,
     ngMinErr          = minErr('ng'),
 
     /** @name angular */
@@ -338,22 +338,19 @@ function forEach(obj, iterator, context) {
       }
     } else if (obj.forEach && obj.forEach !== forEach) {
         obj.forEach(iterator, context, obj);
-    }
-    else if (isBlankObject(obj)) {
+    } else if (isBlankObject(obj)) {
       // createMap() fast path --- Safe to avoid hasOwnProperty check because prototype chain is empty
       for (key in obj) {
         iterator.call(context, obj[key], key, obj);
       }
-    }
-    else if (typeof obj.hasOwnProperty === 'function') {
+    } else if (typeof obj.hasOwnProperty === 'function') {
       // Slow path for objects inheriting Object.prototype, hasOwnProperty check needed
       for (key in obj) {
         if (obj.hasOwnProperty(key)) {
           iterator.call(context, obj[key], key, obj);
         }
       }
-    }
-    else {
+    } else {
       // Slow path for objects which do not have a method `hasOwnProperty`
       for (key in obj) {
         if (hasOwnProperty.call(obj, key)) {
@@ -412,35 +409,33 @@ function setHashKey(obj, h) {
 }
 
 
-  function baseExtend(dst, objs, deep) {
-    var h = dst.$$hashKey;
+function baseExtend(dst, objs, deep) {
+  var h = dst.$$hashKey;
 
-    for (var i = 0, ii = objs.length; i < ii; ++i) {
-      var obj = objs[i];
-      if (!isObject(obj) && !isFunction(obj)) continue;
-      var keys = Object.keys(obj);
-      for (var j = 0, jj = keys.length; j < jj; j++) {
-        var key = keys[j];
-        var src = obj[key];
+  for (var i = 0, ii = objs.length; i < ii; ++i) {
+    var obj = objs[i];
+    if (!isObject(obj) && !isFunction(obj)) continue;
+    var keys = Object.keys(obj);
+    for (var j = 0, jj = keys.length; j < jj; j++) {
+      var key = keys[j];
+      var src = obj[key];
 
-        if (deep && isObject(src)) {
-          if (isDate(src)) {
-            dst[key] = new Date(src.valueOf());
-          }
-          else {
-            if (!isObject(dst[key])) dst[key] = isArray(src) ? [] : {};
-            baseExtend(dst[key], [src], true);
-          }
+      if (deep && isObject(src)) {
+        if (isDate(src)) {
+          dst[key] = new Date(src.valueOf());
+        } else {
+          if (!isObject(dst[key])) dst[key] = isArray(src) ? [] : {};
+          baseExtend(dst[key], [src], true);
         }
-        else {
-          dst[key] = src;
-        }
+      } else {
+        dst[key] = src;
       }
     }
-
-    setHashKey(dst, h);
-    return dst;
   }
+
+  setHashKey(dst, h);
+  return dst;
+}
 
 /**
  * @ngdoc function
@@ -465,30 +460,31 @@ function extend(dst) {
 }
 
 
-  /**
-   * @ngdoc function
-   * @name angular.merge
-   * @module ng
-   * @kind function
-   *
-   * @description
-   * Deeply extends the destination object `dst` by copying own enumerable properties from the `src` object(s)
-   * to `dst`. You can specify multiple `src` objects. If you want to preserve original objects, you can do so
-   * by passing an empty object as the target: `var object = angular.merge({}, object1, object2)`.
-   *
-   * Unlike {@link angular.extend extend()}, `merge()` recursively descends into object properties of source
-   * objects, performing a deep copy.
-   *
-   * @param {Object} dst Destination object.
-   * @param {...Object} src Source object(s).
-   * @returns {Object} Reference to `dst`.
-   */
-  function merge(dst) {
-    return baseExtend(dst, slice.call(arguments, 1), true);
+/**
+* @ngdoc function
+* @name angular.merge
+* @module ng
+* @kind function
+*
+* @description
+* Deeply extends the destination object `dst` by copying own enumerable properties from the `src` object(s)
+* to `dst`. You can specify multiple `src` objects. If you want to preserve original objects, you can do so
+* by passing an empty object as the target: `var object = angular.merge({}, object1, object2)`.
+*
+* Unlike {@link angular.extend extend()}, `merge()` recursively descends into object properties of source
+* objects, performing a deep copy.
+*
+* @param {Object} dst Destination object.
+* @param {...Object} src Source object(s).
+* @returns {Object} Reference to `dst`.
+*/
+function merge(dst) {
+  return baseExtend(dst, slice.call(arguments, 1), true);
 }
 
 
-  function toInt(str) {
+
+function toInt(str) {
   return parseInt(str, 10);
 }
 
@@ -541,9 +537,9 @@ identity.$inject = [];
 
 function valueFn(value) {return function() {return value;};}
 
-  function hasCustomToString(obj) {
-    return isFunction(obj.toString) && obj.toString !== Object.prototype.toString;
-  }
+function hasCustomToString(obj) {
+  return isFunction(obj.toString) && obj.toString !== Object.prototype.toString;
+}
 
 
 /**
@@ -605,7 +601,7 @@ function isBlankObject(value) {
 }
 
 
-  /**
+/**
  * @ngdoc function
  * @name angular.isString
  * @module ng
@@ -741,11 +737,10 @@ function isPromiseLike(obj) {
 }
 
 
-  var TYPED_ARRAY_REGEXP = /^\[object (Uint8(Clamped)?)|(Uint16)|(Uint32)|(Int8)|(Int16)|(Int32)|(Float(32)|(64))Array\]$/;
-
-  function isTypedArray(value) {
-    return TYPED_ARRAY_REGEXP.test(toString.call(value));
-  }
+var TYPED_ARRAY_REGEXP = /^\[object (Uint8(Clamped)?)|(Uint16)|(Uint32)|(Int8)|(Int16)|(Int32)|(Float(32)|(64))Array\]$/;
+function isTypedArray(value) {
+  return TYPED_ARRAY_REGEXP.test(toString.call(value));
+}
 
 
 var trim = function(value) {
@@ -890,16 +885,14 @@ function copy(source, destination, stackSource, stackDest) {
       // objects. The array/object will be pushed onto the stack when recursed.
       if (isArray(source)) {
         return copy(source, [], stackSource, stackDest);
-      }
-      else if (isTypedArray(source)) {
+      } else if (isTypedArray(source)) {
         destination = new source.constructor(source);
       } else if (isDate(source)) {
         destination = new Date(source.getTime());
       } else if (isRegExp(source)) {
         destination = new RegExp(source.source, source.toString().match(/[^\/]*$/)[0]);
         destination.lastIndex = source.lastIndex;
-      }
-      else {
+      } else {
         var emptyObject = Object.create(getPrototypeOf(source));
         return copy(source, emptyObject, stackSource, stackDest);
       }
@@ -941,16 +934,14 @@ function copy(source, destination, stackSource, stackDest) {
         for (key in source) {
           destination[key] = copy(source[key], null, stackSource, stackDest);
         }
-      }
-      else if (source && typeof source.hasOwnProperty === 'function') {
+      } else if (source && typeof source.hasOwnProperty === 'function') {
         // Slow path, which must rely on hasOwnProperty
         for (key in source) {
           if (source.hasOwnProperty(key)) {
             destination[key] = copy(source[key], null, stackSource, stackDest);
           }
         }
-      }
-      else {
+      } else {
         // Slowest path --- hasOwnProperty can't be called as a method
         for (key in source) {
           if (hasOwnProperty.call(source, key)) {
@@ -1037,8 +1028,7 @@ function equals(o1, o2) {
       } else if (isDate(o1)) {
         if (!isDate(o2)) return false;
         return equals(o1.getTime(), o2.getTime());
-      }
-      else if (isRegExp(o1)) {
+      } else if (isRegExp(o1)) {
         return isRegExp(o2) ? o1.toString() == o2.toString() : false;
       } else {
         if (isScope(o1) || isScope(o2) || isWindow(o1) || isWindow(o2) ||
@@ -1081,58 +1071,58 @@ var csp = function() {
   return (csp.isActive_ = active);
 };
 
-  /**
-   * @ngdoc directive
-   * @module ng
-   * @name ngJq
-   *
-   * @element ANY
-   * @param {string=} ngJq the name of the library available under `window`
-   * to be used for angular.element
-   * @description
-   * Use this directive to force the angular.element library.  This should be
-   * used to force either jqLite by leaving ng-jq blank or setting the name of
-   * the jquery variable under window (eg. jQuery).
-   *
-   * Since angular looks for this directive when it is loaded (doesn't wait for the
-   * DOMContentLoaded event), it must be placed on an element that comes before the script
-   * which loads angular. Also, only the first instance of `ng-jq` will be used and all
-   * others ignored.
-   *
-   * @example
-   * This example shows how to force jqLite using the `ngJq` directive to the `html` tag.
-   ```html
-   <!doctype html>
-   <html ng-app ng-jq>
-   ...
-   ...
-   </html>
-   ```
-   * @example
-   * This example shows how to use a jQuery based library of a different name.
-   * The library name must be available at the top most 'window'.
-   ```html
-   <!doctype html>
-   <html ng-app ng-jq="jQueryLib">
-   ...
-   ...
-   </html>
-   ```
-   */
-  var jq = function () {
-    if (isDefined(jq.name_)) return jq.name_;
-    var el;
-    var i, ii = ngAttrPrefixes.length, prefix, name;
-    for (i = 0; i < ii; ++i) {
-      prefix = ngAttrPrefixes[i];
-      if (el = document.querySelector('[' + prefix.replace(':', '\\:') + 'jq]')) {
-        name = el.getAttribute(prefix + 'jq');
-        break;
-      }
+/**
+ * @ngdoc directive
+ * @module ng
+ * @name ngJq
+ *
+ * @element ANY
+ * @param {string=} ngJq the name of the library available under `window`
+ * to be used for angular.element
+ * @description
+ * Use this directive to force the angular.element library.  This should be
+ * used to force either jqLite by leaving ng-jq blank or setting the name of
+ * the jquery variable under window (eg. jQuery).
+ *
+ * Since angular looks for this directive when it is loaded (doesn't wait for the
+ * DOMContentLoaded event), it must be placed on an element that comes before the script
+ * which loads angular. Also, only the first instance of `ng-jq` will be used and all
+ * others ignored.
+ *
+ * @example
+ * This example shows how to force jqLite using the `ngJq` directive to the `html` tag.
+ ```html
+ <!doctype html>
+ <html ng-app ng-jq>
+ ...
+ ...
+ </html>
+ ```
+ * @example
+ * This example shows how to use a jQuery based library of a different name.
+ * The library name must be available at the top most 'window'.
+ ```html
+ <!doctype html>
+ <html ng-app ng-jq="jQueryLib">
+ ...
+ ...
+ </html>
+ ```
+ */
+var jq = function() {
+  if (isDefined(jq.name_)) return jq.name_;
+  var el;
+  var i, ii = ngAttrPrefixes.length, prefix, name;
+  for (i = 0; i < ii; ++i) {
+    prefix = ngAttrPrefixes[i];
+    if (el = document.querySelector('[' + prefix.replace(':', '\\:') + 'jq]')) {
+      name = el.getAttribute(prefix + 'jq');
+      break;
     }
+  }
 
-    return (jq.name_ = name);
-  };
+  return (jq.name_ = name);
+};
 
 function concat(array1, array2, index) {
   return array1.concat(slice.call(array2, index));
@@ -1243,24 +1233,24 @@ function fromJson(json) {
 }
 
 
-  function timezoneToOffset(timezone, fallback) {
-    var requestedTimezoneOffset = Date.parse('Jan 01, 1970 00:00:00 ' + timezone) / 60000;
-    return isNaN(requestedTimezoneOffset) ? fallback : requestedTimezoneOffset;
-  }
+function timezoneToOffset(timezone, fallback) {
+  var requestedTimezoneOffset = Date.parse('Jan 01, 1970 00:00:00 ' + timezone) / 60000;
+  return isNaN(requestedTimezoneOffset) ? fallback : requestedTimezoneOffset;
+}
 
 
-  function addDateMinutes(date, minutes) {
-    date = new Date(date.getTime());
-    date.setMinutes(date.getMinutes() + minutes);
-    return date;
-  }
+function addDateMinutes(date, minutes) {
+  date = new Date(date.getTime());
+  date.setMinutes(date.getMinutes() + minutes);
+  return date;
+}
 
 
-  function convertTimezoneToLocal(date, timezone, reverse) {
-    reverse = reverse ? -1 : 1;
-    var timezoneOffset = timezoneToOffset(timezone, date.getTimezoneOffset());
-    return addDateMinutes(date, reverse * (timezoneOffset - date.getTimezoneOffset()));
-  }
+function convertTimezoneToLocal(date, timezone, reverse) {
+  reverse = reverse ? -1 : 1;
+  var timezoneOffset = timezoneToOffset(timezone, date.getTimezoneOffset());
+  return addDateMinutes(date, reverse * (timezoneOffset - date.getTimezoneOffset()));
+}
 
 
 /**
@@ -1868,7 +1858,7 @@ function createMap() {
 }
 
 var NODE_TYPE_ELEMENT = 1;
-  var NODE_TYPE_ATTRIBUTE = 2;
+var NODE_TYPE_ATTRIBUTE = 2;
 var NODE_TYPE_TEXT = 3;
 var NODE_TYPE_COMMENT = 8;
 var NODE_TYPE_DOCUMENT = 9;
@@ -2067,7 +2057,7 @@ function setupModuleLoader(window) {
            */
           constant: invokeLater('$provide', 'constant', 'unshift'),
 
-          /**
+           /**
            * @ngdoc method
            * @name angular.Module#decorator
            * @module ng
@@ -2211,7 +2201,7 @@ function setupModuleLoader(window) {
          * @returns {angular.Module}
          */
         function invokeLaterAndSetModuleName(provider, method) {
-          return function (recipeName, factoryFunction) {
+          return function(recipeName, factoryFunction) {
             if (factoryFunction && isFunction(factoryFunction)) factoryFunction.$$moduleName = name;
             invokeQueue.push([provider, method, arguments]);
             return moduleInstance;
@@ -2308,8 +2298,8 @@ function toDebugString(obj) {
 
   $AnchorScrollProvider,
   $AnimateProvider,
- $$CoreAnimateQueueProvider,
- $$CoreAnimateRunnerProvider,
+  $$CoreAnimateQueueProvider,
+  $$CoreAnimateRunnerProvider,
   $BrowserProvider,
   $CacheFactoryProvider,
   $ControllerProvider,
@@ -2318,10 +2308,10 @@ function toDebugString(obj) {
   $FilterProvider,
   $InterpolateProvider,
   $IntervalProvider,
- $$HashMapProvider,
+  $$HashMapProvider,
   $HttpProvider,
- $HttpParamSerializerProvider,
- $HttpParamSerializerJQLikeProvider,
+  $HttpParamSerializerProvider,
+  $HttpParamSerializerJQLikeProvider,
   $HttpBackendProvider,
   $LocationProvider,
   $LogProvider,
@@ -2339,8 +2329,8 @@ function toDebugString(obj) {
   $TimeoutProvider,
   $$RAFProvider,
   $WindowProvider,
- $$jqLiteProvider,
- $$CookieReaderProvider
+  $$jqLiteProvider,
+  $$CookieReaderProvider
 */
 
 
@@ -2506,16 +2496,16 @@ function publishExternalAPI(angular) {
   ]);
 }
 
-  /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-   *     Any commits to this file should be reviewed with security in mind.  *
-   *   Changes to this file can potentially create security vulnerabilities. *
-   *          An approval from 2 Core members with history of modifying      *
-   *                         this file is required.                          *
-   *                                                                         *
-   *  Does the change somehow allow for arbitrary javascript to be executed? *
-   *    Or allows for someone to change the prototype of built-in objects?   *
-   *     Or gives undesired access to variables likes document or window?    *
-   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *     Any commits to this file should be reviewed with security in mind.  *
+ *   Changes to this file can potentially create security vulnerabilities. *
+ *          An approval from 2 Core members with history of modifying      *
+ *                         this file is required.                          *
+ *                                                                         *
+ *  Does the change somehow allow for arbitrary javascript to be executed? *
+ *    Or allows for someone to change the prototype of built-in objects?   *
+ *     Or gives undesired access to variables likes document or window?    *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 /* global JQLitePrototype: true,
   addEventListenerFn: true,
@@ -2688,12 +2678,12 @@ function jqLiteAcceptsData(node) {
   return nodeType === NODE_TYPE_ELEMENT || !nodeType || nodeType === NODE_TYPE_DOCUMENT;
 }
 
-  function jqLiteHasData(node) {
-    for (var key in jqCache[node.ng339]) {
-      return true;
-    }
-    return false;
+function jqLiteHasData(node) {
+  for (var key in jqCache[node.ng339]) {
+    return true;
   }
+  return false;
+}
 
 function jqLiteBuildFragment(html, context) {
   var tmp, tag, wrap,
@@ -3628,11 +3618,11 @@ HashMap.prototype = {
   }
 };
 
-  var $$HashMapProvider = [function () {
-    this.$get = [function () {
-      return HashMap;
-    }];
+var $$HashMapProvider = [function() {
+  this.$get = [function() {
+    return HashMap;
   }];
+}];
 
 /**
  * @ngdoc function
@@ -4279,9 +4269,7 @@ function createInjector(modulesToLoad, strictDi) {
           }));
 
 
-  forEach(loadModules(modulesToLoad), function (fn) {
-    if (fn) instanceInjector.invoke(fn);
-  });
+  forEach(loadModules(modulesToLoad), function(fn) { if (fn) instanceInjector.invoke(fn); });
 
   return instanceInjector;
 
@@ -4758,44 +4746,44 @@ function $AnchorScrollProvider() {
 }
 
 var $animateMinErr = minErr('$animate');
-  var ELEMENT_NODE = 1;
-  var NG_ANIMATE_CLASSNAME = 'ng-animate';
+var ELEMENT_NODE = 1;
+var NG_ANIMATE_CLASSNAME = 'ng-animate';
 
-  function mergeClasses(a, b) {
-    if (!a && !b) return '';
-    if (!a) return b;
-    if (!b) return a;
-    if (isArray(a)) a = a.join(' ');
-    if (isArray(b)) b = b.join(' ');
-    return a + ' ' + b;
-  }
+function mergeClasses(a,b) {
+  if (!a && !b) return '';
+  if (!a) return b;
+  if (!b) return a;
+  if (isArray(a)) a = a.join(' ');
+  if (isArray(b)) b = b.join(' ');
+  return a + ' ' + b;
+}
 
-  function extractElementNode(element) {
-    for (var i = 0; i < element.length; i++) {
-      var elm = element[i];
-      if (elm.nodeType === ELEMENT_NODE) {
-        return elm;
-      }
+function extractElementNode(element) {
+  for (var i = 0; i < element.length; i++) {
+    var elm = element[i];
+    if (elm.nodeType === ELEMENT_NODE) {
+      return elm;
     }
   }
+}
 
-  function splitClasses(classes) {
-    if (isString(classes)) {
-      classes = classes.split(' ');
-    }
-
-    // Use createMap() to prevent class assumptions involving property names in
-    // Object.prototype
-    var obj = createMap();
-    forEach(classes, function (klass) {
-      // sometimes the split leaves empty string values
-      // incase extra spaces were applied to the options
-      if (klass.length) {
-        obj[klass] = true;
-      }
-    });
-    return obj;
+function splitClasses(classes) {
+  if (isString(classes)) {
+    classes = classes.split(' ');
   }
+
+  // Use createMap() to prevent class assumptions involving property names in
+  // Object.prototype
+  var obj = createMap();
+  forEach(classes, function(klass) {
+    // sometimes the split leaves empty string values
+    // incase extra spaces were applied to the options
+    if (klass.length) {
+      obj[klass] = true;
+    }
+  });
+  return obj;
+}
 
 // if any other type of options value besides an Object value is
 // passed into the $animate.method() animation then this helper code
@@ -4804,125 +4792,122 @@ var $animateMinErr = minErr('$animate');
 // $animate to either call the callback (< 1.2) or return a promise
 // that can be changed. This helper function ensures that the options
 // are wiped clean incase a callback function is provided.
-  function prepareAnimateOptions(options) {
-    return isObject(options)
+function prepareAnimateOptions(options) {
+  return isObject(options)
       ? options
       : {};
-  }
+}
 
-  var $$CoreAnimateRunnerProvider = function () {
-    this.$get = ['$q', '$$rAF', function ($q, $$rAF) {
-      function AnimateRunner() {
+var $$CoreAnimateRunnerProvider = function() {
+  this.$get = ['$q', '$$rAF', function($q, $$rAF) {
+    function AnimateRunner() {}
+    AnimateRunner.all = noop;
+    AnimateRunner.chain = noop;
+    AnimateRunner.prototype = {
+      end: noop,
+      cancel: noop,
+      resume: noop,
+      pause: noop,
+      complete: noop,
+      then: function(pass, fail) {
+        return $q(function(resolve) {
+          $$rAF(function() {
+            resolve();
+          });
+        }).then(pass, fail);
       }
-
-      AnimateRunner.all = noop;
-      AnimateRunner.chain = noop;
-      AnimateRunner.prototype = {
-        end: noop,
-        cancel: noop,
-        resume: noop,
-        pause: noop,
-        complete: noop,
-        then: function (pass, fail) {
-          return $q(function (resolve) {
-            $$rAF(function () {
-              resolve();
-            });
-          }).then(pass, fail);
-        }
-      };
-      return AnimateRunner;
-    }];
-  };
+    };
+    return AnimateRunner;
+  }];
+};
 
 // this is prefixed with Core since it conflicts with
 // the animateQueueProvider defined in ngAnimate/animateQueue.js
-  var $$CoreAnimateQueueProvider = function () {
-    var postDigestQueue = new HashMap();
-    var postDigestElements = [];
+var $$CoreAnimateQueueProvider = function() {
+  var postDigestQueue = new HashMap();
+  var postDigestElements = [];
 
-    this.$get = ['$$AnimateRunner', '$rootScope',
-      function ($$AnimateRunner, $rootScope) {
-        return {
-          enabled: noop,
-          on: noop,
-          off: noop,
-          pin: noop,
+  this.$get = ['$$AnimateRunner', '$rootScope',
+       function($$AnimateRunner,   $rootScope) {
+    return {
+      enabled: noop,
+      on: noop,
+      off: noop,
+      pin: noop,
 
-          push: function (element, event, options, domOperation) {
-            domOperation && domOperation();
+      push: function(element, event, options, domOperation) {
+        domOperation        && domOperation();
 
-            options = options || {};
-            options.from && element.css(options.from);
-            options.to && element.css(options.to);
+        options = options || {};
+        options.from        && element.css(options.from);
+        options.to          && element.css(options.to);
 
-            if (options.addClass || options.removeClass) {
-              addRemoveClassesPostDigest(element, options.addClass, options.removeClass);
-            }
-
-            return new $$AnimateRunner(); // jshint ignore:line
-          }
-        };
-
-        function addRemoveClassesPostDigest(element, add, remove) {
-          var data = postDigestQueue.get(element);
-          var classVal;
-
-          if (!data) {
-            postDigestQueue.put(element, data = {});
-            postDigestElements.push(element);
-          }
-
-          if (add) {
-            forEach(add.split(' '), function (className) {
-              if (className) {
-                data[className] = true;
-              }
-            });
-          }
-
-          if (remove) {
-            forEach(remove.split(' '), function (className) {
-              if (className) {
-                data[className] = false;
-              }
-            });
-          }
-
-          if (postDigestElements.length > 1) return;
-
-          $rootScope.$$postDigest(function () {
-            forEach(postDigestElements, function (element) {
-              var data = postDigestQueue.get(element);
-              if (data) {
-                var existing = splitClasses(element.attr('class'));
-                var toAdd = '';
-                var toRemove = '';
-                forEach(data, function (status, className) {
-                  var hasClass = !!existing[className];
-                  if (status !== hasClass) {
-                    if (status) {
-                      toAdd += (toAdd.length ? ' ' : '') + className;
-                    }
-                    else {
-                      toRemove += (toRemove.length ? ' ' : '') + className;
-                    }
-                  }
-                });
-
-                forEach(element, function (elm) {
-                  toAdd && jqLiteAddClass(elm, toAdd);
-                  toRemove && jqLiteRemoveClass(elm, toRemove);
-                });
-                postDigestQueue.remove(element);
-              }
-            });
-
-            postDigestElements.length = 0;
-          });
+        if (options.addClass || options.removeClass) {
+          addRemoveClassesPostDigest(element, options.addClass, options.removeClass);
         }
-      }];
-  };
+
+        return new $$AnimateRunner(); // jshint ignore:line
+      }
+    };
+
+    function addRemoveClassesPostDigest(element, add, remove) {
+      var data = postDigestQueue.get(element);
+      var classVal;
+
+      if (!data) {
+        postDigestQueue.put(element, data = {});
+        postDigestElements.push(element);
+      }
+
+      if (add) {
+        forEach(add.split(' '), function(className) {
+          if (className) {
+            data[className] = true;
+          }
+        });
+      }
+
+      if (remove) {
+        forEach(remove.split(' '), function(className) {
+          if (className) {
+            data[className] = false;
+          }
+        });
+      }
+
+      if (postDigestElements.length > 1) return;
+
+      $rootScope.$$postDigest(function() {
+        forEach(postDigestElements, function(element) {
+          var data = postDigestQueue.get(element);
+          if (data) {
+            var existing = splitClasses(element.attr('class'));
+            var toAdd = '';
+            var toRemove = '';
+            forEach(data, function(status, className) {
+              var hasClass = !!existing[className];
+              if (status !== hasClass) {
+                if (status) {
+                  toAdd += (toAdd.length ? ' ' : '') + className;
+                } else {
+                  toRemove += (toRemove.length ? ' ' : '') + className;
+                }
+              }
+            });
+
+            forEach(element, function(elm) {
+              toAdd    && jqLiteAddClass(elm, toAdd);
+              toRemove && jqLiteRemoveClass(elm, toRemove);
+            });
+            postDigestQueue.remove(element);
+          }
+        });
+
+        postDigestElements.length = 0;
+      });
+    }
+  }];
+};
 
 /**
  * @ngdoc provider
@@ -4941,7 +4926,7 @@ var $AnimateProvider = ['$provide', function($provide) {
 
   this.$$registeredAnimations = Object.create(null);
 
-  /**
+   /**
    * @ngdoc method
    * @name $animateProvider#register
    *
@@ -5010,9 +4995,7 @@ var $AnimateProvider = ['$provide', function($provide) {
       if (this.$$classNameFilter) {
         var reservedRegex = new RegExp("(\\s+|\\/)" + NG_ANIMATE_CLASSNAME + "(\\s+|\\/)");
         if (reservedRegex.test(this.$$classNameFilter.toString())) {
-          throw $animateMinErr('nongcls',
-            '$animateProvider.classNameFilter(regex) prohibits accepting a regex value which matches/contains the "{0}" CSS class.',
-            NG_ANIMATE_CLASSNAME);
+          throw $animateMinErr('nongcls','$animateProvider.classNameFilter(regex) prohibits accepting a regex value which matches/contains the "{0}" CSS class.', NG_ANIMATE_CLASSNAME);
 
         }
       }
@@ -5020,7 +5003,7 @@ var $AnimateProvider = ['$provide', function($provide) {
     return this.$$classNameFilter;
   };
 
-  this.$get = ['$$animateQueue', function ($$animateQueue) {
+  this.$get = ['$$animateQueue', function($$animateQueue) {
     function domInsert(element, parentElement, afterElement) {
       // if for some reason the previous element was removed
       // from the dom sometime before this code runs then let's
@@ -5168,7 +5151,7 @@ var $AnimateProvider = ['$provide', function($provide) {
        *
        * @param {Promise} animationPromise The animation promise that is returned when an animation is started.
        */
-      cancel: function (runner) {
+      cancel: function(runner) {
         runner.end && runner.end();
       },
 
@@ -5216,7 +5199,7 @@ var $AnimateProvider = ['$provide', function($provide) {
        *
        * @return {Promise} the animation callback promise
        */
-      move: function (element, parent, after, options) {
+      move: function(element, parent, after, options) {
         parent = parent && jqLite(parent);
         after = after && jqLite(after);
         parent = parent || after.parent();
@@ -5237,8 +5220,8 @@ var $AnimateProvider = ['$provide', function($provide) {
        *
        * @return {Promise} the animation callback promise
        */
-      leave: function (element, options) {
-        return $$animateQueue.push(element, 'leave', prepareAnimateOptions(options), function () {
+      leave: function(element, options) {
+        return $$animateQueue.push(element, 'leave', prepareAnimateOptions(options), function() {
           element.remove();
         });
       },
@@ -5338,10 +5321,10 @@ var $AnimateProvider = ['$provide', function($provide) {
        *
        * @return {Promise} the animation callback promise
        */
-      animate: function (element, from, to, className, options) {
+      animate: function(element, from, to, className, options) {
         options = prepareAnimateOptions(options);
         options.from = options.from ? extend(options.from, from) : from;
-        options.to = options.to ? extend(options.to, to) : to;
+        options.to   = options.to   ? extend(options.to, to)     : to;
 
         className = className || 'ng-inline-animate';
         options.tempClasses = mergeClasses(options.tempClasses, className);
@@ -5632,7 +5615,7 @@ function Browser(window, document, $log, $sniffer) {
    *
    * NOTE: this api is intended for use only by $rootScope.
    */
-  self.$$applicationDestroyed = function () {
+  self.$$applicationDestroyed = function() {
     jqLite(window).off('hashchange popstate', cacheStateAndFireUrlChange);
   };
 
@@ -6116,16 +6099,16 @@ function $TemplateCacheProvider() {
   }];
 }
 
-  /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-   *     Any commits to this file should be reviewed with security in mind.  *
-   *   Changes to this file can potentially create security vulnerabilities. *
-   *          An approval from 2 Core members with history of modifying      *
-   *                         this file is required.                          *
-   *                                                                         *
-   *  Does the change somehow allow for arbitrary javascript to be executed? *
-   *    Or allows for someone to change the prototype of built-in objects?   *
-   *     Or gives undesired access to variables likes document or window?    *
-   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *     Any commits to this file should be reviewed with security in mind.  *
+ *   Changes to this file can potentially create security vulnerabilities. *
+ *          An approval from 2 Core members with history of modifying      *
+ *                         this file is required.                          *
+ *                                                                         *
+ *  Does the change somehow allow for arbitrary javascript to be executed? *
+ *    Or allows for someone to change the prototype of built-in objects?   *
+ *     Or gives undesired access to variables likes document or window?    *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 /* ! VARIABLE/FUNCTION NAMING CONVENTIONS THAT APPLY TO THIS FILE!
  *
@@ -6740,8 +6723,8 @@ function $TemplateCacheProvider() {
       }]);
     </script>
     <div ng-controller="GreeterController">
- <input ng-model="name"> <br/>
- <textarea ng-model="html"></textarea> <br/>
+      <input ng-model="name"> <br/>
+      <textarea ng-model="html"></textarea> <br/>
       <div compile="html"></div>
     </div>
    </file>
@@ -6861,10 +6844,10 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
       if (!match) {
         throw $compileMinErr('iscp',
-          "Invalid {3} for directive '{0}'." +
+            "Invalid {3} for directive '{0}'." +
             " Definition: {... {1}: '{2}' ...}",
-          directiveName, scopeName, definition,
-          (isController ? "controller bindings definition" :
+            directiveName, scopeName, definition,
+            (isController ? "controller bindings definition" :
             "isolate scope definition"));
       }
 
@@ -6887,17 +6870,16 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
     if (isObject(directive.scope)) {
       if (directive.bindToController === true) {
         bindings.bindToController = parseIsolateBindings(directive.scope,
-          directiveName, true);
+                                                         directiveName, true);
         bindings.isolateScope = {};
-      }
-      else {
+      } else {
         bindings.isolateScope = parseIsolateBindings(directive.scope,
-          directiveName, false);
+                                                     directiveName, false);
       }
     }
     if (isObject(directive.bindToController)) {
       bindings.bindToController =
-        parseIsolateBindings(directive.bindToController, directiveName, true);
+          parseIsolateBindings(directive.bindToController, directiveName, true);
     }
     if (isObject(bindings.bindToController)) {
       var controller = directive.controller;
@@ -6905,14 +6887,13 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
       if (!controller) {
         // There is no controller, there may or may not be a controllerAs property
         throw $compileMinErr('noctrl',
-          "Cannot bind to controller without directive '{0}'s controller.",
-          directiveName);
-      }
-      else if (!identifierForController(controller, controllerAs)) {
+              "Cannot bind to controller without directive '{0}'s controller.",
+              directiveName);
+      } else if (!identifierForController(controller, controllerAs)) {
         // There is a controller, but no identifier or controllerAs property
         throw $compileMinErr('noident',
-          "Cannot bind to controller without identifier for directive '{0}'.",
-          directiveName);
+              "Cannot bind to controller without identifier for directive '{0}'.",
+              directiveName);
       }
     }
     return bindings;
@@ -6921,13 +6902,12 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
   function assertValidDirectiveName(name) {
     var letter = name.charAt(0);
     if (!letter || letter !== lowercase(letter)) {
-      throw $compileMinErr('baddir', "Directive name '{0}' is invalid. The first character must be a lowercase letter",
-        name);
+      throw $compileMinErr('baddir', "Directive name '{0}' is invalid. The first character must be a lowercase letter", name);
     }
     if (name !== name.trim()) {
       throw $compileMinErr('baddir',
-        "Directive name '{0}' is invalid. The name should not contain leading or trailing whitespaces",
-        name);
+            "Directive name '{0}' is invalid. The name should not contain leading or trailing whitespaces",
+            name);
     }
   }
 
@@ -6970,7 +6950,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
                 directive.require = directive.require || (directive.controller && directive.name);
                 directive.restrict = directive.restrict || 'EA';
                 var bindings = directive.$$bindings =
-                  parseDirectiveBindings(directive, directive.name);
+                    parseDirectiveBindings(directive, directive.name);
                 if (isObject(bindings.isolateScope)) {
                   directive.$$isolateBindings = bindings.isolateScope;
                 }
@@ -7546,7 +7526,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
             if (nodeLinkFn.transcludeOnThisElement) {
               childBoundTranscludeFn = createBoundTranscludeFn(
-                scope, nodeLinkFn.transclude, parentBoundTranscludeFn);
+                  scope, nodeLinkFn.transclude, parentBoundTranscludeFn);
 
             } else if (!nodeLinkFn.templateOnThisElement && parentBoundTranscludeFn) {
               childBoundTranscludeFn = parentBoundTranscludeFn;
@@ -7559,7 +7539,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
             }
 
             nodeLinkFn(childLinkFn, childScope, node, $rootElement, childBoundTranscludeFn,
-              nodeLinkFn);
+                       nodeLinkFn);
 
           } else if (childLinkFn) {
             childLinkFn(scope, node.childNodes, undefined, parentBoundTranscludeFn);
@@ -7568,7 +7548,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
       }
     }
 
-      function createBoundTranscludeFn(scope, transcludeFn, previousBoundTranscludeFn) {
+    function createBoundTranscludeFn(scope, transcludeFn, previousBoundTranscludeFn) {
 
       var boundTranscludeFn = function(transcludedScope, cloneFn, controllers, futureParentElement, containingScope) {
 
@@ -7773,7 +7753,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
       previousCompileContext = previousCompileContext || {};
 
       var terminalPriority = -Number.MAX_VALUE,
-        newScopeDirective = previousCompileContext.newScopeDirective,
+          newScopeDirective = previousCompileContext.newScopeDirective,
           controllerDirectives = previousCompileContext.controllerDirectives,
           newIsolateScopeDirective = previousCompileContext.newIsolateScopeDirective,
           templateDirective = previousCompileContext.templateDirective,
@@ -7939,7 +7919,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
           nodeLinkFn = compileTemplateUrl(directives.splice(i, directives.length - i), $compileNode,
               templateAttrs, jqCollection, hasTranscludeDirective && childTranscludeFn, preLinkFns, postLinkFns, {
                 controllerDirectives: controllerDirectives,
-              newScopeDirective: (newScopeDirective !== directive) && newScopeDirective,
+                newScopeDirective: (newScopeDirective !== directive) && newScopeDirective,
                 newIsolateScopeDirective: newIsolateScopeDirective,
                 templateDirective: templateDirective,
                 nonTlbTranscludeDirective: nonTlbTranscludeDirective
@@ -8011,10 +7991,9 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
           //If only parents then start at the parent element
           if (inheritType === '^^') {
             $element = $element.parent();
-            //Otherwise attempt getting the controller from elementControllers in case
-            //the element is transcluded (and has no data) and to avoid .data if possible
-          }
-          else {
+          //Otherwise attempt getting the controller from elementControllers in case
+          //the element is transcluded (and has no data) and to avoid .data if possible
+          } else {
             value = elementControllers && elementControllers[name];
             value = value && value.instance;
           }
@@ -8027,7 +8006,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
           if (!value && !optional) {
             throw $compileMinErr('ctreq',
                 "Controller '{0}', required by directive '{1}', can't be found!",
-              name, directiveName);
+                name, directiveName);
           }
         } else if (isArray(require)) {
           value = [];
@@ -8095,8 +8074,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
         }
 
         if (controllerDirectives) {
-          elementControllers = setupControllers($element, attrs, transcludeFn, controllerDirectives, isolateScope,
-            scope);
+          elementControllers = setupControllers($element, attrs, transcludeFn, controllerDirectives, isolateScope, scope);
         }
 
         if (newIsolateScopeDirective) {
@@ -8105,10 +8083,10 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
               templateDirective === newIsolateScopeDirective.$$originalDirective)));
           compile.$$addScopeClass($element, true);
           isolateScope.$$isolateBindings =
-            newIsolateScopeDirective.$$isolateBindings;
+              newIsolateScopeDirective.$$isolateBindings;
           initializeDirectiveBindings(scope, attrs, isolateScope,
-            isolateScope.$$isolateBindings,
-            newIsolateScopeDirective, isolateScope);
+                                      isolateScope.$$isolateBindings,
+                                      newIsolateScopeDirective, isolateScope);
         }
         if (elementControllers) {
           // Initialize bindToController bindings for new/isolate scopes
@@ -8122,8 +8100,8 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
             if (controller && controller.identifier && bindings) {
               controllerForBindings = controller;
               thisLinkFn.$$destroyBindings =
-                initializeDirectiveBindings(scope, attrs, controller.instance,
-                  bindings, scopeDirective);
+                  initializeDirectiveBindings(scope, attrs, controller.instance,
+                                              bindings, scopeDirective);
             }
           }
           for (i in elementControllers) {
@@ -8418,7 +8396,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
             childBoundTranscludeFn = createBoundTranscludeFn(scope, afterTemplateNodeLinkFn.transclude, boundTranscludeFn);
           }
           afterTemplateNodeLinkFn(afterTemplateChildLinkFn, scope, node, rootElement, childBoundTranscludeFn,
-            afterTemplateNodeLinkFn);
+                                  afterTemplateNodeLinkFn);
         }
       };
     }
@@ -8444,8 +8422,8 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
       if (previousDirective) {
         throw $compileMinErr('multidir', 'Multiple directives [{0}{1}, {2}{3}] asking for {4} on: {5}',
-          previousDirective.name, wrapModuleNameIfDefined(previousDirective.$$moduleName),
-          directive.name, wrapModuleNameIfDefined(directive.$$moduleName), what, startingTag(element));
+            previousDirective.name, wrapModuleNameIfDefined(previousDirective.$$moduleName),
+            directive.name, wrapModuleNameIfDefined(directive.$$moduleName), what, startingTag(element));
       }
     }
 
@@ -8637,8 +8615,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
         // for the new node. Instead, remove the data "manually".
         if (!jQuery) {
           delete jqLite.cache[firstElementToRemove[jqLite.expando]];
-        }
-        else {
+        } else {
           // jQuery 2.x doesn't expose the data storage. Use jQuery.cleanData to clean up after
           // the replaced element. The cleanData version monkey-patched by Angular would cause
           // the scope to be trashed and we do need the very same scope to work with the new
@@ -8677,113 +8654,108 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
     }
 
 
-      // Set up $watches for isolate scope and controller bindings. This process
-      // only occurs for isolate scopes and new scopes with controllerAs.
-      function initializeDirectiveBindings(scope, attrs, destination, bindings,
-                                           directive, newScope) {
-        var onNewScopeDestroyed;
-        forEach(bindings, function (definition, scopeName) {
-          var attrName = definition.attrName,
-            optional = definition.optional,
-            mode = definition.mode, // @, =, or &
-            lastValue,
-            parentGet, parentSet, compare;
+    // Set up $watches for isolate scope and controller bindings. This process
+    // only occurs for isolate scopes and new scopes with controllerAs.
+    function initializeDirectiveBindings(scope, attrs, destination, bindings,
+                                         directive, newScope) {
+      var onNewScopeDestroyed;
+      forEach(bindings, function(definition, scopeName) {
+        var attrName = definition.attrName,
+        optional = definition.optional,
+        mode = definition.mode, // @, =, or &
+        lastValue,
+        parentGet, parentSet, compare;
 
-          if (!hasOwnProperty.call(attrs, attrName)) {
-            // In the case of user defined a binding with the same name as a method in Object.prototype but didn't set
-            // the corresponding attribute. We need to make sure subsequent code won't access to the prototype function
-            attrs[attrName] = undefined;
-          }
-
-          switch (mode) {
-
-            case '@':
-              if (!attrs[attrName] && !optional) {
-                destination[scopeName] = undefined;
-              }
-
-              attrs.$observe(attrName, function (value) {
-                destination[scopeName] = value;
-              });
-              attrs.$$observers[attrName].$$scope = scope;
-              if (attrs[attrName]) {
-                // If the attribute has been provided then we trigger an interpolation to ensure
-                // the value is there for use in the link fn
-                destination[scopeName] = $interpolate(attrs[attrName])(scope);
-              }
-              break;
-
-            case '=':
-              if (optional && !attrs[attrName]) {
-                return;
-              }
-              parentGet = $parse(attrs[attrName]);
-
-              if (parentGet.literal) {
-                compare = equals;
-              }
-              else {
-                compare = function (a, b) {
-                  return a === b || (a !== a && b !== b);
-                };
-              }
-              parentSet = parentGet.assign || function () {
-                  // reset the change, or we will throw this exception on every $digest
-                  lastValue = destination[scopeName] = parentGet(scope);
-                  throw $compileMinErr('nonassign',
-                    "Expression '{0}' used with directive '{1}' is non-assignable!",
-                    attrs[attrName], directive.name);
-                };
-              lastValue = destination[scopeName] = parentGet(scope);
-              var parentValueWatch = function parentValueWatch(parentValue) {
-                if (!compare(parentValue, destination[scopeName])) {
-                  // we are out of sync and need to copy
-                  if (!compare(parentValue, lastValue)) {
-                    // parent changed and it has precedence
-                    destination[scopeName] = parentValue;
-                  }
-                  else {
-                    // if the parent can be assigned then do so
-                    parentSet(scope, parentValue = destination[scopeName]);
-                  }
-                }
-                return lastValue = parentValue;
-              };
-              parentValueWatch.$stateful = true;
-              var unwatch;
-              if (definition.collection) {
-                unwatch = scope.$watchCollection(attrs[attrName], parentValueWatch);
-              }
-              else {
-                unwatch = scope.$watch($parse(attrs[attrName], parentValueWatch), null, parentGet.literal);
-              }
-              onNewScopeDestroyed = (onNewScopeDestroyed || []);
-              onNewScopeDestroyed.push(unwatch);
-              break;
-
-            case '&':
-              parentGet = $parse(attrs[attrName]);
-
-              // Don't assign noop to destination if expression is not valid
-              if (parentGet === noop && optional) break;
-
-              destination[scopeName] = function (locals) {
-                return parentGet(scope, locals);
-              };
-              break;
-          }
-        });
-        var destroyBindings = onNewScopeDestroyed ? function destroyBindings() {
-          for (var i = 0, ii = onNewScopeDestroyed.length; i < ii; ++i) {
-            onNewScopeDestroyed[i]();
-          }
-        } : noop;
-        if (newScope && destroyBindings !== noop) {
-          newScope.$on('$destroy', destroyBindings);
-          return noop;
+        if (!hasOwnProperty.call(attrs, attrName)) {
+          // In the case of user defined a binding with the same name as a method in Object.prototype but didn't set
+          // the corresponding attribute. We need to make sure subsequent code won't access to the prototype function
+          attrs[attrName] = undefined;
         }
-        return destroyBindings;
+
+        switch (mode) {
+
+          case '@':
+            if (!attrs[attrName] && !optional) {
+              destination[scopeName] = undefined;
+            }
+
+            attrs.$observe(attrName, function(value) {
+              destination[scopeName] = value;
+            });
+            attrs.$$observers[attrName].$$scope = scope;
+            if (attrs[attrName]) {
+              // If the attribute has been provided then we trigger an interpolation to ensure
+              // the value is there for use in the link fn
+              destination[scopeName] = $interpolate(attrs[attrName])(scope);
+            }
+            break;
+
+          case '=':
+            if (optional && !attrs[attrName]) {
+              return;
+            }
+            parentGet = $parse(attrs[attrName]);
+
+            if (parentGet.literal) {
+              compare = equals;
+            } else {
+              compare = function(a, b) { return a === b || (a !== a && b !== b); };
+            }
+            parentSet = parentGet.assign || function() {
+              // reset the change, or we will throw this exception on every $digest
+              lastValue = destination[scopeName] = parentGet(scope);
+              throw $compileMinErr('nonassign',
+                  "Expression '{0}' used with directive '{1}' is non-assignable!",
+                  attrs[attrName], directive.name);
+            };
+            lastValue = destination[scopeName] = parentGet(scope);
+            var parentValueWatch = function parentValueWatch(parentValue) {
+              if (!compare(parentValue, destination[scopeName])) {
+                // we are out of sync and need to copy
+                if (!compare(parentValue, lastValue)) {
+                  // parent changed and it has precedence
+                  destination[scopeName] = parentValue;
+                } else {
+                  // if the parent can be assigned then do so
+                  parentSet(scope, parentValue = destination[scopeName]);
+                }
+              }
+              return lastValue = parentValue;
+            };
+            parentValueWatch.$stateful = true;
+            var unwatch;
+            if (definition.collection) {
+              unwatch = scope.$watchCollection(attrs[attrName], parentValueWatch);
+            } else {
+              unwatch = scope.$watch($parse(attrs[attrName], parentValueWatch), null, parentGet.literal);
+            }
+            onNewScopeDestroyed = (onNewScopeDestroyed || []);
+            onNewScopeDestroyed.push(unwatch);
+            break;
+
+          case '&':
+            parentGet = $parse(attrs[attrName]);
+
+            // Don't assign noop to destination if expression is not valid
+            if (parentGet === noop && optional) break;
+
+            destination[scopeName] = function(locals) {
+              return parentGet(scope, locals);
+            };
+            break;
+        }
+      });
+      var destroyBindings = onNewScopeDestroyed ? function destroyBindings() {
+        for (var i = 0, ii = onNewScopeDestroyed.length; i < ii; ++i) {
+          onNewScopeDestroyed[i]();
+        }
+      } : noop;
+      if (newScope && destroyBindings !== noop) {
+        newScope.$on('$destroy', destroyBindings);
+        return noop;
       }
+      return destroyBindings;
+    }
   }];
 }
 
@@ -8892,15 +8864,14 @@ function removeComments(jqNodes) {
 var $controllerMinErr = minErr('$controller');
 
 
-  var CNTRL_REG = /^(\S+)(\s+as\s+(\w+))?$/;
-
-  function identifierForController(controller, ident) {
-    if (ident && isString(ident)) return ident;
-    if (isString(controller)) {
-      var match = CNTRL_REG.exec(controller);
-      if (match) return match[3];
-    }
+var CNTRL_REG = /^(\S+)(\s+as\s+(\w+))?$/;
+function identifierForController(controller, ident) {
+  if (ident && isString(ident)) return ident;
+  if (isString(controller)) {
+    var match = CNTRL_REG.exec(controller);
+    if (match) return match[3];
   }
+}
 
 
 /**
@@ -8915,7 +8886,7 @@ var $controllerMinErr = minErr('$controller');
  */
 function $ControllerProvider() {
   var controllers = {},
-    globals = false;
+      globals = false;
 
   /**
    * @ngdoc method
@@ -9024,7 +8995,7 @@ function $ControllerProvider() {
         }
 
         var instantiate;
-        return instantiate = extend(function () {
+        return instantiate = extend(function() {
           var result = $injector.invoke(expression, instance, locals, constructor);
           if (result !== instance && (isObject(result) || isFunction(result))) {
             instance = result;
@@ -9149,81 +9120,80 @@ var JSON_ENDS = {
 };
 var JSON_PROTECTION_PREFIX = /^\)\]\}',?\n/;
 
-  function serializeValue(v) {
-    if (isObject(v)) {
-      return isDate(v) ? v.toISOString() : toJson(v);
-    }
-    return v;
+function serializeValue(v) {
+  if (isObject(v)) {
+    return isDate(v) ? v.toISOString() : toJson(v);
   }
+  return v;
+}
 
 
-  function $HttpParamSerializerProvider() {
-    /**
-     * @ngdoc service
-     * @name $httpParamSerializer
-     * @description
-     *
-     * Default {@link $http `$http`} params serializer that converts objects to strings
-     * according to the following rules:
-     *
-     * * `{'foo': 'bar'}` results in `foo=bar`
-     * * `{'foo': Date.now()}` results in `foo=2015-04-01T09%3A50%3A49.262Z` (`toISOString()` and encoded representation of a Date object)
-     * * `{'foo': ['bar', 'baz']}` results in `foo=bar&foo=baz` (repeated key for each array element)
-     * * `{'foo': {'bar':'baz'}}` results in `foo=%7B%22bar%22%3A%22baz%22%7D"` (stringified and encoded representation of an object)
-     *
-     * Note that serializer will sort the request parameters alphabetically.
-     * */
+function $HttpParamSerializerProvider() {
+  /**
+   * @ngdoc service
+   * @name $httpParamSerializer
+   * @description
+   *
+   * Default {@link $http `$http`} params serializer that converts objects to strings
+   * according to the following rules:
+   *
+   * * `{'foo': 'bar'}` results in `foo=bar`
+   * * `{'foo': Date.now()}` results in `foo=2015-04-01T09%3A50%3A49.262Z` (`toISOString()` and encoded representation of a Date object)
+   * * `{'foo': ['bar', 'baz']}` results in `foo=bar&foo=baz` (repeated key for each array element)
+   * * `{'foo': {'bar':'baz'}}` results in `foo=%7B%22bar%22%3A%22baz%22%7D"` (stringified and encoded representation of an object)
+   *
+   * Note that serializer will sort the request parameters alphabetically.
+   * */
 
-    this.$get = function () {
-      return function ngParamSerializer(params) {
-        if (!params) return '';
-        var parts = [];
-        forEachSorted(params, function (value, key) {
-          if (value === null || isUndefined(value)) return;
-          if (isArray(value)) {
-            forEach(value, function (v, k) {
-              parts.push(encodeUriQuery(key) + '=' + encodeUriQuery(serializeValue(v)));
-            });
-          }
-          else {
-            parts.push(encodeUriQuery(key) + '=' + encodeUriQuery(serializeValue(value)));
-          }
-        });
+  this.$get = function() {
+    return function ngParamSerializer(params) {
+      if (!params) return '';
+      var parts = [];
+      forEachSorted(params, function(value, key) {
+        if (value === null || isUndefined(value)) return;
+        if (isArray(value)) {
+          forEach(value, function(v, k) {
+            parts.push(encodeUriQuery(key)  + '=' + encodeUriQuery(serializeValue(v)));
+          });
+        } else {
+          parts.push(encodeUriQuery(key) + '=' + encodeUriQuery(serializeValue(value)));
+        }
+      });
 
-        return parts.join('&');
-      };
+      return parts.join('&');
     };
-  }
+  };
+}
 
-  function $HttpParamSerializerJQLikeProvider() {
-    /**
-     * @ngdoc service
-     * @name $httpParamSerializerJQLike
-     * @description
-     *
-     * Alternative {@link $http `$http`} params serializer that follows
-     * jQuery's [`param()`](http://api.jquery.com/jquery.param/) method logic.
-     * The serializer will also sort the params alphabetically.
-     *
-     * To use it for serializing `$http` request parameters, set it as the `paramSerializer` property:
-     *
-     * ```js
-     * $http({
+function $HttpParamSerializerJQLikeProvider() {
+  /**
+   * @ngdoc service
+   * @name $httpParamSerializerJQLike
+   * @description
+   *
+   * Alternative {@link $http `$http`} params serializer that follows
+   * jQuery's [`param()`](http://api.jquery.com/jquery.param/) method logic.
+   * The serializer will also sort the params alphabetically.
+   *
+   * To use it for serializing `$http` request parameters, set it as the `paramSerializer` property:
+   *
+   * ```js
+   * $http({
    *   url: myUrl,
    *   method: 'GET',
    *   params: myParams,
    *   paramSerializer: '$httpParamSerializerJQLike'
    * });
-     * ```
-     *
-     * It is also possible to set it as the default `paramSerializer` in the
-     * {@link $httpProvider#defaults `$httpProvider`}.
-     *
-     * Additionally, you can inject the serializer and use it explicitly, for example to serialize
-     * form data for submission:
-     *
-     * ```js
-     * .controller(function($http, $httpParamSerializerJQLike) {
+   * ```
+   *
+   * It is also possible to set it as the default `paramSerializer` in the
+   * {@link $httpProvider#defaults `$httpProvider`}.
+   *
+   * Additionally, you can inject the serializer and use it explicitly, for example to serialize
+   * form data for submission:
+   *
+   * ```js
+   * .controller(function($http, $httpParamSerializerJQLike) {
    *   //...
    *
    *   $http({
@@ -9236,38 +9206,36 @@ var JSON_PROTECTION_PREFIX = /^\)\]\}',?\n/;
    *   });
    *
    * });
-     * ```
-     *
-     * */
-    this.$get = function () {
-      return function jQueryLikeParamSerializer(params) {
-        if (!params) return '';
-        var parts = [];
-        serialize(params, '', true);
-        return parts.join('&');
+   * ```
+   *
+   * */
+  this.$get = function() {
+    return function jQueryLikeParamSerializer(params) {
+      if (!params) return '';
+      var parts = [];
+      serialize(params, '', true);
+      return parts.join('&');
 
-        function serialize(toSerialize, prefix, topLevel) {
-          if (toSerialize === null || isUndefined(toSerialize)) return;
-          if (isArray(toSerialize)) {
-            forEach(toSerialize, function (value) {
-              serialize(value, prefix + '[]');
-            });
-          }
-          else if (isObject(toSerialize) && !isDate(toSerialize)) {
-            forEachSorted(toSerialize, function (value, key) {
-              serialize(value, prefix +
+      function serialize(toSerialize, prefix, topLevel) {
+        if (toSerialize === null || isUndefined(toSerialize)) return;
+        if (isArray(toSerialize)) {
+          forEach(toSerialize, function(value) {
+            serialize(value, prefix + '[]');
+          });
+        } else if (isObject(toSerialize) && !isDate(toSerialize)) {
+          forEachSorted(toSerialize, function(value, key) {
+            serialize(value, prefix +
                 (topLevel ? '' : '[') +
                 key +
                 (topLevel ? '' : ']'));
-            });
-          }
-          else {
-            parts.push(encodeUriQuery(prefix) + '=' + encodeUriQuery(serializeValue(toSerialize)));
-          }
+          });
+        } else {
+          parts.push(encodeUriQuery(prefix) + '=' + encodeUriQuery(serializeValue(toSerialize)));
         }
-      };
+      }
     };
-  }
+  };
+}
 
 function defaultHttpResponseTransform(data, headers) {
   if (isString(data)) {
@@ -9306,13 +9274,12 @@ function parseHeaders(headers) {
   }
 
   if (isString(headers)) {
-    forEach(headers.split('\n'), function (line) {
+    forEach(headers.split('\n'), function(line) {
       i = line.indexOf(':');
       fillInParsed(lowercase(trim(line.substr(0, i))), trim(line.substr(i + 1)));
     });
-  }
-  else if (isObject(headers)) {
-    forEach(headers, function (headerVal, headerKey) {
+  } else if (isObject(headers)) {
+    forEach(headers, function(headerVal, headerKey) {
       fillInParsed(lowercase(headerKey), trim(headerVal));
     });
   }
@@ -9490,7 +9457,7 @@ function $HttpProvider() {
   var interceptorFactories = this.interceptors = [];
 
   this.$get = ['$httpBackend', '$$cookieReader', '$cacheFactory', '$rootScope', '$q', '$injector',
-    function ($httpBackend, $$cookieReader, $cacheFactory, $rootScope, $q, $injector) {
+      function($httpBackend, $$cookieReader, $cacheFactory, $rootScope, $q, $injector) {
 
     var defaultCache = $cacheFactory('$http');
 
@@ -9500,7 +9467,7 @@ function $HttpProvider() {
     defaults.paramSerializer = isString(defaults.paramSerializer) ?
       $injector.get(defaults.paramSerializer) : defaults.paramSerializer;
 
-      /**
+    /**
      * Interceptors stored in reverse order. Inner interceptors before outer interceptors.
      * The reversal is needed so that we can build up the interception chain around the
      * server request.
@@ -9955,11 +9922,11 @@ function $HttpProvider() {
 <example module="httpExample">
 <file name="index.html">
   <div ng-controller="FetchController">
-     <select ng-model="method" aria-label="Request method">
+    <select ng-model="method" aria-label="Request method">
       <option>GET</option>
       <option>JSONP</option>
     </select>
-     <input type="text" ng-model="url" size="80" aria-label="URL" />
+    <input type="text" ng-model="url" size="80" aria-label="URL" />
     <button id="fetchbtn" ng-click="fetch()">fetch</button><br>
     <button id="samplegetbtn" ng-click="updateModel('GET', 'http-hello.html')">Sample GET</button>
     <button id="samplejsonpbtn"
@@ -10319,7 +10286,7 @@ function $HttpProvider() {
           cache,
           cachedResp,
           reqHeaders = config.headers,
-        url = buildUrl(config.url, config.paramSerializer(config.params));
+          url = buildUrl(config.url, config.paramSerializer(config.params));
 
       $http.pendingRequests.push(config);
       promise.then(removePendingReq, removePendingReq);
@@ -10357,7 +10324,7 @@ function $HttpProvider() {
       // send the request to the backend
       if (isUndefined(cachedResp)) {
         var xsrfValue = urlIsSameOrigin(config.url)
-          ? $$cookieReader()[config.xsrfCookieName || defaults.xsrfCookieName]
+            ? $$cookieReader()[config.xsrfCookieName || defaults.xsrfCookieName]
             : undefined;
         if (xsrfValue) {
           reqHeaders[(config.xsrfHeaderName || defaults.xsrfHeaderName)] = xsrfValue;
@@ -10426,9 +10393,9 @@ function $HttpProvider() {
     }
 
 
-      function buildUrl(url, serializedParams) {
-        if (serializedParams.length > 0) {
-          url += ((url.indexOf('?') == -1) ? '?' : '&') + serializedParams;
+    function buildUrl(url, serializedParams) {
+      if (serializedParams.length > 0) {
+        url += ((url.indexOf('?') == -1) ? '?' : '&') + serializedParams;
       }
       return url;
     }
@@ -10608,17 +10575,17 @@ function createHttpBackend($browser, createXhr, $browserDefer, callbacks, rawDoc
   }
 }
 
-  var $interpolateMinErr = angular.$interpolateMinErr = minErr('$interpolate');
-  $interpolateMinErr.throwNoconcat = function (text) {
-    throw $interpolateMinErr('noconcat',
+var $interpolateMinErr = angular.$interpolateMinErr = minErr('$interpolate');
+$interpolateMinErr.throwNoconcat = function(text) {
+  throw $interpolateMinErr('noconcat',
       "Error while interpolating: {0}\nStrict Contextual Escaping disallows " +
       "interpolations that concatenate multiple expressions when a trusted value is " +
       "required.  See http://docs.angularjs.org/api/ng.$sce", text);
-  };
+};
 
-  $interpolateMinErr.interr = function (text, err) {
-    return $interpolateMinErr('interr', "Can't interpolate: {0}\n{1}", text, err.toString());
-  };
+$interpolateMinErr.interr = function(text, err) {
+  return $interpolateMinErr('interr', "Can't interpolate: {0}\n{1}", text, err.toString());
+};
 
 /**
  * @ngdoc provider
@@ -10708,7 +10675,7 @@ function $InterpolateProvider() {
 
     function unescapeText(text) {
       return text.replace(escapedStartRegexp, startSymbol).
-      replace(escapedEndRegexp, endSymbol);
+        replace(escapedEndRegexp, endSymbol);
     }
 
     function stringify(value) {
@@ -10862,7 +10829,7 @@ function $InterpolateProvider() {
       // make it obvious that you bound the value to some user controlled value.  This helps reduce
       // the load when auditing for XSS issues.
       if (trustedContext && concat.length > 1) {
-        $interpolateMinErr.throwNoconcat(text);
+          $interpolateMinErr.throwNoconcat(text);
       }
 
       if (!mustHaveExpression || expressions.length) {
@@ -10899,7 +10866,7 @@ function $InterpolateProvider() {
           // all of these properties are undocumented for now
           exp: text, //just for compatibility with regular watchers created via $watch
           expressions: expressions,
-          $$watchDelegate: function (scope, listener) {
+          $$watchDelegate: function(scope, listener) {
             var lastValue;
             return scope.$watchGroup(parseFns, function interpolateFnWatcher(values, oldValues) {
               var currValue = compute(values);
@@ -11090,9 +11057,9 @@ function $IntervalProvider() {
       * </example>
       */
     function interval(fn, delay, count, invokeApply) {
-       var hasParams = arguments.length > 4,
-         args = hasParams ? sliceArgs(arguments, 4) : [],
-         setInterval = $window.setInterval,
+      var hasParams = arguments.length > 4,
+          args = hasParams ? sliceArgs(arguments, 4) : [],
+          setInterval = $window.setInterval,
           clearInterval = $window.clearInterval,
           iteration = 0,
           skipApply = (isDefined(invokeApply) && !invokeApply),
@@ -11101,9 +11068,9 @@ function $IntervalProvider() {
 
       count = isDefined(count) ? count : 0;
 
-       promise.then(null, null, (!hasParams) ? fn : function () {
-         fn.apply(null, args);
-       });
+      promise.then(null, null, (!hasParams) ? fn : function() {
+        fn.apply(null, args);
+      });
 
       promise.$$intervalId = setInterval(function tick() {
         deferred.notify(iteration++);
@@ -11429,8 +11396,7 @@ function LocationHashbangUrl(appBase, hashPrefix) {
       // Otherwise we ignore what is left
       if (this.$$html5) {
         withoutHashUrl = withoutBaseUrl;
-      }
-      else {
+      } else {
         withoutHashUrl = '';
         if (isUndefined(withoutBaseUrl)) {
           appBase = url;
@@ -12237,13 +12203,13 @@ function $LocationProvider() {
      <file name="index.html">
        <div ng-controller="LogController">
          <p>Reload this page with open console, enter text and hit the log button...</p>
- <label>Message:
- <input type="text" ng-model="message" /></label>
+         <label>Message:
+         <input type="text" ng-model="message" /></label>
          <button ng-click="$log.log(message)">log</button>
          <button ng-click="$log.warn(message)">warn</button>
          <button ng-click="$log.info(message)">info</button>
          <button ng-click="$log.error(message)">error</button>
- <button ng-click="$log.debug(message)">debug</button>
+         <button ng-click="$log.debug(message)">debug</button>
        </div>
      </file>
    </example>
@@ -12374,16 +12340,16 @@ function $LogProvider() {
   }];
 }
 
-  /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-   *     Any commits to this file should be reviewed with security in mind.  *
-   *   Changes to this file can potentially create security vulnerabilities. *
-   *          An approval from 2 Core members with history of modifying      *
-   *                         this file is required.                          *
-   *                                                                         *
-   *  Does the change somehow allow for arbitrary javascript to be executed? *
-   *    Or allows for someone to change the prototype of built-in objects?   *
-   *     Or gives undesired access to variables likes document or window?    *
-   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *     Any commits to this file should be reviewed with security in mind.  *
+ *   Changes to this file can potentially create security vulnerabilities. *
+ *          An approval from 2 Core members with history of modifying      *
+ *                         this file is required.                          *
+ *                                                                         *
+ *  Does the change somehow allow for arbitrary javascript to be executed? *
+ *    Or allows for someone to change the prototype of built-in objects?   *
+ *     Or gives undesired access to variables likes document or window?    *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 var $parseMinErr = minErr('$parse');
 
@@ -12467,10 +12433,8 @@ function ensureSafeFunction(obj, fullExpression) {
   }
 }
 
-  var OPERATORS = createMap();
-  forEach('+ - * / % === !== == != < > <= >= && || ! = |'.split(' '), function (operator) {
-    OPERATORS[operator] = true;
-  });
+var OPERATORS = createMap();
+forEach('+ - * / % === !== == != < > <= >= && || ! = |'.split(' '), function(operator) { OPERATORS[operator] = true; });
 var ESCAPE = {"n":"\n", "f":"\f", "r":"\r", "t":"\t", "v":"\v", "'":"'", '"':'"'};
 
 
@@ -12652,36 +12616,36 @@ Lexer.prototype = {
   }
 };
 
-  var AST = function (lexer, options) {
+var AST = function(lexer, options) {
   this.lexer = lexer;
   this.options = options;
 };
 
-  AST.Program = 'Program';
-  AST.ExpressionStatement = 'ExpressionStatement';
-  AST.AssignmentExpression = 'AssignmentExpression';
-  AST.ConditionalExpression = 'ConditionalExpression';
-  AST.LogicalExpression = 'LogicalExpression';
-  AST.BinaryExpression = 'BinaryExpression';
-  AST.UnaryExpression = 'UnaryExpression';
-  AST.CallExpression = 'CallExpression';
-  AST.MemberExpression = 'MemberExpression';
-  AST.Identifier = 'Identifier';
-  AST.Literal = 'Literal';
-  AST.ArrayExpression = 'ArrayExpression';
-  AST.Property = 'Property';
-  AST.ObjectExpression = 'ObjectExpression';
-  AST.ThisExpression = 'ThisExpression';
+AST.Program = 'Program';
+AST.ExpressionStatement = 'ExpressionStatement';
+AST.AssignmentExpression = 'AssignmentExpression';
+AST.ConditionalExpression = 'ConditionalExpression';
+AST.LogicalExpression = 'LogicalExpression';
+AST.BinaryExpression = 'BinaryExpression';
+AST.UnaryExpression = 'UnaryExpression';
+AST.CallExpression = 'CallExpression';
+AST.MemberExpression = 'MemberExpression';
+AST.Identifier = 'Identifier';
+AST.Literal = 'Literal';
+AST.ArrayExpression = 'ArrayExpression';
+AST.Property = 'Property';
+AST.ObjectExpression = 'ObjectExpression';
+AST.ThisExpression = 'ThisExpression';
 
 // Internal use only
-  AST.NGValueParameter = 'NGValueParameter';
+AST.NGValueParameter = 'NGValueParameter';
 
-  AST.prototype = {
-    ast: function (text) {
+AST.prototype = {
+  ast: function(text) {
     this.text = text;
     this.tokens = this.lexer.lex(text);
 
-      var value = this.program();
+    var value = this.program();
 
     if (this.tokens.length !== 0) {
       this.throwError('is an unexpected token', this.tokens[0]);
@@ -12690,117 +12654,116 @@ Lexer.prototype = {
     return value;
   },
 
-    program: function () {
-      var body = [];
-      while (true) {
-        if (this.tokens.length > 0 && !this.peek('}', ')', ';', ']'))
-          body.push(this.expressionStatement());
-        if (!this.expect(';')) {
-          return {type: AST.Program, body: body};
-        }
+  program: function() {
+    var body = [];
+    while (true) {
+      if (this.tokens.length > 0 && !this.peek('}', ')', ';', ']'))
+        body.push(this.expressionStatement());
+      if (!this.expect(';')) {
+        return { type: AST.Program, body: body};
       }
-    },
+    }
+  },
 
-    expressionStatement: function () {
-      return {type: AST.ExpressionStatement, expression: this.filterChain()};
-    },
+  expressionStatement: function() {
+    return { type: AST.ExpressionStatement, expression: this.filterChain() };
+  },
 
-    filterChain: function () {
-      var left = this.expression();
-      var token;
-      while ((token = this.expect('|'))) {
-        left = this.filter(left);
+  filterChain: function() {
+    var left = this.expression();
+    var token;
+    while ((token = this.expect('|'))) {
+      left = this.filter(left);
+    }
+    return left;
+  },
+
+  expression: function() {
+    return this.assignment();
+  },
+
+  assignment: function() {
+    var result = this.ternary();
+    if (this.expect('=')) {
+      result = { type: AST.AssignmentExpression, left: result, right: this.assignment(), operator: '='};
+    }
+    return result;
+  },
+
+  ternary: function() {
+    var test = this.logicalOR();
+    var alternate;
+    var consequent;
+    if (this.expect('?')) {
+      alternate = this.expression();
+      if (this.consume(':')) {
+        consequent = this.expression();
+        return { type: AST.ConditionalExpression, test: test, alternate: alternate, consequent: consequent};
       }
-      return left;
-    },
+    }
+    return test;
+  },
 
-    expression: function () {
-      return this.assignment();
-    },
+  logicalOR: function() {
+    var left = this.logicalAND();
+    while (this.expect('||')) {
+      left = { type: AST.LogicalExpression, operator: '||', left: left, right: this.logicalAND() };
+    }
+    return left;
+  },
 
-    assignment: function () {
-      var result = this.ternary();
-      if (this.expect('=')) {
-        result = {type: AST.AssignmentExpression, left: result, right: this.assignment(), operator: '='};
-      }
-      return result;
-    },
+  logicalAND: function() {
+    var left = this.equality();
+    while (this.expect('&&')) {
+      left = { type: AST.LogicalExpression, operator: '&&', left: left, right: this.equality()};
+    }
+    return left;
+  },
 
-    ternary: function () {
-      var test = this.logicalOR();
-      var alternate;
-      var consequent;
-      if (this.expect('?')) {
-        alternate = this.expression();
-        if (this.consume(':')) {
-          consequent = this.expression();
-          return {type: AST.ConditionalExpression, test: test, alternate: alternate, consequent: consequent};
-        }
-      }
-      return test;
-    },
+  equality: function() {
+    var left = this.relational();
+    var token;
+    while ((token = this.expect('==','!=','===','!=='))) {
+      left = { type: AST.BinaryExpression, operator: token.text, left: left, right: this.relational() };
+    }
+    return left;
+  },
 
-    logicalOR: function () {
-      var left = this.logicalAND();
-      while (this.expect('||')) {
-        left = {type: AST.LogicalExpression, operator: '||', left: left, right: this.logicalAND()};
-      }
-      return left;
-    },
+  relational: function() {
+    var left = this.additive();
+    var token;
+    while ((token = this.expect('<', '>', '<=', '>='))) {
+      left = { type: AST.BinaryExpression, operator: token.text, left: left, right: this.additive() };
+    }
+    return left;
+  },
 
-    logicalAND: function () {
-      var left = this.equality();
-      while (this.expect('&&')) {
-        left = {type: AST.LogicalExpression, operator: '&&', left: left, right: this.equality()};
-      }
-      return left;
-    },
+  additive: function() {
+    var left = this.multiplicative();
+    var token;
+    while ((token = this.expect('+','-'))) {
+      left = { type: AST.BinaryExpression, operator: token.text, left: left, right: this.multiplicative() };
+    }
+    return left;
+  },
 
-    equality: function () {
-      var left = this.relational();
-      var token;
-      while ((token = this.expect('==', '!=', '===', '!=='))) {
-        left = {type: AST.BinaryExpression, operator: token.text, left: left, right: this.relational()};
-      }
-      return left;
-    },
+  multiplicative: function() {
+    var left = this.unary();
+    var token;
+    while ((token = this.expect('*','/','%'))) {
+      left = { type: AST.BinaryExpression, operator: token.text, left: left, right: this.unary() };
+    }
+    return left;
+  },
 
-    relational: function () {
-      var left = this.additive();
-      var token;
-      while ((token = this.expect('<', '>', '<=', '>='))) {
-        left = {type: AST.BinaryExpression, operator: token.text, left: left, right: this.additive()};
-      }
-      return left;
-    },
-
-    additive: function () {
-      var left = this.multiplicative();
-      var token;
-      while ((token = this.expect('+', '-'))) {
-        left = {type: AST.BinaryExpression, operator: token.text, left: left, right: this.multiplicative()};
-      }
-      return left;
-    },
-
-    multiplicative: function () {
-      var left = this.unary();
-      var token;
-      while ((token = this.expect('*', '/', '%'))) {
-        left = {type: AST.BinaryExpression, operator: token.text, left: left, right: this.unary()};
-      }
-      return left;
-    },
-
-    unary: function () {
-      var token;
-      if ((token = this.expect('+', '-', '!'))) {
-        return {type: AST.UnaryExpression, operator: token.text, prefix: true, argument: this.unary()};
-      }
-      else {
-        return this.primary();
-      }
-    },
+  unary: function() {
+    var token;
+    if ((token = this.expect('+', '-', '!'))) {
+      return { type: AST.UnaryExpression, operator: token.text, prefix: true, argument: this.unary() };
+    } else {
+      return this.primary();
+    }
+  },
 
   primary: function() {
     var primary;
@@ -12811,8 +12774,7 @@ Lexer.prototype = {
       primary = this.arrayDeclaration();
     } else if (this.expect('{')) {
       primary = this.object();
-    }
-    else if (this.constants.hasOwnProperty(this.peek().text)) {
+    } else if (this.constants.hasOwnProperty(this.peek().text)) {
       primary = copy(this.constants[this.consume().text]);
     } else if (this.peek().identifier) {
       primary = this.identifier();
@@ -12825,13 +12787,13 @@ Lexer.prototype = {
     var next;
     while ((next = this.expect('(', '[', '.'))) {
       if (next.text === '(') {
-        primary = {type: AST.CallExpression, callee: primary, arguments: this.parseArguments()};
+        primary = {type: AST.CallExpression, callee: primary, arguments: this.parseArguments() };
         this.consume(')');
       } else if (next.text === '[') {
-        primary = {type: AST.MemberExpression, object: primary, property: this.expression(), computed: true};
+        primary = { type: AST.MemberExpression, object: primary, property: this.expression(), computed: true };
         this.consume(']');
       } else if (next.text === '.') {
-        primary = {type: AST.MemberExpression, object: primary, property: this.identifier(), computed: false};
+        primary = { type: AST.MemberExpression, object: primary, property: this.identifier(), computed: false };
       } else {
         this.throwError('IMPOSSIBLE');
       }
@@ -12839,83 +12801,81 @@ Lexer.prototype = {
     return primary;
   },
 
-    filter: function (baseExpression) {
-      var args = [baseExpression];
-      var result = {type: AST.CallExpression, callee: this.identifier(), arguments: args, filter: true};
+  filter: function(baseExpression) {
+    var args = [baseExpression];
+    var result = {type: AST.CallExpression, callee: this.identifier(), arguments: args, filter: true};
 
-      while (this.expect(':')) {
+    while (this.expect(':')) {
+      args.push(this.expression());
+    }
+
+    return result;
+  },
+
+  parseArguments: function() {
+    var args = [];
+    if (this.peekToken().text !== ')') {
+      do {
         args.push(this.expression());
-      }
+      } while (this.expect(','));
+    }
+    return args;
+  },
 
-      return result;
-    },
+  identifier: function() {
+    var token = this.consume();
+    if (!token.identifier) {
+      this.throwError('is not a valid identifier', token);
+    }
+    return { type: AST.Identifier, name: token.text };
+  },
 
-    parseArguments: function () {
-      var args = [];
-      if (this.peekToken().text !== ')') {
-        do {
-          args.push(this.expression());
-        } while (this.expect(','));
-      }
-      return args;
-    },
+  constant: function() {
+    // TODO check that it is a constant
+    return { type: AST.Literal, value: this.consume().value };
+  },
 
-    identifier: function () {
-      var token = this.consume();
-      if (!token.identifier) {
-        this.throwError('is not a valid identifier', token);
-      }
-      return {type: AST.Identifier, name: token.text};
-    },
+  arrayDeclaration: function() {
+    var elements = [];
+    if (this.peekToken().text !== ']') {
+      do {
+        if (this.peek(']')) {
+          // Support trailing commas per ES5.1.
+          break;
+        }
+        elements.push(this.expression());
+      } while (this.expect(','));
+    }
+    this.consume(']');
 
-    constant: function () {
-      // TODO check that it is a constant
-      return {type: AST.Literal, value: this.consume().value};
-    },
+    return { type: AST.ArrayExpression, elements: elements };
+  },
 
-    arrayDeclaration: function () {
-      var elements = [];
-      if (this.peekToken().text !== ']') {
-        do {
-          if (this.peek(']')) {
-            // Support trailing commas per ES5.1.
-            break;
-          }
-          elements.push(this.expression());
-        } while (this.expect(','));
-      }
-      this.consume(']');
+  object: function() {
+    var properties = [], property;
+    if (this.peekToken().text !== '}') {
+      do {
+        if (this.peek('}')) {
+          // Support trailing commas per ES5.1.
+          break;
+        }
+        property = {type: AST.Property, kind: 'init'};
+        if (this.peek().constant) {
+          property.key = this.constant();
+        } else if (this.peek().identifier) {
+          property.key = this.identifier();
+        } else {
+          this.throwError("invalid key", this.peek());
+        }
+        this.consume(':');
+        property.value = this.expression();
+        properties.push(property);
+      } while (this.expect(','));
+    }
+    this.consume('}');
 
-      return {type: AST.ArrayExpression, elements: elements};
-    },
-
-    object: function () {
-      var properties = [], property;
-      if (this.peekToken().text !== '}') {
-        do {
-          if (this.peek('}')) {
-            // Support trailing commas per ES5.1.
-            break;
-          }
-          property = {type: AST.Property, kind: 'init'};
-          if (this.peek().constant) {
-            property.key = this.constant();
-          }
-          else if (this.peek().identifier) {
-            property.key = this.identifier();
-          }
-          else {
-            this.throwError("invalid key", this.peek());
-          }
-          this.consume(':');
-          property.value = this.expression();
-          properties.push(property);
-        } while (this.expect(','));
-      }
-      this.consume('}');
-
-      return {type: AST.ObjectExpression, properties: properties};
-    },
+    return {type: AST.ObjectExpression, properties: properties };
+  },
 
   throwError: function(msg, token) {
     throw $parseMinErr('syntax',
@@ -12923,17 +12883,17 @@ Lexer.prototype = {
           token.text, msg, (token.index + 1), this.text, this.text.substring(token.index));
   },
 
-    consume: function (e1) {
-      if (this.tokens.length === 0) {
-        throw $parseMinErr('ueoe', 'Unexpected end of expression: {0}', this.text);
-      }
+  consume: function(e1) {
+    if (this.tokens.length === 0) {
+      throw $parseMinErr('ueoe', 'Unexpected end of expression: {0}', this.text);
+    }
 
-      var token = this.expect(e1);
-      if (!token) {
-        this.throwError('is unexpected, expecting [' + e1 + ']', this.peek());
-      }
-      return token;
-    },
+    var token = this.expect(e1);
+    if (!token) {
+      this.throwError('is unexpected, expecting [' + e1 + ']', this.peek());
+    }
+    return token;
+  },
 
   peekToken: function() {
     if (this.tokens.length === 0) {
@@ -12968,226 +12928,221 @@ Lexer.prototype = {
   },
 
 
-    /* `undefined` is not a constant, it is an identifier,
-     * but using it as an identifier is not supported
-     */
-    constants: {
-      'true': {type: AST.Literal, value: true},
-      'false': {type: AST.Literal, value: false},
-      'null': {type: AST.Literal, value: null},
-      'undefined': {type: AST.Literal, value: undefined},
-      'this': {type: AST.ThisExpression}
+  /* `undefined` is not a constant, it is an identifier,
+   * but using it as an identifier is not supported
+   */
+  constants: {
+    'true': { type: AST.Literal, value: true },
+    'false': { type: AST.Literal, value: false },
+    'null': { type: AST.Literal, value: null },
+    'undefined': {type: AST.Literal, value: undefined },
+    'this': {type: AST.ThisExpression }
+  }
+};
+
+function ifDefined(v, d) {
+  return typeof v !== 'undefined' ? v : d;
+}
+
+function plusFn(l, r) {
+  if (typeof l === 'undefined') return r;
+  if (typeof r === 'undefined') return l;
+  return l + r;
+}
+
+function isStateless($filter, filterName) {
+  var fn = $filter(filterName);
+  return !fn.$stateful;
+}
+
+function findConstantAndWatchExpressions(ast, $filter) {
+  var allConstants;
+  var argsToWatch;
+  switch (ast.type) {
+  case AST.Program:
+    allConstants = true;
+    forEach(ast.body, function(expr) {
+      findConstantAndWatchExpressions(expr.expression, $filter);
+      allConstants = allConstants && expr.expression.constant;
+    });
+    ast.constant = allConstants;
+    break;
+  case AST.Literal:
+    ast.constant = true;
+    ast.toWatch = [];
+    break;
+  case AST.UnaryExpression:
+    findConstantAndWatchExpressions(ast.argument, $filter);
+    ast.constant = ast.argument.constant;
+    ast.toWatch = ast.argument.toWatch;
+    break;
+  case AST.BinaryExpression:
+    findConstantAndWatchExpressions(ast.left, $filter);
+    findConstantAndWatchExpressions(ast.right, $filter);
+    ast.constant = ast.left.constant && ast.right.constant;
+    ast.toWatch = ast.left.toWatch.concat(ast.right.toWatch);
+    break;
+  case AST.LogicalExpression:
+    findConstantAndWatchExpressions(ast.left, $filter);
+    findConstantAndWatchExpressions(ast.right, $filter);
+    ast.constant = ast.left.constant && ast.right.constant;
+    ast.toWatch = ast.constant ? [] : [ast];
+    break;
+  case AST.ConditionalExpression:
+    findConstantAndWatchExpressions(ast.test, $filter);
+    findConstantAndWatchExpressions(ast.alternate, $filter);
+    findConstantAndWatchExpressions(ast.consequent, $filter);
+    ast.constant = ast.test.constant && ast.alternate.constant && ast.consequent.constant;
+    ast.toWatch = ast.constant ? [] : [ast];
+    break;
+  case AST.Identifier:
+    ast.constant = false;
+    ast.toWatch = [ast];
+    break;
+  case AST.MemberExpression:
+    findConstantAndWatchExpressions(ast.object, $filter);
+    if (ast.computed) {
+      findConstantAndWatchExpressions(ast.property, $filter);
     }
-  };
-
-  function ifDefined(v, d) {
-    return typeof v !== 'undefined' ? v : d;
+    ast.constant = ast.object.constant && (!ast.computed || ast.property.constant);
+    ast.toWatch = [ast];
+    break;
+  case AST.CallExpression:
+    allConstants = ast.filter ? isStateless($filter, ast.callee.name) : false;
+    argsToWatch = [];
+    forEach(ast.arguments, function(expr) {
+      findConstantAndWatchExpressions(expr, $filter);
+      allConstants = allConstants && expr.constant;
+      if (!expr.constant) {
+        argsToWatch.push.apply(argsToWatch, expr.toWatch);
+      }
+    });
+    ast.constant = allConstants;
+    ast.toWatch = ast.filter && isStateless($filter, ast.callee.name) ? argsToWatch : [ast];
+    break;
+  case AST.AssignmentExpression:
+    findConstantAndWatchExpressions(ast.left, $filter);
+    findConstantAndWatchExpressions(ast.right, $filter);
+    ast.constant = ast.left.constant && ast.right.constant;
+    ast.toWatch = [ast];
+    break;
+  case AST.ArrayExpression:
+    allConstants = true;
+    argsToWatch = [];
+    forEach(ast.elements, function(expr) {
+      findConstantAndWatchExpressions(expr, $filter);
+      allConstants = allConstants && expr.constant;
+      if (!expr.constant) {
+        argsToWatch.push.apply(argsToWatch, expr.toWatch);
+      }
+    });
+    ast.constant = allConstants;
+    ast.toWatch = argsToWatch;
+    break;
+  case AST.ObjectExpression:
+    allConstants = true;
+    argsToWatch = [];
+    forEach(ast.properties, function(property) {
+      findConstantAndWatchExpressions(property.value, $filter);
+      allConstants = allConstants && property.value.constant;
+      if (!property.value.constant) {
+        argsToWatch.push.apply(argsToWatch, property.value.toWatch);
+      }
+    });
+    ast.constant = allConstants;
+    ast.toWatch = argsToWatch;
+    break;
+  case AST.ThisExpression:
+    ast.constant = false;
+    ast.toWatch = [];
+    break;
   }
+}
 
-  function plusFn(l, r) {
-    if (typeof l === 'undefined') return r;
-    if (typeof r === 'undefined') return l;
-    return l + r;
+function getInputs(body) {
+  if (body.length != 1) return;
+  var lastExpression = body[0].expression;
+  var candidate = lastExpression.toWatch;
+  if (candidate.length !== 1) return candidate;
+  return candidate[0] !== lastExpression ? candidate : undefined;
+}
+
+function isAssignable(ast) {
+  return ast.type === AST.Identifier || ast.type === AST.MemberExpression;
+}
+
+function assignableAST(ast) {
+  if (ast.body.length === 1 && isAssignable(ast.body[0].expression)) {
+    return {type: AST.AssignmentExpression, left: ast.body[0].expression, right: {type: AST.NGValueParameter}, operator: '='};
   }
+}
 
-  function isStateless($filter, filterName) {
-    var fn = $filter(filterName);
-    return !fn.$stateful;
-  }
-
-  function findConstantAndWatchExpressions(ast, $filter) {
-    var allConstants;
-    var argsToWatch;
-    switch (ast.type) {
-      case AST.Program:
-        allConstants = true;
-        forEach(ast.body, function (expr) {
-          findConstantAndWatchExpressions(expr.expression, $filter);
-          allConstants = allConstants && expr.expression.constant;
-        });
-        ast.constant = allConstants;
-        break;
-      case AST.Literal:
-        ast.constant = true;
-        ast.toWatch = [];
-        break;
-      case AST.UnaryExpression:
-        findConstantAndWatchExpressions(ast.argument, $filter);
-        ast.constant = ast.argument.constant;
-        ast.toWatch = ast.argument.toWatch;
-        break;
-      case AST.BinaryExpression:
-        findConstantAndWatchExpressions(ast.left, $filter);
-        findConstantAndWatchExpressions(ast.right, $filter);
-        ast.constant = ast.left.constant && ast.right.constant;
-        ast.toWatch = ast.left.toWatch.concat(ast.right.toWatch);
-        break;
-      case AST.LogicalExpression:
-        findConstantAndWatchExpressions(ast.left, $filter);
-        findConstantAndWatchExpressions(ast.right, $filter);
-        ast.constant = ast.left.constant && ast.right.constant;
-        ast.toWatch = ast.constant ? [] : [ast];
-        break;
-      case AST.ConditionalExpression:
-        findConstantAndWatchExpressions(ast.test, $filter);
-        findConstantAndWatchExpressions(ast.alternate, $filter);
-        findConstantAndWatchExpressions(ast.consequent, $filter);
-        ast.constant = ast.test.constant && ast.alternate.constant && ast.consequent.constant;
-        ast.toWatch = ast.constant ? [] : [ast];
-        break;
-      case AST.Identifier:
-        ast.constant = false;
-        ast.toWatch = [ast];
-        break;
-      case AST.MemberExpression:
-        findConstantAndWatchExpressions(ast.object, $filter);
-        if (ast.computed) {
-          findConstantAndWatchExpressions(ast.property, $filter);
-    }
-        ast.constant = ast.object.constant && (!ast.computed || ast.property.constant);
-        ast.toWatch = [ast];
-        break;
-      case AST.CallExpression:
-        allConstants = ast.filter ? isStateless($filter, ast.callee.name) : false;
-        argsToWatch = [];
-        forEach(ast.arguments, function (expr) {
-          findConstantAndWatchExpressions(expr, $filter);
-          allConstants = allConstants && expr.constant;
-          if (!expr.constant) {
-            argsToWatch.push.apply(argsToWatch, expr.toWatch);
-          }
-        });
-        ast.constant = allConstants;
-        ast.toWatch = ast.filter && isStateless($filter, ast.callee.name) ? argsToWatch : [ast];
-        break;
-      case AST.AssignmentExpression:
-        findConstantAndWatchExpressions(ast.left, $filter);
-        findConstantAndWatchExpressions(ast.right, $filter);
-        ast.constant = ast.left.constant && ast.right.constant;
-        ast.toWatch = [ast];
-        break;
-      case AST.ArrayExpression:
-        allConstants = true;
-        argsToWatch = [];
-        forEach(ast.elements, function (expr) {
-          findConstantAndWatchExpressions(expr, $filter);
-          allConstants = allConstants && expr.constant;
-          if (!expr.constant) {
-            argsToWatch.push.apply(argsToWatch, expr.toWatch);
-          }
-        });
-        ast.constant = allConstants;
-        ast.toWatch = argsToWatch;
-        break;
-      case AST.ObjectExpression:
-        allConstants = true;
-        argsToWatch = [];
-        forEach(ast.properties, function (property) {
-          findConstantAndWatchExpressions(property.value, $filter);
-          allConstants = allConstants && property.value.constant;
-          if (!property.value.constant) {
-            argsToWatch.push.apply(argsToWatch, property.value.toWatch);
-          }
-        });
-        ast.constant = allConstants;
-        ast.toWatch = argsToWatch;
-        break;
-      case AST.ThisExpression:
-        ast.constant = false;
-        ast.toWatch = [];
-        break;
-    }
-  }
-
-  function getInputs(body) {
-    if (body.length != 1) return;
-    var lastExpression = body[0].expression;
-    var candidate = lastExpression.toWatch;
-    if (candidate.length !== 1) return candidate;
-    return candidate[0] !== lastExpression ? candidate : undefined;
-  }
-
-  function isAssignable(ast) {
-    return ast.type === AST.Identifier || ast.type === AST.MemberExpression;
-  }
-
-  function assignableAST(ast) {
-    if (ast.body.length === 1 && isAssignable(ast.body[0].expression)) {
-      return {
-        type: AST.AssignmentExpression,
-        left: ast.body[0].expression,
-        right: {type: AST.NGValueParameter},
-        operator: '='
-      };
-    }
-  }
-
-  function isLiteral(ast) {
-    return ast.body.length === 0 ||
+function isLiteral(ast) {
+  return ast.body.length === 0 ||
       ast.body.length === 1 && (
       ast.body[0].expression.type === AST.Literal ||
       ast.body[0].expression.type === AST.ArrayExpression ||
       ast.body[0].expression.type === AST.ObjectExpression);
-  }
+}
 
-  function isConstant(ast) {
-    return ast.constant;
-  }
+function isConstant(ast) {
+  return ast.constant;
+}
 
-  function ASTCompiler(astBuilder, $filter) {
-    this.astBuilder = astBuilder;
-    this.$filter = $filter;
-  }
+function ASTCompiler(astBuilder, $filter) {
+  this.astBuilder = astBuilder;
+  this.$filter = $filter;
+}
 
-  ASTCompiler.prototype = {
-    compile: function (expression, expensiveChecks) {
-      var self = this;
-      var ast = this.astBuilder.ast(expression);
-      this.state = {
-        nextId: 0,
-        filters: {},
-        expensiveChecks: expensiveChecks,
-        fn: {vars: [], body: [], own: {}},
-        assign: {vars: [], body: [], own: {}},
-        inputs: []
-      };
-      findConstantAndWatchExpressions(ast, self.$filter);
-      var extra = '';
-      var assignable;
-      this.stage = 'assign';
-      if ((assignable = assignableAST(ast))) {
-        this.state.computing = 'assign';
-        var result = this.nextId();
-        this.recurse(assignable, result);
-        extra = 'fn.assign=' + this.generateFunction('assign', 's,v,l');
+ASTCompiler.prototype = {
+  compile: function(expression, expensiveChecks) {
+    var self = this;
+    var ast = this.astBuilder.ast(expression);
+    this.state = {
+      nextId: 0,
+      filters: {},
+      expensiveChecks: expensiveChecks,
+      fn: {vars: [], body: [], own: {}},
+      assign: {vars: [], body: [], own: {}},
+      inputs: []
+    };
+    findConstantAndWatchExpressions(ast, self.$filter);
+    var extra = '';
+    var assignable;
+    this.stage = 'assign';
+    if ((assignable = assignableAST(ast))) {
+      this.state.computing = 'assign';
+      var result = this.nextId();
+      this.recurse(assignable, result);
+      extra = 'fn.assign=' + this.generateFunction('assign', 's,v,l');
     }
-      var toWatch = getInputs(ast.body);
-      self.stage = 'inputs';
-      forEach(toWatch, function (watch, key) {
-        var fnKey = 'fn' + key;
-        self.state[fnKey] = {vars: [], body: [], own: {}};
-        self.state.computing = fnKey;
-        var intoId = self.nextId();
-        self.recurse(watch, intoId);
-        self.return_(intoId);
-        self.state.inputs.push(fnKey);
-        watch.watchId = key;
-      });
-      this.state.computing = 'fn';
-      this.stage = 'main';
-      this.recurse(ast);
-      var fnString =
-        // The build and minification steps remove the string "use strict" from the code, but this is done using a regex.
-        // This is a workaround for this until we do a better job at only removing the prefix only when we should.
-        '"' + this.USE + ' ' + this.STRICT + '";\n' +
-        this.filterPrefix() +
-        'var fn=' + this.generateFunction('fn', 's,l,a,i') +
-        extra +
-        this.watchFns() +
-        'return fn;';
+    var toWatch = getInputs(ast.body);
+    self.stage = 'inputs';
+    forEach(toWatch, function(watch, key) {
+      var fnKey = 'fn' + key;
+      self.state[fnKey] = {vars: [], body: [], own: {}};
+      self.state.computing = fnKey;
+      var intoId = self.nextId();
+      self.recurse(watch, intoId);
+      self.return_(intoId);
+      self.state.inputs.push(fnKey);
+      watch.watchId = key;
+    });
+    this.state.computing = 'fn';
+    this.stage = 'main';
+    this.recurse(ast);
+    var fnString =
+      // The build and minification steps remove the string "use strict" from the code, but this is done using a regex.
+      // This is a workaround for this until we do a better job at only removing the prefix only when we should.
+      '"' + this.USE + ' ' + this.STRICT + '";\n' +
+      this.filterPrefix() +
+      'var fn=' + this.generateFunction('fn', 's,l,a,i') +
+      extra +
+      this.watchFns() +
+      'return fn;';
 
-      /* jshint -W054 */
-      var fn = (new Function('$filter',
+    /* jshint -W054 */
+    var fn = (new Function('$filter',
         'ensureSafeMemberName',
         'ensureSafeObject',
         'ensureSafeFunction',
@@ -13195,838 +13150,811 @@ Lexer.prototype = {
         'plus',
         'text',
         fnString))(
-        this.$filter,
-        ensureSafeMemberName,
-        ensureSafeObject,
-        ensureSafeFunction,
-        ifDefined,
-        plusFn,
-        expression);
-      /* jshint +W054 */
-      this.state = this.stage = undefined;
-      fn.literal = isLiteral(ast);
-      fn.constant = isConstant(ast);
-      return fn;
-    },
-
-    USE: 'use',
-
-    STRICT: 'strict',
-
-    watchFns: function () {
-      var result = [];
-      var fns = this.state.inputs;
-      var self = this;
-      forEach(fns, function (name) {
-        result.push('var ' + name + '=' + self.generateFunction(name, 's'));
-    });
-      if (fns.length) {
-        result.push('fn.inputs=[' + fns.join(',') + '];');
-      }
-      return result.join('');
+          this.$filter,
+          ensureSafeMemberName,
+          ensureSafeObject,
+          ensureSafeFunction,
+          ifDefined,
+          plusFn,
+          expression);
+    /* jshint +W054 */
+    this.state = this.stage = undefined;
+    fn.literal = isLiteral(ast);
+    fn.constant = isConstant(ast);
+    return fn;
   },
 
-    generateFunction: function (name, params) {
-      return 'function(' + params + '){' +
+  USE: 'use',
+
+  STRICT: 'strict',
+
+  watchFns: function() {
+    var result = [];
+    var fns = this.state.inputs;
+    var self = this;
+    forEach(fns, function(name) {
+      result.push('var ' + name + '=' + self.generateFunction(name, 's'));
+    });
+    if (fns.length) {
+      result.push('fn.inputs=[' + fns.join(',') + '];');
+    }
+    return result.join('');
+  },
+
+  generateFunction: function(name, params) {
+    return 'function(' + params + '){' +
         this.varsPrefix(name) +
         this.body(name) +
         '};';
   },
 
-    filterPrefix: function () {
-      var parts = [];
-      var self = this;
-      forEach(this.state.filters, function (id, filter) {
-        parts.push(id + '=$filter(' + self.escape(filter) + ')');
-      });
-      if (parts.length) return 'var ' + parts.join(',') + ';';
-      return '';
-  },
-
-    varsPrefix: function (section) {
-      return this.state[section].vars.length ? 'var ' + this.state[section].vars.join(',') + ';' : '';
-    },
-
-    body: function (section) {
-      return this.state[section].body.join('');
-    },
-
-    recurse: function (ast, intoId, nameId, recursionFn, create, skipWatchIdCheck) {
-      var left, right, self = this, args, expression;
-      recursionFn = recursionFn || noop;
-      if (!skipWatchIdCheck && isDefined(ast.watchId)) {
-        intoId = intoId || this.nextId();
-        this.if_('i',
-          this.lazyAssign(intoId, this.computedMember('i', ast.watchId)),
-          this.lazyRecurse(ast, intoId, nameId, recursionFn, create, true)
-        );
-        return;
-      }
-      switch (ast.type) {
-        case AST.Program:
-          forEach(ast.body, function (expression, pos) {
-            self.recurse(expression.expression, undefined, undefined, function (expr) {
-              right = expr;
-            });
-            if (pos !== ast.body.length - 1) {
-              self.current().body.push(right, ';');
-            }
-            else {
-              self.return_(right);
-            }
-          });
-          break;
-        case AST.Literal:
-          expression = this.escape(ast.value);
-          this.assign(intoId, expression);
-          recursionFn(expression);
-          break;
-        case AST.UnaryExpression:
-          this.recurse(ast.argument, undefined, undefined, function (expr) {
-            right = expr;
-          });
-          expression = ast.operator + '(' + this.ifDefined(right, 0) + ')';
-          this.assign(intoId, expression);
-          recursionFn(expression);
-          break;
-        case AST.BinaryExpression:
-          this.recurse(ast.left, undefined, undefined, function (expr) {
-            left = expr;
-          });
-          this.recurse(ast.right, undefined, undefined, function (expr) {
-            right = expr;
-          });
-          if (ast.operator === '+') {
-            expression = this.plus(left, right);
-          }
-          else if (ast.operator === '-') {
-            expression = this.ifDefined(left, 0) + ast.operator + this.ifDefined(right, 0);
-          }
-          else {
-            expression = '(' + left + ')' + ast.operator + '(' + right + ')';
-          }
-          this.assign(intoId, expression);
-          recursionFn(expression);
-          break;
-        case AST.LogicalExpression:
-          intoId = intoId || this.nextId();
-          self.recurse(ast.left, intoId);
-          self.if_(ast.operator === '&&' ? intoId : self.not(intoId), self.lazyRecurse(ast.right, intoId));
-          recursionFn(intoId);
-          break;
-        case AST.ConditionalExpression:
-          intoId = intoId || this.nextId();
-          self.recurse(ast.test, intoId);
-          self.if_(intoId, self.lazyRecurse(ast.alternate, intoId), self.lazyRecurse(ast.consequent, intoId));
-          recursionFn(intoId);
-          break;
-        case AST.Identifier:
-          intoId = intoId || this.nextId();
-          if (nameId) {
-            nameId.context = self.stage === 'inputs' ? 's' : this.assign(this.nextId(),
-              this.getHasOwnProperty('l', ast.name) + '?l:s');
-            nameId.computed = false;
-            nameId.name = ast.name;
-          }
-          ensureSafeMemberName(ast.name);
-          self.if_(self.stage === 'inputs' || self.not(self.getHasOwnProperty('l', ast.name)),
-            function () {
-              self.if_(self.stage === 'inputs' || 's', function () {
-                if (create && create !== 1) {
-                  self.if_(
-                    self.not(self.nonComputedMember('s', ast.name)),
-                    self.lazyAssign(self.nonComputedMember('s', ast.name), '{}'));
-                }
-                self.assign(intoId, self.nonComputedMember('s', ast.name));
-              });
-            }, intoId && self.lazyAssign(intoId, self.nonComputedMember('l', ast.name))
-          );
-          if (self.state.expensiveChecks || isPossiblyDangerousMemberName(ast.name)) {
-            self.addEnsureSafeObject(intoId);
-          }
-          recursionFn(intoId);
-          break;
-        case AST.MemberExpression:
-          left = nameId && (nameId.context = this.nextId()) || this.nextId();
-          intoId = intoId || this.nextId();
-          self.recurse(ast.object, left, undefined, function () {
-            self.if_(self.notNull(left), function () {
-              if (ast.computed) {
-                right = self.nextId();
-                self.recurse(ast.property, right);
-                self.addEnsureSafeMemberName(right);
-                if (create && create !== 1) {
-                  self.if_(self.not(self.computedMember(left, right)),
-                    self.lazyAssign(self.computedMember(left, right), '{}'));
-                }
-                expression = self.ensureSafeObject(self.computedMember(left, right));
-                self.assign(intoId, expression);
-                if (nameId) {
-                  nameId.computed = true;
-                  nameId.name = right;
-                }
-              }
-              else {
-                ensureSafeMemberName(ast.property.name);
-                if (create && create !== 1) {
-                  self.if_(self.not(self.nonComputedMember(left, ast.property.name)),
-                    self.lazyAssign(self.nonComputedMember(left, ast.property.name), '{}'));
-                }
-                expression = self.nonComputedMember(left, ast.property.name);
-                if (self.state.expensiveChecks || isPossiblyDangerousMemberName(ast.property.name)) {
-                  expression = self.ensureSafeObject(expression);
-                }
-                self.assign(intoId, expression);
-                if (nameId) {
-                  nameId.computed = false;
-                  nameId.name = ast.property.name;
-                }
-              }
-            }, function () {
-              self.assign(intoId, 'undefined');
-        });
-            recursionFn(intoId);
-          }, !!create);
-          break;
-        case AST.CallExpression:
-          intoId = intoId || this.nextId();
-          if (ast.filter) {
-            right = self.filter(ast.callee.name);
-            args = [];
-            forEach(ast.arguments, function (expr) {
-              var argument = self.nextId();
-              self.recurse(expr, argument);
-              args.push(argument);
-            });
-            expression = right + '(' + args.join(',') + ')';
-            self.assign(intoId, expression);
-            recursionFn(intoId);
-          }
-          else {
-            right = self.nextId();
-            left = {};
-            args = [];
-            self.recurse(ast.callee, right, left, function () {
-              self.if_(self.notNull(right), function () {
-                self.addEnsureSafeFunction(right);
-                forEach(ast.arguments, function (expr) {
-                  self.recurse(expr, self.nextId(), undefined, function (argument) {
-                    args.push(self.ensureSafeObject(argument));
-                  });
-                });
-                if (left.name) {
-                  if (!self.state.expensiveChecks) {
-                    self.addEnsureSafeObject(left.context);
-                  }
-                  expression = self.member(left.context, left.name, left.computed) + '(' + args.join(',') + ')';
-                }
-                else {
-                  expression = right + '(' + args.join(',') + ')';
-                }
-                expression = self.ensureSafeObject(expression);
-                self.assign(intoId, expression);
-              }, function () {
-                self.assign(intoId, 'undefined');
-              });
-              recursionFn(intoId);
-            });
-      }
-          break;
-        case AST.AssignmentExpression:
-          right = this.nextId();
-          left = {};
-          if (!isAssignable(ast.left)) {
-            throw $parseMinErr('lval', 'Trying to assing a value to a non l-value');
-          }
-          this.recurse(ast.left, undefined, left, function () {
-            self.if_(self.notNull(left.context), function () {
-              self.recurse(ast.right, right);
-              self.addEnsureSafeObject(self.member(left.context, left.name, left.computed));
-              expression = self.member(left.context, left.name, left.computed) + ast.operator + right;
-              self.assign(intoId, expression);
-              recursionFn(intoId || expression);
-            });
-          }, 1);
-          break;
-        case AST.ArrayExpression:
-          args = [];
-          forEach(ast.elements, function (expr) {
-            self.recurse(expr, self.nextId(), undefined, function (argument) {
-              args.push(argument);
-            });
-          });
-          expression = '[' + args.join(',') + ']';
-          this.assign(intoId, expression);
-          recursionFn(expression);
-          break;
-        case AST.ObjectExpression:
-          args = [];
-          forEach(ast.properties, function (property) {
-            self.recurse(property.value, self.nextId(), undefined, function (expr) {
-              args.push(self.escape(
-                  property.key.type === AST.Identifier ? property.key.name :
-                    ('' + property.key.value)) +
-                ':' + expr);
-            });
-          });
-          expression = '{' + args.join(',') + '}';
-          this.assign(intoId, expression);
-          recursionFn(expression);
-          break;
-        case AST.ThisExpression:
-          this.assign(intoId, 's');
-          recursionFn('s');
-          break;
-        case AST.NGValueParameter:
-          this.assign(intoId, 'v');
-          recursionFn('v');
-          break;
-    }
-  },
-
-    getHasOwnProperty: function (element, property) {
-      var key = element + '.' + property;
-      var own = this.current().own;
-      if (!own.hasOwnProperty(key)) {
-        own[key] = this.nextId(false, element + '&&(' + this.escape(property) + ' in ' + element + ')');
-    }
-      return own[key];
-  },
-
-    assign: function (id, value) {
-      if (!id) return;
-      this.current().body.push(id, '=', value, ';');
-      return id;
-  },
-
-    filter: function (filterName) {
-      if (!this.state.filters.hasOwnProperty(filterName)) {
-        this.state.filters[filterName] = this.nextId(true);
-    }
-      return this.state.filters[filterName];
-  },
-
-    ifDefined: function (id, defaultValue) {
-      return 'ifDefined(' + id + ',' + this.escape(defaultValue) + ')';
-  },
-
-    plus: function (left, right) {
-      return 'plus(' + left + ',' + right + ')';
-  },
-
-    return_: function (id) {
-      this.current().body.push('return ', id, ';');
-  },
-
-    if_: function (test, alternate, consequent) {
-      if (test === true) {
-        alternate();
-    } else {
-        var body = this.current().body;
-        body.push('if(', test, '){');
-        alternate();
-        body.push('}');
-        if (consequent) {
-          body.push('else{');
-          consequent();
-          body.push('}');
-        }
-    }
-  },
-
-    not: function (expression) {
-      return '!(' + expression + ')';
-    },
-
-    notNull: function (expression) {
-      return expression + '!=null';
-  },
-
-    nonComputedMember: function (left, right) {
-      return left + '.' + right;
-    },
-
-    computedMember: function (left, right) {
-      return left + '[' + right + ']';
-    },
-
-    member: function (left, right, computed) {
-      if (computed) return this.computedMember(left, right);
-      return this.nonComputedMember(left, right);
-    },
-
-    addEnsureSafeObject: function (item) {
-      this.current().body.push(this.ensureSafeObject(item), ';');
-  },
-
-    addEnsureSafeMemberName: function (item) {
-      this.current().body.push(this.ensureSafeMemberName(item), ';');
-    },
-
-    addEnsureSafeFunction: function (item) {
-      this.current().body.push(this.ensureSafeFunction(item), ';');
-    },
-
-    ensureSafeObject: function (item) {
-      return 'ensureSafeObject(' + item + ',text)';
-    },
-
-    ensureSafeMemberName: function (item) {
-      return 'ensureSafeMemberName(' + item + ',text)';
-    },
-
-    ensureSafeFunction: function (item) {
-      return 'ensureSafeFunction(' + item + ',text)';
-    },
-
-    lazyRecurse: function (ast, intoId, nameId, recursionFn, create, skipWatchIdCheck) {
-      var self = this;
-      return function () {
-        self.recurse(ast, intoId, nameId, recursionFn, create, skipWatchIdCheck);
-      };
-    },
-
-    lazyAssign: function (id, value) {
-      var self = this;
-      return function () {
-        self.assign(id, value);
-      };
-    },
-
-    stringEscapeRegex: /[^ a-zA-Z0-9]/g,
-
-    stringEscapeFn: function (c) {
-      return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4);
-  },
-
-    escape: function (value) {
-      if (isString(value)) return "'" + value.replace(this.stringEscapeRegex, this.stringEscapeFn) + "'";
-      if (isNumber(value)) return value.toString();
-      if (value === true) return 'true';
-      if (value === false) return 'false';
-      if (value === null) return 'null';
-      if (typeof value === 'undefined') return 'undefined';
-
-      throw $parseMinErr('esc', 'IMPOSSIBLE');
-    },
-
-    nextId: function (skip, init) {
-      var id = 'v' + (this.state.nextId++);
-      if (!skip) {
-        this.current().vars.push(id + (init ? '=' + init : ''));
-    }
-      return id;
-    },
-
-    current: function () {
-      return this.state[this.state.computing];
-    }
-  };
-
-
-  function ASTInterpreter(astBuilder, $filter) {
-    this.astBuilder = astBuilder;
-    this.$filter = $filter;
-  }
-
-  ASTInterpreter.prototype = {
-    compile: function (expression, expensiveChecks) {
-      var self = this;
-      var ast = this.astBuilder.ast(expression);
-      this.expression = expression;
-      this.expensiveChecks = expensiveChecks;
-      findConstantAndWatchExpressions(ast, self.$filter);
-      var assignable;
-      var assign;
-      if ((assignable = assignableAST(ast))) {
-        assign = this.recurse(assignable);
-      }
-      var toWatch = getInputs(ast.body);
-      var inputs;
-      if (toWatch) {
-        inputs = [];
-        forEach(toWatch, function (watch, key) {
-          var input = self.recurse(watch);
-          watch.input = input;
-          inputs.push(input);
-          watch.watchId = key;
-        });
-      }
-      var expressions = [];
-      forEach(ast.body, function (expression) {
-        expressions.push(self.recurse(expression.expression));
+  filterPrefix: function() {
+    var parts = [];
+    var self = this;
+    forEach(this.state.filters, function(id, filter) {
+      parts.push(id + '=$filter(' + self.escape(filter) + ')');
     });
-      var fn = ast.body.length === 0 ? function () {
-      } :
-        ast.body.length === 1 ? expressions[0] :
-          function (scope, locals) {
-            var lastValue;
-            forEach(expressions, function (exp) {
-              lastValue = exp(scope, locals);
-            });
-            return lastValue;
-          };
-      if (assign) {
-        fn.assign = function (scope, value, locals) {
-          return assign(scope, locals, value);
-        };
-      }
-      if (inputs) {
-        fn.inputs = inputs;
-      }
-      fn.literal = isLiteral(ast);
-      fn.constant = isConstant(ast);
-      return fn;
+    if (parts.length) return 'var ' + parts.join(',') + ';';
+    return '';
   },
 
-    recurse: function (ast, context, create) {
-      var left, right, self = this, args, expression;
-      if (ast.input) {
-        return this.inputs(ast.input, ast.watchId);
-      }
-      switch (ast.type) {
-        case AST.Literal:
-          return this.value(ast.value, context);
-        case AST.UnaryExpression:
-          right = this.recurse(ast.argument);
-          return this['unary' + ast.operator](right, context);
-        case AST.BinaryExpression:
-          left = this.recurse(ast.left);
-          right = this.recurse(ast.right);
-          return this['binary' + ast.operator](left, right, context);
-        case AST.LogicalExpression:
-          left = this.recurse(ast.left);
-          right = this.recurse(ast.right);
-          return this['binary' + ast.operator](left, right, context);
-        case AST.ConditionalExpression:
-          return this['ternary?:'](
-            this.recurse(ast.test),
-            this.recurse(ast.alternate),
-            this.recurse(ast.consequent),
-            context
-          );
-        case AST.Identifier:
-          ensureSafeMemberName(ast.name, self.expression);
-          return self.identifier(ast.name,
-            self.expensiveChecks || isPossiblyDangerousMemberName(ast.name),
-            context, create, self.expression);
-        case AST.MemberExpression:
-          left = this.recurse(ast.object, false, !!create);
-          if (!ast.computed) {
-            ensureSafeMemberName(ast.property.name, self.expression);
-            right = ast.property.name;
-          }
-          if (ast.computed) right = this.recurse(ast.property);
-          return ast.computed ?
-            this.computedMember(left, right, context, create, self.expression) :
-            this.nonComputedMember(left, right, self.expensiveChecks, context, create, self.expression);
-        case AST.CallExpression:
-          args = [];
-          forEach(ast.arguments, function (expr) {
-            args.push(self.recurse(expr));
-          });
-          if (ast.filter) right = this.$filter(ast.callee.name);
-          if (!ast.filter) right = this.recurse(ast.callee, true);
-          return ast.filter ?
-            function (scope, locals, assign, inputs) {
-              var values = [];
-              for (var i = 0; i < args.length; ++i) {
-                values.push(args[i](scope, locals, assign, inputs));
-              }
-              var value = right.apply(undefined, values, inputs);
-              return context ? {context: undefined, name: undefined, value: value} : value;
-            } :
-            function (scope, locals, assign, inputs) {
-              var rhs = right(scope, locals, assign, inputs);
-              var value;
-              if (rhs.value != null) {
-                ensureSafeObject(rhs.context, self.expression);
-                ensureSafeFunction(rhs.value, self.expression);
-                var values = [];
-                for (var i = 0; i < args.length; ++i) {
-                  values.push(ensureSafeObject(args[i](scope, locals, assign, inputs), self.expression));
-                }
-                value = ensureSafeObject(rhs.value.apply(rhs.context, values), self.expression);
-              }
-              return context ? {value: value} : value;
-            };
-        case AST.AssignmentExpression:
-          left = this.recurse(ast.left, true, 1);
-          right = this.recurse(ast.right);
-          return function (scope, locals, assign, inputs) {
-            var lhs = left(scope, locals, assign, inputs);
-            var rhs = right(scope, locals, assign, inputs);
-            ensureSafeObject(lhs.value, self.expression);
-            lhs.context[lhs.name] = rhs;
-            return context ? {value: rhs} : rhs;
-          };
-        case AST.ArrayExpression:
-          args = [];
-          forEach(ast.elements, function (expr) {
-            args.push(self.recurse(expr));
-          });
-          return function (scope, locals, assign, inputs) {
-            var value = [];
-            for (var i = 0; i < args.length; ++i) {
-              value.push(args[i](scope, locals, assign, inputs));
-        }
-            return context ? {value: value} : value;
-          };
-        case AST.ObjectExpression:
-          args = [];
-          forEach(ast.properties, function (property) {
-            args.push({
-              key: property.key.type === AST.Identifier ?
-                property.key.name :
-                ('' + property.key.value),
-              value: self.recurse(property.value)
-            });
-          });
-          return function (scope, locals, assign, inputs) {
-            var value = {};
-            for (var i = 0; i < args.length; ++i) {
-              value[args[i].key] = args[i].value(scope, locals, assign, inputs);
-        }
-            return context ? {value: value} : value;
-          };
-        case AST.ThisExpression:
-          return function (scope) {
-            return context ? {value: scope} : scope;
-          };
-        case AST.NGValueParameter:
-          return function (scope, locals, assign, inputs) {
-            return context ? {value: assign} : assign;
-          };
-    }
-    },
+  varsPrefix: function(section) {
+    return this.state[section].vars.length ? 'var ' + this.state[section].vars.join(',') + ';' : '';
+  },
 
-    'unary+': function (argument, context) {
-      return function (scope, locals, assign, inputs) {
-        var arg = argument(scope, locals, assign, inputs);
-        if (isDefined(arg)) {
-          arg = +arg;
+  body: function(section) {
+    return this.state[section].body.join('');
+  },
+
+  recurse: function(ast, intoId, nameId, recursionFn, create, skipWatchIdCheck) {
+    var left, right, self = this, args, expression;
+    recursionFn = recursionFn || noop;
+    if (!skipWatchIdCheck && isDefined(ast.watchId)) {
+      intoId = intoId || this.nextId();
+      this.if_('i',
+        this.lazyAssign(intoId, this.computedMember('i', ast.watchId)),
+        this.lazyRecurse(ast, intoId, nameId, recursionFn, create, true)
+      );
+      return;
+    }
+    switch (ast.type) {
+    case AST.Program:
+      forEach(ast.body, function(expression, pos) {
+        self.recurse(expression.expression, undefined, undefined, function(expr) { right = expr; });
+        if (pos !== ast.body.length - 1) {
+          self.current().body.push(right, ';');
+        } else {
+          self.return_(right);
         }
-        else {
-          arg = 0;
+      });
+      break;
+    case AST.Literal:
+      expression = this.escape(ast.value);
+      this.assign(intoId, expression);
+      recursionFn(expression);
+      break;
+    case AST.UnaryExpression:
+      this.recurse(ast.argument, undefined, undefined, function(expr) { right = expr; });
+      expression = ast.operator + '(' + this.ifDefined(right, 0) + ')';
+      this.assign(intoId, expression);
+      recursionFn(expression);
+      break;
+    case AST.BinaryExpression:
+      this.recurse(ast.left, undefined, undefined, function(expr) { left = expr; });
+      this.recurse(ast.right, undefined, undefined, function(expr) { right = expr; });
+      if (ast.operator === '+') {
+        expression = this.plus(left, right);
+      } else if (ast.operator === '-') {
+        expression = this.ifDefined(left, 0) + ast.operator + this.ifDefined(right, 0);
+      } else {
+        expression = '(' + left + ')' + ast.operator + '(' + right + ')';
       }
-        return context ? {value: arg} : arg;
-      };
-    },
-    'unary-': function (argument, context) {
-      return function (scope, locals, assign, inputs) {
-        var arg = argument(scope, locals, assign, inputs);
-        if (isDefined(arg)) {
-          arg = -arg;
-        }
-        else {
-          arg = 0;
-        }
-        return context ? {value: arg} : arg;
-      };
-    },
-    'unary!': function (argument, context) {
-      return function (scope, locals, assign, inputs) {
-        var arg = !argument(scope, locals, assign, inputs);
-        return context ? {value: arg} : arg;
-      };
-    },
-    'binary+': function (left, right, context) {
-      return function (scope, locals, assign, inputs) {
-        var lhs = left(scope, locals, assign, inputs);
-        var rhs = right(scope, locals, assign, inputs);
-        var arg = plusFn(lhs, rhs);
-        return context ? {value: arg} : arg;
-      };
-    },
-    'binary-': function (left, right, context) {
-      return function (scope, locals, assign, inputs) {
-        var lhs = left(scope, locals, assign, inputs);
-        var rhs = right(scope, locals, assign, inputs);
-        var arg = (isDefined(lhs) ? lhs : 0) - (isDefined(rhs) ? rhs : 0);
-        return context ? {value: arg} : arg;
-      };
-    },
-    'binary*': function (left, right, context) {
-      return function (scope, locals, assign, inputs) {
-        var arg = left(scope, locals, assign, inputs) * right(scope, locals, assign, inputs);
-        return context ? {value: arg} : arg;
-      };
-    },
-    'binary/': function (left, right, context) {
-      return function (scope, locals, assign, inputs) {
-        var arg = left(scope, locals, assign, inputs) / right(scope, locals, assign, inputs);
-        return context ? {value: arg} : arg;
-      };
-    },
-    'binary%': function (left, right, context) {
-      return function (scope, locals, assign, inputs) {
-        var arg = left(scope, locals, assign, inputs) % right(scope, locals, assign, inputs);
-        return context ? {value: arg} : arg;
-      };
-    },
-    'binary===': function (left, right, context) {
-      return function (scope, locals, assign, inputs) {
-        var arg = left(scope, locals, assign, inputs) === right(scope, locals, assign, inputs);
-        return context ? {value: arg} : arg;
-      };
-    },
-    'binary!==': function (left, right, context) {
-      return function (scope, locals, assign, inputs) {
-        var arg = left(scope, locals, assign, inputs) !== right(scope, locals, assign, inputs);
-        return context ? {value: arg} : arg;
-      };
-    },
-    'binary==': function (left, right, context) {
-      return function (scope, locals, assign, inputs) {
-        var arg = left(scope, locals, assign, inputs) == right(scope, locals, assign, inputs);
-        return context ? {value: arg} : arg;
-      };
-    },
-    'binary!=': function (left, right, context) {
-      return function (scope, locals, assign, inputs) {
-        var arg = left(scope, locals, assign, inputs) != right(scope, locals, assign, inputs);
-        return context ? {value: arg} : arg;
-      };
-    },
-    'binary<': function (left, right, context) {
-      return function (scope, locals, assign, inputs) {
-        var arg = left(scope, locals, assign, inputs) < right(scope, locals, assign, inputs);
-        return context ? {value: arg} : arg;
-      };
-    },
-    'binary>': function (left, right, context) {
-      return function (scope, locals, assign, inputs) {
-        var arg = left(scope, locals, assign, inputs) > right(scope, locals, assign, inputs);
-        return context ? {value: arg} : arg;
-      };
-    },
-    'binary<=': function (left, right, context) {
-      return function (scope, locals, assign, inputs) {
-        var arg = left(scope, locals, assign, inputs) <= right(scope, locals, assign, inputs);
-        return context ? {value: arg} : arg;
-      };
-    },
-    'binary>=': function (left, right, context) {
-      return function (scope, locals, assign, inputs) {
-        var arg = left(scope, locals, assign, inputs) >= right(scope, locals, assign, inputs);
-        return context ? {value: arg} : arg;
-      };
-    },
-    'binary&&': function (left, right, context) {
-      return function (scope, locals, assign, inputs) {
-        var arg = left(scope, locals, assign, inputs) && right(scope, locals, assign, inputs);
-        return context ? {value: arg} : arg;
-      };
-    },
-    'binary||': function (left, right, context) {
-      return function (scope, locals, assign, inputs) {
-        var arg = left(scope, locals, assign, inputs) || right(scope, locals, assign, inputs);
-        return context ? {value: arg} : arg;
-      };
-    },
-    'ternary?:': function (test, alternate, consequent, context) {
-      return function (scope, locals, assign, inputs) {
-        var arg = test(scope, locals, assign, inputs) ? alternate(scope, locals, assign, inputs) : consequent(scope,
-          locals, assign, inputs);
-        return context ? {value: arg} : arg;
-      };
-    },
-    value: function (value, context) {
-      return function () {
-        return context ? {context: undefined, name: undefined, value: value} : value;
-      };
-    },
-    identifier: function (name, expensiveChecks, context, create, expression) {
-      return function (scope, locals, assign, inputs) {
-        var base = locals && (name in locals) ? locals : scope;
-        if (create && create !== 1 && base && !(base[name])) {
-          base[name] = {};
-        }
-        var value = base ? base[name] : undefined;
-        if (expensiveChecks) {
-          ensureSafeObject(value, expression);
-        }
-        if (context) {
-          return {context: base, name: name, value: value};
-        }
-        else {
-          return value;
-        }
-      };
-    },
-    computedMember: function (left, right, context, create, expression) {
-      return function (scope, locals, assign, inputs) {
-        var lhs = left(scope, locals, assign, inputs);
-        var rhs;
-        var value;
-        if (lhs != null) {
-          rhs = right(scope, locals, assign, inputs);
-          ensureSafeMemberName(rhs, expression);
-          if (create && create !== 1 && lhs && !(lhs[rhs])) {
-            lhs[rhs] = {};
+      this.assign(intoId, expression);
+      recursionFn(expression);
+      break;
+    case AST.LogicalExpression:
+      intoId = intoId || this.nextId();
+      self.recurse(ast.left, intoId);
+      self.if_(ast.operator === '&&' ? intoId : self.not(intoId), self.lazyRecurse(ast.right, intoId));
+      recursionFn(intoId);
+      break;
+    case AST.ConditionalExpression:
+      intoId = intoId || this.nextId();
+      self.recurse(ast.test, intoId);
+      self.if_(intoId, self.lazyRecurse(ast.alternate, intoId), self.lazyRecurse(ast.consequent, intoId));
+      recursionFn(intoId);
+      break;
+    case AST.Identifier:
+      intoId = intoId || this.nextId();
+      if (nameId) {
+        nameId.context = self.stage === 'inputs' ? 's' : this.assign(this.nextId(), this.getHasOwnProperty('l', ast.name) + '?l:s');
+        nameId.computed = false;
+        nameId.name = ast.name;
+      }
+      ensureSafeMemberName(ast.name);
+      self.if_(self.stage === 'inputs' || self.not(self.getHasOwnProperty('l', ast.name)),
+        function() {
+          self.if_(self.stage === 'inputs' || 's', function() {
+            if (create && create !== 1) {
+              self.if_(
+                self.not(self.nonComputedMember('s', ast.name)),
+                self.lazyAssign(self.nonComputedMember('s', ast.name), '{}'));
+            }
+            self.assign(intoId, self.nonComputedMember('s', ast.name));
+          });
+        }, intoId && self.lazyAssign(intoId, self.nonComputedMember('l', ast.name))
+        );
+      if (self.state.expensiveChecks || isPossiblyDangerousMemberName(ast.name)) {
+        self.addEnsureSafeObject(intoId);
+      }
+      recursionFn(intoId);
+      break;
+    case AST.MemberExpression:
+      left = nameId && (nameId.context = this.nextId()) || this.nextId();
+      intoId = intoId || this.nextId();
+      self.recurse(ast.object, left, undefined, function() {
+        self.if_(self.notNull(left), function() {
+          if (ast.computed) {
+            right = self.nextId();
+            self.recurse(ast.property, right);
+            self.addEnsureSafeMemberName(right);
+            if (create && create !== 1) {
+              self.if_(self.not(self.computedMember(left, right)), self.lazyAssign(self.computedMember(left, right), '{}'));
+            }
+            expression = self.ensureSafeObject(self.computedMember(left, right));
+            self.assign(intoId, expression);
+            if (nameId) {
+              nameId.computed = true;
+              nameId.name = right;
+            }
+          } else {
+            ensureSafeMemberName(ast.property.name);
+            if (create && create !== 1) {
+              self.if_(self.not(self.nonComputedMember(left, ast.property.name)), self.lazyAssign(self.nonComputedMember(left, ast.property.name), '{}'));
+            }
+            expression = self.nonComputedMember(left, ast.property.name);
+            if (self.state.expensiveChecks || isPossiblyDangerousMemberName(ast.property.name)) {
+              expression = self.ensureSafeObject(expression);
+            }
+            self.assign(intoId, expression);
+            if (nameId) {
+              nameId.computed = false;
+              nameId.name = ast.property.name;
+            }
           }
-          value = lhs[rhs];
-          ensureSafeObject(value, expression);
-        }
-        if (context) {
-          return {context: lhs, name: rhs, value: value};
-        }
-        else {
-          return value;
-        }
-      };
-    },
-    nonComputedMember: function (left, right, expensiveChecks, context, create, expression) {
-      return function (scope, locals, assign, inputs) {
-        var lhs = left(scope, locals, assign, inputs);
-        if (create && create !== 1 && lhs && !(lhs[right])) {
-          lhs[right] = {};
-        }
-        var value = lhs != null ? lhs[right] : undefined;
-        if (expensiveChecks || isPossiblyDangerousMemberName(right)) {
-          ensureSafeObject(value, expression);
-        }
-        if (context) {
-          return {context: lhs, name: right, value: value};
-        }
-        else {
-          return value;
-        }
-      };
-    },
-    inputs: function (input, watchId) {
-      return function (scope, value, locals, inputs) {
-        if (inputs) return inputs[watchId];
-        return input(scope, value, locals);
-      };
+        }, function() {
+          self.assign(intoId, 'undefined');
+        });
+        recursionFn(intoId);
+      }, !!create);
+      break;
+    case AST.CallExpression:
+      intoId = intoId || this.nextId();
+      if (ast.filter) {
+        right = self.filter(ast.callee.name);
+        args = [];
+        forEach(ast.arguments, function(expr) {
+          var argument = self.nextId();
+          self.recurse(expr, argument);
+          args.push(argument);
+        });
+        expression = right + '(' + args.join(',') + ')';
+        self.assign(intoId, expression);
+        recursionFn(intoId);
+      } else {
+        right = self.nextId();
+        left = {};
+        args = [];
+        self.recurse(ast.callee, right, left, function() {
+          self.if_(self.notNull(right), function() {
+            self.addEnsureSafeFunction(right);
+            forEach(ast.arguments, function(expr) {
+              self.recurse(expr, self.nextId(), undefined, function(argument) {
+                args.push(self.ensureSafeObject(argument));
+              });
+            });
+            if (left.name) {
+              if (!self.state.expensiveChecks) {
+                self.addEnsureSafeObject(left.context);
+              }
+              expression = self.member(left.context, left.name, left.computed) + '(' + args.join(',') + ')';
+            } else {
+              expression = right + '(' + args.join(',') + ')';
+            }
+            expression = self.ensureSafeObject(expression);
+            self.assign(intoId, expression);
+          }, function() {
+            self.assign(intoId, 'undefined');
+          });
+          recursionFn(intoId);
+        });
+      }
+      break;
+    case AST.AssignmentExpression:
+      right = this.nextId();
+      left = {};
+      if (!isAssignable(ast.left)) {
+        throw $parseMinErr('lval', 'Trying to assing a value to a non l-value');
+      }
+      this.recurse(ast.left, undefined, left, function() {
+        self.if_(self.notNull(left.context), function() {
+          self.recurse(ast.right, right);
+          self.addEnsureSafeObject(self.member(left.context, left.name, left.computed));
+          expression = self.member(left.context, left.name, left.computed) + ast.operator + right;
+          self.assign(intoId, expression);
+          recursionFn(intoId || expression);
+        });
+      }, 1);
+      break;
+    case AST.ArrayExpression:
+      args = [];
+      forEach(ast.elements, function(expr) {
+        self.recurse(expr, self.nextId(), undefined, function(argument) {
+          args.push(argument);
+        });
+      });
+      expression = '[' + args.join(',') + ']';
+      this.assign(intoId, expression);
+      recursionFn(expression);
+      break;
+    case AST.ObjectExpression:
+      args = [];
+      forEach(ast.properties, function(property) {
+        self.recurse(property.value, self.nextId(), undefined, function(expr) {
+          args.push(self.escape(
+              property.key.type === AST.Identifier ? property.key.name :
+                ('' + property.key.value)) +
+              ':' + expr);
+        });
+      });
+      expression = '{' + args.join(',') + '}';
+      this.assign(intoId, expression);
+      recursionFn(expression);
+      break;
+    case AST.ThisExpression:
+      this.assign(intoId, 's');
+      recursionFn('s');
+      break;
+    case AST.NGValueParameter:
+      this.assign(intoId, 'v');
+      recursionFn('v');
+      break;
+    }
+  },
+
+  getHasOwnProperty: function(element, property) {
+    var key = element + '.' + property;
+    var own = this.current().own;
+    if (!own.hasOwnProperty(key)) {
+      own[key] = this.nextId(false, element + '&&(' + this.escape(property) + ' in ' + element + ')');
+    }
+    return own[key];
+  },
+
+  assign: function(id, value) {
+    if (!id) return;
+    this.current().body.push(id, '=', value, ';');
+    return id;
+  },
+
+  filter: function(filterName) {
+    if (!this.state.filters.hasOwnProperty(filterName)) {
+      this.state.filters[filterName] = this.nextId(true);
+    }
+    return this.state.filters[filterName];
+  },
+
+  ifDefined: function(id, defaultValue) {
+    return 'ifDefined(' + id + ',' + this.escape(defaultValue) + ')';
+  },
+
+  plus: function(left, right) {
+    return 'plus(' + left + ',' + right + ')';
+  },
+
+  return_: function(id) {
+    this.current().body.push('return ', id, ';');
+  },
+
+  if_: function(test, alternate, consequent) {
+    if (test === true) {
+      alternate();
+    } else {
+      var body = this.current().body;
+      body.push('if(', test, '){');
+      alternate();
+      body.push('}');
+      if (consequent) {
+        body.push('else{');
+        consequent();
+        body.push('}');
+      }
+    }
+  },
+
+  not: function(expression) {
+    return '!(' + expression + ')';
+  },
+
+  notNull: function(expression) {
+    return expression + '!=null';
+  },
+
+  nonComputedMember: function(left, right) {
+    return left + '.' + right;
+  },
+
+  computedMember: function(left, right) {
+    return left + '[' + right + ']';
+  },
+
+  member: function(left, right, computed) {
+    if (computed) return this.computedMember(left, right);
+    return this.nonComputedMember(left, right);
+  },
+
+  addEnsureSafeObject: function(item) {
+    this.current().body.push(this.ensureSafeObject(item), ';');
+  },
+
+  addEnsureSafeMemberName: function(item) {
+    this.current().body.push(this.ensureSafeMemberName(item), ';');
+  },
+
+  addEnsureSafeFunction: function(item) {
+    this.current().body.push(this.ensureSafeFunction(item), ';');
+  },
+
+  ensureSafeObject: function(item) {
+    return 'ensureSafeObject(' + item + ',text)';
+  },
+
+  ensureSafeMemberName: function(item) {
+    return 'ensureSafeMemberName(' + item + ',text)';
+  },
+
+  ensureSafeFunction: function(item) {
+    return 'ensureSafeFunction(' + item + ',text)';
+  },
+
+  lazyRecurse: function(ast, intoId, nameId, recursionFn, create, skipWatchIdCheck) {
+    var self = this;
+    return function() {
+      self.recurse(ast, intoId, nameId, recursionFn, create, skipWatchIdCheck);
+    };
+  },
+
+  lazyAssign: function(id, value) {
+    var self = this;
+    return function() {
+      self.assign(id, value);
+    };
+  },
+
+  stringEscapeRegex: /[^ a-zA-Z0-9]/g,
+
+  stringEscapeFn: function(c) {
+    return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4);
+  },
+
+  escape: function(value) {
+    if (isString(value)) return "'" + value.replace(this.stringEscapeRegex, this.stringEscapeFn) + "'";
+    if (isNumber(value)) return value.toString();
+    if (value === true) return 'true';
+    if (value === false) return 'false';
+    if (value === null) return 'null';
+    if (typeof value === 'undefined') return 'undefined';
+
+    throw $parseMinErr('esc', 'IMPOSSIBLE');
+  },
+
+  nextId: function(skip, init) {
+    var id = 'v' + (this.state.nextId++);
+    if (!skip) {
+      this.current().vars.push(id + (init ? '=' + init : ''));
+    }
+    return id;
+  },
+
+  current: function() {
+    return this.state[this.state.computing];
   }
 };
 
-  /**
-   * @constructor
-   */
-  var Parser = function (lexer, $filter, options) {
-    this.lexer = lexer;
-    this.$filter = $filter;
-    this.options = options;
-    this.ast = new AST(this.lexer);
-    this.astCompiler = options.csp ? new ASTInterpreter(this.ast, $filter) :
-      new ASTCompiler(this.ast, $filter);
-  };
 
-  Parser.prototype = {
-    constructor: Parser,
+function ASTInterpreter(astBuilder, $filter) {
+  this.astBuilder = astBuilder;
+  this.$filter = $filter;
+}
 
-    parse: function (text) {
-      return this.astCompiler.compile(text, this.options.expensiveChecks);
+ASTInterpreter.prototype = {
+  compile: function(expression, expensiveChecks) {
+    var self = this;
+    var ast = this.astBuilder.ast(expression);
+    this.expression = expression;
+    this.expensiveChecks = expensiveChecks;
+    findConstantAndWatchExpressions(ast, self.$filter);
+    var assignable;
+    var assign;
+    if ((assignable = assignableAST(ast))) {
+      assign = this.recurse(assignable);
     }
-  };
+    var toWatch = getInputs(ast.body);
+    var inputs;
+    if (toWatch) {
+      inputs = [];
+      forEach(toWatch, function(watch, key) {
+        var input = self.recurse(watch);
+        watch.input = input;
+        inputs.push(input);
+        watch.watchId = key;
+      });
+    }
+    var expressions = [];
+    forEach(ast.body, function(expression) {
+      expressions.push(self.recurse(expression.expression));
+    });
+    var fn = ast.body.length === 0 ? function() {} :
+             ast.body.length === 1 ? expressions[0] :
+             function(scope, locals) {
+               var lastValue;
+               forEach(expressions, function(exp) {
+                 lastValue = exp(scope, locals);
+               });
+               return lastValue;
+             };
+    if (assign) {
+      fn.assign = function(scope, value, locals) {
+        return assign(scope, locals, value);
+      };
+    }
+    if (inputs) {
+      fn.inputs = inputs;
+    }
+    fn.literal = isLiteral(ast);
+    fn.constant = isConstant(ast);
+    return fn;
+  },
+
+  recurse: function(ast, context, create) {
+    var left, right, self = this, args, expression;
+    if (ast.input) {
+      return this.inputs(ast.input, ast.watchId);
+    }
+    switch (ast.type) {
+    case AST.Literal:
+      return this.value(ast.value, context);
+    case AST.UnaryExpression:
+      right = this.recurse(ast.argument);
+      return this['unary' + ast.operator](right, context);
+    case AST.BinaryExpression:
+      left = this.recurse(ast.left);
+      right = this.recurse(ast.right);
+      return this['binary' + ast.operator](left, right, context);
+    case AST.LogicalExpression:
+      left = this.recurse(ast.left);
+      right = this.recurse(ast.right);
+      return this['binary' + ast.operator](left, right, context);
+    case AST.ConditionalExpression:
+      return this['ternary?:'](
+        this.recurse(ast.test),
+        this.recurse(ast.alternate),
+        this.recurse(ast.consequent),
+        context
+      );
+    case AST.Identifier:
+      ensureSafeMemberName(ast.name, self.expression);
+      return self.identifier(ast.name,
+                             self.expensiveChecks || isPossiblyDangerousMemberName(ast.name),
+                             context, create, self.expression);
+    case AST.MemberExpression:
+      left = this.recurse(ast.object, false, !!create);
+      if (!ast.computed) {
+        ensureSafeMemberName(ast.property.name, self.expression);
+        right = ast.property.name;
+      }
+      if (ast.computed) right = this.recurse(ast.property);
+      return ast.computed ?
+        this.computedMember(left, right, context, create, self.expression) :
+        this.nonComputedMember(left, right, self.expensiveChecks, context, create, self.expression);
+    case AST.CallExpression:
+      args = [];
+      forEach(ast.arguments, function(expr) {
+        args.push(self.recurse(expr));
+      });
+      if (ast.filter) right = this.$filter(ast.callee.name);
+      if (!ast.filter) right = this.recurse(ast.callee, true);
+      return ast.filter ?
+        function(scope, locals, assign, inputs) {
+          var values = [];
+          for (var i = 0; i < args.length; ++i) {
+            values.push(args[i](scope, locals, assign, inputs));
+          }
+          var value = right.apply(undefined, values, inputs);
+          return context ? {context: undefined, name: undefined, value: value} : value;
+        } :
+        function(scope, locals, assign, inputs) {
+          var rhs = right(scope, locals, assign, inputs);
+          var value;
+          if (rhs.value != null) {
+            ensureSafeObject(rhs.context, self.expression);
+            ensureSafeFunction(rhs.value, self.expression);
+            var values = [];
+            for (var i = 0; i < args.length; ++i) {
+              values.push(ensureSafeObject(args[i](scope, locals, assign, inputs), self.expression));
+            }
+            value = ensureSafeObject(rhs.value.apply(rhs.context, values), self.expression);
+          }
+          return context ? {value: value} : value;
+        };
+    case AST.AssignmentExpression:
+      left = this.recurse(ast.left, true, 1);
+      right = this.recurse(ast.right);
+      return function(scope, locals, assign, inputs) {
+        var lhs = left(scope, locals, assign, inputs);
+        var rhs = right(scope, locals, assign, inputs);
+        ensureSafeObject(lhs.value, self.expression);
+        lhs.context[lhs.name] = rhs;
+        return context ? {value: rhs} : rhs;
+      };
+    case AST.ArrayExpression:
+      args = [];
+      forEach(ast.elements, function(expr) {
+        args.push(self.recurse(expr));
+      });
+      return function(scope, locals, assign, inputs) {
+        var value = [];
+        for (var i = 0; i < args.length; ++i) {
+          value.push(args[i](scope, locals, assign, inputs));
+        }
+        return context ? {value: value} : value;
+      };
+    case AST.ObjectExpression:
+      args = [];
+      forEach(ast.properties, function(property) {
+        args.push({key: property.key.type === AST.Identifier ?
+                        property.key.name :
+                        ('' + property.key.value),
+                   value: self.recurse(property.value)
+        });
+      });
+      return function(scope, locals, assign, inputs) {
+        var value = {};
+        for (var i = 0; i < args.length; ++i) {
+          value[args[i].key] = args[i].value(scope, locals, assign, inputs);
+        }
+        return context ? {value: value} : value;
+      };
+    case AST.ThisExpression:
+      return function(scope) {
+        return context ? {value: scope} : scope;
+      };
+    case AST.NGValueParameter:
+      return function(scope, locals, assign, inputs) {
+        return context ? {value: assign} : assign;
+      };
+    }
+  },
+
+  'unary+': function(argument, context) {
+    return function(scope, locals, assign, inputs) {
+      var arg = argument(scope, locals, assign, inputs);
+      if (isDefined(arg)) {
+        arg = +arg;
+      } else {
+        arg = 0;
+      }
+      return context ? {value: arg} : arg;
+    };
+  },
+  'unary-': function(argument, context) {
+    return function(scope, locals, assign, inputs) {
+      var arg = argument(scope, locals, assign, inputs);
+      if (isDefined(arg)) {
+        arg = -arg;
+      } else {
+        arg = 0;
+      }
+      return context ? {value: arg} : arg;
+    };
+  },
+  'unary!': function(argument, context) {
+    return function(scope, locals, assign, inputs) {
+      var arg = !argument(scope, locals, assign, inputs);
+      return context ? {value: arg} : arg;
+    };
+  },
+  'binary+': function(left, right, context) {
+    return function(scope, locals, assign, inputs) {
+      var lhs = left(scope, locals, assign, inputs);
+      var rhs = right(scope, locals, assign, inputs);
+      var arg = plusFn(lhs, rhs);
+      return context ? {value: arg} : arg;
+    };
+  },
+  'binary-': function(left, right, context) {
+    return function(scope, locals, assign, inputs) {
+      var lhs = left(scope, locals, assign, inputs);
+      var rhs = right(scope, locals, assign, inputs);
+      var arg = (isDefined(lhs) ? lhs : 0) - (isDefined(rhs) ? rhs : 0);
+      return context ? {value: arg} : arg;
+    };
+  },
+  'binary*': function(left, right, context) {
+    return function(scope, locals, assign, inputs) {
+      var arg = left(scope, locals, assign, inputs) * right(scope, locals, assign, inputs);
+      return context ? {value: arg} : arg;
+    };
+  },
+  'binary/': function(left, right, context) {
+    return function(scope, locals, assign, inputs) {
+      var arg = left(scope, locals, assign, inputs) / right(scope, locals, assign, inputs);
+      return context ? {value: arg} : arg;
+    };
+  },
+  'binary%': function(left, right, context) {
+    return function(scope, locals, assign, inputs) {
+      var arg = left(scope, locals, assign, inputs) % right(scope, locals, assign, inputs);
+      return context ? {value: arg} : arg;
+    };
+  },
+  'binary===': function(left, right, context) {
+    return function(scope, locals, assign, inputs) {
+      var arg = left(scope, locals, assign, inputs) === right(scope, locals, assign, inputs);
+      return context ? {value: arg} : arg;
+    };
+  },
+  'binary!==': function(left, right, context) {
+    return function(scope, locals, assign, inputs) {
+      var arg = left(scope, locals, assign, inputs) !== right(scope, locals, assign, inputs);
+      return context ? {value: arg} : arg;
+    };
+  },
+  'binary==': function(left, right, context) {
+    return function(scope, locals, assign, inputs) {
+      var arg = left(scope, locals, assign, inputs) == right(scope, locals, assign, inputs);
+      return context ? {value: arg} : arg;
+    };
+  },
+  'binary!=': function(left, right, context) {
+    return function(scope, locals, assign, inputs) {
+      var arg = left(scope, locals, assign, inputs) != right(scope, locals, assign, inputs);
+      return context ? {value: arg} : arg;
+    };
+  },
+  'binary<': function(left, right, context) {
+    return function(scope, locals, assign, inputs) {
+      var arg = left(scope, locals, assign, inputs) < right(scope, locals, assign, inputs);
+      return context ? {value: arg} : arg;
+    };
+  },
+  'binary>': function(left, right, context) {
+    return function(scope, locals, assign, inputs) {
+      var arg = left(scope, locals, assign, inputs) > right(scope, locals, assign, inputs);
+      return context ? {value: arg} : arg;
+    };
+  },
+  'binary<=': function(left, right, context) {
+    return function(scope, locals, assign, inputs) {
+      var arg = left(scope, locals, assign, inputs) <= right(scope, locals, assign, inputs);
+      return context ? {value: arg} : arg;
+    };
+  },
+  'binary>=': function(left, right, context) {
+    return function(scope, locals, assign, inputs) {
+      var arg = left(scope, locals, assign, inputs) >= right(scope, locals, assign, inputs);
+      return context ? {value: arg} : arg;
+    };
+  },
+  'binary&&': function(left, right, context) {
+    return function(scope, locals, assign, inputs) {
+      var arg = left(scope, locals, assign, inputs) && right(scope, locals, assign, inputs);
+      return context ? {value: arg} : arg;
+    };
+  },
+  'binary||': function(left, right, context) {
+    return function(scope, locals, assign, inputs) {
+      var arg = left(scope, locals, assign, inputs) || right(scope, locals, assign, inputs);
+      return context ? {value: arg} : arg;
+    };
+  },
+  'ternary?:': function(test, alternate, consequent, context) {
+    return function(scope, locals, assign, inputs) {
+      var arg = test(scope, locals, assign, inputs) ? alternate(scope, locals, assign, inputs) : consequent(scope, locals, assign, inputs);
+      return context ? {value: arg} : arg;
+    };
+  },
+  value: function(value, context) {
+    return function() { return context ? {context: undefined, name: undefined, value: value} : value; };
+  },
+  identifier: function(name, expensiveChecks, context, create, expression) {
+    return function(scope, locals, assign, inputs) {
+      var base = locals && (name in locals) ? locals : scope;
+      if (create && create !== 1 && base && !(base[name])) {
+        base[name] = {};
+      }
+      var value = base ? base[name] : undefined;
+      if (expensiveChecks) {
+        ensureSafeObject(value, expression);
+      }
+      if (context) {
+        return {context: base, name: name, value: value};
+      } else {
+        return value;
+      }
+    };
+  },
+  computedMember: function(left, right, context, create, expression) {
+    return function(scope, locals, assign, inputs) {
+      var lhs = left(scope, locals, assign, inputs);
+      var rhs;
+      var value;
+      if (lhs != null) {
+        rhs = right(scope, locals, assign, inputs);
+        ensureSafeMemberName(rhs, expression);
+        if (create && create !== 1 && lhs && !(lhs[rhs])) {
+          lhs[rhs] = {};
+        }
+        value = lhs[rhs];
+        ensureSafeObject(value, expression);
+      }
+      if (context) {
+        return {context: lhs, name: rhs, value: value};
+      } else {
+        return value;
+      }
+    };
+  },
+  nonComputedMember: function(left, right, expensiveChecks, context, create, expression) {
+    return function(scope, locals, assign, inputs) {
+      var lhs = left(scope, locals, assign, inputs);
+      if (create && create !== 1 && lhs && !(lhs[right])) {
+        lhs[right] = {};
+      }
+      var value = lhs != null ? lhs[right] : undefined;
+      if (expensiveChecks || isPossiblyDangerousMemberName(right)) {
+        ensureSafeObject(value, expression);
+      }
+      if (context) {
+        return {context: lhs, name: right, value: value};
+      } else {
+        return value;
+      }
+    };
+  },
+  inputs: function(input, watchId) {
+    return function(scope, value, locals, inputs) {
+      if (inputs) return inputs[watchId];
+      return input(scope, value, locals);
+    };
+  }
+};
+
+/**
+ * @constructor
+ */
+var Parser = function(lexer, $filter, options) {
+  this.lexer = lexer;
+  this.$filter = $filter;
+  this.options = options;
+  this.ast = new AST(this.lexer);
+  this.astCompiler = options.csp ? new ASTInterpreter(this.ast, $filter) :
+                                   new ASTCompiler(this.ast, $filter);
+};
+
+Parser.prototype = {
+  constructor: Parser,
+
+  parse: function(text) {
+    return this.astCompiler.compile(text, this.options.expensiveChecks);
+  }
+};
 
 //////////////////////////////////////////////////
 // Parser helper functions
 //////////////////////////////////////////////////
 
-  function setter(obj, path, setValue, fullExp) {
+function setter(obj, path, setValue, fullExp) {
   ensureSafeObject(obj, fullExp);
 
   var element = path.split('.'), key;
@@ -14147,7 +14075,7 @@ function $ParseProvider() {
               parsedExpression.$$watchDelegate = constantWatchDelegate;
             } else if (oneTime) {
               parsedExpression.$$watchDelegate = parsedExpression.literal ?
-                oneTimeLiteralWatchDelegate : oneTimeWatchDelegate;
+                  oneTimeLiteralWatchDelegate : oneTimeWatchDelegate;
             } else if (parsedExpression.inputs) {
               parsedExpression.$$watchDelegate = inputsWatchDelegate;
             }
@@ -15057,14 +14985,13 @@ function $RootScopeProvider() {
   function createChildScopeClass(parent) {
     function ChildScope() {
       this.$$watchers = this.$$nextSibling =
-        this.$$childHead = this.$$childTail = null;
+          this.$$childHead = this.$$childTail = null;
       this.$$listeners = {};
       this.$$listenerCount = {};
       this.$$watchersCount = 0;
       this.$id = nextUid();
       this.$$ChildScope = null;
     }
-
     ChildScope.prototype = parent;
     return ChildScope;
   }
@@ -15072,9 +14999,9 @@ function $RootScopeProvider() {
   this.$get = ['$injector', '$exceptionHandler', '$parse', '$browser',
       function($injector, $exceptionHandler, $parse, $browser) {
 
-        function destroyChildScope($event) {
-          $event.currentScope.$$destroyed = true;
-        }
+    function destroyChildScope($event) {
+        $event.currentScope.$$destroyed = true;
+    }
 
     /**
      * @ngdoc type
@@ -15338,7 +15265,7 @@ function $RootScopeProvider() {
        *     comparing for reference equality.
        * @returns {function()} Returns a deregistration function for this listener.
        */
-      $watch: function (watchExp, listener, objectEquality, prettyPrintExpression) {
+      $watch: function(watchExp, listener, objectEquality, prettyPrintExpression) {
         var get = $parse(watchExp);
 
         if (get.$$watchDelegate) {
@@ -16280,11 +16207,11 @@ function $RootScopeProvider() {
       $rootScope.$$phase = null;
     }
 
-        function incrementWatchersCount(current, count) {
-          do {
-            current.$$watchersCount += count;
-          } while ((current = current.$parent));
-        }
+    function incrementWatchersCount(current, count) {
+      do {
+        current.$$watchersCount += count;
+      } while ((current = current.$parent));
+    }
 
     function decrementListenerCount(current, count, name) {
       do {
@@ -16393,16 +16320,16 @@ function $$SanitizeUriProvider() {
   };
 }
 
-  /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-   *     Any commits to this file should be reviewed with security in mind.  *
-   *   Changes to this file can potentially create security vulnerabilities. *
-   *          An approval from 2 Core members with history of modifying      *
-   *                         this file is required.                          *
-   *                                                                         *
-   *  Does the change somehow allow for arbitrary javascript to be executed? *
-   *    Or allows for someone to change the prototype of built-in objects?   *
-   *     Or gives undesired access to variables likes document or window?    *
-   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *     Any commits to this file should be reviewed with security in mind.  *
+ *   Changes to this file can potentially create security vulnerabilities. *
+ *          An approval from 2 Core members with history of modifying      *
+ *                         this file is required.                          *
+ *                                                                         *
+ *  Does the change somehow allow for arbitrary javascript to be executed? *
+ *    Or allows for someone to change the prototype of built-in objects?   *
+ *     Or gives undesired access to variables likes document or window?    *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 var $sceMinErr = minErr('$sce');
 
@@ -17561,7 +17488,7 @@ var $compileMinErr = minErr('$compile');
  * @property {number} totalPendingRequests total amount of pending template requests being downloaded.
  */
 function $TemplateRequestProvider() {
-  this.$get = ['$templateCache', '$http', '$q', '$sce', function ($templateCache, $http, $q, $sce) {
+  this.$get = ['$templateCache', '$http', '$q', '$sce', function($templateCache, $http, $q, $sce) {
     function handleRequestFn(tpl, ignoreRequestError) {
       handleRequestFn.totalPendingRequests++;
 
@@ -17765,14 +17692,14 @@ function $TimeoutProvider() {
       *
       */
     function timeout(fn, delay, invokeApply) {
-       if (!isFunction(fn)) {
-         invokeApply = delay;
-         delay = fn;
-         fn = noop;
-       }
+      if (!isFunction(fn)) {
+        invokeApply = delay;
+        delay = fn;
+        fn = noop;
+      }
 
-       var args = sliceArgs(arguments, 3),
-         skipApply = (isDefined(invokeApply) && !invokeApply),
+      var args = sliceArgs(arguments, 3),
+          skipApply = (isDefined(invokeApply) && !invokeApply),
           deferred = (skipApply ? $$q : $q).defer(),
           promise = deferred.promise,
           timeoutId;
@@ -17954,7 +17881,7 @@ function urlIsSameOrigin(requestUrl) {
            }]);
        </script>
        <div ng-controller="ExampleController">
- <input type="text" ng-model="greeting" aria-label="greeting" />
+         <input type="text" ng-model="greeting" aria-label="greeting" />
          <button ng-click="doGreeting(greeting)">ALERT</button>
        </div>
      </file>
@@ -17971,60 +17898,60 @@ function $WindowProvider() {
   this.$get = valueFn(window);
 }
 
-  /**
-   * @name $$cookieReader
-   * @requires $document
-   *
-   * @description
-   * This is a private service for reading cookies used by $http and ngCookies
-   *
-   * @return {Object} a key/value map of the current cookies
-   */
-  function $$CookieReader($document) {
-    var rawDocument = $document[0] || {};
-    var lastCookies = {};
-    var lastCookieString = '';
+/**
+ * @name $$cookieReader
+ * @requires $document
+ *
+ * @description
+ * This is a private service for reading cookies used by $http and ngCookies
+ *
+ * @return {Object} a key/value map of the current cookies
+ */
+function $$CookieReader($document) {
+  var rawDocument = $document[0] || {};
+  var lastCookies = {};
+  var lastCookieString = '';
 
-    function safeDecodeURIComponent(str) {
-      try {
-        return decodeURIComponent(str);
-      } catch (e) {
-        return str;
-      }
+  function safeDecodeURIComponent(str) {
+    try {
+      return decodeURIComponent(str);
+    } catch (e) {
+      return str;
     }
+  }
 
-    return function () {
-      var cookieArray, cookie, i, index, name;
-      var currentCookieString = rawDocument.cookie || '';
+  return function() {
+    var cookieArray, cookie, i, index, name;
+    var currentCookieString = rawDocument.cookie || '';
 
-      if (currentCookieString !== lastCookieString) {
-        lastCookieString = currentCookieString;
-        cookieArray = lastCookieString.split('; ');
-        lastCookies = {};
+    if (currentCookieString !== lastCookieString) {
+      lastCookieString = currentCookieString;
+      cookieArray = lastCookieString.split('; ');
+      lastCookies = {};
 
-        for (i = 0; i < cookieArray.length; i++) {
-          cookie = cookieArray[i];
-          index = cookie.indexOf('=');
-          if (index > 0) { //ignore nameless cookies
-            name = safeDecodeURIComponent(cookie.substring(0, index));
-            // the first value that is seen for a cookie is the most
-            // specific one.  values for the same cookie name that
-            // follow are for less specific paths.
-            if (lastCookies[name] === undefined) {
-              lastCookies[name] = safeDecodeURIComponent(cookie.substring(index + 1));
-            }
+      for (i = 0; i < cookieArray.length; i++) {
+        cookie = cookieArray[i];
+        index = cookie.indexOf('=');
+        if (index > 0) { //ignore nameless cookies
+          name = safeDecodeURIComponent(cookie.substring(0, index));
+          // the first value that is seen for a cookie is the most
+          // specific one.  values for the same cookie name that
+          // follow are for less specific paths.
+          if (lastCookies[name] === undefined) {
+            lastCookies[name] = safeDecodeURIComponent(cookie.substring(index + 1));
           }
         }
       }
-      return lastCookies;
-    };
-  }
+    }
+    return lastCookies;
+  };
+}
 
-  $$CookieReader.$inject = ['$document'];
+$$CookieReader.$inject = ['$document'];
 
-  function $$CookieReaderProvider() {
-    this.$get = $$CookieReader;
-  }
+function $$CookieReaderProvider() {
+  this.$get = $$CookieReader;
+}
 
 /* global currencyFilter: true,
  dateFilter: true,
@@ -18257,7 +18184,7 @@ function $FilterProvider($provide) {
                                 {name:'Julie', phone:'555-8765'},
                                 {name:'Juliette', phone:'555-5678'}]"></div>
 
- <label>Search: <input ng-model="searchText"></label>
+       <label>Search: <input ng-model="searchText"></label>
        <table id="searchTextResults">
          <tr><th>Name</th><th>Phone</th></tr>
          <tr ng-repeat="friend in friends | filter:searchText">
@@ -18266,10 +18193,10 @@ function $FilterProvider($provide) {
          </tr>
        </table>
        <hr>
- <label>Any: <input ng-model="search.$"></label> <br>
- <label>Name only <input ng-model="search.name"></label><br>
- <label>Phone only <input ng-model="search.phone"></label><br>
- <label>Equality <input type="checkbox" ng-model="strict"></label><br>
+       <label>Any: <input ng-model="search.$"></label> <br>
+       <label>Name only <input ng-model="search.name"></label><br>
+       <label>Phone only <input ng-model="search.phone"></label><br>
+       <label>Equality <input type="checkbox" ng-model="strict"></label><br>
        <table id="searchObjResults">
          <tr><th>Name</th><th>Phone</th></tr>
          <tr ng-repeat="friendObj in friends | filter:search:strict">
@@ -18320,8 +18247,7 @@ function filterFilter() {
     if (!isArrayLike(array)) {
       if (array == null) {
         return array;
-      }
-      else {
+      } else {
         throw minErr('filter')('notarray', 'Expected array but received: {0}', array);
       }
     }
@@ -18440,9 +18366,9 @@ function deepCompare(actual, expected, comparator, matchAgainstAnyProp, dontMatc
 }
 
 // Used for easily differentiating between `null` and actual `object`
-  function getTypeForFilter(val) {
-    return (val === null) ? 'null' : typeof val;
-  }
+function getTypeForFilter(val) {
+  return (val === null) ? 'null' : typeof val;
+}
 
 /**
  * @ngdoc filter
@@ -18469,7 +18395,7 @@ function deepCompare(actual, expected, comparator, matchAgainstAnyProp, dontMatc
            }]);
        </script>
        <div ng-controller="ExampleController">
- <input type="number" ng-model="amount" aria-label="amount"> <br>
+         <input type="number" ng-model="amount" aria-label="amount"> <br>
          default currency symbol ($): <span id="currency-default">{{amount | currency}}</span><br>
          custom currency identifier (USD$): <span id="currency-custom">{{amount | currency:"USD$"}}</span>
          no fractions (0): <span id="currency-no-fractions">{{amount | currency:"USD$":0}}</span>
@@ -18545,7 +18471,7 @@ function currencyFilter($locale) {
            }]);
        </script>
        <div ng-controller="ExampleController">
- <label>Enter number: <input ng-model='val'></label><br>
+         <label>Enter number: <input ng-model='val'></label><br>
          Default formatting: <span id='number-default'>{{val | number}}</span><br>
          No fractions: <span>{{val | number:0}}</span><br>
          Negative number: <span>{{-val | number:4}}</span>
@@ -18595,7 +18521,7 @@ function formatNumber(number, pattern, groupSep, decimalSep, fractionSize) {
 
   var numStr = number + '',
       formatedText = '',
-    hasExponent = false,
+      hasExponent = false,
       parts = [];
 
   if (isInfinity) formatedText = '\u221e';
@@ -18707,8 +18633,8 @@ function dateStrGetter(name, shortForm) {
   };
 }
 
-  function timeZoneGetter(date, formats, offset) {
-    var zone = -1 * offset;
+function timeZoneGetter(date, formats, offset) {
+  var zone = -1 * offset;
   var paddedZone = (zone >= 0) ? "+" : "";
 
   paddedZone += padNumber(Math[zone > 0 ? 'floor' : 'ceil'](zone / 60), 2) +
@@ -18747,13 +18673,13 @@ function ampmGetter(date, formats) {
   return date.getHours() < 12 ? formats.AMPMS[0] : formats.AMPMS[1];
 }
 
-  function eraGetter(date, formats) {
-    return date.getFullYear() <= 0 ? formats.ERAS[0] : formats.ERAS[1];
-  }
+function eraGetter(date, formats) {
+  return date.getFullYear() <= 0 ? formats.ERAS[0] : formats.ERAS[1];
+}
 
-  function longEraGetter(date, formats) {
-    return date.getFullYear() <= 0 ? formats.ERANAMES[0] : formats.ERANAMES[1];
-  }
+function longEraGetter(date, formats) {
+  return date.getFullYear() <= 0 ? formats.ERANAMES[0] : formats.ERANAMES[1];
+}
 
 var DATE_FORMATS = {
   yyyy: dateGetter('FullYear', 4),
@@ -18781,14 +18707,14 @@ var DATE_FORMATS = {
      a: ampmGetter,
      Z: timeZoneGetter,
     ww: weekGetter(2),
-  w: weekGetter(1),
-  G: eraGetter,
-  GG: eraGetter,
-  GGG: eraGetter,
-  GGGG: longEraGetter
+     w: weekGetter(1),
+     G: eraGetter,
+     GG: eraGetter,
+     GGG: eraGetter,
+     GGGG: longEraGetter
 };
 
-  var DATE_FORMATS_SPLIT = /((?:[^yMdHhmsaZEwG']+)|(?:'(?:[^']|'')*')|(?:E+|y+|M+|d+|H+|h+|m+|s+|a|Z|G+|w+))(.*)/,
+var DATE_FORMATS_SPLIT = /((?:[^yMdHhmsaZEwG']+)|(?:'(?:[^']|'')*')|(?:E+|y+|M+|d+|H+|h+|m+|s+|a|Z|G+|w+))(.*)/,
     NUMBER_STRING = /^\-?\d+$/;
 
 /**
@@ -19060,20 +18986,20 @@ var uppercaseFilter = valueFn(uppercase);
            }]);
        </script>
        <div ng-controller="ExampleController">
- <label>
- Limit {{numbers}} to:
- <input type="number" step="1" ng-model="numLimit">
- </label>
+         <label>
+            Limit {{numbers}} to:
+            <input type="number" step="1" ng-model="numLimit">
+         </label>
          <p>Output numbers: {{ numbers | limitTo:numLimit }}</p>
- <label>
- Limit {{letters}} to:
- <input type="number" step="1" ng-model="letterLimit">
- </label>
+         <label>
+            Limit {{letters}} to:
+            <input type="number" step="1" ng-model="letterLimit">
+         </label>
          <p>Output letters: {{ letters | limitTo:letterLimit }}</p>
- <label>
- Limit {{longNumber}} to:
- <input type="number" step="1" ng-model="longNumberLimit">
- </label>
+         <label>
+            Limit {{longNumber}} to:
+            <input type="number" step="1" ng-model="longNumberLimit">
+         </label>
          <p>Output long number: {{ longNumber | limitTo:longNumberLimit }}</p>
        </div>
      </file>
@@ -19122,7 +19048,7 @@ var uppercaseFilter = valueFn(uppercase);
    </example>
 */
 function limitToFilter() {
-  return function (input, limit, begin) {
+  return function(input, limit, begin) {
     if (Math.abs(Number(limit)) === Infinity) {
       limit = Number(limit);
     } else {
@@ -19141,8 +19067,7 @@ function limitToFilter() {
     } else {
       if (begin === 0) {
         return input.slice(limit, input.length);
-      }
-      else {
+      } else {
         return input.slice(Math.max(0, begin + limit), begin);
       }
     }
@@ -19202,30 +19127,30 @@ function limitToFilter() {
            }]);
        </script>
        <div ng-controller="ExampleController">
- <table class="friend">
- <tr>
- <th>Name</th>
- <th>Phone Number</th>
- <th>Age</th>
- </tr>
- <tr ng-repeat="friend in friends | orderBy:'-age'">
- <td>{{friend.name}}</td>
- <td>{{friend.phone}}</td>
- <td>{{friend.age}}</td>
- </tr>
- </table>
- </div>
- </file>
- </example>
+         <table class="friend">
+           <tr>
+             <th>Name</th>
+             <th>Phone Number</th>
+             <th>Age</th>
+           </tr>
+           <tr ng-repeat="friend in friends | orderBy:'-age'">
+             <td>{{friend.name}}</td>
+             <td>{{friend.phone}}</td>
+             <td>{{friend.age}}</td>
+           </tr>
+         </table>
+       </div>
+     </file>
+   </example>
  *
  * The predicate and reverse parameters can be controlled dynamically through scope properties,
  * as shown in the next example.
  * @example
- <example module="orderByExample">
- <file name="index.html">
- <script>
- angular.module('orderByExample', [])
- .controller('ExampleController', ['$scope', function($scope) {
+   <example module="orderByExample">
+     <file name="index.html">
+       <script>
+         angular.module('orderByExample', [])
+           .controller('ExampleController', ['$scope', function($scope) {
              $scope.friends =
                  [{name:'John', phone:'555-1212', age:10},
                   {name:'Mary', phone:'555-9876', age:19},
@@ -19239,33 +19164,33 @@ function limitToFilter() {
                $scope.predicate = predicate;
              };
            }]);
- </script>
- <style type="text/css">
- .sortorder:after {
+       </script>
+       <style type="text/css">
+         .sortorder:after {
            content: '\25b2';
          }
- .sortorder.reverse:after {
+         .sortorder.reverse:after {
            content: '\25bc';
          }
- </style>
- <div ng-controller="ExampleController">
+       </style>
+       <div ng-controller="ExampleController">
          <pre>Sorting predicate = {{predicate}}; reverse = {{reverse}}</pre>
          <hr/>
          [ <a href="" ng-click="predicate=''">unsorted</a> ]
          <table class="friend">
            <tr>
- <th>
- <a href="" ng-click="order('name')">Name</a>
- <span class="sortorder" ng-show="predicate === 'name'" ng-class="{reverse:reverse}"></span>
- </th>
- <th>
- <a href="" ng-click="order('phone')">Phone Number</a>
- <span class="sortorder" ng-show="predicate === 'phone'" ng-class="{reverse:reverse}"></span>
- </th>
- <th>
- <a href="" ng-click="order('age')">Age</a>
- <span class="sortorder" ng-show="predicate === 'age'" ng-class="{reverse:reverse}"></span>
- </th>
+             <th>
+               <a href="" ng-click="order('name')">Name</a>
+               <span class="sortorder" ng-show="predicate === 'name'" ng-class="{reverse:reverse}"></span>
+             </th>
+             <th>
+               <a href="" ng-click="order('phone')">Phone Number</a>
+               <span class="sortorder" ng-show="predicate === 'phone'" ng-class="{reverse:reverse}"></span>
+             </th>
+             <th>
+               <a href="" ng-click="order('age')">Age</a>
+               <span class="sortorder" ng-show="predicate === 'age'" ng-class="{reverse:reverse}"></span>
+             </th>
            </tr>
            <tr ng-repeat="friend in friends | orderBy:predicate:reverse">
              <td>{{friend.name}}</td>
@@ -19328,9 +19253,7 @@ function orderByFilter($parse) {
 
     if (!(isArrayLike(array))) return array;
 
-    if (!isArray(sortPredicate)) {
-      sortPredicate = [sortPredicate];
-    }
+    if (!isArray(sortPredicate)) { sortPredicate = [sortPredicate]; }
     if (sortPredicate.length === 0) { sortPredicate = ['+']; }
 
     var predicates = processPredicates(sortPredicate, reverseOrder);
@@ -19340,16 +19263,14 @@ function orderByFilter($parse) {
     // See https://en.wikipedia.org/wiki/Schwartzian_transform
     var compareValues = Array.prototype.map.call(array, getComparisonObject);
     compareValues.sort(doComparison);
-    array = compareValues.map(function (item) {
-      return item.value;
-    });
+    array = compareValues.map(function(item) { return item.value; });
 
     return array;
 
     function getComparisonObject(value, index) {
       return {
         value: value,
-        predicateValues: predicates.map(function (predicate) {
+        predicateValues: predicates.map(function(predicate) {
           return getPredicateValue(predicate.get(value), index);
         })
       };
@@ -19357,7 +19278,7 @@ function orderByFilter($parse) {
 
     function doComparison(v1, v2) {
       var result = 0;
-      for (var index = 0, length = predicates.length; index < length; ++index) {
+      for (var index=0, length = predicates.length; index < length; ++index) {
         result = compare(v1.predicateValues[index], v2.predicateValues[index]) * predicates[index].descending;
         if (result) break;
       }
@@ -19367,13 +19288,12 @@ function orderByFilter($parse) {
 
   function processPredicates(sortPredicate, reverseOrder) {
     reverseOrder = reverseOrder ? -1 : 1;
-    return sortPredicate.map(function (predicate) {
+    return sortPredicate.map(function(predicate) {
       var descending = 1, get = identity;
 
       if (isFunction(predicate)) {
         get = predicate;
-      }
-      else if (isString(predicate)) {
+      } else if (isString(predicate)) {
         if ((predicate.charAt(0) == '+' || predicate.charAt(0) == '-')) {
           descending = predicate.charAt(0) == '-' ? -1 : 1;
           predicate = predicate.substring(1);
@@ -19382,13 +19302,11 @@ function orderByFilter($parse) {
           get = $parse(predicate);
           if (get.constant) {
             var key = get();
-            get = function (value) {
-              return value[key];
-            };
+            get = function(value) { return value[key]; };
           }
         }
       }
-      return {get: get, descending: descending * reverseOrder};
+      return { get: get, descending: descending * reverseOrder };
     });
   }
 
@@ -19423,14 +19341,12 @@ function orderByFilter($parse) {
     if (value === null) {
       type = 'string';
       value = 'null';
-    }
-    else if (type === 'string') {
+    } else if (type === 'string') {
       value = value.toLowerCase();
-    }
-    else if (type === 'object') {
+    } else if (type === 'object') {
       value = objectValue(value, index);
     }
-    return {value: value, type: type};
+    return { value: value, type: type };
   }
 
   function compare(v1, v2) {
@@ -19439,8 +19355,7 @@ function orderByFilter($parse) {
       if (v1.value !== v2.value) {
         result = v1.value < v2.value ? -1 : 1;
       }
-    }
-    else {
+    } else {
       result = v1.type < v2.type ? -1 : 1;
     }
     return result;
@@ -19560,7 +19475,7 @@ var htmlAnchorDirective = valueFn({
           }, 5000, 'page should navigate to /123');
         });
 
- it('should execute ng-click but not reload when href empty string and name specified', function() {
+        it('should execute ng-click but not reload when href empty string and name specified', function() {
           element(by.id('link-4')).click();
           expect(element(by.model('value')).getAttribute('value')).toEqual('4');
           expect(element(by.id('link-4')).getAttribute('href')).toBe('');
@@ -19673,7 +19588,7 @@ var htmlAnchorDirective = valueFn({
  * @example
     <example>
       <file name="index.html">
- <label>Click me to toggle: <input type="checkbox" ng-model="checked"></label><br/>
+        <label>Click me to toggle: <input type="checkbox" ng-model="checked"></label><br/>
         <button ng-model="button" ng-disabled="checked">Button</button>
       </file>
       <file name="protractor.js" type="protractor">
@@ -19715,8 +19630,8 @@ var htmlAnchorDirective = valueFn({
  * @example
     <example>
       <file name="index.html">
- <label>Check me to check both: <input type="checkbox" ng-model="master"></label><br/>
- <input id="checkSlave" type="checkbox" ng-checked="master" aria-label="Slave input">
+        <label>Check me to check both: <input type="checkbox" ng-model="master"></label><br/>
+        <input id="checkSlave" type="checkbox" ng-checked="master" aria-label="Slave input">
       </file>
       <file name="protractor.js" type="protractor">
         it('should check both checkBoxes', function() {
@@ -19750,8 +19665,8 @@ var htmlAnchorDirective = valueFn({
  * @example
     <example>
       <file name="index.html">
- <label>Check me to make text readonly: <input type="checkbox" ng-model="checked"></label><br/>
- <input type="text" ng-readonly="checked" value="I'm Angular" aria-label="Readonly field" />
+        <label>Check me to make text readonly: <input type="checkbox" ng-model="checked"></label><br/>
+        <input type="text" ng-readonly="checked" value="I'm Angular" aria-label="Readonly field" />
       </file>
       <file name="protractor.js" type="protractor">
         it('should toggle readonly attr', function() {
@@ -19786,8 +19701,8 @@ var htmlAnchorDirective = valueFn({
  * @example
     <example>
       <file name="index.html">
- <label>Check me to select: <input type="checkbox" ng-model="selected"></label><br/>
- <select aria-label="ngSelected demo">
+        <label>Check me to select: <input type="checkbox" ng-model="selected"></label><br/>
+        <select aria-label="ngSelected demo">
           <option>Hello!</option>
           <option id="greet" ng-selected="selected">Greetings!</option>
         </select>
@@ -19823,7 +19738,7 @@ var htmlAnchorDirective = valueFn({
  * @example
      <example>
        <file name="index.html">
- <label>Check me check multiple: <input type="checkbox" ng-model="open"></label><br/>
+         <label>Check me check multiple: <input type="checkbox" ng-model="open"></label><br/>
          <details id="details" ng-open="open">
             <summary>Show/Hide me</summary>
          </details>
@@ -19859,7 +19774,7 @@ forEach(BOOLEAN_ATTR, function(propName, attrName) {
   var linkFn = defaultLinkFn;
 
   if (propName === 'checked') {
-    linkFn = function (scope, element, attr) {
+    linkFn = function(scope, element, attr) {
       // ensuring ngChecked doesn't interfere with ngModel when both are set on the same input
       if (attr.ngModel !== attr[normalized]) {
         defaultLinkFn(scope, element, attr);
@@ -20254,7 +20169,7 @@ function FormController(element, attrs, $scope, $animate, $interpolate) {
  *
  * # Alias: {@link ng.directive:ngForm `ngForm`}
  *
-  * In Angular, forms can be nested. This means that the outer form is valid when all of the child
+ * In Angular, forms can be nested. This means that the outer form is valid when all of the child
  * forms are valid as well. However, browsers do not allow nesting of `<form>` elements, so
  * Angular provides the {@link ng.directive:ngForm `ngForm`} directive which behaves identically to
  * `<form>` but can be nested.  This allows you to have nested forms, which is very useful when
@@ -20353,11 +20268,11 @@ function FormController(element, attrs, $scope, $animate, $interpolate) {
        <form name="myForm" ng-controller="FormController" class="my-form">
          userType: <input name="input" ng-model="userType" required>
          <span class="error" ng-show="myForm.input.$error.required">Required!</span><br>
-  <code>userType = {{userType}}</code><br>
-  <code>myForm.input.$valid = {{myForm.input.$valid}}</code><br>
-  <code>myForm.input.$error = {{myForm.input.$error}}</code><br>
-  <code>myForm.$valid = {{myForm.$valid}}</code><br>
-  <code>myForm.$error.required = {{!!myForm.$error.required}}</code><br>
+         <code>userType = {{userType}}</code><br>
+         <code>myForm.input.$valid = {{myForm.input.$valid}}</code><br>
+         <code>myForm.input.$error = {{myForm.input.$error}}</code><br>
+         <code>myForm.$valid = {{myForm.$valid}}</code><br>
+         <code>myForm.$error.required = {{!!myForm.$error.required}}</code><br>
         </form>
       </file>
       <file name="protractor.js" type="protractor">
@@ -20432,7 +20347,7 @@ var formDirectiveFactory = function(isNgForm) {
 
             if (nameAttr) {
               setter(scope, controller.$name, controller, controller.$name);
-              attr.$observe(nameAttr, function (newValue) {
+              attr.$observe(nameAttr, function(newValue) {
                 if (controller.$name === newValue) return;
                 setter(scope, controller.$name, undefined, controller.$name);
                 parentFormCtrl.$$renameControl(controller, newValue);
@@ -20471,7 +20386,7 @@ var ngFormDirective = formDirectiveFactory(true);
 var ISO_DATE_REGEXP = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/;
 var URL_REGEXP = /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
 var EMAIL_REGEXP = /^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i;
-  var NUMBER_REGEXP = /^\s*(\-|\+)?(\d+|(\d*(\.\d*)))([eE][+-]?\d+)?\s*$/;
+var NUMBER_REGEXP = /^\s*(\-|\+)?(\d+|(\d*(\.\d*)))([eE][+-]?\d+)?\s*$/;
 var DATE_REGEXP = /^(\d{4})-(\d{2})-(\d{2})$/;
 var DATETIMELOCAL_REGEXP = /^(\d{4})-(\d\d)-(\d\d)T(\d\d):(\d\d)(?::(\d\d)(\.\d{1,3})?)?$/;
 var WEEK_REGEXP = /^(\d{4})-W(\d\d)$/;
@@ -20530,16 +20445,16 @@ var inputType = {
              }]);
          </script>
          <form name="myForm" ng-controller="ExampleController">
-   <label>Single word:
-   <input type="text" name="input" ng-model="example.text"
-   ng-pattern="example.word" required ng-trim="false">
-   </label>
-   <div role="alert">
-   <span class="error" ng-show="myForm.input.$error.required">
-   Required!</span>
-   <span class="error" ng-show="myForm.input.$error.pattern">
-   Single word only!</span>
-   </div>
+           <label>Single word:
+             <input type="text" name="input" ng-model="example.text"
+                    ng-pattern="example.word" required ng-trim="false">
+           </label>
+           <div role="alert">
+             <span class="error" ng-show="myForm.input.$error.required">
+               Required!</span>
+             <span class="error" ng-show="myForm.input.$error.pattern">
+               Single word only!</span>
+           </div>
            <tt>text = {{example.text}}</tt><br/>
            <tt>myForm.input.$valid = {{myForm.input.$valid}}</tt><br/>
            <tt>myForm.input.$error = {{myForm.input.$error}}</tt><br/>
@@ -20618,15 +20533,15 @@ var inputType = {
             }]);
        </script>
        <form name="myForm" ng-controller="DateController as dateCtrl">
-     <label for="exampleInput">Pick a date in 2013:</label>
+          <label for="exampleInput">Pick a date in 2013:</label>
           <input type="date" id="exampleInput" name="input" ng-model="example.value"
               placeholder="yyyy-MM-dd" min="2013-01-01" max="2013-12-31" required />
-     <div role="alert">
-     <span class="error" ng-show="myForm.input.$error.required">
-     Required!</span>
-     <span class="error" ng-show="myForm.input.$error.date">
-     Not a valid date!</span>
-     </div>
+          <div role="alert">
+            <span class="error" ng-show="myForm.input.$error.required">
+                Required!</span>
+            <span class="error" ng-show="myForm.input.$error.date">
+                Not a valid date!</span>
+           </div>
            <tt>value = {{example.value | date: "yyyy-MM-dd"}}</tt><br/>
            <tt>myForm.input.$valid = {{myForm.input.$valid}}</tt><br/>
            <tt>myForm.input.$error = {{myForm.input.$error}}</tt><br/>
@@ -20713,15 +20628,15 @@ var inputType = {
           }]);
       </script>
       <form name="myForm" ng-controller="DateController as dateCtrl">
-    <label for="exampleInput">Pick a date between in 2013:</label>
+        <label for="exampleInput">Pick a date between in 2013:</label>
         <input type="datetime-local" id="exampleInput" name="input" ng-model="example.value"
             placeholder="yyyy-MM-ddTHH:mm:ss" min="2001-01-01T00:00:00" max="2013-12-31T00:00:00" required />
-    <div role="alert">
-    <span class="error" ng-show="myForm.input.$error.required">
-    Required!</span>
-    <span class="error" ng-show="myForm.input.$error.datetimelocal">
-    Not a valid date!</span>
-    </div>
+        <div role="alert">
+          <span class="error" ng-show="myForm.input.$error.required">
+              Required!</span>
+          <span class="error" ng-show="myForm.input.$error.datetimelocal">
+              Not a valid date!</span>
+        </div>
         <tt>value = {{example.value | date: "yyyy-MM-ddTHH:mm:ss"}}</tt><br/>
         <tt>myForm.input.$valid = {{myForm.input.$valid}}</tt><br/>
         <tt>myForm.input.$error = {{myForm.input.$error}}</tt><br/>
@@ -20809,15 +20724,15 @@ var inputType = {
         }]);
      </script>
      <form name="myForm" ng-controller="DateController as dateCtrl">
-   <label for="exampleInput">Pick a between 8am and 5pm:</label>
+        <label for="exampleInput">Pick a between 8am and 5pm:</label>
         <input type="time" id="exampleInput" name="input" ng-model="example.value"
             placeholder="HH:mm:ss" min="08:00:00" max="17:00:00" required />
-   <div role="alert">
-   <span class="error" ng-show="myForm.input.$error.required">
-   Required!</span>
-   <span class="error" ng-show="myForm.input.$error.time">
-   Not a valid date!</span>
-   </div>
+        <div role="alert">
+          <span class="error" ng-show="myForm.input.$error.required">
+              Required!</span>
+          <span class="error" ng-show="myForm.input.$error.time">
+              Not a valid date!</span>
+        </div>
         <tt>value = {{example.value | date: "HH:mm:ss"}}</tt><br/>
         <tt>myForm.input.$valid = {{myForm.input.$valid}}</tt><br/>
         <tt>myForm.input.$error = {{myForm.input.$error}}</tt><br/>
@@ -20904,17 +20819,17 @@ var inputType = {
         }]);
       </script>
       <form name="myForm" ng-controller="DateController as dateCtrl">
-    <label>Pick a date between in 2013:
-    <input id="exampleInput" type="week" name="input" ng-model="example.value"
-    placeholder="YYYY-W##" min="2012-W32"
-    max="2013-W52" required />
-    </label>
-    <div role="alert">
-    <span class="error" ng-show="myForm.input.$error.required">
-    Required!</span>
-    <span class="error" ng-show="myForm.input.$error.week">
-    Not a valid date!</span>
-    </div>
+        <label>Pick a date between in 2013:
+          <input id="exampleInput" type="week" name="input" ng-model="example.value"
+                 placeholder="YYYY-W##" min="2012-W32"
+                 max="2013-W52" required />
+        </label>
+        <div role="alert">
+          <span class="error" ng-show="myForm.input.$error.required">
+              Required!</span>
+          <span class="error" ng-show="myForm.input.$error.week">
+              Not a valid date!</span>
+        </div>
         <tt>value = {{example.value | date: "yyyy-Www"}}</tt><br/>
         <tt>myForm.input.$valid = {{myForm.input.$valid}}</tt><br/>
         <tt>myForm.input.$error = {{myForm.input.$error}}</tt><br/>
@@ -21001,15 +20916,15 @@ var inputType = {
         }]);
      </script>
      <form name="myForm" ng-controller="DateController as dateCtrl">
-   <label for="exampleInput">Pick a month in 2013:</label>
+       <label for="exampleInput">Pick a month in 2013:</label>
        <input id="exampleInput" type="month" name="input" ng-model="example.value"
           placeholder="yyyy-MM" min="2013-01" max="2013-12" required />
-   <div role="alert">
-   <span class="error" ng-show="myForm.input.$error.required">
-   Required!</span>
-   <span class="error" ng-show="myForm.input.$error.month">
-   Not a valid month!</span>
-   </div>
+       <div role="alert">
+         <span class="error" ng-show="myForm.input.$error.required">
+            Required!</span>
+         <span class="error" ng-show="myForm.input.$error.month">
+            Not a valid month!</span>
+       </div>
        <tt>value = {{example.value | date: "yyyy-MM"}}</tt><br/>
        <tt>myForm.input.$valid = {{myForm.input.$valid}}</tt><br/>
        <tt>myForm.input.$error = {{myForm.input.$error}}</tt><br/>
@@ -21120,16 +21035,16 @@ var inputType = {
              }]);
          </script>
          <form name="myForm" ng-controller="ExampleController">
-   <label>Number:
-   <input type="number" name="input" ng-model="example.value"
-   min="0" max="99" required>
-   </label>
-   <div role="alert">
-   <span class="error" ng-show="myForm.input.$error.required">
-   Required!</span>
-   <span class="error" ng-show="myForm.input.$error.number">
-   Not valid number!</span>
-   </div>
+           <label>Number:
+             <input type="number" name="input" ng-model="example.value"
+                    min="0" max="99" required>
+          </label>
+           <div role="alert">
+             <span class="error" ng-show="myForm.input.$error.required">
+               Required!</span>
+             <span class="error" ng-show="myForm.input.$error.number">
+               Not valid number!</span>
+           </div>
            <tt>value = {{example.value}}</tt><br/>
            <tt>myForm.input.$valid = {{myForm.input.$valid}}</tt><br/>
            <tt>myForm.input.$error = {{myForm.input.$error}}</tt><br/>
@@ -21218,15 +21133,15 @@ var inputType = {
              }]);
          </script>
          <form name="myForm" ng-controller="ExampleController">
-   <label>URL:
-   <input type="url" name="input" ng-model="url.text" required>
-   <label>
-   <div role="alert">
-   <span class="error" ng-show="myForm.input.$error.required">
-   Required!</span>
-   <span class="error" ng-show="myForm.input.$error.url">
-   Not valid url!</span>
-   </div>
+           <label>URL:
+             <input type="url" name="input" ng-model="url.text" required>
+           <label>
+           <div role="alert">
+             <span class="error" ng-show="myForm.input.$error.required">
+               Required!</span>
+             <span class="error" ng-show="myForm.input.$error.url">
+               Not valid url!</span>
+           </div>
            <tt>text = {{url.text}}</tt><br/>
            <tt>myForm.input.$valid = {{myForm.input.$valid}}</tt><br/>
            <tt>myForm.input.$error = {{myForm.input.$error}}</tt><br/>
@@ -21317,15 +21232,15 @@ var inputType = {
              }]);
          </script>
            <form name="myForm" ng-controller="ExampleController">
-   <label>Email:
-   <input type="email" name="input" ng-model="email.text" required>
-   </label>
-   <div role="alert">
-   <span class="error" ng-show="myForm.input.$error.required">
-   Required!</span>
-   <span class="error" ng-show="myForm.input.$error.email">
-   Not valid email!</span>
-   </div>
+             <label>Email:
+               <input type="email" name="input" ng-model="email.text" required>
+             </label>
+             <div role="alert">
+               <span class="error" ng-show="myForm.input.$error.required">
+                 Required!</span>
+               <span class="error" ng-show="myForm.input.$error.email">
+                 Not valid email!</span>
+             </div>
              <tt>text = {{email.text}}</tt><br/>
              <tt>myForm.input.$valid = {{myForm.input.$valid}}</tt><br/>
              <tt>myForm.input.$error = {{myForm.input.$error}}</tt><br/>
@@ -21397,18 +21312,18 @@ var inputType = {
              }]);
          </script>
          <form name="myForm" ng-controller="ExampleController">
-   <label>
-   <input type="radio" ng-model="color.name" value="red">
-   Red
-   </label><br/>
-   <label>
-   <input type="radio" ng-model="color.name" ng-value="specialValue">
-   Green
-   </label><br/>
-   <label>
-   <input type="radio" ng-model="color.name" value="blue">
-   Blue
-   </label><br/>
+           <label>
+             <input type="radio" ng-model="color.name" value="red">
+             Red
+           </label><br/>
+           <label>
+             <input type="radio" ng-model="color.name" ng-value="specialValue">
+             Green
+           </label><br/>
+           <label>
+             <input type="radio" ng-model="color.name" value="blue">
+             Blue
+           </label><br/>
            <tt>color = {{color.name | json}}</tt><br/>
           </form>
           Note that `ng-value="specialValue"` sets radio item's value to be the value of `$scope.specialValue`.
@@ -21456,13 +21371,13 @@ var inputType = {
              }]);
          </script>
          <form name="myForm" ng-controller="ExampleController">
-   <label>Value1:
-   <input type="checkbox" ng-model="checkboxModel.value1">
-   </label><br/>
-   <label>Value2:
-   <input type="checkbox" ng-model="checkboxModel.value2"
-   ng-true-value="'YES'" ng-false-value="'NO'">
-   </label><br/>
+           <label>Value1:
+             <input type="checkbox" ng-model="checkboxModel.value1">
+           </label><br/>
+           <label>Value2:
+             <input type="checkbox" ng-model="checkboxModel.value2"
+                    ng-true-value="'YES'" ng-false-value="'NO'">
+            </label><br/>
            <tt>value1 = {{checkboxModel.value1}}</tt><br/>
            <tt>value2 = {{checkboxModel.value2}}</tt><br/>
           </form>
@@ -21991,36 +21906,36 @@ function checkboxInputType(scope, element, attr, ctrl, $sniffer, $browser, $filt
        </script>
        <div ng-controller="ExampleController">
          <form name="myForm">
- <label>
- User name:
- <input type="text" name="userName" ng-model="user.name" required>
- </label>
- <div role="alert">
- <span class="error" ng-show="myForm.userName.$error.required">
- Required!</span>
- </div>
- <label>
- Last name:
- <input type="text" name="lastName" ng-model="user.last"
- ng-minlength="3" ng-maxlength="10">
- </label>
- <div role="alert">
- <span class="error" ng-show="myForm.lastName.$error.minlength">
- Too short!</span>
- <span class="error" ng-show="myForm.lastName.$error.maxlength">
- Too long!</span>
- </div>
+           <label>
+              User name:
+              <input type="text" name="userName" ng-model="user.name" required>
+           </label>
+           <div role="alert">
+             <span class="error" ng-show="myForm.userName.$error.required">
+              Required!</span>
+           </div>
+           <label>
+              Last name:
+              <input type="text" name="lastName" ng-model="user.last"
+              ng-minlength="3" ng-maxlength="10">
+           </label>
+           <div role="alert">
+             <span class="error" ng-show="myForm.lastName.$error.minlength">
+               Too short!</span>
+             <span class="error" ng-show="myForm.lastName.$error.maxlength">
+               Too long!</span>
+           </div>
          </form>
          <hr>
          <tt>user = {{user}}</tt><br/>
- <tt>myForm.userName.$valid = {{myForm.userName.$valid}}</tt><br/>
- <tt>myForm.userName.$error = {{myForm.userName.$error}}</tt><br/>
- <tt>myForm.lastName.$valid = {{myForm.lastName.$valid}}</tt><br/>
- <tt>myForm.lastName.$error = {{myForm.lastName.$error}}</tt><br/>
- <tt>myForm.$valid = {{myForm.$valid}}</tt><br/>
- <tt>myForm.$error.required = {{!!myForm.$error.required}}</tt><br/>
- <tt>myForm.$error.minlength = {{!!myForm.$error.minlength}}</tt><br/>
- <tt>myForm.$error.maxlength = {{!!myForm.$error.maxlength}}</tt><br/>
+         <tt>myForm.userName.$valid = {{myForm.userName.$valid}}</tt><br/>
+         <tt>myForm.userName.$error = {{myForm.userName.$error}}</tt><br/>
+         <tt>myForm.lastName.$valid = {{myForm.lastName.$valid}}</tt><br/>
+         <tt>myForm.lastName.$error = {{myForm.lastName.$error}}</tt><br/>
+         <tt>myForm.$valid = {{myForm.$valid}}</tt><br/>
+         <tt>myForm.$error.required = {{!!myForm.$error.required}}</tt><br/>
+         <tt>myForm.$error.minlength = {{!!myForm.$error.minlength}}</tt><br/>
+         <tt>myForm.$error.maxlength = {{!!myForm.$error.maxlength}}</tt><br/>
        </div>
       </file>
       <file name="protractor.js" type="protractor">
@@ -22209,7 +22124,7 @@ var ngValueDirective = function() {
            }]);
        </script>
        <div ng-controller="ExampleController">
- <label>Enter name: <input type="text" ng-model="name"></label><br>
+         <label>Enter name: <input type="text" ng-model="name"></label><br>
          Hello <span ng-bind="name"></span>!
        </div>
      </file>
@@ -22270,8 +22185,8 @@ var ngBindDirective = ['$compile', function($compile) {
            }]);
        </script>
        <div ng-controller="ExampleController">
- <label>Salutation: <input type="text" ng-model="salutation"></label><br>
- <label>Name: <input type="text" ng-model="name"></label><br>
+        <label>Salutation: <input type="text" ng-model="salutation"></label><br>
+        <label>Name: <input type="text" ng-model="name"></label><br>
         <pre ng-bind-template="{{salutation}} {{name}}!"></pre>
        </div>
      </file>
@@ -22557,7 +22472,7 @@ function classDirective(name, selector) {
     function arrayClasses(classVal) {
       var classes = [];
       if (isArray(classVal)) {
-        forEach(classVal, function (v) {
+        forEach(classVal, function(v) {
           classes = classes.concat(arrayClasses(v));
         });
         return classes;
@@ -22619,35 +22534,35 @@ function classDirective(name, selector) {
  * @example Example that demonstrates basic bindings via ngClass directive.
    <example>
      <file name="index.html">
- <p ng-class="{strike: deleted, bold: important, 'has-error': error}">Map Syntax Example</p>
- <label>
- <input type="checkbox" ng-model="deleted">
- deleted (apply "strike" class)
- </label><br>
- <label>
- <input type="checkbox" ng-model="important">
- important (apply "bold" class)
- </label><br>
- <label>
- <input type="checkbox" ng-model="error">
- error (apply "has-error" class)
- </label>
+       <p ng-class="{strike: deleted, bold: important, 'has-error': error}">Map Syntax Example</p>
+       <label>
+          <input type="checkbox" ng-model="deleted">
+          deleted (apply "strike" class)
+       </label><br>
+       <label>
+          <input type="checkbox" ng-model="important">
+          important (apply "bold" class)
+       </label><br>
+       <label>
+          <input type="checkbox" ng-model="error">
+          error (apply "has-error" class)
+       </label>
        <hr>
        <p ng-class="style">Using String Syntax</p>
- <input type="text" ng-model="style"
- placeholder="Type: bold strike red" aria-label="Type: bold strike red">
+       <input type="text" ng-model="style"
+              placeholder="Type: bold strike red" aria-label="Type: bold strike red">
        <hr>
        <p ng-class="[style1, style2, style3]">Using Array Syntax</p>
- <input ng-model="style1"
- placeholder="Type: bold, strike or red" aria-label="Type: bold, strike or red"><br>
- <input ng-model="style2"
- placeholder="Type: bold, strike or red" aria-label="Type: bold, strike or red 2"><br>
- <input ng-model="style3"
- placeholder="Type: bold, strike or red" aria-label="Type: bold, strike or red 3"><br>
- <hr>
- <p ng-class="[style4, {orange: warning}]">Using Array and Map Syntax</p>
- <input ng-model="style4" placeholder="Type: bold, strike" aria-label="Type: bold, strike"><br>
- <label><input type="checkbox" ng-model="warning"> warning (apply "orange" class)</label>
+       <input ng-model="style1"
+              placeholder="Type: bold, strike or red" aria-label="Type: bold, strike or red"><br>
+       <input ng-model="style2"
+              placeholder="Type: bold, strike or red" aria-label="Type: bold, strike or red 2"><br>
+       <input ng-model="style3"
+              placeholder="Type: bold, strike or red" aria-label="Type: bold, strike or red 3"><br>
+       <hr>
+       <p ng-class="[style4, {orange: warning}]">Using Array and Map Syntax</p>
+       <input ng-model="style4" placeholder="Type: bold, strike" aria-label="Type: bold, strike"><br>
+       <label><input type="checkbox" ng-model="warning"> warning (apply "orange" class)</label>
      </file>
      <file name="style.css">
        .strike {
@@ -22659,11 +22574,11 @@ function classDirective(name, selector) {
        .red {
            color: red;
        }
- .has-error {
+       .has-error {
            color: red;
            background-color: yellow;
        }
- .orange {
+       .orange {
            color: orange;
        }
      </file>
@@ -22697,7 +22612,7 @@ function classDirective(name, selector) {
          expect(ps.get(2).getAttribute('class')).toBe('bold strike red');
        });
 
- it('array with map example should have 2 classes', function() {
+       it('array with map example should have 2 classes', function() {
          expect(ps.last().getAttribute('class')).toBe('');
          element(by.model('style4')).sendKeys('bold');
          element(by.model('warning')).click();
@@ -22751,8 +22666,8 @@ function classDirective(name, selector) {
    The ngClass directive still supports CSS3 Transitions/Animations even if they do not follow the ngAnimate CSS naming structure.
    Upon animation ngAnimate will apply supplementary CSS classes to track the start and end of an animation, but this will not hinder
    any pre-existing CSS transitions already on the element. To get an idea of what happens during a class-based animation, be sure
- to view the step by step details of {@link $animate#addClass $animate.addClass} and
- {@link $animate#removeClass $animate.removeClass}.
+   to view the step by step details of {@link $animate#addClass $animate.addClass} and
+   {@link $animate#removeClass $animate.removeClass}.
  */
 var ngClassDirective = classDirective('', true);
 
@@ -22891,7 +22806,7 @@ var ngClassEvenDirective = classDirective('Even', 1);
    <example>
      <file name="index.html">
         <div id="template1" ng-cloak>{{ 'hello' }}</div>
- <div id="template2" class="ng-cloak">{{ 'world' }}</div>
+        <div id="template2" class="ng-cloak">{{ 'world' }}</div>
      </file>
      <file name="protractor.js" type="protractor">
        it('should remove the template directive and css class', function() {
@@ -23850,7 +23765,7 @@ forEach(
  * @example
   <example module="ngAnimate" deps="angular-animate.js" animations="true">
     <file name="index.html">
- <label>Click me: <input type="checkbox" ng-model="checked" ng-init="checked=true" /></label><br/>
+      <label>Click me: <input type="checkbox" ng-model="checked" ng-init="checked=true" /></label><br/>
       Show when checked:
       <span ng-if="checked" class="animate-if">
         This is removed when the checkbox is unchecked.
@@ -24107,7 +24022,7 @@ var ngIfDirective = ['$animate', function($animate) {
  * @param {String} src URL of content to load.
  */
 var ngIncludeDirective = ['$templateRequest', '$anchorScroll', '$animate',
-  function ($templateRequest, $anchorScroll, $animate) {
+                  function($templateRequest,   $anchorScroll,   $animate) {
   return {
     restrict: 'ECA',
     priority: 400,
@@ -24609,7 +24524,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
             required>Change me!</div>
         <span ng-show="myForm.myWidget.$error.required">Required!</span>
        <hr>
- <textarea ng-model="userContent" aria-label="Dynamic textarea"></textarea>
+       <textarea ng-model="userContent" aria-label="Dynamic textarea"></textarea>
       </form>
     </file>
     <file name="protractor.js" type="protractor">
@@ -24661,7 +24576,7 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
       ngModelGet = parsedNgModel,
       ngModelSet = parsedNgModelAssign,
       pendingDebounce = null,
-    parserValid,
+      parserValid,
       ctrl = this;
 
   this.$$setOptions = function(options) {
@@ -24941,7 +24856,7 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
 
     var allowInvalid = ctrl.$options && ctrl.$options.allowInvalid;
 
-    ctrl.$$runValidators(modelValue, viewValue, function (allValid) {
+    ctrl.$$runValidators(modelValue, viewValue, function(allValid) {
       // If there was no change in validity, don't update the model
       // This prevents changing an invalid modelValue to undefined
       if (!allowInvalid && prevValid !== allValid) {
@@ -24959,12 +24874,12 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
 
   };
 
-      this.$$runValidators = function (modelValue, viewValue, doneCallback) {
+  this.$$runValidators = function(modelValue, viewValue, doneCallback) {
     currentValidationRunId++;
     var localValidationRunId = currentValidationRunId;
 
     // check parser error
-        if (!processParseErrors()) {
+    if (!processParseErrors()) {
       validationDone(false);
       return;
     }
@@ -24974,12 +24889,12 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
     }
     processAsyncValidators();
 
-        function processParseErrors() {
+    function processParseErrors() {
       var errorKey = ctrl.$$parserName || 'parse';
-          if (parserValid === undefined) {
+      if (parserValid === undefined) {
         setValidity(errorKey, null);
       } else {
-            if (!parserValid) {
+        if (!parserValid) {
           forEach(ctrl.$validators, function(v, name) {
             setValidity(name, null);
           });
@@ -24987,9 +24902,9 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
             setValidity(name, null);
           });
         }
-            // Set the parse error last, to prevent unsetting it, should a $validators key == parserName
-            setValidity(errorKey, parserValid);
-            return parserValid;
+        // Set the parse error last, to prevent unsetting it, should a $validators key == parserName
+        setValidity(errorKey, parserValid);
+        return parserValid;
       }
       return true;
     }
@@ -25110,7 +25025,7 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
 
     // Pass the $$lastCommittedViewValue here, because the cached viewValue might be out of date.
     // This can happen if e.g. $setViewValue is called from inside a parser
-    ctrl.$$runValidators(modelValue, ctrl.$$lastCommittedViewValue, function (allValid) {
+    ctrl.$$runValidators(modelValue, ctrl.$$lastCommittedViewValue, function(allValid) {
       if (!allowInvalid) {
         // Note: Don't check ctrl.$valid here, as we could have
         // external validators (e.g. calculated on the server),
@@ -25230,8 +25145,8 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
     // if scope model value and ngModel value are out of sync
     // TODO(perf): why not move this to the action fn?
     if (modelValue !== ctrl.$modelValue &&
-        // checks for NaN is needed to allow setting the model to NaN when there's an asyncValidator
-      (ctrl.$modelValue === ctrl.$modelValue || modelValue === modelValue)
+       // checks for NaN is needed to allow setting the model to NaN when there's an asyncValidator
+       (ctrl.$modelValue === ctrl.$modelValue || modelValue === modelValue)
     ) {
       ctrl.$modelValue = ctrl.$$rawModelValue = modelValue;
       parserValid = undefined;
@@ -25362,13 +25277,13 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
            background: red;
          }
        </style>
- <p id="inputDescription">
- Update input to see transitions when valid/invalid.
- Integer is a valid value.
- </p>
+       <p id="inputDescription">
+        Update input to see transitions when valid/invalid.
+        Integer is a valid value.
+       </p>
        <form name="testForm" ng-controller="ExampleController">
- <input ng-model="val" ng-pattern="/^\d+$/" name="anim" class="my-input"
- aria-describedby="inputDescription" />
+         <input ng-model="val" ng-pattern="/^\d+$/" name="anim" class="my-input"
+                aria-describedby="inputDescription" />
        </form>
      </file>
  * </example>
@@ -25398,11 +25313,11 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
      <file name="index.html">
        <div ng-controller="ExampleController">
          <form name="userForm">
- <label>Name:
- <input type="text" name="userName"
- ng-model="user.name"
- ng-model-options="{ getterSetter: true }" />
- </label>
+           <label>Name:
+             <input type="text" name="userName"
+                    ng-model="user.name"
+                    ng-model-options="{ getterSetter: true }" />
+           </label>
          </form>
          <pre>user.name = <span ng-bind="user.name()"></span></pre>
        </div>
@@ -25535,15 +25450,15 @@ var DEFAULT_REGEXP = /(\s+|^)default(\s+|$)/;
     <file name="index.html">
       <div ng-controller="ExampleController">
         <form name="userForm">
- <label>Name:
- <input type="text" name="userName"
- ng-model="user.name"
- ng-model-options="{ updateOn: 'blur' }"
- ng-keyup="cancel($event)" />
- </label><br />
- <label>Other data:
- <input type="text" ng-model="user.data" />
- </label><br />
+          <label>Name:
+            <input type="text" name="userName"
+                   ng-model="user.name"
+                   ng-model-options="{ updateOn: 'blur' }"
+                   ng-keyup="cancel($event)" />
+          </label><br />
+          <label>Other data:
+            <input type="text" ng-model="user.data" />
+          </label><br />
         </form>
         <pre>user.name = <span ng-bind="user.name"></span></pre>
       </div>
@@ -25591,13 +25506,13 @@ var DEFAULT_REGEXP = /(\s+|^)default(\s+|$)/;
     <file name="index.html">
       <div ng-controller="ExampleController">
         <form name="userForm">
- <label>Name:
- <input type="text" name="userName"
- ng-model="user.name"
- ng-model-options="{ debounce: 1000 }" />
- </label>
- <button ng-click="userForm.userName.$rollbackViewValue(); user.name=''">Clear</button>
- <br />
+          <label>Name:
+            <input type="text" name="userName"
+                   ng-model="user.name"
+                   ng-model-options="{ debounce: 1000 }" />
+          </label>
+          <button ng-click="userForm.userName.$rollbackViewValue(); user.name=''">Clear</button>
+          <br />
         </form>
         <pre>user.name = <span ng-bind="user.name"></span></pre>
       </div>
@@ -25616,11 +25531,11 @@ var DEFAULT_REGEXP = /(\s+|^)default(\s+|$)/;
     <file name="index.html">
       <div ng-controller="ExampleController">
         <form name="userForm">
- <label>Name:
- <input type="text" name="userName"
- ng-model="user.name"
- ng-model-options="{ getterSetter: true }" />
- </label>
+          <label>Name:
+            <input type="text" name="userName"
+                   ng-model="user.name"
+                   ng-model-options="{ getterSetter: true }" />
+          </label>
         </form>
         <pre>user.name = <span ng-bind="user.name()"></span></pre>
       </div>
@@ -25806,9 +25721,9 @@ function isObjectEmpty(obj) {
  */
 var ngNonBindableDirective = ngDirective({ terminal: true, priority: 1000 });
 
-  /* global jqLiteRemove */
+/* global jqLiteRemove */
 
-  var ngOptionsMinErr = minErr('ngOptions');
+var ngOptionsMinErr = minErr('ngOptions');
 
 /**
  * @ngdoc directive
@@ -25946,11 +25861,11 @@ var ngNonBindableDirective = ngDirective({ terminal: true, priority: 1000 });
  *      even when the options are recreated (e.g. reloaded from the server).
  *
  * @example
- <example module="selectExample">
- <file name="index.html">
- <script>
- angular.module('selectExample', [])
- .controller('ExampleController', ['$scope', function($scope) {
+    <example module="selectExample">
+      <file name="index.html">
+        <script>
+        angular.module('selectExample', [])
+          .controller('ExampleController', ['$scope', function($scope) {
             $scope.colors = [
               {name:'black', shade:'dark'},
               {name:'white', shade:'light', notAnOption: true},
@@ -25960,53 +25875,53 @@ var ngNonBindableDirective = ngDirective({ terminal: true, priority: 1000 });
             ];
             $scope.myColor = $scope.colors[2]; // red
           }]);
- </script>
- <div ng-controller="ExampleController">
- <ul>
- <li ng-repeat="color in colors">
- <label>Name: <input ng-model="color.name"></label>
- <label><input type="checkbox" ng-model="color.notAnOption"> Disabled?</label>
- <button ng-click="colors.splice($index, 1)" aria-label="Remove">X</button>
- </li>
- <li>
- <button ng-click="colors.push({})">add</button>
- </li>
- </ul>
- <hr/>
- <label>Color (null not allowed):
- <select ng-model="myColor" ng-options="color.name for color in colors"></select>
- </label><br/>
- <label>Color (null allowed):
- <span  class="nullable">
- <select ng-model="myColor" ng-options="color.name for color in colors">
- <option value="">-- choose color --</option>
- </select>
- </span></label><br/>
+        </script>
+        <div ng-controller="ExampleController">
+          <ul>
+            <li ng-repeat="color in colors">
+              <label>Name: <input ng-model="color.name"></label>
+              <label><input type="checkbox" ng-model="color.notAnOption"> Disabled?</label>
+              <button ng-click="colors.splice($index, 1)" aria-label="Remove">X</button>
+            </li>
+            <li>
+              <button ng-click="colors.push({})">add</button>
+            </li>
+          </ul>
+          <hr/>
+          <label>Color (null not allowed):
+            <select ng-model="myColor" ng-options="color.name for color in colors"></select>
+          </label><br/>
+          <label>Color (null allowed):
+          <span  class="nullable">
+            <select ng-model="myColor" ng-options="color.name for color in colors">
+              <option value="">-- choose color --</option>
+            </select>
+          </span></label><br/>
 
- <label>Color grouped by shade:
- <select ng-model="myColor" ng-options="color.name group by color.shade for color in colors">
- </select>
- </label><br/>
+          <label>Color grouped by shade:
+            <select ng-model="myColor" ng-options="color.name group by color.shade for color in colors">
+            </select>
+          </label><br/>
 
- <label>Color grouped by shade, with some disabled:
- <select ng-model="myColor"
- ng-options="color.name group by color.shade disable when color.notAnOption for color in colors">
- </select>
- </label><br/>
+          <label>Color grouped by shade, with some disabled:
+            <select ng-model="myColor"
+                  ng-options="color.name group by color.shade disable when color.notAnOption for color in colors">
+            </select>
+          </label><br/>
 
 
 
- Select <button ng-click="myColor = { name:'not in list', shade: 'other' }">bogus</button>.
- <br/>
- <hr/>
- Currently selected: {{ {selected_color:myColor} }}
- <div style="border:solid 1px black; height:20px"
- ng-style="{'background-color':myColor.name}">
- </div>
- </div>
- </file>
- <file name="protractor.js" type="protractor">
- it('should check ng-options', function() {
+          Select <button ng-click="myColor = { name:'not in list', shade: 'other' }">bogus</button>.
+          <br/>
+          <hr/>
+          Currently selected: {{ {selected_color:myColor} }}
+          <div style="border:solid 1px black; height:20px"
+               ng-style="{'background-color':myColor.name}">
+          </div>
+        </div>
+      </file>
+      <file name="protractor.js" type="protractor">
+         it('should check ng-options', function() {
            expect(element(by.binding('{selected_color:myColor}')).getText()).toMatch('red');
            element.all(by.model('myColor')).first().click();
            element.all(by.css('select[ng-model="myColor"] option')).first().click();
@@ -26015,541 +25930,525 @@ var ngNonBindableDirective = ngDirective({ terminal: true, priority: 1000 });
            element.all(by.css('.nullable select[ng-model="myColor"] option')).first().click();
            expect(element(by.binding('{selected_color:myColor}')).getText()).toMatch('null');
          });
- </file>
- </example>
+      </file>
+    </example>
  */
 
 // jshint maxlen: false
 //                     //00001111111111000000000002222222222000000000000000000000333333333300000000000000000000000004444444444400000000000005555555555555550000000006666666666666660000000777777777777777000000000000000888888888800000000000000000009999999999
-  var NG_OPTIONS_REGEXP = /^\s*([\s\S]+?)(?:\s+as\s+([\s\S]+?))?(?:\s+group\s+by\s+([\s\S]+?))?(?:\s+disable\s+when\s+([\s\S]+?))?\s+for\s+(?:([\$\w][\$\w]*)|(?:\(\s*([\$\w][\$\w]*)\s*,\s*([\$\w][\$\w]*)\s*\)))\s+in\s+([\s\S]+?)(?:\s+track\s+by\s+([\s\S]+?))?$/;
-  // 1: value expression (valueFn)
-  // 2: label expression (displayFn)
-  // 3: group by expression (groupByFn)
-  // 4: disable when expression (disableWhenFn)
-  // 5: array item variable name
-  // 6: object item key variable name
-  // 7: object item value variable name
-  // 8: collection expression
-  // 9: track by expression
+var NG_OPTIONS_REGEXP = /^\s*([\s\S]+?)(?:\s+as\s+([\s\S]+?))?(?:\s+group\s+by\s+([\s\S]+?))?(?:\s+disable\s+when\s+([\s\S]+?))?\s+for\s+(?:([\$\w][\$\w]*)|(?:\(\s*([\$\w][\$\w]*)\s*,\s*([\$\w][\$\w]*)\s*\)))\s+in\s+([\s\S]+?)(?:\s+track\s+by\s+([\s\S]+?))?$/;
+                        // 1: value expression (valueFn)
+                        // 2: label expression (displayFn)
+                        // 3: group by expression (groupByFn)
+                        // 4: disable when expression (disableWhenFn)
+                        // 5: array item variable name
+                        // 6: object item key variable name
+                        // 7: object item value variable name
+                        // 8: collection expression
+                        // 9: track by expression
 // jshint maxlen: 100
 
 
-  var ngOptionsDirective = ['$compile', '$parse', function ($compile, $parse) {
+var ngOptionsDirective = ['$compile', '$parse', function($compile, $parse) {
 
-    function parseOptionsExpression(optionsExp, selectElement, scope) {
+  function parseOptionsExpression(optionsExp, selectElement, scope) {
 
-      var match = optionsExp.match(NG_OPTIONS_REGEXP);
-      if (!(match)) {
-        throw ngOptionsMinErr('iexp',
-          "Expected expression in form of " +
-          "'_select_ (as _label_)? for (_key_,)?_value_ in _collection_'" +
-          " but got '{0}'. Element: {1}",
-          optionsExp, startingTag(selectElement));
-      }
-
-      // Extract the parts from the ngOptions expression
-
-      // The variable name for the value of the item in the collection
-      var valueName = match[5] || match[7];
-      // The variable name for the key of the item in the collection
-      var keyName = match[6];
-
-      // An expression that generates the viewValue for an option if there is a label expression
-      var selectAs = / as /.test(match[0]) && match[1];
-      // An expression that is used to track the id of each object in the options collection
-      var trackBy = match[9];
-      // An expression that generates the viewValue for an option if there is no label expression
-      var valueFn = $parse(match[2] ? match[1] : valueName);
-      var selectAsFn = selectAs && $parse(selectAs);
-      var viewValueFn = selectAsFn || valueFn;
-      var trackByFn = trackBy && $parse(trackBy);
-
-      // Get the value by which we are going to track the option
-      // if we have a trackFn then use that (passing scope and locals)
-      // otherwise just hash the given viewValue
-      var getTrackByValueFn = trackBy ?
-        function (value, locals) {
-          return trackByFn(scope, locals);
-        } :
-        function getHashOfValue(value) {
-          return hashKey(value);
-        };
-      var getTrackByValue = function (value, key) {
-        return getTrackByValueFn(value, getLocals(value, key));
-      };
-
-      var displayFn = $parse(match[2] || match[1]);
-      var groupByFn = $parse(match[3] || '');
-      var disableWhenFn = $parse(match[4] || '');
-      var valuesFn = $parse(match[8]);
-
-      var locals = {};
-      var getLocals = keyName ? function (value, key) {
-        locals[keyName] = key;
-        locals[valueName] = value;
-        return locals;
-      } : function (value) {
-        locals[valueName] = value;
-        return locals;
-      };
-
-
-      function Option(selectValue, viewValue, label, group, disabled) {
-        this.selectValue = selectValue;
-        this.viewValue = viewValue;
-        this.label = label;
-        this.group = group;
-        this.disabled = disabled;
-      }
-
-      function getOptionValuesKeys(optionValues) {
-        var optionValuesKeys;
-
-        if (!keyName && isArrayLike(optionValues)) {
-          optionValuesKeys = optionValues;
-        }
-        else {
-          // if object, extract keys, in enumeration order, unsorted
-          optionValuesKeys = [];
-          for (var itemKey in optionValues) {
-            if (optionValues.hasOwnProperty(itemKey) && itemKey.charAt(0) !== '$') {
-              optionValuesKeys.push(itemKey);
-            }
-          }
-        }
-        return optionValuesKeys;
-      }
-
-      return {
-        trackBy: trackBy,
-        getTrackByValue: getTrackByValue,
-        getWatchables: $parse(valuesFn, function (optionValues) {
-          // Create a collection of things that we would like to watch (watchedArray)
-          // so that they can all be watched using a single $watchCollection
-          // that only runs the handler once if anything changes
-          var watchedArray = [];
-          optionValues = optionValues || [];
-
-          var optionValuesKeys = getOptionValuesKeys(optionValues);
-          var optionValuesLength = optionValuesKeys.length;
-          for (var index = 0; index < optionValuesLength; index++) {
-            var key = (optionValues === optionValuesKeys) ? index : optionValuesKeys[index];
-            var value = optionValues[key];
-
-            var locals = getLocals(optionValues[key], key);
-            var selectValue = getTrackByValueFn(optionValues[key], locals);
-            watchedArray.push(selectValue);
-
-            // Only need to watch the displayFn if there is a specific label expression
-            if (match[2] || match[1]) {
-              var label = displayFn(scope, locals);
-              watchedArray.push(label);
-            }
-
-            // Only need to watch the disableWhenFn if there is a specific disable expression
-            if (match[4]) {
-              var disableWhen = disableWhenFn(scope, locals);
-              watchedArray.push(disableWhen);
-            }
-          }
-          return watchedArray;
-        }),
-
-        getOptions: function () {
-
-          var optionItems = [];
-          var selectValueMap = {};
-
-          // The option values were already computed in the `getWatchables` fn,
-          // which must have been called to trigger `getOptions`
-          var optionValues = valuesFn(scope) || [];
-          var optionValuesKeys = getOptionValuesKeys(optionValues);
-          var optionValuesLength = optionValuesKeys.length;
-
-          for (var index = 0; index < optionValuesLength; index++) {
-            var key = (optionValues === optionValuesKeys) ? index : optionValuesKeys[index];
-            var value = optionValues[key];
-            var locals = getLocals(value, key);
-            var viewValue = viewValueFn(scope, locals);
-            var selectValue = getTrackByValueFn(viewValue, locals);
-            var label = displayFn(scope, locals);
-            var group = groupByFn(scope, locals);
-            var disabled = disableWhenFn(scope, locals);
-            var optionItem = new Option(selectValue, viewValue, label, group, disabled);
-
-            optionItems.push(optionItem);
-            selectValueMap[selectValue] = optionItem;
-          }
-
-          return {
-            items: optionItems,
-            selectValueMap: selectValueMap,
-            getOptionFromViewValue: function (value) {
-              return selectValueMap[getTrackByValue(value)];
-            },
-            getViewValueFromOption: function (option) {
-              // If the viewValue could be an object that may be mutated by the application,
-              // we need to make a copy and not return the reference to the value on the option.
-              return trackBy ? angular.copy(option.viewValue) : option.viewValue;
-            }
-          };
-        }
-      };
+    var match = optionsExp.match(NG_OPTIONS_REGEXP);
+    if (!(match)) {
+      throw ngOptionsMinErr('iexp',
+        "Expected expression in form of " +
+        "'_select_ (as _label_)? for (_key_,)?_value_ in _collection_'" +
+        " but got '{0}'. Element: {1}",
+        optionsExp, startingTag(selectElement));
     }
 
+    // Extract the parts from the ngOptions expression
 
-    // we can't just jqLite('<option>') since jqLite is not smart enough
-    // to create it in <select> and IE barfs otherwise.
-    var optionTemplate = document.createElement('option'),
-      optGroupTemplate = document.createElement('optgroup');
+    // The variable name for the value of the item in the collection
+    var valueName = match[5] || match[7];
+    // The variable name for the key of the item in the collection
+    var keyName = match[6];
+
+    // An expression that generates the viewValue for an option if there is a label expression
+    var selectAs = / as /.test(match[0]) && match[1];
+    // An expression that is used to track the id of each object in the options collection
+    var trackBy = match[9];
+    // An expression that generates the viewValue for an option if there is no label expression
+    var valueFn = $parse(match[2] ? match[1] : valueName);
+    var selectAsFn = selectAs && $parse(selectAs);
+    var viewValueFn = selectAsFn || valueFn;
+    var trackByFn = trackBy && $parse(trackBy);
+
+    // Get the value by which we are going to track the option
+    // if we have a trackFn then use that (passing scope and locals)
+    // otherwise just hash the given viewValue
+    var getTrackByValueFn = trackBy ?
+                              function(value, locals) { return trackByFn(scope, locals); } :
+                              function getHashOfValue(value) { return hashKey(value); };
+    var getTrackByValue = function(value, key) {
+      return getTrackByValueFn(value, getLocals(value, key));
+    };
+
+    var displayFn = $parse(match[2] || match[1]);
+    var groupByFn = $parse(match[3] || '');
+    var disableWhenFn = $parse(match[4] || '');
+    var valuesFn = $parse(match[8]);
+
+    var locals = {};
+    var getLocals = keyName ? function(value, key) {
+      locals[keyName] = key;
+      locals[valueName] = value;
+      return locals;
+    } : function(value) {
+      locals[valueName] = value;
+      return locals;
+    };
+
+
+    function Option(selectValue, viewValue, label, group, disabled) {
+      this.selectValue = selectValue;
+      this.viewValue = viewValue;
+      this.label = label;
+      this.group = group;
+      this.disabled = disabled;
+    }
+
+    function getOptionValuesKeys(optionValues) {
+      var optionValuesKeys;
+
+      if (!keyName && isArrayLike(optionValues)) {
+        optionValuesKeys = optionValues;
+      } else {
+        // if object, extract keys, in enumeration order, unsorted
+        optionValuesKeys = [];
+        for (var itemKey in optionValues) {
+          if (optionValues.hasOwnProperty(itemKey) && itemKey.charAt(0) !== '$') {
+            optionValuesKeys.push(itemKey);
+          }
+        }
+      }
+      return optionValuesKeys;
+    }
 
     return {
-      restrict: 'A',
-      terminal: true,
-      require: ['select', '?ngModel'],
-      link: function (scope, selectElement, attr, ctrls) {
+      trackBy: trackBy,
+      getTrackByValue: getTrackByValue,
+      getWatchables: $parse(valuesFn, function(optionValues) {
+        // Create a collection of things that we would like to watch (watchedArray)
+        // so that they can all be watched using a single $watchCollection
+        // that only runs the handler once if anything changes
+        var watchedArray = [];
+        optionValues = optionValues || [];
 
-        // if ngModel is not defined, we don't need to do anything
-        var ngModelCtrl = ctrls[1];
-        if (!ngModelCtrl) return;
+        var optionValuesKeys = getOptionValuesKeys(optionValues);
+        var optionValuesLength = optionValuesKeys.length;
+        for (var index = 0; index < optionValuesLength; index++) {
+          var key = (optionValues === optionValuesKeys) ? index : optionValuesKeys[index];
+          var value = optionValues[key];
 
-        var selectCtrl = ctrls[0];
-        var multiple = attr.multiple;
+          var locals = getLocals(optionValues[key], key);
+          var selectValue = getTrackByValueFn(optionValues[key], locals);
+          watchedArray.push(selectValue);
 
-        // The emptyOption allows the application developer to provide their own custom "empty"
-        // option when the viewValue does not match any of the option values.
-        var emptyOption;
-        for (var i = 0, children = selectElement.children(), ii = children.length; i < ii; i++) {
-          if (children[i].value === '') {
-            emptyOption = children.eq(i);
-            break;
+          // Only need to watch the displayFn if there is a specific label expression
+          if (match[2] || match[1]) {
+            var label = displayFn(scope, locals);
+            watchedArray.push(label);
+          }
+
+          // Only need to watch the disableWhenFn if there is a specific disable expression
+          if (match[4]) {
+            var disableWhen = disableWhenFn(scope, locals);
+            watchedArray.push(disableWhen);
           }
         }
+        return watchedArray;
+      }),
 
-        var providedEmptyOption = !!emptyOption;
+      getOptions: function() {
 
-        var unknownOption = jqLite(optionTemplate.cloneNode(false));
-        unknownOption.val('?');
+        var optionItems = [];
+        var selectValueMap = {};
 
-        var options;
-        var ngOptions = parseOptionsExpression(attr.ngOptions, selectElement, scope);
+        // The option values were already computed in the `getWatchables` fn,
+        // which must have been called to trigger `getOptions`
+        var optionValues = valuesFn(scope) || [];
+        var optionValuesKeys = getOptionValuesKeys(optionValues);
+        var optionValuesLength = optionValuesKeys.length;
 
+        for (var index = 0; index < optionValuesLength; index++) {
+          var key = (optionValues === optionValuesKeys) ? index : optionValuesKeys[index];
+          var value = optionValues[key];
+          var locals = getLocals(value, key);
+          var viewValue = viewValueFn(scope, locals);
+          var selectValue = getTrackByValueFn(viewValue, locals);
+          var label = displayFn(scope, locals);
+          var group = groupByFn(scope, locals);
+          var disabled = disableWhenFn(scope, locals);
+          var optionItem = new Option(selectValue, viewValue, label, group, disabled);
 
-        var renderEmptyOption = function () {
-          if (!providedEmptyOption) {
-            selectElement.prepend(emptyOption);
+          optionItems.push(optionItem);
+          selectValueMap[selectValue] = optionItem;
+        }
+
+        return {
+          items: optionItems,
+          selectValueMap: selectValueMap,
+          getOptionFromViewValue: function(value) {
+            return selectValueMap[getTrackByValue(value)];
+          },
+          getViewValueFromOption: function(option) {
+            // If the viewValue could be an object that may be mutated by the application,
+            // we need to make a copy and not return the reference to the value on the option.
+            return trackBy ? angular.copy(option.viewValue) : option.viewValue;
           }
-          selectElement.val('');
-          emptyOption.prop('selected', true); // needed for IE
-          emptyOption.attr('selected', true);
         };
-
-        var removeEmptyOption = function () {
-          if (!providedEmptyOption) {
-            emptyOption.remove();
-          }
-        };
+      }
+    };
+  }
 
 
-        var renderUnknownOption = function () {
-          selectElement.prepend(unknownOption);
-          selectElement.val('?');
-          unknownOption.prop('selected', true); // needed for IE
-          unknownOption.attr('selected', true);
-        };
+  // we can't just jqLite('<option>') since jqLite is not smart enough
+  // to create it in <select> and IE barfs otherwise.
+  var optionTemplate = document.createElement('option'),
+      optGroupTemplate = document.createElement('optgroup');
 
-        var removeUnknownOption = function () {
-          unknownOption.remove();
-        };
+  return {
+    restrict: 'A',
+    terminal: true,
+    require: ['select', '?ngModel'],
+    link: function(scope, selectElement, attr, ctrls) {
+
+      // if ngModel is not defined, we don't need to do anything
+      var ngModelCtrl = ctrls[1];
+      if (!ngModelCtrl) return;
+
+      var selectCtrl = ctrls[0];
+      var multiple = attr.multiple;
+
+      // The emptyOption allows the application developer to provide their own custom "empty"
+      // option when the viewValue does not match any of the option values.
+      var emptyOption;
+      for (var i = 0, children = selectElement.children(), ii = children.length; i < ii; i++) {
+        if (children[i].value === '') {
+          emptyOption = children.eq(i);
+          break;
+        }
+      }
+
+      var providedEmptyOption = !!emptyOption;
+
+      var unknownOption = jqLite(optionTemplate.cloneNode(false));
+      unknownOption.val('?');
+
+      var options;
+      var ngOptions = parseOptionsExpression(attr.ngOptions, selectElement, scope);
 
 
-        // Update the controller methods for multiple selectable options
-        if (!multiple) {
+      var renderEmptyOption = function() {
+        if (!providedEmptyOption) {
+          selectElement.prepend(emptyOption);
+        }
+        selectElement.val('');
+        emptyOption.prop('selected', true); // needed for IE
+        emptyOption.attr('selected', true);
+      };
 
-          selectCtrl.writeValue = function writeNgOptionsValue(value) {
-            var option = options.getOptionFromViewValue(value);
+      var removeEmptyOption = function() {
+        if (!providedEmptyOption) {
+          emptyOption.remove();
+        }
+      };
 
-            if (option && !option.disabled) {
-              if (selectElement[0].value !== option.selectValue) {
-                removeUnknownOption();
-                removeEmptyOption();
 
-                selectElement[0].value = option.selectValue;
-                option.element.selected = true;
-                option.element.setAttribute('selected', 'selected');
-              }
-            }
-            else {
-              if (value === null || providedEmptyOption) {
-                removeUnknownOption();
-                renderEmptyOption();
-              }
-              else {
-                removeEmptyOption();
-                renderUnknownOption();
-              }
-            }
-          };
+      var renderUnknownOption = function() {
+        selectElement.prepend(unknownOption);
+        selectElement.val('?');
+        unknownOption.prop('selected', true); // needed for IE
+        unknownOption.attr('selected', true);
+      };
 
-          selectCtrl.readValue = function readNgOptionsValue() {
+      var removeUnknownOption = function() {
+        unknownOption.remove();
+      };
 
-            var selectedOption = options.selectValueMap[selectElement.val()];
 
-            if (selectedOption && !selectedOption.disabled) {
-              removeEmptyOption();
+      // Update the controller methods for multiple selectable options
+      if (!multiple) {
+
+        selectCtrl.writeValue = function writeNgOptionsValue(value) {
+          var option = options.getOptionFromViewValue(value);
+
+          if (option && !option.disabled) {
+            if (selectElement[0].value !== option.selectValue) {
               removeUnknownOption();
-              return options.getViewValueFromOption(selectedOption);
-            }
-            return null;
-          };
+              removeEmptyOption();
 
-          // If we are using `track by` then we must watch the tracked value on the model
-          // since ngModel only watches for object identity change
-          if (ngOptions.trackBy) {
-            scope.$watch(
-              function () {
-                return ngOptions.getTrackByValue(ngModelCtrl.$viewValue);
-              },
-              function () {
-                ngModelCtrl.$render();
-              }
-            );
+              selectElement[0].value = option.selectValue;
+              option.element.selected = true;
+              option.element.setAttribute('selected', 'selected');
+            }
+          } else {
+            if (value === null || providedEmptyOption) {
+              removeUnknownOption();
+              renderEmptyOption();
+            } else {
+              removeEmptyOption();
+              renderUnknownOption();
+            }
           }
+        };
 
+        selectCtrl.readValue = function readNgOptionsValue() {
+
+          var selectedOption = options.selectValueMap[selectElement.val()];
+
+          if (selectedOption && !selectedOption.disabled) {
+            removeEmptyOption();
+            removeUnknownOption();
+            return options.getViewValueFromOption(selectedOption);
+          }
+          return null;
+        };
+
+        // If we are using `track by` then we must watch the tracked value on the model
+        // since ngModel only watches for object identity change
+        if (ngOptions.trackBy) {
+          scope.$watch(
+            function() { return ngOptions.getTrackByValue(ngModelCtrl.$viewValue); },
+            function() { ngModelCtrl.$render(); }
+          );
         }
-        else {
 
-          ngModelCtrl.$isEmpty = function (value) {
-            return !value || value.length === 0;
-          };
+      } else {
+
+        ngModelCtrl.$isEmpty = function(value) {
+          return !value || value.length === 0;
+        };
 
 
-          selectCtrl.writeValue = function writeNgOptionsMultiple(value) {
-            options.items.forEach(function (option) {
-              option.element.selected = false;
+        selectCtrl.writeValue = function writeNgOptionsMultiple(value) {
+          options.items.forEach(function(option) {
+            option.element.selected = false;
+          });
+
+          if (value) {
+            value.forEach(function(item) {
+              var option = options.getOptionFromViewValue(item);
+              if (option && !option.disabled) option.element.selected = true;
             });
-
-            if (value) {
-              value.forEach(function (item) {
-                var option = options.getOptionFromViewValue(item);
-                if (option && !option.disabled) option.element.selected = true;
-              });
-            }
-          };
+          }
+        };
 
 
-          selectCtrl.readValue = function readNgOptionsMultiple() {
-            var selectedValues = selectElement.val() || [],
+        selectCtrl.readValue = function readNgOptionsMultiple() {
+          var selectedValues = selectElement.val() || [],
               selections = [];
 
-            forEach(selectedValues, function (value) {
-              var option = options.selectValueMap[value];
-              if (!option.disabled) selections.push(options.getViewValueFromOption(option));
-            });
+          forEach(selectedValues, function(value) {
+            var option = options.selectValueMap[value];
+            if (!option.disabled) selections.push(options.getViewValueFromOption(option));
+          });
 
-            return selections;
-          };
+          return selections;
+        };
 
-          // If we are using `track by` then we must watch these tracked values on the model
-          // since ngModel only watches for object identity change
-          if (ngOptions.trackBy) {
+        // If we are using `track by` then we must watch these tracked values on the model
+        // since ngModel only watches for object identity change
+        if (ngOptions.trackBy) {
 
-            scope.$watchCollection(function () {
-              if (isArray(ngModelCtrl.$viewValue)) {
-                return ngModelCtrl.$viewValue.map(function (value) {
-                  return ngOptions.getTrackByValue(value);
-                });
-              }
-            }, function () {
-              ngModelCtrl.$render();
-            });
+          scope.$watchCollection(function() {
+            if (isArray(ngModelCtrl.$viewValue)) {
+              return ngModelCtrl.$viewValue.map(function(value) {
+                return ngOptions.getTrackByValue(value);
+              });
+            }
+          }, function() {
+            ngModelCtrl.$render();
+          });
 
+        }
+      }
+
+
+      if (providedEmptyOption) {
+
+        // we need to remove it before calling selectElement.empty() because otherwise IE will
+        // remove the label from the element. wtf?
+        emptyOption.remove();
+
+        // compile the element since there might be bindings in it
+        $compile(emptyOption)(scope);
+
+        // remove the class, which is added automatically because we recompile the element and it
+        // becomes the compilation root
+        emptyOption.removeClass('ng-scope');
+      } else {
+        emptyOption = jqLite(optionTemplate.cloneNode(false));
+      }
+
+      // We need to do this here to ensure that the options object is defined
+      // when we first hit it in writeNgOptionsValue
+      updateOptions();
+
+      // We will re-render the option elements if the option values or labels change
+      scope.$watchCollection(ngOptions.getWatchables, updateOptions);
+
+      // ------------------------------------------------------------------ //
+
+
+      function updateOptionElement(option, element) {
+        option.element = element;
+        element.disabled = option.disabled;
+        if (option.value !== element.value) element.value = option.selectValue;
+        if (option.label !== element.label) {
+          element.label = option.label;
+          element.textContent = option.label;
+        }
+      }
+
+      function addOrReuseElement(parent, current, type, templateElement) {
+        var element;
+        // Check whether we can reuse the next element
+        if (current && lowercase(current.nodeName) === type) {
+          // The next element is the right type so reuse it
+          element = current;
+        } else {
+          // The next element is not the right type so create a new one
+          element = templateElement.cloneNode(false);
+          if (!current) {
+            // There are no more elements so just append it to the select
+            parent.appendChild(element);
+          } else {
+            // The next element is not a group so insert the new one
+            parent.insertBefore(element, current);
           }
         }
+        return element;
+      }
 
 
+      function removeExcessElements(current) {
+        var next;
+        while (current) {
+          next = current.nextSibling;
+          jqLiteRemove(current);
+          current = next;
+        }
+      }
+
+
+      function skipEmptyAndUnknownOptions(current) {
+        var emptyOption_ = emptyOption && emptyOption[0];
+        var unknownOption_ = unknownOption && unknownOption[0];
+
+        if (emptyOption_ || unknownOption_) {
+          while (current &&
+                (current === emptyOption_ ||
+                current === unknownOption_)) {
+            current = current.nextSibling;
+          }
+        }
+        return current;
+      }
+
+
+      function updateOptions() {
+
+        var previousValue = options && selectCtrl.readValue();
+
+        options = ngOptions.getOptions();
+
+        var groupMap = {};
+        var currentElement = selectElement[0].firstChild;
+
+        // Ensure that the empty option is always there if it was explicitly provided
         if (providedEmptyOption) {
-
-          // we need to remove it before calling selectElement.empty() because otherwise IE will
-          // remove the label from the element. wtf?
-          emptyOption.remove();
-
-          // compile the element since there might be bindings in it
-          $compile(emptyOption)(scope);
-
-          // remove the class, which is added automatically because we recompile the element and it
-          // becomes the compilation root
-          emptyOption.removeClass('ng-scope');
-        }
-        else {
-          emptyOption = jqLite(optionTemplate.cloneNode(false));
+          selectElement.prepend(emptyOption);
         }
 
-        // We need to do this here to ensure that the options object is defined
-        // when we first hit it in writeNgOptionsValue
-        updateOptions();
+        currentElement = skipEmptyAndUnknownOptions(currentElement);
 
-        // We will re-render the option elements if the option values or labels change
-        scope.$watchCollection(ngOptions.getWatchables, updateOptions);
+        options.items.forEach(function updateOption(option) {
+          var group;
+          var groupElement;
+          var optionElement;
 
-        // ------------------------------------------------------------------ //
+          if (option.group) {
 
+            // This option is to live in a group
+            // See if we have already created this group
+            group = groupMap[option.group];
 
-        function updateOptionElement(option, element) {
-          option.element = element;
-          element.disabled = option.disabled;
-          if (option.value !== element.value) element.value = option.selectValue;
-          if (option.label !== element.label) {
-            element.label = option.label;
-            element.textContent = option.label;
-          }
-        }
+            if (!group) {
 
-        function addOrReuseElement(parent, current, type, templateElement) {
-          var element;
-          // Check whether we can reuse the next element
-          if (current && lowercase(current.nodeName) === type) {
-            // The next element is the right type so reuse it
-            element = current;
-          }
-          else {
-            // The next element is not the right type so create a new one
-            element = templateElement.cloneNode(false);
-            if (!current) {
-              // There are no more elements so just append it to the select
-              parent.appendChild(element);
-            }
-            else {
-              // The next element is not a group so insert the new one
-              parent.insertBefore(element, current);
-            }
-          }
-          return element;
-        }
-
-
-        function removeExcessElements(current) {
-          var next;
-          while (current) {
-            next = current.nextSibling;
-            jqLiteRemove(current);
-            current = next;
-          }
-        }
-
-
-        function skipEmptyAndUnknownOptions(current) {
-          var emptyOption_ = emptyOption && emptyOption[0];
-          var unknownOption_ = unknownOption && unknownOption[0];
-
-          if (emptyOption_ || unknownOption_) {
-            while (current &&
-            (current === emptyOption_ ||
-            current === unknownOption_)) {
-              current = current.nextSibling;
-            }
-          }
-          return current;
-        }
-
-
-        function updateOptions() {
-
-          var previousValue = options && selectCtrl.readValue();
-
-          options = ngOptions.getOptions();
-
-          var groupMap = {};
-          var currentElement = selectElement[0].firstChild;
-
-          // Ensure that the empty option is always there if it was explicitly provided
-          if (providedEmptyOption) {
-            selectElement.prepend(emptyOption);
-          }
-
-          currentElement = skipEmptyAndUnknownOptions(currentElement);
-
-          options.items.forEach(function updateOption(option) {
-            var group;
-            var groupElement;
-            var optionElement;
-
-            if (option.group) {
-
-              // This option is to live in a group
-              // See if we have already created this group
-              group = groupMap[option.group];
-
-              if (!group) {
-
-                // We have not already created this group
-                groupElement = addOrReuseElement(selectElement[0],
-                  currentElement,
-                  'optgroup',
-                  optGroupTemplate);
-                // Move to the next element
-                currentElement = groupElement.nextSibling;
-
-                // Update the label on the group element
-                groupElement.label = option.group;
-
-                // Store it for use later
-                group = groupMap[option.group] = {
-                  groupElement: groupElement,
-                  currentOptionElement: groupElement.firstChild
-                };
-
-              }
-
-              // So now we have a group for this option we add the option to the group
-              optionElement = addOrReuseElement(group.groupElement,
-                group.currentOptionElement,
-                'option',
-                optionTemplate);
-              updateOptionElement(option, optionElement);
+              // We have not already created this group
+              groupElement = addOrReuseElement(selectElement[0],
+                                               currentElement,
+                                               'optgroup',
+                                               optGroupTemplate);
               // Move to the next element
-              group.currentOptionElement = optionElement.nextSibling;
+              currentElement = groupElement.nextSibling;
+
+              // Update the label on the group element
+              groupElement.label = option.group;
+
+              // Store it for use later
+              group = groupMap[option.group] = {
+                groupElement: groupElement,
+                currentOptionElement: groupElement.firstChild
+              };
 
             }
-            else {
 
-              // This option is not in a group
-              optionElement = addOrReuseElement(selectElement[0],
-                currentElement,
-                'option',
-                optionTemplate);
-              updateOptionElement(option, optionElement);
-              // Move to the next element
-              currentElement = optionElement.nextSibling;
-            }
-          });
+            // So now we have a group for this option we add the option to the group
+            optionElement = addOrReuseElement(group.groupElement,
+                                              group.currentOptionElement,
+                                              'option',
+                                              optionTemplate);
+            updateOptionElement(option, optionElement);
+            // Move to the next element
+            group.currentOptionElement = optionElement.nextSibling;
 
+          } else {
 
-          // Now remove all excess options and group
-          Object.keys(groupMap).forEach(function (key) {
-            removeExcessElements(groupMap[key].currentOptionElement);
-          });
-          removeExcessElements(currentElement);
-
-          ngModelCtrl.$render();
-
-          // Check to see if the value has changed due to the update to the options
-          if (!ngModelCtrl.$isEmpty(previousValue)) {
-            var nextValue = selectCtrl.readValue();
-            if (ngOptions.trackBy ? !equals(previousValue, nextValue) : previousValue !== nextValue) {
-              ngModelCtrl.$setViewValue(nextValue);
-              ngModelCtrl.$render();
-            }
+            // This option is not in a group
+            optionElement = addOrReuseElement(selectElement[0],
+                                              currentElement,
+                                              'option',
+                                              optionTemplate);
+            updateOptionElement(option, optionElement);
+            // Move to the next element
+            currentElement = optionElement.nextSibling;
           }
+        });
 
+
+        // Now remove all excess options and group
+        Object.keys(groupMap).forEach(function(key) {
+          removeExcessElements(groupMap[key].currentOptionElement);
+        });
+        removeExcessElements(currentElement);
+
+        ngModelCtrl.$render();
+
+        // Check to see if the value has changed due to the update to the options
+        if (!ngModelCtrl.$isEmpty(previousValue)) {
+          var nextValue = selectCtrl.readValue();
+          if (ngOptions.trackBy ? !equals(previousValue, nextValue) : previousValue !== nextValue) {
+            ngModelCtrl.$setViewValue(nextValue);
+            ngModelCtrl.$render();
+          }
         }
 
       }
-    };
-  }];
 
-  /**
-   * @ngdoc directive
+    }
+  };
+}];
+
+/**
+ * @ngdoc directive
  * @name ngPluralize
  * @restrict EA
  *
@@ -26602,9 +26501,9 @@ var ngNonBindableDirective = ngDirective({ terminal: true, priority: 1000 });
  * <span ng-non-bindable>`{{personCount}}`</span>. The closed braces `{}` is a placeholder
  * for <span ng-non-bindable>{{numberExpression}}</span>.
  *
-   * If no rule is defined for a category, then an empty string is displayed and a warning is generated.
-   * Note that some locales define more categories than `one` and `other`. For example, fr-fr defines `few` and `many`.
-   *
+ * If no rule is defined for a category, then an empty string is displayed and a warning is generated.
+ * Note that some locales define more categories than `one` and `other`. For example, fr-fr defines `few` and `many`.
+ *
  * # Configuring ngPluralize with offset
  * The `offset` attribute allows further customization of pluralized text, which can result in
  * a better user experience. For example, instead of the message "4 people are viewing this document",
@@ -26651,9 +26550,9 @@ var ngNonBindableDirective = ngDirective({ terminal: true, priority: 1000 });
             }]);
         </script>
         <div ng-controller="ExampleController">
-   <label>Person 1:<input type="text" ng-model="person1" value="Igor" /></label><br/>
-   <label>Person 2:<input type="text" ng-model="person2" value="Misko" /></label><br/>
-   <label>Number of People:<input type="text" ng-model="personCount" value="1" /></label><br/>
+          <label>Person 1:<input type="text" ng-model="person1" value="Igor" /></label><br/>
+          <label>Person 2:<input type="text" ng-model="person2" value="Misko" /></label><br/>
+          <label>Number of People:<input type="text" ng-model="personCount" value="1" /></label><br/>
 
           <!--- Example with simple pluralization rules for en locale --->
           Without Offset:
@@ -26723,7 +26622,7 @@ var ngNonBindableDirective = ngDirective({ terminal: true, priority: 1000 });
       </file>
     </example>
  */
-  var ngPluralizeDirective = ['$locale', '$interpolate', '$log', function ($locale, $interpolate, $log) {
+var ngPluralizeDirective = ['$locale', '$interpolate', '$log', function($locale, $interpolate, $log) {
   var BRACE = /{}/g,
       IS_WHEN = /^when(Minus)?(.+)$/;
 
@@ -26773,8 +26672,7 @@ var ngNonBindableDirective = ngDirective({ terminal: true, priority: 1000 });
             }
             watchRemover = noop;
             updateElementText();
-          }
-          else {
+          } else {
             watchRemover = scope.$watch(whenExpFn, updateElementText);
           }
           lastCount = count;
@@ -27015,7 +26913,7 @@ var ngNonBindableDirective = ngDirective({ terminal: true, priority: 1000 });
         {name:'Samantha', age:60, gender:'girl'}
       ]">
         I have {{friends.length}} friends. They are:
- <input type="search" ng-model="q" placeholder="filter friends..." aria-label="filter friends" />
+        <input type="search" ng-model="q" placeholder="filter friends..." aria-label="filter friends" />
         <ul class="example-animate-container">
           <li class="animate-repeat" ng-repeat="friend in friends | filter:q as results">
             [{{$index + 1}}] {{friend.name}} who is {{friend.age}} years old.
@@ -27415,7 +27313,7 @@ var NG_HIDE_IN_PROGRESS_CLASS = 'ng-hide-animate';
  * @example
   <example module="ngAnimate" deps="angular-animate.js" animations="true">
     <file name="index.html">
- Click me: <input type="checkbox" ng-model="checked" aria-label="Toggle ngHide"><br/>
+      Click me: <input type="checkbox" ng-model="checked" aria-label="Toggle ngHide"><br/>
       <div>
         Show:
         <div class="check-element animate-show" ng-show="checked">
@@ -27581,7 +27479,7 @@ var ngShowDirective = ['$animate', function($animate) {
  * @example
   <example module="ngAnimate" deps="angular-animate.js" animations="true">
     <file name="index.html">
- Click me: <input type="checkbox" ng-model="checked" aria-label="Toggle ngShow"><br/>
+      Click me: <input type="checkbox" ng-model="checked" aria-label="Toggle ngShow"><br/>
       <div>
         Show:
         <div class="check-element animate-hide" ng-show="checked">
@@ -27768,7 +27666,7 @@ var ngStyleDirective = ngDirective(function(scope, element, attr) {
       <div ng-controller="ExampleController">
         <select ng-model="selection" ng-options="item for item in items">
         </select>
- <code>selection={{selection}}</code>
+        <code>selection={{selection}}</code>
         <hr/>
         <div class="animate-switch-container"
           ng-switch on="selection">
@@ -27946,8 +27844,8 @@ var ngSwitchDefaultDirective = ngDirective({
          }]);
        </script>
        <div ng-controller="ExampleController">
- <input ng-model="title" aria-label="title"> <br/>
- <textarea ng-model="text" aria-label="text"></textarea> <br/>
+         <input ng-model="title" aria-label="title"> <br/>
+         <textarea ng-model="text" aria-label="text"></textarea> <br/>
          <pane title="{{title}}">{{text}}</pane>
        </div>
      </file>
@@ -28032,7 +27930,7 @@ var scriptDirective = ['$templateCache', function($templateCache) {
   };
 }];
 
-  var noopNgModelController = {$setViewValue: noop, $render: noop};
+var noopNgModelController = { $setViewValue: noop, $render: noop };
 
 /**
  * @ngdoc type
@@ -28043,99 +27941,96 @@ var scriptDirective = ['$templateCache', function($templateCache) {
  * added `<option>` elements, perhaps by an `ngRepeat` directive.
  */
 var SelectController =
-  ['$element', '$scope', '$attrs', function ($element, $scope, $attrs) {
+        ['$element', '$scope', '$attrs', function($element, $scope, $attrs) {
 
-    var self = this,
+  var self = this,
       optionsMap = new HashMap();
 
-    // If the ngModel doesn't get provided then provide a dummy noop version to prevent errors
-    self.ngModelCtrl = noopNgModelController;
+  // If the ngModel doesn't get provided then provide a dummy noop version to prevent errors
+  self.ngModelCtrl = noopNgModelController;
 
-    // The "unknown" option is one that is prepended to the list if the viewValue
-    // does not match any of the options. When it is rendered the value of the unknown
-    // option is '? XXX ?' where XXX is the hashKey of the value that is not known.
-    //
-    // We can't just jqLite('<option>') since jqLite is not smart enough
-    // to create it in <select> and IE barfs otherwise.
-    self.unknownOption = jqLite(document.createElement('option'));
-    self.renderUnknownOption = function (val) {
-      var unknownVal = '? ' + hashKey(val) + ' ?';
-      self.unknownOption.val(unknownVal);
-      $element.prepend(self.unknownOption);
-      $element.val(unknownVal);
-    };
+  // The "unknown" option is one that is prepended to the list if the viewValue
+  // does not match any of the options. When it is rendered the value of the unknown
+  // option is '? XXX ?' where XXX is the hashKey of the value that is not known.
+  //
+  // We can't just jqLite('<option>') since jqLite is not smart enough
+  // to create it in <select> and IE barfs otherwise.
+  self.unknownOption = jqLite(document.createElement('option'));
+  self.renderUnknownOption = function(val) {
+    var unknownVal = '? ' + hashKey(val) + ' ?';
+    self.unknownOption.val(unknownVal);
+    $element.prepend(self.unknownOption);
+    $element.val(unknownVal);
+  };
 
-    $scope.$on('$destroy', function () {
-      // disable unknown option so that we don't do work when the whole select is being destroyed
-      self.renderUnknownOption = noop;
-    });
+  $scope.$on('$destroy', function() {
+    // disable unknown option so that we don't do work when the whole select is being destroyed
+    self.renderUnknownOption = noop;
+  });
 
-    self.removeUnknownOption = function () {
-      if (self.unknownOption.parent()) self.unknownOption.remove();
-    };
+  self.removeUnknownOption = function() {
+    if (self.unknownOption.parent()) self.unknownOption.remove();
+  };
 
 
-    // Read the value of the select control, the implementation of this changes depending
-    // upon whether the select can have multiple values and whether ngOptions is at work.
-    self.readValue = function readSingleValue() {
+  // Read the value of the select control, the implementation of this changes depending
+  // upon whether the select can have multiple values and whether ngOptions is at work.
+  self.readValue = function readSingleValue() {
+    self.removeUnknownOption();
+    return $element.val();
+  };
+
+
+  // Write the value to the select control, the implementation of this changes depending
+  // upon whether the select can have multiple values and whether ngOptions is at work.
+  self.writeValue = function writeSingleValue(value) {
+    if (self.hasOption(value)) {
       self.removeUnknownOption();
-      return $element.val();
-    };
-
-
-    // Write the value to the select control, the implementation of this changes depending
-    // upon whether the select can have multiple values and whether ngOptions is at work.
-    self.writeValue = function writeSingleValue(value) {
-      if (self.hasOption(value)) {
+      $element.val(value);
+      if (value === '') self.emptyOption.prop('selected', true); // to make IE9 happy
+    } else {
+      if (value == null && self.emptyOption) {
         self.removeUnknownOption();
-        $element.val(value);
-        if (value === '') self.emptyOption.prop('selected', true); // to make IE9 happy
+        $element.val('');
+      } else {
+        self.renderUnknownOption(value);
       }
-      else {
-        if (value == null && self.emptyOption) {
-          self.removeUnknownOption();
-          $element.val('');
+    }
+  };
+
+
+  // Tell the select control that an option, with the given value, has been added
+  self.addOption = function(value, element) {
+    assertNotHasOwnProperty(value, '"option value"');
+    if (value === '') {
+      self.emptyOption = element;
+    }
+    var count = optionsMap.get(value) || 0;
+    optionsMap.put(value, count + 1);
+  };
+
+  // Tell the select control that an option, with the given value, has been removed
+  self.removeOption = function(value) {
+    var count = optionsMap.get(value);
+    if (count) {
+      if (count === 1) {
+        optionsMap.remove(value);
+        if (value === '') {
+          self.emptyOption = undefined;
         }
-        else {
-          self.renderUnknownOption(value);
-        }
+      } else {
+        optionsMap.put(value, count - 1);
       }
-    };
+    }
+  };
 
+  // Check whether the select control has an option matching the given value
+  self.hasOption = function(value) {
+    return !!optionsMap.get(value);
+  };
+}];
 
-    // Tell the select control that an option, with the given value, has been added
-    self.addOption = function (value, element) {
-      assertNotHasOwnProperty(value, '"option value"');
-      if (value === '') {
-        self.emptyOption = element;
-      }
-      var count = optionsMap.get(value) || 0;
-      optionsMap.put(value, count + 1);
-    };
-
-    // Tell the select control that an option, with the given value, has been removed
-    self.removeOption = function (value) {
-      var count = optionsMap.get(value);
-      if (count) {
-        if (count === 1) {
-          optionsMap.remove(value);
-          if (value === '') {
-            self.emptyOption = undefined;
-          }
-        }
-        else {
-          optionsMap.put(value, count - 1);
-        }
-      }
-    };
-
-    // Check whether the select control has an option matching the given value
-    self.hasOption = function (value) {
-      return !!optionsMap.get(value);
-    };
-  }];
-
-  /**
+/**
  * @ngdoc directive
  * @name select
  * @restrict E
@@ -28143,47 +28038,47 @@ var SelectController =
  * @description
  * HTML `SELECT` element with angular data-binding.
  *
-   * In many cases, `ngRepeat` can be used on `<option>` elements instead of {@link ng.directive:ngOptions
+ * In many cases, `ngRepeat` can be used on `<option>` elements instead of {@link ng.directive:ngOptions
  * ngOptions} to achieve a similar result. However, `ngOptions` provides some benefits such as reducing
-   * memory and increasing speed by not creating a new scope for each repeated instance, as well as providing
+ * memory and increasing speed by not creating a new scope for each repeated instance, as well as providing
  * more flexibility in how the `<select>`'s model is assigned via the `select` **`as`** part of the
-   * comprehension expression.
+ * comprehension expression.
  *
  * When an item in the `<select>` menu is selected, the array element or object property
  * represented by the selected option will be bound to the model identified by the `ngModel`
  * directive.
  *
-   * If the viewValue contains a value that doesn't match any of the options then the control
-   * will automatically add an "unknown" option, which it then removes when this is resolved.
-   *
+ * If the viewValue contains a value that doesn't match any of the options then the control
+ * will automatically add an "unknown" option, which it then removes when this is resolved.
+ *
  * Optionally, a single hard-coded `<option>` element, with the value set to an empty string, can
  * be nested into the `<select>` element. This element will then represent the `null` or "not selected"
  * option. See example below for demonstration.
  *
-   * <div class="alert alert-info">
-   * The value of a `select` directive used without `ngOptions` is always a string.
-   * When the model needs to be bound to a non-string value, you must either explictly convert it
-   * using a directive (see example below) or use `ngOptions` to specify the set of options.
-   * This is because an option element can only be bound to string values at present.
+ * <div class="alert alert-info">
+ * The value of a `select` directive used without `ngOptions` is always a string.
+ * When the model needs to be bound to a non-string value, you must either explictly convert it
+ * using a directive (see example below) or use `ngOptions` to specify the set of options.
+ * This is because an option element can only be bound to string values at present.
  * </div>
  *
-   * ### Example (binding `select` to a non-string value)
+ * ### Example (binding `select` to a non-string value)
  *
-   * <example name="select-with-non-string-options" module="nonStringSelect">
-   *   <file name="index.html">
-   *     <select ng-model="model.id" convert-to-number>
-   *       <option value="0">Zero</option>
-   *       <option value="1">One</option>
-   *       <option value="2">Two</option>
-   *     </select>
-   *     {{ model }}
-   *   </file>
-   *   <file name="app.js">
-   *     angular.module('nonStringSelect', [])
-   *       .run(function($rootScope) {
+ * <example name="select-with-non-string-options" module="nonStringSelect">
+ *   <file name="index.html">
+ *     <select ng-model="model.id" convert-to-number>
+ *       <option value="0">Zero</option>
+ *       <option value="1">One</option>
+ *       <option value="2">Two</option>
+ *     </select>
+ *     {{ model }}
+ *   </file>
+ *   <file name="app.js">
+ *     angular.module('nonStringSelect', [])
+ *       .run(function($rootScope) {
  *         $rootScope.model = { id: 2 };
  *       })
-   *       .directive('convertToNumber', function() {
+ *       .directive('convertToNumber', function() {
  *         return {
  *           require: 'ngModel',
  *           link: function(scope, element, attrs, ngModel) {
@@ -28196,23 +28091,23 @@ var SelectController =
  *           }
  *         };
  *       });
-   *   </file>
-   *   <file name="protractor.js" type="protractor">
-   *     it('should initialize to model', function() {
+ *   </file>
+ *   <file name="protractor.js" type="protractor">
+ *     it('should initialize to model', function() {
  *       var select = element(by.css('select'));
  *       expect(element(by.model('model.id')).$('option:checked').getText()).toEqual('Two');
  *     });
-   *   </file>
-   * </example>
+ *   </file>
+ * </example>
  *
  */
-  var selectDirective = function () {
+var selectDirective = function() {
 
   return {
     restrict: 'E',
     require: ['select', '?ngModel'],
     controller: SelectController,
-    link: function (scope, element, attr, ctrls) {
+    link: function(scope, element, attr, ctrls) {
 
       // if ngModel is not defined, we don't need to do anything
       var ngModelCtrl = ctrls[1];
@@ -28225,15 +28120,15 @@ var SelectController =
       // We delegate rendering to the `writeValue` method, which can be changed
       // if the select can have multiple selected values or if the options are being
       // generated by `ngOptions`
-      ngModelCtrl.$render = function () {
+      ngModelCtrl.$render = function() {
         selectCtrl.writeValue(ngModelCtrl.$viewValue);
       };
 
       // When the selected item(s) changes we delegate getting the value of the select control
       // to the `readValue` method, which can be changed if the select can have multiple
       // selected values or if the options are being generated by `ngOptions`
-      element.on('change', function () {
-        scope.$apply(function () {
+      element.on('change', function() {
+        scope.$apply(function() {
           ngModelCtrl.$setViewValue(selectCtrl.readValue());
         });
       });
@@ -28247,7 +28142,7 @@ var SelectController =
         // Read value now needs to check each option to see if it is selected
         selectCtrl.readValue = function readMultipleValue() {
           var array = [];
-          forEach(element.find('option'), function (option) {
+          forEach(element.find('option'), function(option) {
             if (option.selected) {
               array.push(option.value);
             }
@@ -28258,7 +28153,7 @@ var SelectController =
         // Write value now needs to set the selected property of each matching option
         selectCtrl.writeValue = function writeMultipleValue(value) {
           var items = new HashMap(value);
-          forEach(element.find('option'), function (option) {
+          forEach(element.find('option'), function(option) {
             option.selected = isDefined(items.get(option.value));
           });
         };
@@ -28276,14 +28171,14 @@ var SelectController =
 
         // If we are a multiple select then value is now a collection
         // so the meaning of $isEmpty changes
-        ngModelCtrl.$isEmpty = function (value) {
+        ngModelCtrl.$isEmpty = function(value) {
           return !value || value.length === 0;
         };
 
       }
     }
   };
-  };
+};
 
 
 // The option directive is purely designed to communicate the existence (or lack of)
@@ -28337,14 +28232,13 @@ var optionDirective = ['$interpolate', function($interpolate) {
               selectCtrl.ngModelCtrl.$render();
               chromeHack(element);
             });
-          }
-          else {
+          } else {
             selectCtrl.addOption(attr.value, element);
             selectCtrl.ngModelCtrl.$render();
             chromeHack(element);
           }
 
-          element.on('$destroy', function () {
+          element.on('$destroy', function() {
             selectCtrl.removeOption(attr.value);
             selectCtrl.ngModelCtrl.$render();
           });
@@ -28467,5 +28361,4 @@ var minlengthDirective = function() {
 
 })(window, document);
 
-!window.angular.$$csp() && window.angular.element(document.head).prepend(
-  '<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
+!window.angular.$$csp() && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');

@@ -4,10 +4,10 @@
   </ion-nav-buttons>
   <ion-content class='padding has-header'>
 
-    <label class='item item-input item-stacked-label item-text-wrap'>
-      <span class='input-label'><b>Map Name</b></span>
+    <ion-input class='item item-input item-stacked-label item-text-wrap'>
+      <ion-label>Map Name</ion-label>
       <input type='text' ng-model='vm.map.name' autofocus>
-    </label>
+    </ion-input>
 
     <ion-checkbox ng-model='vm.map.downloadMacrostrat' ng-show='vm.map.showDownloadMacrostrat'
                   ng-change='vm.estimateArchiveTile()'>

@@ -57,7 +57,7 @@ Install this for the localForage dependencies
 
 ### Tested Environment
 
-    ionic library: 1.1.1
+    ionic library: 1.2.3
     ionic cli : 1.7.13
     cordova: 5.4.1
     cordova-plugin-camera: 1.2.0

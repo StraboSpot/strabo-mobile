@@ -253,16 +253,23 @@ Input Fields Style
   padding: 6px;
 }
 
+/* ion-input */
+.item-input {
+  display: block !important;
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+/* ion-label */
 .input-label {
   max-width: 100% !important;
   width: 100% !important;
   font-weight: bold;
   text-transform: uppercase;
   font-size: small;
-}
-
-textarea {
-  font-size: small;
+  line-height: 20px;
+  height: 20px;
+  padding: 0px;
 }
 
 input[type="text"],
@@ -280,22 +287,35 @@ input[type="search"],
 input[type="tel"],
 input[type="color"] {
   font-size: small;
-  line-height: 25px;
-  height: 25px;
-  padding-top: 1px;
+  line-height: 20px;
+  height: 20px;
+  padding: 0px !important;
 }
 
-.item-input {
-  padding-top: 1px;
-  padding-bottom: 1px;
+.login-input {
+  line-height: 40px !important;
+  height: 40px !important;
+  font-size: large !important;
+  vertical-align: middle !important;
+}
+
+textarea {
+  font-size: small;
 }
 
 .item-select select {
   position: relative !important;
+  max-width: 100% !important;
+  width: 100% !important;
   direction: ltr;
-  padding-top: 6px;
-  padding-bottom: 6px;
+  padding-top: 1px;
+  padding-bottom: 1px;
   padding-left: 0px;
+}
+
+/* Select box dropdown arrow positioning */
+.item-select:after {
+  top: 75% !important;
 }
 
 .item-checkbox {
@@ -352,7 +372,7 @@ Style fields for input errors and no-errors
 /*--------------------
 Login Page
 --------------------*/
-.login {
+.login-page {
   background: url(../img/background.jpg) no-repeat center center fixed;;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -360,7 +380,7 @@ Login Page
   background-size: cover;
 }
 
-.logintext {
+.login-title-text {
   text-align: center;
   font-weight: 900;
   font-family: Impact, Charcoal, sans-serif;
@@ -370,7 +390,7 @@ Login Page
   letter-spacing: 6px;
 }
 
-.logininset {
+.login-inset {
   max-width: 400px;
 }
 

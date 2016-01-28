@@ -4,12 +4,12 @@
   </ion-nav-buttons>
   <ion-content class='has-header'>
     <h6 ng-show='vm.data.email'>You are currently logged in as: {{ vm.data.email }}</h6>
-    <label class='item item-input' ng-hide='vm.data.email'>
-      <input type='text' placeholder='Email' ng-model='vm.login.email'>
-    </label>
-    <label class='item item-input' ng-hide='vm.data.email'>
-      <input type='password' placeholder='Password' ng-model='vm.login.password'>
-    </label>
+    <ion-input class='item item-input' ng-hide='vm.data.email'>
+      <input class='login-input' type='text' placeholder='Email' ng-model='vm.login.email'>
+    </ion-input>
+    <ion-input class='item item-input' ng-hide='vm.data.email'>
+      <input class='login-input' type='password' placeholder='Password' ng-model='vm.login.password'>
+    </ion-input>
     <button ng-click='vm.doLogin();' ng-hide='vm.data.email'
             ng-disabled='!(vm.login.email && vm.login.password)'
             class='button icon-left icon ion-log-in button-balanced'>
@@ -21,10 +21,10 @@
     </button>
     <div ng-show='vm.data.email'>
       <br>
-      <label class='item item-input item-stacked-label'>
-        <span class='input-label'>Name</span>
+      <ion-input class='item item-input item-stacked-label'>
+        <ion-label>Name</ion-label>
         <input type='text' placeholder='John Doe' ng-model='vm.data.name'>
-      </label>
+      </ion-input>
     </div>
   </ion-content>
 </ion-view>
