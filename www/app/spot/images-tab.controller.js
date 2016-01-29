@@ -5,17 +5,17 @@
     .module('app')
     .controller('ImagesTabController', ImagesTabController);
 
-  ImagesTabController.$inject = ['$cordovaCamera', '$ionicModal', '$ionicPopup', '$location', '$log', '$scope',
+  ImagesTabController.$inject = ['$cordovaCamera', '$document', '$ionicModal', '$ionicPopup', '$location', '$log', '$scope',
     '$state', '$window', 'ImageBasemapFactory', 'SpotFactory'];
 
-  function ImagesTabController($cordovaCamera, $ionicModal, $ionicPopup, $location, $log, $scope, $state, $window,
+  function ImagesTabController($cordovaCamera, $document, $ionicModal, $ionicPopup, $location, $log, $scope, $state, $window,
                                ImageBasemapFactory, SpotFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.loadTab($state);  // Need to load current state into parent
 
+    vm.addImage = addImage;
     vm.annotateChecked = annotateChecked;
-    vm.cameraModal = cameraModal;
     vm.cameraSource = [{
       'text': 'Photo Library',
       'value': 'PHOTOLIBRARY'
@@ -43,6 +43,44 @@
 
     function activate() {
       $log.log('In ImagesTabController');
+
+      ionic.on('change', getFile, $document[0].getElementById('file'));
+    }
+
+    function cameraModal() {
+      // camera modal popup
+      var myPopup = $ionicPopup.show({
+        'template': '<ion-radio ng-repeat="source in vmChild.cameraSource" ng-value="source.value" ng-model="vmChild.selectedCameraSource.source">{{ source.text }}</ion-radio>',
+        'title': 'Select an image source',
+        'scope': $scope,
+        'buttons': [{
+          'text': 'Cancel'
+        }, {
+          'text': '<b>Go</b>',
+          'type': 'button-positive',
+          'onTap': function (e) {
+            if (!vm.selectedCameraSource.source) {
+              // don't allow the user to close unless a value is set
+              e.preventDefault();
+            }
+            else {
+              return vm.selectedCameraSource.source;
+            }
+          }
+        }]
+      });
+
+      myPopup.then(function (cameraSource) {
+        if (cameraSource) {
+          launchCamera(cameraSource);
+        }
+      });
+    }
+
+    function getFile(event) {
+      $log.log('Getting file ....');
+      var file = event.target.files[0];
+      readDataUrl(file);
     }
 
     function launchCamera(source) {
@@ -129,35 +167,6 @@
               readDataUrl(file);
             };
 
-            var readDataUrl = function (file) {
-              // $log.log('inside readDataUrl');
-              var reader = new FileReader();
-              var image = new Image();
-              reader.onloadend = function (evt) {
-                // $log.log('Read as data URL');
-                // $log.log(evt.target.result);
-                image.src = evt.target.result;
-                image.onload = function () {
-                  // push the image data to our camera images array
-                  $scope.$apply(function () {
-                    vmParent.spot.images.push({
-                      'src': image.src,
-                      'height': image.height,
-                      'width': image.width,
-                      'id': Math.floor((new Date().getTime() + Math.random()) * 10)
-                    });
-                  });
-                };
-                image.onerror = function () {
-                  $ionicPopup.alert({
-                    'title': 'Error!',
-                    'template': 'Invalid file type: ' + evt.type
-                  });
-                };
-              };
-              reader.readAsDataURL(file);
-            };
-
             // invoke the reading of the image file from the local filesystem
             $window.resolveLocalFileSystemURL(imageURI, gotFileEntry, resolveFail);
           }
@@ -167,42 +176,49 @@
       });
     }
 
+    function readDataUrl(file) {
+      // $log.log('inside readDataUrl');
+      var reader = new FileReader();
+      var image = new Image();
+      reader.onloadend = function (evt) {
+        // $log.log('Read as data URL');
+        // $log.log(evt.target.result);
+        image.src = evt.target.result;
+        image.onload = function () {
+          // push the image data to our camera images array
+          $scope.$apply(function () {
+            vmParent.spot.images.push({
+              'src': image.src,
+              'height': image.height,
+              'width': image.width,
+              'id': Math.floor((new Date().getTime() + Math.random()) * 10)
+            });
+          });
+        };
+        image.onerror = function () {
+          $ionicPopup.alert({
+            'title': 'Error!',
+            'template': 'Invalid file type.'
+          });
+        };
+      };
+      reader.readAsDataURL(file);
+    }
+
     /**
      * Public Functions
      */
 
-    function annotateChecked(image) {
-      image.annotated = !image.annotated;
+    function addImage() {
+      // If this is a web browser and not using cordova
+      if ($document[0].location.protocol !== 'file:') { // Phonegap is not present }
+        ionic.trigger('click', {'target': $document[0].getElementById('file')});
+      }
+      else cameraModal();
     }
 
-    function cameraModal(source) {
-      // camera modal popup
-      var myPopup = $ionicPopup.show({
-        'template': '<ion-radio ng-repeat="source in vmChild.cameraSource" ng-value="source.value" ng-model="vmChild.selectedCameraSource.source">{{ source.text }}</ion-radio>',
-        'title': 'Select an image source',
-        'scope': $scope,
-        'buttons': [{
-          'text': 'Cancel'
-        }, {
-          'text': '<b>Go</b>',
-          'type': 'button-positive',
-          'onTap': function (e) {
-            if (!vm.selectedCameraSource.source) {
-              // don't allow the user to close unless a value is set
-              e.preventDefault();
-            }
-            else {
-              return vm.selectedCameraSource.source;
-            }
-          }
-        }]
-      });
-
-      myPopup.then(function (cameraSource) {
-        if (cameraSource) {
-          launchCamera(cameraSource);
-        }
-      });
+    function annotateChecked(image) {
+      image.annotated = !image.annotated;
     }
 
     function closeImageModal() {

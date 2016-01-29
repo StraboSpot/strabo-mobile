@@ -1,10 +1,11 @@
 <ion-view>
   <ion-content>
-    <button ng-click='vmChild.cameraModal();'
+    <button ng-click='vmChild.addImage();'
             class='button button-clear button-positive'>
       <i class='icon ion-camera'></i>
-      <span class='button-text-big'>Add Photo</span>
+      <span class='button-text-big'>Add Photo or Image</span>
     </button>
+    <input type='file' id='file' style='display: none;'/>
     <div class='row'>
       <ul>
         <li ng-repeat='image in vm.spot.images' class='images-container'>
@@ -21,5 +22,6 @@
         </li>
       </ul>
     </div>
+    {{ vmChild.fileName }}
   </ion-content>
 </ion-view>

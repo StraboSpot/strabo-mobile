@@ -5,6 +5,7 @@ globals:
   angular: true
   inject: true
   cordova: true
+  ionic: true
   ol: true
   _: true
   localforage: true
