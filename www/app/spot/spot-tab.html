@@ -1,6 +1,6 @@
 <form name='straboForm' novalidate=''>
   <ion-view>
-    <ion-content>
+    <ion-content class="strabo-form">
       <ion-input class='item item-input item-stacked-label item-text-wrap'>
         <ion-label>Spot Name</ion-label>
         <input type='text' placeholder='Name this Spot' ng-model='vm.data.name'>
@@ -45,60 +45,58 @@
           <ion-label>Geometry</ion-label>
           <input type='text' disabled ng-model='vm.spot.geometry.type'>
         </ion-input>
-        <!-- Latitude and Longitude text boxes for Point features -->
-        <ion-input ng-show='vmChild.showLatLng'
-                   class='item item-input item-stacked-label item-text-wrap'
-                   ng-class='{ "has-errors": straboForm["lat"].$invalid, "no-errors": straboForm["lat"].$valid }'>
-          <ion-label>Latitude</ion-label>
-          <input type='number' name='lat' ng-model='vmChild.lat' ng-change='vmChild.updateLatitude(vmChild.lat)'
-                 required min='-90' max='90'>
-        </ion-input>
 
-        <div ng-if='straboForm["lat"].$touched'>
-          <div ng-messages='straboForm["lat"].$error'>
-            <div ng-messages-include='app/form/error-messages.html'></div>
+        <div ng-show='vmChild.showLatLng'>
+          <!-- Latitude and Longitude text boxes for Point features -->
+          <ion-input ng-show='vmChild.showLatLng'
+                     class='item item-input item-stacked-label item-text-wrap'
+                     ng-class='{ "has-errors": straboForm["lat"].$invalid, "no-errors": straboForm["lat"].$valid }'>
+            <ion-label>Latitude</ion-label>
+            <input type='number' name='lat' ng-model='vmChild.lat' ng-change='vmChild.updateLatitude(vmChild.lat)'
+                   required min='-90' max='90'>
+          </ion-input>
+          <div ng-if='straboForm["lat"].$touched'>
+            <div ng-messages='straboForm["lat"].$error'>
+              <div ng-messages-include='app/form/error-messages.html'></div>
+            </div>
+          </div>
+          <ion-input class='item item-input item-stacked-label item-text-wrap'
+                     ng-class='{ "has-errors": straboForm["lng"].$invalid, "no-errors": straboForm["lng"].$valid }'>
+            <ion-label>Longitude</ion-label>
+            <input type='number' name='lng' ng-model='vmChild.lng' ng-change='vmChild.updateLongitude(vmChild.lng)'
+                   required min='-180' max='180'>
+          </ion-input>
+          <div ng-if='straboForm["lng"].$touched'>
+            <div ng-messages='straboForm["lng"].$error'>
+              <div ng-messages-include='app/form/error-messages.html'></div>
+            </div>
           </div>
         </div>
 
-        <ion-input ng-show='vmChild.showLatLng'
-                   class='item item-input item-stacked-label item-text-wrap'
-                   ng-class='{ "has-errors": straboForm["lng"].$invalid, "no-errors": straboForm["lng"].$valid }'>
-          <ion-label>Longitude</ion-label>
-          <input type='number' name='lng' ng-model='vmChild.lng' ng-change='vmChild.updateLongitude(vmChild.lng)'
-                 required min='-180' max='180'>
-        </ion-input>
-
-        <div ng-if='straboForm["lng"].$touched'>
-          <div ng-messages='straboForm["lng"].$error'>
-            <div ng-messages-include='app/form/error-messages.html'></div>
+        <!-- X and Y text boxes for Point features mapped on an image -->
+        <div ng-show='vmChild.showXY'>
+          <ion-input class='item item-input item-stacked-label item-text-wrap'
+                     ng-class='{ "has-errors": straboForm["x"].$invalid, "no-errors": straboForm["y"].$valid }'>
+            <ion-label>Pixels in the X direction</ion-label>
+            <input type='number' name='x' ng-model='vmChild.x' ng-change='vmChild.updateX(vmChild.x)'
+                   required min='0'>
+          </ion-input>
+          <div ng-if='straboForm["x"].$touched'>
+            <div ng-messages='straboForm["x"].$error'>
+              <div ng-messages-include='app/form/error-messages.html'></div>
+            </div>
           </div>
-        </div>
-      </div>
-      <!-- X and Y text boxes for Point features mapped on an image -->
-      <ion-input ng-show='vmChild.showXY'
-                 class='item item-input item-stacked-label item-text-wrap'
-                 ng-class='{ "has-errors": straboForm["x"].$invalid, "no-errors": straboForm["y"].$valid }'>
-        <ion-label>Pixels in the X direction</ion-label>
-        <input type='number' name='x' ng-model='vmChild.x' ng-change='vmChild.updateX(vmChild.x)'
-               required min='0'>
-      </ion-input>
-
-      <div ng-if='straboForm["x"].$touched'>
-        <div ng-messages='straboForm["x"].$error'>
-          <div ng-messages-include='app/form/error-messages.html'></div>
-        </div>
-      </div>
-      <ion-input ng-show='vmChild.showXY'
-                 class='item item-input item-stacked-label item-text-wrap'
-                 ng-class='{ "has-errors": straboForm["y"].$invalid, "no-errors": straboForm["y"].$valid }'>
-        <ion-label>Pixels in the Y direction</ion-label>
-        <input type='number' name='y' ng-model='vmChild.y' ng-change='vmChild.updateY(vmChild.y)'
-               required min='0'>
-      </ion-input>
-
-      <div ng-if='straboForm["y"].$touched'>
-        <div ng-messages='straboForm["y"].$error'>
-          <div ng-messages-include='app/form/error-messages.html'></div>
+          <ion-input class='item item-input item-stacked-label item-text-wrap'
+                     ng-class='{ "has-errors": straboForm["y"].$invalid, "no-errors": straboForm["y"].$valid }'>
+            <ion-label>Pixels in the Y direction</ion-label>
+            <input type='number' name='y' ng-model='vmChild.y' ng-change='vmChild.updateY(vmChild.y)'
+                   required min='0'>
+          </ion-input>
+          <div ng-if='straboForm["y"].$touched'>
+            <div ng-messages='straboForm["y"].$error'>
+              <div ng-messages-include='app/form/error-messages.html'></div>
+            </div>
+          </div>
         </div>
       </div>
 

@@ -1,4 +1,5 @@
-<div ng-repeat='field in vm.survey'>
+<div ng-repeat='field in vm.survey'
+     class='strabo-form'>
   <div id='{{ field.name }}' ng-show='vm.showField(field)'>
     <div data-ng-switch on='field.type.split(" ")[0]'>
       <div class='field-group item item-divider' ng-switch-when='begin'>
@@ -97,8 +98,9 @@
           ng-checked='vm.data[field.name]'
           ng-click='vm.toggleAcknowledgeChecked(field.name)'
           id='{{ field.name }}Toggle'
-          ng-required='{{ field.required }}'>
-          {{field.label}}
+          ng-required='{{ field.required }}'
+          toggle-class='toggle-positive'>
+          <span class='toggle-left-label'>{{field.label}}</span>
         </ion-toggle>
       </div>
       <div ng-if='straboForm[field.name].$touched'>

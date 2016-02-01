@@ -247,29 +247,16 @@ Image Modal Style: used for image active-slider when choosing spot images
 }
 
 /*--------------------
-Input Fields Style
+Form Fields Style
 --------------------*/
-.field-group {
-  text-transform: uppercase;
-  font-weight: bold;
-  padding: 6px;
-}
 
-.item-divider {
-  text-transform: uppercase;
-  font-weight: bold;
-  padding: 6px;
-}
-
-/* ion-input */
-.item-input {
+.strabo-form .item-input {
   display: block !important;
   padding-top: 1px;
   padding-bottom: 1px;
 }
 
-/* ion-label */
-.input-label {
+.strabo-form .input-label{
   max-width: 100% !important;
   width: 100% !important;
   font-weight: bold;
@@ -280,35 +267,35 @@ Input Fields Style
   padding: 0px;
 }
 
-input[type="text"],
-input[type="password"],
-input[type="datetime"],
-input[type="datetime-local"],
-input[type="date"],
-input[type="month"],
-input[type="time"],
-input[type="week"],
-input[type="number"],
-input[type="email"],
-input[type="url"],
-input[type="search"],
-input[type="tel"],
-input[type="color"] {
+.strabo-form input{
   font-size: small;
   line-height: 20px;
   height: 20px;
   padding: 0px !important;
 }
 
-.login-input {
-  line-height: 40px !important;
-  height: 40px !important;
-  font-size: large !important;
-  vertical-align: middle !important;
-}
-
 textarea {
   font-size: small;
+}
+
+.strabo-form .toggle {
+  left: 16px;
+}
+
+.strabo-form .toggle-left-label {
+  margin-left: 65px;
+}
+
+.field-group {
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 6px;
+}
+
+.item-divider {
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 6px;
 }
 
 .item-select select {
@@ -339,12 +326,11 @@ textarea {
   left: 0px;
 }
 
-.item-toggle .toggle {
-  left: 16px !important;
-}
-
-.item-toggle .ng-binding {
-  margin-left: 65px !important;
+.login-input {
+  line-height: 40px !important;
+  height: 40px !important;
+  font-size: large !important;
+  vertical-align: middle !important;
 }
 
 /*--------------------
@@ -474,28 +460,42 @@ Buttons on Spot Page (Pseudo Tabs)
 /*--------------------
 Images on Images Tab
 ---------------------*/
-.images-container {
-  position: relative;
-  width: 100px;
-  height: 120px;
-  float: left;
-  margin-left: 10px;
-  display: inline;
-}
-.annotate-checkbox {
-  position: absolute;
-  bottom: 0px;
-  left: 0px;
+
+.image-col {
+  max-width: 110px;
 }
 
-.annotate-checkbox-label {
-  position: absolute;
-  left: 20px;
-  bottom: -3px;
+.strabo-image .item-input {
+  padding: 0px;
+  border: none;
 }
 
-.image-map {
-  position: absolute;
-  bottom: 20px;
-  right: 0px;
+.strabo-image .image-title{
+  font-size: small;
+  font-weight: bold;
+  text-decoration: underline;
+  height: 20px;
+}
+
+.strabo-image .image-description{
+  font-size: small;
+  height: 20px;
+  border: none;
+  text-overflow: ellipsis;
+}
+
+.strabo-image .toggle {
+  left: 3px;
+  margin-top: -15px;
+}
+
+.strabo-image .item-toggle {
+  border: none;
+  padding: 10px;
+  max-height: 30px;
+}
+
+.strabo-image .toggle-left-image-label {
+  font-size: small;
+  margin-left: 40px;
 }

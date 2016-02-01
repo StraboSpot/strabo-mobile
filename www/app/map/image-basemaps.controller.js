@@ -28,8 +28,10 @@
       });
       _.forEach(spotsWithImages, function (spot) {
         _.forEach(spot.images, function (image) {
-          image.title = image.caption ? image.caption.substring(0, 24) : 'Untitled ' + _.indexOf(spot.images,
-            image);
+          if (!image.title) {
+            image.title = image.caption ? image.caption.substring(0, 24) : 'Untitled ' + _.indexOf(spot.images,
+              image);
+          }
           if (image.annotated) {
             image.annotated = true;
             ImageBasemapFactory.addImageBasemap(image);

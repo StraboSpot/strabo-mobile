@@ -15,7 +15,6 @@
     vmParent.loadTab($state);  // Need to load current state into parent
 
     vm.addImage = addImage;
-    vm.annotateChecked = annotateChecked;
     vm.cameraSource = [{
       'text': 'Photo Library',
       'value': 'PHOTOLIBRARY'
@@ -26,9 +25,10 @@
       'text': 'Saved Photo Album',
       'value': 'SAVEDPHOTOALBUM'
     }];
+    vm.checkTitle = checkTitle;
     vm.closeImageModal = closeImageModal;
     vm.goToImageBasemap = goToImageBasemap;
-    vm.isAnnotated = isAnnotated;
+    vm.moreDetail = moreDetail;
     vm.selectedCameraSource = {
       // default is always camera
       'source': 'CAMERA'
@@ -125,11 +125,6 @@
            *
            */
 
-          // create an images array if it doesn't exist -- camera images are stored here
-          if (angular.isUndefined(vmParent.spot.images)) {
-            vmParent.spot.images = [];
-          }
-
           $log.log('original imageURI ', imageURI);
 
           // are we on an android device and is the URI schema a 'content://' type?
@@ -178,6 +173,12 @@
 
     function readDataUrl(file) {
       // $log.log('inside readDataUrl');
+
+      // create an images array if it doesn't exist -- camera images are stored here
+      if (angular.isUndefined(vmParent.spot.images)) {
+        vmParent.spot.images = [];
+      }
+
       var reader = new FileReader();
       var image = new Image();
       reader.onloadend = function (evt) {
@@ -217,13 +218,19 @@
       else cameraModal();
     }
 
-    function annotateChecked(image) {
-      image.annotated = !image.annotated;
-    }
-
     function closeImageModal() {
       vm.imageModal.hide();
       vm.imageModal.remove();
+    }
+
+    function checkTitle(image) {
+      if (!image.title) {
+        $ionicPopup.alert({
+          'title': 'Title Needed!',
+          'template': 'This image needs a title before you can use it as an image basemap.'
+        });
+        image.annotated = false;
+      }
     }
 
     function goToImageBasemap(image) {
@@ -249,8 +256,11 @@
       }));
     }
 
-    function isAnnotated(image) {
-      return image.annotated;
+    function moreDetail(image) {
+      $ionicPopup.alert({
+        'title': 'In Development!',
+        'template': 'This will show more detail about the image.'
+      });
     }
 
     function showImages(index) {

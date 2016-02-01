@@ -16,10 +16,12 @@
 
     vm.getCurrentLocation = getCurrentLocation;
     vm.getRockUnits = getRockUnits;
+    vm.mapped = false;
     vm.rockUnit = {};
     vm.rockUnits = {};
     vm.setFromMap = setFromMap;
     vm.setRockUnit = setRockUnit;
+    vm.showLatLng = false;
     vm.showXY = false;
     vm.updateLatitude = updateLatitude;
     vm.updateLongitude = updateLongitude;

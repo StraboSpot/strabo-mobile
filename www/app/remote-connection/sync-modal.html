@@ -5,13 +5,13 @@
   </ion-header-bar>
   <ion-content class='has-header' ng-controller='SyncModalController as vmChild'>
     <div class='padding'>
-      You are currently logged in as: {{ vmChild.loginEmail }}
+      <small>You are currently logged in as: {{ vmChild.loginEmail }}</small>
     </div>
     <div ng-show='vmChild.progress.showProgress'>You are uploading spot {{ vmChild.progress.current }} of {{
       vmChild.progress.total
       }}
     </div>
-    <div ng-show='vmChild.showDatasetOpts() && !vmChild.progress.showProgress'>
+    <div ng-show='vmChild.showDatasetOpts() && !vmChild.progress.showProgress' class='strabo-form'>
       <div class='list'>
         <div>
           <!-- List Current Datasets -->
