@@ -5,10 +5,9 @@
     .module('app')
     .controller('OrientationController', OrientationController);
 
-  OrientationController.$inject = ['$ionicPopup', '$location', '$log', '$state', 'FormFactory', 'ProjectFactory',
-    'SpotFactory'];
+  OrientationController.$inject = ['$location', '$log', '$state', 'FormFactory', 'SpotFactory'];
 
-  function OrientationController($ionicPopup, $location, $log, $state, FormFactory, ProjectFactory, SpotFactory) {
+  function OrientationController($location, $log, $state, FormFactory, SpotFactory) {
     var vm = this;
 
     vm.choices = {};
@@ -142,8 +141,9 @@
             if (!vm.currentSpot.properties.orientation_data) vm.currentSpot.properties.orientation_data = [];
             vm.currentSpot.properties.orientation_data.push(vm.data);
           }
-          SpotFactory.setCurrentSpot(vm.currentSpot);
-          $location.path('/app/spotTab/' + vm.currentSpot.properties.id + '/orientation-data');
+          SpotFactory.save(vm.currentSpot).then(function () {
+            $location.path('/app/spotTab/' + vm.currentSpot.properties.id + '/orientation-data');
+          });
         }
       }
     }

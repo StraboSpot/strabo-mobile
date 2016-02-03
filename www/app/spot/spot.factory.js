@@ -31,11 +31,9 @@
       'read': read,
       'save': save,
       'setCurrentOrientationIndex': setCurrentOrientationIndex,
-      'setCurrentSpot': setCurrentSpot,
       'setCurrentSpotById': setCurrentSpotById,
       'setNewSpot': setNewSpot,
-      'updateSpotsWithRockUnit': updateSpotsWithRockUnit,
-      'write': write
+      'updateSpotsWithRockUnit': updateSpotsWithRockUnit
     };
 
     /**
@@ -205,10 +203,6 @@
       currentAssociatedOrientationIndex = assoicatedIndex;
     }
 
-    function setCurrentSpot(spot) {
-      currentSpot = spot;
-    }
-
     function setCurrentSpotById(id) {
       var match = _.filter(spots, function (spot) {
         return String(spot.properties.id) === String(id);
@@ -218,6 +212,8 @@
 
     // Initialize a new Spot
     function setNewSpot(jsonObj) {
+      var deferred = $q.defer(); // init promise
+
       currentSpot = jsonObj;
       currentSpot.type = 'Feature';
       if (!currentSpot.properties) currentSpot.properties = {};
@@ -238,7 +234,11 @@
       if (!number) number = '';
       currentSpot.properties.name = prefix + number;
 
-      return currentSpot.properties.id;
+      ProjectFactory.incrementSpotNumber();
+      save(currentSpot).then(function () {
+        deferred.resolve(currentSpot.properties.id);
+      });
+      return deferred.promise;
     }
 
     function updateSpotsWithRockUnit(key, rock_unit) {
@@ -248,11 +248,6 @@
           $log.log('Updated Spot using modified rock unit: ', spot);
         }
       });
-    }
-
-    // Write to local storage
-    function write(key, value) {
-      return LocalStorageFactory.getDb().spotsDb.setItem(key, value);
     }
   }
 }());

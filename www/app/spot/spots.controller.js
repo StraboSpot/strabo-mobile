@@ -268,8 +268,9 @@
 
     // Create a new Spot
     function newSpot() {
-      var id = SpotFactory.setNewSpot({});
-      $location.path('/app/spotTab/' + id + '/spot');
+      SpotFactory.setNewSpot({}).then(function (id) {
+        $location.path('/app/spotTab/' + id + '/spot');
+      });
     }
 
     function openModal(modal) {

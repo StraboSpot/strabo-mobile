@@ -6,13 +6,12 @@
     .controller('SpotController', SpotController);
 
   SpotController.$inject = ['$document', '$ionicActionSheet', '$ionicHistory', '$ionicPopup', '$location', '$log',
-    '$state', 'FormFactory', 'ImageBasemapFactory', 'PreferencesFactory', 'ProjectFactory', 'SpotFactory'];
+    '$state', 'FormFactory', 'ImageBasemapFactory', 'PreferencesFactory', 'SpotFactory'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
   function SpotController($document, $ionicActionSheet, $ionicHistory, $ionicPopup, $location, $log, $state,
-                          FormFactory, ImageBasemapFactory, PreferencesFactory, ProjectFactory, SpotFactory) {
+                          FormFactory, ImageBasemapFactory, PreferencesFactory, SpotFactory) {
     var vm = this;
-    var copySpot = false;
     var returnToMap = false;
 
     vm.choices = undefined;
@@ -23,7 +22,6 @@
     vm.goBack = goBack;
     vm.isOptionChecked = isOptionChecked;
     vm.loadTab = loadTab;
-    vm.openSpot = openSpot;
     vm.setSelMultClass = setSelMultClass;
     vm.showActionsheet = showActionsheet;
     vm.showField = showField;
@@ -54,9 +52,9 @@
       var newSpot = _.omit(vm.spot, 'properties');
       newSpot.properties = _.omit(vm.data,
         ['name', 'id', 'date', 'time', 'modified_timestamp']);
-      var id = SpotFactory.setNewSpot(newSpot);
-      copySpot = true;
-      submit('/app/spotTab/' + id + '/spot');
+      SpotFactory.setNewSpot(newSpot).then(function (id) {
+        submit('/app/spotTab/' + id + '/spot');
+      });
     }
 
     // Set the form survey (and choices, if applicable)
@@ -83,11 +81,8 @@
 
     // Set the current spot
     function setSpot(id) {
+      SpotFactory.setCurrentSpotById(id);
       vm.spot = SpotFactory.getCurrentSpot();
-      if (!vm.spot) {
-        SpotFactory.setCurrentSpotById(id);
-        vm.spot = SpotFactory.getCurrentSpot();
-      }
 
       // Convert date string to Date type
       vm.spot.properties.date = new Date(vm.spot.properties.date);
@@ -193,7 +188,6 @@
       vm.stateName = state.current.name;
       vm.survey = undefined;
       vm.choices = undefined;
-      copySpot = false;
       setSpot(state.params.spotId);
       setForm(vm.stateName);
 
@@ -206,11 +200,6 @@
       if (vm.spot.geometry && vm.spot.geometry.type === 'Polygon') {
         vm.showRadius = false;
       }
-    }
-
-    function openSpot(id) {
-      SpotFactory.clearCurrentSpot();
-      $location.path('/app/spotTab/' + id + '/spot');
     }
 
     // Set the class for the select_multiple fields here because it is not working
@@ -290,19 +279,11 @@
           }
         });
 
-        var found = _.find(vm.spots, function (spot) {
-          return spot.properties.id === vm.data.id;
-        });
-
         // Save the spot
-        SpotFactory.save(vm.spot).then(function (data) {
-          vm.spots = data;
-          if (copySpot) SpotFactory.clearCurrentSpot();
-          if (!found) ProjectFactory.incrementSpotNumber();
+        SpotFactory.save(vm.spot).then(function () {
           $location.path(toPath);
         });
       }
-      copySpot = false;
     }
 
     function toggleAcknowledgeChecked(field) {

@@ -5,9 +5,9 @@
     .module('app')
     .factory('MapDrawFactory', MapDrawFactory);
 
-  MapDrawFactory.$inject = ['$document', '$ionicPopup', '$location', '$log', '$rootScope', 'SpotFactory'];
+  MapDrawFactory.$inject = ['$document', '$ionicPopup', '$location', '$log', 'SpotFactory'];
 
-  function MapDrawFactory($document, $ionicPopup, $location, $log, $rootScope, SpotFactory) {
+  function MapDrawFactory($document, $ionicPopup, $location, $log, SpotFactory) {
     var draw;               // draw is a ol3 drawing interaction
     var drawButtonActive;   // drawButtonActive used to keep state of which selected drawing tool is active
     var drawLayer;
@@ -186,8 +186,6 @@
         // clear the drawing
         drawLayer.setSource(new ol.source.Vector());
 
-        var id = '';
-
         // we want a geojson object when the user finishes drawing
         var geojson = new ol.format.GeoJSON();
 
@@ -290,9 +288,9 @@
               geojsonObj.properties.image_basemap = imageBasemap.id;
             }
 
-            id = SpotFactory.setNewSpot(geojsonObj);
-            $location.path('app/spotTab/' + id + '/spot');
-            $rootScope.$apply();
+            SpotFactory.setNewSpot(geojsonObj).then(function (id) {
+              $location.path('app/spotTab/' + id + '/spot');
+            });
           }
           else {
             // contains a kink, aka self-intersecting polygon
@@ -307,14 +305,15 @@
           var curSpot = SpotFactory.getCurrentSpot();
           if (curSpot) {
             curSpot.geometry = geojsonObj.geometry;
-            id = curSpot.properties.id;
-            SpotFactory.setCurrentSpot(curSpot);
+            SpotFactory.save(curSpot).then(function () {
+              $location.path('/app/spotTab/' + curSpot.properties.id + '/spot');
+            });
           }
           else {
-            id = SpotFactory.setNewSpot(geojsonObj);
+            SpotFactory.setNewSpot(geojsonObj).then(function (id) {
+              $location.path('/app/spotTab/' + id + '/spot');
+            });
           }
-          $location.path('/app/spotTab/' + id + '/spot');
-          $rootScope.$apply();
         }
       });
       map.addInteraction(draw);

@@ -109,8 +109,9 @@
               SpotFactory.updateSpotsWithRockUnit(key, vm.data);
               if (vm.currentSpot) {
                 vm.currentSpot.properties.rock_unit = vm.data;
-                SpotFactory.setCurrentSpot(vm.currentSpot);
-                $location.path(toPath);
+                SpotFactory.save(vm.currentSpot).then(function () {
+                  $location.path(toPath);
+                });
               }
               else {
                 $location.path(toPath);

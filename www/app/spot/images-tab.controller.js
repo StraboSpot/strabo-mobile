@@ -222,8 +222,8 @@
       // Only allow toggle on if there is an image title
       if (image.annotated && !image.title) {
         $ionicPopup.alert({
-          'title': 'Title Needed!',
-          'template': 'This image needs a title before you can use it as an image basemap.'
+          'title': 'Image Name Needed!',
+          'template': 'This image needs a name before you can use it as an image basemap.'
         });
         image.annotated = false;
       }
