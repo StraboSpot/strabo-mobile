@@ -28,6 +28,7 @@
       'getSpotCount': getSpotCount,
       'getSpots': getSpots,
       'isRockUnitUsed': isRockUnitUsed,
+      'isSafeDelete': isSafeDelete,
       'loadSpots': loadSpots,
       'moveSpot': moveSpot,
       'save': save,
@@ -159,6 +160,13 @@
     function isRockUnitUsed(key, value) {
       return _.find(spots, function (spot) {
         if (spot.properties.rock_unit) return spot.properties.rock_unit[key] === value;
+      });
+    }
+
+    function isSafeDelete(spotToDelete) {
+      if (!spotToDelete.images) return true;
+      return !_.find(spotToDelete.images, function (image) {
+        return image.annotated === true;
       });
     }
 

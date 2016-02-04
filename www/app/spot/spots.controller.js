@@ -85,19 +85,32 @@
       vm.spots = SpotFactory.getSpots();
     }
 
-    function deleteSpot(id) {
+    function deleteSpot(spot) {
       vm.deleteSelected = true;
-      var confirmPopup = $ionicPopup.confirm({
-        'title': 'Delete Spot',
-        'template': 'Are you sure you want to delete this spot?'
-      });
-      confirmPopup.then(function (res) {
-        if (res) {
-          SpotFactory.destroy(id);
-          vm.spots = SpotFactory.getSpots();
-        }
-        vm.deleteSelected = false;
-      });
+
+      if (SpotFactory.isSafeDelete(spot)) {
+        var confirmPopup = $ionicPopup.confirm({
+          'title': 'Delete Spot',
+          'template': 'Are you sure you want to delete this spot?'
+        });
+        confirmPopup.then(function (res) {
+          if (res) {
+            SpotFactory.destroy(spot.properties.id);
+            vm.spots = SpotFactory.getSpots();
+          }
+          vm.deleteSelected = false;
+        });
+      }
+      else {
+        var alertPopup = $ionicPopup.alert({
+          'title': 'Spot Deletion Prohibited!',
+          'template': 'This Spot has at least one image being used as an image basemap. Remove any image basemaps' +
+          ' from this Spot before deleting.'
+        });
+        alertPopup.then(function () {
+          vm.deleteSelected = false;
+        });
+      }
     }
 
     // Export data to CSV

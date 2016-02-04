@@ -100,16 +100,25 @@
 
     // Delete the spot
     function deleteSpot() {
-      var confirmPopup = $ionicPopup.confirm({
-        'title': 'Delete Spot',
-        'template': 'Are you sure you want to delete this spot?'
-      });
-      confirmPopup.then(function (res) {
-        if (res) {
-          SpotFactory.destroy(vm.data.id);
-          $location.path('/app/spots');
-        }
-      });
+      if (SpotFactory.isSafeDelete(vm.spot)) {
+        var confirmPopup = $ionicPopup.confirm({
+          'title': 'Delete Spot',
+          'template': 'Are you sure you want to delete this spot?'
+        });
+        confirmPopup.then(function (res) {
+          if (res) {
+            SpotFactory.destroy(vm.data.id);
+            $location.path('/app/spots');
+          }
+        });
+      }
+      else {
+        $ionicPopup.alert({
+          'title': 'Spot Deletion Prohibited!',
+          'template': 'This Spot has at least one image being used as an image basemap. Remove any image basemaps' +
+          ' from this Spot before deleting.'
+        });
+      }
     }
 
     // Get the max value allowed for a number field
