@@ -1,0 +1,50 @@
+<ion-modal-view>
+  <ion-header-bar class='bar-dark nav-title-slide-ios7'>
+    <div class="buttons">
+      <div class='button button-clear' ng-click='vmChild.closeModal("imagePropertiesModal")'><span
+        class='icon ion-arrow-left-c'></span></div>
+    </div>
+    <h1 class='title'>Image Properties</h1>
+    <div class="buttons">
+      <button ng-click='vmChild.deleteImage(vmChild.currentImage);'
+              class='button button-icon icon ion-trash-b'></button>
+    </div>
+  </ion-header-bar>
+  <ion-content class='has-header strabo-form'>
+    <div class='field-group item item-divider'>
+      Image Data
+    </div>
+    <ion-input class='item item-input item-stacked-label item-text-wrap'>
+      <ion-label>Image Name</ion-label>
+      <input type='text' ng-model='vmChild.currentImage.title' placeholder='Image Title'>
+    </ion-input>
+    <ion-input class='item item-input item-stacked-label item-text-wrap'>
+      <ion-label>Image Description</ion-label>
+      <textarea placeholder='Image description ...' rows='4' ng-model='vmChild.currentImage.caption'></textarea>
+    </ion-input>
+    <ion-input class='item item-input item-stacked-label item-text-wrap'>
+      <ion-label>Scale of Overall Image</ion-label>
+      <input type='text' ng-model='vmChild.currentImage.scale_of_image' placeholder='Image Title'>
+    </ion-input>
+    <ion-input class='item item-input item-stacked-label item-text-wrap'>
+      <ion-label>Scale and type of object in image (m)</ion-label>
+      <input type='text' ng-model='vmChild.currentImage.scale_object' placeholder='Image Title'>
+    </ion-input>
+    <div class='field-group item item-divider'>
+      Camera Orientation
+    </div>
+    <ion-input class='item item-input item-stacked-label item-text-wrap'>
+      <ion-label>View azimuth (trend)</ion-label>
+      <input type='number' ng-model='vmChild.currentImage.view_azimuth_trend'>
+    </ion-input>
+    <ion-input class='item item-input item-stacked-label item-text-wrap'>
+      <ion-label>View angle (plunge)</ion-label>
+      <input type='number' ng-model='vmChild.currentImage.view_angle_plunge'>
+    </ion-input>
+    <ion-input class='item item-input item-stacked-label item-text-wrap'>
+      <ion-label>Orientation of View Subject</ion-label>
+      <input type='text' ng-model='vmChild.currentImage.orientation_of_view_subject'
+             placeholder='e.g., facing direction of cliff face'>
+    </ion-input>
+  </ion-content>
+</ion-modal-view>

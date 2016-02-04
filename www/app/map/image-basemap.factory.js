@@ -9,19 +9,23 @@
     .module('app')
     .factory('ImageBasemapFactory', ImageBasemapFactory);
 
-  function ImageBasemapFactory() {
+  ImageBasemapFactory.$inject = ['$log'];
+
+  function ImageBasemapFactory($log) {
     var imageBasemaps = [];
-    var currentImageBasemap;
 
     return {
       'addImageBasemap': addImageBasemap,
       'clearAllImageBasemaps': clearAllImageBasemaps,
-      'clearCurrentImageBasemap': clearCurrentImageBasemap,
-      'getCurrentImageBasemap': getCurrentImageBasemap,
       'getImageBasemaps': getImageBasemaps,
+      'loadImageBasemaps': loadImageBasemaps,
       'removeImageBasemap': removeImageBasemap,
-      'setCurrentImageBasemap': setCurrentImageBasemap
+      'setImageBasemaps': setImageBasemaps
     };
+
+    /**
+     * Public Functions
+     */
 
     function addImageBasemap(imageBasemap) {
       imageBasemaps = _.reject(imageBasemaps, function (image) {
@@ -34,16 +38,16 @@
       imageBasemaps = [];
     }
 
-    function clearCurrentImageBasemap() {
-      currentImageBasemap = null;
-    }
-
-    function getCurrentImageBasemap() {
-      return currentImageBasemap;
-    }
-
     function getImageBasemaps() {
       return imageBasemaps;
+    }
+
+    function loadImageBasemaps(spots) {
+      var images = _.flatten(_.compact(_.pluck(spots, 'images')));
+      imageBasemaps = _.filter(images, function (image) {
+        return image.annotated === true;
+      });
+      $log.log('Image Basemaps:', imageBasemaps);
     }
 
     function removeImageBasemap(imageBasemap) {
@@ -52,8 +56,8 @@
       });
     }
 
-    function setCurrentImageBasemap(imageBasemap) {
-      currentImageBasemap = imageBasemap;
+    function setImageBasemaps(inImageBasemaps) {
+      imageBasemaps = inImageBasemaps;
     }
   }
 }());

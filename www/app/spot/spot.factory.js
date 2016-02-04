@@ -5,12 +5,13 @@
     .module('app')
     .factory('SpotFactory', SpotFactory);
 
-  SpotFactory.$inject = ['$log', '$q', 'LocalStorageFactory', 'ProjectFactory'];
+  SpotFactory.$inject = ['$log', '$q', 'ImageBasemapFactory', 'LocalStorageFactory', 'ProjectFactory'];
 
-  function SpotFactory($log, $q, LocalStorageFactory, ProjectFactory) {
+  function SpotFactory($log, $q, ImageBasemapFactory, LocalStorageFactory, ProjectFactory) {
     var currentSpot;
     var currentAssociatedOrientationIndex;
     var currentOrientationIndex;
+    var moveSpot = false;
     var spots;
 
     return {
@@ -28,7 +29,7 @@
       'getSpots': getSpots,
       'isRockUnitUsed': isRockUnitUsed,
       'loadSpots': loadSpots,
-      'read': read,
+      'moveSpot': moveSpot,
       'save': save,
       'setCurrentOrientationIndex': setCurrentOrientationIndex,
       'setCurrentSpotById': setCurrentSpotById,
@@ -168,18 +169,12 @@
         all().then(function (savedData) {
           spots = savedData;
           $log.log('Finished loading Spots: ', spots);
+          ImageBasemapFactory.loadImageBasemaps(spots);
           deferred.resolve();
         });
       }
       else deferred.resolve();
       return deferred.promise;
-    }
-
-    // Read from local storage
-    function read(key, callback) {
-      LocalStorageFactory.getDb().spotsDb.getItem(key).then(function (value) {
-        callback(value);
-      });
     }
 
     function save(saveSpot) {

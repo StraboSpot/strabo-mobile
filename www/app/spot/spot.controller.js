@@ -6,11 +6,11 @@
     .controller('SpotController', SpotController);
 
   SpotController.$inject = ['$document', '$ionicActionSheet', '$ionicHistory', '$ionicPopup', '$location', '$log',
-    '$state', 'FormFactory', 'ImageBasemapFactory', 'PreferencesFactory', 'SpotFactory'];
+    '$state', 'FormFactory', 'PreferencesFactory', 'SpotFactory'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
   function SpotController($document, $ionicActionSheet, $ionicHistory, $ionicPopup, $location, $log, $state,
-                          FormFactory, ImageBasemapFactory, PreferencesFactory, SpotFactory) {
+                          FormFactory, PreferencesFactory, SpotFactory) {
     var vm = this;
     var returnToMap = false;
 
@@ -87,24 +87,9 @@
       // Convert date string to Date type
       vm.spot.properties.date = new Date(vm.spot.properties.date);
       vm.spot.properties.time = new Date(vm.spot.properties.time);
-      vm.spotTitle = vm.spot.properties.name;
 
+      vm.spotTitle = vm.spot.properties.name;
       vm.spots = SpotFactory.getSpots();
-      if (!_.isEmpty(vm.spots)) {
-        vm.spots.forEach(function (obj, i) {
-          // Check for image basemaps
-          _.forEach(obj.images, function (image) {
-            if (image.annotated) {
-              image.annotated = true;
-              ImageBasemapFactory.addImageBasemap(image);
-            }
-            else {
-              image.annotated = false;
-              ImageBasemapFactory.removeImageBasemap(image);
-            }
-          });
-        });
-      }
       vm.data = vm.spot.properties;
       $log.log('Spot loaded: ', vm.spot);
     }
@@ -158,12 +143,8 @@
       if (returnToMap && vm.data.image_basemap) {
         submit('app/image-basemaps/' + vm.data.image_basemap);
       }
-      else if (returnToMap && !vm.data.image_basemap) {
-        submit('app/map');
-      }
-      else {
-        submit('app/spots');
-      }
+      else if (returnToMap && !vm.data.image_basemap) submit('app/map');
+      else submit('app/spots');
       returnToMap = false;
     }
 
@@ -179,6 +160,8 @@
     }
 
     function loadTab(state) {
+      SpotFactory.moveSpot = false;
+
       if ($ionicHistory.backView()) {
         if ($ionicHistory.backView().stateName === 'app.map' ||
           $ionicHistory.backView().stateName === 'app.image-basemap') {
@@ -261,25 +244,11 @@
       return preferences[tab];
     }
 
-    // Add or modify Spot
+    // Save the Spot
     function submit(toPath) {
       // Validate the form first
       if (vm.validateForm()) {
-        $log.log('spot to save: ', vm.spot);
-
-        // define the geojson feature type
-        vm.spot.type = 'Feature';
-
-        _.forEach(vm.spot.images, function (image) {
-          if (image.annotated) {
-            ImageBasemapFactory.addImageBasemap(image);
-          }
-          else {
-            ImageBasemapFactory.removeImageBasemap(image);
-          }
-        });
-
-        // Save the spot
+        $log.log('Spot to save: ', vm.spot);
         SpotFactory.save(vm.spot).then(function () {
           $location.path(toPath);
         });
@@ -293,38 +262,24 @@
           'template': 'By closing this group you will be clearing any data in this group. Continue?'
         });
         confirmPopup.then(function (res) {
-          if (res) {
-            vm.data = FormFactory.toggleAcknowledgeChecked(vm.data, field);
-          }
-          else {
-            $document[0].getElementById(field + 'Toggle').checked = true;
-          }
+          if (res) vm.data = FormFactory.toggleAcknowledgeChecked(vm.data, field);
+          else $document[0].getElementById(field + 'Toggle').checked = true;
         });
       }
-      else {
-        vm.data = FormFactory.toggleAcknowledgeChecked(vm.data, field);
-      }
+      else vm.data = FormFactory.toggleAcknowledgeChecked(vm.data, field);
     }
 
     function toggleChecked(field, choice) {
       var i = -1;
-      if (vm.data[field]) {
-        i = vm.data[field].indexOf(choice);
-      }
-      else {
-        vm.data[field] = [];
-      }
+      if (vm.data[field]) i = vm.data[field].indexOf(choice);
+      else vm.data[field] = [];
 
       // If choice not already selected
-      if (i === -1) {
-        vm.data[field].push(choice);
-      }
+      if (i === -1) vm.data[field].push(choice);
       // Choice has been unselected so remove it and delete if empty
       else {
         vm.data[field].splice(i, 1);
-        if (vm.data[field].length === 0) {
-          delete vm.data[field];
-        }
+        if (vm.data[field].length === 0) delete vm.data[field];
       }
     }
 
@@ -345,12 +300,8 @@
               if (!vm.spot.geometry.coordinates[0] && !vm.spot.geometry.coordinates[1]) {
                 geoError = '<b>Latitude</b> and <b>longitude</b> are required.';
               }
-              else if (!vm.spot.geometry.coordinates[0]) {
-                geoError = '<b>Longitude</b> is required.';
-              }
-              else if (!vm.spot.geometry.coordinates[1]) {
-                geoError = '<b>Latitude</b> is required.';
-              }
+              else if (!vm.spot.geometry.coordinates[0]) geoError = '<b>Longitude</b> is required.';
+              else if (!vm.spot.geometry.coordinates[1]) geoError = '<b>Latitude</b> is required.';
               if (geoError) {
                 $ionicPopup.alert({
                   'title': 'Validation Error!',
@@ -365,9 +316,7 @@
           // Don't validate the sample tab if no sample fields are filled in
           var validateSample = false;
           _.each(vm.survey, function (field) {
-            if (vm.data[field.name]) {
-              validateSample = true;
-            }
+            if (vm.data[field.name]) validateSample = true;
           });
           if (!validateSample) return true;
       }

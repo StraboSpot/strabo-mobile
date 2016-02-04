@@ -9,15 +9,19 @@
     'MapDrawFactory', 'ImageBasemapFactory', 'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory', 'SpotFactory'];
 
   function ImageBasemapController($ionicActionSheet, $ionicSideMenuDelegate, $location, $log, $state, MapDrawFactory,
-                                  ImageBasemapFactory, MapFeaturesFactory, MapSetupFactory, MapViewFactory, SpotFactory) {
+                                  ImageBasemapFactory, MapFeaturesFactory, MapSetupFactory, MapViewFactory,
+                                  SpotFactory) {
     var vm = this;
 
     vm.goBack = goBack;
-    vm.goToImageBasemaps = goToImageBasemaps;
-    vm.imageBasemap = ImageBasemapFactory.getCurrentImageBasemap();
+    vm.imageBasemap = {};
     vm.showActionsheet = showActionsheet;
 
     var map;
+
+    /**
+     * Private Functions
+     */
 
     activate();
 
@@ -25,6 +29,7 @@
       // Disable dragging back to ionic side menu because this affects drawing tools
       $ionicSideMenuDelegate.canDragContent(false);
 
+      setImageBasemap();
       MapSetupFactory.setImageBasemap(vm.imageBasemap);
       MapSetupFactory.setInitialMapView();
       MapSetupFactory.setMap();
@@ -33,7 +38,6 @@
       MapSetupFactory.setPopupOverlay();
 
       map = MapSetupFactory.getMap();
-
       MapFeaturesFactory.createFeatureLayer(map, vm.imageBasemap);
 
       // When the map is moved update the zoom control
@@ -57,19 +61,26 @@
       });
     }
 
-
-    function goBack() {
-      if (SpotFactory.getCurrentSpot()) {
-        $location.path('/app/spotTab/' + SpotFactory.getCurrentSpot().properties.id + '/spot');
-      }
-      else {
-        ImageBasemapFactory.clearCurrentImageBasemap();
-        $location.path('/app/image-basemaps');
-      }
+    function setImageBasemap() {
+      vm.imageBasemap = _.filter(ImageBasemapFactory.getImageBasemaps(), function (imageBasemap) {
+        return imageBasemap.id.toString() === $state.params.imagebasemapId;
+      })[0];
     }
 
-    function goToImageBasemaps() {
-      $state.go('app.image-basemaps');
+    /**
+     * Public Functions
+     */
+
+    function goBack() {
+      var currentSpot = SpotFactory.getCurrentSpot();
+      if (!currentSpot) $location.path('/app/image-basemaps');
+      // Return to spot tab unless we got to this image from the images tab (that is if the id
+      // of the image basemap we're leaving matches the id of an image of this spot)
+      else if (currentSpot.properties.image_basemap &&
+        currentSpot.properties.image_basemap.toString() === $state.params.imagebasemapId) {
+        $location.path('/app/spotTab/' + currentSpot.properties.id + '/spot');
+      }
+      else $location.path('/app/spotTab/' + currentSpot.properties.id + '/images');
     }
 
     function showActionsheet() {

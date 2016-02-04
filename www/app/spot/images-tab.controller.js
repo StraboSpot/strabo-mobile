@@ -5,11 +5,11 @@
     .module('app')
     .controller('ImagesTabController', ImagesTabController);
 
-  ImagesTabController.$inject = ['$cordovaCamera', '$document', '$ionicModal', '$ionicPopup', '$location', '$log',
-    '$scope', '$state', '$window', 'ImageBasemapFactory', 'SpotFactory'];
+  ImagesTabController.$inject = ['$cordovaCamera', '$document', '$ionicModal', '$ionicPopup', '$log', '$scope',
+    '$state', '$window', 'ImageBasemapFactory'];
 
-  function ImagesTabController($cordovaCamera, $document, $ionicModal, $ionicPopup, $location, $log, $scope, $state,
-                               $window, ImageBasemapFactory, SpotFactory) {
+  function ImagesTabController($cordovaCamera, $document, $ionicModal, $ionicPopup, $log, $scope, $state, $window,
+                               ImageBasemapFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.loadTab($state);  // Need to load current state into parent
@@ -25,8 +25,10 @@
       'text': 'Saved Photo Album',
       'value': 'SAVEDPHOTOALBUM'
     }];
-    vm.checkImageBasemapAction = checkImageBasemapAction;
+    vm.closeModal = closeModal;
     vm.closeImageModal = closeImageModal;
+    vm.currentImage = {};
+    vm.deleteImage = deleteImage;
     vm.goToImageBasemap = goToImageBasemap;
     vm.moreDetail = moreDetail;
     vm.selectedCameraSource = {
@@ -34,6 +36,7 @@
       'source': 'CAMERA'
     };
     vm.showImages = showImages;
+    vm.toggleImageBasemap = toggleImageBasemap;
 
     activate();
 
@@ -44,6 +47,7 @@
     function activate() {
       $log.log('In ImagesTabController');
 
+      createModals();
       ionic.on('change', getFile, $document[0].getElementById('file'));
     }
 
@@ -77,10 +81,50 @@
       });
     }
 
+
+    function createModals() {
+      $ionicModal.fromTemplateUrl('app/spot/image-properties-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up'
+      }).then(function (modal) {
+        vm.imagePropertiesModal = modal;
+      });
+    }
+
     function getFile(event) {
       $log.log('Getting file ....');
       var file = event.target.files[0];
       readDataUrl(file);
+    }
+
+    function isImageUsed(image) {
+      var spotsWithImage = _.filter(vmParent.spots, function (spot) {
+        return spot.properties.image_basemap === image.id;
+      });
+      if (spotsWithImage.length >= 1) {
+        var names = _.map(spotsWithImage, function (spot) {
+          return spot.properties.name;
+        });
+        var alertTitle = 'Image Basemap Contains Spots!';
+        var alertText = 'More than 20 spots are mapped on this image basemap. Delete these spots before ' +
+          'removing the image as an Image Basemap.';
+        if (spotsWithImage.length === 1) {
+          alertTitle = 'Image Basemap Contains a Spot!';
+          alertText = 'The following spot is mapped on this image basemap. Delete this spot before ' +
+            'removing the image as an Image Basemap: ' + names.join(', ');
+        }
+        else if (spotsWithImage.length > 1 && spotsWithImage.length <= 20) {
+          alertTitle = 'Image Basemap Contains Spots!';
+          alertText = 'The following spots are mapped on this image basemap. Delete these spots before ' +
+            'removing the image as an Image Basemap: ' + names.join(', ');
+        }
+        $ionicPopup.alert({
+          'title': alertTitle,
+          'template': alertText
+        });
+        return true;
+      }
+      return false;
     }
 
     function launchCamera(source) {
@@ -218,45 +262,8 @@
       else cameraModal();
     }
 
-    function checkImageBasemapAction(image) {
-      // Only allow toggle on if there is an image title
-      if (image.annotated && !image.title) {
-        $ionicPopup.alert({
-          'title': 'Image Name Needed!',
-          'template': 'This image needs a name before you can use it as an image basemap.'
-        });
-        image.annotated = false;
-      }
-
-      // Only allow toggle off if no spots mapped on this image
-      if (!image.annotated) {
-        var spotsWithImage = _.filter(vmParent.spots, function (spot) {
-          return spot.properties.image_basemap === image.id;
-        });
-        if (spotsWithImage.length >= 1) {
-          var names = _.map(spotsWithImage, function (spot) {
-            return spot.properties.name;
-          });
-          var alertTitle = 'Image Basemap Contains Spots!';
-          var alertText = 'More than 20 spots are mapped on this image basemap. Delete these spots before ' +
-            'removing the image as an Image Basemap.';
-          if (spotsWithImage.length === 1) {
-            alertTitle = 'Image Basemap Contains a Spot!';
-            alertText = 'The following spot is mapped on this image basemap. Delete this spot before ' +
-              'removing the image as an Image Basemap: ' + names.join(', ');
-          }
-          else if (spotsWithImage.length > 1 && spotsWithImage.length <= 20) {
-            alertTitle = 'Image Basemap Contains Spots!';
-            alertText = 'The following spots are mapped on this image basemap. Delete these spots before ' +
-              'removing the image as an Image Basemap: ' + names.join(', ');
-          }
-          $ionicPopup.alert({
-            'title': alertTitle,
-            'template': alertText
-          });
-          image.annotated = true;
-        }
-      }
+    function closeModal(modal) {
+      vm[modal].hide();
     }
 
     function closeImageModal() {
@@ -264,34 +271,30 @@
       vm.imageModal.remove();
     }
 
+    function deleteImage(imageToDelete) {
+      if (!isImageUsed(imageToDelete)) {
+        var confirmPopup = $ionicPopup.confirm({
+          'title': 'Delete Image',
+          'template': 'Are you sure you want to delete this image?'
+        });
+        confirmPopup.then(function (res) {
+          if (res) {
+            vmParent.spot.images = _.reject(vmParent.spot.images, function (image) {
+              return imageToDelete.id === image.id;
+            });
+            closeModal('imagePropertiesModal');
+          }
+        });
+      }
+    }
+
     function goToImageBasemap(image) {
-      SpotFactory.read(vmParent.spot.properties.id, (function (savedSpot) {
-        savedSpot.properties.date = new Date(savedSpot.properties.date);
-        savedSpot.properties.time = new Date(savedSpot.properties.time);
-        if (_.isEqual(vmParent.spot, savedSpot)) {    // User angular.copy to get rid of angular's $$hashKey
-          ImageBasemapFactory.setCurrentImageBasemap(image);              // Save referenced image basemap
-          $location.path('/app/image-basemaps/' + image.id);
-          $scope.$apply();
-        }
-        else if (_.isEqual(angular.copy(vmParent.spot), savedSpot)) {    // User angular.copy to get rid of angular's $$hashKey
-          ImageBasemapFactory.setCurrentImageBasemap(image);              // Save referenced image basemap
-          $location.path('/app/image-basemaps/' + image.id);
-          $scope.$apply();
-        }
-        else {
-          $ionicPopup.alert({
-            'title': 'Save First!',
-            'template': 'There have been changes to this Spot. Please save this Spot before opening the Image Basemap.'
-          });
-        }
-      }));
+      vmParent.submit('/app/image-basemaps/' + image.id);
     }
 
     function moreDetail(image) {
-      $ionicPopup.alert({
-        'title': 'In Development!',
-        'template': 'This will show more detail about the image.'
-      });
+      vm.currentImage = image;
+      vm.imagePropertiesModal.show();
     }
 
     function showImages(index) {
@@ -303,6 +306,27 @@
         vm.imageModal = modal;
         vm.imageModal.show();
       });
+    }
+
+    function toggleImageBasemap(image) {
+      // Only allow toggle on if there is an image title
+      if (image.annotated && !image.title) {
+        $ionicPopup.alert({
+          'title': 'Image Name Needed!',
+          'template': 'This image needs a name before you can use it as an image basemap.'
+        });
+        image.annotated = false;
+      }
+      if (image.annotated && image.title) {
+        ImageBasemapFactory.addImageBasemap(image);
+      }
+
+      // Only allow toggle off if no spots mapped on this image
+      if (!image.annotated) {
+        var imageUsed = isImageUsed(image);
+        if (imageUsed) image.annotated = true;
+        else ImageBasemapFactory.removeImageBasemap(image);
+      }
     }
   }
 }());

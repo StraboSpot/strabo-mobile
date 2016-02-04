@@ -5,11 +5,11 @@
     .module('app')
     .controller('SpotTabController', SpotTabController);
 
-  SpotTabController.$inject = ['$cordovaGeolocation', '$ionicPopup', '$log', '$scope', '$state', 'ImageBasemapFactory',
-    'MapViewFactory', 'ProjectFactory', 'SpotFactory'];
+  SpotTabController.$inject = ['$cordovaGeolocation', '$ionicPopup', '$log', '$scope', '$state', 'MapViewFactory',
+    'ProjectFactory', 'SpotFactory'];
 
-  function SpotTabController($cordovaGeolocation, $ionicPopup, $log, $scope, $state, ImageBasemapFactory,
-                             MapViewFactory, ProjectFactory, SpotFactory) {
+  function SpotTabController($cordovaGeolocation, $ionicPopup, $log, $scope, $state, MapViewFactory, ProjectFactory,
+                             SpotFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.loadTab($state);  // Need to load current state into parent
@@ -106,14 +106,11 @@
 
     // Open the map so the user can set the location for the spot
     function setFromMap() {
+      SpotFactory.moveSpot = true;
       if (_.has(vmParent.spot.properties, 'image_basemap')) {
-        var image = _.findWhere(ImageBasemapFactory.getImageBasemaps(), {'id': vmParent.spot.properties.image_basemap});
-        ImageBasemapFactory.setCurrentImageBasemap(image);    // Save referenced image basemap
         vmParent.submit('/app/image-basemaps/' + vmParent.spot.properties.image_basemap);
       }
-      else {
-        vmParent.submit('/app/map');
-      }
+      else vmParent.submit('/app/map');
     }
 
     function getRockUnits() {
@@ -122,15 +119,11 @@
     }
 
     function setRockUnit() {
-      if (!vm.rockUnit) {
-        delete vmParent.spot.properties.rock_unit;
-      }
+      if (!vm.rockUnit) delete vmParent.spot.properties.rock_unit;
       else if (vm.rockUnit.unit_label_abbreviation === '-- new rock unit --') {
         $state.go('app.new-rock-unit');
       }
-      else {
-        vmParent.spot.properties.rock_unit = vm.rockUnit;
-      }
+      else vmParent.spot.properties.rock_unit = vm.rockUnit;
     }
 
     // Update the value for the Latitude from the user input
@@ -160,8 +153,6 @@
     // View the spot on the map
     function viewSpot() {
       if (_.has(vmParent.spot.properties, 'image_basemap')) {
-        var image = _.findWhere(ImageBasemapFactory.getImageBasemaps(), {'id': vmParent.spot.properties.image_basemap});
-        ImageBasemapFactory.setCurrentImageBasemap(image);    // Save referenced image basemap
         vmParent.submit('/app/image-basemaps/' + vmParent.spot.properties.image_basemap);
       }
       else {

@@ -9,7 +9,7 @@
     <ion-list>
       <ion-item ng-repeat='imageBasemap in vm.imageBasemaps'
                 ng-click='vm.goToImageBasemap(imageBasemap)'>
-        {{imageBasemap.title}}
+        {{ imageBasemap.title || imageBasemap.caption.substring(0, 24) || 'Unnamed' }}
       </ion-item>
     </ion-list>
     </ion-content>

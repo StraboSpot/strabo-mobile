@@ -302,11 +302,11 @@
         }
         else {
           $log.log('Drawend: Normal (not freehand)');
-          var curSpot = SpotFactory.getCurrentSpot();
-          if (curSpot) {
-            curSpot.geometry = geojsonObj.geometry;
-            SpotFactory.save(curSpot).then(function () {
-              $location.path('/app/spotTab/' + curSpot.properties.id + '/spot');
+          var currentSpot = SpotFactory.getCurrentSpot();
+          if (currentSpot && SpotFactory.moveSpot) {
+            currentSpot.geometry = geojsonObj.geometry;
+            SpotFactory.save(currentSpot).then(function () {
+              $location.path('/app/spotTab/' + currentSpot.properties.id + '/spot');
             });
           }
           else {
