@@ -10,11 +10,12 @@
   function DebugController($log, SpotFactory) {
     var vm = this;
 
-    vm.pointsToGenerate = '';
+    vm.pointsGenerated = undefined;
+    vm.pointsToGenerate = undefined;
     vm.submit = submit;
 
     function submit(pointsToGenerate) {
-      $log.log('Generating ' + pointsToGenerate + ' random points.');
+      $log.log('Generating ' + pointsToGenerate + ' random Spots ...');
       generateRandomGeojsonPoint(pointsToGenerate);
     }
 
@@ -40,6 +41,8 @@
 
       var feature_types = ['bedding', 'contact', 'foliation', 'fracture', 'fault', 'shear_zone_boundary', 'other',
         'vein'];
+
+      var initialNumberOfSpots = SpotFactory.getSpots().length;
 
       for (var i = 0; i < num; i++) {
         // Set the date and time to now
@@ -68,8 +71,10 @@
             'id': Math.floor((new Date().getTime() + Math.random()) * 10)
           }
         };
-        vm.status = i + 1;
-        SpotFactory.save(geojsonPoint);
+
+        SpotFactory.save(geojsonPoint).then(function (spots) {
+          vm.pointsGenerated = spots.length - initialNumberOfSpots;
+        });
       }
     }
   }
