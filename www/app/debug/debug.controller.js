@@ -38,8 +38,8 @@
         return r * interval + min;
       }
 
-      var feature_types = ['bedding', 'contact', 'foliation', 'axial_planar_surface', 'fracture', 'joint',
-        'fault_plane', 'shear_fracture', 'shear_zone', 'other', 'vein'];
+      var feature_types = ['bedding', 'contact', 'foliation', 'fracture', 'fault', 'shear_zone_boundary', 'other',
+        'vein'];
 
       for (var i = 0; i < num; i++) {
         // Set the date and time to now
@@ -56,17 +56,19 @@
           },
           'type': 'Feature',
           'properties': {
-            'measured_plane': true,
-            'planar_feature_type': feature_types[Math.floor(Math.random() * feature_types.length)],
+            'orientation_data': [{
+              'dip': _.random(0, 90),
+              'feature_type': feature_types[Math.floor(Math.random() * feature_types.length)],
+              'orientation_type': 'planar_orientation',
+              'strike': _.random(0, 180)
+            }],
             'date': d,
             'time': d,
-            'strike': _.random(0, 180),
-            'dip': _.random(0, 90),
             'name': 'x' + _.random(10, 99) + i.toString(),
             'id': Math.floor((new Date().getTime() + Math.random()) * 10)
           }
         };
-
+        vm.status = i + 1;
         SpotFactory.save(geojsonPoint);
       }
     }

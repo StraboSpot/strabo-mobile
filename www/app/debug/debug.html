@@ -1,16 +1,25 @@
-<ion-view title='Debug'>
+<ion-view title='Random Spots'>
 
   <ion-nav-buttons side='left'>
     <button menu-toggle='left' class='button button-icon icon ion-navicon'></button>
   </ion-nav-buttons>
 
-  <ion-content class='has-header'>
+  <ion-content class='has-header strabo-form'>
     <ion-input class='item item-input item-stacked-label'>
-      <ion-label>Number of points to generate</ion-label>
-      <input type='number' ng-model='vm.pointsToGenerate' value={{vm.pointsToGenerate}} placeholder='How many points?'>
+      <ion-label>Number of random Spots to generate:</ion-label>
+      <input type='number' ng-model='vm.pointsToGenerate' value={{vm.pointsToGenerate}} placeholder='How many Spots?'>
     </ion-input>
-    <button class='button button-block button-positive' ng-click='vm.submit(vm.pointsToGenerate)'>Generate Points
-    </button>
-  </ion-content>
+    <div class='padding'>
+      <button ng-click='vm.submit(vm.pointsToGenerate)'
+              class='button button-positive'>
+        <i class='icon ion-grid'></i>
+        Generate Spots
+      </button>
+    </div>
 
+    <div class='padding' ng-show='vm.status'>
+      <hr>
+      Points generated: {{ vm.status }}
+    </div>
+  </ion-content>
 </ion-view>

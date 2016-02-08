@@ -191,12 +191,13 @@
       var deferred = $q.defer(); // init promise
       LocalStorageFactory.getDb().spotsDb.setItem(saveSpot.properties.id, saveSpot).then(function () {
         $log.log('Saved spot: ', saveSpot);
-        all().then(function (savedData) {
-          spots = savedData;
-          $log.log('All spots: ', spots);
-          deferred.notify();
-          deferred.resolve(spots);
+        spots = _.reject(spots, function (spot) {
+          return spot.properties.id === saveSpot.properties.id;
         });
+        spots.push(saveSpot);
+        $log.log('All spots: ', spots);
+        deferred.notify();
+        deferred.resolve(spots);
       });
       return deferred.promise;
     }
