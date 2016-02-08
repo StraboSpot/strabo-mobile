@@ -52,6 +52,13 @@ navigation history that also transitions its views in and out.
         Sample
       </a>
     </span>
+    <span ng-show='vm.showTab("inferences")'>
+      <a class='button button-clear spot-tab-inactive'
+         ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab.inferences"}'
+         ng-click='vm.submit("/app/spotTab/" + vm.data.id + "/inferences");'>
+        Inferences
+      </a>
+    </span>
   </ion-scroll>
 </ion-header-bar>
 

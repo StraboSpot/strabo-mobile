@@ -209,6 +209,16 @@
           }
         }
       })
+      .state('app.spotTab.inferences', {
+        'cache': false,
+        'url': '/:spotId/inferences',
+        'views': {
+          'spottab-childview': {
+            'templateUrl': 'app/spot/inferences-tab.html',
+            'controller': 'InferencesTabController as vmChild'
+          }
+        }
+      })
       .state('app.spotTab.spot', {
         'cache': false,
         'url': '/:spotId/spot',

@@ -1,0 +1,29 @@
+<ion-view>
+  <ion-content class="strabo-form">
+    <ion-toggle class='toggle-large'
+                toggle-class='toggle-positive'
+                ng-model='vm.spot.properties.rosetta_outcrop'>
+          <span class='toggle-left-label'>Rosetta (e.g., Particularly Significant) Outcrop?
+          </span>
+    </ion-toggle>
+    <ion-input class='item item-input'>
+      <ion-label>Description of Outcrop</ion-label>
+      <textarea placeholder='Write the description of the outcrop here ...' rows='4' ng-model='vm.spot.properties.description_of_outcrop'></textarea>
+    </ion-input>
+
+    <ion-input class='item item-input item-select item-text-wrap'>
+      <ion-label>Related Rosetta Outcrop</ion-label>
+      <select ng-model='vm.spot.properties.related_rosetta_outcrop'
+              ng-options='choice.properties.id as choice.properties.name for choice in vmChild.relatedRosettaChoices'>
+        <option value=''></option>
+      </select>
+    </ion-input>
+
+    <div class='item item-divider'>
+      Notes
+    </div>
+    <ion-input class='item item-input'>
+      <textarea placeholder='Notes about these inferences ...' rows='12' ng-model='vm.spot.properties.inferences_notes'></textarea>
+    </ion-input>
+  </ion-content>
+</ion-view>
