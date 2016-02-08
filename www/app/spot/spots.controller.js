@@ -19,10 +19,13 @@
     vm.exportToCSV = exportToCSV;
     vm.goToSpot = goToSpot;
     vm.isOnlineLoggedIn = isOnlineLoggedIn;
+    vm.loadMoreSpots = loadMoreSpots;
+    vm.moreSpotsCanBeLoaded = moreSpotsCanBeLoaded;
     vm.newSpot = newSpot;
     vm.openModal = openModal;
     vm.showActionsheet = showActionsheet;
     vm.spots = [];
+    vm.spotsDisplayed = [];
     vm.sync = sync;
 
     activate();
@@ -32,8 +35,9 @@
      */
 
     function activate() {
-      SpotFactory.clearCurrentSpot();            // Make sure the current spot is empty
-      vm.spots = SpotFactory.getSpots();  // Move newest to top
+      SpotFactory.clearCurrentSpot();           // Make sure the current spot is empty
+      vm.spots = SpotFactory.getSpots();
+      vm.spotsDisplayed = angular.fromJson(angular.toJson(vm.spots)).slice(0, 20);
       createModals();
       cleanupModals();
     }
@@ -68,6 +72,7 @@
       confirmPopup.then(
         function (res) {
           if (res) {
+            vm.spotsDisplayed = [];
             SpotFactory.clear().then(function () {
               // update the spots list
               vm.spots = SpotFactory.getSpots();
@@ -277,6 +282,16 @@
     // Is the user online and logged in
     function isOnlineLoggedIn() {
       return navigator.onLine && UserFactory.getUser();
+    }
+
+    function loadMoreSpots() {
+      var moreSpots = angular.fromJson(angular.toJson(vm.spots)).splice(vm.spotsDisplayed.length, vm.spotsDisplayed.length + 20);
+      vm.spotsDisplayed = _.union(vm.spotsDisplayed, moreSpots);
+      $scope.$broadcast('scroll.infiniteScrollComplete');
+    }
+
+    function moreSpotsCanBeLoaded() {
+      return vm.spotsDisplayed.length !== vm.spots.length;
     }
 
     // Create a new Spot

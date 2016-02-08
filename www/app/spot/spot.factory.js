@@ -176,6 +176,9 @@
         $log.log('Loading Spots ....');
         all().then(function (savedData) {
           spots = savedData;
+          spots = _.sortBy(spots, function (spot) {
+            return spot.properties.modified_timestamp;
+          }).reverse();
           $log.log('Finished loading Spots: ', spots);
           ImageBasemapFactory.loadImageBasemaps(spots);
           deferred.resolve();
@@ -195,6 +198,9 @@
           return spot.properties.id === saveSpot.properties.id;
         });
         spots.push(saveSpot);
+        spots = _.sortBy(spots, function (spot) {
+          return spot.properties.modified_timestamp;
+        }).reverse();
         $log.log('All spots: ', spots);
         deferred.notify();
         deferred.resolve(spots);

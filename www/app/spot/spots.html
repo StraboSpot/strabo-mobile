@@ -15,9 +15,12 @@
       No Spots added yet. Add a spot using the '+' button in the top right or by drawing a point, line or polygon on the
       Main Map page.
     </div>
+    <div class='padding' ng-show='vm.spots.length > 0'>
+      <small>Displaying {{ vm.spotsDisplayed.length }}/{{ vm.spots.length }} Spots</small>
+    </div>
     <ion-list>
       <ion-item class='item-text-wrap item-button-right'
-                ng-repeat='spot in vm.spots | orderBy:"-properties.modified_timestamp" track by spot.properties.id'
+                ng-repeat='spot in vm.spotsDisplayed track by spot.properties.id'
                 ng-click='vm.goToSpot(spot.properties.id)'>
         {{spot.properties.name}}
         <button class='button button-clear button-dark'
@@ -25,6 +28,11 @@
           <i class='ion-trash-b'></i>
         </button>
       </ion-item>
+      <ion-infinite-scroll
+        ng-if='vm.moreSpotsCanBeLoaded()'
+        icon='ion-loading-c'
+        on-infinite='vm.loadMoreSpots()'>
+      </ion-infinite-scroll>
     </ion-list>
   </ion-content>
 </ion-view>
