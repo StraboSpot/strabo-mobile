@@ -1,0 +1,41 @@
+<ion-view>
+  <ion-content class="strabo-form">
+
+
+    <div ng-show='vmChild.parentSpot'>
+      <button ng-click='vmChild.goToSpot(vmChild.parentSpot.properties.id)'
+              class='button button-clear button-positive'>
+        <i class='icon ion-eye'></i>
+        <span class='button-text-big'>{{ vmChild.parentSpot.properties.name }}</span>
+      </button>
+    </div>
+
+    <div class='padding' ng-show='vmChild.parentSpot || vmChild.childrenSpots.length > 0'>
+      <span ng-show='vmChild.parentSpot'>
+        <i class='ion-arrow-up-c'></i>
+        <br><br>
+      </span>
+      This Spot
+      <span ng-show='vmChild.childrenSpots.length > 0'>
+        <br><br>
+       <i class='ion-arrow-down-c'></i>
+      </span>
+    </div>
+
+    <div ng-repeat='childSpot in vmChild.childrenSpots' ng-show='vmChild.childrenSpots.length > 0'>
+      <button ng-click='vmChild.goToSpot(childSpot.properties.id)'
+              class='button button-clear button-positive'>
+        <i class='icon ion-eye'></i>
+        <span class='button-text-big'>{{ childSpot.properties.name }}</span>
+      </button>
+    </div>
+
+    <div class='item item-divider'>
+      Notes
+    </div>
+    <ion-input class='item item-input'>
+      <textarea placeholder='Notes about these inferences ...' rows='12'
+                ng-model='vm.spot.properties.nest_notes'></textarea>
+    </ion-input>
+  </ion-content>
+</ion-view>

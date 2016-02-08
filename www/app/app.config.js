@@ -219,6 +219,16 @@
           }
         }
       })
+      .state('app.spotTab.nest', {
+        'cache': false,
+        'url': '/:spotId/nest',
+        'views': {
+          'spottab-childview': {
+            'templateUrl': 'app/spot/nest-tab.html',
+            'controller': 'NestTabController as vmChild'
+          }
+        }
+      })
       .state('app.spotTab.spot', {
         'cache': false,
         'url': '/:spotId/spot',

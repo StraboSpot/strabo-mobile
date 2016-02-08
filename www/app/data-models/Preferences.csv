@@ -5,7 +5,7 @@ _3dstructures,acknowledge,3D Structures,false
 images,acknowledge,Images,false
 sample,acknowledge,Sample,false
 inferences,acknowledge,Inferences,false
-nesting,acknowledge,Nesting,false
+nest,acknowledge,Nesting,false
 ,end group,,
 group_other_preferences,begin group,Other Preferences,
 right_hand_rule,acknowledge,Right-hand Rule,false
