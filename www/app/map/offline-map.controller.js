@@ -9,6 +9,7 @@
 
   function OfflineMapController($ionicLoading, $ionicPopup, $scope, OfflineTilesFactory) {
     var vm = this;
+    var deleteMap;
 
     vm.clearOfflineTile = clearOfflineTile;
     vm.deleteTiles = deleteTiles;
@@ -83,6 +84,7 @@
     }
 
     function deleteTiles(map) {
+      deleteMap = true;
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete Saved Map',
         'template': 'Are you sure you want to delete the saved offline map <b>' + map.name + '</b>?'
@@ -98,45 +100,47 @@
             activate();
           });
         }
+        deleteMap = false;
       });
     }
 
     function edit(map) {
-      // console.log('edit');
-      vm.mapDetail = {};
+      if (!deleteMap) {
+        vm.mapDetail = {};
 
-      // rename popup
-      var myPopup = $ionicPopup.show({
-        'template': '<input type="text" ng-model="vm.mapDetail.newName">',
-        'title': 'Enter New Map Name',
-        'scope': $scope,
-        'buttons': [
-          {'text': 'Cancel'},
-          {
-            'text': '<b>Save</b>',
-            'type': 'button-positive',
-            'onTap': function (e) {
-              if (!vm.mapDetail.newName) {
-                // don't allow the user to close unless he enters the new name
-                e.preventDefault();
-              }
-              else {
-                return vm.mapDetail.newName;
+        // rename popup
+        var myPopup = $ionicPopup.show({
+          'template': '<input type="text" ng-model="vm.mapDetail.newName">',
+          'title': 'Enter New Map Name',
+          'scope': $scope,
+          'buttons': [
+            {'text': 'Cancel'},
+            {
+              'text': '<b>Save</b>',
+              'type': 'button-positive',
+              'onTap': function (e) {
+                if (!vm.mapDetail.newName) {
+                  // don't allow the user to close unless he enters the new name
+                  e.preventDefault();
+                }
+                else {
+                  return vm.mapDetail.newName;
+                }
               }
             }
-          }
-        ]
-      });
+          ]
+        });
 
-      myPopup.then(function (name) {
-        if (name) {
-          // rename the map
-          OfflineTilesFactory.renameMap(map.name, vm.mapDetail.newName)
-            .then(function () {
-              activate();
-            });
-        }
-      });
+        myPopup.then(function (name) {
+          if (name) {
+            // rename the map
+            OfflineTilesFactory.renameMap(map.name, vm.mapDetail.newName)
+              .then(function () {
+                activate();
+              });
+          }
+        });
+      }
     }
   }
 }());

@@ -12,20 +12,14 @@
     </div>
     <div ng-hide='vm.numOfflineTiles === 0'>
       <ion-list>
-        <ion-item class='item-text-wrap item-button-right' ng-repeat='map in vm.maps.maps'>
+        <ion-item class='item-text-wrap item-button-right' ng-repeat='map in vm.maps.maps' ng-click='vm.edit(map)'>
           <b>{{map.name}}</b><br>
           <small>{{map.tileArray.length}} tiles, {{map.size | normalizeBytes}}, {{map.mapProvider}}<span
             ng-if='map.date'>, Saved: {{ map.date }}</span></small>
-          <div class='buttons'>
-            <button class='button button-clear button-dark'
-                    ng-click='vm.edit(map)'>
-              <i class='icon ion-edit'></i>
-            </button>
             <button class='button button-clear button-assertive'
                     ng-click='vm.deleteTiles(map)'>
               <i class='icon ion-minus-circled'></i>
             </button>
-          </div>
         </ion-item>
       </ion-list>
       <div class='padding'>

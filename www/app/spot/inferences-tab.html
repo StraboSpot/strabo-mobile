@@ -45,6 +45,7 @@
       <div ng-show='vm.spot.properties.inferences.relationships'>
         <ion-list>
           <ion-item class='item-text-wrap item-button-right'
+                    ng-click='vmChild.editRelationship($index)'
                     ng-repeat='relationship in vm.spot.properties.inferences.relationships'>
             {{ relationship.observationA }}
             <span ng-hide='relationship.relationship === "other"'>{{ relationship.relationship }}</span>
@@ -53,15 +54,9 @@
             <span ng-show='relationship.deformation_event'><br><small>Deformation Event: {{
               relationship.deformation_event }}
             </small></span>
-            <div class='buttons'>
-              <button class='button button-clear button-dark'
-                      ng-click='vmChild.editRelationship($index)'>
-                <i class='ion-edit'></i>
-              </button>
             <button class='button button-clear button-assertive' ng-click='vmChild.deleteRelationship($index)'>
               <i class='icon ion-minus-circled'></i>
             </button>
-              </div>
           </ion-item>
         </ion-list>
       </div>

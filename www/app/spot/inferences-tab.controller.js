@@ -11,6 +11,7 @@
     var vm = this;
     var vmParent = $scope.vm;
     var index;
+    var deleteRel;
     vmParent.loadTab($state);  // Need to load current state into parent
 
     vm.addRelationship = addRelationship;
@@ -94,8 +95,18 @@
      */
 
     function addRelationship() {
-      vm.operationAdd = true;
-      vm.relationshipModal.show();
+      if (vm.orientationData.length > 1) {
+        vm.operationAdd = true;
+        vm.relationshipModal.show();
+      }
+      else {
+        $ionicPopup.alert({
+          'title': 'Orientation Data Needed',
+          'template': 'There must be at least two orientation observations for this Spot before any relationships' +
+          ' can be made. Valid orientation observations for relationships must include both a feature type and a' +
+          ' strike or trend.'
+        });
+      }
     }
 
     function addThisRelationship() {
@@ -117,6 +128,7 @@
     }
 
     function deleteRelationship(i) {
+      deleteRel = true;
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete Relationship',
         'template': 'Are you sure you want to delete this relationship?'
@@ -128,18 +140,21 @@
             delete vmParent.spot.properties.inferences.relationships;
           }
         }
+        deleteRel = false;
       });
     }
 
     function editRelationship(i) {
-      vm.deformationEvent = vmParent.spot.properties.inferences.relationships[i].deformation_event;
-      vm.observationA = vmParent.spot.properties.inferences.relationships[i].observationA;
-      vm.observationB = vmParent.spot.properties.inferences.relationships[i].observationB;
-      vm.otherRelationship = vmParent.spot.properties.inferences.relationships[i].other_relationship;
-      vm.relationship = vmParent.spot.properties.inferences.relationships[i].relationship;
-      vm.operationAdd = false;
-      index = i;
-      vm.relationshipModal.show();
+      if (!deleteRel) {
+        vm.deformationEvent = vmParent.spot.properties.inferences.relationships[i].deformation_event;
+        vm.observationA = vmParent.spot.properties.inferences.relationships[i].observationA;
+        vm.observationB = vmParent.spot.properties.inferences.relationships[i].observationB;
+        vm.otherRelationship = vmParent.spot.properties.inferences.relationships[i].other_relationship;
+        vm.relationship = vmParent.spot.properties.inferences.relationships[i].relationship;
+        vm.operationAdd = false;
+        index = i;
+        vm.relationshipModal.show();
+      }
     }
 
     function editThisRelationship() {
@@ -158,7 +173,7 @@
       if (!vmParent.spot.properties.inferences.rosetta_outcrop) {
         var confirmPopup = $ionicPopup.confirm({
           'title': 'Turn off Rosetta?',
-          'template': 'By toggling off Rosetta you will be clearing all Rosetta data. Continue?'
+          'template': 'By toggling off Rosetta you will be clearing all Rosetta data for this Spot. Continue?'
         });
         confirmPopup.then(function (res) {
           if (res) delete vmParent.spot.properties.inferences;
