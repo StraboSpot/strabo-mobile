@@ -1,4 +1,4 @@
-<ion-view title='Spots'>
+<ion-view title='{{ vm.spots.length }} Spots'>
   <ion-nav-buttons side='left'>
     <button menu-toggle='left' class='button button-icon icon ion-navicon'></button>
   </ion-nav-buttons>
@@ -14,9 +14,6 @@
     <div class='padding' ng-show='vm.spots.length === 0'>
       No Spots added yet. Add a spot using the '+' button in the top right or by drawing a point, line or polygon on the
       Main Map page.
-    </div>
-    <div class='padding' ng-show='vm.spots.length > 0'>
-      <small>Displaying {{ vm.spotsDisplayed.length }}/{{ vm.spots.length }} Spots</small>
     </div>
     <ion-list>
       <ion-item class='item-text-wrap item-button-right'
