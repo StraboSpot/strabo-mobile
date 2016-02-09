@@ -3,24 +3,29 @@
     <button menu-toggle='left' ng-click='vm.submit();' class='button button-icon icon ion-navicon'></button>
   </ion-nav-buttons>
   <ion-content class='has-header'>
-    <h6 ng-show='vm.data.email'>You are currently logged in as: {{ vm.data.email }}</h6>
+    <div class='padding' ng-show='vm.data.email'>
+      <small>You are currently logged in as: {{ vm.data.email }}</small>
+    </div>
     <ion-input class='item item-input' ng-hide='vm.data.email'>
       <input class='login-input' type='text' placeholder='Email' ng-model='vm.login.email'>
     </ion-input>
     <ion-input class='item item-input' ng-hide='vm.data.email'>
       <input class='login-input' type='password' placeholder='Password' ng-model='vm.login.password'>
     </ion-input>
-    <button ng-click='vm.doLogin();' ng-hide='vm.data.email'
-            ng-disabled='!(vm.login.email && vm.login.password)'
-            class='button icon-left icon ion-log-in button-balanced'>
-      Login
-    </button>
-    <button ng-click='vm.doLogout();' ng-show='vm.data.email'
-            class='button icon-left icon ion-log-out button-assertive'>
-      Logout
-    </button>
+    <div class='padding'>
+      <button ng-click='vm.doLogin()' ng-hide='vm.data.email'
+              ng-disabled='!(vm.login.email && vm.login.password)'
+              class='button button-clear button-positive'>
+        <i class='icon ion-log-in'></i>
+        <span class='button-text-big'>Log In</span>
+      </button>
+      <button ng-click='vm.doLogout()' ng-show='vm.data.email'
+              class='button button-clear button-positive'>
+        <i class='icon ion-log-out'></i>
+        <span class='button-text-big'>Logout</span>
+      </button>
+    </div>
     <div ng-show='vm.data.email' class='strabo-form'>
-      <br>
       <ion-input class='item item-input item-stacked-label'>
         <ion-label>Name</ion-label>
         <input type='text' placeholder='John Doe' ng-model='vm.data.name'>
