@@ -96,12 +96,14 @@
       if (SpotFactory.isSafeDelete(spot)) {
         var confirmPopup = $ionicPopup.confirm({
           'title': 'Delete Spot',
-          'template': 'Are you sure you want to delete this spot?'
+          'template': 'Are you sure you want to delete Spot ' + spot.properties.name + '?'
         });
         confirmPopup.then(function (res) {
           if (res) {
-            SpotFactory.destroy(spot.properties.id);
-            vm.spots = SpotFactory.getSpots();
+            SpotFactory.destroy(spot.properties.id).then(function () {
+              vm.spots = SpotFactory.getSpots();
+              vm.spotsDisplayed = angular.fromJson(angular.toJson(vm.spots)).slice(0, 20);
+            });
           }
           vm.deleteSelected = false;
         });

@@ -76,10 +76,14 @@
 
     // delete the spot
     function destroy(key) {
+      var deferred = $q.defer(); // init promise
       spots = _.reject(spots, function (spot) {
         return spot.properties.id === key;
       });
-      return LocalStorageFactory.getDb().spotsDb.removeItem(key);
+      LocalStorageFactory.getDb().spotsDb.removeItem(key).then(function () {
+        deferred.resolve();
+      });
+      return deferred.promise;
     }
 
     function destroyOrientation(i, j) {

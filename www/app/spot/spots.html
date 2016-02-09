@@ -1,4 +1,9 @@
-<ion-view title='{{ vm.spots.length }} Spots'>
+<ion-view>
+  <ion-nav-title >
+    {{ vm.spots.length }}
+    <span ng-show='vm.spots.length === 1'> Spot</span>
+    <span ng-show='vm.spots.length === 0 || vm.spots.length > 1'> Spots</span>
+  </ion-nav-title>
   <ion-nav-buttons side='left'>
     <button menu-toggle='left' class='button button-icon icon ion-navicon'></button>
   </ion-nav-buttons>
@@ -20,9 +25,9 @@
                 ng-repeat='spot in vm.spotsDisplayed track by spot.properties.id'
                 ng-click='vm.goToSpot(spot.properties.id)'>
         {{spot.properties.name}}
-        <button class='button button-clear button-dark'
+        <button class='button button-clear button-assertive'
                 ng-click='vm.deleteSpot(spot)'>
-          <i class='ion-trash-b'></i>
+          <i class='icon ion-minus-circled'></i>
         </button>
       </ion-item>
       <ion-infinite-scroll

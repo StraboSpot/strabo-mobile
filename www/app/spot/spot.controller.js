@@ -107,8 +107,9 @@
         });
         confirmPopup.then(function (res) {
           if (res) {
-            SpotFactory.destroy(vm.data.id);
-            $location.path('/app/spots');
+            SpotFactory.destroy(vm.data.id).then(function () {
+              $location.path('/app/spots');
+            });
           }
         });
       }
