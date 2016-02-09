@@ -38,6 +38,13 @@ navigation history that also transitions its views in and out.
         3D Structures
       </a>
     </span>
+        <span ng-show='vm.showTab("other_features")'>
+      <a class='button button-clear spot-tab-inactive'
+         ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab.other-features"}'
+         ng-click='vm.submit("/app/spotTab/" + vm.data.id + "/other-features");'>
+        Other Features
+      </a>
+    </span>
     <span ng-show='vm.showTab("images")'>
       <a class='button button-clear spot-tab-inactive'
          ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab.images"}'

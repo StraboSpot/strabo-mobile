@@ -3,6 +3,7 @@ group_tab_control,begin group,Tab Control,
 orientation,acknowledge,Orientation,false
 _3dstructures,acknowledge,3D Structures,false
 images,acknowledge,Images,false
+other_features,acknowledge,Other Features,false
 sample,acknowledge,Sample,false
 inferences,acknowledge,Inferences,false
 nest,acknowledge,Nesting,false

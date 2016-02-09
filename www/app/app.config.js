@@ -229,6 +229,16 @@
           }
         }
       })
+      .state('app.spotTab.other-features', {
+        'cache': false,
+        'url': '/:spotId/other-features',
+        'views': {
+          'spottab-childview': {
+            'templateUrl': 'app/spot/other-features-tab.html',
+            'controller': 'OtherFeaturesTabController as vmChild'
+          }
+        }
+      })
       .state('app.spotTab.spot', {
         'cache': false,
         'url': '/:spotId/spot',

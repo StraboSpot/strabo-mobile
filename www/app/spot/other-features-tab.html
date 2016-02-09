@@ -1,0 +1,39 @@
+<ion-view>
+  <ion-content class='strabo-form'>
+    <div ng-repeat='feature in vm.spot.properties.other_features'>
+      <ion-input class='item item-input item-stacked-label item-text-wrap item-button-right'>
+        <ion-label>{{ feature.name }} ({{ feature.type }} feature)</ion-label>
+        <textarea rows='2' ng-model='feature.description'></textarea>
+        <button class='button button-clear button-assertive' ng-click='vmChild.deleteFeature(feature.name)'>
+          <i class='icon ion-minus-circled'></i>
+        </button>
+      </ion-input>
+    </div>
+    <div class='list list-inset'>
+      <div class='item item-divider'>
+        Add a Feature
+      </div>
+      <ion-input class='item item-input item-select item-text-wrap'>
+        <ion-label>Feature Type</ion-label>
+        <select ng-model='vmChild.otherFeature.type'
+                ng-options='type as type for type in vmChild.otherFeatureTypes'>
+        </select>
+      </ion-input>
+      <ion-input class='item item-input'>
+        <ion-label>Feature Name</ion-label>
+        <input type='text' placeholder='Name of this feature ...' ng-model='vmChild.otherFeature.name'>
+      </ion-input>
+      <ion-input class='item item-input'>
+        <ion-label>Feature Description</ion-label>
+        <textarea placeholder='Description of this feature ....' rows='4'
+                  ng-model='vmChild.otherFeature.description'></textarea>
+      </ion-input>
+      <button ng-click='vmChild.addFeature()'
+              ng-disabled='!(vmChild.otherFeature.type && vmChild.otherFeature.name && vmChild.otherFeature.description)'
+              class='button button-clear button-positive'>
+        <i class='icon ion-plus-circled'></i>
+        <span class='button-text-big'>Add Feature</span>
+      </button>
+    </div>
+  </ion-content>
+</ion-view>
