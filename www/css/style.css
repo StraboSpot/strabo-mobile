@@ -331,6 +331,22 @@ textarea {
   height: 25px !important;
 }
 
+.relationship-select {
+  max-width: 100% !important;
+  width: 100% !important;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: small;
+}
+
+.other-relationship {
+  padding-left: 25px !important;
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+  line-height: 25px !important;
+  height: 25px !important;
+}
+
 /*--------------------
 Style fields for input errors and no-errors
 --------------------*/
