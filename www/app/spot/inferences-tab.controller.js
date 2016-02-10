@@ -12,27 +12,27 @@
     var vmParent = $scope.vm;
     vmParent.loadTab($state);  // Need to load current state into parent
 
-    var index;
-    var deleteRel;
+    var relationshipToEdit;
+    var delRelationship;
 
     vm.addRelationship = addRelationship;
-    vm.addThisRelationship = addThisRelationship;
     vm.closeModal = closeModal;
-    vm.deformationEvent = undefined;
     vm.deleteRelationship = deleteRelationship;
     vm.editRelationship = editRelationship;
-    vm.editThisRelationship = editThisRelationship;
-    vm.observationA = '-- Select an Observation --';
-    vm.observationB = '-- Select an Observation --';
-    vm.operationAdd = true;
     vm.orientationData = ['-- Select an Observation --'];
-    vm.otherRelationship = undefined;
     vm.outcropInPlaceChoices = ['5 - definitely in place', '4', '3',
       '2', '1 - float'];
-    vm.relationship = '-- Select a Relationship --';
-    vm.relationshipChoices = ['-- Select a Relationship --', 'cross-cuts', 'is cut by', 'is younger than', 'is older than',
+    vm.relationship = {
+      'deformation_event': undefined,
+      'observationA': '-- Select an Observation --',
+      'observationB': '-- Select an Observation --',
+      'other_relationship': undefined,
+      'relationship_type': '-- Select a Relationship --'
+    };
+    vm.relationshipTypeChoices = ['-- Select a Relationship --', 'cross-cuts', 'is cut by', 'is younger than', 'is older than',
       'is lower metamorphic grade than', 'is higher metamorphic grade than', 'is included within', 'includes', 'other'];
     vm.relationshipModal = {};
+    vm.submitRelationship = submitRelationship;
     vm.toggleRosetta = toggleRosetta;
 
     activate();
@@ -50,7 +50,7 @@
     }
 
     function createModal() {
-      $ionicModal.fromTemplateUrl('app/spot/relationship-modal.html', {
+      $ionicModal.fromTemplateUrl('app/spot/inferences-relationship-modal.html', {
         'scope': $scope,
         'animation': 'slide-in-up'
       }).then(function (modal) {
@@ -83,12 +83,14 @@
     }
 
     function resetRelationshipVariables() {
-      vm.deformationEvent = undefined;
-      vm.observationA = '-- Select an Observation --';
-      vm.observationB = '-- Select an Observation --';
-      vm.otherRelationship = undefined;
-      vm.relationship = '-- Select a Relationship --';
-      index = undefined;
+      vm.relationship = {
+        'deformation_event': undefined,
+        'observationA': '-- Select an Observation --',
+        'observationB': '-- Select an Observation --',
+        'other_relationship': undefined,
+        'relationship_type': '-- Select a Relationship --'
+      };
+      relationshipToEdit = undefined;
     }
 
     /**
@@ -97,7 +99,6 @@
 
     function addRelationship() {
       if (vm.orientationData.length > 1) {
-        vm.operationAdd = true;
         vm.relationshipModal.show();
       }
       else {
@@ -110,26 +111,13 @@
       }
     }
 
-    function addThisRelationship() {
-      vm.relationshipModal.hide();
-      if (!vmParent.spot.properties.inferences.relationships) vmParent.spot.properties.inferences.relationships = [];
-      vmParent.spot.properties.inferences.relationships.push({
-        'deformation_event': vm.deformationEvent,
-        'observationA': vm.observationA,
-        'observationB': vm.observationB,
-        'other_relationship': vm.otherRelationship,
-        'relationship': vm.relationship
-      });
-      resetRelationshipVariables();
-    }
-
     function closeModal(modal) {
       resetRelationshipVariables();
       vm[modal].hide();
     }
 
     function deleteRelationship(i) {
-      deleteRel = true;
+      delRelationship = true;
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete Relationship',
         'template': 'Are you sure you want to delete this relationship?'
@@ -141,33 +129,42 @@
             delete vmParent.spot.properties.inferences.relationships;
           }
         }
-        deleteRel = false;
+        delRelationship = false;
       });
     }
 
     function editRelationship(i) {
-      if (!deleteRel) {
-        vm.deformationEvent = vmParent.spot.properties.inferences.relationships[i].deformation_event;
-        vm.observationA = vmParent.spot.properties.inferences.relationships[i].observationA;
-        vm.observationB = vmParent.spot.properties.inferences.relationships[i].observationB;
-        vm.otherRelationship = vmParent.spot.properties.inferences.relationships[i].other_relationship;
-        vm.relationship = vmParent.spot.properties.inferences.relationships[i].relationship;
-        vm.operationAdd = false;
-        index = i;
+      if (!delRelationship) {
+        vm.relationship = {
+          'deformation_event': vmParent.spot.properties.inferences.relationships[i].deformation_event,
+          'observationA': vmParent.spot.properties.inferences.relationships[i].observationA,
+          'observationB': vmParent.spot.properties.inferences.relationships[i].observationB,
+          'other_relationship': vmParent.spot.properties.inferences.relationships[i].other_relationship,
+          'relationship_type': vmParent.spot.properties.inferences.relationships[i].relationship_type
+        };
+        relationshipToEdit = i;
         vm.relationshipModal.show();
       }
     }
 
-    function editThisRelationship() {
-      vm.relationshipModal.hide();
-      vmParent.spot.properties.inferences.relationships.splice(index, 1, {
-        'deformation_event': vm.deformationEvent,
-        'observationA': vm.observationA,
-        'observationB': vm.observationB,
-        'other_relationship': vm.otherRelationship,
-        'relationship': vm.relationship
-      });
-      resetRelationshipVariables();
+    function submitRelationship() {
+      if (vm.relationship.observationA === '-- Select an Observation --' ||
+        vm.relationship.relationship_type === '-- Select a Relationship --' ||
+        vm.relationship.observationB === '-- Select an Observation --') {
+        $ionicPopup.alert({
+          'title': 'Incomplete Data',
+          'template': 'Please be sure to select at least two observations and a relationship.'
+        });
+      }
+      else {
+        if (!vmParent.spot.properties.inferences.relationships) vmParent.spot.properties.inferences.relationships = [];
+        if (angular.isDefined(relationshipToEdit)) {
+          vmParent.spot.properties.inferences.relationships.splice(relationshipToEdit, 1, vm.relationship);
+        }
+        else vmParent.spot.properties.inferences.relationships.push(vm.relationship);
+        vm.relationshipModal.hide();
+        resetRelationshipVariables();
+      }
     }
 
     function toggleRosetta() {
