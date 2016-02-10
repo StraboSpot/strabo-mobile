@@ -4,7 +4,7 @@ orientation,acknowledge,Orientation,false
 _3dstructures,acknowledge,3D Structures,false
 images,acknowledge,Images,false
 other_features,acknowledge,Other Features,false
-sample,acknowledge,Sample,false
+samples,acknowledge,Samples,false
 inferences,acknowledge,Inferences,false
 nest,acknowledge,Nesting,false
 ,end group,,

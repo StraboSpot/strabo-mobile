@@ -3,19 +3,19 @@
     <ion-content class="strabo-form">
       <ion-input class='item item-input item-stacked-label item-text-wrap'>
         <ion-label>Spot Name</ion-label>
-        <input type='text' placeholder='Name this Spot' ng-model='vm.data.name'>
+        <input type='text' placeholder='Name this Spot' ng-model='vm.spot.properties.name'>
       </ion-input>
       <ion-input class='item item-input item-stacked-label item-text-wrap'>
         <ion-label>ID</ion-label>
-        <input type='number' disabled ng-model='vm.data.id'>
+        <input type='number' disabled ng-model='vm.spot.properties.id'>
       </ion-input>
       <ion-input class='item item-input item-stacked-label item-text-wrap'>
         <ion-label>Date</ion-label>
-        <input type='date' ng-model='vm.data.date'>
+        <input type='date' ng-model='vm.spot.properties.date'>
       </ion-input>
       <ion-input class='item item-input item-stacked-label item-text-wrap'>
         <ion-label>Time</ion-label>
-        <input type='time' ng-model='vm.data.time'>
+        <input type='time' ng-model='vm.spot.properties.time'>
       </ion-input>
 
       <div class='item item-divider'>
@@ -105,11 +105,11 @@
       <div ng-show='vm.showRadius'>
         <ion-input class='item item-input item-stacked-label item-text-wrap'>
           <ion-label>Radius of Spot</ion-label>
-          <input type='number' ng-model='vm.data.spot_radius'>
+          <input type='number' ng-model='vm.spot.properties.spot_radius'>
         </ion-input>
         <ion-input class='item item-input item-select item-text-wrap'>
           <ion-label>Spot Radius Units</ion-label>
-          <select ng-model='vm.data.spot_radius_units'>
+          <select ng-model='vm.spot.properties.spot_radius_units'>
             <option>kilometer</option>
             <option>meter</option>
             <option>milimeter</option>
@@ -132,7 +132,7 @@
             <option value=''></option>
           </select>
         </ion-input>
-        <button ng-click='vmChild.viewRockUnit();' ng-show='vm.data.rock_unit'
+        <button ng-click='vmChild.viewRockUnit();' ng-show='vm.spot.properties.rock_unit'
                 class='button button-clear button-positive'>
           <i class='icon ion-eye'></i>
           <span class='button-text-small'>View/Edit Rock Unit</span>
@@ -152,7 +152,7 @@
         Notes
       </div>
       <ion-input class='item item-input'>
-        <textarea placeholder='Notes about this Spot' rows='12' ng-model='vm.data.notes'></textarea>
+        <textarea placeholder='Notes about this Spot' rows='12' ng-model='vm.spot.properties.notes'></textarea>
       </ion-input>
     </ion-content>
   </ion-view>

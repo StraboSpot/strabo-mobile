@@ -1,0 +1,17 @@
+<ion-modal-view>
+  <ion-header-bar class='bar-dark nav-title-slide-ios7'>
+    <button class='button icon ion-checkmark-circled button-clear'
+            ng-click='vmChild.submitSample()'>
+    </button>
+    <h1 class='title'>Sample</h1>
+    <button class='button icon ion-close-round button-clear'
+            ng-click='vmChild.closeModal("sampleModal")'>
+    </button>
+  </ion-header-bar>
+  <ion-content class='has-header'>
+    <form name='straboForm' novalidate=''>
+      <auto-fields/>
+    </form>
+  </ion-content>
+</ion-modal-view>
+

@@ -64,7 +64,7 @@
           vm.survey = FormFactory.getForm()._3dstructures_survey;
           vm.choices = FormFactory.getForm()._3dstructures_choices;
           break;
-        case 'app.spotTab.sample':
+        case 'app.spotTab.samples':
           vm.survey = FormFactory.getForm().sample_survey;
           vm.choices = FormFactory.getForm().sample_choices;
           break;
@@ -321,17 +321,11 @@
               }
             }
           }
-          break;
-        case 'app.spotTab.sample':
-          // Don't validate the sample tab if no sample fields are filled in
-          var validateSample = false;
-          _.each(vm.survey, function (field) {
-            if (vm.data[field.name]) validateSample = true;
-          });
-          if (!validateSample) return true;
+          return vm.survey && FormFactory.validate(vm.survey, vm.data);
+        case 'app.spotTab._3dstructures':
+          return vm.survey && FormFactory.validate(vm.survey, vm.data);
       }
-      if (!vm.survey) return true;
-      return vm.survey && FormFactory.validate(vm.survey, vm.data);
+      return true;
     }
   }
 }());

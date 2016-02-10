@@ -249,13 +249,13 @@
           }
         }
       })
-      .state('app.spotTab.sample', {
+      .state('app.spotTab.samples', {
         'cache': false,
-        'url': '/:spotId/sample',
+        'url': '/:spotId/samples',
         'views': {
           'spottab-childview': {
-            'templateUrl': 'app/spot/sample-tab.html',
-            'controller': 'SampleTabController as vmChild'
+            'templateUrl': 'app/spot/samples-tab.html',
+            'controller': 'SamplesTabController as vmChild'
           }
         }
       })
