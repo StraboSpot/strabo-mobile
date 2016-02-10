@@ -1,21 +1,19 @@
- <ion-view>
-    <ion-content>
-      <button ng-click='vmChild.addSample()'
-              class='button button-clear button-positive'>
-        <i class='icon ion-plus-circled'></i>
-        <span class='button-text-big'>Add a Sample</span>
-      </button>
-      <div ng-show='vm.spot.properties.samples'>
-        <ion-list>
-          <ion-item class='item-text-wrap item-button-right'
-                    ng-click='vmChild.editSample($index)'
-                    ng-repeat='sample in vm.spot.properties.samples'>
-            {{ sample.sample_id_name }}
-            <button class='button button-clear button-assertive' ng-click='vmChild.deleteSample($index)'>
-              <i class='icon ion-minus-circled'></i>
-            </button>
-          </ion-item>
-        </ion-list>
-      </div>
-    </ion-content>
-  </ion-view>
+<ion-view>
+  <ion-content>
+    <button ng-click='vmChild.addSample()'
+            class='button button-clear button-positive'>
+      <i class='icon ion-plus-circled'></i>
+      <span class='button-text-big'>Add a Sample</span>
+    </button>
+    <ion-list>
+      <ion-item class='item-text-wrap item-button-right'
+                ng-click='vmChild.editSample($index)'
+                ng-repeat='sample in vm.spot.properties.samples'>
+        <b>{{ sample.sample_id_name }}</b>
+        <button class='button button-clear button-assertive' ng-click='vmChild.deleteSample($index)'>
+          <i class='icon ion-minus-circled'></i>
+        </button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

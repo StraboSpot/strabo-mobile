@@ -1,0 +1,29 @@
+<ion-modal-view>
+  <ion-header-bar class='bar-dark nav-title-slide-ios7'>
+    <button class='button icon ion-checkmark-circled button-clear'
+            ng-click='vmChild.submitFeature()'>
+    </button>
+    <h1 class='title'>Other Feature</h1>
+    <button class='button icon ion-close-round button-clear'
+            ng-click='vmChild.closeModal("otherFeatureModal")'>
+    </button>
+  </ion-header-bar>
+  <ion-content class='has-header strabo-form'>
+    <ion-input class='item item-input item-select item-text-wrap'>
+      <ion-label>Feature Type</ion-label>
+      <select ng-model='vmChild.otherFeature.type'
+              ng-options='type as type for type in vmChild.otherFeatureTypes'>
+      </select>
+    </ion-input>
+    <ion-input class='item item-input'>
+      <ion-label>Feature Name</ion-label>
+      <input type='text' placeholder='Name of this feature ...' ng-model='vmChild.otherFeature.name'>
+    </ion-input>
+    <ion-input class='item item-input'>
+      <ion-label>Feature Description</ion-label>
+        <textarea placeholder='Description of this feature ....' rows='14'
+                  ng-model='vmChild.otherFeature.description'></textarea>
+    </ion-input>
+  </ion-content>
+</ion-modal-view>
+

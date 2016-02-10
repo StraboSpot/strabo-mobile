@@ -5,22 +5,29 @@
     .module('app')
     .controller('OtherFeaturesTabController', OtherFeaturesTabController);
 
-  OtherFeaturesTabController.$inject = ['$ionicPopup', '$log', '$scope', '$state'];
+  OtherFeaturesTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state'];
 
-  function OtherFeaturesTabController($ionicPopup, $log, $scope, $state) {
+  function OtherFeaturesTabController($ionicModal, $ionicPopup, $log, $scope, $state) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.loadTab($state);  // Need to load current state into parent
 
+    var featureToEdit;
+    var delFeature;
+
     vm.addFeature = addFeature;
+    vm.closeModal = closeModal;
+    vm.deleteFeature = deleteFeature;
+    vm.editFeature = editFeature;
     vm.otherFeature = {
       'type': undefined,
       'name': undefined,
       'description': undefined
     };
+    vm.otherFeatureModal = {};
     vm.otherFeatureTypes = ['geomorhic', 'hydrologic', 'paleontological',
       'igneous', 'metamorphic', 'sedimentological', 'other'];
-    vm.deleteFeature = deleteFeature;
+    vm.submitFeature = submitFeature;
 
     activate();
 
@@ -30,6 +37,17 @@
 
     function activate() {
       $log.log('In OtherFeaturesTabController');
+
+      createModal();
+    }
+
+    function createModal() {
+      $ionicModal.fromTemplateUrl('app/spot/other-feature-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up'
+      }).then(function (modal) {
+        vm.otherFeatureModal = modal;
+      });
     }
 
     /**
@@ -37,50 +55,71 @@
      */
 
     function addFeature() {
-      if (!vmParent.spot.properties.other_features) {
-        vmParent.spot.properties.other_features = [];
-      }
-      // Check if the field name already exists in properties.other_features
-      var found = _.find(vmParent.spot.properties.other_features, function (feature) {
-        return feature.name === vm.otherFeature.name;
-      });
-
-      if (found) {
-        $ionicPopup.alert({
-          'title': 'Alert!',
-          'template': 'The feature name <b>' + vm.otherFeature.name + '</b> is already being used. Choose a different feature name.'
-        });
-      }
-      else {
-        vmParent.spot.properties.other_features.push({
-          'name': vm.otherFeature.name,
-          'type': vm.otherFeature.type,
-          'description': vm.otherFeature.description
-        });
-        vm.otherFeature = {
-          'type': undefined,
-          'name': undefined,
-          'description': undefined
-        };
-      }
+      featureToEdit = undefined;
+      vm.otherFeature = {};
+      vm.otherFeatureModal.show();
     }
 
-    function deleteFeature(featureName) {
+    function closeModal(modal) {
+      vm[modal].hide();
+    }
+
+    function deleteFeature(i) {
+      delFeature = true;
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete Feature',
         'template': 'Are you sure you want to delete this feature?'
       });
       confirmPopup.then(function (res) {
         if (res) {
-          vmParent.spot.properties.other_features = _.reject(vmParent.spot.properties.other_features,
-            function (feature) {
-              return feature.name === featureName;
-            });
+          vmParent.spot.properties.other_features.splice(i, 1);
           if (vmParent.spot.properties.other_features.length === 0) {
             delete vmParent.spot.properties.other_features;
           }
         }
+        delFeature = false;
       });
+    }
+
+    function editFeature(i) {
+      if (!delFeature) {
+        vm.otherFeature = {
+          'type': vmParent.spot.properties.other_features[i].type,
+          'name': vmParent.spot.properties.other_features[i].name,
+          'description': vmParent.spot.properties.other_features[i].description
+        };
+        featureToEdit = i;
+        vm.otherFeatureModal.show();
+      }
+    }
+
+    function submitFeature() {
+      if (!vm.otherFeature.type || !vm.otherFeature.name) {
+        $ionicPopup.alert({
+          'title': 'Incomplete Data',
+          'template': 'Please be sure to have at least a feature type and name.'
+        });
+      }
+      else {
+        if (!vmParent.spot.properties.other_features) vmParent.spot.properties.other_features = [];
+        var dup = _.find(vmParent.spot.properties.other_features, function (feature) {
+          return feature.name === vm.otherFeature.name;
+        });
+        if (_.indexOf(vmParent.spot.properties.other_features, dup) === featureToEdit) dup = undefined;
+        if (!dup) {
+          if (angular.isDefined(featureToEdit)) {
+            vmParent.spot.properties.other_features.splice(featureToEdit, 1, vm.otherFeature);
+          }
+          else vmParent.spot.properties.other_features.push(vm.otherFeature);
+          vm.otherFeatureModal.hide();
+        }
+        else {
+          $ionicPopup.alert({
+            'title': 'Alert!',
+            'template': 'The feature name <b>' + vm.otherFeature.name + '</b> is already being used. Choose a different feature name.'
+          });
+        }
+      }
     }
   }
 }());
