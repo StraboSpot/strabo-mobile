@@ -332,11 +332,12 @@ textarea {
 }
 
 .relationship-select {
-  max-width: 100% !important;
-  width: 100% !important;
   font-weight: bold;
   text-transform: uppercase;
   font-size: small;
+  line-height: 30px;
+  height: 30px;
+  padding-left: 15px;
 }
 
 .other-relationship {

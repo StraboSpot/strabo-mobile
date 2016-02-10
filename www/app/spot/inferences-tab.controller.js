@@ -21,15 +21,15 @@
     vm.deleteRelationship = deleteRelationship;
     vm.editRelationship = editRelationship;
     vm.editThisRelationship = editThisRelationship;
-    vm.observationA = undefined;
-    vm.observationB = undefined;
+    vm.observationA = '-- Select an Observation --';
+    vm.observationB = '-- Select an Observation --';
     vm.operationAdd = true;
-    vm.orientationData = [];
+    vm.orientationData = ['-- Select an Observation --'];
     vm.otherRelationship = undefined;
     vm.outcropInPlaceChoices = ['5 - definitely in place', '4', '3',
       '2', '1 - float'];
-    vm.relationship = undefined;
-    vm.relationshipChoices = ['cross-cuts', 'is cut by', 'is younger than', 'is older than',
+    vm.relationship = '-- Select a Relationship --';
+    vm.relationshipChoices = ['-- Select a Relationship --', 'cross-cuts', 'is cut by', 'is younger than', 'is older than',
       'is lower metamorphic grade than', 'is higher metamorphic grade than', 'is included within', 'includes', 'other'];
     vm.relationshipModal = {};
     vm.toggleRosetta = toggleRosetta;
@@ -83,10 +83,10 @@
 
     function resetRelationshipVariables() {
       vm.deformationEvent = undefined;
-      vm.observationA = undefined;
-      vm.observationB = undefined;
+      vm.observationA = '-- Select an Observation --';
+      vm.observationB = '-- Select an Observation --';
       vm.otherRelationship = undefined;
-      vm.relationship = undefined;
+      vm.relationship = '-- Select a Relationship --';
       index = undefined;
     }
 

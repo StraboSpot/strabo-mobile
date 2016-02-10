@@ -1,13 +1,11 @@
 <ion-modal-view>
   <ion-header-bar class='bar-dark nav-title-slide-ios7'>
-    <div class="buttons">
-      <div class='button button-clear' ng-click='vmChild.closeModal("relationshipModal")'><span
-        class='icon ion-arrow-left-c'></span></div>
-    </div>
     <h1 class='title'>Relationships</h1>
+    <button class='button icon ion-close-round button-clear'
+            ng-click='vmChild.closeModal("relationshipModal")'></button>
   </ion-header-bar>
   <ion-content class='has-header'>
-    <div class='padding relationship-select'>
+    <div class='relationship-select'>
       Select observations and relationship:
     </div>
     <ion-input class='item item-input item-select item-text-wrap'>
@@ -22,7 +20,8 @@
     </ion-input>
     <div ng-show='vmChild.relationship === "other"'>
       <ion-input class='item item-input'>
-        <input class='other-relationship' type='text' ng-model='vmChild.otherRelationship' placeholder='Define other relationship here ...'>
+        <input class='other-relationship' type='text' ng-model='vmChild.otherRelationship'
+               placeholder='Define other relationship here ...'>
       </ion-input>
     </div>
     <ion-input class='item item-input item-select item-text-wrap'>
@@ -39,7 +38,9 @@
     </div>
     <div ng-show='vmChild.operationAdd'>
       <button ng-click='vmChild.addThisRelationship()'
-              ng-disabled='!vmChild.observationA || !vmChild.relationship || !vmChild.observationB'
+              ng-disabled='vmChild.observationA === "-- Select an Observation --"
+               || vmChild.relationship === "-- Select a Relationship --"
+                || vmChild.observationB === "-- Select an Observation --"'
               class='button button-clear button-positive'>
         <i class='icon ion-plus-circled'></i>
         <span class='button-text-small'>Add this Relationship</span>
@@ -47,7 +48,9 @@
     </div>
     <div ng-show='!vmChild.operationAdd'>
       <button ng-click='vmChild.editThisRelationship()'
-              ng-disabled='!vmChild.observationA || !vmChild.relationship || !vmChild.observationB'
+              ng-disabled='vmChild.observationA === "-- Select an Observation --"
+               || vmChild.relationship === "-- Select a Relationship --"
+                || vmChild.observationB === "-- Select an Observation --"'
               class='button button-clear button-positive'>
         <i class='icon ion-plus-circled'></i>
         <span class='button-text-small'>Edit this Relationship</span>

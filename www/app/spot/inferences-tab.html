@@ -47,10 +47,10 @@
           <ion-item class='item-text-wrap item-button-right'
                     ng-click='vmChild.editRelationship($index)'
                     ng-repeat='relationship in vm.spot.properties.inferences.relationships'>
-            {{ relationship.observationA }}
+            <b>{{ relationship.observationA }}
             <span ng-hide='relationship.relationship === "other"'>{{ relationship.relationship }}</span>
             <span ng-show='relationship.relationship === "other"'>{{ relationship.other_relationship }}</span>
-            {{ relationship.observationB }}
+            {{ relationship.observationB }}</b>
             <span ng-show='relationship.deformation_event'><br><small>Deformation Event: {{
               relationship.deformation_event }}
             </small></span>
