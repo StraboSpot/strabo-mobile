@@ -98,7 +98,7 @@
      */
 
     function addRelationship() {
-      if (vm.orientationData.length > 1) {
+      if (vm.orientationData.length > 2) { // 2 because the first item in the array is '-- Select an Observation --'
         vm.relationshipModal.show();
       }
       else {

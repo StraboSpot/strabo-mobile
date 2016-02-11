@@ -72,11 +72,10 @@
       confirmPopup.then(
         function (res) {
           if (res) {
-            vm.spotsDisplayed = [];
             SpotFactory.clear().then(function () {
               // update the spots list
-              vm.spots = SpotFactory.getSpots();
-
+              vm.spots = [];
+              vm.spotsDisplayed = [];
               // Remove all of the image basemaps
               ImageBasemapFactory.clearAllImageBasemaps();
             });
