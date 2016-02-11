@@ -19,6 +19,9 @@
 
     function activate() {
       $log.log('In 3DStructuresTabController');
+
+      if (!vmParent.spot.properties._3d_structures) vmParent.spot.properties._3d_structures = {};
+      vmParent.data = vmParent.spot.properties._3d_structures;
     }
   }
 }());

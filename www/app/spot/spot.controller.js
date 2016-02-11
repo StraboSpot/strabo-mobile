@@ -297,7 +297,7 @@
     function validateForm() {
       switch (vm.stateName) {
         case 'app.spotTab.spot':
-          if (!vm.data.name) {
+          if (!vm.spot.properties.name) {
             $ionicPopup.alert({
               'title': 'Validation Error!',
               'template': '<b>Spot Name</b> is required.'
@@ -323,7 +323,12 @@
           }
           return vm.survey && FormFactory.validate(vm.survey, vm.data);
         case 'app.spotTab._3dstructures':
-          return vm.survey && FormFactory.validate(vm.survey, vm.data);
+          if (vm.survey && FormFactory.validate(vm.survey, vm.data)) {
+            vm.spot.properties._3d_structures = vm.data;
+            return true;
+          }
+          return false;
+
       }
       return true;
     }
