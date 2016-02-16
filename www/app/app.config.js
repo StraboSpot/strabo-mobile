@@ -346,13 +346,15 @@
     });
   }
 
-  function prepMenu(LocalStorageFactory, FormFactory, PreferencesFactory, ProjectFactory, SpotFactory, UserFactory) {
-    return LocalStorageFactory.setupLocalforage().then(function () {
-      return FormFactory.loadForms().then(function () {
-        return PreferencesFactory.loadPreferences().then(function () {
-          return ProjectFactory.loadProject().then(function () {
-            return SpotFactory.loadSpots().then(function () {
-              return UserFactory.loadUser();
+  function prepMenu(LocalStorageFactory, DataModelsFactory, FormFactory, PreferencesFactory, ProjectFactory, SpotFactory, UserFactory) {
+    return DataModelsFactory.loadDataModels().then(function () {
+      return LocalStorageFactory.setupLocalforage().then(function () {
+        return FormFactory.loadForms().then(function () {
+          return PreferencesFactory.loadPreferences().then(function () {
+            return ProjectFactory.loadProject().then(function () {
+              return SpotFactory.loadSpots().then(function () {
+                return UserFactory.loadUser();
+              });
             });
           });
         });

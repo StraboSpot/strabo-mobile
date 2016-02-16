@@ -514,3 +514,14 @@ Images on Images Tab
   font-size: small;
   margin-left: 40px;
 }
+
+/*--------------------
+Json Data Model
+---------------------*/
+
+pre {  font-size: x-small; }
+.type { color: green; }
+.required { color: darkorange; }
+.label { color: blue; }
+.hint { color: magenta; }
+.key { color: red; }
