@@ -5,15 +5,11 @@
     .module('app')
     .factory('ProjectFactory', ProjectFactory);
 
-  ProjectFactory.$inject = ['$ionicPopup', '$log', '$q', 'DataModelsFactory', 'LocalStorageFactory'];
+  ProjectFactory.$inject = ['$ionicPopup', '$log', '$q', 'LocalStorageFactory'];
 
-  function ProjectFactory($ionicPopup, $log, $q, DataModelsFactory, LocalStorageFactory) {
+  function ProjectFactory($ionicPopup, $log, $q, LocalStorageFactory) {
     var data;
     var projectKey = 'project_name';
-    var rockUnitSurvey = {};
-    var rockUnitChoices = {};
-    var survey = {};
-    var toolsSurvey = {};
     var projects = [];
 
     return {
@@ -23,12 +19,8 @@
       'getProjectData': getProjectData,
       'getProjectName': getProjectName,
       'getRockUnits': getRockUnits,
-      'getRockUnitsChoices': getRockUnitsChoices,
-      'getRockUnitsSurvey': getRockUnitsSurvey,
       'getSpotNumber': getSpotNumber,
       'getSpotPrefix': getSpotPrefix,
-      'getSurvey': getSurvey,
-      'getToolsSurvey': getToolsSurvey,
       'incrementSpotNumber': incrementSpotNumber,
       'loadProject': loadProject,                     // Run from app config
       'save': save,
@@ -50,26 +42,6 @@
         deferred.resolve(config);
       });
       return deferred.promise;
-    }
-
-    function setSurvey(inSurvey) {
-      survey = inSurvey;
-      $log.log('Finished loading project survey: ', survey);
-    }
-
-    function setToolsSurvey(inSurvey) {
-      toolsSurvey = inSurvey;
-      $log.log('Finished loading project tools survey: ', toolsSurvey);
-    }
-
-    function setRockUnitSurvey(inSurvey) {
-      rockUnitSurvey = inSurvey;
-      $log.log('Finished loading rock unit survey: ', rockUnitSurvey);
-    }
-
-    function setRockUnitChoices(inChoices) {
-      rockUnitChoices = inChoices;
-      $log.log('Finished loading rock unit choices: ', rockUnitChoices);
     }
 
     /**
@@ -129,22 +101,6 @@
       return data.starting_number_for_spot;
     }
 
-    function getSurvey() {
-      return survey;
-    }
-
-    function getRockUnitsSurvey() {
-      return rockUnitSurvey;
-    }
-
-    function getRockUnitsChoices() {
-      return rockUnitChoices;
-    }
-
-    function getToolsSurvey() {
-      return toolsSurvey;
-    }
-
     // Increment starting spot number by 1
     function incrementSpotNumber() {
       var start_number = getSpotNumber();
@@ -164,11 +120,6 @@
           $log.log('Finished loading project properties: ', data);
           deferred.resolve();
         });
-        $log.log('Loading project surveys ....');
-        DataModelsFactory.readCSV(DataModelsFactory.dataModels.project, setSurvey);
-        DataModelsFactory.readCSV(DataModelsFactory.dataModels.tools, setToolsSurvey);
-        DataModelsFactory.readCSV(DataModelsFactory.dataModels.rock_unit_survey, setRockUnitSurvey);
-        DataModelsFactory.readCSV(DataModelsFactory.dataModels.rock_unit_choices, setRockUnitChoices);
       }
       else {
         deferred.resolve();

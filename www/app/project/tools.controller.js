@@ -5,9 +5,9 @@
     .module('app')
     .controller('ToolsController', ToolsController);
 
-  ToolsController.$inject = ['$scope', 'FormFactory', 'ProjectFactory'];
+  ToolsController.$inject = ['DataModelsFactory', 'FormFactory', 'ProjectFactory'];
 
-  function ToolsController($scope, FormFactory, ProjectFactory) {
+  function ToolsController(DataModelsFactory, FormFactory, ProjectFactory) {
     var vm = this;
 
     vm.data = {};
@@ -22,7 +22,7 @@
      */
 
     function activate() {
-      vm.survey = ProjectFactory.getToolsSurvey();
+      vm.survey = DataModelsFactory.getDataModel('tools').survey;
       vm.data = ProjectFactory.getProjectData();
     }
 

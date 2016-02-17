@@ -5,10 +5,12 @@
     .module('app')
     .controller('_3DStructuresTabController', _3DStructuresTabController);
 
-  _3DStructuresTabController.$inject = ['$log', '$scope', '$state'];
+  _3DStructuresTabController.$inject = ['$log', '$scope', '$state', 'DataModelsFactory'];
 
-  function _3DStructuresTabController($log, $scope, $state) {
+  function _3DStructuresTabController($log, $scope, $state, DataModelsFactory) {
     var vmParent = $scope.vm;
+    vmParent.survey = DataModelsFactory.getDataModel('_3d_structures').survey;
+    vmParent.choices = DataModelsFactory.getDataModel('_3d_structures').choices;
     vmParent.loadTab($state);     // Need to load current state into parent
 
     activate();

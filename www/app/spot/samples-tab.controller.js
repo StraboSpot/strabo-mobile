@@ -5,11 +5,13 @@
     .module('app')
     .controller('SamplesTabController', SamplesTabController);
 
-  SamplesTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state'];
+  SamplesTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'DataModelsFactory'];
 
-  function SamplesTabController($ionicModal, $ionicPopup, $log, $scope, $state) {
+  function SamplesTabController($ionicModal, $ionicPopup, $log, $scope, $state, DataModelsFactory) {
     var vm = this;
     var vmParent = $scope.vm;
+    vmParent.survey = DataModelsFactory.getDataModel('sample').survey;
+    vmParent.choices = DataModelsFactory.getDataModel('sample').choices;
     vmParent.loadTab($state);     // Need to load current state into parent
 
     var sampleToEdit;

@@ -5,9 +5,9 @@
     .module('app')
     .controller('ProjectController', ProjectController);
 
-  ProjectController.$inject = ['$state', 'FormFactory', 'ProjectFactory'];
+  ProjectController.$inject = ['$state', 'DataModelsFactory', 'FormFactory', 'ProjectFactory'];
 
-  function ProjectController($state, FormFactory, ProjectFactory) {
+  function ProjectController($state, DataModelsFactory, FormFactory, ProjectFactory) {
     var vm = this;
 
     vm.data = {};
@@ -25,7 +25,7 @@
      */
 
     function activate() {
-      vm.survey = ProjectFactory.getSurvey();
+      vm.survey = DataModelsFactory.getDataModel('project').survey;
       if ($state.current.name === 'app.new-project') {
         vm.isNewProject = true;
       }

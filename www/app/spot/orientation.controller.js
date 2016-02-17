@@ -5,9 +5,9 @@
     .module('app')
     .controller('OrientationController', OrientationController);
 
-  OrientationController.$inject = ['$location', '$log', '$state', 'FormFactory', 'SpotFactory'];
+  OrientationController.$inject = ['$location', '$log', '$state', 'DataModelsFactory', 'FormFactory', 'SpotFactory'];
 
-  function OrientationController($location, $log, $state, FormFactory, SpotFactory) {
+  function OrientationController($location, $log, $state, DataModelsFactory, FormFactory, SpotFactory) {
     var vm = this;
 
     vm.choices = {};
@@ -29,20 +29,22 @@
      */
 
     function activate() {
-      var form = {};
       switch ($state.current.name) {
         case 'app.new-linear-orientation':
-          form = FormFactory.getLinearOrientationForm();
+          vm.survey = DataModelsFactory.getDataModel('orientation_data').linear_orientation.survey;
+          vm.choices = DataModelsFactory.getDataModel('orientation_data').linear_orientation.choices;
           vm.title = 'New Linear Orienation';
           vm.data.orientation_type = 'linear_orientation';
           break;
         case 'app.new-planar-orientation':
-          form = FormFactory.getPlanarOrientationForm();
+          vm.survey = DataModelsFactory.getDataModel('orientation_data').planar_orientation.survey;
+          vm.choices = DataModelsFactory.getDataModel('orientation_data').planar_orientation.choices;
           vm.title = 'New Planar Orientation';
           vm.data.orientation_type = 'planar_orientation';
           break;
         case 'app.new-tabular-zone-orientation':
-          form = FormFactory.getTabularOrientationForm();
+          vm.survey = DataModelsFactory.getDataModel('orientation_data').tabular_orientation.survey;
+          vm.choices = DataModelsFactory.getDataModel('orientation_data').tabular_orientation.choices;
           vm.title = 'New Tabular Zone Orientation';
           vm.data.orientation_type = 'tabular_zone_orientation';
           break;
@@ -53,22 +55,23 @@
           if (angular.isDefined(aI)) vm.data = vm.data.associated_orientation[aI];
           switch (vm.data.orientation_type) {
             case 'linear_orientation':
-              form = FormFactory.getLinearOrientationForm();
+              vm.survey = DataModelsFactory.getDataModel('orientation_data').linear_orientation.survey;
+              vm.choices = DataModelsFactory.getDataModel('orientation_data').linear_orientation.choices;
               vm.title = 'Linear Orientation';
               break;
             case 'planar_orientation':
-              form = FormFactory.getPlanarOrientationForm();
+              vm.survey = DataModelsFactory.getDataModel('orientation_data').planar_orientation.survey;
+              vm.choices = DataModelsFactory.getDataModel('orientation_data').planar_orientation.choices;
               vm.title = 'Planar Orientation';
               break;
             case 'tabular_zone_orientation':
-              form = FormFactory.getTabularOrientationForm();
+              vm.survey = DataModelsFactory.getDataModel('orientation_data').tabular_orientation.survey;
+              vm.choices = DataModelsFactory.getDataModel('orientation_data').tabular_orientation.choices;
               vm.title = 'Tabular Zone Orientation';
               break;
           }
           break;
       }
-      vm.survey = form.survey;
-      vm.choices = form.choices;
     }
 
     /**

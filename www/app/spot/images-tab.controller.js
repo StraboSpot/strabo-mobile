@@ -6,12 +6,14 @@
     .controller('ImagesTabController', ImagesTabController);
 
   ImagesTabController.$inject = ['$cordovaCamera', '$document', '$ionicModal', '$ionicPopup', '$log', '$scope',
-    '$state', '$window', 'ImageBasemapFactory'];
+    '$state', '$window', 'DataModelsFactory', 'ImageBasemapFactory'];
 
   function ImagesTabController($cordovaCamera, $document, $ionicModal, $ionicPopup, $log, $scope, $state, $window,
-                               ImageBasemapFactory) {
+                               DataModelsFactory, ImageBasemapFactory) {
     var vm = this;
     var vmParent = $scope.vm;
+    vmParent.survey = DataModelsFactory.getDataModel('image').survey;
+    vmParent.choices = undefined;
     vmParent.loadTab($state);  // Need to load current state into parent
 
     vm.addImage = addImage;
@@ -27,7 +29,6 @@
     }];
     vm.closeModal = closeModal;
     vm.closeImageModal = closeImageModal;
-    vm.currentImage = {};
     vm.deleteImage = deleteImage;
     vm.goToImageBasemap = goToImageBasemap;
     vm.moreDetail = moreDetail;
@@ -271,8 +272,8 @@
       vm.imageModal.remove();
     }
 
-    function deleteImage(imageToDelete) {
-      if (!isImageUsed(imageToDelete)) {
+    function deleteImage() {
+      if (!isImageUsed(vmParent.data)) {
         var confirmPopup = $ionicPopup.confirm({
           'title': 'Delete Image',
           'template': 'Are you sure you want to delete this image?'
@@ -280,8 +281,9 @@
         confirmPopup.then(function (res) {
           if (res) {
             vmParent.spot.images = _.reject(vmParent.spot.images, function (image) {
-              return imageToDelete.id === image.id;
+              return vmParent.data.id === image.id;
             });
+            vmParent.data = {};
             closeModal('imagePropertiesModal');
           }
         });
@@ -293,7 +295,7 @@
     }
 
     function moreDetail(image) {
-      vm.currentImage = image;
+      vmParent.data = image;
       vm.imagePropertiesModal.show();
     }
 

@@ -6,7 +6,7 @@ images,acknowledge,Images,false
 other_features,acknowledge,Other Features,false
 samples,acknowledge,Samples,false
 inferences,acknowledge,Inferences,false
-nest,acknowledge,Nesting,false
+nest,acknowledge,Nest,false
 ,end group,,
 group_other_preferences,begin group,Other Preferences,
 right_hand_rule,acknowledge,Right-hand Rule,false

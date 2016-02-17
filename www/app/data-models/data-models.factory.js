@@ -8,75 +8,73 @@
   DataModelsFactory.$inject = ['$log', '$http', '$q'];
 
   function DataModelsFactory($log, $http, $q) {
-    var dataModels2 = {
+    var dataModels = {
       '_3d_structures': {
-        'survey_file': 'app/data-models/Tab3DStructures.csv',
-        'choices_file': 'app/data-models/Tab3DStructures-choices.csv'
+        'survey': {},
+        'survey_file': 'app/data-models/3d_structures-survey.csv',
+        'choices': {},
+        'choices_file': 'app/data-models/3d_structures-choices.csv'
+      },
+      'image': {
+        'survey': {},
+        'survey_file': 'app/data-models/image_properties-survey.csv'
       },
       'orientation_data': {
         'linear_orientation': {
-          'survey_file': 'app/data-models/linear-orientation-survey.csv',
-          'choices_file': 'app/data-models/linear-orientation-choices.csv'
+          'survey': {},
+          'survey_file': 'app/data-models/linear_orientation-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/linear_orientation-choices.csv'
         },
         'planar_orientation': {
-          'survey_file': 'app/data-models/planar-orientation-survey.csv',
-          'choices_file': 'app/data-models/planar-orientation-choices.csv'
+          'survey': {},
+          'survey_file': 'app/data-models/planar_orientation-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/planar_orientation-choices.csv'
         },
         'tabular_orientation': {
-          'survey_file': 'app/data-models/tabular-zone-orientation-survey.csv',
-          'choices_file': 'app/data-models/tabular-zone-orientation-choices.csv'
+          'survey': {},
+          'survey_file': 'app/data-models/tabular_zone_orientation-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/tabular_zone_orientation-choices.csv'
         }
       },
       'preferences': {
-        'survey_file': 'app/data-models/Preferences.csv'
+        'survey': {},
+        'survey_file': 'app/data-models/project_preferences-survey.csv'
       },
       'project': {
-        'survey_file': 'app/data-models/ProjectsPage.csv'
+        'survey': {},
+        'survey_file': 'app/data-models/project_description-survey.csv'
       },
       'rock_unit': {
-        'survey_file': 'app/data-models/rock-unit.csv',
-        'choices_file': 'app/data-models/rock-unit-choices.csv'
+        'survey': {},
+        'survey_file': 'app/data-models/rock_unit-survey.csv',
+        'choices': {},
+        'choices_file': 'app/data-models/rock_unit-choices.csv'
       },
       'sample': {
-        'survey_file': 'app/data-models/TabSample.csv',
-        'choices_file': 'app/data-models/TabSample-choices.csv'
+        'survey': {},
+        'survey_file': 'app/data-models/sample-survey.csv',
+        'choices': {},
+        'choices_file': 'app/data-models/sample-choices.csv'
       },
       'tools': {
-        'survey_file': 'app/data-models/Tools.csv'
+        'survey': {},
+        'survey_file': 'app/data-models/tools-survey.csv'
       },
       'traces': {
-        'survey_file': 'app/data-models/traces.csv',
+        'survey': {},
+        'survey_file': 'app/data-models/traces-survey.csv',
+        'choices': {},
         'choices_file': 'app/data-models/traces-choices.csv'
       }
     };
-
-    var dataModels = {
-      '_3dstructures_survey': 'app/data-models/Tab3DStructures.csv',
-      '_3dstructures_choices': 'app/data-models/Tab3DStructures-choices.csv',
-      'linear_orientation_survey': 'app/data-models/linear-orientation-survey.csv',
-      'linear_orientation_choices': 'app/data-models/linear-orientation-choices.csv',
-      'orientation_survey': 'app/data-models/orientation.csv',
-      'orientation_choices': 'app/data-models/orientation-choices.csv',
-      'planar_orientation_survey': 'app/data-models/planar-orientation-survey.csv',
-      'planar_orientation_choices': 'app/data-models/planar-orientation-choices.csv',
-      'preferences': 'app/data-models/Preferences.csv',
-      'project': 'app/data-models/ProjectsPage.csv',
-      'rock_unit_survey': 'app/data-models/rock-unit.csv',
-      'rock_unit_choices': 'app/data-models/rock-unit-choices.csv',
-      'sample_survey': 'app/data-models/TabSample.csv',
-      'sample_choices': 'app/data-models/TabSample-choices.csv',
-      'tabular_orientation_survey': 'app/data-models/tabular-zone-orientation-survey.csv',
-      'tabular_orientation_choices': 'app/data-models/tabular-zone-orientation-choices.csv',
-      'tools': 'app/data-models/Tools.csv',
-      'traces_survey': 'app/data-models/traces.csv',
-      'traces_choices': 'app/data-models/traces-choices.csv'
-    };
-
     var spotDataModel = {};
 
     return {
+      'getDataModel': getDataModel,
       'getSpotDataModel': getSpotDataModel,
-      'dataModels': dataModels,
       'loadDataModels': loadDataModels,
       'readCSV': readCSV
     };
@@ -96,7 +94,7 @@
       spotDataModel = {
         'geometry': {
           'coordinates': {},
-          'type': 'one of [Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon'
+          'type': 'one of [Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon]'
         },
         'properties': {
           '_3d_structures': [],
@@ -110,30 +108,18 @@
           'time': 'datetime',
           'trace': {}
         },
-        'images': [{
-          'annotated': 'true/false for whether or not the image is used as an Image Basemap',
-          'caption': 'string for the description of the image',
-          'height': 'number in pixels',
-          'id': 'number; timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id)',
-          'orientation_of_view_subject': 'string',
-          'scale_of_object': 'string',
-          'scale_of_image': 'string',
-          'src': 'string for base64 image',
-          'title': 'string',
-          'view_angle_plunge': 'number',
-          'view_angle_trend': 'number',
-          'width': 'number in pixels'
-        }]
+        'images': []
       };
 
       var models = {
-        '_3d_structures': dataModels2._3d_structures,
-        'linear_orientation': dataModels2.orientation_data.linear_orientation,
-        'planar_orientation': dataModels2.orientation_data.planar_orientation,
-        'tabular_orientation': dataModels2.orientation_data.tabular_orientation,
-        'rock_unit': dataModels2.rock_unit,
-        'samples': dataModels2.sample,
-        'trace': dataModels2.traces
+        '_3d_structures': dataModels._3d_structures,
+        'images': dataModels.image,
+        'linear_orientation': dataModels.orientation_data.linear_orientation,
+        'planar_orientation': dataModels.orientation_data.planar_orientation,
+        'tabular_orientation': dataModels.orientation_data.tabular_orientation,
+        'rock_unit': dataModels.rock_unit,
+        'samples': dataModels.sample,
+        'trace': dataModels.traces
       };
       _.each(models, function (model, key) {
         var description = {};
@@ -147,13 +133,18 @@
         });
         description = sortby(description);
         if (key === 'linear_orientation' || key === 'planar_orientation' || key === 'tabular_orientation') {
-          description.orientation_type = key;
+          description.orientation_type = key + '; REQUIRED';
           description.associated_orientation = [];
           description = sortby(description);
           spotDataModel.properties.orientation_data.push(description);
         }
         else if (key === 'trace' || key === 'rock_unit') {
           _.extend(spotDataModel.properties[key], description);
+        }
+        else if (key === 'images') {
+          description.annotated = 'true/false for whether or not the image is used as an Image Basemap';
+          description = sortby(description);
+          spotDataModel.images.push(description);
         }
         else spotDataModel.properties[key].push(description);
       });
@@ -201,6 +192,10 @@
      * Public Functions
      */
 
+    function getDataModel(model) {
+      return dataModels[model];
+    }
+
     function getSpotDataModel() {
       return spotDataModel;
     }
@@ -210,20 +205,20 @@
       var promises = [];
 
       $log.log('Loading data models ...');
-      _.each(dataModels2, function (dataModel, key) {
+      _.each(dataModels, function (dataModel, key) {
         if (key === 'orientation_data') {
           _.each(dataModel, function (orientationDataModel, orientationKey) {
-            $log.log('Loading', key, orientationKey, ' ...');
+            // $log.log('Loading', key, orientationKey, ' ...');
             promises.push(loadDataModel(orientationDataModel));
           });
         }
         else {
-          $log.log('Loading', key, ' ...');
+          // $log.log('Loading', key, ' ...');
           promises.push(loadDataModel(dataModel));
         }
       });
       $q.all(promises).then(function () {
-        $log.log('Finished loading all data models', dataModels2);
+        $log.log('Finished loading all data models', dataModels);
         createSpotDataModel();
         deferred.resolve();
       });

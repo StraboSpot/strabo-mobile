@@ -5,9 +5,9 @@
     .module('app')
     .factory('PreferencesFactory', PreferencesFactory);
 
-  PreferencesFactory.$inject = ['$log', '$q', 'DataModelsFactory', 'LocalStorageFactory'];
+  PreferencesFactory.$inject = ['$log', '$q', 'LocalStorageFactory'];
 
-  function PreferencesFactory($log, $q, DataModelsFactory, LocalStorageFactory) {
+  function PreferencesFactory($log, $q, LocalStorageFactory) {
     var data;
     var survey = {};
 
@@ -34,11 +34,6 @@
       return deferred.promise;
     }
 
-    function setSurvey(inSurvey) {
-      survey = inSurvey;
-      $log.log('Finished loading preferences survey: ', survey);
-    }
-
     /**
      * Public Functions
      */
@@ -51,7 +46,7 @@
       return survey;
     }
 
-    // Load the preferences data and survey
+    // Load the preferences data
     function loadPreferences() {
       var deferred = $q.defer(); // init promise
       if (!data) {
@@ -61,9 +56,6 @@
           $log.log('Finished loading preferences: ', data);
           deferred.resolve();
         });
-        $log.log('Loading preferences survey ....');
-        var csvFile = DataModelsFactory.dataModels.preferences;
-        DataModelsFactory.readCSV(csvFile, setSurvey);
       }
       else deferred.resolve();
       return deferred.promise;

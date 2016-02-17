@@ -10,6 +10,8 @@
   function OrientationDataTabController($ionicPopup, $log, $scope, $state, SpotFactory) {
     var vm = this;
     var vmParent = $scope.vm;
+    vmParent.survey = undefined;
+    vmParent.choices = undefined;
     vmParent.loadTab($state);  // Need to load current state into parent
 
     vm.addAssociatedLine = addAssociatedLine;

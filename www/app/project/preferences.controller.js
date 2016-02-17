@@ -5,9 +5,9 @@
     .module('app')
     .controller('PreferencesController', PreferencesController);
 
-  PreferencesController.$inject = ['$ionicSideMenuDelegate', '$scope', 'FormFactory', 'PreferencesFactory'];
+  PreferencesController.$inject = ['$ionicSideMenuDelegate', 'DataModelsFactory', 'FormFactory', 'PreferencesFactory'];
 
-  function PreferencesController($ionicSideMenuDelegate, $scope, FormFactory, PreferencesFactory) {
+  function PreferencesController($ionicSideMenuDelegate, DataModelsFactory, FormFactory, PreferencesFactory) {
     var vm = this;
 
     vm.data = {};
@@ -24,7 +24,7 @@
      */
 
     function activate() {
-      vm.survey = PreferencesFactory.getSurvey();
+      vm.survey = DataModelsFactory.getDataModel('preferences').survey;
       vm.data = PreferencesFactory.getPreferencesData();
     }
 

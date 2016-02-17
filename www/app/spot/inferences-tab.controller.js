@@ -10,6 +10,8 @@
   function InferencesTabController($ionicModal, $ionicPopup, $log, $scope, $state) {
     var vm = this;
     var vmParent = $scope.vm;
+    vmParent.survey = undefined;
+    vmParent.choices = undefined;
     vmParent.loadTab($state);  // Need to load current state into parent
 
     var relationshipToEdit;

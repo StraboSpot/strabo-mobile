@@ -57,28 +57,6 @@
       });
     }
 
-    // Set the form survey (and choices, if applicable)
-    function setForm(tab) {
-      switch (tab) {
-        case 'app.spotTab._3dstructures':
-          vm.survey = FormFactory.getForm()._3dstructures_survey;
-          vm.choices = FormFactory.getForm()._3dstructures_choices;
-          break;
-        case 'app.spotTab.samples':
-          vm.survey = FormFactory.getForm().sample_survey;
-          vm.choices = FormFactory.getForm().sample_choices;
-          break;
-        case 'app.spotTab.spot':
-          vm.survey = FormFactory.getForm().traces_survey;
-          vm.choices = FormFactory.getForm().traces_choices;
-          break;
-        default:
-          vm.survey = undefined;
-          vm.choices = undefined;
-          break;
-      }
-    }
-
     // Set the current spot
     function setSpot(id) {
       SpotFactory.setCurrentSpotById(id);
@@ -179,10 +157,7 @@
         }
       }
       vm.stateName = state.current.name;
-      vm.survey = undefined;
-      vm.choices = undefined;
       setSpot(state.params.spotId);
-      setForm(vm.stateName);
 
       vm.showTrace = false;
       vm.showRockUnit = true;

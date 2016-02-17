@@ -5,10 +5,11 @@
     .module('app')
     .controller('RockUnitController', RockUnitController);
 
-  RockUnitController.$inject = ['$ionicPopup', '$location', '$log', '$state', 'FormFactory', 'ProjectFactory',
-    'SpotFactory'];
+  RockUnitController.$inject = ['$ionicPopup', '$location', '$log', '$state', 'DataModelsFactory', 'FormFactory',
+    'ProjectFactory', 'SpotFactory'];
 
-  function RockUnitController($ionicPopup, $location, $log, $state, FormFactory, ProjectFactory, SpotFactory) {
+  function RockUnitController($ionicPopup, $location, $log, $state, DataModelsFactory, FormFactory, ProjectFactory,
+                              SpotFactory) {
     var vm = this;
     var key = 'unit_label_abbreviation';
 
@@ -29,8 +30,8 @@
      */
 
     function activate() {
-      vm.survey = ProjectFactory.getRockUnitsSurvey();
-      vm.choices = ProjectFactory.getRockUnitsChoices();
+      vm.survey = DataModelsFactory.getDataModel('rock_unit').survey;
+      vm.choices = DataModelsFactory.getDataModel('rock_unit').choices;
       vm.rockUnits = ProjectFactory.getRockUnits();
 
       if ($state.current.name !== 'app.new-rock-unit') vm.data = loadRockUnit();
