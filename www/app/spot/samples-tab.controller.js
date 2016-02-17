@@ -61,8 +61,8 @@
     function deleteSample(i) {
       delSample = true;
       var confirmPopup = $ionicPopup.confirm({
-        'title': 'Delete Relationship',
-        'template': 'Are you sure you want to delete this relationship?'
+        'title': 'Delete Sample',
+        'template': 'Are you sure you want to delete this sample?'
       });
       confirmPopup.then(function (res) {
         if (res) {
