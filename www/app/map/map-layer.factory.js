@@ -32,7 +32,6 @@
       'getOfflineLayer': getOfflineLayer,
       'getOfflineOverlayLayer': getOfflineOverlayLayer,
       'getOnlineLayer': getOnlineLayer,
-      'getOnlineOverlayLayer': getOnlineOverlayLayer,
       'setVisibleLayers': setVisibleLayers
     };
 
@@ -416,17 +415,13 @@
       return onlineLayer;
     }
 
-    function getOnlineOverlayLayer() {
-      return onlineOverlayLayer;
-    }
-
     function setVisibleLayers(map, online) {
       if (!online) {
         $log.log('Offline');
 
         // remove the online maps
         map.removeLayer(onlineLayer);
-        map.removeLayer(onlineOverlayLayer);
+        // map.removeLayer(onlineOverlayLayer);
 
         // Add offline tile layer
         map.getLayers().insertAt(0, offlineLayer);
@@ -449,7 +444,7 @@
 
         // Add online map layer
         map.getLayers().insertAt(0, onlineLayer);
-        map.getLayers().insertAt(1, onlineOverlayLayer);
+        //   map.getLayers().insertAt(1, onlineOverlayLayer);
       }
     }
   }
