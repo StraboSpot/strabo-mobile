@@ -100,6 +100,7 @@
           '_3d_structures': [],
           'date': 'datetime',
           'id': 'number; timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id)',
+          'images': [],
           'modified_timestamp': 'timestamp',
           'name': 'Type: text; REQUIRED',
           'orientation_data': [],
@@ -107,8 +108,7 @@
           'samples': [],
           'time': 'datetime',
           'trace': {}
-        },
-        'images': []
+        }
       };
 
       var models = {
@@ -143,8 +143,9 @@
         }
         else if (key === 'images') {
           description.annotated = 'true/false for whether or not the image is used as an Image Basemap';
+          description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id); REQUIRED';
           description = sortby(description);
-          spotDataModel.images.push(description);
+          spotDataModel.properties.images.push(description);
         }
         else spotDataModel.properties[key].push(description);
       });

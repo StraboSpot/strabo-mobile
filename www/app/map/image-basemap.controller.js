@@ -6,10 +6,10 @@
     .controller('ImageBasemapController', ImageBasemapController);
 
   ImageBasemapController.$inject = ['$ionicActionSheet', '$ionicSideMenuDelegate', '$location', '$log', '$state',
-    'MapDrawFactory', 'ImageBasemapFactory', 'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory', 'SpotFactory'];
+    'MapDrawFactory', 'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory', 'SpotFactory'];
 
   function ImageBasemapController($ionicActionSheet, $ionicSideMenuDelegate, $location, $log, $state, MapDrawFactory,
-                                  ImageBasemapFactory, MapFeaturesFactory, MapSetupFactory, MapViewFactory,
+                                  MapFeaturesFactory, MapSetupFactory, MapViewFactory,
                                   SpotFactory) {
     var vm = this;
 
@@ -62,9 +62,11 @@
     }
 
     function setImageBasemap() {
-      vm.imageBasemap = _.filter(ImageBasemapFactory.getImageBasemaps(), function (imageBasemap) {
-        return imageBasemap.id.toString() === $state.params.imagebasemapId;
-      })[0];
+      _.each(SpotFactory.getSpots(), function (spot) {
+        _.each(spot.properties.images, function (image) {
+          if (image.id.toString() === $state.params.imagebasemapId) vm.imageBasemap = image;
+        });
+      });
     }
 
     /**

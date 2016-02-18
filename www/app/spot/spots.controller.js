@@ -6,14 +6,13 @@
     .controller('SpotsController', Spots);
 
   Spots.$inject = ['$cordovaDevice', '$cordovaFile', '$document', '$ionicActionSheet', '$ionicModal', '$ionicPopup',
-    '$location', '$log', '$scope', '$window', 'ImageBasemapFactory', 'SpotFactory', 'UserFactory'];
+    '$location', '$log', '$scope', '$window', 'SpotFactory', 'UserFactory'];
 
   function Spots($cordovaDevice, $cordovaFile, $document, $ionicActionSheet, $ionicModal, $ionicPopup, $location, $log,
-                 $scope, $window, ImageBasemapFactory, SpotFactory, UserFactory) {
+                 $scope, $window, SpotFactory, UserFactory) {
     var vm = this;
 
     vm.clearAllSpots = clearAllSpots;
-    vm.closeModal = closeModal;
     vm.deleteSelected = false;
     vm.deleteSpot = deleteSpot;
     vm.exportToCSV = exportToCSV;
@@ -76,17 +75,10 @@
               // update the spots list
               vm.spots = [];
               vm.spotsDisplayed = [];
-              // Remove all of the image basemaps
-              ImageBasemapFactory.clearAllImageBasemaps();
             });
           }
         }
       );
-    }
-
-    function closeModal(modal) {
-      vm[modal].hide();
-      vm.spots = SpotFactory.getSpots();
     }
 
     function deleteSpot(spot) {

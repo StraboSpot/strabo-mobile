@@ -12,7 +12,6 @@
 
     // Return public API
     return {
-      'addDatasetSpot': addDatasetSpot,
       'addSpotToDataset': addSpotToDataset,
       'authenticateUser': authenticateUser,
       'createDataset': createDataset,
@@ -29,22 +28,20 @@
     };
 
     /**
-     * Public Functions
+     * Private Functions
      */
 
-    // Add a spot to a dataset
-    function addDatasetSpot(spot, dataset_id, encodedLogin) {
-      var request = $http({
-        'method': 'post',
-        'url': baseUrl + '/db/datasetSpots/' + dataset_id,
-        'headers': {
-          'Authorization': 'Basic ' + encodedLogin,
-          'Content-Type': 'application/json'
-        },
-        'data': spot
+    function removeImages(spot) {
+      var spotNoImages = angular.fromJson(angular.toJson(spot));  // Deep clone
+      _.each(spotNoImages.properties.images, function (image, i) {
+        spotNoImages.properties.images[i] = _.omit(image, 'src');
       });
-      return (request.then(handleSuccess, handleError));
+      return spotNoImages;
     }
+
+    /**
+     * Public Functions
+     */
 
     // Add a spot to a dataset
     function addSpotToDataset(id, dataset_id, encodedLogin) {
@@ -101,7 +98,7 @@
           'Authorization': 'Basic ' + encodedLogin,
           'Content-Type': 'application/json'
         },
-        'data': spot
+        'data': removeImages(spot)
       });
       return (request.then(handleSuccess, handleError));
     }
@@ -203,7 +200,7 @@
           'Authorization': 'Basic ' + encodedLogin,
           'Content-Type': 'application/json'
         },
-        'data': spot
+        'data': removeImages(spot)
       });
       return (request.then(handleSuccess, handleError));
     }
@@ -226,15 +223,6 @@
       formdata.append('feature_id', spot_id);
       formdata.append('image_file', blob, 'image.jpeg');
       formdata.append('id', image.id);
-      formdata.append('height', image.height);
-      formdata.append('width', image.width);
-      formdata.append('annotated', image.annotated);
-      if (image.title && image.title !== 'undefined') {
-        formdata.append('title', image.title);
-      }
-      if (image.caption && image.caption !== 'undefined') {
-        formdata.append('caption', image.caption);
-      }
 
       var request = $http({
         'method': 'post',

@@ -5,9 +5,9 @@
     .module('app')
     .factory('SpotFactory', SpotFactory);
 
-  SpotFactory.$inject = ['$log', '$q', 'ImageBasemapFactory', 'LocalStorageFactory', 'ProjectFactory'];
+  SpotFactory.$inject = ['$log', '$q', 'LocalStorageFactory', 'ProjectFactory'];
 
-  function SpotFactory($log, $q, ImageBasemapFactory, LocalStorageFactory, ProjectFactory) {
+  function SpotFactory($log, $q, LocalStorageFactory, ProjectFactory) {
     var currentSpot;
     var currentAssociatedOrientationIndex;
     var currentOrientationIndex;
@@ -168,8 +168,8 @@
     }
 
     function isSafeDelete(spotToDelete) {
-      if (!spotToDelete.images) return true;
-      return !_.find(spotToDelete.images, function (image) {
+      if (!spotToDelete.properties.images) return true;
+      return !_.find(spotToDelete.properties.images, function (image) {
         return image.annotated === true;
       });
     }
@@ -184,7 +184,6 @@
             return spot.properties.modified_timestamp;
           }).reverse();
           $log.log('Finished loading Spots: ', spots);
-          ImageBasemapFactory.loadImageBasemaps(spots);
           deferred.resolve();
         });
       }

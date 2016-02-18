@@ -6,10 +6,10 @@
     .controller('ImagesTabController', ImagesTabController);
 
   ImagesTabController.$inject = ['$cordovaCamera', '$document', '$ionicModal', '$ionicPopup', '$log', '$scope',
-    '$state', '$window', 'DataModelsFactory', 'ImageBasemapFactory'];
+    '$state', '$window', 'DataModelsFactory'];
 
   function ImagesTabController($cordovaCamera, $document, $ionicModal, $ionicPopup, $log, $scope, $state, $window,
-                               DataModelsFactory, ImageBasemapFactory) {
+                               DataModelsFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.survey = DataModelsFactory.getDataModel('image').survey;
@@ -220,8 +220,8 @@
       // $log.log('inside readDataUrl');
 
       // create an images array if it doesn't exist -- camera images are stored here
-      if (angular.isUndefined(vmParent.spot.images)) {
-        vmParent.spot.images = [];
+      if (angular.isUndefined(vmParent.spot.properties.images)) {
+        vmParent.spot.properties.images = [];
       }
 
       var reader = new FileReader();
@@ -233,7 +233,7 @@
         image.onload = function () {
           // push the image data to our camera images array
           $scope.$apply(function () {
-            vmParent.spot.images.push({
+            vmParent.spot.properties.images.push({
               'src': image.src,
               'height': image.height,
               'width': image.width,
@@ -280,7 +280,7 @@
         });
         confirmPopup.then(function (res) {
           if (res) {
-            vmParent.spot.images = _.reject(vmParent.spot.images, function (image) {
+            vmParent.spot.properties.images = _.reject(vmParent.spot.properties.images, function (image) {
               return vmParent.data.id === image.id;
             });
             vmParent.data = {};
@@ -319,15 +319,11 @@
         });
         image.annotated = false;
       }
-      if (image.annotated && image.title) {
-        ImageBasemapFactory.addImageBasemap(image);
-      }
 
       // Only allow toggle off if no spots mapped on this image
       if (!image.annotated) {
         var imageUsed = isImageUsed(image);
         if (imageUsed) image.annotated = true;
-        else ImageBasemapFactory.removeImageBasemap(image);
       }
     }
   }

@@ -6,7 +6,7 @@
       <span class='button-text-big'>Add Photo or Image</span>
     </button>
     <input type='file' id='file' style='display: none;'/>
-    <div class='row' ng-repeat='image in vm.spot.images'>
+    <div class='row' ng-repeat='image in vm.spot.properties.images'>
       <div class='col image-col'>
         <a><img ng-src='{{image.src}}' width='100' height='100' ng-click='vmChild.showImages($index)'/></a>
       </div>

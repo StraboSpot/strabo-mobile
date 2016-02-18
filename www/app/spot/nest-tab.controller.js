@@ -32,8 +32,8 @@
     }
 
     function getChildren(thisSpot) {
-      if (thisSpot.images) {
-        var imageBasemaps = _.map(thisSpot.images, function (image) {
+      if (thisSpot.properties.images) {
+        var imageBasemaps = _.map(thisSpot.properties.images, function (image) {
           return image.id;
         });
         return _.filter(vmParent.spots, function (spot) {
@@ -46,7 +46,7 @@
     function getParent(thisSpot) {
       if (thisSpot.properties.image_basemap) {
         var parentSpot = _.find(vmParent.spots, function (spot) {
-          return _.find(spot.images, function (image) {
+          return _.find(spot.properties.images, function (image) {
             return image.id === thisSpot.properties.image_basemap;
           });
         });

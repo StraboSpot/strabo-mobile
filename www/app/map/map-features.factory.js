@@ -5,10 +5,10 @@
     .module('app')
     .factory('MapFeaturesFactory', MapFeatures);
 
-  MapFeatures.$inject = ['HelpersFactory', 'ImageBasemapFactory', 'MapLayerFactory', 'MapSetupFactory', 'SpotFactory',
+  MapFeatures.$inject = ['HelpersFactory', 'MapLayerFactory', 'MapSetupFactory', 'SpotFactory',
     'SymbologyFactory'];
 
-  function MapFeatures(HelpersFactory, ImageBasemapFactory, MapLayerFactory, MapSetupFactory, SpotFactory,
+  function MapFeatures(HelpersFactory, MapLayerFactory, MapSetupFactory, SpotFactory,
                        SymbologyFactory) {
     return {
       'createFeatureLayer': createFeatureLayer,

@@ -5,12 +5,13 @@
     .module('app')
     .controller('ImageBasemapsController', ImageBasemapsController);
 
-  ImageBasemapsController.$inject = ['$location', '$log', 'ImageBasemapFactory', 'SpotFactory'];
+  ImageBasemapsController.$inject = ['$location', '$log', 'SpotFactory'];
 
-  function ImageBasemapsController($location, $log, ImageBasemapFactory, SpotFactory) {
+  function ImageBasemapsController($location, $log, SpotFactory) {
     var vm = this;
 
     vm.goToImageBasemap = goToImageBasemap;
+    vm.imageBasemaps = [];
 
     activate();
 
@@ -23,12 +24,11 @@
      */
 
     function getImageBasemaps() {
-      var spots = SpotFactory.getSpots();
-      var images = _.flatten(_.compact(_.pluck(spots, 'images')));
-      vm.imageBasemaps = _.filter(images, function (image) {
-        return image.annotated === true;
+      _.each(SpotFactory.getSpots(), function (spot) {
+        _.each(spot.properties.images, function (image) {
+          if (image.annotated === true) vm.imageBasemaps.push(image);
+        });
       });
-      ImageBasemapFactory.setImageBasemaps(vm.imageBasemaps);
       $log.log('Image Basemaps:', vm.imageBasemaps);
     }
 
