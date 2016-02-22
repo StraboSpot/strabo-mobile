@@ -40,12 +40,17 @@
       login.email = login.email.toLowerCase();
       RemoteServerFactory.authenticateUser(login).then(function (response) {
         if (response.status === 200 && response.data.valid === 'true') {
-          $log.log('Logged in successfully as ' + login.email);
+          $log.log('Logged in successfully as', login.email, 'Server Response:', response);
           user = {
             'email': login.email,
             'encoded_login': Base64.encode(login.email + ':' + login.password)
           };
-          saveUser(user);
+          RemoteServerFactory.getProfile(user.encoded_login).then(function (profileResponse) {
+            if (response.status === 200) {
+              user.name = profileResponse.data.name;
+              saveUser(user);
+            }
+          });
         }
         else {
           $ionicPopup.alert({

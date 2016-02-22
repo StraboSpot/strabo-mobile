@@ -23,6 +23,7 @@
       'getDatasets': getDatasets,
       'getDatasetSpots': getDatasetSpots,
       'getImages': getImages,
+      'getProfile': getProfile,
       'updateFeature': updateFeature,
       'uploadImage': uploadImage
     };
@@ -186,6 +187,18 @@
         'url': baseUrl + '/db/featureImages/' + dataset_id,
         'headers': {
           'Authorization': 'Basic ' + encodedLogin + '\''
+        }
+      });
+      return (request.then(handleSuccess, handleError));
+    }
+
+    // Get all spots for a dataset
+    function getProfile(encodedLogin) {
+      var request = $http({
+        'method': 'get',
+        'url': baseUrl + '/db/profile',
+        'headers': {
+          'Authorization': 'Basic ' + encodedLogin
         }
       });
       return (request.then(handleSuccess, handleError));
