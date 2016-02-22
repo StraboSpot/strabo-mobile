@@ -235,8 +235,6 @@
           $scope.$apply(function () {
             vmParent.spot.properties.images.push({
               'src': image.src,
-              'height': image.height,
-              'width': image.width,
               'id': Math.floor((new Date().getTime() + Math.random()) * 10)
             });
           });

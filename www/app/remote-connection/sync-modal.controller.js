@@ -74,13 +74,6 @@
               var imageProps = _.findWhere(spot.properties.images,
                 {'self': downloadImageResponse.config.url});
               imageProps.src = base64Image;
-              // Set the image height and width
-              if (!imageProps.height || !imageProps.width) {
-                var im = new Image();
-                im.src = base64Image;
-                imageProps.height = im.height;
-                imageProps.width = im.width;
-              }
               deferred.resolve();
             });
           }

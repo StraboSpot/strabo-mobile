@@ -81,7 +81,9 @@
         zoom = 4;
       }
       else {
-        extent = [0, 0, imageBasemap.width, imageBasemap.height];
+        var im = new Image();
+        im.src = imageBasemap.src;
+        extent = [0, 0, im.width, im.height];
         projection = new ol.proj.Projection({
           'code': 'map-image',
           'units': 'pixels',
