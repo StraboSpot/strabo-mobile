@@ -5,30 +5,35 @@
     .module('app')
     .controller('OtherFeaturesTabController', OtherFeaturesTabController);
 
-  OtherFeaturesTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state'];
+  OtherFeaturesTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'ProjectFactory'];
 
-  function OtherFeaturesTabController($ionicModal, $ionicPopup, $log, $scope, $state) {
+  function OtherFeaturesTabController($ionicModal, $ionicPopup, $log, $scope, $state, ProjectFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.survey = undefined;
     vmParent.choices = undefined;
     vmParent.loadTab($state);  // Need to load current state into parent
 
-    var featureToEdit;
     var delFeature;
+    var defaultTypes = ['geomorhic', 'hydrologic', 'paleontological', 'igneous', 'metamorphic', 'sedimentological',
+      'other'];
+    var featureToEdit;
 
     vm.addFeature = addFeature;
     vm.closeModal = closeModal;
     vm.deleteFeature = deleteFeature;
+    vm.deleteType = deleteType;
     vm.editFeature = editFeature;
+    vm.editTypes = editTypes;
+    vm.filterDefaults = filterDefaults;
+    vm.newFeatureType = '';
     vm.otherFeature = {
       'type': undefined,
       'name': undefined,
       'description': undefined
     };
     vm.otherFeatureModal = {};
-    vm.otherFeatureTypes = ['geomorhic', 'hydrologic', 'paleontological',
-      'igneous', 'metamorphic', 'sedimentological', 'other'];
+    vm.otherFeatureTypes = [];
     vm.submitFeature = submitFeature;
 
     activate();
@@ -40,6 +45,18 @@
     function activate() {
       $log.log('In OtherFeaturesTabController');
 
+      vm.addedTypes = _.without(vm.otherFeatureTypes, 'geomorhic', 'hydrologic', 'paleontological', 'igneous',
+        'metamorphic', 'sedimentological', 'other');
+
+      var savedOtherFeatures = ProjectFactory.getOtherFeatures();
+      if (_.isEmpty(savedOtherFeatures)) {
+        ProjectFactory.saveOtherFeatures(defaultTypes).then(
+          function () {
+            vm.otherFeatureTypes = ProjectFactory.getOtherFeatures();
+          });
+      }
+      else vm.otherFeatureTypes = ProjectFactory.getOtherFeatures();
+
       createModal();
     }
 
@@ -50,6 +67,21 @@
       }).then(function (modal) {
         vm.otherFeatureModal = modal;
       });
+
+      $ionicModal.fromTemplateUrl('app/spot/other-feature-types-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up'
+      }).then(function (modal) {
+        vm.otherFeatureTypesModal = modal;
+      });
+    }
+
+    function saveFeature() {
+      if (angular.isDefined(featureToEdit)) {
+        vmParent.spot.properties.other_features.splice(featureToEdit, 1, vm.otherFeature);
+      }
+      else vmParent.spot.properties.other_features.push(vm.otherFeature);
+      vm.otherFeatureModal.hide();
     }
 
     /**
@@ -63,6 +95,7 @@
     }
 
     function closeModal(modal) {
+      vm.newFeatureType = '';
       vm[modal].hide();
     }
 
@@ -83,6 +116,29 @@
       });
     }
 
+    function deleteType(i) {
+      var customTypes = _.reject(vm.otherFeatureTypes, function (type) {
+        return _.contains(defaultTypes, type);
+      });
+      var usedType = _.filter(vmParent.spots, function (spot) {
+        return _.filter(spot.properties.other_features, function (otherFeature) {
+          return otherFeature.type === customTypes[i];
+        });
+      });
+      var spotNames = [];
+      _.each(usedType, function (spot) {
+        spotNames.push(spot.properties.name);
+      });
+      if (usedType) {
+        $ionicPopup.alert({
+          'title': 'Type in Use',
+          'template': 'This type is used in the following Spot(s). Please remove the type from these Spot(s) before' +
+          ' deleting this type. Spot(s): ' + spotNames.join(', ')
+        });
+      }
+      else customTypes.splice(i, 1);
+    }
+
     function editFeature(i) {
       if (!delFeature) {
         vm.otherFeature = {
@@ -93,6 +149,14 @@
         featureToEdit = i;
         vm.otherFeatureModal.show();
       }
+    }
+
+    function editTypes() {
+      vm.otherFeatureTypesModal.show();
+    }
+
+    function filterDefaults(type) {
+      return _.indexOf(defaultTypes, type) === -1;
     }
 
     function submitFeature() {
@@ -109,11 +173,30 @@
         });
         if (_.indexOf(vmParent.spot.properties.other_features, dup) === featureToEdit) dup = undefined;
         if (!dup) {
-          if (angular.isDefined(featureToEdit)) {
-            vmParent.spot.properties.other_features.splice(featureToEdit, 1, vm.otherFeature);
+          if (vm.otherFeature.type === 'other') {
+            if (vm.newFeatureType) {
+              if (_.indexOf(vm.otherFeatureTypes, vm.newFeatureType) === -1) {
+                vm.otherFeatureTypes.splice(-1, 0, vm.newFeatureType);
+                ProjectFactory.saveOtherFeatures(vm.otherFeatureTypes);
+                vm.otherFeature.type = vm.newFeatureType;
+                vm.newFeatureType = '';
+                saveFeature();
+              }
+              else {
+                $ionicPopup.alert({
+                  'title': 'Alert!',
+                  'template': 'The type <b>' + vm.newFeatureType + '</b> is already being used. Choose a different type name.'
+                });
+              }
+            }
+            else {
+              $ionicPopup.alert({
+                'title': 'Alert!',
+                'template': 'You must specify a feature type.'
+              });
+            }
           }
-          else vmParent.spot.properties.other_features.push(vm.otherFeature);
-          vm.otherFeatureModal.hide();
+          else saveFeature();
         }
         else {
           $ionicPopup.alert({

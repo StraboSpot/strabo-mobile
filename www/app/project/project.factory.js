@@ -8,7 +8,7 @@
   ProjectFactory.$inject = ['$ionicPopup', '$log', '$q', 'LocalStorageFactory'];
 
   function ProjectFactory($ionicPopup, $log, $q, LocalStorageFactory) {
-    var data;
+    var data = {};
     var projectKey = 'project_name';
     var projects = [];
 
@@ -18,12 +18,14 @@
       'getProjects': getProjects,
       'getProjectData': getProjectData,
       'getProjectName': getProjectName,
+      'getOtherFeatures': getOtherFeatures,
       'getRockUnits': getRockUnits,
       'getSpotNumber': getSpotNumber,
       'getSpotPrefix': getSpotPrefix,
       'incrementSpotNumber': incrementSpotNumber,
       'loadProject': loadProject,                     // Run from app config
       'save': save,
+      'saveOtherFeatures': saveOtherFeatures,
       'saveRockUnits': saveRockUnits
     };
 
@@ -93,6 +95,10 @@
       return data.spot_prefix;
     }
 
+    function getOtherFeatures() {
+      return data.other_features || [];
+    }
+
     function getRockUnits() {
       return data.rock_units || [];
     }
@@ -113,7 +119,7 @@
 
     function loadProject() {
       var deferred = $q.defer(); // init promise
-      if (!data) {
+      if (_.isEmpty(data)) {
         $log.log('Loading project properties ....');
         all().then(function (savedData) {
           data = savedData;
@@ -136,6 +142,18 @@
         });
         $log.log('Saved project properties: ', data);
       });
+    }
+
+    function saveOtherFeatures(other_features) {
+      var deferred = $q.defer(); // init promise
+      LocalStorageFactory.getDb().projectDb.removeItem('other_features', function () {
+        data.other_features = other_features;
+        LocalStorageFactory.getDb().projectDb.setItem('other_features', other_features).then(function () {
+          $log.log('Saved other features: ', other_features);
+          deferred.resolve();
+        });
+      });
+      return deferred.promise;
     }
 
     function saveRockUnits(rock_units) {

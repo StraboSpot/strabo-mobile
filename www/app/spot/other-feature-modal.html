@@ -15,6 +15,12 @@
               ng-options='type as type for type in vmChild.otherFeatureTypes'>
       </select>
     </ion-input>
+    <div ng-show='vmChild.otherFeature.type === "other"'>
+      <ion-input class='item item-input'>
+        <ion-label>Other Feature Type</ion-label>
+        <input type='text' placeholder='Type of feature ...' ng-model='vmChild.newFeatureType'>
+      </ion-input>
+    </div>
     <ion-input class='item item-input'>
       <ion-label>Feature Name</ion-label>
       <input type='text' placeholder='Name of this feature ...' ng-model='vmChild.otherFeature.name'>

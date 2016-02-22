@@ -49,7 +49,7 @@
     // Load the preferences data
     function loadPreferences() {
       var deferred = $q.defer(); // init promise
-      if (!data) {
+      if (_.isEmpty(data)) {
         $log.log('Loading preferences ....');
         all().then(function (savedData) {
           data = savedData;
