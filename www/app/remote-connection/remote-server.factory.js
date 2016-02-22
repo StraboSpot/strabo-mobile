@@ -206,7 +206,7 @@
     }
 
     // Upload load an image
-    function uploadImage(spot_id, image, encodedLogin) {
+    function uploadImage(image, encodedLogin) {
       function dataURItoBlob(dataURI) {
         var binary = atob(dataURI.split(',')[1]);
         var array = [];
@@ -220,7 +220,6 @@
       var blob = dataURItoBlob(image.src);
 
       var formdata = new FormData();
-      formdata.append('feature_id', spot_id);
       formdata.append('image_file', blob, 'image.jpeg');
       formdata.append('id', image.id);
 

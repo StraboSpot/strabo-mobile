@@ -137,7 +137,7 @@
       function uploadImages(spot) {
         if (spot.properties.images) {
           _.each(spot.properties.images, function (image) {
-            RemoteServerFactory.uploadImage(spot.properties.id, image, vm.encodedLogin).then(function (response) {
+            RemoteServerFactory.uploadImage(image, vm.encodedLogin).then(function (response) {
               if (response.status === 201) {
                 $log.log('Image uploaded for', spot, 'Server response:', response);
               }
