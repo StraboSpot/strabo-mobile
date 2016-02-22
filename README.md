@@ -53,7 +53,8 @@ Also need to install this plugin due to Cordova bug with Android and content sch
 Install this for the localForage dependencies
 
     cordova plugin add https://github.com/litehelpers/Cordova-sqlite-storage.git
-    install localForage-cordovaSQLiteDriver bower install --save localForage-cordovaSQLiteDriver
+    npm install -g bower
+    bower install --save localForage-cordovaSQLiteDriver
 
 ### Tested Environment
 
