@@ -14,6 +14,7 @@
 
     return {
       'addNewProject': addNewProject,
+      'destroyOtherFeature': destroyOtherFeature,
       'destroyRockUnit': destroyRockUnit,
       'getProjects': getProjects,
       'getProjectData': getProjectData,
@@ -66,6 +67,14 @@
         'template': 'The project name ' + project[projectKey] + ' is already being used for another project. Use a different name.'
       });
       return false;
+    }
+
+    function destroyOtherFeature(i) {
+      data.other_features.splice(i, 1);
+      LocalStorageFactory.getDb().projectDb.removeItem('other_features', function () {
+        LocalStorageFactory.getDb().projectDb.setItem('other_features', data.other_features);
+        $log.log('Saved other features: ', data.other_features);
+      });
     }
 
     function destroyRockUnit(key, value) {

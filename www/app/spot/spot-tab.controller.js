@@ -149,7 +149,7 @@
     }
 
     function viewRockUnit() {
-      vmParent.submit('/app/rock-units/' + vmParent.spot.properties.rock_unit.unit_label_abbreviation);
+      vmParent.submit('/app/manage-project/' + vmParent.spot.properties.rock_unit.unit_label_abbreviation);
     }
 
     // View the spot on the map

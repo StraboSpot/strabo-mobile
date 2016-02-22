@@ -62,7 +62,7 @@
         confirmPopup.then(function (res) {
           if (res) {
             ProjectFactory.destroyRockUnit(key, vm.data[key]);
-            $state.go('app.rock-units');
+            $state.go('app.manage-project');
           }
         });
       }

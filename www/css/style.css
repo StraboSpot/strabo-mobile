@@ -147,11 +147,6 @@ Map Layer Switcher Style
 Buttons
 --------------------*/
 
-/* Right buttons in a list */
-.button-second{
-  right:95px !important;
-}
-
 .button-text-small {
   color: black;
   font-size: small;
@@ -160,6 +155,10 @@ Buttons
 .button-text-big {
   color: black;
   font-weight: bold;
+}
+
+.divider-buttons-right .item-divider i {
+  position:absolute; right:10px;
 }
 
 /*--------------------

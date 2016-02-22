@@ -68,19 +68,19 @@
           }
         }
       })
-      .state('app.rock-units', {
+      .state('app.manage-project', {
         'cache': false,
-        'url': '/rock-units',
+        'url': '/manage-project',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/project/rock-units.html',
-            'controller': 'RockUnitsController as vm'
+            'templateUrl': 'app/project/manage-project.html',
+            'controller': 'ManageProjectController as vm'
           }
         }
       })
       .state('app.rock-unit', {
         'cache': false,
-        'url': '/rock-units/:unit_label_abbreviation',
+        'url': '/manage-project/:unit_label_abbreviation',
         'views': {
           'menuContent': {
             'templateUrl': 'app/project/rock-unit.html',
@@ -90,7 +90,7 @@
       })
       .state('app.new-rock-unit', {
         'cache': false,
-        'url': '/rock-units/new-rock-unit',
+        'url': '/manage-project/new-rock-unit',
         'views': {
           'menuContent': {
             'templateUrl': 'app/project/rock-unit.html',

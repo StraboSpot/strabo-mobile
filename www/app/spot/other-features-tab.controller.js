@@ -22,10 +22,7 @@
     vm.addFeature = addFeature;
     vm.closeModal = closeModal;
     vm.deleteFeature = deleteFeature;
-    vm.deleteType = deleteType;
     vm.editFeature = editFeature;
-    vm.editTypes = editTypes;
-    vm.filterDefaults = filterDefaults;
     vm.newFeatureType = '';
     vm.otherFeature = {
       'type': undefined,
@@ -45,9 +42,6 @@
     function activate() {
       $log.log('In OtherFeaturesTabController');
 
-      vm.addedTypes = _.without(vm.otherFeatureTypes, 'geomorhic', 'hydrologic', 'paleontological', 'igneous',
-        'metamorphic', 'sedimentological', 'other');
-
       var savedOtherFeatures = ProjectFactory.getOtherFeatures();
       if (_.isEmpty(savedOtherFeatures)) {
         ProjectFactory.saveOtherFeatures(defaultTypes).then(
@@ -66,13 +60,6 @@
         'animation': 'slide-in-up'
       }).then(function (modal) {
         vm.otherFeatureModal = modal;
-      });
-
-      $ionicModal.fromTemplateUrl('app/spot/other-feature-types-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up'
-      }).then(function (modal) {
-        vm.otherFeatureTypesModal = modal;
       });
     }
 
@@ -116,29 +103,6 @@
       });
     }
 
-    function deleteType(i) {
-      var customTypes = _.reject(vm.otherFeatureTypes, function (type) {
-        return _.contains(defaultTypes, type);
-      });
-      var usedType = _.filter(vmParent.spots, function (spot) {
-        return _.filter(spot.properties.other_features, function (otherFeature) {
-          return otherFeature.type === customTypes[i];
-        });
-      });
-      var spotNames = [];
-      _.each(usedType, function (spot) {
-        spotNames.push(spot.properties.name);
-      });
-      if (usedType) {
-        $ionicPopup.alert({
-          'title': 'Type in Use',
-          'template': 'This type is used in the following Spot(s). Please remove the type from these Spot(s) before' +
-          ' deleting this type. Spot(s): ' + spotNames.join(', ')
-        });
-      }
-      else customTypes.splice(i, 1);
-    }
-
     function editFeature(i) {
       if (!delFeature) {
         vm.otherFeature = {
@@ -149,14 +113,6 @@
         featureToEdit = i;
         vm.otherFeatureModal.show();
       }
-    }
-
-    function editTypes() {
-      vm.otherFeatureTypesModal.show();
-    }
-
-    function filterDefaults(type) {
-      return _.indexOf(defaultTypes, type) === -1;
     }
 
     function submitFeature() {
