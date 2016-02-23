@@ -130,7 +130,7 @@
         }, {
           'text': '<i class="icon ion-archive"></i>Save Map for Offline Use'
         }, {
-          'text': '<i class="icon ion-grid"></i> Add Features to a New Spot'
+          'text': '<i class="icon ion-grid"></i> Create a Nest'
         }],
         'cancelText': 'Cancel',
         'cancel': function () {
@@ -146,7 +146,7 @@
               vm.cacheOfflineTiles();
               break;
             case 2:
-              MapDrawFactory.groupSpots();
+              MapDrawFactory.groupSpots($scope);
               break;
           }
           return true;

@@ -1,10 +1,38 @@
 <ion-view>
   <ion-content class='strabo-form'>
-    <div class='padding'>
-      Nests are still in development! Currently Nests can only be made through Image Basemaps.
+    <button ng-click='vmChild.goToMap()'
+            class='button button-clear button-positive'>
+      <i class='icon ion-map'></i>
+      <span class='button-text-big'>Go to the Map</span>
+    </button>
+
+    <div ng-hide='vm.spot.properties.nests.length > 0'>
+      <div class='item item-divider'>
+        Other Nests
+      </div>
+      <div class='padding'>This Spot is not a member of any other Nests. Create a Nest from the Action menu in the
+        top right corner of the Map or Image Basemap.</div>
+    </div>
+    <div ng-repeat='nest in vm.spot.properties.nests'>
+      <div class='item item-divider'>
+        {{ nest.name || 'Nest' }}
+      </div>
+      <ion-list>
+        <ion-item>
+          This Spot
+        </ion-item>
+        <ion-item ng-repeat='member in nest.members' ng-click='vmChild.goToSpot(member)'>
+          {{ vmChild.getName(member) }}
+        </ion-item>
+      </ion-list>
+    </div>
+
+    <div class='item item-divider'>
+      Image Basemap Nest
     </div>
     <div class='padding' ng-hide='vmChild.parentSpot || vmChild.childrenSpots.length > 0'>
-      No Nest has been created yet. Add a Spot to an Image Basemap to view Nest.
+      This Spot is not a member of an Image Basemap Nest. Add an Image to this Spot. Set the Image as an Image
+      Basemap then add a Spot to that Image Basemap to create a Nest.
     </div>
     <div ng-show='vmChild.parentSpot || vmChild.childrenSpots.length > 0'>
       <div ng-show='vmChild.parentSpot'>
@@ -34,14 +62,16 @@
           <span class='button-text-big'>{{ childSpot.properties.name }}</span>
         </button>
       </div>
-
-      <div class='item item-divider'>
-        Notes
-      </div>
-      <ion-input class='item item-input'>
-      <textarea placeholder='Notes about this nest ...' rows='12'
-                ng-model='vm.spot.properties.nest.notes'></textarea>
-      </ion-input>
     </div>
+
+
+    <div class='item item-divider'>
+      Notes
+    </div>
+    <ion-input class='item item-input'>
+      <textarea placeholder='Notes about Nests for this Spot ...' rows='12'
+                ng-model='vm.spot.properties.nest.notes'></textarea>
+    </ion-input>
+
   </ion-content>
 </ion-view>

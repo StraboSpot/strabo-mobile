@@ -5,9 +5,9 @@
     .module('app')
     .controller('NestTabController', NestTabController);
 
-  NestTabController.$inject = ['$log', '$scope', '$state'];
+  NestTabController.$inject = ['$log', '$scope', '$state', 'MapViewFactory', 'SpotFactory'];
 
-  function NestTabController($log, $scope, $state) {
+  function NestTabController($log, $scope, $state, MapViewFactory, SpotFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.survey = undefined;
@@ -15,7 +15,9 @@
     vmParent.loadTab($state);  // Need to load current state into parent
 
     vm.childrenSpots = [];
+    vm.getName = getName;
     vm.parentSpot = undefined;
+    vm.goToMap = goToMap;
     vm.goToSpot = goToSpot;
 
     activate();
@@ -58,6 +60,25 @@
     /**
      * Public Functions
      */
+
+    function getName(spotId) {
+      return SpotFactory.getNameFromId(spotId);
+    }
+
+    function goToMap() {
+      if (_.has(vmParent.spot.properties, 'image_basemap')) {
+        vmParent.submit('/app/image-basemaps/' + vmParent.spot.properties.image_basemap);
+      }
+      else {
+        var center = SpotFactory.getCenter(vmParent.spot);
+        var spotCenter = ol.proj.transform([center.lon, center.lat], 'EPSG:4326', 'EPSG:3857');
+        MapViewFactory.setMapView(new ol.View({
+          'center': spotCenter,
+          'zoom': 16
+        }));
+        vmParent.submit('/app/map');
+      }
+    }
 
     function goToSpot(id) {
       vmParent.submit('/app/spotTab/' + id + '/spot');

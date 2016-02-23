@@ -24,6 +24,7 @@
       'getCurrentOrientationIndex': getCurrentOrientationIndex,
       'getCurrentSpot': getCurrentSpot,
       'getFirstSpot': getFirstSpot,
+      'getNameFromId': getNameFromId,
       'getOrientations': getOrientations,
       'getSpotCount': getSpotCount,
       'getSpots': getSpots,
@@ -146,6 +147,13 @@
       });
 
       return deferred.promise;
+    }
+
+    function getNameFromId(id) {
+      var spotCur = _.find(spots, function (spot) {
+        return spot.properties.id === id;
+      });
+      return spotCur.properties.name;
     }
 
     function getOrientations() {

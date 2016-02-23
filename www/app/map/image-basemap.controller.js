@@ -5,12 +5,11 @@
     .module('app')
     .controller('ImageBasemapController', ImageBasemapController);
 
-  ImageBasemapController.$inject = ['$ionicActionSheet', '$ionicSideMenuDelegate', '$location', '$log', '$state',
-    'MapDrawFactory', 'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory', 'SpotFactory'];
+  ImageBasemapController.$inject = ['$ionicActionSheet', '$ionicSideMenuDelegate', '$location', '$log', '$scope',
+    '$state', 'MapDrawFactory', 'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory', 'SpotFactory'];
 
-  function ImageBasemapController($ionicActionSheet, $ionicSideMenuDelegate, $location, $log, $state, MapDrawFactory,
-                                  MapFeaturesFactory, MapSetupFactory, MapViewFactory,
-                                  SpotFactory) {
+  function ImageBasemapController($ionicActionSheet, $ionicSideMenuDelegate, $location, $log, $scope, $state,
+                                  MapDrawFactory, MapFeaturesFactory, MapSetupFactory, MapViewFactory, SpotFactory) {
     var vm = this;
 
     vm.goBack = goBack;
@@ -91,7 +90,7 @@
         'buttons': [{
           'text': '<i class="icon ion-map"></i> Zoom to Extent of Spots'
         }, {
-          'text': '<i class="icon ion-grid"></i> Add Features to a New Station'
+          'text': '<i class="icon ion-grid"></i> Create a Nest'
         }],
         'cancelText': 'Cancel',
         'cancel': function () {
@@ -104,7 +103,7 @@
               MapViewFactory.zoomToSpotsExtent(map, vm.imageBasemap);
               break;
             case 1:
-              MapDrawFactory.groupSpots();
+              MapDrawFactory.groupSpots($scope);
               break;
           }
           return true;

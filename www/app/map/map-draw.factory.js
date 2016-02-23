@@ -13,6 +13,7 @@
     var drawLayer;
     var imageBasemap;       // id of an image basemap if an image basemap is being used
     var map;
+    var scope;
 
     return {
       'cancelDraw': cancelDraw,
@@ -110,7 +111,8 @@
     }
 
     // Create a group of spots by drawing a polygon on the map
-    function groupSpots() {
+    function groupSpots(inScope) {
+      scope = inScope;
       // Remove layer switcher and drawing tools to to avoid confusion
       // with lasso and regular drawing
       map.getControls().forEach(function (control) {
@@ -121,8 +123,8 @@
       });
 
       $ionicPopup.alert({
-        'title': 'Create a Station',
-        'template': 'Draw a polygon around the features you would like to add to a new Spot.'
+        'title': 'Create a Nest',
+        'template': 'Draw a polygon around the Spots you would like to add to a new Nest.'
       });
 
       // start the draw with freehand enabled
@@ -238,7 +240,7 @@
             // no, good
 
             // contains all the lassoed objects
-            var isLassoed = [];
+            var lassoedSpots = [];
 
             var spots = SpotFactory.getSpots();
             var mappedSpots = _.filter(spots, function (spot) {
@@ -253,44 +255,80 @@
               if (spotType === 'Point') {
                 // is the point inside the drawn polygon?
                 if (turf.inside(spot, geojsonObj)) {
-                  isLassoed.push({
-                    'id': spot.properties.id,
-                    'name': spot.properties.name
-                  });
+                  lassoedSpots.push(spot);
                 }
               }
 
               if (spotType === 'LineString' || spotType === 'Polygon') {
                 // is the line or polygon within/intersected in the drawn polygon?
                 if (turf.intersect(spot, geojsonObj)) {
-                  isLassoed.push({
-                    'id': spot.properties.id,
-                    'name': spot.properties.name
-                  });
+                  lassoedSpots.push(spot);
                 }
               }
             });
 
-            $log.log('isLassoed, ', isLassoed);
+            $log.log('Lassoed Spots:', lassoedSpots);
 
-            if (isLassoed.length === 0) {
+            if (lassoedSpots.length === 0) {
               $ionicPopup.alert({
-                'title': 'Empty Group!',
-                'template': 'No spots are within or intersect the drawn poloygon.'
+                'title': 'Empty Nest!',
+                'template': 'No Spots are within or intersect the drawn poloygon. A Nest needs to contain at least 2 Spots.'
               });
-              return;
             }
-
-            geojsonObj.properties = {
-              'nest_members': isLassoed
-            };
-            if (imageBasemap) {
-              geojsonObj.properties.image_basemap = imageBasemap.id;
+            else if (lassoedSpots.length === 1) {
+              $ionicPopup.alert({
+                'title': 'Nest Too Small!',
+                'template': 'Only 1 Spot is within or intersects the drawn poloygon. A Nest needs to contain at least 2 Spots.'
+              });
             }
+            else {
+              var myPopup = $ionicPopup.show({
+                'template': '<input type="text" ng-model="vm.name">',
+                'title': 'Enter a name for this Nest',
+                'scope': scope,
+                'buttons': [{
+                  'text': 'Cancel'
+                }, {
+                  'text': '<b>Save</b>',
+                  'type': 'button-positive',
+                  'onTap': function (err) {
+                    if (!scope.vm.name) {
+                      // don't allow the user to close unless he enters wifi password
+                      e.preventDefault();
+                    } else return scope.vm.name;
+                  }
+                }]
+              });
 
-            SpotFactory.setNewSpot(geojsonObj).then(function (id) {
-              $location.path('app/spotTab/' + id + '/spot');
-            });
+              myPopup.then(function (res) {
+                var lassoedSpotsIds = _.pluck(_.pluck(lassoedSpots, 'properties'), 'id');
+
+                _.each(lassoedSpots, function (lassoedSpot) {
+                  if (!lassoedSpot.properties.nests) lassoedSpot.properties.nests = [];
+                  lassoedSpot.properties.nests.push({
+                    'name': res,
+                    'members': _.without(lassoedSpotsIds, lassoedSpot.properties.id)});
+                  SpotFactory.save(lassoedSpot);
+                });
+
+                // Should do the saves above with array of promises but shouldn't really matter if the alert happens before the saves finish
+                $ionicPopup.alert({
+                  'title': 'Nest Created!',
+                  'template': lassoedSpots.length + ' Spots were added to the new Nest ' + res + ' .'
+                });
+
+                /* geojsonObj.properties = {
+                 'nest': lassoedSpots
+                 };
+                 if (imageBasemap) {
+                 geojsonObj.properties.image_basemap = imageBasemap.id;
+                 }
+
+                 SpotFactory.setNewSpot(geojsonObj).then(function (id) {
+                 $location.path('app/spotTab/' + id + '/spot');
+                 }); */
+              });
+            }
           }
           else {
             // contains a kink, aka self-intersecting polygon
