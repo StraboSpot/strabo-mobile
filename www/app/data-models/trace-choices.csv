@@ -1,19 +1,19 @@
 label,order,name,list name
-Contact,0,contact,pl5yo85
-Geologic Structure,1,geologic_struc,pl5yo85
-Geomorphic Feature,2,geomorphic_fea,pl5yo85
-Anthropogenic Feature,3,anthropenic_fe,pl5yo85
-Other Features,4,other_features,pl5yo85
+contact,0,contact,pl5yo85
+geologic structure,1,geologic_struc,pl5yo85
+geomorphic feature,2,geomorphic_fea,pl5yo85
+anthropogenic feature,3,anthropenic_fe,pl5yo85
+other feature,4,other_feature,pl5yo85
 depositional,0,depositional,lx9ax28
 intrusive,1,intrusive,lx9ax28
 metamorphic,2,metamorphic,lx9ax28
 marker layer,3,marker_layer,lx9ax28
-other,4,unknown,lx9ax28
+other,4,other,lx9ax28
 stratigraphic,0,stratigraphic,bi4sw60
 alluvial,1,alluvial,bi4sw60
 unconformity,2,unconformity,bi4sw60
-angular unconformity,3,option_7,bi4sw60
-disconformity,4,option_8,bi4sw60
+angular unconformity,3,angular_unconf,bi4sw60
+disconformity,4,disconformity,bi4sw60
 nonconformity,5,nonconformity,bi4sw60
 volcanic,6,volcanic,bi4sw60
 other,7,other,bi4sw60
@@ -52,8 +52,8 @@ other,,other,hz6ha86
 syncline,0,syncline,wg6ry31
 anticline,1,anticline,wg6ry31
 monocline,2,monocline,wg6ry31
-antiformal syncline,3,option_11,wg6ry31
-synformal anticline,4,option_12,wg6ry31
+antiformal syncline,3,antiformal_syn,wg6ry31
+synformal anticline,4,synformal_anti,wg6ry31
 synform,5,synform,wg6ry31
 antiform,6,antiform,wg6ry31
 s-fold,7,s_fold,wg6ry31

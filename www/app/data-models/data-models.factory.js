@@ -63,11 +63,11 @@
         'survey': {},
         'survey_file': 'app/data-models/tools-survey.csv'
       },
-      'traces': {
+      'trace': {
         'survey': {},
-        'survey_file': 'app/data-models/traces-survey.csv',
+        'survey_file': 'app/data-models/trace-survey.csv',
         'choices': {},
-        'choices_file': 'app/data-models/traces-choices.csv'
+        'choices_file': 'app/data-models/trace-choices.csv'
       }
     };
     var featureTypeLabels = {};
@@ -150,7 +150,7 @@
         'tabular_orientation': dataModels.orientation_data.tabular_orientation,
         'rock_unit': dataModels.rock_unit,
         'samples': dataModels.sample,
-        'trace': dataModels.traces
+        'trace': dataModels.trace
       };
       _.each(models, function (model, key) {
         var description = {};

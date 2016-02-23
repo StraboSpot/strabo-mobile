@@ -50,7 +50,7 @@
     // Create a new spot with the details from this spot
     function copyThisSpot() {
       var newSpot = _.omit(vm.spot, 'properties');
-      newSpot.properties = _.omit(vm.data,
+      newSpot.properties = _.omit(vm.spot.properties,
         ['name', 'id', 'date', 'time', 'modified_timestamp']);
       SpotFactory.setNewSpot(newSpot).then(function (id) {
         submit('/app/spotTab/' + id + '/spot');
@@ -68,7 +68,17 @@
 
       vm.spotTitle = vm.spot.properties.name;
       vm.spots = SpotFactory.getSpots();
-      vm.data = vm.spot.properties;
+
+      switch (vm.stateName) {
+        case 'app.spotTab.spot':
+          if (!vm.spot.properties.trace) vm.spot.properties.trace = {};
+          vm.data = vm.spot.properties.trace;
+          break;
+        default:
+          vm.data = vm.spot.properties;
+          break;
+      }
+
       $log.log('Spot loaded: ', vm.spot);
     }
 
@@ -85,7 +95,7 @@
         });
         confirmPopup.then(function (res) {
           if (res) {
-            SpotFactory.destroy(vm.data.id).then(function () {
+            SpotFactory.destroy(vm.spot.properties.id).then(function () {
               $location.path('/app/spots');
             });
           }
@@ -128,10 +138,10 @@
 
     function goBack() {
       SpotFactory.clearCurrentSpot();
-      if (returnToMap && vm.data.image_basemap) {
-        submit('app/image-basemaps/' + vm.data.image_basemap);
+      if (returnToMap && vm.spot.properties.image_basemap) {
+        submit('app/image-basemaps/' + vm.spot.properties.image_basemap);
       }
-      else if (returnToMap && !vm.data.image_basemap) submit('app/map');
+      else if (returnToMap && !vm.spot.properties.image_basemap) submit('app/map');
       else submit('app/spots');
       returnToMap = false;
     }
@@ -231,6 +241,8 @@
 
     // Save the Spot
     function submit(toPath) {
+      if (_.isEmpty(vm.spot.properties.trace)) delete vm.spot.properties.trace;
+
       // Validate the form first
       if (vm.validateForm()) {
         $log.log('Spot to save: ', vm.spot);

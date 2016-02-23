@@ -12,8 +12,8 @@
                              ProjectFactory, SpotFactory) {
     var vm = this;
     var vmParent = $scope.vm;
-    vmParent.survey = DataModelsFactory.getDataModel('traces').survey;
-    vmParent.choices = DataModelsFactory.getDataModel('traces').choices;
+    vmParent.survey = DataModelsFactory.getDataModel('trace').survey;
+    vmParent.choices = DataModelsFactory.getDataModel('trace').choices;
     vmParent.loadTab($state);  // Need to load current state into parent
 
     vm.getCurrentLocation = getCurrentLocation;
