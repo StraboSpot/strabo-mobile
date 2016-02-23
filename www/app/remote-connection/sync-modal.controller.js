@@ -74,6 +74,13 @@
               var imageProps = _.findWhere(spot.properties.images,
                 {'self': downloadImageResponse.config.url});
               imageProps.src = base64Image;
+              // Set the image height and width
+              if (!imageProps.height || !imageProps.width) {
+                var im = new Image();
+                im.src = base64Image;
+                imageProps.height = im.height;
+                imageProps.width = im.width;
+              }
               deferred.resolve();
             });
           }
@@ -177,7 +184,8 @@
                       $log.log('Spot', spot, 'added to Dataset', dataset_id, 'Server response:', response2);
                     }
                     else {
-                      $log.log('Error adding spot', spot, 'added to Dataset', dataset_id, 'Server response:', response2);
+                      $log.log('Error adding spot', spot, 'added to Dataset', dataset_id, 'Server response:',
+                        response2);
                     }
                   }
                 );
