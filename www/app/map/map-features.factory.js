@@ -5,10 +5,10 @@
     .module('app')
     .factory('MapFeaturesFactory', MapFeatures);
 
-  MapFeatures.$inject = ['HelpersFactory', 'MapLayerFactory', 'MapSetupFactory', 'SpotFactory',
+  MapFeatures.$inject = ['DataModelsFactory', 'HelpersFactory', 'MapLayerFactory', 'MapSetupFactory', 'SpotFactory',
     'SymbologyFactory'];
 
-  function MapFeatures(HelpersFactory, MapLayerFactory, MapSetupFactory, SpotFactory,
+  function MapFeatures(DataModelsFactory, HelpersFactory, MapLayerFactory, MapSetupFactory, SpotFactory,
                        SymbologyFactory) {
     return {
       'createFeatureLayer': createFeatureLayer,
@@ -58,7 +58,7 @@
       // get distinct groups and aggregate spots by group type
       var featureGroup = _.groupBy(mappedFeatures, function (feature) {
         if (feature.properties.orientation) {
-          return feature.properties.orientation.feature_type || 'no type';
+          return DataModelsFactory.getFeatureTypeLabel(feature.properties.orientation.feature_type) || 'no type';
         }
         return 'no type';
       });

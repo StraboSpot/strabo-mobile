@@ -5,7 +5,11 @@
       <button ng-click='vm.submit();'
               class='button button-icon icon ion-arrow-left-c'></button>
     </ion-nav-buttons>
-    <ion-content class='has-header'>
+    <ion-content class='has-header strabo-form'>
+      <ion-input class='item item-input item-stacked-label item-text-wrap'>
+        <ion-label>Orientation Name</ion-label>
+        <input type='text' placeholder='If a name is not specified a default will be given.' ng-model='vm.data.name'>
+      </ion-input>
       <auto-fields/>
     </ion-content>
   </ion-view>

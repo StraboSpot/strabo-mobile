@@ -1,13 +1,11 @@
 <ion-view>
   <ion-content class="strabo-form">
-    <ion-toggle class='toggle-large'
+    <ion-toggle class='toggle-small'
                 toggle-class='toggle-positive'
-                ng-click='vmChild.toggleRosetta()'
                 ng-model='vm.spot.properties.inferences.rosetta_outcrop'>
           <span class='toggle-left-label'>Rosetta (e.g., Particularly Significant) Outcrop?
           </span>
     </ion-toggle>
-    <div ng-show='vm.spot.properties.inferences.rosetta_outcrop'>
       <ion-input class='item item-input'>
         <ion-label>Description of Outcrop</ion-label>
         <textarea placeholder='Write the description of the outcrop here ...' rows='4'
@@ -47,10 +45,10 @@
           <ion-item class='item-text-wrap item-button-right'
                     ng-click='vmChild.editRelationship($index)'
                     ng-repeat='relationship in vm.spot.properties.inferences.relationships'>
-            {{ relationship.observationA }}
-            <span ng-hide='relationship.relationship_type === "other"'>{{ relationship.relationship_type }}</span>
-            <span ng-show='relationship.relationship_type === "other"'>{{ relationship.other_relationship }}</span>
-            {{ relationship.observationB }}
+            {{ vmChild.orientationData[relationship.observationA] || 'Unknown' }}
+            <b><span ng-hide='relationship.relationship_type === "other"'>{{ relationship.relationship_type }}</span>
+            <span ng-show='relationship.relationship_type === "other"'>{{ relationship.other_relationship }}</span></b>
+            {{ vmChild.orientationData[relationship.observationB]  || 'Unknown' }}
             <span ng-show='relationship.deformation_event'><br><small>Deformation Event: {{
               relationship.deformation_event }}
             </small></span>
@@ -68,6 +66,5 @@
         <textarea placeholder='Notes about these inferences ...' rows='12'
                   ng-model='vm.spot.properties.inferences.notes'></textarea>
       </ion-input>
-    </div>
   </ion-content>
 </ion-view>

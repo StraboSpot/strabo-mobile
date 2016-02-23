@@ -13,7 +13,8 @@
       <span class='button-text-big'>Add a Tabular Zone</span>
     </button>
     <ion-list>
-      <ion-item ng-repeat='orientation in vm.spot.properties.orientation_data track by $index'
+      <ion-item class='item-text-wrap item-button-right'
+                ng-repeat='orientation in vm.spot.properties.orientation_data track by $index'
                 ng-init='orientationIndex = $index'>
         <div ng-click='vmChild.goToOrientation(orientationIndex)'>
             <span ng-if='orientation.orientation_type === "linear_orientation"' class='orientation-text'>
@@ -22,21 +23,22 @@
               {{ orientationIndex+1 }}: Measured Plane</span>
             <span ng-if='orientation.orientation_type === "tabular_zone_orientation"' class='orientation-text'>
               {{ orientationIndex+1 }}: Measured Tabular Zone</span>
+          <span class="orientation-name">(Name: {{ orientation.name }})</span>
           <br>
           <span ng-if='orientation.strike'>Strike: {{ orientation.strike }}</span>
           <span ng-if='orientation.dip_direction'>Dip Direction: {{ orientation.dip_direction }}</span>
           <span ng-if='orientation.dip'>Dip: {{ orientation.dip }}</span>
           <span ng-if='orientation.trend'>Trend: {{ orientation.trend }}</span>
           <span ng-if='orientation.plunge'>Plunge: {{ orientation.plunge }}</span>
-          <span ng-if='orientation.feature_type'>Feature Type: {{ orientation.feature_type }}</span>
+          <span ng-if='orientation.feature_type'>
+            Feature Type: {{ vmChild.featureTypeLabel(orientation.feature_type) }}</span>
         </div>
-        <div class=" item-button-right">
-          <button class='button button-clear button-assertive' ng-click='vmChild.deleteOrientation(orientationIndex)'>
-            <i class='icon ion-minus-circled'></i>
-          </button>
-        </div>
+        <button class='button button-clear button-assertive' ng-click='vmChild.deleteOrientation(orientationIndex)'>
+          <i class='icon ion-minus-circled'></i>
+        </button>
         <div ng-if='orientation.associated_orientation'>
-          <ion-item ng-repeat='associated_orientation in orientation.associated_orientation track by $index'
+          <ion-item class='item-text-wrap item-button-right'
+                    ng-repeat='associated_orientation in orientation.associated_orientation track by $index'
                     ng-init='associatedOrienationIndex = $index'>
             <div ng-click='vmChild.goToAssociatedOrientation(orientationIndex, associatedOrienationIndex)'>
                 <span ng-if='associated_orientation.orientation_type === "linear_orientation"' class='orientation-text'>
@@ -46,21 +48,20 @@
                 <span ng-if='associated_orientation.orientation_type === "tabular_zone_orientation"'
                       class='orientation-text'>
                   Associated Measured Tabular Zone</span>
+              <span class="orientation-name">(Name: {{ associated_orientation.name }})</span>
               <br>
               <span ng-if='associated_orientation.strike'>Strike: {{ associated_orientation.strike }}</span>
               <span ng-if='associated_orientation.dip_direction'>Dip Direction: {{ associated_orientation.dip_direction }}</span>
               <span ng-if='associated_orientation.dip'>Dip: {{ associated_orientation.dip }}</span>
               <span ng-if='associated_orientation.trend'>Trend: {{ associated_orientation.trend }}</span>
               <span ng-if='associated_orientation.plunge'>Plunge: {{ associated_orientation.plunge }}</span>
-              <span
-                ng-if='associated_orientation.feature_type'>Feature Type: {{ associated_orientation.feature_type }}</span>
+              <span ng-if='associated_orientation.feature_type'>
+                Feature Type: {{ vmChild.featureTypeLabel(associated_orientation.feature_type) }}</span>
             </div>
-            <div class=" item-button-right">
-              <button class='button button-clear button-dark'
-                      ng-click='vmChild.deleteAssociatedOrientation(orientationIndex, associatedOrienationIndex)'>
-                <i class='ion-trash-b'></i>
-              </button>
-            </div>
+            <button class='button button-clear button-assertive'
+                    ng-click='vmChild.deleteAssociatedOrientation(orientationIndex, associatedOrienationIndex)'>
+              <i class='icon ion-minus-circled'></i>
+            </button>
           </ion-item>
         </div>
 

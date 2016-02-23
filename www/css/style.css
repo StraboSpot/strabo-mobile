@@ -170,6 +170,12 @@ Orientation Tab Style
   text-transform: uppercase;
 }
 
+.orientation-name {
+  font-weight: normal;
+  font-size: small;
+  text-transform: initial;
+}
+
 /*--------------------
 Online & Offline Notification Circles
 --------------------*/

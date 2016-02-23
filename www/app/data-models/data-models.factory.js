@@ -70,10 +70,12 @@
         'choices_file': 'app/data-models/traces-choices.csv'
       }
     };
+    var featureTypeLabels = {};
     var spotDataModel = {};
 
     return {
       'getDataModel': getDataModel,
+      'getFeatureTypeLabel': getFeatureTypeLabel,
       'getSpotDataModel': getSpotDataModel,
       'loadDataModels': loadDataModels,
       'readCSV': readCSV
@@ -90,6 +92,23 @@
       });
     }
 
+    function createFeatureTypesDictionary() {
+      var models = [dataModels.orientation_data.linear_orientation,
+        dataModels.orientation_data.planar_orientation,
+        dataModels.orientation_data.tabular_orientation];
+      _.each(models, function (model) {
+        var type = _.findWhere(model.survey, {'name': 'feature_type'});
+        var list = type.type.split(' ')[1];
+        var choices = _.filter(model.choices, function (choice) {
+          return choice['list name'] === list;
+        });
+        _.each(choices, function (choice) {
+          featureTypeLabels[choice.name] = choice.label;
+        });
+      });
+      $log.log('Feature Types:', featureTypeLabels);
+    }
+
     function createSpotDataModel() {
       spotDataModel = {
         'geometry': {
@@ -101,6 +120,18 @@
           'date': 'datetime',
           'id': 'number; timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id)',
           'images': [],
+          'inferences': {
+            'description_of_outcrop': 'Type: text',
+            'outcrop_in_place': 'one of [5 - definitely in place, 4, 3, 2, 1 - float]',
+            'related_rosetta_outcrop': 'id of spot',
+            'relationships': [{
+              'observationA': 'id of first observation',
+              'observationB': 'id of second observation',
+              'other_relationship': 'Type: text',
+              'relationship_type': 'one of [cross-cuts, is cut by, is younger than, is older than, is lower metamorphic grade than, is higher metamorphic grade than, is included within, includes, other]'
+            }],
+            'rosetta_outcrop': 'true/false'
+          },
           'modified_timestamp': 'timestamp',
           'name': 'Type: text; REQUIRED',
           'orientation_data': [],
@@ -133,6 +164,8 @@
         });
         description = sortby(description);
         if (key === 'linear_orientation' || key === 'planar_orientation' || key === 'tabular_orientation') {
+          description.name = 'Type: text; REQUIRED';
+          description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id); REQUIRED';
           description.orientation_type = key + '; REQUIRED';
           description.associated_orientation = [];
           description = sortby(description);
@@ -197,6 +230,10 @@
       return dataModels[model];
     }
 
+    function getFeatureTypeLabel(type) {
+      return featureTypeLabels[type];
+    }
+
     function getSpotDataModel() {
       return spotDataModel;
     }
@@ -221,6 +258,7 @@
       $q.all(promises).then(function () {
         $log.log('Finished loading all data models', dataModels);
         createSpotDataModel();
+        createFeatureTypesDictionary();
         deferred.resolve();
       });
       return deferred.promise;

@@ -21,7 +21,7 @@
     vm.closeModal = closeModal;
     vm.deleteRelationship = deleteRelationship;
     vm.editRelationship = editRelationship;
-    vm.orientationData = ['-- Select an Observation --'];
+    vm.orientationData = {'-- Select an Observation --': '-- Select an Observation --'};
     vm.outcropInPlaceChoices = ['5 - definitely in place', '4', '3',
       '2', '1 - float'];
     vm.relationship = {
@@ -35,7 +35,6 @@
       'is lower metamorphic grade than', 'is higher metamorphic grade than', 'is included within', 'includes', 'other'];
     vm.relationshipModal = {};
     vm.submitRelationship = submitRelationship;
-    vm.toggleRosetta = toggleRosetta;
 
     activate();
 
@@ -61,16 +60,12 @@
     }
 
     function gatherOrientationData() {
-      if (vmParent.spot.properties.orientation_data) {
-        _.each(vmParent.spot.properties.orientation_data, function (orientation) {
-          if (orientation.feature_type && (orientation.strike || orientation.trend)) {
-            var name = orientation.feature_type.replace(/_/g, ' ');
-            var value = orientation.strike ? orientation.strike : '';
-            if (!value) value = orientation.trend ? orientation.trend : '';
-            vm.orientationData.push(name + ' ' + value);
-          }
+      _.each(vmParent.spot.properties.orientation_data, function (orientation) {
+        vm.orientationData[orientation.id] = orientation.name;
+        _.each(orientation.associated_orientation, function (associated_orientation) {
+          vm.orientationData[associated_orientation.id] = associated_orientation.name;
         });
-      }
+      });
     }
 
     function gatherRosettaChoices() {
@@ -100,17 +95,7 @@
      */
 
     function addRelationship() {
-      if (vm.orientationData.length > 2) { // 2 because the first item in the array is '-- Select an Observation --'
-        vm.relationshipModal.show();
-      }
-      else {
-        $ionicPopup.alert({
-          'title': 'Orientation Data Needed',
-          'template': 'There must be at least two orientation observations for this Spot before any relationships' +
-          ' can be made. Valid orientation observations for relationships must include both a feature type and a' +
-          ' strike or trend.'
-        });
-      }
+      vm.relationshipModal.show();
     }
 
     function closeModal(modal) {
@@ -160,25 +145,13 @@
       }
       else {
         if (!vmParent.spot.properties.inferences.relationships) vmParent.spot.properties.inferences.relationships = [];
+        if (vm.relationship.relationship_type !== 'other') delete vm.relationship.other_relationship;
         if (angular.isDefined(relationshipToEdit)) {
           vmParent.spot.properties.inferences.relationships.splice(relationshipToEdit, 1, vm.relationship);
         }
         else vmParent.spot.properties.inferences.relationships.push(vm.relationship);
         vm.relationshipModal.hide();
         resetRelationshipVariables();
-      }
-    }
-
-    function toggleRosetta() {
-      if (!vmParent.spot.properties.inferences.rosetta_outcrop) {
-        var confirmPopup = $ionicPopup.confirm({
-          'title': 'Turn off Rosetta?',
-          'template': 'By toggling off Rosetta you will be clearing all Rosetta data for this Spot. Continue?'
-        });
-        confirmPopup.then(function (res) {
-          if (res) delete vmParent.spot.properties.inferences;
-          else vmParent.spot.properties.inferences.rosetta_outcrop = true;
-        });
       }
     }
   }

@@ -13,7 +13,7 @@
     </div>
     <ion-input class='item item-input item-select item-text-wrap'>
       <select ng-model='vmChild.relationship.observationA'
-              ng-options='orientation as orientation for orientation in vmChild.orientationData'>
+              ng-options='key as value for (key, value) in vmChild.orientationData'>
       </select>
     </ion-input>
     <ion-input class='item item-input item-select item-text-wrap'>
@@ -29,7 +29,7 @@
     </div>
     <ion-input class='item item-input item-select item-text-wrap'>
       <select ng-model='vmChild.relationship.observationB'
-              ng-options='orientation as orientation for orientation in vmChild.orientationData'>
+              ng-options='key as value for (key, value) in vmChild.orientationData'>
       </select>
     </ion-input>
     <div class='strabo-form'>
