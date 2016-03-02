@@ -26,15 +26,15 @@
               </button>
             </div>
           </td>
-          <td class='project'>
+          <td class='project' menu-close ng-click='vm.projectDetail()'>
             <span class='project-name-header'>Project</span>
             <br>
             {{ vm.projectName }}
           </td>
         </tr>
         <tr>
-          <td class='project-buttons'>
-            <button menu-close ng-click='vm.switchProject();' class='button button-small button-clear icon-left ion-arrow-swap'>
+          <td class='project-buttons' menu-close ng-click='vm.switchProject()'>
+            <button class='button button-small button-clear icon-left ion-arrow-swap'>
               Switch Projects
             </button>
           </td>

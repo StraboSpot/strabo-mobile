@@ -14,6 +14,7 @@
     vm.getUserImage = getUserImage;
     vm.getUserName = getUserName;
     vm.switchProject = switchProject;
+    vm.projectDetail = projectDetail;
     vm.projectName = '';
     vm.userImage = null;
     vm.userName = null;
@@ -61,6 +62,10 @@
 
     function getUserName() {
       return UserFactory.getUserName();
+    }
+
+    function projectDetail() {
+      $state.go('app.project');
     }
 
     function switchProject() {
