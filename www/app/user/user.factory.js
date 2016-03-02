@@ -18,7 +18,8 @@
       'getUserImage': getUserImage,
       'loadUser': loadUser,             // Run from app config
       'saveUser': saveUser,
-      'uploadUser': uploadUser,
+      'updateUser': updateUser,
+      'uploadUserProfile': uploadUserProfile,
       'uploadUserImage': uploadUserImage
     };
 
@@ -56,30 +57,8 @@
             'email': login.email,
             'encoded_login': Base64.encode(login.email + ':' + login.password)
           };
-          RemoteServerFactory.getProfile(user.encoded_login).then(function (profileResponse) {
-            if (profileResponse.status === 200) {
-              user.name = profileResponse.data.name;
-              RemoteServerFactory.getProfileImage(user.encoded_login).then(function (profileImageResponse) {
-                if (profileImageResponse.status === 200 && profileImageResponse.data) {
-                  readDataUrl(profileImageResponse.data, function (base64Image) {
-                    user.image = base64Image;
-                    saveUser(user);
-                    deferred.resolve();
-                  });
-                }
-                else {
-                  saveUser(user);
-                  deferred.resolve();
-                }
-              });
-            }
-            else {
-              $ionicPopup.alert({
-                'title': 'Error!',
-                'template': 'Error contacting server to retrieve profile. Try again.'
-              });
-              deferred.reject();
-            }
+          updateUser().then(function () {
+            deferred.resolve();
           });
         }
         else {
@@ -135,7 +114,37 @@
       });
     }
 
-    function uploadUser() {
+    function updateUser() {
+      var deferred = $q.defer(); // init promise
+      RemoteServerFactory.getProfile(user.encoded_login).then(function (profileResponse) {
+        if (profileResponse.status === 200) {
+          user.name = profileResponse.data.name;
+          RemoteServerFactory.getProfileImage(user.encoded_login).then(function (profileImageResponse) {
+            if (profileImageResponse.status === 200 && profileImageResponse.data) {
+              readDataUrl(profileImageResponse.data, function (base64Image) {
+                user.image = base64Image;
+                saveUser(user);
+                deferred.resolve();
+              });
+            }
+            else {
+              saveUser(user);
+              deferred.resolve();
+            }
+          });
+        }
+        else {
+          $ionicPopup.alert({
+            'title': 'Error!',
+            'template': 'Error contacting server to retrieve profile. Try again.'
+          });
+          deferred.reject();
+        }
+      });
+      return deferred.promise;
+    }
+
+    function uploadUserProfile() {
       var userToUpload = _.omit(user, ['image', 'email', 'encoded_login']);
       if (!_.isEmpty(userToUpload)) {
         if (navigator.onLine) {

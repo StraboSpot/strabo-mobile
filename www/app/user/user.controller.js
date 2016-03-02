@@ -26,10 +26,12 @@
     vm.login = null;
     vm.doLogin = doLogin;
     vm.doLogout = doLogout;
+    vm.doRefresh = doRefresh;
     vm.selectedCameraSource = {
       // default is always camera
       'source': 'CAMERA'
     };
+    vm.showOfflineWarning = false;
     vm.submit = submit;
 
     activate();
@@ -235,9 +237,27 @@
     function submit() {
       if (!angular.equals(vm.data, dataOrig)) {
         UserFactory.saveUser(vm.data);
-        if (!angular.equals(_.omit(vm.data, 'image'), _.omit(dataOrig, 'image'))) UserFactory.uploadUser();
+        if (!angular.equals(_.omit(vm.data, 'image'), _.omit(dataOrig, 'image'))) UserFactory.uploadUserProfile();
         if (!angular.equals(vm.data.image, dataOrig.image)) UserFactory.uploadUserImage();
         dataOrig = angular.copy(vm.data);
+      }
+    }
+
+    function doRefresh() {
+      if (navigator.onLine) {
+        vm.showOfflineWarning = false;
+        UserFactory.updateUser().then(function () {
+          vm.data = UserFactory.getUser();
+          dataOrig = angular.copy(vm.data);
+        }).finally(function () {
+          // Stop the ion-refresher from spinning
+          $scope.$broadcast('scroll.refreshComplete');
+        });
+      }
+      else {
+        vm.showOfflineWarning = true;
+        // Stop the ion-refresher from spinning
+        $scope.$broadcast('scroll.refreshComplete');
       }
     }
   }
