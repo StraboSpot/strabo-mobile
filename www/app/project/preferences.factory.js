@@ -22,7 +22,7 @@
      * Private Functions
      */
 
-    function all() {
+  /*  function all() {
       var deferred = $q.defer(); // init promise
       var config = {};
 
@@ -32,7 +32,7 @@
         deferred.resolve(config);
       });
       return deferred.promise;
-    }
+    }*/
 
     /**
      * Public Functions
@@ -49,6 +49,25 @@
     // Load the preferences data
     function loadPreferences() {
       var deferred = $q.defer(); // init promise
+      if (!data) {
+        $log.log('Loading preferences ....');
+        LocalStorageFactory.getDb().projectDb.getItem('preferences').then(function (savedPreferences) {
+          if (savedPreferences) {
+            data = savedPreferences;
+            $log.log('Finished loading preferences: ', savedPreferences);
+          }
+          else $log.log('No saved preferences.');
+          deferred.resolve();
+        });
+      }
+      else {
+        deferred.resolve();
+      }
+      return deferred.promise;
+
+
+      /*
+      var deferred = $q.defer(); // init promise
       if (_.isEmpty(data)) {
         $log.log('Loading preferences ....');
         all().then(function (savedData) {
@@ -58,15 +77,20 @@
         });
       }
       else deferred.resolve();
-      return deferred.promise;
+      return deferred.promise;*/
     }
 
     function save(newData) {
-      LocalStorageFactory.getDb().configDb.clear().then(function () {
+ /*     LocalStorageFactory.getDb().configDb.clear().then(function () {
         data = newData;
         _.forEach(data, function (value, key, list) {
           LocalStorageFactory.getDb().configDb.setItem(key, value);
         });
+
+      });*/
+
+      data = newData;
+      LocalStorageFactory.getDb().projectDb.setItem('preferences', data).then(function () {
         $log.log('Saved preferences: ', data);
       });
     }
