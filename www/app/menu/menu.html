@@ -12,8 +12,12 @@
         <tr>
           <td menu-close class='user' rowspan="2" ng-click='vm.editUser();'>
             <div ng-show='vm.userName'>
-              <img src='img/ninja.png'>
-              <br>
+              <div ng-hide='vm.userImage'>
+                <img src='img/ninja.png'>
+              </div>
+              <div ng-show='vm.userImage'>
+                <img class='profile-image' class='profile-image' ng-src='{{ vm.userImage }}'>
+              </div>
               <span class='user-name'>{{ vm.userName }}</span>
             </div>
             <div ng-show='!vm.userName'>

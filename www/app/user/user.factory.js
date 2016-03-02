@@ -15,13 +15,24 @@
       'doLogin': doLogin,
       'getUser': getUser,
       'getUserName': getUserName,
+      'getUserImage': getUserImage,
       'loadUser': loadUser,             // Run from app config
-      'saveUser': saveUser
+      'saveUser': saveUser,
+      'uploadUser': uploadUser,
+      'uploadUserImage': uploadUserImage
     };
 
     /**
      * Private Functions
      */
+
+    function readDataUrl(file, callback) {
+      var reader = new FileReader();
+      reader.onloadend = function (evt) {
+        callback(evt.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
 
     /**
      * Public Functions
@@ -46,9 +57,28 @@
             'encoded_login': Base64.encode(login.email + ':' + login.password)
           };
           RemoteServerFactory.getProfile(user.encoded_login).then(function (profileResponse) {
-            if (response.status === 200) {
+            if (profileResponse.status === 200) {
               user.name = profileResponse.data.name;
-              saveUser(user);
+              RemoteServerFactory.getProfileImage(user.encoded_login).then(function (profileImageResponse) {
+                if (profileImageResponse.status === 200 && profileImageResponse.data) {
+                  readDataUrl(profileImageResponse.data, function (base64Image) {
+                    user.image = base64Image;
+                    saveUser(user);
+                    deferred.resolve();
+                  });
+                }
+                else {
+                  saveUser(user);
+                  deferred.resolve();
+                }
+              });
+            }
+            else {
+              $ionicPopup.alert({
+                'title': 'Error!',
+                'template': 'Error contacting server to retrieve profile. Try again.'
+              });
+              deferred.reject();
             }
           });
         }
@@ -58,13 +88,17 @@
             'template': 'Incorrect username or password.'
           });
         }
-        deferred.resolve();
       });
       return deferred.promise;
     }
 
     function getUserName() {
       if (user) return user.name || user.email;
+      return null;
+    }
+
+    function getUserImage() {
+      if (user) return user.image;
       return null;
     }
 
@@ -99,6 +133,36 @@
       LocalStorageFactory.getDb().config2Db.setItem('user', userData).then(function (savedData) {
         $log.log('Saved user: ', savedData);
       });
+    }
+
+    function uploadUser() {
+      var userToUpload = _.omit(user, ['image', 'email', 'encoded_login']);
+      if (!_.isEmpty(userToUpload)) {
+        if (navigator.onLine) {
+          $log.log('Upload user profile ...');
+
+          RemoteServerFactory.setProfile(userToUpload, user.encoded_login).then(function (response) {
+            if (response.status === 201) $log.log('Finshed uploading user profile. Server response:', response);
+            else $log.log('Error uploading user profile. Server response:', response);
+          });
+        }
+        else {
+          $log.log('TODO: Queue User Profile Upload!');
+        }
+      }
+    }
+
+    function uploadUserImage() {
+      if (navigator.onLine) {
+        $log.log('Upload user profile image ...');
+        RemoteServerFactory.setProfileImage(user.image, user.encoded_login).then(function (response) {
+          if (response.status === 201) $log.log('Finshed uploading user profile image. Server response:', response);
+          else $log.log('Error uploading user profile image. Server response:', response);
+        });
+      }
+      else {
+        $log.log('TODO: Queue User Profile Image Upload!');
+      }
     }
   }
 }());

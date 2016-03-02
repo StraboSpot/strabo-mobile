@@ -40,6 +40,14 @@ Project Info
   vertical-align: bottom;
 }
 
+img.profile-image {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  object-position: center; /* Center the image within the element */
+  border-radius: 50%;
+}
+
 /*--------------------
 Map Draw Controls Style
 --------------------*/
@@ -387,7 +395,7 @@ Style fields for input errors and no-errors
 Login Page
 --------------------*/
 .login-page {
-  background: url(../img/background.jpg) no-repeat center center fixed;;
+  background: url(../img/background.jpg) no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;

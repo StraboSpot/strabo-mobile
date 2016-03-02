@@ -11,9 +11,11 @@
     var vm = this;
     vm.editUser = editUser;
     vm.getProjectName = getProjectName;
+    vm.getUserImage = getUserImage;
     vm.getUserName = getUserName;
     vm.switchProject = switchProject;
     vm.projectName = '';
+    vm.userImage = null;
     vm.userName = null;
 
     activate();
@@ -23,6 +25,11 @@
      */
 
     function activate() {
+      // Watch for user image changes
+      $scope.$watch('vm.getUserImage()', function (userImage) {
+        vm.userImage = userImage;
+      });
+
       // Watch for user name changes
       $scope.$watch('vm.getUserName()', function (userName) {
         vm.userName = userName;
@@ -46,6 +53,10 @@
 
     function getProjectName() {
       return ProjectFactory.getProjectName();
+    }
+
+    function getUserImage() {
+      return UserFactory.getUserImage();
     }
 
     function getUserName() {

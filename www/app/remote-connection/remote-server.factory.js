@@ -24,6 +24,9 @@
       'getDatasetSpots': getDatasetSpots,
       'getImages': getImages,
       'getProfile': getProfile,
+      'getProfileImage': getProfileImage,
+      'setProfile': setProfile,
+      'setProfileImage': setProfileImage,
       'updateFeature': updateFeature,
       'uploadImage': uploadImage
     };
@@ -31,6 +34,15 @@
     /**
      * Private Functions
      */
+
+    function dataURItoBlob(dataURI) {
+      var binary = atob(dataURI.split(',')[1]);
+      var array = [];
+      for (var i = 0; i < binary.length; i++) {
+        array.push(binary.charCodeAt(i));
+      }
+      return new Blob([new Uint8Array(array)], {'type': 'image/jpeg'});
+    }
 
     function removeImages(spot) {
       var spotNoImages = angular.fromJson(angular.toJson(spot));  // Deep clone
@@ -192,7 +204,7 @@
       return (request.then(handleSuccess, handleError));
     }
 
-    // Get all spots for a dataset
+    // Get user profile
     function getProfile(encodedLogin) {
       var request = $http({
         'method': 'get',
@@ -200,6 +212,54 @@
         'headers': {
           'Authorization': 'Basic ' + encodedLogin
         }
+      });
+      return (request.then(handleSuccess, handleError));
+    }
+
+    // Get user profile image
+    function getProfileImage(encodedLogin) {
+      var request = $http({
+        'method': 'get',
+        'url': baseUrl + '/db/profileimage',
+        'responseType': 'blob',
+        'headers': {
+          'Authorization': 'Basic ' + encodedLogin
+        }
+      });
+      return (request.then(handleSuccess, handleError));
+    }
+
+    // Create/Update user profile
+    function setProfile(user, encodedLogin) {
+      var request = $http({
+        'method': 'post',
+        'url': baseUrl + '/db/profile',
+        'headers': {
+          'Authorization': 'Basic ' + encodedLogin,
+          'Content-Type': 'application/json'
+        },
+        'data': user
+      });
+      return (request.then(handleSuccess, handleError));
+    }
+
+    // Create/Update user profile image
+    function setProfileImage(image, encodedLogin) {
+      // base64 encoded string needs to be a blob type in formdata
+      var blob = dataURItoBlob(image);
+
+      var formdata = new FormData();
+      formdata.append('image_file', blob, 'image.jpeg');
+
+      var request = $http({
+        'method': 'post',
+        'url': baseUrl + '/db/profileimage',
+        'transformRequest': angular.identity,
+        'headers': {
+          'Authorization': 'Basic ' + encodedLogin,
+          'Content-Type': undefined
+        },
+        'data': formdata
       });
       return (request.then(handleSuccess, handleError));
     }
@@ -220,15 +280,6 @@
 
     // Upload load an image
     function uploadImage(image, encodedLogin) {
-      function dataURItoBlob(dataURI) {
-        var binary = atob(dataURI.split(',')[1]);
-        var array = [];
-        for (var i = 0; i < binary.length; i++) {
-          array.push(binary.charCodeAt(i));
-        }
-        return new Blob([new Uint8Array(array)], {'type': 'image/jpeg'});
-      }
-
       // base64 encoded string needs to be a blob type in formdata
       var blob = dataURItoBlob(image.src);
 
