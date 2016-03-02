@@ -5,9 +5,9 @@
     .module('app')
     .controller('PreferencesController', PreferencesController);
 
-  PreferencesController.$inject = ['$ionicSideMenuDelegate', 'DataModelsFactory', 'FormFactory', 'PreferencesFactory'];
+  PreferencesController.$inject = ['$ionicSideMenuDelegate', 'DataModelsFactory', 'FormFactory', 'ProjectFactory'];
 
-  function PreferencesController($ionicSideMenuDelegate, DataModelsFactory, FormFactory, PreferencesFactory) {
+  function PreferencesController($ionicSideMenuDelegate, DataModelsFactory, FormFactory, ProjectFactory) {
     var vm = this;
 
     vm.data = {};
@@ -25,7 +25,7 @@
 
     function activate() {
       vm.survey = DataModelsFactory.getDataModel('preferences').survey;
-      vm.data = PreferencesFactory.getPreferencesData();
+      vm.data = ProjectFactory.getPreferences();
     }
 
     /**
@@ -42,8 +42,7 @@
     function submit() {
       var valid = FormFactory.validate(vm.survey, vm.data);
       if (valid) {
-        PreferencesFactory.save(vm.data);
-        vm.dataOriginal = vm.data;
+        ProjectFactory.savePreferences(vm.data);
         $ionicSideMenuDelegate.toggleLeft();
       }
     }

@@ -17,6 +17,7 @@
       'destroyOtherFeature': destroyOtherFeature,
       'destroyRockUnit': destroyRockUnit,
       'getProjects': getProjects,
+      'getPreferences': getPreferences,
       'getProjectData': getProjectData,
       'getProjectName': getProjectName,
       'getOtherFeatures': getOtherFeatures,
@@ -27,6 +28,7 @@
       'loadProject': loadProject,                     // Run from app config
       'save': save,
       'saveOtherFeatures': saveOtherFeatures,
+      'savePreferences': savePreferences,
       'saveRockUnits': saveRockUnits
     };
 
@@ -86,6 +88,10 @@
         LocalStorageFactory.getDb().projectDb.setItem('rock_units', data.rock_units);
         $log.log('Saved rock units: ', data.rock_units);
       });
+    }
+
+    function getPreferences() {
+      return data.preferences || {};
     }
 
     function getProjects() {
@@ -159,6 +165,18 @@
         data.other_features = other_features;
         LocalStorageFactory.getDb().projectDb.setItem('other_features', other_features).then(function () {
           $log.log('Saved other features: ', other_features);
+          deferred.resolve();
+        });
+      });
+      return deferred.promise;
+    }
+
+    function savePreferences(preferences) {
+      var deferred = $q.defer(); // init promise
+      LocalStorageFactory.getDb().projectDb.removeItem('preferences', function () {
+        data.preferences = preferences;
+        LocalStorageFactory.getDb().projectDb.setItem('preferences', preferences).then(function () {
+          $log.log('Saved preferences: ', preferences);
           deferred.resolve();
         });
       });

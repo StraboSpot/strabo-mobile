@@ -6,11 +6,11 @@
     .controller('SpotController', SpotController);
 
   SpotController.$inject = ['$document', '$ionicHistory', '$ionicPopover', '$ionicPopup', '$location', '$log', '$scope',
-    '$state', 'FormFactory', 'PreferencesFactory', 'SpotFactory'];
+    '$state', 'FormFactory', 'ProjectFactory', 'SpotFactory'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
   function SpotController($document, $ionicHistory, $ionicPopover, $ionicPopup, $location, $log, $scope, $state,
-                          FormFactory, PreferencesFactory, SpotFactory) {
+                          FormFactory, ProjectFactory, SpotFactory) {
     var vm = this;
     var returnToMap = false;
 
@@ -224,7 +224,7 @@
     }
 
     function showTab(tab) {
-      var preferences = PreferencesFactory.getPreferencesData();
+      var preferences = ProjectFactory.getPreferences();
       return preferences[tab];
     }
 

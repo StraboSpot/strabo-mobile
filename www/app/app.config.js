@@ -346,14 +346,12 @@
     });
   }
 
-  function prepMenu(LocalStorageFactory, DataModelsFactory, PreferencesFactory, ProjectFactory, SpotFactory, UserFactory) {
+  function prepMenu(LocalStorageFactory, DataModelsFactory, ProjectFactory, SpotFactory, UserFactory) {
     return DataModelsFactory.loadDataModels().then(function () {
       return LocalStorageFactory.setupLocalforage().then(function () {
-        return PreferencesFactory.loadPreferences().then(function () {
-          return ProjectFactory.loadProject().then(function () {
-            return SpotFactory.loadSpots().then(function () {
-              return UserFactory.loadUser();
-            });
+        return ProjectFactory.loadProject().then(function () {
+          return SpotFactory.loadSpots().then(function () {
+            return UserFactory.loadUser();
           });
         });
       });
