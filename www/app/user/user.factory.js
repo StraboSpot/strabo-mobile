@@ -41,7 +41,7 @@
 
     function clearUser() {
       user = undefined;
-      LocalStorageFactory.getDb().config2Db.removeItem('user').then(function () {
+      LocalStorageFactory.getDb().configDb.removeItem('user').then(function () {
         $log.log('Cleared user data from local storage');
       });
     }
@@ -89,14 +89,12 @@
       var deferred = $q.defer(); // init promise
       if (!user) {
         $log.log('Loading user ....');
-        LocalStorageFactory.getDb().config2Db.getItem('user').then(function (savedUser) {
+        LocalStorageFactory.getDb().configDb.getItem('user').then(function (savedUser) {
           if (savedUser) {
             user = savedUser;
             $log.log('Loaded saved user: ', savedUser);
           }
-          else {
-            $log.log('No saved user.');
-          }
+          else $log.log('No saved user.');
           deferred.resolve();
         });
       }
@@ -109,7 +107,7 @@
     // Save all user data in local storage
     function saveUser(userData) {
       user = userData;
-      LocalStorageFactory.getDb().config2Db.setItem('user', userData).then(function (savedData) {
+      LocalStorageFactory.getDb().configDb.setItem('user', userData).then(function (savedData) {
         $log.log('Saved user: ', savedData);
       });
     }

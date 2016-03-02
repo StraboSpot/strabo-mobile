@@ -9,11 +9,10 @@
 
   function LocalStorageFactory($log, $q) {
     var dbs = {};
-    dbs.configDb = {};
-    dbs.config2Db = {};       // global LocalForage for user and project data
+    dbs.configDb = {};        // global LocalForage for configuration and user data
     dbs.mapNamesDb = {};      // global LocalForage for map names
     dbs.mapTilesDb = {};      // global LocalForage for offline map tiles
-    dbs.projectDb = {};       // global LocalForage for configuration data
+    dbs.projectDb = {};       // global LocalForage for project data
     dbs.spotsDb = {};         // global LocalForage for spot data
 
     return {
@@ -59,9 +58,7 @@
           deferred.resolve(false);
         }
       }
-      else {
-        deferred.resolve(true);
-      }
+      else deferred.resolve(true);
 
       return deferred.promise;
     }
