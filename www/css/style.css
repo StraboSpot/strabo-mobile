@@ -169,6 +169,14 @@ Buttons
   position:absolute; right:10px;
 }
 
+.rotate-90 {
+  -moz-transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
 /*--------------------
 Orientation Tab Style
 --------------------*/
@@ -538,3 +546,25 @@ pre {  font-size: x-small; }
 .label { color: blue; }
 .hint { color: magenta; }
 .key { color: red; }
+
+
+/*--------------------
+Popover Style
+---------------------*/
+
+ion-popover-view.fit {
+  height: auto;
+}
+
+ion-popover-view.fit ion-content {
+  position: relative;
+}
+
+.platform-android ion-popover-view.fit {
+  margin-top: 10px;
+}
+
+.platform-ios ion-popover-view.fit {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}

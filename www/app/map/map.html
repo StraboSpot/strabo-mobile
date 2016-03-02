@@ -8,8 +8,8 @@
   <ion-nav-buttons side='right'>
     <button ng-hide='vm.currentSpot' ng-click='vm.toggleLocation()'
             ng-class='{"button button-icon icon ion-pinpoint": !vm.locationOn, "button button-icon icon ion-android-locate": vm.locationOn}'></button>
-    <button ng-click='vm.showActionsheet()'
-            class='button button-icon icon ion-arrow-up-b'></button>
+    <button ng-click='vm.popover.show($event)'
+            class='button button-icon icon ion-more rotate-90'></button>
     <div ng-class='{"online": vm.isOnline(), "offline": !vm.isOnline()}'></div>
     </ion-nav-buttons>
   <ion-pane data-tap-disabled='true'>

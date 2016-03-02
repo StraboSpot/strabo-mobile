@@ -5,16 +5,17 @@
     .module('app')
     .controller('SpotController', SpotController);
 
-  SpotController.$inject = ['$document', '$ionicActionSheet', '$ionicHistory', '$ionicPopup', '$location', '$log',
+  SpotController.$inject = ['$document', '$ionicHistory', '$ionicPopover', '$ionicPopup', '$location', '$log', '$scope',
     '$state', 'FormFactory', 'PreferencesFactory', 'SpotFactory'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
-  function SpotController($document, $ionicActionSheet, $ionicHistory, $ionicPopup, $location, $log, $state,
+  function SpotController($document, $ionicHistory, $ionicPopover, $ionicPopup, $location, $log, $scope, $state,
                           FormFactory, PreferencesFactory, SpotFactory) {
     var vm = this;
     var returnToMap = false;
 
     vm.choices = undefined;
+    vm.copyThisSpot = copyThisSpot;
     vm.data = {};
     vm.deleteSpot = deleteSpot;
     vm.getMax = getMax;
@@ -23,7 +24,6 @@
     vm.isOptionChecked = isOptionChecked;
     vm.loadTab = loadTab;
     vm.setSelMultClass = setSelMultClass;
-    vm.showActionsheet = showActionsheet;
     vm.showField = showField;
     vm.showRadius = true;
     vm.showRockUnit = true;
@@ -45,15 +45,19 @@
 
     function activate() {
       $log.log('In SpotController');
+      createPopover();
     }
 
-    // Create a new spot with the details from this spot
-    function copyThisSpot() {
-      var newSpot = _.omit(vm.spot, 'properties');
-      newSpot.properties = _.omit(vm.spot.properties,
-        ['name', 'id', 'date', 'time', 'modified_timestamp']);
-      SpotFactory.setNewSpot(newSpot).then(function (id) {
-        submit('/app/spotTab/' + id + '/spot');
+    function createPopover() {
+      $ionicPopover.fromTemplateUrl('app/spot/spot-popover.html', {
+        'scope': $scope
+      }).then(function (popover) {
+        vm.popover = popover;
+      });
+
+      // Cleanup the popover when we're done with it!
+      $scope.$on('$destroy', function () {
+        vm.popover.remove();
       });
     }
 
@@ -85,6 +89,17 @@
     /**
      * Public Functions
      */
+
+    // Create a new spot with the details from this spot
+    function copyThisSpot() {
+      vm.popover.hide();
+      var newSpot = _.omit(vm.spot, 'properties');
+      newSpot.properties = _.omit(vm.spot.properties,
+        ['name', 'id', 'date', 'time', 'modified_timestamp']);
+      SpotFactory.setNewSpot(newSpot).then(function (id) {
+        submit('/app/spotTab/' + id + '/spot');
+      });
+    }
 
     // Delete the spot
     function deleteSpot() {
@@ -194,32 +209,6 @@
         }
       }
       return 'no-errors';
-    }
-
-    function showActionsheet() {
-      $ionicActionSheet.show({
-        'titleText': 'Spot Actions',
-        'buttons': [{
-          'text': '<i class="icon ion-ios-copy"></i>Copy this Spot to a New Spot'
-        }, {
-          'text': '<i class="icon ion-help-circled"></i>What other Spot actions do we need here?'
-        }],
-        'cancelText': 'Cancel',
-        'cancel': function () {
-          $log.log('CANCELLED');
-        },
-        'buttonClicked': function (index) {
-          $log.log('BUTTON CLICKED', index);
-          switch (index) {
-            case 0:
-              copyThisSpot();
-              break;
-            case 1:
-              break;
-          }
-          return true;
-        }
-      });
     }
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair

@@ -5,16 +5,17 @@
     .module('app')
     .controller('ImageBasemapController', ImageBasemapController);
 
-  ImageBasemapController.$inject = ['$ionicActionSheet', '$ionicSideMenuDelegate', '$location', '$log', '$scope',
+  ImageBasemapController.$inject = ['$ionicPopover', '$ionicSideMenuDelegate', '$location', '$log', '$scope',
     '$state', 'MapDrawFactory', 'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory', 'SpotFactory'];
 
-  function ImageBasemapController($ionicActionSheet, $ionicSideMenuDelegate, $location, $log, $scope, $state,
+  function ImageBasemapController($ionicPopover, $ionicSideMenuDelegate, $location, $log, $scope, $state,
                                   MapDrawFactory, MapFeaturesFactory, MapSetupFactory, MapViewFactory, SpotFactory) {
     var vm = this;
 
     vm.goBack = goBack;
+    vm.groupSpots = groupSpots;
     vm.imageBasemap = {};
-    vm.showActionsheet = showActionsheet;
+    vm.zoomToSpotsExtent = zoomToSpotsExtent;
 
     var map;
 
@@ -27,6 +28,8 @@
     function activate() {
       // Disable dragging back to ionic side menu because this affects drawing tools
       $ionicSideMenuDelegate.canDragContent(false);
+
+      createPopover();
 
       setImageBasemap();
       MapSetupFactory.setImageBasemap(vm.imageBasemap);
@@ -60,6 +63,19 @@
       });
     }
 
+    function createPopover() {
+      $ionicPopover.fromTemplateUrl('app/map/image-basemap-popover.html', {
+        'scope': $scope
+      }).then(function (popover) {
+        vm.popover = popover;
+      });
+
+      // Cleanup the popover when we're done with it!
+      $scope.$on('$destroy', function () {
+        vm.popover.remove();
+      });
+    }
+
     function setImageBasemap() {
       _.each(SpotFactory.getSpots(), function (spot) {
         _.each(spot.properties.images, function (image) {
@@ -84,31 +100,14 @@
       else $location.path('/app/spotTab/' + currentSpot.properties.id + '/images');
     }
 
-    function showActionsheet() {
-      $ionicActionSheet.show({
-        'titleText': 'Map Actions',
-        'buttons': [{
-          'text': '<i class="icon ion-map"></i> Zoom to Extent of Spots'
-        }, {
-          'text': '<i class="icon ion-grid"></i> Create a Nest'
-        }],
-        'cancelText': 'Cancel',
-        'cancel': function () {
-          $log.log('CANCELLED');
-        },
-        'buttonClicked': function (index) {
-          $log.log('BUTTON CLICKED', index);
-          switch (index) {
-            case 0:
-              MapViewFactory.zoomToSpotsExtent(map, vm.imageBasemap);
-              break;
-            case 1:
-              MapDrawFactory.groupSpots($scope);
-              break;
-          }
-          return true;
-        }
-      });
+    function groupSpots() {
+      vm.popover.hide();
+      MapDrawFactory.groupSpots($scope);
+    }
+
+    function zoomToSpotsExtent() {
+      vm.popover.hide();
+      MapViewFactory.zoomToSpotsExtent(map, vm.imageBasemap);
     }
   }
 }());

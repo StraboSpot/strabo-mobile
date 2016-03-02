@@ -5,10 +5,10 @@
     .module('app')
     .controller('SpotsController', Spots);
 
-  Spots.$inject = ['$cordovaDevice', '$cordovaFile', '$document', '$ionicActionSheet', '$ionicModal', '$ionicPopup',
+  Spots.$inject = ['$cordovaDevice', '$cordovaFile', '$document', '$ionicModal', '$ionicPopover', '$ionicPopup',
     '$location', '$log', '$scope', '$window', 'SpotFactory', 'UserFactory'];
 
-  function Spots($cordovaDevice, $cordovaFile, $document, $ionicActionSheet, $ionicModal, $ionicPopup, $location, $log,
+  function Spots($cordovaDevice, $cordovaFile, $document, $ionicModal, $ionicPopover, $ionicPopup, $location, $log,
                  $scope, $window, SpotFactory, UserFactory) {
     var vm = this;
 
@@ -22,7 +22,6 @@
     vm.moreSpotsCanBeLoaded = moreSpotsCanBeLoaded;
     vm.newSpot = newSpot;
     vm.openModal = openModal;
-    vm.showActionsheet = showActionsheet;
     vm.spots = [];
     vm.spotsDisplayed = [];
     vm.sync = sync;
@@ -38,6 +37,7 @@
       vm.spots = SpotFactory.getSpots();
       vm.spotsDisplayed = angular.fromJson(angular.toJson(vm.spots)).slice(0, 20);
       createModals();
+      createPopover();
       cleanupModals();
     }
 
@@ -58,12 +58,26 @@
       });
     }
 
+    function createPopover() {
+      $ionicPopover.fromTemplateUrl('app/spot/spots-popover.html', {
+        'scope': $scope
+      }).then(function (popover) {
+        vm.popover = popover;
+      });
+
+      // Cleanup the popover when we're done with it!
+      $scope.$on('$destroy', function () {
+        vm.popover.remove();
+      });
+    }
+
     /**
      * Public Functions
      */
 
     // clears all spots
     function clearAllSpots() {
+      vm.popover.hide();
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete Spots',
         'template': 'Are you sure you want to delete <b>ALL</b> spots? This will also delete any associated image basemaps.'
@@ -113,6 +127,7 @@
 
     // Export data to CSV
     function exportToCSV() {
+      vm.popover.hide();
       // Convert the spot objects to a csv format
       function convertToCSV() {
         // Get all the fields for the csv header row
@@ -296,33 +311,6 @@
 
     function openModal(modal) {
       vm[modal].show();
-    }
-
-    function showActionsheet() {
-      $ionicActionSheet.show({
-        'titleText': 'Spot Actions',
-        'buttons': [{
-          'text': '<i class="icon ion-trash-b"></i> Delete All Spots'
-        }, {
-          'text': '<i class="icon ion-archive"></i>Export All Spots to CSV'
-        }],
-        'cancelText': 'Cancel',
-        'cancel': function () {
-          $log.log('CANCELLED');
-        },
-        'buttonClicked': function (index) {
-          $log.log('BUTTON CLICKED', index);
-          switch (index) {
-            case 0:
-              vm.clearAllSpots();
-              break;
-            case 1:
-              vm.exportToCSV();
-              break;
-          }
-          return true;
-        }
-      });
     }
 
     function sync() {

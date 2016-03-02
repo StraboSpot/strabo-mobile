@@ -5,22 +5,23 @@
     .module('app')
     .controller('MapController', MapController);
 
-  MapController.$inject = ['$ionicActionSheet', '$ionicPopup', '$ionicSideMenuDelegate', '$location', '$log', '$scope',
-    'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory', 'MapSetupFactory', 'MapViewFactory',
-    'SpotFactory', 'OfflineTilesFactory'];
+  MapController.$inject = ['$ionicPopover', '$ionicPopup', '$ionicSideMenuDelegate', '$location', '$log', '$scope',
+    'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory', 'MapSetupFactory', 'MapViewFactory', 'SpotFactory',
+    'OfflineTilesFactory'];
 
-  function MapController($ionicActionSheet, $ionicPopup, $ionicSideMenuDelegate, $location, $log, $scope,
-                         MapDrawFactory, MapFeaturesFactory, MapLayerFactory, MapSetupFactory, MapViewFactory,
-                         SpotFactory, OfflineTilesFactory) {
+  function MapController($ionicPopover, $ionicPopup, $ionicSideMenuDelegate, $location, $log, $scope, MapDrawFactory,
+                         MapFeaturesFactory, MapLayerFactory, MapSetupFactory, MapViewFactory, SpotFactory,
+                         OfflineTilesFactory) {
     var vm = this;
 
     vm.cacheOfflineTiles = cacheOfflineTiles;
     vm.currentSpot = SpotFactory.getCurrentSpot();
     vm.currentZoom = '';
+    vm.groupSpots = groupSpots;
     vm.isOnline = isOnline;
     vm.returnToSpot = returnToSpot;
-    vm.showActionsheet = showActionsheet;
     vm.toggleLocation = toggleLocation;
+    vm.zoomToSpotsExtent = zoomToSpotsExtent;
 
     var map;
 
@@ -29,6 +30,8 @@
     function activate() {
       // Disable dragging back to ionic side menu because this affects drawing tools
       $ionicSideMenuDelegate.canDragContent(false);
+
+      createPopover();
 
       MapSetupFactory.setImageBasemap(null);
       MapSetupFactory.setInitialMapView();
@@ -70,6 +73,19 @@
       });
     }
 
+    function createPopover() {
+      $ionicPopover.fromTemplateUrl('app/map/map-popover.html', {
+        'scope': $scope
+      }).then(function (popover) {
+        vm.popover = popover;
+      });
+
+      // Cleanup the popover when we're done with it!
+      $scope.$on('$destroy', function () {
+        vm.popover.remove();
+      });
+    }
+
     /**
      *  Private Functions
      */
@@ -92,6 +108,7 @@
 
     // Cache the tiles in the current view but don't switch to the offline layer
     function cacheOfflineTiles() {
+      vm.popover.hide();
       if (navigator.onLine) {
         // Get the map extent
         var mapViewExtent = MapViewFactory.getMapViewExtent(map);
@@ -114,6 +131,11 @@
       }
     }
 
+    function groupSpots() {
+      vm.popover.hide();
+      MapDrawFactory.groupSpots($scope);
+    }
+
     function isOnline() {
       return navigator.onLine;
     }
@@ -122,42 +144,15 @@
       $location.path('/app/spotTab/' + vm.currentSpot.properties.id + '/spot');
     }
 
-    function showActionsheet() {
-      $ionicActionSheet.show({
-        'titleText': 'Map Actions',
-        'buttons': [{
-          'text': '<i class="icon ion-map"></i> Zoom to Extent of Spots'
-        }, {
-          'text': '<i class="icon ion-archive"></i>Save Map for Offline Use'
-        }, {
-          'text': '<i class="icon ion-grid"></i> Create a Nest'
-        }],
-        'cancelText': 'Cancel',
-        'cancel': function () {
-          $log.log('CANCELLED');
-        },
-        'buttonClicked': function (index) {
-          $log.log('BUTTON CLICKED', index);
-          switch (index) {
-            case 0:
-              MapViewFactory.zoomToSpotsExtent(map);
-              break;
-            case 1:
-              vm.cacheOfflineTiles();
-              break;
-            case 2:
-              MapDrawFactory.groupSpots($scope);
-              break;
-          }
-          return true;
-        }
-      });
-    }
-
     // Get current position
     function toggleLocation() {
       vm.locationOn = angular.isUndefined(vm.locationOn) || vm.locationOn === false;
       MapViewFactory.getCurrentLocation(map, vm.locationOn);
+    }
+
+    function zoomToSpotsExtent() {
+      vm.popover.hide();
+      MapViewFactory.zoomToSpotsExtent(map);
     }
   }
 }());
