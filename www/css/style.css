@@ -412,12 +412,12 @@ Login Page
 
 .login-title-text {
   text-align: center;
-  font-weight: 900;
+  font-size: 400%;
   font-family: Impact, Charcoal, sans-serif;
   padding-top: 20px;
-  color: #373737;
+  color: black;
   text-shadow: 0 0 6px #FFF;
-  letter-spacing: 6px;
+  letter-spacing: 10px;
 }
 
 .login-inset {
@@ -437,9 +437,11 @@ button.skip {
 
 .create-account-text{
   font-weight: bold;
-  color: #373737;
+  font-size: 120%;
+  color: black;
   text-transform: uppercase;
   text-shadow: 0 0 6px #FFF;
+  text-decoration: none;
 }
 
 .caption {
