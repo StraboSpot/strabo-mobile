@@ -19,6 +19,9 @@ fracture,fracture,yy6na02,3
 vein,vein,yy6na02,4
 fault,fault,yy6na02,5
 shear zone boundary,shear_zone_bou,yy6na02,6
+fold axial surface,fold_axial_surface,yy6na02,7
+plane of boudinage,plane_of_boudinage,yy6na02,8
+plane of mullions,plane_of_mullions,yy6na02,9
 other,other,yy6na02,10
 lithologic change,lithologic_cha,ry4pa50,
 sedimentary feature,sedimentary_fe,ry4pa50,
@@ -145,6 +148,3 @@ porphyroblast system,porphyroblast_,tj67x48,
 strain assymetry,strain_assym,tj67x48,
 flanking structures,flanking_struc,tj67x48,
 other,other,tj67x48,
-fold axial surface,fold_axial_sur,wt7zo52,
-plane of boudinage,plane_boudinag,wt7zo52,
-plane of mullions,plane_mullions,wt7zo52,
