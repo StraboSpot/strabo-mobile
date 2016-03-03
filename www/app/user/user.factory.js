@@ -5,9 +5,9 @@
     .module('app')
     .factory('UserFactory', UserFactory);
 
-  UserFactory.$inject = ['$ionicPopup', '$log', '$q', 'LocalStorageFactory', 'RemoteServerFactory'];
+  UserFactory.$inject = ['$ionicPopup', '$log', '$q', 'LocalStorageFactory', 'ProjectFactory', 'RemoteServerFactory'];
 
-  function UserFactory($ionicPopup, $log, $q, LocalStorageFactory, RemoteServerFactory) {
+  function UserFactory($ionicPopup, $log, $q, LocalStorageFactory, ProjectFactory, RemoteServerFactory) {
     var user;
 
     return {
@@ -42,6 +42,7 @@
     function clearUser() {
       user = undefined;
       LocalStorageFactory.getDb().configDb.removeItem('user').then(function () {
+        ProjectFactory.destroyProject();
         $log.log('Cleared user data from local storage');
       });
     }

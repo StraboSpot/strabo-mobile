@@ -42,7 +42,7 @@
     function submit() {
       var valid = FormFactory.validate(vm.survey, vm.data);
       if (valid) {
-        ProjectFactory.savePreferences(vm.data);
+        ProjectFactory.saveProjectItem('preferences', vm.data);
         $ionicSideMenuDelegate.toggleLeft();
       }
     }

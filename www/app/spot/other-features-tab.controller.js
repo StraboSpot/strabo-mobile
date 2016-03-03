@@ -44,7 +44,7 @@
 
       var savedOtherFeatures = ProjectFactory.getOtherFeatures();
       if (_.isEmpty(savedOtherFeatures)) {
-        ProjectFactory.saveOtherFeatures(defaultTypes).then(
+        ProjectFactory.saveProjectItem('other_features', defaultTypes).then(
           function () {
             vm.otherFeatureTypes = ProjectFactory.getOtherFeatures();
           });
@@ -133,7 +133,7 @@
             if (vm.newFeatureType) {
               if (_.indexOf(vm.otherFeatureTypes, vm.newFeatureType) === -1) {
                 vm.otherFeatureTypes.splice(-1, 0, vm.newFeatureType);
-                ProjectFactory.saveOtherFeatures(vm.otherFeatureTypes);
+                ProjectFactory.saveProjectItem('other_features', vm.otherFeatureTypes);
                 vm.otherFeature.type = vm.newFeatureType;
                 vm.newFeatureType = '';
                 saveFeature();

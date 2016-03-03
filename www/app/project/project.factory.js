@@ -15,6 +15,7 @@
     return {
       'addNewProject': addNewProject,
       'destroyOtherFeature': destroyOtherFeature,
+      'destroyProject': destroyProject,
       'destroyRockUnit': destroyRockUnit,
       'getProjects': getProjects,
       'getPreferences': getPreferences,
@@ -27,9 +28,7 @@
       'incrementSpotNumber': incrementSpotNumber,
       'loadProject': loadProject,                     // Run from app config
       'save': save,
-      'saveOtherFeatures': saveOtherFeatures,
-      'savePreferences': savePreferences,
-      'saveRockUnits': saveRockUnits
+      'saveProjectItem': saveProjectItem
     };
 
     /**
@@ -79,15 +78,30 @@
       });
     }
 
+    function destroyProject() {
+      data = {};
+      projects = [];
+      LocalStorageFactory.getDb().projectDb.clear().then(function () {
+        $log.log('Cleared project from local storage.');
+      });
+    }
+
     function destroyRockUnit(key, value) {
       data.rock_units = _.reject(data.rock_units, function (obj) {
         return obj[key] === value;
       });
 
-      LocalStorageFactory.getDb().projectDb.removeItem('rock_units', function () {
-        LocalStorageFactory.getDb().projectDb.setItem('rock_units', data.rock_units);
-        $log.log('Saved rock units: ', data.rock_units);
-      });
+      if (_.isEmpty(data.rock_units)) {
+        delete data.rock_units;
+        LocalStorageFactory.getDb().projectDb.removeItem('rock_units', function () {
+          $log.log('No more rock units');
+        });
+      }
+      else {
+        LocalStorageFactory.getDb().projectDb.setItem('rock_units', data.rock_units).then(function () {
+          $log.log('Saved rock units: ', data.rock_units);
+        });
+      }
     }
 
     function getPreferences() {
@@ -159,39 +173,22 @@
       });
     }
 
-    function saveOtherFeatures(other_features) {
+    function saveProjectItem(key, value) {
       var deferred = $q.defer(); // init promise
-      LocalStorageFactory.getDb().projectDb.removeItem('other_features', function () {
-        data.other_features = other_features;
-        LocalStorageFactory.getDb().projectDb.setItem('other_features', other_features).then(function () {
-          $log.log('Saved other features: ', other_features);
+      if (_.isEmpty(value)) {
+        delete data[key];
+        LocalStorageFactory.getDb().projectDb.removeItem(key, function () {
+          $log.log('No', key, '- Removed from local storage');
           deferred.resolve();
         });
-      });
-      return deferred.promise;
-    }
-
-    function savePreferences(preferences) {
-      var deferred = $q.defer(); // init promise
-      LocalStorageFactory.getDb().projectDb.removeItem('preferences', function () {
-        data.preferences = preferences;
-        LocalStorageFactory.getDb().projectDb.setItem('preferences', preferences).then(function () {
-          $log.log('Saved preferences: ', preferences);
+      }
+      else {
+        data[key] = value;
+        LocalStorageFactory.getDb().projectDb.setItem(key, value).then(function () {
+          $log.log('Saved', key, ':', value);
           deferred.resolve();
         });
-      });
-      return deferred.promise;
-    }
-
-    function saveRockUnits(rock_units) {
-      var deferred = $q.defer(); // init promise
-      LocalStorageFactory.getDb().projectDb.removeItem('rock_units', function () {
-        data.rock_units = rock_units;
-        LocalStorageFactory.getDb().projectDb.setItem('rock_units', rock_units).then(function () {
-          $log.log('Saved rock units: ', rock_units);
-          deferred.resolve();
-        });
-      });
+      }
       return deferred.promise;
     }
   }

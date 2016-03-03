@@ -30,7 +30,7 @@
 
       var savedOtherFeatures = ProjectFactory.getOtherFeatures();
       if (_.isEmpty(savedOtherFeatures)) {
-        ProjectFactory.saveOtherFeatures(defaultTypes).then(
+        ProjectFactory.saveProjectItem('other_features', defaultTypes).then(
           function () {
             vm.otherFeatureTypes = ProjectFactory.getOtherFeatures();
           });

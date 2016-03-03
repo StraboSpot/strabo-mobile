@@ -106,7 +106,7 @@
           var valid = FormFactory.validate(vm.survey, vm.data);
           if (valid) {
             vm.rockUnits.push(vm.data);
-            ProjectFactory.saveRockUnits(vm.rockUnits).then(function () {
+            ProjectFactory.saveProjectItem('rock_units', vm.rockUnits).then(function () {
               SpotFactory.updateSpotsWithRockUnit(key, vm.data);
               if (vm.currentSpot) {
                 vm.currentSpot.properties.rock_unit = vm.data;
