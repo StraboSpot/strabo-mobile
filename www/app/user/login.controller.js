@@ -5,9 +5,9 @@
     .module('app')
     .controller('LoginController', LoginController);
 
-  LoginController.$inject = ['$ionicPopup', '$log', '$state', 'UserFactory'];
+  LoginController.$inject = ['$ionicLoading', '$ionicPopup', '$log', '$state', 'UserFactory'];
 
-  function LoginController($ionicPopup, $log, $state, UserFactory) {
+  function LoginController($ionicLoading, $ionicPopup, $log, $state, UserFactory) {
     var vm = this;
 
     vm.login = null;
@@ -32,8 +32,12 @@
     // Perform the login action
     function doLogin() {
       if (navigator.onLine) {
+        $ionicLoading.show({
+          'template': '<ion-spinner></ion-spinner>'
+        });
         UserFactory.doLogin(vm.login).then(function () {
-          if (UserFactory.getUser()) $state.go('app.spots');
+          $ionicLoading.hide();
+          if (UserFactory.getUser()) vm.skip();
         });
       }
       else {

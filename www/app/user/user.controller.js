@@ -5,9 +5,10 @@
     .module('app')
     .controller('UserController', UserController);
 
-  UserController.$inject = ['$cordovaCamera', '$document', '$ionicPopup', '$log', '$scope', '$window', 'UserFactory'];
+  UserController.$inject = ['$cordovaCamera', '$document', '$ionicLoading', '$ionicPopup', '$log', '$scope', '$window',
+    'UserFactory'];
 
-  function UserController($cordovaCamera, $document, $ionicPopup, $log, $scope, $window, UserFactory) {
+  function UserController($cordovaCamera, $document, $ionicLoading, $ionicPopup, $log, $scope, $window, UserFactory) {
     var vm = this;
     var dataOrig;
 
@@ -212,7 +213,11 @@
     // Perform the login action when the user presses the login icon
     function doLogin() {
       if (navigator.onLine) {
+        $ionicLoading.show({
+          'template': '<ion-spinner></ion-spinner>'
+        });
         UserFactory.doLogin(vm.login).then(function () {
+          $ionicLoading.hide();
           vm.data = UserFactory.getUser();
           dataOrig = angular.copy(vm.data);
         });
