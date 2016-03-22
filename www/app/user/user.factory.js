@@ -5,9 +5,10 @@
     .module('app')
     .factory('UserFactory', UserFactory);
 
-  UserFactory.$inject = ['$ionicPopup', '$log', '$q', 'LocalStorageFactory', 'ProjectFactory', 'RemoteServerFactory'];
+  UserFactory.$inject = ['$ionicPopup', '$log', '$state', '$q', 'LocalStorageFactory', 'ProjectFactory', 'RemoteServerFactory',
+    'SpotFactory'];
 
-  function UserFactory($ionicPopup, $log, $q, LocalStorageFactory, ProjectFactory, RemoteServerFactory) {
+  function UserFactory($ionicPopup, $log, $state, $q, LocalStorageFactory, ProjectFactory, RemoteServerFactory, SpotFactory) {
     var user;
 
     return {
@@ -41,9 +42,16 @@
 
     function clearUser() {
       user = undefined;
+      /* LocalStorageFactory.getDb().configDb.removeItem('user').then(function () {
+       ProjectFactory.clearProjects().then(function () {
+       $log.log('Cleared user data from local storage');
+       });
+       });*/
       LocalStorageFactory.getDb().configDb.removeItem('user').then(function () {
-        ProjectFactory.destroyProject();
         $log.log('Cleared user data from local storage');
+        ProjectFactory.destroyProject();
+        SpotFactory.clearAllSpots();
+        $state.go('app.manage-project');
       });
     }
 
@@ -67,6 +75,7 @@
             'title': 'Login Failure!',
             'template': 'Incorrect username or password.'
           });
+          deferred.resolve();
         }
       });
       return deferred.promise;
@@ -137,7 +146,7 @@
             'title': 'Error!',
             'template': 'Error contacting server to retrieve profile. Try again.'
           });
-          deferred.reject();
+          deferred.resolve();
         }
       });
       return deferred.promise;

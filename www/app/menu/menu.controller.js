@@ -26,6 +26,9 @@
      */
 
     function activate() {
+      var currentProject = ProjectFactory.getCurrentProject();
+      if (_.isEmpty(currentProject)) $state.go('app.manage-project');
+
       // Watch for user image changes
       $scope.$watch('vm.getUserImage()', function (userImage) {
         vm.userImage = userImage;
@@ -69,7 +72,9 @@
     }
 
     function switchProject() {
-      $state.go('app.projects');
+      ProjectFactory.switchProject = true;
+      if ($state.current.name === 'app.manage-project') $state.reload();
+      else $state.go('app.manage-project');
     }
   }
 }());

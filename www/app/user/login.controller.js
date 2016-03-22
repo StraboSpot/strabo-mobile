@@ -5,9 +5,9 @@
     .module('app')
     .controller('LoginController', LoginController);
 
-  LoginController.$inject = ['$ionicLoading', '$ionicPopup', '$log', '$state', 'UserFactory'];
+  LoginController.$inject = ['$ionicLoading', '$ionicPopup', '$log', '$state', 'ProjectFactory', 'UserFactory'];
 
-  function LoginController($ionicLoading, $ionicPopup, $log, $state, UserFactory) {
+  function LoginController($ionicLoading, $ionicPopup, $log, $state, ProjectFactory, UserFactory) {
     var vm = this;
 
     vm.login = null;
@@ -49,7 +49,8 @@
     }
 
     function skip() {
-      $state.go('app.spots');
+      if (_.isEmpty(ProjectFactory.getCurrentProject())) $state.go('app.manage-project');
+      else $state.go('app.spots');
     }
   }
 }());

@@ -5,35 +5,79 @@
     .module('app')
     .factory('RemoteServerFactory', RemoteServerFactory);
 
-  RemoteServerFactory.$inject = ['$http'];
+  RemoteServerFactory.$inject = ['$http', '$log', '$q'];
 
-  function RemoteServerFactory($http) {
+  function RemoteServerFactory($http, $log, $q) {
     var baseUrl = 'http://strabospot.org';
 
     // Return public API
     return {
+      'addDatasetToProject': addDatasetToProject,
       'addSpotToDataset': addSpotToDataset,
       'authenticateUser': authenticateUser,
       'createDataset': createDataset,
       'createFeature': createFeature,
       'deleteAllDatasetSpots': deleteAllDatasetSpots,
       'deleteDataset': deleteDataset,
+      'deleteProject': deleteProject,
       'deleteSpots': deleteSpots,
       'downloadImage': downloadImage,
       'getDatasets': getDatasets,
       'getDatasetSpots': getDatasetSpots,
+      'getImage': getImage,
       'getImages': getImages,
+      'getMyProjects': getMyProjects,
       'getProfile': getProfile,
       'getProfileImage': getProfileImage,
       'setProfile': setProfile,
       'setProfileImage': setProfileImage,
+      'getProject': getProject,
+      'getProjectDatasets': getProjectDatasets,
       'updateFeature': updateFeature,
-      'uploadImage': uploadImage
+      'updateProject': updateProject,
+      'updateDataset': updateDataset,
+      'updateDatasetSpots': updateDatasetSpots,
+      'uploadImage': uploadImage,
+      'verifyImageExistance': verifyImageExistance
     };
 
     /**
      * Private Functions
      */
+
+    function buildDeleteRequest(urlPart, login) {
+      return $http({
+        'method': 'delete',
+        'url': baseUrl + urlPart,
+        'headers': {
+          'Authorization': 'Basic ' + login,
+          'Content-Type': 'application/json'
+        }
+      });
+    }
+
+    function buildGetRequest(urlPart, login) {
+      return $http({
+        'method': 'get',
+        'url': baseUrl + urlPart,
+        'headers': {
+          'Authorization': 'Basic ' + login,
+          'Content-Type': 'application/json'
+        }
+      });
+    }
+
+    function buildPostRequest(urlPart, data, login) {
+      return $http({
+        'method': 'post',
+        'url': baseUrl + urlPart,
+        'headers': {
+          'Authorization': 'Basic ' + login,
+          'Content-Type': 'application/json'
+        },
+        'data': data
+      });
+    }
 
     function dataURItoBlob(dataURI) {
       var binary = atob(dataURI.split(',')[1]);
@@ -55,22 +99,6 @@
     /**
      * Public Functions
      */
-
-    // Add a spot to a dataset
-    function addSpotToDataset(id, dataset_id, encodedLogin) {
-      var request = $http({
-        'method': 'post',
-        'url': baseUrl + '/db/datasetSpots/' + dataset_id,
-        'headers': {
-          'Authorization': 'Basic ' + encodedLogin,
-          'Content-Type': 'application/json'
-        },
-        'data': {
-          'id': id
-        }
-      });
-      return (request.then(handleSuccess, handleError));
-    }
 
     // Authenticate the user
     function authenticateUser(loginData) {
@@ -168,6 +196,18 @@
       return (request.then(handleSuccess, handleError));
     }
 
+    function getImage(imageId, encodedLogin) {
+      var request = $http({
+        'method': 'get',
+        'url': baseUrl + '/db/image/' + imageId,
+        'responseType': 'blob',
+        'headers': {
+          'Authorization': 'Basic ' + encodedLogin + '\''
+        }
+      });
+      return (request.then(handleSuccess, handleError));
+    }
+
     // Get all datasets for a user
     function getDatasets(encodedLogin) {
       var request = $http({
@@ -181,22 +221,28 @@
     }
 
     // Get all spots for a dataset
-    function getDatasetSpots(dataset_id, encodedLogin) {
+    function getDatasetSpots(datasetId, encodedLogin) {
+      var request = buildGetRequest('/db/datasetSpots/' + datasetId, encodedLogin);
+      return (request.then(handleSuccess, handleError));
+    }
+
+    // Get all images for a feature
+    function getImages(datasetId, encodedLogin) {
       var request = $http({
         'method': 'get',
-        'url': baseUrl + '/db/datasetSpots/' + dataset_id,
+        'url': baseUrl + '/db/featureImages/' + datasetId,
         'headers': {
-          'Authorization': 'Basic ' + encodedLogin
+          'Authorization': 'Basic ' + encodedLogin + '\''
         }
       });
       return (request.then(handleSuccess, handleError));
     }
 
     // Get all images for a feature
-    function getImages(dataset_id, encodedLogin) {
+    function getMyProjects(encodedLogin) {
       var request = $http({
         'method': 'get',
-        'url': baseUrl + '/db/featureImages/' + dataset_id,
+        'url': baseUrl + '/db/myProjects',
         'headers': {
           'Authorization': 'Basic ' + encodedLogin + '\''
         }
@@ -264,17 +310,57 @@
       return (request.then(handleSuccess, handleError));
     }
 
+    function getProject(projectId, encodedLogin) {
+      var request = buildGetRequest('/db/project/' + projectId, encodedLogin);
+      $log.log('Getting project...');
+      return (request.then(handleSuccess, handleError));
+    }
+
+    function getProjectDatasets(id, encodedLogin) {
+      var request = $http({
+        'method': 'get',
+        'url': baseUrl + '/db/projectDatasets/' + id,
+        'headers': {
+          'Authorization': 'Basic ' + encodedLogin + '\''
+        }
+      });
+      return (request.then(handleSuccess, handleError));
+    }
+
+    function addDatasetToProject(projectId, datasetId, encodedLogin) {
+      var request = buildPostRequest('/db/projectDatasets/' + projectId, {'id': datasetId}, encodedLogin);
+      return (request.then(handleSuccess, handleError));
+    }
+
+    // Add a spot to a dataset
+    function addSpotToDataset(spotId, datasetId, encodedLogin) {
+      var request = buildPostRequest('/db/datasetSpots/' + datasetId, {'id': spotId}, encodedLogin);
+      return (request.then(handleSuccess, handleError));
+    }
+
+    function deleteProject(projectId, encodedLogin) {
+      var request = buildDeleteRequest('/db/project/' + projectId, encodedLogin);
+      return (request.then(handleSuccess, handleError));
+    }
+
+    function updateDataset(dataset, encodedLogin) {
+      var request = buildPostRequest('/db/dataset', dataset, encodedLogin);
+      return (request.then(handleSuccess, handleError));
+    }
+
+    function updateDatasetSpots(datasetId, spotCollection, encodedLogin) {
+      var request = buildPostRequest('/db/datasetspots/' + datasetId, spotCollection, encodedLogin);
+      return (request.then(handleSuccess, handleError));
+    }
+
     // Update a feature
     function updateFeature(spot, encodedLogin) {
-      var request = $http({
-        'method': 'post',
-        'url': spot.properties.self,
-        'headers': {
-          'Authorization': 'Basic ' + encodedLogin,
-          'Content-Type': 'application/json'
-        },
-        'data': removeImages(spot)
-      });
+      var request = buildPostRequest('/db/feature', removeImages(spot), encodedLogin);
+      return (request.then(handleSuccess, handleError));
+    }
+
+    function updateProject(project, encodedLogin) {
+      var request = buildPostRequest('/db/project', project, encodedLogin);
       return (request.then(handleSuccess, handleError));
     }
 
@@ -300,24 +386,26 @@
       return (request.then(handleSuccess, handleError));
     }
 
+    function verifyImageExistance(id, encodedLogin) {
+      var request = buildGetRequest('/db/verifyimage/' + id, encodedLogin);
+      return (request.then(handleSuccess, handleError));
+    }
+
     /**
      * Private Functions
      */
 
     // Transform the error response, unwrapping the application data from the API response payload
     function handleError(response) {
-      return (response);
-      /* if(!angular.isObject(response.data) || !response.data.Error) {
-       var communicationError = 'There was a failure communicating with the strabo server. ' +
-       'You are likely working in offline mode and cannot reach the server or the server is currently down. ';
-       return($q.reject(communicationError));
-       }
-       // Otherwise, use expected error message.
-       return($q.reject(response.data.Error));*/
+      //$log.error('Failure:', response);
+      //return ($q.reject(response.data.Error));
+      return ($q.reject(response));
     }
 
     // Transform the successful response, unwrapping the application data from the API response payload
     function handleSuccess(response) {
+      //$log.log('Success:', response);
+      //return (response.data);
       return (response);
     }
   }

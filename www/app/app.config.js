@@ -29,29 +29,9 @@
           'prepMenu': prepMenu
         }
       })
-      .state('app.projects', {
-        'cache': false,
-        'url': '/projects',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/project/projects.html',
-            'controller': 'ProjectsController as vm'
-          }
-        }
-      })
       .state('app.project', {
         'cache': false,
         'url': '/project',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/project/project.html',
-            'controller': 'ProjectController as vm'
-          }
-        }
-      })
-      .state('app.new-project', {
-        'cache': false,
-        'url': '/new-project',
         'views': {
           'menuContent': {
             'templateUrl': 'app/project/project.html',
@@ -349,9 +329,9 @@
   function prepMenu(LocalStorageFactory, DataModelsFactory, ProjectFactory, SpotFactory, UserFactory) {
     return DataModelsFactory.loadDataModels().then(function () {
       return LocalStorageFactory.setupLocalforage().then(function () {
-        return ProjectFactory.loadProject().then(function () {
-          return SpotFactory.loadSpots().then(function () {
-            return UserFactory.loadUser();
+        return UserFactory.loadUser().then(function () {
+          return ProjectFactory.prepProject().then(function () {
+            return SpotFactory.loadSpots();
           });
         });
       });

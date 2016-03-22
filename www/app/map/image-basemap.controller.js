@@ -77,7 +77,7 @@
     }
 
     function setImageBasemap() {
-      _.each(SpotFactory.getSpots(), function (spot) {
+      _.each(SpotFactory.getActiveSpots(), function (spot) {
         _.each(spot.properties.images, function (image) {
           if (image.id.toString() === $state.params.imagebasemapId) vm.imageBasemap = image;
         });

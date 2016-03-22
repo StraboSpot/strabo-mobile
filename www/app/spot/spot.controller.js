@@ -71,7 +71,7 @@
       vm.spot.properties.time = new Date(vm.spot.properties.time);
 
       vm.spotTitle = vm.spot.properties.name;
-      vm.spots = SpotFactory.getSpots();
+      vm.spots = SpotFactory.getActiveSpots();
 
       switch (vm.stateName) {
         case 'app.spotTab.spot':

@@ -24,7 +24,7 @@
      */
 
     function getImageBasemaps() {
-      _.each(SpotFactory.getSpots(), function (spot) {
+      _.each(SpotFactory.getActiveSpots(), function (spot) {
         _.each(spot.properties.images, function (image) {
           if (image.annotated === true) vm.imageBasemaps.push(image);
         });

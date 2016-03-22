@@ -23,7 +23,7 @@
 
     function activate() {
       vm.survey = DataModelsFactory.getDataModel('tools').survey;
-      vm.data = ProjectFactory.getProjectData();
+      vm.data = ProjectFactory.getProjectTools();
     }
 
     /**
@@ -39,10 +39,7 @@
 
     function submit() {
       var valid = FormFactory.validate(vm.survey, vm.data);
-      if (valid) {
-        ProjectFactory.save(vm.data);
-        vm.dataOriginal = vm.data;
-      }
+      if (valid) ProjectFactory.saveProjectItem('tools', vm.data);
     }
   }
 }());

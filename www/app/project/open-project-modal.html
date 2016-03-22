@@ -1,0 +1,36 @@
+<form name='straboForm' novalidate=''>
+<ion-modal-view>
+  <ion-header-bar class='bar-dark nav-title-slide-ios7' align-title='center'>
+    <button class='button icon ion-checkmark-circled button-clear'
+            ng-click='vm.newProject()'
+            ng-show='vm.showNewProjectDetail'>
+    </button>
+    <h1 class='title'>{{ vm.titleText }}</h1>
+    <button class='button icon ion-close-round button-clear'
+            ng-click='vm.closeModal()'
+            ng-show='vm.showExitProjectModal'>
+    </button>
+  </ion-header-bar>
+  <ion-content class='has-header'>
+    <button class='button button-block button-light' ng-show='vm.showProjectButtons' ng-click='vm.toggleProject("new")'>
+      New Project
+    </button>
+    <button class='button button-block button-light' ng-show='vm.showProjectButtons' ng-click='vm.toggleProject("existing")'>
+      Existing Projects
+    </button>
+    <div ng-show='vm.showNewProjectDetail'>
+      <auto-fields/>
+    </div>
+    <ion-list ng-show='vm.showExistingProjectsList'>
+      <ion-item ng-repeat='project in vm.projects track by project.id'
+                ng-click='vm.selectProject(project)'
+                class='item-button-right'>
+        {{ project.name || 'Unnamed' }}
+        <button class='button button-clear button-assertive' ng-click='vm.deleteProject(project)'>
+          <i class='icon ion-minus-circled'></i>
+        </button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-modal-view>
+</form>

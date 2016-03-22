@@ -1,10 +1,8 @@
 <form name='straboForm' novalidate=''>
   <ion-view title='Project Description'>
   <ion-nav-buttons side='left'>
-    <button ng-hide='vm.isNewProject' menu-toggle='left' ng-click='vm.submit();'
+    <button menu-toggle='left' ng-click='vm.submit();'
             class='button button-icon icon ion-navicon'></button>
-    <button ng-show='vm.isNewProject' ng-click='vm.goToProjects()'
-            class='button button-icon icon ion-arrow-left-c'></button>
   </ion-nav-buttons>
   <ion-content class='has-header'>
     <auto-fields/>

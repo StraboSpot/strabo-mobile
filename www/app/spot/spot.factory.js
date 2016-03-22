@@ -5,9 +5,10 @@
     .module('app')
     .factory('SpotFactory', SpotFactory);
 
-  SpotFactory.$inject = ['$log', '$q', 'LocalStorageFactory', 'ProjectFactory'];
+  SpotFactory.$inject = ['$ionicPopup', '$log', '$state', '$q', 'LocalStorageFactory', 'ProjectFactory'];
 
-  function SpotFactory($log, $q, LocalStorageFactory, ProjectFactory) {
+  function SpotFactory($ionicPopup, $log, $state, $q,LocalStorageFactory, ProjectFactory) {
+    var activeSpots;
     var currentSpot;
     var currentAssociatedOrientationIndex;
     var currentOrientationIndex;
@@ -15,10 +16,12 @@
     var spots;
 
     return {
-      'clear': clear,
+      'clearActiveSpots': clearActiveSpots,
+      'clearAllSpots': clearAllSpots,
       'clearCurrentSpot': clearCurrentSpot,
       'destroy': destroy,
       'destroyOrientation': destroyOrientation,
+      'getActiveSpots': getActiveSpots,
       'getCenter': getCenter,
       'getCurrentAssociatedOrientationIndex': getCurrentAssociatedOrientationIndex,
       'getCurrentOrientationIndex': getCurrentOrientationIndex,
@@ -26,6 +29,7 @@
       'getFirstSpot': getFirstSpot,
       'getNameFromId': getNameFromId,
       'getOrientations': getOrientations,
+      'getSpotById': getSpotById,
       'getSpotCount': getSpotCount,
       'getSpots': getSpots,
       'isRockUnitUsed': isRockUnitUsed,
@@ -61,12 +65,33 @@
      */
 
     // wipes the spots database
-    function clear() {
+    function clearActiveSpots() {
+      var deferred = $q.defer(); // init promise
+      var promises = [];
+      _.each(activeSpots, function (activeSpot) {
+        spots = _.reject(spots, function (spot) {
+          return spot.properties.id === activeSpot.properties.id;
+        });
+        promises.push(LocalStorageFactory.getDb().spotsDb.removeItem(activeSpot.properties.id).then(function () {
+          ProjectFactory.removeSpotFromDataset(activeSpot.properties.id);
+        }));
+      });
+
+      $q.all().then(function () {
+        activeSpots = undefined;
+        deferred.resolve();
+      });
+      return deferred.promise;
+    }
+
+    // wipes the spots database
+    function clearAllSpots() {
       var deferred = $q.defer(); // init promise
       LocalStorageFactory.getDb().spotsDb.clear().then(function () {
-        spots = null;
-        deferred.notify();
-        deferred.resolve(spots);
+        $log.log('All spots deleted from local storage.');
+        spots = undefined;
+        activeSpots = undefined;
+        deferred.resolve();
       });
       return deferred.promise;
     }
@@ -81,6 +106,7 @@
       spots = _.reject(spots, function (spot) {
         return spot.properties.id === key;
       });
+      ProjectFactory.removeSpotFromDataset(key);
       LocalStorageFactory.getDb().spotsDb.removeItem(key).then(function () {
         deferred.resolve();
       });
@@ -98,6 +124,21 @@
         currentSpot.properties.orientation_data.splice(i, 1);
         if (currentSpot.properties.orientation_data.length === 0) delete currentSpot.properties.orientation_data;
       }
+    }
+
+
+    function getActiveSpots() {
+      activeSpots = [];
+      var activeDatasets = ProjectFactory.getActiveDatasets();
+      _.each(activeDatasets, function (activeDataset) {
+        _.each(ProjectFactory.getSpotIds()[activeDataset.id], function (spotId) {
+          var found = _.find(spots, function (spot) {
+            return spot.properties.id === spotId;
+          });
+          if (found) activeSpots.push(found);
+        });
+      });
+      return activeSpots;
     }
 
     // Get the center of a geoshape
@@ -158,6 +199,13 @@
 
     function getOrientations() {
       return currentSpot.properties.orientation || [];
+    }
+
+    function getSpotById(id) {
+      var spotCur = _.find(spots, function (spot) {
+        return spot.properties.id === id;
+      });
+      return spotCur;
     }
 
     // gets the number of spots
@@ -235,30 +283,41 @@
     function setNewSpot(jsonObj) {
       var deferred = $q.defer(); // init promise
 
-      currentSpot = jsonObj;
-      currentSpot.type = 'Feature';
-      if (!currentSpot.properties) currentSpot.properties = {};
+      if (_.isEmpty(ProjectFactory.getSpotsDataset())) {
+        $ionicPopup.alert({
+          'title': 'No Default Dataset',
+          'template': 'A default dataset for new Spots has not been specified. Set this from the Manage Project page.'
+        });
+        $state.go('app.manage-project');
+        deferred.reject();
+      }
+      else {
+        currentSpot = jsonObj;
+        currentSpot.type = 'Feature';
+        if (!currentSpot.properties) currentSpot.properties = {};
 
-      // Set the date and time to now
-      var d = new Date(Date.now());
-      d.setMilliseconds(0);
-      currentSpot.properties.date = d;
-      currentSpot.properties.time = d;
+        // Set the date and time to now
+        var d = new Date(Date.now());
+        d.setMilliseconds(0);
+        currentSpot.properties.date = d;
+        currentSpot.properties.time = d;
 
-      // Set id from the timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id)
-      currentSpot.properties.id = Math.floor((new Date().getTime() + Math.random()) * 10);
+        // Set id from the timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id)
+        currentSpot.properties.id = Math.floor((new Date().getTime() + Math.random()) * 10);
 
-      // Set default name
-      var prefix = ProjectFactory.getSpotPrefix();
-      if (!prefix) prefix = new Date().getTime().toString();
-      var number = ProjectFactory.getSpotNumber();
-      if (!number) number = '';
-      currentSpot.properties.name = prefix + number;
+        // Set default name
+        var prefix = ProjectFactory.getSpotPrefix();
+        if (!prefix) prefix = new Date().getTime().toString();
+        var number = ProjectFactory.getSpotNumber();
+        if (!number) number = '';
+        currentSpot.properties.name = prefix + number;
 
-      ProjectFactory.incrementSpotNumber();
-      save(currentSpot).then(function () {
-        deferred.resolve(currentSpot.properties.id);
-      });
+        ProjectFactory.incrementSpotNumber();
+        ProjectFactory.addSpotToDataset(currentSpot.properties.id, ProjectFactory.getSpotsDataset().id);
+        save(currentSpot).then(function () {
+          deferred.resolve(currentSpot.properties.id);
+        });
+      }
       return deferred.promise;
     }
 

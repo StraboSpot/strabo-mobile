@@ -18,7 +18,7 @@
 
     function createFeatureLayer(map, imageBasemap) {
       // Loop through all spots and create ol vector layers
-      var spots = SpotFactory.getSpots();
+      var spots = SpotFactory.getActiveSpots();
       var featureLayer = MapLayerFactory.getFeatureLayer();
       // wipe the array because we want to avoid duplicating the feature in the ol.Collection
       featureLayer.getLayers().clear();

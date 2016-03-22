@@ -242,7 +242,7 @@
             // contains all the lassoed objects
             var lassoedSpots = [];
 
-            var spots = SpotFactory.getSpots();
+            var spots = SpotFactory.getActiveSpots();
             var mappedSpots = _.filter(spots, function (spot) {
               return spot.geometry;
             });
@@ -291,7 +291,7 @@
                 }, {
                   'text': '<b>Save</b>',
                   'type': 'button-positive',
-                  'onTap': function (err) {
+                  'onTap': function (e) {
                     if (!scope.vm.name) {
                       // don't allow the user to close unless he enters wifi password
                       e.preventDefault();
@@ -301,32 +301,35 @@
               });
 
               myPopup.then(function (res) {
-                var lassoedSpotsIds = _.pluck(_.pluck(lassoedSpots, 'properties'), 'id');
+                if (res) {
+                  var lassoedSpotsIds = _.pluck(_.pluck(lassoedSpots, 'properties'), 'id');
 
-                _.each(lassoedSpots, function (lassoedSpot) {
-                  if (!lassoedSpot.properties.nests) lassoedSpot.properties.nests = [];
-                  lassoedSpot.properties.nests.push({
-                    'name': res,
-                    'members': _.without(lassoedSpotsIds, lassoedSpot.properties.id)});
-                  SpotFactory.save(lassoedSpot);
-                });
+                  _.each(lassoedSpots, function (lassoedSpot) {
+                    if (!lassoedSpot.properties.nests) lassoedSpot.properties.nests = [];
+                    lassoedSpot.properties.nests.push({
+                      'name': res,
+                      'members': _.without(lassoedSpotsIds, lassoedSpot.properties.id)
+                    });
+                    SpotFactory.save(lassoedSpot);
+                  });
 
-                // Should do the saves above with array of promises but shouldn't really matter if the alert happens before the saves finish
-                $ionicPopup.alert({
-                  'title': 'Nest Created!',
-                  'template': lassoedSpots.length + ' Spots were added to the new Nest ' + res + ' .'
-                });
+                  // Should do the saves above with array of promises but shouldn't really matter if the alert happens before the saves finish
+                  $ionicPopup.alert({
+                    'title': 'Nest Created!',
+                    'template': lassoedSpots.length + ' Spots were added to the new Nest ' + res + ' .'
+                  });
 
-                /* geojsonObj.properties = {
-                 'nest': lassoedSpots
-                 };
-                 if (imageBasemap) {
-                 geojsonObj.properties.image_basemap = imageBasemap.id;
-                 }
+                  /* geojsonObj.properties = {
+                   'nest': lassoedSpots
+                   };
+                   if (imageBasemap) {
+                   geojsonObj.properties.image_basemap = imageBasemap.id;
+                   }
 
-                 SpotFactory.setNewSpot(geojsonObj).then(function (id) {
-                 $location.path('app/spotTab/' + id + '/spot');
-                 }); */
+                   SpotFactory.setNewSpot(geojsonObj).then(function (id) {
+                   $location.path('app/spotTab/' + id + '/spot');
+                   }); */
+                }
               });
             }
           }

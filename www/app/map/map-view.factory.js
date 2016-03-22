@@ -247,7 +247,7 @@
       }
 
       // Loop through all spots and create ol vector layers
-      var spots = SpotFactory.getSpots();
+      var spots = SpotFactory.getActiveSpots();
       if (isImageBasemap) {
         spots = getImageBasemapSpots(spots);
         if (spots.length > 0) {

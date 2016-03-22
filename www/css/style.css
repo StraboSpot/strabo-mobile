@@ -570,3 +570,21 @@ ion-popover-view.fit ion-content {
   padding-top: 10px;
   padding-bottom: 10px;
 }
+
+/*--------------------
+Dataset List Toggles
+---------------------*/
+.toggle-left {
+  margin-left: 50px;
+}
+
+.dataset .toggle {
+  left: 3px;
+  margin-top: -15px;
+}
+
+.dataset .item-toggle {
+  padding: 10px;
+  max-height: 35px;
+  border: none;
+}

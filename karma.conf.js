@@ -15,7 +15,7 @@
       // list of files / patterns to load in the browser
       'files': [
         // libs
-        'www/lib/underscore-1.7.0.js',
+        'www/lib/underscore.js',
         'www/lib/ionic/js/ionic.bundle.js',
         'www/lib/ng-cordova.js',
         'www/lib/localforage.js',

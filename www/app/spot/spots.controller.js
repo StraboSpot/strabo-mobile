@@ -12,7 +12,7 @@
                  $scope, $window, SpotFactory, UserFactory) {
     var vm = this;
 
-    vm.clearAllSpots = clearAllSpots;
+    vm.deleteAllActiveSpots = deleteAllActiveSpots;
     vm.deleteSelected = false;
     vm.deleteSpot = deleteSpot;
     vm.exportToCSV = exportToCSV;
@@ -24,7 +24,6 @@
     vm.openModal = openModal;
     vm.spots = [];
     vm.spotsDisplayed = [];
-    vm.sync = sync;
 
     activate();
 
@@ -34,28 +33,11 @@
 
     function activate() {
       SpotFactory.clearCurrentSpot();           // Make sure the current spot is empty
-      vm.spots = SpotFactory.getSpots();
+      vm.spots = _.sortBy(SpotFactory.getActiveSpots(), function (spot) {
+        return spot.properties.modified_timestamp;
+      }).reverse();
       vm.spotsDisplayed = angular.fromJson(angular.toJson(vm.spots)).slice(0, 20);
-      createModals();
       createPopover();
-      cleanupModals();
-    }
-
-    function cleanupModals() {
-      // Cleanup the modal when we're done with it!
-      // Execute action on hide modal
-      $scope.$on('syncModal.hidden', function () {
-        vm.syncModal.remove();
-      });
-    }
-
-    function createModals() {
-      $ionicModal.fromTemplateUrl('app/remote-connection/sync-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up'
-      }).then(function (modal) {
-        vm.syncModal = modal;
-      });
     }
 
     function createPopover() {
@@ -76,16 +58,16 @@
      */
 
     // clears all spots
-    function clearAllSpots() {
+    function deleteAllActiveSpots() {
       vm.popover.hide();
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete Spots',
-        'template': 'Are you sure you want to delete <b>ALL</b> spots? This will also delete any associated image basemaps.'
+        'template': 'Are you sure you want to delete <b>ALL</b> active spots? This will also delete any associated image basemaps.'
       });
       confirmPopup.then(
         function (res) {
           if (res) {
-            SpotFactory.clear().then(function () {
+            SpotFactory.clearActiveSpots().then(function () {
               // update the spots list
               vm.spots = [];
               vm.spotsDisplayed = [];
@@ -106,7 +88,7 @@
         confirmPopup.then(function (res) {
           if (res) {
             SpotFactory.destroy(spot.properties.id).then(function () {
-              vm.spots = SpotFactory.getSpots();
+              vm.spots = SpotFactory.getActiveSpots();
               vm.spotsDisplayed = angular.fromJson(angular.toJson(vm.spots)).slice(0, 20);
             });
           }
@@ -311,30 +293,6 @@
 
     function openModal(modal) {
       vm[modal].show();
-    }
-
-    function sync() {
-      if (isOnlineLoggedIn()) {
-        vm.openModal('syncModal');
-      }
-      else if (!navigator.onLine && !UserFactory.getUser()) {
-        $ionicPopup.alert({
-          'title': 'Get Online and Log In!',
-          'template': 'You must be online and logged in to sync with the Strabo database.'
-        });
-      }
-      else if (!navigator.onLine) {
-        $ionicPopup.alert({
-          'title': 'Not Online!',
-          'template': 'You must be online to sync with the Strabo database.'
-        });
-      }
-      else {
-        $ionicPopup.alert({
-          'title': 'Not Logged In!',
-          'template': 'You must be logged in to sync with the Strabo database.'
-        });
-      }
     }
   }
 }());
