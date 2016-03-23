@@ -14,6 +14,7 @@
     var currentOrientationIndex;
     var moveSpot = false;
     var spots;
+    var visibleDatasets = [];
 
     return {
       'clearActiveSpots': clearActiveSpots,
@@ -32,6 +33,7 @@
       'getSpotById': getSpotById,
       'getSpotCount': getSpotCount,
       'getSpots': getSpots,
+      'getVisibleDatasets': getVisibleDatasets,
       'isRockUnitUsed': isRockUnitUsed,
       'isSafeDelete': isSafeDelete,
       'loadSpots': loadSpots,
@@ -40,6 +42,7 @@
       'setCurrentOrientationIndex': setCurrentOrientationIndex,
       'setCurrentSpotById': setCurrentSpotById,
       'setNewSpot': setNewSpot,
+      'setVisibleDatasets': setVisibleDatasets,
       'updateSpotsWithRockUnit': updateSpotsWithRockUnit
     };
 
@@ -217,6 +220,10 @@
       return spots || [];
     }
 
+    function getVisibleDatasets() {
+      return visibleDatasets;
+    }
+
     function isRockUnitUsed(key, value) {
       return _.find(spots, function (spot) {
         if (spot.properties.rock_unit) return spot.properties.rock_unit[key] === value;
@@ -319,6 +326,10 @@
         });
       }
       return deferred.promise;
+    }
+
+    function setVisibleDatasets(datasets) {
+      visibleDatasets = datasets;
     }
 
     function updateSpotsWithRockUnit(key, rock_unit) {

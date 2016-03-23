@@ -6,22 +6,30 @@
     .controller('SpotsController', Spots);
 
   Spots.$inject = ['$cordovaDevice', '$cordovaFile', '$document', '$ionicModal', '$ionicPopover', '$ionicPopup',
-    '$location', '$log', '$scope', '$window', 'SpotFactory', 'UserFactory'];
+    '$location', '$log', '$scope', '$window', 'ProjectFactory', 'SpotFactory', 'UserFactory'];
 
   function Spots($cordovaDevice, $cordovaFile, $document, $ionicModal, $ionicPopover, $ionicPopup, $location, $log,
-                 $scope, $window, SpotFactory, UserFactory) {
+                 $scope, $window, ProjectFactory, SpotFactory, UserFactory) {
     var vm = this;
 
+    var visibleDatasets = [];
+
+    vm.activeDatasets = [];
+    vm.checkedDataset = checkedDataset;
+    vm.closeModal = closeModal;
     vm.deleteAllActiveSpots = deleteAllActiveSpots;
     vm.deleteSelected = false;
     vm.deleteSpot = deleteSpot;
     vm.exportToCSV = exportToCSV;
+    vm.filter = filter;
+    vm.filterModal = {};
+    vm.filterOn = false;
     vm.goToSpot = goToSpot;
+    vm.isDatasetChecked = isDatasetChecked;
     vm.isOnlineLoggedIn = isOnlineLoggedIn;
     vm.loadMoreSpots = loadMoreSpots;
     vm.moreSpotsCanBeLoaded = moreSpotsCanBeLoaded;
     vm.newSpot = newSpot;
-    vm.openModal = openModal;
     vm.spots = [];
     vm.spotsDisplayed = [];
 
@@ -33,11 +41,23 @@
 
     function activate() {
       SpotFactory.clearCurrentSpot();           // Make sure the current spot is empty
-      vm.spots = _.sortBy(SpotFactory.getActiveSpots(), function (spot) {
-        return spot.properties.modified_timestamp;
-      }).reverse();
-      vm.spotsDisplayed = angular.fromJson(angular.toJson(vm.spots)).slice(0, 20);
+      visibleDatasets = SpotFactory.getVisibleDatasets();
+      setVisibleSpots();
       createPopover();
+
+      $ionicModal.fromTemplateUrl('app/spot/spots-filter-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false,
+        'hardwareBackButtonClose': false
+      }).then(function (modal) {
+        vm.filterModal = modal;
+      });
+
+      // Cleanup the modal when we're done with it!
+      $scope.$on('$destroy', function () {
+        vm.filterModal.remove();
+      });
     }
 
     function createPopover() {
@@ -53,9 +73,47 @@
       });
     }
 
+    function setVisibleSpots() {
+      var activeSpots = SpotFactory.getActiveSpots();
+      if (_.isEmpty(visibleDatasets)) {
+        vm.spots = activeSpots;
+        vm.filterOn = false;
+      }
+      else {
+        var datasetIdsToSpotIds = ProjectFactory.getSpotIds();
+        var visibleSpotsIds = [];
+        _.each(visibleDatasets, function (visibleDataset) {
+          visibleSpotsIds.push(datasetIdsToSpotIds[visibleDataset]);
+        });
+        visibleSpotsIds = _.flatten(visibleSpotsIds);
+        vm.spots = _.filter(activeSpots, function (activeSpot) {
+          return _.contains(visibleSpotsIds, activeSpot.properties.id);
+        });
+        vm.filterOn = true;
+      }
+      _.sortBy(vm.spots, function (spot) {
+        return spot.properties.modified_timestamp;
+      }).reverse();
+      vm.spotsDisplayed = angular.fromJson(angular.toJson(vm.spots)).slice(0, 20);
+    }
+
     /**
      * Public Functions
      */
+
+    function checkedDataset(dataset) {
+      $log.log('visibleDatasets:', visibleDatasets);
+      var i = _.indexOf(visibleDatasets, dataset);
+      if (i === -1) visibleDatasets.push(dataset);
+      else visibleDatasets.splice(i, 1);
+      SpotFactory.setVisibleDatasets(visibleDatasets);
+      $log.log('visibleDatasets after:', visibleDatasets);
+    }
+
+    function closeModal() {
+      setVisibleSpots();
+      vm.filterModal.hide();
+    }
 
     // clears all spots
     function deleteAllActiveSpots() {
@@ -263,10 +321,21 @@
       );
     }
 
+    function filter() {
+      vm.activeDatasets = ProjectFactory.getActiveDatasets();
+      vm.filterModal.show();
+    }
+
     function goToSpot(id) {
       if (!vm.deleteSelected) {
         $location.path('/app/spotTab/' + id + '/spot');
       }
+    }
+
+    function isDatasetChecked(id) {
+      return _.find(visibleDatasets, function (visibleDataset) {
+        return visibleDataset === id;
+      });
     }
 
     // Is the user online and logged in
@@ -275,7 +344,8 @@
     }
 
     function loadMoreSpots() {
-      var moreSpots = angular.fromJson(angular.toJson(vm.spots)).splice(vm.spotsDisplayed.length, vm.spotsDisplayed.length + 20);
+      var moreSpots = angular.fromJson(angular.toJson(vm.spots)).splice(vm.spotsDisplayed.length,
+        vm.spotsDisplayed.length + 20);
       vm.spotsDisplayed = _.union(vm.spotsDisplayed, moreSpots);
       $scope.$broadcast('scroll.infiniteScrollComplete');
     }
@@ -289,10 +359,6 @@
       SpotFactory.setNewSpot({}).then(function (id) {
         $location.path('/app/spotTab/' + id + '/spot');
       });
-    }
-
-    function openModal(modal) {
-      vm[modal].show();
     }
   }
 }());

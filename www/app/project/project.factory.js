@@ -95,7 +95,7 @@
         $log.log('Loading remote datsets for this project...');
         RemoteServerFactory.getProjectDatasets(currentProject.id, user.encoded_login).then(function (response) {
           if (response.status === 200 && response.data && response.data.datasets) {
-            $log.log('Loaded remoted current datsets:', response);
+            $log.log('Loaded remote current datsets:', response);
             currentDatasets = response.data.datasets;
             saveDatasets().then(function () {
               deferred.resolve();

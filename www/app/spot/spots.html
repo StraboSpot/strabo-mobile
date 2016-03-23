@@ -8,10 +8,14 @@
     <button menu-toggle='left' class='button button-icon icon ion-navicon'></button>
   </ion-nav-buttons>
   <ion-nav-buttons side='right'>
+    <button class='button button-icon ion-funnel button-positive' ng-click='vm.filter()'></button>
     <button class='button button-icon ion-plus' ng-click='vm.newSpot()'></button>
     <button ng-click='vm.popover.show($event)' class='button button-icon icon ion-more rotate-90'></button>
   </ion-nav-buttons>
   <ion-content class='has-header'>
+    <div class='padding-left filter-on' ng-show='vm.filterOn'>
+      Results are being filtered.
+    </div>
     <div class='padding' ng-show='vm.spots.length === 0'>
       No Spots added to any of the active datasets yet. Add a spot using the '+' button in the top right or by drawing a point, line or polygon on the
       Main Map page.

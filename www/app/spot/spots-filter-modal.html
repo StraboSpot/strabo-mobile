@@ -1,0 +1,13 @@
+<ion-modal-view>
+  <ion-header-bar class='bar-dark nav-title-slide-ios7' align-title='center'>
+    <button ng-click='vm.closeModal()' class='button button-icon icon ion-arrow-left-c'></button>
+    <h1 class='title'>Filter</h1>
+  </ion-header-bar>
+  <ion-content class='has-header'>
+    <ion-checkbox ng-repeat='dataset in vm.activeDatasets'
+                  ng-checked='vm.isDatasetChecked(dataset.id)'
+                  ng-click='vm.checkedDataset(dataset.id)'>
+      {{ dataset.name }}
+    </ion-checkbox>
+  </ion-content>
+</ion-modal-view>
