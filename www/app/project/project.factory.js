@@ -81,11 +81,10 @@
     function createDefaultDataset() {
       var id = Math.floor((new Date().getTime() + Math.random()) * 10);
       var defaultDataset = {
-        'datasettype': 'app',
         'name': 'Default',
-        'datecreated': new Date(),
+        'date': new Date(),
         'id': id,
-        'self': 'http://strabospot.org/db/dataset/' + id
+        'modified_timestamp': Date.now()
       };
       return defaultDataset;
     }
@@ -140,12 +139,10 @@
     function createNewDataset(datasetName) {
       var id = Math.floor((new Date().getTime() + Math.random()) * 10);
       var newDataset = {
-        'datasettype': 'app',
         'name': datasetName,
         'date': new Date(),
-        'modified_timestamp': new Date(),
-        'id': id,
-        'self': 'http://strabospot.org/db/dataset/' + id
+        'modified_timestamp': Date.now(),
+        'id': id
       };
       currentDatasets.push(newDataset);
       saveDatasets();
@@ -159,7 +156,7 @@
       var promises = [];
       promises.push(saveProjectItem('description', descriptionData));
       promises.push(saveProjectItem('date', new Date()));
-      promises.push(saveProjectItem('modified_timestamp', new Date()));
+      promises.push(saveProjectItem('modified_timestamp', Date.now()));
       promises.push(saveProjectItem('id', id));
       promises.push(saveProjectItem('other_features', defaultTypes));
       $q.all(promises).then(function () {
@@ -389,7 +386,7 @@
 
     function saveProjectItem(key, value) {
       var deferred = $q.defer(); // init promise
-      var timestamp = new Date();
+      var timestamp = Date.now();
       LocalStorageFactory.getDb().projectDb.setItem('modified_timestamp', timestamp).then(function () {
         currentProject.modified_timestamp = timestamp;
         if (value) {

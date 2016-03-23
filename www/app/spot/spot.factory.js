@@ -248,7 +248,7 @@
     }
 
     function save(saveSpot) {
-      saveSpot.properties.modified_timestamp = new Date().getTime();
+      saveSpot.properties.modified_timestamp = Date.now();
 
       var deferred = $q.defer(); // init promise
       LocalStorageFactory.getDb().spotsDb.setItem(saveSpot.properties.id, saveSpot).then(function () {
