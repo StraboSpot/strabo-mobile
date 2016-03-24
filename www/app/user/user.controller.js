@@ -232,11 +232,19 @@
 
     // Destory the user data on when the logout button pressed
     function doLogout() {
-      vm.login = null;
-      vm.data = null;
-      dataOrig = null;
-      UserFactory.clearUser();
-      $log.log('Logged out');
+      var confirmPopup = $ionicPopup.confirm({
+        'title': 'Log Out Warning!',
+        'template': 'Logging out will erase any data on this device not synced to the server. Are you sure you want to continue?'
+      });
+      confirmPopup.then(function (res) {
+        if (res) {
+          vm.login = null;
+          vm.data = null;
+          dataOrig = null;
+          UserFactory.clearUser();
+          $log.log('Logged out');
+        }
+      });
     }
 
     function submit() {

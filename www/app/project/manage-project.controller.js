@@ -427,7 +427,7 @@
       vm.data = {};
       vm.showExistingProjectsList = false;
       vm.showExitProjectModal = !_.isEmpty(vm.project);
-      if (_.isEmpty(vm.project) || !isSyncReady()) {
+      if (!isSyncReady()) {
         vm.showProjectButtons = false;
         vm.showNewProjectDetail = true;
         vm.titleText = 'Create a New Project';
