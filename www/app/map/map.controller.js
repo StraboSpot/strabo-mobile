@@ -32,18 +32,21 @@
       $ionicSideMenuDelegate.canDragContent(false);
 
       createPopover();
+      var switcher = new ol.control.LayerSwitcher();
 
       MapSetupFactory.setImageBasemap(null);
       MapSetupFactory.setInitialMapView();
       MapSetupFactory.setMap();
       MapSetupFactory.setLayers();
-      MapSetupFactory.setMapControls();
+      MapSetupFactory.setMapControls(switcher);
       MapSetupFactory.setPopupOverlay();
 
       map = MapSetupFactory.getMap();
 
       getMapView();
-      MapFeaturesFactory.createFeatureLayer(map);
+      var datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map);
+      MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map);
+      MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
 
       // When the map is moved save the new view and update the zoom control
       map.on('moveend', function (evt) {
@@ -55,6 +58,22 @@
       map.on('touchstart', function (event) {
         $log.log('touch');
         $log.log(event);
+      });
+
+      // Add a `change:visible` listener to all layers currently within the map
+      ol.control.LayerSwitcher.forEachRecursive(map, function (l, idx, a) {
+        l.on('change', function (e) {
+          var lyr = e.target;
+          if (lyr.get('title') === 'Datasets') {
+            _.each(lyr.getLayerStatesArray(), function (layerState) {
+              if (datasetsLayerStates[layerState.layer.get('id')] !== layerState.visible) {
+                datasetsLayerStates[layerState.layer.get('id')] = layerState.visible;
+              }
+            });
+            MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
+            switcher.renderPanel();
+          }
+        });
       });
 
       // Display popup on click

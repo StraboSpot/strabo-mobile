@@ -63,6 +63,7 @@
         map.addLayer(imageBasemapLayer);
       }
 
+      map.addLayer(MapLayerFactory.getDatasetsLayer());
       map.addLayer(MapLayerFactory.getFeatureLayer());
       map.addLayer(MapLayerFactory.getDrawLayer());
     }
@@ -114,7 +115,7 @@
       });
     }
 
-    function setMapControls() {
+    function setMapControls(switcher) {
       var drawControlProps = {
         'map': map,
         'drawLayer': MapLayerFactory.getDrawLayer(),
@@ -127,7 +128,7 @@
 
       ol.inherits(MapDrawFactory.DrawControls, ol.control.Control);
       map.addControl(new MapDrawFactory.DrawControls(drawControlProps));
-      map.addControl(new ol.control.LayerSwitcher());
+      map.addControl(switcher);
     }
 
     function setPopupOverlay() {

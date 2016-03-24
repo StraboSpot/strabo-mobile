@@ -10,6 +10,7 @@
   function MapLayerFactory($log, $window, HelpersFactory, OfflineTilesFactory) {
     var drawLayer;
     var featureLayer;
+    var datasetsLayer;
     var geolocationLayer;
     var offlineLayer;
     var offlineOverlayLayer;
@@ -26,6 +27,7 @@
 
     return {
       'getCurrentVisibleLayer': getCurrentVisibleLayer,
+      'getDatasetsLayer': getDatasetsLayer,
       'getDrawLayer': getDrawLayer,
       'getFeatureLayer': getFeatureLayer,
       'getGeolocationLayer': getGeolocationLayer,
@@ -42,6 +44,7 @@
       // Initialize Layers
       setDrawLayer();
       setFeatureLayer();
+      setDatasetsLayer();
       setGeolocationLayer();
       setOfflineLayer();
       setOfflineOverlayLayer();
@@ -55,11 +58,19 @@
       setGeolocationSpeedTextStyle();
     }
 
+    function setDatasetsLayer() {
+      datasetsLayer = new ol.layer.Group({
+        'name': 'datasetsLayer',
+        'title': 'Datasets',
+        'layers': []
+      });
+    }
+
     // vector layer where we house all the geojson spot objects
     function setFeatureLayer() {
       featureLayer = new ol.layer.Group({
         'name': 'featureLayer',
-        'title': 'Spots',
+        'title': 'Spot Orientations',
         'layers': []
       });
     }
@@ -391,12 +402,16 @@
       return mapTileId.get('id');
     }
 
-    function getFeatureLayer() {
-      return featureLayer;
+    function getDatasetsLayer() {
+      return datasetsLayer;
     }
 
     function getDrawLayer() {
       return drawLayer;
+    }
+
+    function getFeatureLayer() {
+      return featureLayer;
     }
 
     function getGeolocationLayer() {

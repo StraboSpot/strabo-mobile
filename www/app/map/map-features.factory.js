@@ -5,36 +5,107 @@
     .module('app')
     .factory('MapFeaturesFactory', MapFeatures);
 
-  MapFeatures.$inject = ['DataModelsFactory', 'HelpersFactory', 'MapLayerFactory', 'MapSetupFactory', 'SpotFactory',
-    'SymbologyFactory'];
+  MapFeatures.$inject = ['DataModelsFactory', 'HelpersFactory', 'MapLayerFactory', 'MapSetupFactory', 'ProjectFactory',
+    'SpotFactory', 'SymbologyFactory'];
 
-  function MapFeatures(DataModelsFactory, HelpersFactory, MapLayerFactory, MapSetupFactory, SpotFactory,
+  function MapFeatures(DataModelsFactory, HelpersFactory, MapLayerFactory, MapSetupFactory, ProjectFactory, SpotFactory,
                        SymbologyFactory) {
     return {
+      'createDatasetsLayer': createDatasetsLayer,
       'createFeatureLayer': createFeatureLayer,
       'geojsonToVectorLayer': geojsonToVectorLayer,
+      'getInitialDatasetLayerStates': getInitialDatasetLayerStates,
       'showPopup': showPopup
     };
 
-    function createFeatureLayer(map, imageBasemap) {
+    /**
+     * Private Functions
+     */
+
+    function getMappableSpots(map, imageBasemap) {
+      var activeSpots = SpotFactory.getActiveSpots();
+      if (map.getView().getProjection().getUnits() === 'pixels') {
+        return _.filter(activeSpots, function (spot) {
+          return spot.properties.image_basemap === imageBasemap.id;
+        });
+      }
+      // Remove spots that don't have a geometry defined or are mapped on an image
+      return _.reject(activeSpots, function (spot) {
+        return !_.has(spot, 'geometry') || _.has(spot.properties, 'image_basemap');
+      });
+    }
+
+    function getVisibleSpots(mappableSpots, states) {
+      // Get the spot ids of mappable spots in the visible datasets
+      var datasetIdsToSpotIds = ProjectFactory.getSpotIds();
+      var spotIds = {};
+      _.each(states, function (value, key) {
+        if (value) spotIds[key] = datasetIdsToSpotIds[key];
+        else spotIds[key] = [];
+      });
+
+      var visibleSpots = {};
+      _.each(spotIds, function (spotId, key) {
+        visibleSpots[key] = _.filter(mappableSpots, function (activeSpot) {
+          return _.contains(spotId, activeSpot.properties.id);
+        });
+      });
+      return visibleSpots;
+    }
+
+    /**
+     * Public Functions
+     */
+
+    function createDatasetsLayer(states, map, imageBasemap) {
+      var mappableSpots = getMappableSpots(map, imageBasemap);
+      var visibleSpotsDatasets = getVisibleSpots(mappableSpots, states);
+      var datasets = ProjectFactory.getActiveDatasets();
+      var datasetsLayer = MapLayerFactory.getDatasetsLayer();
+      datasetsLayer.getLayers().clear();
+
+      _.each(visibleSpotsDatasets, function (visibleSpotsDataset, key) {
+        var d = {};
+        var datasetLayer = {};
+        if (visibleSpotsDataset.length === 1) {
+          d = _.find(datasets, function (dataset) {
+            return dataset.id.toString() === key;
+          });
+          datasetLayer = new ol.layer.Tile({
+            'id': d.id,
+            'title': d.name + ' (1 Spot)'
+          });
+          datasetsLayer.getLayers().push(datasetLayer);
+        }
+        else if (visibleSpotsDataset.length > 1) {
+          d = _.find(datasets, function (dataset) {
+            return dataset.id.toString() === key;
+          });
+          datasetLayer = new ol.layer.Tile({
+            'id': d.id,
+            'title': d.name + ' (' + visibleSpotsDataset.length + ' Spots)'
+          });
+          datasetsLayer.getLayers().push(datasetLayer);
+        }
+      });
+    }
+
+    function createFeatureLayer(states, map, imageBasemap) {
       // Loop through all spots and create ol vector layers
-      var spots = SpotFactory.getActiveSpots();
+
+      var mappableSpots = getMappableSpots(map, imageBasemap);
+      var visibleSpotsDatasets = getVisibleSpots(mappableSpots, states);
+      var visibleSpots = [];
+      _.each(visibleSpotsDatasets, function (visibleSpotsDataset) {
+        if (visibleSpotsDataset.length > 0) visibleSpots.push(visibleSpotsDataset);
+      });
+
+      mappableSpots = _.flatten(visibleSpots);
+
       var featureLayer = MapLayerFactory.getFeatureLayer();
       // wipe the array because we want to avoid duplicating the feature in the ol.Collection
       featureLayer.getLayers().clear();
 
-      var mappableSpots;
-      if (map.getView().getProjection().getUnits() === 'pixels') {
-        mappableSpots = _.filter(spots, function (spot) {
-          return spot.properties.image_basemap === imageBasemap.id;
-        });
-      }
-      else {
-        // Remove spots that don't have a geometry defined or are mapped on an image
-        mappableSpots = _.reject(spots, function (spot) {
-          return !_.has(spot, 'geometry') || _.has(spot.properties, 'image_basemap');
-        });
-      }
 
       // Create features to map from the mappable spots.
       // Create a deep clone of each mappable spot. For spots with orientation data, create a clone of the entire spot
@@ -204,6 +275,22 @@
         'title': geojson.properties.name,
         'style': styleFunction
       });
+    }
+
+    function getInitialDatasetLayerStates(map, imageBasemap) {
+      // Set the default visible states for the datasets
+      var datasets = ProjectFactory.getActiveDatasets();
+      var datasetsLayerStates = {};
+      _.each(datasets, function (dataset) {
+        datasetsLayerStates[dataset.id] = true;
+      });
+      var mappableSpots = getMappableSpots(map, imageBasemap);
+      var states = {};
+      var visibleSpotsDatasets = getVisibleSpots(mappableSpots, datasetsLayerStates);
+      _.each(visibleSpotsDatasets, function (visibleSpotsDataset, key) {
+        if (visibleSpotsDataset.length > 0) states[key] = true;
+      });
+      return states;
     }
 
     function showPopup(map, evt) {

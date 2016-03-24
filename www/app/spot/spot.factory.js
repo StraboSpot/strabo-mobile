@@ -7,7 +7,7 @@
 
   SpotFactory.$inject = ['$ionicPopup', '$log', '$state', '$q', 'LocalStorageFactory', 'ProjectFactory'];
 
-  function SpotFactory($ionicPopup, $log, $state, $q,LocalStorageFactory, ProjectFactory) {
+  function SpotFactory($ionicPopup, $log, $state, $q, LocalStorageFactory, ProjectFactory) {
     var activeSpots;
     var currentSpot;
     var currentAssociatedOrientationIndex;

@@ -216,7 +216,7 @@
     }
 
     function doLoadProjectRemote(project) {
-      ProjectFactory.destroyProject().then(function () {
+      destroyProject().then(function () {
         ProjectFactory.loadProjectRemote(project).then(function () {
           vm.closeModal();
           initializeProject();
@@ -407,10 +407,18 @@
       $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Downloading Spots...'});
       doDownloadDataset(dataset).then(function () {
         $ionicLoading.hide();
-        $ionicPopup.alert({
-          'title': 'Success!',
-          'template': 'Spots downloaded successfully.'
-        });
+        if (vm.getNumberOfSpots(dataset) === '(0 Spots)') {
+          $ionicPopup.alert({
+            'title': 'Success!',
+            'template': 'No Spots to download.'
+          });
+        }
+        else {
+          $ionicPopup.alert({
+            'title': 'Success!',
+            'template': 'Spots downloaded successfully.'
+          });
+        }
         deferred.resolve();
       }, function (err) {
         $ionicLoading.hide();
@@ -483,29 +491,29 @@
         }
       }
       // Look for any current spots that match the id of the downloaded spot and remove the current spot
-      var foundSpot = _.find(SpotFactory.getSpots(), function (savedSpot) {
-        return savedSpot.properties.id === spot.properties.id;
-      });
-      if (!foundSpot) {
-        SpotFactory.save(spot).then(function () {
-          $log.log('Saved new Spot from server:', spot);
-          ProjectFactory.addSpotToDataset(spot.properties.id, dataset.id);
-          deferred.resolve();
-        }, function (err) {
-          $log.log('Error saving Spot to local storage');
-          deferred.reject(err);
-        });
-      }
-      //else if (foundSpot.properties.modified_timestamp < new Date(spot.properties.modified_timestamp)) {
+      /* var foundSpot = _.find(SpotFactory.getSpots(), function (savedSpot) {
+       return savedSpot.properties.id === spot.properties.id;
+       });
+       if (!foundSpot) {*/
       SpotFactory.save(spot).then(function () {
-        $log.log('Updated Spot from server:', spot);
+        $log.log('Saved new Spot from server:', spot);
         ProjectFactory.addSpotToDataset(spot.properties.id, dataset.id);
         deferred.resolve();
       }, function (err) {
         $log.log('Error saving Spot to local storage');
         deferred.reject(err);
       });
-      /* }
+      //}
+      /*else if (foundSpot.properties.modified_timestamp < new Date(spot.properties.modified_timestamp)) {
+       SpotFactory.save(spot).then(function () {
+       $log.log('Updated Spot from server:', spot);
+       ProjectFactory.addSpotToDataset(spot.properties.id, dataset.id);
+       deferred.resolve();
+       }, function (err) {
+       $log.log('Error saving Spot to local storage');
+       deferred.reject(err);
+       });
+       }
        else if (foundSpot.properties.modified_timestamp > new Date(spot.properties.modified_timestamp)) {
        $log.log('Local Spot newer than Spot on server. Taking no action.');
        deferred.resolve();
@@ -626,34 +634,34 @@
     }
 
     /*function doSync() {
-      if (isSyncReady()) {
-        vm.showOfflineWarning = false;
-        SyncFactory.doDownloadProject(vm.project, UserFactory.getUser().encoded_login).then(function (msg) {
-          $log.log(msg);
-          SyncFactory.doDownloadDatasets(vm.activeDatasets, UserFactory.getUser().encoded_login).then(function () {
-            $log.log('Finished sync');
-          });
+     if (isSyncReady()) {
+     vm.showOfflineWarning = false;
+     SyncFactory.doDownloadProject(vm.project, UserFactory.getUser().encoded_login).then(function (msg) {
+     $log.log(msg);
+     SyncFactory.doDownloadDatasets(vm.activeDatasets, UserFactory.getUser().encoded_login).then(function () {
+     $log.log('Finished sync');
+     });
 
-          //doDownloadProject().then(function () {
-          if (remoteProject date > local Project date) {
-           destory local project
-           save remote Project
-           download datasets
-           }
-          //vm.data = UserFactory.getUser();
-          //dataOrig = angular.copy(vm.data);
-          //$log.log('Finished sync');
-        }).finally(function () {
-          // Stop the ion-refresher from spinning
-          $scope.$broadcast('scroll.refreshComplete');
-        });
-      }
-      else {
-        vm.showOfflineWarning = true;
-        // Stop the ion-refresher from spinning
-        $scope.$broadcast('scroll.refreshComplete');
-      }
-    }*/
+     //doDownloadProject().then(function () {
+     if (remoteProject date > local Project date) {
+     destory local project
+     save remote Project
+     download datasets
+     }
+     //vm.data = UserFactory.getUser();
+     //dataOrig = angular.copy(vm.data);
+     //$log.log('Finished sync');
+     }).finally(function () {
+     // Stop the ion-refresher from spinning
+     $scope.$broadcast('scroll.refreshComplete');
+     });
+     }
+     else {
+     vm.showOfflineWarning = true;
+     // Stop the ion-refresher from spinning
+     $scope.$broadcast('scroll.refreshComplete');
+     }
+     }*/
 
     function initializeDownload() {
       var names = _.pluck(vm.activeDatasets, 'name');
