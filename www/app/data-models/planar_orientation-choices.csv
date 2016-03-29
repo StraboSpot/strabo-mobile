@@ -18,11 +18,12 @@ foliation,foliation,yy6na02,2
 fracture,fracture,yy6na02,3
 vein,vein,yy6na02,4
 fault,fault,yy6na02,5
-shear zone boundary,shear_zone_bou,yy6na02,6
-fold axial surface,fold_axial_surface,yy6na02,7
-plane of boudinage,plane_of_boudinage,yy6na02,8
-plane of mullions,plane_of_mullions,yy6na02,9
-other,other,yy6na02,10
+shear zone,shear_zone,yy6na02,6
+shear zone boundary,shear_zone_bou,yy6na02,7
+fold axial surface,fold_axial_surface,yy6na02,8
+plane of boudinage,plane_of_boudinage,yy6na02,9
+plane of mullions,plane_of_mullions,yy6na02,10
+other,other,yy6na02,11
 lithologic change,lithologic_cha,ry4pa50,
 sedimentary feature,sedimentary_fe,ry4pa50,
 stratigraphic,stratigraphic,lx9ax28,0
@@ -102,22 +103,24 @@ high-angle,high_angle,kk9ik41,
 low-angle,low_angle,kk9ik41,
 scissor,scissor,kk9ik41,
 other,other,kk9ik41,
-N side up,n_side_up,ia36i83,
-NE side up,ne_side_up,ia36i83,
-E side up,e_side_up,ia36i83,
-SE side up,se_side_up,ia36i83,
-S side up,s_side_up,ia36i83,
-SW side up,sw_side_up,ia36i83,
-W side up,w_side_up,ia36i83,
-NW side up,nw_side_up,ia36i83,
-top to N,top_to_n,ia36i83,
-top to NE,top_to_ne,ia36i83,
-top to E,top_to_e,ia36i83,
-top to SE,top_to_se,ia36i83,
-top to S,top_to_s,ia36i83,
-top to SW,top_to_sw,ia36i83,
-top to W,top_to_w,ia36i83,
-top to NW,top_to_nw,ia36i83,
+N side up,n_side_up,ia36i83,0
+NE side up,ne_side_up,ia36i83,1
+E side up,e_side_up,ia36i83,2
+SE side up,se_side_up,ia36i83,3
+S side up,s_side_up,ia36i83,4
+SW side up,sw_side_up,ia36i83,5
+W side up,w_side_up,ia36i83,6
+NW side up,nw_side_up,ia36i83,7
+top to N,top_to_n,ia36i83,8
+top to NE,top_to_ne,ia36i83,9
+top to E,top_to_e,ia36i83,10
+top to SE,top_to_se,ia36i83,11
+top to S,top_to_s,ia36i83,12
+top to SW,top_to_sw,ia36i83,13
+top to W,top_to_w,ia36i83,14
+top to NW,top_to_nw,ia36i83,15
+right-lateral,right_lateral,ia36i83,16
+left-lateral,left_lateral,ia36i83,17
 other,other,ia36i83,
 not specified,not_specified,gq4wq38,0
 offset bedding,offset_bedding,gq4wq38,1
@@ -148,3 +151,6 @@ porphyroblast system,porphyroblast_,tj67x48,
 strain assymetry,strain_assym,tj67x48,
 flanking structures,flanking_struc,tj67x48,
 other,other,tj67x48,
+maximum amount,maximum_amount,kh6kx98,
+minimum amount,minimum_amount,kh6kx98,
+estimate of amount,estimate_of_am,kh6kx98,

@@ -11,6 +11,8 @@ sheath,,sheath,wg6ry31
 single-layer buckle,,single_layer_b,wg6ry31
 ptygmatic,,ptygmatic,wg6ry31
 crenulation,,crenulation,wg6ry31
+interfolial,,interfolial,wg6ry31
+other,,other,wg6ry31
 chevron,0,chevron,fa6tb91
 cuspate,1,cuspate,fa6tb91
 circular,2,circular,fa6tb91
@@ -45,14 +47,25 @@ unidirectional,,unidirectional,hm3vv92
 bidirectional,,bidirectional,hm3vv92
 symmetrical,,symmetrical,cf1so76
 asymmetrical,,asymmetrical,cf1so76
-north,,north,rz7bs81
-NE,,ne,rz7bs81
-east,,east,rz7bs81
-SE,,se,rz7bs81
-south,,south,rz7bs81
-SW,,sw,rz7bs81
-west,,west,rz7bs81
-NW,,nw,rz7bs81
+N side up,0,n_side_up,ia36i83
+NE side up,1,ne_side_up,ia36i83
+E side up,2,e_side_up,ia36i83
+SE side up,3,se_side_up,ia36i83
+S side up,4,s_side_up,ia36i83
+SW side up,5,sw_side_up,ia36i83
+W side up,6,w_side_up,ia36i83
+NW side up,7,nw_side_up,ia36i83
+top to N,8,top_to_n,ia36i83
+top to NE,9,top_to_ne,ia36i83
+top to E,10,top_to_e,ia36i83
+top to SE,11,top_to_se,ia36i83
+top to S,12,top_to_s,ia36i83
+top to SW,13,top_to_sw,ia36i83
+top to W,14,top_to_w,ia36i83
+top to NW,15,top_to_nw,ia36i83
+right-lateral,16,right_lateral,ia36i83
+left-lateral,17,left_lateral,ia36i83
+other,,other,ia36i83
 5 - best - accurate,0,5,ex15z66
 4,1,4,ex15z66
 3 - approximate,2,3,ex15z66
