@@ -5,12 +5,9 @@ end_date,date,End Date,false,
 purpose_of_study,text,Purpose of Study,false,
 other_team_members,text,Other Team Members,false,
 area_of_interest,text,Area of Interest,false,
-spot_prefix,text,SPOT Prefix Label,false,Label prefix based on location or other
-starting_number_for_spot,integer,Starting Number for SPOTs,false,
-sample_prefix,text,Sample Prefix Label,false,Short label based on location or IGSN prefix or something else associated with the user
 instruments,text,Instruments Used,false,
 gps_datum,text,GPS Datum,false,default to WGS84
 magnetic_declination,text,Magnetic Declination,false,Enter range for high latitude areas
-Notes,note,Notes,false,
+notes,note,Notes,false,
 start,start,,,
 end,end,,,

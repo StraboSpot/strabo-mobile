@@ -5,9 +5,10 @@
     .module('app')
     .controller('SamplesTabController', SamplesTabController);
 
-  SamplesTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'DataModelsFactory'];
+  SamplesTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'DataModelsFactory',
+    'ProjectFactory'];
 
-  function SamplesTabController($ionicModal, $ionicPopup, $log, $scope, $state, DataModelsFactory) {
+  function SamplesTabController($ionicModal, $ionicPopup, $log, $scope, $state, DataModelsFactory, ProjectFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.survey = DataModelsFactory.getDataModel('sample').survey;
@@ -51,6 +52,7 @@
     function addSample() {
       sampleToEdit = undefined;
       vmParent.data = {};
+      vmParent.data.sample_id_name = ProjectFactory.getSamplePrefix();
       vm.sampleModal.show();
     }
 

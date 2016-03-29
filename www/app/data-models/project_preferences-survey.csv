@@ -1,17 +1,22 @@
-name,type,label,required
-group_tab_control,begin group,Tab Control,
-orientation,acknowledge,Orientation,false
-_3dstructures,acknowledge,3D Structures,false
-images,acknowledge,Images,false
-other_features,acknowledge,Other Features,false
-samples,acknowledge,Samples,false
-inferences,acknowledge,Inferences,false
-nest,acknowledge,Nest,false
-,end group,,
-group_other_preferences,begin group,Other Preferences,
-right_hand_rule,acknowledge,Right-hand Rule,false
-drop_down_to_finish_typing,acknowledge,Drop Down to Finish Typing,false
-student_mode,acknowledge,Student Mode,false
-,end group,,
-start,start,,
-end,end,,
+name,type,label,required,hint
+group_tab_control,begin group,Tab Control,,
+orientation,acknowledge,Orientation,false,
+_3dstructures,acknowledge,3D Structures,false,
+images,acknowledge,Images,false,
+other_features,acknowledge,Other Features,false,
+samples,acknowledge,Samples,false,
+inferences,acknowledge,Inferences,false,
+nest,acknowledge,Nest,false,
+,end group,,,
+group_ep4pr46,begin group,Naming Conventions,,
+spot_prefix,text,SPOT Prefix Label,false,Label prefix based on location or other
+starting_number_for_spot,integer,Starting Number for SPOTs,false,
+sample_prefix,text,Sample Prefix Label,false,Short label based on location or IGSN prefix or something else associated with the user
+,end group,,,
+group_other_preferences,begin group,Other Preferences,,
+right_hand_rule,acknowledge,Right-hand Rule,false,
+drop_down_to_finish_typing,acknowledge,Drop Down to Finish Typing,false,
+student_mode,acknowledge,Student Mode,false,
+,end group,,,
+start,start,,,
+end,end,,,

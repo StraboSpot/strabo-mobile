@@ -37,6 +37,7 @@
       'getOtherFeatures': getOtherFeatures,
       'getRockUnits': getRockUnits,
       'getSpotNumber': getSpotNumber,
+      'getSamplePrefix': getSamplePrefix,
       'getSpotPrefix': getSpotPrefix,
       'getSpotsDataset': getSpotsDataset,
       'getSpotIds': getSpotIds,
@@ -277,11 +278,15 @@
     }
 
     function getSpotNumber() {
-      return currentProject.description.starting_number_for_spot;
+      return currentProject.preferences.starting_number_for_spot;
+    }
+
+    function getSamplePrefix() {
+      return currentProject.preferences.sample_prefix;
     }
 
     function getSpotPrefix() {
-      return currentProject.description.spot_prefix;
+      return currentProject.preferences.spot_prefix;
     }
 
     // Increment starting spot number by 1
@@ -289,8 +294,8 @@
       var start_number = getSpotNumber();
       if (start_number) {
         start_number += 1;
-        currentProject.description.starting_number_for_spot = start_number;
-        saveProjectItem('description', currentProject.description);
+        currentProject.preferences.starting_number_for_spot = start_number;
+        saveProjectItem('preferences', currentProject.preferences);
       }
     }
 
