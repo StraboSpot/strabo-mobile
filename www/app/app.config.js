@@ -29,22 +29,13 @@
           'prepMenu': prepMenu
         }
       })
-      .state('app.project', {
+      .state('app.description', {
         'cache': false,
-        'url': '/project',
+        'url': '/description',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/project/project.html',
-            'controller': 'ProjectController as vm'
-          }
-        }
-      })
-      .state('app.daily-setup', {
-        'cache': false,
-        'url': '/daily-setup',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/project/daily-setup.html'
+            'templateUrl': 'app/project/description.html',
+            'controller': 'DescriptionController as vm'
           }
         }
       })

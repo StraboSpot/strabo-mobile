@@ -1,0 +1,24 @@
+<ion-modal-view>
+  <ion-header-bar class='bar-dark nav-title-slide-ios7'>
+    <div class="buttons">
+      <div class='button button-clear' ng-click='vm.closeModal("dailySetupModal")'>
+        <span class='icon ion-arrow-left-c'></span></div>
+    </div>
+    <h1 class='title'>Daily Setup</h1>
+  </ion-header-bar>
+  <ion-content class='has-header strabo-form'>
+    <ion-input class='item item-input item-stacked-label item-text-wrap'>
+      <ion-label>Date</ion-label>
+      <input type='date' ng-model='vm.dailySetup.date'>
+    </ion-input>
+    <ion-input class='item item-input item-stacked-label item-text-wrap'>
+      <ion-label>Time</ion-label>
+      <input type='time' ng-model='vm.dailySetup.date'>
+    </ion-input>
+    <ion-input class='item item-input'>
+      <ion-label>Notes</ion-label>
+      <textarea class='padding-left' rows='12'
+                ng-model='vm.dailySetup.notes'></textarea>
+    </ion-input>
+  </ion-content>
+</ion-modal-view>
