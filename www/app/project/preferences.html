@@ -1,8 +1,10 @@
 <form name='straboForm' novalidate=''>
   <ion-view title='Preferences'>
     <ion-nav-buttons side='left'>
-      <button menu-toggle='left' ng-click='vm.submit();'
+      <button ng-hide='vm.currentSpot' menu-toggle='left' ng-click='vm.submit();'
               class='button button-icon icon ion-navicon'></button>
+      <button ng-show='vm.currentSpot' ng-click='vm.submit("/app/spotTab/" + vm.currentSpot.properties.id + "/spot");'
+              class='button button-icon icon ion-arrow-left-c'></button>
     </ion-nav-buttons>
     <ion-content class='has-header'>
       <auto-fields/>

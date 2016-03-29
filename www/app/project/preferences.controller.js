@@ -5,11 +5,12 @@
     .module('app')
     .controller('PreferencesController', PreferencesController);
 
-  PreferencesController.$inject = ['$ionicSideMenuDelegate', 'DataModelsFactory', 'FormFactory', 'ProjectFactory'];
+  PreferencesController.$inject = ['$location', 'DataModelsFactory', 'FormFactory', 'ProjectFactory', 'SpotFactory'];
 
-  function PreferencesController($ionicSideMenuDelegate, DataModelsFactory, FormFactory, ProjectFactory) {
+  function PreferencesController($location, DataModelsFactory, FormFactory, ProjectFactory, SpotFactory) {
     var vm = this;
 
+    vm.currentSpot = SpotFactory.getCurrentSpot();
     vm.data = {};
     vm.pristine = true;
     vm.showField = showField;
@@ -39,11 +40,12 @@
       return show;
     }
 
-    function submit() {
+    function submit(toPath) {
       var valid = FormFactory.validate(vm.survey, vm.data);
       if (valid) {
-        ProjectFactory.saveProjectItem('preferences', vm.data);
-        $ionicSideMenuDelegate.toggleLeft();
+        ProjectFactory.saveProjectItem('preferences', vm.data).then(function () {
+          if (toPath) $location.path(toPath);
+        });
       }
     }
 
