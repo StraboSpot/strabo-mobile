@@ -25,7 +25,7 @@ other_vein_fill,text,Other Vein Mineral,,true,,,,${vein_fill} = 'other'
 fault_or_sz_type,select_one kk9ik41,Type of Fault or Shear Zone Boundary,"Specific type: e.g., dextral, sinistral, normal, reverse, oblique",false,,,horizontal,${feature_type} = 'fault' or ${feature_type} = 'shear_zone_bou' or ${feature_type} = 'shear_zone'
 other_fault_or_sz_type,text,Other Fault or Shear Zone Boundary Type,,true,,,,${fault_or_sz_type} = 'other'
 movement,select_one ia36i83,Movement,Relative movement across structure,false,,,,${feature_type} = 'fault' or ${feature_type} = 'shear_zone_bou'
-other_movement,text,Other Movement,,true,,,,
+other_movement,text,Other Movement,,true,,,,${movement} = 'other'
 movement_justification,select_multiple gq4wq38,Movement Justification,Offset feature types used to determine relative movement,false,,,,
 other_movement_justification,text,Other Movement Justification,,true,,,,"selected(${movement_justification}, 'other')"
 directional_indicators,select_multiple tj67x48,Directional Indicators,"Specific sense of shear indicator, such as Riedel shears, S-C fabrics, drag folds, etc.",false,,,,${feature_type} = 'fault' or ${feature_type} = 'shear_zone_bou'
