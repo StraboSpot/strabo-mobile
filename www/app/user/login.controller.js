@@ -36,8 +36,14 @@
           'template': '<ion-spinner></ion-spinner>'
         });
         UserFactory.doLogin(vm.login).then(function () {
-          $ionicLoading.hide();
           if (UserFactory.getUser()) vm.skip();
+        }, function (err) {
+          $ionicPopup.alert({
+            'title': 'Error communicating with server!',
+            'template': 'There was a problem logging in. Try again later. Server error message: ' + err
+          });
+        }).finally(function () {
+          $ionicLoading.hide();
         });
       }
       else {

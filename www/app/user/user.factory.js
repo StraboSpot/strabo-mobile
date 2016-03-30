@@ -42,11 +42,6 @@
 
     function clearUser() {
       user = undefined;
-      /* LocalStorageFactory.getDb().configDb.removeItem('user').then(function () {
-       ProjectFactory.clearProjects().then(function () {
-       $log.log('Cleared user data from local storage');
-       });
-       });*/
       LocalStorageFactory.getDb().configDb.removeItem('user').then(function () {
         $log.log('Cleared user data from local storage');
         ProjectFactory.destroyProject();
@@ -60,7 +55,7 @@
       var deferred = $q.defer(); // init promise
       login.email = login.email.toLowerCase();
       RemoteServerFactory.authenticateUser(login).then(function (response) {
-        if (response.status === 200 && response.data.valid === 'true') {
+        if (response.data.valid === 'true') {
           $log.log('Logged in successfully as', login.email, 'Server Response:', response);
           user = {
             'email': login.email,
@@ -68,6 +63,8 @@
           };
           updateUser().then(function () {
             deferred.resolve();
+          }, function (err) {
+            deferred.reject(err);
           });
         }
         else {
@@ -77,6 +74,8 @@
           });
           deferred.resolve();
         }
+      }, function (response) {
+        deferred.reject(response.data);
       });
       return deferred.promise;
     }
@@ -125,29 +124,25 @@
     function updateUser() {
       var deferred = $q.defer(); // init promise
       RemoteServerFactory.getProfile(user.encoded_login).then(function (profileResponse) {
-        if (profileResponse.status === 200) {
-          user.name = profileResponse.data.name;
-          RemoteServerFactory.getProfileImage(user.encoded_login).then(function (profileImageResponse) {
-            if (profileImageResponse.status === 200 && profileImageResponse.data) {
-              readDataUrl(profileImageResponse.data, function (base64Image) {
-                user.image = base64Image;
-                saveUser(user);
-                deferred.resolve();
-              });
-            }
-            else {
+        user.name = profileResponse.data.name;
+        RemoteServerFactory.getProfileImage(user.encoded_login).then(function (profileImageResponse) {
+          if (profileImageResponse.data) {
+            readDataUrl(profileImageResponse.data, function (base64Image) {
+              user.image = base64Image;
               saveUser(user);
               deferred.resolve();
-            }
-          });
-        }
-        else {
-          $ionicPopup.alert({
-            'title': 'Error!',
-            'template': 'Error contacting server to retrieve profile. Try again.'
-          });
+            });
+          }
+          else {
+            saveUser(user);
+            deferred.resolve();
+          }
+        }, function () {
+          saveUser(user);
           deferred.resolve();
-        }
+        });
+      }, function (profileResponse) {
+        deferred.reject(profileResponse.data.Error);
       });
       return deferred.promise;
     }
@@ -157,10 +152,10 @@
       if (!_.isEmpty(userToUpload)) {
         if (navigator.onLine) {
           $log.log('Upload user profile ...');
-
           RemoteServerFactory.setProfile(userToUpload, user.encoded_login).then(function (response) {
-            if (response.status === 201) $log.log('Finshed uploading user profile. Server response:', response);
-            else $log.log('Error uploading user profile. Server response:', response);
+            $log.log('Finshed uploading user profile. Server response:', response);
+          }, function (response) {
+            $log.error('Error uploading user profile. Server response:', response);
           });
         }
         else {
@@ -173,8 +168,9 @@
       if (navigator.onLine) {
         $log.log('Upload user profile image ...');
         RemoteServerFactory.setProfileImage(user.image, user.encoded_login).then(function (response) {
-          if (response.status === 201) $log.log('Finshed uploading user profile image. Server response:', response);
-          else $log.log('Error uploading user profile image. Server response:', response);
+          $log.log('Finshed uploading user profile image. Server response:', response);
+        }, function (response) {
+          $log.error('Error uploading user profile image. Server response:', response);
         });
       }
       else {

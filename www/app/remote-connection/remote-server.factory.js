@@ -29,10 +29,10 @@
       'getMyProjects': getMyProjects,
       'getProfile': getProfile,
       'getProfileImage': getProfileImage,
-      'setProfile': setProfile,
-      'setProfileImage': setProfileImage,
       'getProject': getProject,
       'getProjectDatasets': getProjectDatasets,
+      'setProfile': setProfile,
+      'setProfileImage': setProfileImage,
       'updateFeature': updateFeature,
       'updateProject': updateProject,
       'updateDataset': updateDataset,
@@ -88,6 +88,20 @@
       return new Blob([new Uint8Array(array)], {'type': 'image/jpeg'});
     }
 
+    // Transform the error response, unwrapping the application data from the API response payload
+    function handleError(response) {
+      //$log.error('Failure:', response);
+      //return ($q.reject(response.data.Error));
+      return ($q.reject(response));
+    }
+
+    // Transform the successful response, unwrapping the application data from the API response payload
+    function handleSuccess(response) {
+      //$log.log('Success:', response);
+      //return (response.data);
+      return (response);
+    }
+
     function removeImages(spot) {
       var spotNoImages = angular.fromJson(angular.toJson(spot));  // Deep clone
       _.each(spotNoImages.properties.images, function (image, i) {
@@ -102,16 +116,9 @@
 
     // Authenticate the user
     function authenticateUser(loginData) {
-      var request = $http({
-        'method': 'post',
-        'url': baseUrl + '/userAuthenticate',
-        'headers': {
-          'Content-Type': 'application/json'
-        },
-        'data': {
-          'email': loginData.email,
-          'password': loginData.password
-        }
+      var request = buildPostRequest('/userAuthenticate', {
+        'email': loginData.email,
+        'password': loginData.password
       });
       return (request.then(handleSuccess, handleError));
     }
@@ -144,6 +151,19 @@
       return (request.then(handleSuccess, handleError));
     }
 
+    // Delete all spots in a dataset
+    function deleteAllDatasetSpots(dataset_id, encodedLogin) {
+      var request = $http({
+        'method': 'delete',
+        'url': baseUrl + '/db/datasetSpots/' + dataset_id,
+        'headers': {
+          'Authorization': 'Basic ' + encodedLogin,
+          'Content-Type': 'application/json'
+        }
+      });
+      return (request.then(handleSuccess, handleError));
+    }
+
     // Delete a dataset
     function deleteDataset(self_url, encodedLogin) {
       var request = $http({
@@ -170,36 +190,11 @@
       return (request.then(handleSuccess, handleError));
     }
 
-    // Delete all spots in a dataset
-    function deleteAllDatasetSpots(dataset_id, encodedLogin) {
-      var request = $http({
-        'method': 'delete',
-        'url': baseUrl + '/db/datasetSpots/' + dataset_id,
-        'headers': {
-          'Authorization': 'Basic ' + encodedLogin,
-          'Content-Type': 'application/json'
-        }
-      });
-      return (request.then(handleSuccess, handleError));
-    }
-
     // Download image for a feature
     function downloadImage(image_url, encodedLogin) {
       var request = $http({
         'method': 'get',
         'url': image_url,
-        'responseType': 'blob',
-        'headers': {
-          'Authorization': 'Basic ' + encodedLogin + '\''
-        }
-      });
-      return (request.then(handleSuccess, handleError));
-    }
-
-    function getImage(imageId, encodedLogin) {
-      var request = $http({
-        'method': 'get',
-        'url': baseUrl + '/db/image/' + imageId,
         'responseType': 'blob',
         'headers': {
           'Authorization': 'Basic ' + encodedLogin + '\''
@@ -223,6 +218,18 @@
     // Get all spots for a dataset
     function getDatasetSpots(datasetId, encodedLogin) {
       var request = buildGetRequest('/db/datasetSpots/' + datasetId, encodedLogin);
+      return (request.then(handleSuccess, handleError));
+    }
+
+    function getImage(imageId, encodedLogin) {
+      var request = $http({
+        'method': 'get',
+        'url': baseUrl + '/db/image/' + imageId,
+        'responseType': 'blob',
+        'headers': {
+          'Authorization': 'Basic ' + encodedLogin + '\''
+        }
+      });
       return (request.then(handleSuccess, handleError));
     }
 
@@ -252,13 +259,7 @@
 
     // Get user profile
     function getProfile(encodedLogin) {
-      var request = $http({
-        'method': 'get',
-        'url': baseUrl + '/db/profile',
-        'headers': {
-          'Authorization': 'Basic ' + encodedLogin
-        }
-      });
+      var request = buildGetRequest('/db/profile', encodedLogin);
       return (request.then(handleSuccess, handleError));
     }
 
@@ -275,17 +276,26 @@
       return (request.then(handleSuccess, handleError));
     }
 
+    function getProject(projectId, encodedLogin) {
+      var request = buildGetRequest('/db/project/' + projectId, encodedLogin);
+      $log.log('Getting project...');
+      return (request.then(handleSuccess, handleError));
+    }
+
+    function getProjectDatasets(id, encodedLogin) {
+      var request = $http({
+        'method': 'get',
+        'url': baseUrl + '/db/projectDatasets/' + id,
+        'headers': {
+          'Authorization': 'Basic ' + encodedLogin + '\''
+        }
+      });
+      return (request.then(handleSuccess, handleError));
+    }
+
     // Create/Update user profile
     function setProfile(user, encodedLogin) {
-      var request = $http({
-        'method': 'post',
-        'url': baseUrl + '/db/profile',
-        'headers': {
-          'Authorization': 'Basic ' + encodedLogin,
-          'Content-Type': 'application/json'
-        },
-        'data': user
-      });
+      var request = buildPostRequest('/db/profile', user, encodedLogin);
       return (request.then(handleSuccess, handleError));
     }
 
@@ -306,23 +316,6 @@
           'Content-Type': undefined
         },
         'data': formdata
-      });
-      return (request.then(handleSuccess, handleError));
-    }
-
-    function getProject(projectId, encodedLogin) {
-      var request = buildGetRequest('/db/project/' + projectId, encodedLogin);
-      $log.log('Getting project...');
-      return (request.then(handleSuccess, handleError));
-    }
-
-    function getProjectDatasets(id, encodedLogin) {
-      var request = $http({
-        'method': 'get',
-        'url': baseUrl + '/db/projectDatasets/' + id,
-        'headers': {
-          'Authorization': 'Basic ' + encodedLogin + '\''
-        }
       });
       return (request.then(handleSuccess, handleError));
     }
@@ -389,24 +382,6 @@
     function verifyImageExistance(id, encodedLogin) {
       var request = buildGetRequest('/db/verifyimage/' + id, encodedLogin);
       return (request.then(handleSuccess, handleError));
-    }
-
-    /**
-     * Private Functions
-     */
-
-    // Transform the error response, unwrapping the application data from the API response payload
-    function handleError(response) {
-      //$log.error('Failure:', response);
-      //return ($q.reject(response.data.Error));
-      return ($q.reject(response));
-    }
-
-    // Transform the successful response, unwrapping the application data from the API response payload
-    function handleSuccess(response) {
-      //$log.log('Success:', response);
-      //return (response.data);
-      return (response);
     }
   }
 }());

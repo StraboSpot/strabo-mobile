@@ -217,9 +217,15 @@
           'template': '<ion-spinner></ion-spinner>'
         });
         UserFactory.doLogin(vm.login).then(function () {
-          $ionicLoading.hide();
           vm.data = UserFactory.getUser();
           dataOrig = angular.copy(vm.data);
+        }, function (err) {
+          $ionicPopup.alert({
+            'title': 'Error communicating with server!',
+            'template': 'There was a problem logging in. Try again later. Server error message: ' + err
+          });
+        }).finally(function () {
+          $ionicLoading.hide();
         });
       }
       else {
@@ -234,7 +240,7 @@
     function doLogout() {
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Log Out Warning!',
-        'template': 'Logging out will erase any data on this device not synced to the server. Are you sure you want to continue?'
+        'template': 'Logging out will <b>erase</b> any data on this device not synced to the server. Are you sure you want to continue?'
       });
       confirmPopup.then(function (res) {
         if (res) {
