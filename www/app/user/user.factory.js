@@ -46,7 +46,7 @@
         $log.log('Cleared user data from local storage');
         ProjectFactory.destroyProject();
         SpotFactory.clearAllSpots();
-        $state.go('app.manage-project');
+        //$state.go('app.manage-project');
       });
     }
 

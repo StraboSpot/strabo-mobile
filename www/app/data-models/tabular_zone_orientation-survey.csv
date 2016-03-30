@@ -23,7 +23,7 @@ fault_or_sz,select_one kk9ik41,Fault Zone or Shear Zone Type,,false,,,horizontal
 other_fault_or_sz,text,Other Fault Zone or Shear Zone Type,,true,,,,${fault_or_sz} = 'other',
 movement,select_one ia36i83,Movement,,false,,,horizontal,${feature_type} = 'zone_faulting' or ${feature_type} = 'shear_zone',
 other_movement,text,Other Movement,,true,,,,${movement} = 'other',
-movement_justification,select_multiple gq4wq38,Movement Justification,,false,,,horizontal,,
+movement_justification,select_multiple gq4wq38,Movement Justification,,false,,,horizontal,${movement} != '',
 other_movement_justification,text,Other Movement Justification,,true,,,,"selected(${movement_justification}, 'other')",
 dir_indicators,select_multiple tj67x48,Directional Indicators,,false,,,,${feature_type} = 'zone_faulting' or ${feature_type} = 'shear_zone',
 other_dir_indicators,text,Other Directional Indicator,,true,,,,"selected(${dir_indicators}, 'other')",
