@@ -278,14 +278,17 @@
     }
 
     function getSpotNumber() {
+      if (!currentProject.preferences) return undefined;
       return currentProject.preferences.starting_number_for_spot;
     }
 
     function getSamplePrefix() {
+      if (!currentProject.preferences) return undefined;
       return currentProject.preferences.sample_prefix;
     }
 
     function getSpotPrefix() {
+      if (!currentProject.preferences) return undefined;
       return currentProject.preferences.spot_prefix;
     }
 
