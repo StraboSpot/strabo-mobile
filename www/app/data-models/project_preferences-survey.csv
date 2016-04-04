@@ -11,7 +11,8 @@ nest,acknowledge,Nest,false,
 group_ep4pr46,begin group,Naming Conventions,,
 spot_prefix,text,SPOT Prefix Label,false,Label prefix based on location or other
 starting_number_for_spot,integer,Starting Number for SPOTs,false,
-sample_prefix,text,Sample Prefix Label,false,Short label based on location or IGSN prefix or something else associated with the user
+sample_prefix,text,Sample Prefix Label,false,Short label based on location or IGSN prefix (exactly 3 characters) or something else associated with the user
+starting_sample_number,integer,Starting Sample Number,false,Use exactly 6 numbers if creating an IGSN code
 ,end group,,,
 group_other_preferences,begin group,Other Preferences,,
 right_hand_rule,acknowledge,Right-hand Rule,false,

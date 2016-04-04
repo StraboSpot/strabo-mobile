@@ -52,7 +52,9 @@
     function addSample() {
       sampleToEdit = undefined;
       vmParent.data = {};
-      vmParent.data.sample_id_name = ProjectFactory.getSamplePrefix();
+      var number = ProjectFactory.getSampleNumber();
+      number = (number) ? number.toString() : '';
+      vmParent.data.sample_id_name = ProjectFactory.getSamplePrefix() + number;
       vm.sampleModal.show();
     }
 
@@ -99,10 +101,13 @@
         });
         if (_.indexOf(vmParent.spot.properties.samples, dup) === sampleToEdit) dup = undefined;
         if (!dup) {
-          if (angular.isDefined(sampleToEdit)) {
-            vmParent.spot.properties.samples.splice(sampleToEdit, 1, vmParent.data);
+          // Editing Sample
+          if (angular.isDefined(sampleToEdit)) vmParent.spot.properties.samples.splice(sampleToEdit, 1, vmParent.data);
+          // New Sample
+          else {
+            vmParent.spot.properties.samples.push(vmParent.data);
+            ProjectFactory.incrementSampleNumber();
           }
-          else vmParent.spot.properties.samples.push(vmParent.data);
           vm.sampleModal.hide();
           vmParent.data = {};
         }

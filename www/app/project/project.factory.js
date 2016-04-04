@@ -36,11 +36,13 @@
       'getProjectTools': getProjectTools,
       'getOtherFeatures': getOtherFeatures,
       'getRockUnits': getRockUnits,
-      'getSpotNumber': getSpotNumber,
+      'getSampleNumber': getSampleNumber,
       'getSamplePrefix': getSamplePrefix,
+      'getSpotNumber': getSpotNumber,
       'getSpotPrefix': getSpotPrefix,
       'getSpotsDataset': getSpotsDataset,
       'getSpotIds': getSpotIds,
+      'incrementSampleNumber': incrementSampleNumber,
       'incrementSpotNumber': incrementSpotNumber,
       'isSyncReady': isSyncReady,
       'loadProjectRemote': loadProjectRemote,
@@ -277,14 +279,19 @@
       return spotIds;
     }
 
-    function getSpotNumber() {
+    function getSampleNumber() {
       if (!currentProject.preferences) return undefined;
-      return currentProject.preferences.starting_number_for_spot;
+      return currentProject.preferences.starting_sample_number;
     }
 
     function getSamplePrefix() {
       if (!currentProject.preferences) return undefined;
       return currentProject.preferences.sample_prefix;
+    }
+
+    function getSpotNumber() {
+      if (!currentProject.preferences) return undefined;
+      return currentProject.preferences.starting_number_for_spot;
     }
 
     function getSpotPrefix() {
@@ -298,6 +305,16 @@
       if (start_number) {
         start_number += 1;
         currentProject.preferences.starting_number_for_spot = start_number;
+        saveProjectItem('preferences', currentProject.preferences);
+      }
+    }
+
+    // Increment starting sample number by 1
+    function incrementSampleNumber() {
+      var start_number = getSampleNumber();
+      if (start_number) {
+        start_number += 1;
+        currentProject.preferences.starting_sample_number = start_number;
         saveProjectItem('preferences', currentProject.preferences);
       }
     }
