@@ -5,15 +5,16 @@
     .module('app')
     .controller('ArchiveTilesController', ArchiveTilesController);
 
-  ArchiveTilesController.$inject = ['$log', '$q', '$state', 'LocalStorageFactory', 'MapViewFactory',
+  ArchiveTilesController.$inject = ['$ionicPopup', '$log', '$q', '$state', 'LocalStorageFactory', 'MapViewFactory',
     'OfflineTilesFactory', 'SlippyTileNamesFactory'];
 
-  function ArchiveTilesController($log, $q, $state, LocalStorageFactory, MapViewFactory, OfflineTilesFactory,
-                                  SlippyTileNamesFactory) {
+  function ArchiveTilesController($ionicPopup, $log, $q, $state, LocalStorageFactory, MapViewFactory,
+                                  OfflineTilesFactory, SlippyTileNamesFactory) {
     var vm = this;
     var mapExtent = MapViewFactory.getExtent();
 
     vm.downloading = false;
+    vm.estimateArchiveTile = estimateArchiveTile;
     vm.goToMap = goToMap;
     vm.map = {
       'curentZoom': undefined,
@@ -26,15 +27,31 @@
       'progress': {},
       'status': ''
     };
+    vm.maps = {};
+    vm.nameSelectChanged = nameSelectChanged;
     vm.numOfflineTiles = 0;  // number of tiles we have in offline storage
-    vm.estimateArchiveTile = estimateArchiveTile;
+    vm.selectedName = {};
+    vm.showNameField = false;
+    vm.showSelectName = false;
     vm.submit = submit;
     vm.submitBtnText = '';
     vm.tiles = {};
 
     activate();
 
+    /**
+     * Private Functions
+     */
+
     function activate() {
+      OfflineTilesFactory.getMaps().then(function (maps) {
+        vm.maps = maps;
+        vm.selectedName = _.last(_.sortBy(vm.maps, 'date'));
+        if (vm.selectedName) vm.map.name = vm.selectedName.name;
+        vm.showNameField = _.isEmpty(vm.maps);
+        vm.showSelectName = !_.isEmpty(vm.maps);
+        vm.maps.push({'name': '-- New Offline Map --', 'date': new Date(1970, 1, 1)});
+      });
       vm.downloading = false;
       vm.map.currentZoom = mapExtent.zoom;
       vm.map.maxZoom = _.findWhere(OfflineTilesFactory.getMapProviders(), {'id': mapExtent.mapProvider}).maxZoom;
@@ -42,10 +59,6 @@
       estimateArchiveTile();
       updateOfflineTileCount();
     }
-
-    /**
-     * Private Functions
-     */
 
     function isSavedTile(namedTile) {
       var deferred = $q.defer(); // init promise
@@ -67,7 +80,7 @@
         }
         else if (mapsToSave.length === 1 && vm.map.progress.failed > 1) {
           vm.map.saveStatus = 'Map saved, however ' + vm.map.progress.failed + ' tiles were not downloaded. ' +
-            'Try saving the maps again with the same name to download the missing tiles.';
+            'Try saving the map again with the same name to download the missing tiles.';
         }
         else if (mapsToSave.length > 1 && vm.map.progress.failed === 1) {
           vm.map.saveStatus = 'Maps saved, however 1 tile was not downloaded. ' +
@@ -83,7 +96,8 @@
         deferred.resolve();
       }, function (notify) {
         // Update the progress bar once we receive notifications
-        vm.map.percentDownload = Math.ceil(((notify.success.length + notify.failed.length) / vm.tiles.need.length) * 100) || 0;
+        vm.map.percentDownload = Math.ceil(
+            ((notify.success.length + notify.failed.length) / vm.tiles.need.length) * 100) || 0;
         vm.map.progress = {
           'success': notify.success.length,
           'failed': notify.failed.length,
@@ -161,57 +175,76 @@
       $state.go('app.map');
     }
 
+    function nameSelectChanged() {
+      if (vm.selectedName.name === '-- New Offline Map --') {
+        vm.showNameField = true;
+        vm.map = {};
+      }
+      else {
+        vm.showNameField = false;
+        vm.map.name = vm.selectedName.name;
+      }
+    }
+
     function submit() {
-      var mapsToSave = [];
-      mapsToSave.push({
-        'name': vm.map.name,
-        'mapProvider': mapExtent.mapProvider,
-        'tiles': {
-          'need': _.filter(vm.tiles.need, function (tile) {
-            return tile.tile_provider === mapExtent.mapProvider;
-          }),
-          'saved': _.filter(vm.tiles.saved, function (tile) {
-            return tile.tile_provider === mapExtent.mapProvider;
-          })
-        }
-      });
-      if (vm.map.downloadMacrostrat) {
+      if (vm.map.name) {
+        var mapsToSave = [];
         mapsToSave.push({
-          'name': vm.map.name + '-macrostratGeologic',
-          'mapProvider': 'macrostratGeologic',
+          'name': vm.map.name,
+          'mapProvider': mapExtent.mapProvider,
           'tiles': {
             'need': _.filter(vm.tiles.need, function (tile) {
-              return tile.tile_provider === 'macrostratGeologic';
+              return tile.tile_provider === mapExtent.mapProvider;
             }),
             'saved': _.filter(vm.tiles.saved, function (tile) {
-              return tile.tile_provider === 'macrostratGeologic';
+              return tile.tile_provider === mapExtent.mapProvider;
             })
           }
         });
-      }
-
-      var promises = [];
-      _.each(mapsToSave, function (mapToSave, i) {
-        var deferred = $q.defer(); // init promise
-        OfflineTilesFactory.checkValidMapName(mapToSave).then(function (valid, newTiles) {
-          if (!valid) mapsToSave.splice(i, 1);
-          else if (valid && newTiles) mapToSave.tiles.saved = newTiles;
-          deferred.resolve();
-        });
-        promises.push(deferred.promise);
-      });
-
-      $q.all(promises).then(function () {
-        if (_.size(mapsToSave) > 0) {
-          // tell the user that we're saving the map
-          vm.submitBtnText = 'Saving map . . . please wait.';
-          vm.map.progress = '';
-          vm.downloading = true;
-          saveMaps(mapsToSave).then(function () {
-            activate();
+        if (vm.map.downloadMacrostrat) {
+          mapsToSave.push({
+            'name': vm.map.name + '-macrostratGeologic',
+            'mapProvider': 'macrostratGeologic',
+            'tiles': {
+              'need': _.filter(vm.tiles.need, function (tile) {
+                return tile.tile_provider === 'macrostratGeologic';
+              }),
+              'saved': _.filter(vm.tiles.saved, function (tile) {
+                return tile.tile_provider === 'macrostratGeologic';
+              })
+            }
           });
         }
-      });
+
+        var promises = [];
+        _.each(mapsToSave, function (mapToSave, i) {
+          var deferred = $q.defer(); // init promise
+          OfflineTilesFactory.checkValidMapName(mapToSave).then(function (valid, newTiles) {
+            if (!valid) mapsToSave.splice(i, 1);
+            else if (valid && newTiles) mapToSave.tiles.saved = newTiles;
+            deferred.resolve();
+          });
+          promises.push(deferred.promise);
+        });
+
+        $q.all(promises).then(function () {
+          if (_.size(mapsToSave) > 0) {
+            // tell the user that we're saving the map
+            vm.submitBtnText = 'Saving map . . . please wait.';
+            vm.map.progress = '';
+            vm.downloading = true;
+            saveMaps(mapsToSave).then(function () {
+              activate();
+            });
+          }
+        });
+      }
+      else {
+        $ionicPopup.alert({
+          'title': 'No Name Entered!',
+          'template': 'Please give the map a name.'
+        });
+      }
     }
   }
 }());

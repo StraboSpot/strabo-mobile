@@ -178,16 +178,16 @@
         if (!savedMap) deferred.resolve(true, null);
         else if (savedMap && map.mapProvider !== savedMap.mapProvider) {
           $ionicPopup.alert({
-            'title': 'Duplicate Map Name!',
-            'template': 'There is already a saved map with the name ' + map.name + ' and this map uses a different ' +
-            'tile provider. Delete the saved map  ' + map.name + ' before trying to save a map with the same name.'
+            'title': 'Append Error!',
+            'template': 'Cannot append the selected new tiles to the saved map <b>' + map.name + '</b> since the map' +
+            ' tile provider is not the same. A new map name must be given if you wish to use a different tile provider.'
           });
           deferred.resolve(false, null);
         }
         else {
           var confirmPopup = $ionicPopup.confirm({
-            'title': 'Duplicate Map Name!',
-            'template': 'There is already a saved map with the name ' + map.name + '. Append the current tiles to saved map?'
+            'title': 'Append Tiles?',
+            'template': 'Append the current tiles to saved map <b>' + map.name + '</b>?'
           });
           confirmPopup.then(function (res) {
             if (res) {

@@ -92,9 +92,9 @@
       confirmPopup.then(function (res) {
         if (res) {
           $ionicLoading.show({
-            'template': '<ion-spinner></ion-spinner>'
+            'template': '<ion-spinner></ion-spinner><br>Deleting Map'
           });
-          OfflineTilesFactory.deleteMap(map).then(function () {
+          OfflineTilesFactory.deleteMap(map).finally(function () {
             // console.log('this map has been deleted');
             $ionicLoading.hide();
             activate();
@@ -136,7 +136,7 @@
             // rename the map
             OfflineTilesFactory.renameMap(map.name, vm.mapDetail.newName)
               .then(function () {
-                activate();
+                refreshOfflineMapList();
               });
           }
         });
