@@ -5,16 +5,20 @@
     .module('app')
     .controller('OrientationController', OrientationController);
 
-  OrientationController.$inject = ['$location', '$log', '$state', 'DataModelsFactory', 'FormFactory', 'SpotFactory'];
+  OrientationController.$inject = ['$ionicPopover', '$ionicPopup', '$location', '$log', '$q', '$scope', '$state',
+    'DataModelsFactory', 'FormFactory', 'SpotFactory'];
 
-  function OrientationController($location, $log, $state, DataModelsFactory, FormFactory, SpotFactory) {
+  function OrientationController($ionicPopover, $ionicPopup, $location, $log, $q, $scope, $state, DataModelsFactory,
+                                 FormFactory, SpotFactory) {
     var vm = this;
 
     vm.choices = {};
+    vm.copyThisOrientation = copyThisOrientation;
     vm.currentSpot = SpotFactory.getCurrentSpot();
     vm.data = {};
     vm.isOptionChecked = isOptionChecked;
     vm.newOrientation = newOrientation;
+    vm.popover = {};
     vm.returnToSpot = returnToSpot;
     vm.showField = showField;
     vm.survey = {};
@@ -72,11 +76,61 @@
           }
           break;
       }
+      createPopover();
+    }
+
+    function createPopover() {
+      $ionicPopover.fromTemplateUrl('app/spot/orientation-popover.html', {
+        'scope': $scope
+      }).then(function (popover) {
+        vm.popover = popover;
+      });
+
+      // Cleanup the popover when we're done with it!
+      $scope.$on('$destroy', function () {
+        vm.popover.remove();
+      });
+    }
+
+    function doCopy() {
+      // Set new index
+      var i = SpotFactory.getCurrentOrientationIndex();
+      var aI = SpotFactory.getCurrentAssociatedOrientationIndex();
+      var iNew = i;
+      var aINew;
+      if (angular.isDefined(aI)) {
+        aINew = vm.currentSpot.properties.orientation_data[i].associated_orientation.length;
+      }
+      else iNew = vm.currentSpot.properties.orientation_data.length;
+      SpotFactory.setCurrentOrientationIndex(iNew, aINew);
+
+      // Copy data
+      var copy = angular.copy(vm.data);
+      delete copy.name;
+      copy.id = Math.floor((new Date().getTime() + Math.random()) * 10);
+      if (angular.isDefined(aI)) {
+        vm.currentSpot.properties.orientation_data[i].associated_orientation.push(copy);
+      }
+      else vm.currentSpot.properties.orientation_data.push(copy);
+
+      vm.popover.hide();
+      $state.go('app.orientation', {}, {'reload': true});
     }
 
     /**
      * Public Functions
      */
+
+    function copyThisOrientation() {
+      submit().then(doCopy,
+        function (err) {
+          $ionicPopup.alert({
+            'title': 'Unable To Copy!',
+            'template': err
+          });
+          vm.popover.hide();
+        });
+    }
 
     function isOptionChecked(field, choice) {
       if (vm.data) {
@@ -94,7 +148,11 @@
     }
 
     function returnToSpot() {
-      $location.path('/app/spotTab/' + vm.currentSpot.properties.id + '/orientation-data');
+      submit().then(function () {
+        $location.path('/app/spotTab/' + vm.currentSpot.properties.id + '/orientation-data');
+      }, function () {
+        $location.path('/app/spotTab/' + vm.currentSpot.properties.id + '/orientation-data');
+      });
     }
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair
@@ -105,6 +163,7 @@
     }
 
     function submit() {
+      var deferred = $q.defer(); // init promise
       // Don't validate if no fields are filled in
       var validate = false;
       _.each(vm.survey, function (field) {
@@ -112,9 +171,7 @@
           validate = true;
         }
       });
-      if (!validate) {
-        $location.path('/app/spotTab/' + vm.currentSpot.properties.id + '/orientation-data');
-      }
+      if (!validate) deferred.reject('Empty Orientation Data');
       else {
         var valid = FormFactory.validate(vm.survey, vm.data);
         if (valid) {
@@ -128,6 +185,9 @@
               if (!vm.currentSpot.properties.orientation_data[i].associated_orientation) {
                 vm.currentSpot.properties.orientation_data[i].associated_orientation = [];
               }
+              vm.data.id = Math.floor((new Date().getTime() + Math.random()) * 10);
+              SpotFactory.setCurrentOrientationIndex(i,
+                vm.currentSpot.properties.orientation_data[i].associated_orientation.length);
               vm.currentSpot.properties.orientation_data[i].associated_orientation.push(vm.data);
             }
             else {
@@ -142,13 +202,16 @@
           }
           else {
             if (!vm.currentSpot.properties.orientation_data) vm.currentSpot.properties.orientation_data = [];
+            vm.data.id = Math.floor((new Date().getTime() + Math.random()) * 10);
             vm.currentSpot.properties.orientation_data.push(vm.data);
           }
           SpotFactory.save(vm.currentSpot).then(function () {
-            $location.path('/app/spotTab/' + vm.currentSpot.properties.id + '/orientation-data');
+            deferred.resolve();
           });
         }
+        else deferred.reject('Invalid Orientation Data');
       }
+      return deferred.promise;
     }
 
     function toggleChecked(field, choice) {

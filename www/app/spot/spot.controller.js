@@ -23,6 +23,7 @@
     vm.goBack = goBack;
     vm.isOptionChecked = isOptionChecked;
     vm.loadTab = loadTab;
+    vm.popover = {};
     vm.setSelMultClass = setSelMultClass;
     vm.showField = showField;
     vm.showRadius = true;

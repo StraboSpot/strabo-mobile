@@ -2,8 +2,11 @@
   <ion-view>
     <ion-nav-title>{{ vm.title }}</ion-nav-title>
     <ion-nav-buttons side='left'>
-      <button ng-click='vm.submit();'
+      <button ng-click='vm.returnToSpot();'
               class='button button-icon icon ion-arrow-left-c'></button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side='right'>
+      <button ng-click='vm.popover.show($event)' class='button button-icon icon ion-more rotate-90'></button>
     </ion-nav-buttons>
     <ion-content class='has-header strabo-form'>
       <ion-input class='item item-input item-stacked-label item-text-wrap'>

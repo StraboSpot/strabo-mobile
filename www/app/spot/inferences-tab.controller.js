@@ -31,6 +31,7 @@
       'other_relationship': undefined,
       'relationship_type': '-- Select a Relationship --'
     };
+    vm.relatedRosettaChoices = {};
     vm.relationshipTypeChoices = ['-- Select a Relationship --', 'cross-cuts', 'is cut by', 'is younger than', 'is older than',
       'is lower metamorphic grade than', 'is higher metamorphic grade than', 'is included within', 'includes', 'other'];
     vm.relationshipModal = {};
