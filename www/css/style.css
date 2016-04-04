@@ -192,6 +192,12 @@ Orientation Tab Style
   text-transform: initial;
 }
 
+
+.orientation-reference {
+  background: lightgray;
+  font-size: x-small;
+}
+
 /*--------------------
 Online & Offline Notification Circles
 --------------------*/

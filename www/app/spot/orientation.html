@@ -9,6 +9,16 @@
       <button ng-click='vm.popover.show($event)' class='button button-icon icon ion-more rotate-90'></button>
     </ion-nav-buttons>
     <ion-content class='has-header strabo-form'>
+      <div class='padding orientation-reference' ng-show='vm.showAssociatedOrientation()'>
+        <b>REFERENCE ORIENTATION</b></span>
+        <span ng-if='vm.parentOrientation.strike'>Strike: {{ vm.parentOrientation.strike }}</span>
+        <span ng-if='vm.parentOrientation.dip_direction'>Dip Direction: {{ vm.parentOrientation.dip_direction }}</span>
+        <span ng-if='vm.parentOrientation.dip'>Dip: {{ vm.parentOrientation.dip }}</span>
+        <span ng-if='vm.parentOrientation.trend'>Trend: {{ vm.parentOrientation.trend }}</span>
+        <span ng-if='vm.parentOrientation.plunge'>Plunge: {{ vm.parentOrientation.plunge }}</span>
+        <span ng-if='vm.parentOrientation.feature_type'>
+          Feature Type: {{ vm.featureTypeLabel(vm.parentOrientation.feature_type) }}</span>
+      </div>
       <ion-input class='item item-input item-stacked-label item-text-wrap'>
         <ion-label>Orientation Name</ion-label>
         <input type='text' placeholder='If a name is not specified a default will be given.' ng-model='vm.data.name'>

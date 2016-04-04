@@ -16,10 +16,12 @@
     vm.copyThisOrientation = copyThisOrientation;
     vm.currentSpot = SpotFactory.getCurrentSpot();
     vm.data = {};
+    vm.featureTypeLabel = featureTypeLabel;
     vm.isOptionChecked = isOptionChecked;
     vm.newOrientation = newOrientation;
     vm.popover = {};
     vm.returnToSpot = returnToSpot;
+    vm.showAssociatedOrientation = showAssociatedOrientation;
     vm.showField = showField;
     vm.survey = {};
     vm.submit = submit;
@@ -132,6 +134,10 @@
         });
     }
 
+    function featureTypeLabel(type) {
+      return DataModelsFactory.getFeatureTypeLabel(type);
+    }
+
     function isOptionChecked(field, choice) {
       if (vm.data) {
         if (vm.data[field]) {
@@ -153,6 +159,22 @@
       }, function () {
         $location.path('/app/spotTab/' + vm.currentSpot.properties.id + '/orientation-data');
       });
+    }
+
+    function showAssociatedOrientation() {
+      var i = SpotFactory.getCurrentOrientationIndex();
+      var aI = SpotFactory.getCurrentAssociatedOrientationIndex();
+      if (angular.isDefined(aI) ||
+        ((angular.isDefined(i) && (($state.current.name === 'app.new-linear-orientation' ||
+        $state.current.name === 'app.new-planar-orientation' ||
+        $state.current.name === 'app.new-tabular-zone-orientation'))))) {
+        vm.parentOrientation = vm.currentSpot.properties.orientation_data[i];
+        if (vm.parentOrientation.strike || vm.parentOrientation.dip_direction || vm.parentOrientation.dip ||
+          vm.parentOrientation.trend || vm.parentOrientation.plunge || vm.parentOrientation.feature_type) {
+          return true;
+        }
+      }
+      return false;
     }
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair
