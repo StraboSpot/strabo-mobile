@@ -3,7 +3,7 @@
  * Copyright 2015 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v1.2.3
+ * Ionic, v1.2.4
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -3494,6 +3494,9 @@ ion-infinite-scroll {
   bottom: 0;
   left: 0;
   position: absolute; }
+  .overflow-scroll.pane {
+    overflow-x: hidden;
+    overflow-y: scroll; }
   .overflow-scroll .scroll {
     position: static;
     height: 100%;
@@ -8458,7 +8461,7 @@ input:checked + .checkbox-icon:after {
     background: #f8f8f8;
     color: #444; }
   .item-select.item-stable:after, .item-select.item-stable .input-label {
-    color: #666666; }
+    color: #656565; }
   .item-select.item-positive select {
     background: #387ef5;
     color: #fff; }
