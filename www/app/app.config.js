@@ -299,10 +299,12 @@
         }
       })
       .state('app.about', {
+        'cache': false,
         'url': '/about',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/layout/about.html'
+            'templateUrl': 'app/about/about.html',
+            'controller': 'AboutController as vm'
           }
         }
       });

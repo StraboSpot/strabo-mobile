@@ -61,6 +61,11 @@ Build Stack:
 ### Build App with Ionic
 See [Ionic Package Help Docs](http://docs.ionic.io/docs/package-overview)
 
+**To Deploy Updates**
+
+    ionic plugin add ionic-plugin-deploy
+    ionic upload --note "new version" --deploy=production
+
 ### Build App Locally
 **Add Cordova Plugins**
 

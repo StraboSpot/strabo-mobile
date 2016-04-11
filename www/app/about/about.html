@@ -6,10 +6,27 @@
     <div class='padding'>
       Strabo Mobile is a part of a larger Data System for Structural Geology and Tectonics (SG&T).
       It consists of a database, a web site and a mobile app.
-      The entire Strabo project is still in development and as such the mobile app is not yet in the Google Play Store or the iOS App Store but can be tested by accessing it as described below.
+      The entire Strabo project is still in development and as such the mobile app is not yet in the Google Play Store
+      or the iOS App Store but can be tested by accessing it as described below.
       <br><br>
       Current Version 0.10.6
       <br><br>
+      <div ng-hide='vm.isWeb'>
+        <button ng-click='vm.checkForUpdates()'
+                class='button button-clear button-positive padding-left'>
+          <i class='icon ion-refresh'></i>
+          <span class='button-text-big'>Check for Updates</span>
+        </button>
+        <div ng-show='vm.checkedForUpdates && !vm.hasUpdate'>No Updates Available
+        </div>
+        <div ng-show='vm.hasUpdate'><br></div>
+        <button ng-show='vm.hasUpdate' ng-click='vm.doUpdate()'
+                class='button button-clear button-positive padding-left'>
+          <i class='icon ion-arrow-down-a'></i>
+          <span class='button-text-big'>Download Update</span>
+        </button>
+        <br><br>
+      </div>
       <h5>Accessing the main site</h5>
       <hr>
       <a href='#' onclick='window.open("http://strabospot.org/", "_system", "location=yes"); return false;'>http://strabospot.org/</a>
@@ -20,8 +37,10 @@
          onclick='window.open("https://build.phonegap.com/apps/1289076/share", "_system", "location=yes"); return false;'>https://build.phonegap.com/apps/1289076/share</a>
       <br><br>
       Note for iOS users:<br>
-      The link above will not however work for iOS devices unless your device has been previously registered as a valid testing device for this particular project.
-      The app can be installed on iOS devices through the use of the Ionic View app. Search the App Store for Ionic View. Preview a Shared App and use the id <b>90b11d0a</b>.
+      The link above will not however work for iOS devices unless your device has been previously registered as a valid
+      testing device for this particular project.
+      The app can be installed on iOS devices through the use of the Ionic View app. Search the App Store for Ionic
+      View. Preview a Shared App and use the id <b>90b11d0a</b>.
       Some functionality is limited when using the app through Ionic View however, such as the camera/photos.
       <br><br>
       A web version of the app can be accessed at <a href='#'
