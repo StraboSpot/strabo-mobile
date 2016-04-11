@@ -9,6 +9,7 @@
 
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <script src="lib/ionic-platform-web-client/dist/ionic.io.bundle.min.js"></script>
 
     <!-- ngCordova -->
     <script src="lib/ng-cordova.js"></script>
@@ -38,7 +39,8 @@
     <script src="lib/ol3/ol3-layerswitcher.js"></script>
 
     <!-- cordova script (this will be a 404 during development) -->
-    <script src="cordova.js"></script>
+    <!-- Cordova is bootstrapped by ionic-platform-web-client, uncomment this if you remove ionic-platform-web-client... -->
+    <!-- <script src="cordova.js"></script> -->
 
     <!-- local storage with localForage and SQLite Driver -->
     <script src="lib/localforage/dist/localforage.js"></script>

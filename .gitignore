@@ -6,15 +6,11 @@ hooks/
 platforms/
 plugins/
 resources/
-
-plugins/
 scss/
 .bowerrc
 bower.json
 gulpfile.js
-ionic.project
 package.json
-
 .idea
 
 # Ignore Mac DS_Store files

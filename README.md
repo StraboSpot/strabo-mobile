@@ -25,42 +25,21 @@ Build Stack:
 ### Installation
 
     npm install -g cordova ionic
-    ionic start ionic-sample blank
+    ionic start ToDelete
 
 ### Get Project Files
 
     git clone https://github.com/StraboSpot/strabo-mobile.git
     cd strabo-mobile
 
-- Move everything, **except `.gitignore`, `config.xml` and the `www` folder**, from the `ionic-sample` folder created above into the `strabo-mobile` folder.
-- Delete the now mostly empty ionic-sample folder.
-- In `ionic.project` modify to `"app_id": "90b11d0a"`.
-
-### Add Cordova Plugins
-
-In the `strabo-mobile` folder:
-
-    cordova plugin add cordova-plugin-geolocation
-    cordova plugin add cordova-plugin-network-information
-    cordova plugin add cordova-plugin-camera
-    cordova plugin add cordova-plugin-file
-    cordova plugin add cordova-plugin-inappbrowser
-
-Also need to install this plugin due to Cordova bug with Android and content schema
-
-    cordova plugin add cordova-plugin-filepath
-    
-Install this for the localForage dependencies
-
-    cordova plugin add https://github.com/litehelpers/Cordova-sqlite-storage.git
-    npm install -g bower
-    bower install --save localForage-cordovaSQLiteDriver
+- Move everything, **except `.gitignore`, `config.xml`, `ionic.project` and the `www` folder**, from the `ionic-sample` folder created above into the `strabo-mobile` folder.
+- Delete the now mostly empty `ToDelete` folder.
 
 ### Tested Environment
 
     ionic library: 1.2.4
     ionic cli : 1.7.14
-    cordova: 5.4.1
+    cordova: 6.6.1
     ng-cordova: v0.1.23-alpha
     cordova-plugin-camera: 1.2.0
     cordova-plugin-console: 1.0.1
@@ -74,16 +53,38 @@ Install this for the localForage dependencies
     nodejs: 5.0.0
     npm: 2.12.1
     bower: 1.7.2
-
-### Run
-
-In a web browser:
+    
+### Run in a Web Browser    
 
     ionic serve
 
+### Build App with Ionic
+See [Ionic Package Help Docs](http://docs.ionic.io/docs/package-overview)
+
+### Build App Locally
+**Add Cordova Plugins**
+
+In the `strabo-mobile` folder:
+
+    cordova plugin add cordova-plugin-geolocation
+    cordova plugin add cordova-plugin-network-information
+    cordova plugin add cordova-plugin-camera
+    cordova plugin add cordova-plugin-file
+    cordova plugin add cordova-plugin-inappbrowser
+
+Also need to install this plugin due to Cordova bug with Android and content schema
+
+    cordova plugin add cordova-plugin-filepath
+    
+Install this plugin for the localForage dependencies
+
+    cordova plugin add cordova-sqlite-storage@0.7.14
+
+**Run on a Mobile Device**
+
 To test as a native app see the Ionic [guide](http://ionicframework.com/docs/guide/testing.html).
 
-For a USB connected Android device first copy `config.xml` from `strabo-moble/www` into the `strabo-mobile` root. (This copy can be deleted after but be sure the original remains in `strabo-moble/www`. PhoneGap Build needs `config.xml` in `strabo-moble/www`.) Then:
+For a USB connected Android device first copy `config.xml` from `strabo-moble/www` into the `strabo-mobile` root. Then:
 
     ionic platform add android
     ionic run
