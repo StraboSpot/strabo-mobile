@@ -15,7 +15,6 @@ Strabo Mobile is a cross-platform mobile application for Structural Geology and 
 - Linting Utility: [ESLint](http://eslint.org/)
 
 ## Development Setup
----
 
 ### Prerequisites
 
@@ -26,17 +25,13 @@ Strabo Mobile is a cross-platform mobile application for Structural Geology and 
 ### Installation
 
     npm install -g cordova ionic
-    ionic start ToDelete
 
 ### Get Project Files
 
     git clone https://github.com/StraboSpot/strabo-mobile.git
     cd strabo-mobile
 
-1. Move everything, **except `.gitignore`, `config.xml`, `ionic.project` and the `www` folder**, from the `ionic-sample` folder created above into the `strabo-mobile` folder.
-1. Delete the now mostly empty `ToDelete` folder.
-1. Restore the Plugins and Platforms from `package.json`:
-
+Restore the Plugins and Platforms from `package.json`:
 
     ionic state restore
 
@@ -73,14 +68,20 @@ Strabo Mobile is a cross-platform mobile application for Structural Geology and 
     ng-cordova: v0.1.23-alpha
 
 ## Running/Testing the App
----
+
 ### In a Desktop Web Browser:  
 
     ionic serve
 
 ### As a Native App, Built App with Ionic
 - Packages were built in the step above with `ionic state restore`.
+- Set up an [Ionic Security Profile](http://docs.ionic.io/docs/security-profiles), named strabo. 
 - Use [Ionic Package](http://docs.ionic.io/docs/package-overview) to build new packages for changes that require binary modifications.
+
+
+    ionic package build android --release --profile strabo
+    ionic package build ios --release --profile strabo
+
 - Changes to the HTML/CSS/JS/Images/Audio/Video files (basically anything inside `/www`) only need to be updated with [Ionic Deploy](http://docs.ionic.io/docs/deploy-overview).
 
 To Deploy Updates:
@@ -97,7 +98,7 @@ For a USB connected Android device first copy `config.xml` from `strabo-moble/ww
     ionic run
     
 ## Library Updates
----
+
 **Ionic:**
 
 1. Download latest ionic: `npm install -g ionic`
@@ -106,7 +107,7 @@ For a USB connected Android device first copy `config.xml` from `strabo-moble/ww
 
 
 ## Unit-Testing
----
+
 Prerequisites:
 
     npm install karma --save-dev
@@ -125,7 +126,7 @@ To run tests:
 Note: Make sure the version of `angular.js` that is bundled within `www/lib/ionic/js/ionic.bundle.js` matches the version of `angular-mocks.js`. Updated versions can be found [here](https://code.angularjs.org/).
 
 ## Linting
----
+
 Using [ESLint](http://eslint.org/) with an AngularJS plugin based on [John Papa's Guideline](https://github.com/johnpapa/angular-styleguide).
 
 1) Install eslint as a dev-dependency:

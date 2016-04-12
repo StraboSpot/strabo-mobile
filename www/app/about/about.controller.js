@@ -5,9 +5,9 @@
     .module('app')
     .controller('AboutController', AboutController);
 
-  AboutController.$inject = ['$scope'];
+  AboutController.$inject = ['$ionicLoading', '$log', '$scope'];
 
-  function AboutController($scope) {
+  function AboutController($ionicLoading, $log, $scope) {
     var vm = this;
     var deploy = new Ionic.Deploy();
 
@@ -20,29 +20,34 @@
     /**
      * Public Functions
      */
-    
+
     // Check Ionic Deploy for new code
     function checkForUpdates() {
-      console.log('Ionic Deploy: Checking for updates');
+      $log.log('Ionic Deploy: Checking for updates');
+      $ionicLoading.show({
+        'template': '<ion-spinner></ion-spinner>'
+      });
       vm.checkedForUpdates = false;
-      deploy.check().then(function(hasUpdate) {
-        console.log('Ionic Deploy: Update available: ' + hasUpdate);
+      deploy.check().then(function (hasUpdate) {
+        $log.log('Ionic Deploy: Update available: ' + hasUpdate);
         vm.checkedForUpdates = true;
         vm.hasUpdate = hasUpdate;
+        $ionicLoading.hide();
         $scope.$apply();
-      }, function(err) {
-        console.error('Ionic Deploy: Unable to check for updates', err);
+      }, function (err) {
+        $ionicLoading.hide();
+        $log.error('Ionic Deploy: Unable to check for updates', err);
       });
     }
-    
+
     // Update app code with new release from Ionic Deploy
     function doUpdate() {
-      deploy.update().then(function(res) {
-        console.log('Ionic Deploy: Update Success! ', res);
-      }, function(err) {
-        console.log('Ionic Deploy: Update error! ', err);
-      }, function(prog) {
-        console.log('Ionic Deploy: Progress... ', prog);
+      deploy.update().then(function (res) {
+        $log.log('Ionic Deploy: Update Success! ', res);
+      }, function (err) {
+        $log.log('Ionic Deploy: Update error! ', err);
+      }, function (prog) {
+        $log.log('Ionic Deploy: Progress... ', prog);
       });
     }
   }
