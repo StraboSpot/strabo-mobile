@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="gov.az.azgs.strabomobile" version="0.10.6" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget id="gov.az.azgs.strabomobile" version="0.11" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:gap="http://phonegap.com/ns/1.0">
   <name>Strabo Mobile</name>
   <description>
     Strabo Mobile is a cross-platform mobile application for geologic field data acquisition.
@@ -25,17 +25,6 @@
   <gap:config-file platform="ios" parent="UIFileSharingEnabled" mode="replace">
     <true></true>
   </gap:config-file>
-  <gap:plugin name="cordova-plugin-camera" version="1.2.0" source="npm"/>
-  <gap:plugin name="cordova-plugin-console" version="1.0.2" source="npm"/>
-  <gap:plugin name="cordova-plugin-device" version="1.1.1" source="npm"/>
-  <gap:plugin name="cordova-plugin-file" version="3.0.0" source="npm"/>
-  <gap:plugin name="cordova-plugin-geolocation" version="1.0.1" source="npm"/>
-  <gap:plugin name="cordova-plugin-inappbrowser" version="1.0.1" source="npm"/>
-  <gap:plugin name="cordova-plugin-network-information" version="1.0.1" source="npm"/>
-  <gap:plugin name="cordova-plugin-whitelist" version="1.2.1" source="npm"/>
-  <gap:plugin name="ionic-plugin-keyboard" version="2.0.1" source="npm"/>
-  <gap:plugin name="cordova-plugin-filepath" version="1.0.0" source="npm"/>
-  <gap:plugin name="cordova-sqlite-storage" version="0.7.14" source="npm"/>
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
   </feature>

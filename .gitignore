@@ -10,7 +10,6 @@ scss/
 .bowerrc
 bower.json
 gulpfile.js
-package.json
 .idea
 
 # Ignore Mac DS_Store files
