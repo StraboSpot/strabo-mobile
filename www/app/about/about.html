@@ -17,8 +17,7 @@
           <i class='icon ion-refresh'></i>
           <span class='button-text-big'>Check for Updates</span>
         </button>
-        <div ng-show='vm.checkedForUpdates && !vm.hasUpdate'>No Updates Available
-        </div>
+        <div ng-show='vm.msg'>{{ vm.msg }} </div>
         <div ng-show='vm.hasUpdate'><br></div>
         <button ng-show='vm.hasUpdate' ng-click='vm.doUpdate()'
                 class='button button-clear button-positive padding-left'>
