@@ -78,10 +78,11 @@ Restore the Plugins and Platforms from `package.json`:
 - Set up an [Ionic Security Profile](http://docs.ionic.io/docs/security-profiles), named strabo. 
 - Use [Ionic Package](http://docs.ionic.io/docs/package-overview) to build new packages for changes that require binary modifications.
 
-
+```
     ionic package build android --release --profile strabo
     ionic package build ios --release --profile strabo
-
+```
+    
 - Changes to the HTML/CSS/JS/Images/Audio/Video files (basically anything inside `/www`) only need to be updated with [Ionic Deploy](http://docs.ionic.io/docs/deploy-overview).
 
 To Deploy Updates:
