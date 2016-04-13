@@ -1,13 +1,13 @@
-name,type,label,required,hint
-project_name,text,Project Name,true,
-start_date,date,Start Date,false,
-end_date,date,End Date,false,
-purpose_of_study,text,Purpose of Study,false,
-other_team_members,text,Other Team Members,false,
-area_of_interest,text,Area of Interest,false,
-instruments,text,Instruments Used,false,
-gps_datum,text,GPS Datum,false,default to WGS84
-magnetic_declination,text,Magnetic Declination,false,Enter range for high latitude areas
-notes,note,Notes,false,
-start,start,,,
-end,end,,,
+name,type,label,required,hint,appearance
+project_name,text,Project Name,true,,
+start_date,date,Start Date,false,,
+end_date,date,End Date,false,,
+purpose_of_study,text,Purpose of Study,false,,
+other_team_members,text,Other Team Members,false,,
+area_of_interest,text,Area of Interest,false,,
+instruments,text,Instruments Used,false,,
+gps_datum,text,GPS Datum,false,default to WGS84,
+magnetic_declination,text,Magnetic Declination,false,Enter range for high latitude areas,
+notes,text,Notes,false,,multiline
+start,start,,,,
+end,end,,,,

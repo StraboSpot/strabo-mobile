@@ -1,14 +1,14 @@
-name,type,label,required,relevant
-sample_id_name,text,Sample specific ID / Name,true,
-oriented_sample,select_one hz9zw76,Oriented Sample,false,
-sample_orientation_notes,text,Sample Orientation Notes,false,${oriented_sample} = 'yes'
-sample_description,text,Sample Description,false,
-material_type,select_one jq8qd30,Material Type,false,
-other_material_type,text,Other Material Type,true,${material_type} = 'other'
-sample_size,text,Sample Size,false,
-main_sampling_purpose,select_one to0mv13,Main Sampling Purpose,false,
-other_sampling_purpose,text,Other Sampling Purpose,true,${main_sampling_purpose} = 'other'
-intactness_of_sample,select_one fc6dz57,Intactness of Sample,false,
-sample_notes,note,Sample Notes,false,
-start,start,,,
-end,end,,,
+name,type,label,required,relevant,appearance
+sample_id_name,text,Sample specific ID / Name,true,,
+oriented_sample,select_one hz9zw76,Oriented Sample,false,,
+sample_orientation_notes,text,Sample Orientation Notes,false,${oriented_sample} = 'yes',
+sample_description,text,Sample Description,false,,
+material_type,select_one jq8qd30,Material Type,false,,
+other_material_type,text,Other Material Type,true,${material_type} = 'other',
+sample_size,text,Sample Size,false,,
+main_sampling_purpose,select_one to0mv13,Main Sampling Purpose,false,,
+other_sampling_purpose,text,Other Sampling Purpose,true,${main_sampling_purpose} = 'other',
+intactness_of_sample,select_one fc6dz57,Intactness of Sample,false,,
+sample_notes,text,Sample Notes,false,,multiline
+start,start,,,,
+end,end,,,,

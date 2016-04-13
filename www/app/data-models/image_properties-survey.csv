@@ -1,14 +1,15 @@
-name,type,label,required,hint
-group_image_data,begin group,Image Data,,
-title,text,Image Name,false,
-caption,text,Image Description,false,
-scale_of_image,text,Scale of Overall Image,false,
-scale_of_object,text,Scale and type of object in image (m),false,
-group_camera_orientation,begin group,Camera Orientation,,
-view_azimuth_trend,integer,View azimuth (trend),false,
-view_angle_plunge,integer,View angle (plunge),false,
-orientation_of_view_subject,text,Orientation of View Subject,false,"e.g., facing direction of cliff face"
-,end group,,,
-,end group,,,
-start,start,,,
-end,end,,,
+name,type,label,required,appearance,hint
+group_image_data,begin group,Image Data,,,
+title,text,Image Name,false,,
+caption,text,Image Description,false,multiline,
+scale_of_image,text,Scale of Overall Image,false,,
+scale_of_object,text,Scale and type of object in image (m),false,,
+group_camera_orientation,begin group,Camera Orientation,,,
+view_azimuth_trend,integer,View azimuth (trend),false,,
+view_angle_plunge,integer,View angle (plunge),false,,
+orientation_of_view_subject,text,Orientation of View Subject,false,,"e.g., facing direction of cliff face"
+,end group,,,,
+,end group,,,,
+start,start,,,,
+end,end,,,,
+

@@ -35,11 +35,21 @@
         <ion-input class='item item-input item-stacked-label item-text-wrap'
                    ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
           <ion-label>{{ field.label }}</ion-label>
-          <input type='text'
-                 name='{{ field.name }}'
-                 placeholder='{{ field.hint }}'
-                 ng-model='vm.data[field.name]'
-                 ng-required='{{ field.required }}'>
+          <div ng-if='field.appearance === "multiline"'>
+            <textarea name='{{ field.name }}'
+                      rows='4'
+                      placeholder='{{field.hint}}'
+                      ng-model='vm.data[field.name]'
+                      ng-required='{{ field.required }}'>
+            </textarea>
+          </div>
+          <div ng-if='field.appearance !== "multiline"'>
+            <input type='text'
+                   name='{{ field.name }}'
+                   placeholder='{{ field.hint }}'
+                   ng-model='vm.data[field.name]'
+                   ng-required='{{ field.required }}'>
+          </div>
         </ion-input>
       </div>
       <div ng-switch-when='date'>
@@ -57,12 +67,12 @@
         <ion-input class='item item-input item-stacked-label item-text-wrap'
                    ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
           <ion-label>{{ field.label }}</ion-label>
-                  <textarea name='{{ field.name }}'
-                            rows='4'
-                            placeholder='{{field.hint}}'
-                            ng-model='vm.data[field.name]'
-                            ng-required='{{ field.required }}'>
-                  </textarea>
+          <textarea name='{{ field.name }}'
+                    rows='4'
+                    placeholder='{{field.hint}}'
+                    ng-model='vm.data[field.name]'
+                    ng-required='{{ field.required }}'>
+          </textarea>
         </ion-input>
       </div>
       <div ng-switch-when='select_one'>

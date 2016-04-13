@@ -35,7 +35,7 @@ movement_amount_m,decimal,Movement Amount (m),How much movement?,false,,,,
 movement_amount_qualifier,select_one kh6kx98,Movement Amount Qualifier,,false,,,,${movement_amount_m} != ''
 thickness,decimal,Planar Feature Thickness (m),,false,,,,
 length,decimal,Planar Feature Length (m),,false,,,,
-notes,note,Planar Feature Notes,,false,,,,
+notes,text,Planar Feature Notes,,false,,,multiline,
 min_age,decimal,Minimum Age of Structure (Ma),,false,,,,
 min_age_just,text,Justification of Minimum Age,,false,,,,${min_age} != ''
 max_age,decimal,Maximum Age of Structure (Ma),,false,,,,

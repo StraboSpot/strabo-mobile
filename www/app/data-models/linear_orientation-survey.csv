@@ -13,6 +13,6 @@ min_age_just,text,Justification of Minimum Age,,false,,,${min_age} != '',,
 max_age,decimal,Maximum Age of Structure (Ma),,false,,,,,
 max_age_just,text,Justification of Maximum Age,,false,,,${max_age} != '',,
 geo_age,text,Geologic Age of Structure,,false,,,,,
-notes,note,Line Notes,,false,,,,,
+notes,text,Line Notes,,false,,,,,multiline
 start,start,,,,,,,,
 end,end,,,,,,,,
