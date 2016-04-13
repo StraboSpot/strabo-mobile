@@ -115,6 +115,7 @@
           vmParent.spot.properties.inferences.relationships.splice(i, 1);
           if (vmParent.spot.properties.inferences.relationships.length === 0) {
             delete vmParent.spot.properties.inferences.relationships;
+            if (_.isEmpty(vmParent.spot.properties.inferences)) delete vmParent.spot.properties.inferences;
           }
         }
         delRelationship = false;
@@ -145,6 +146,7 @@
         });
       }
       else {
+        if (!vmParent.spot.properties.inferences) vmParent.spot.properties.inferences = {};
         if (!vmParent.spot.properties.inferences.relationships) vmParent.spot.properties.inferences.relationships = [];
         if (vm.relationship.relationship_type !== 'other') delete vm.relationship.other_relationship;
         if (angular.isDefined(relationshipToEdit)) {
