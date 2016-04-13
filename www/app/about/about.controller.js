@@ -36,7 +36,7 @@
         $ionicLoading.hide();
         $scope.$apply();
       }, function (err) {
-        vm.msg = 'Unable to check for updates';
+        vm.msg = 'Unable to check for updates.';
         $scope.$apply();
         $ionicLoading.hide();
         $log.error('Ionic Deploy: Unable to check for updates', err);
@@ -45,11 +45,17 @@
 
     // Update app code with new release from Ionic Deploy
     function doUpdate() {
+      $ionicLoading.show({
+        'template': '<ion-spinner></ion-spinner>'
+      });
       deploy.update().then(function (res) {
+        $ionicLoading.hide();
         $log.log('Ionic Deploy: Update Success! ', res);
       }, function (err) {
+        $ionicLoading.hide();
         $log.log('Ionic Deploy: Update error! ', err);
       }, function (prog) {
+        $ionicLoading.hide();
         $log.log('Ionic Deploy: Progress... ', prog);
       });
     }
