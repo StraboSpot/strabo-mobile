@@ -9,7 +9,7 @@ resources/
 scss/
 .bowerrc
 bower.json
-
+info.txt
 gulpfile.js
 .idea
 
