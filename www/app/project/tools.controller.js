@@ -5,9 +5,9 @@
     .module('app')
     .controller('ToolsController', ToolsController);
 
-  ToolsController.$inject = ['DataModelsFactory', 'FormFactory', 'ProjectFactory'];
+  ToolsController.$inject = ['$location', 'DataModelsFactory', 'FormFactory', 'ProjectFactory'];
 
-  function ToolsController(DataModelsFactory, FormFactory, ProjectFactory) {
+  function ToolsController($location, DataModelsFactory, FormFactory, ProjectFactory) {
     var vm = this;
 
     vm.data = {};
@@ -22,8 +22,11 @@
      */
 
     function activate() {
-      vm.survey = DataModelsFactory.getDataModel('tools').survey;
-      vm.data = ProjectFactory.getProjectTools();
+      if (_.isEmpty(ProjectFactory.getCurrentProject())) $location.path('app/manage-project');
+      else {
+        vm.survey = DataModelsFactory.getDataModel('tools').survey;
+        vm.data = ProjectFactory.getProjectTools();
+      }
     }
 
     /**

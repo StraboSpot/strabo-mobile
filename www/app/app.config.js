@@ -69,6 +69,26 @@
           }
         }
       })
+      .state('app.tags', {
+        'cache': false,
+        'url': '/tags',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/project/tags.html',
+            'controller': 'TagsController as vm'
+          }
+        }
+      })
+      .state('app.tag', {
+        'cache': false,
+        'url': '/tags/:tag_id',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/project/tag.html',
+            'controller': 'TagController as vm'
+          }
+        }
+      })
       .state('app.tools', {
         'cache': false,
         'url': '/tools',

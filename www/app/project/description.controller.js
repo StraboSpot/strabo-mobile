@@ -5,10 +5,10 @@
     .module('app')
     .controller('DescriptionController', DescriptionController);
 
-  DescriptionController.$inject = ['$ionicModal', '$ionicPopup', '$scope', 'DataModelsFactory', 'FormFactory',
-    'ProjectFactory'];
+  DescriptionController.$inject = ['$ionicModal', '$ionicPopup', '$location', '$scope', 'DataModelsFactory',
+    'FormFactory', 'ProjectFactory'];
 
-  function DescriptionController($ionicModal, $ionicPopup, $scope, DataModelsFactory, FormFactory, ProjectFactory) {
+  function DescriptionController($ionicModal, $ionicPopup, $location, $scope, DataModelsFactory, FormFactory, ProjectFactory) {
     var vm = this;
     var isDelete = false;
 
@@ -32,10 +32,13 @@
      */
 
     function activate() {
-      vm.survey = DataModelsFactory.getDataModel('project').survey;
-      vm.data = ProjectFactory.getCurrentProject().description;
-      fixDates();
-      createModals();
+      if (_.isEmpty(ProjectFactory.getCurrentProject())) $location.path('app/manage-project');
+      else {
+        vm.survey = DataModelsFactory.getDataModel('project').survey;
+        vm.data = ProjectFactory.getCurrentProject().description;
+        fixDates();
+        createModals();
+      }
     }
 
     function createModals() {

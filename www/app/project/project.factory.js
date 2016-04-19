@@ -26,6 +26,8 @@
       'destroyProject': destroyProject,
       'destroyOtherFeature': destroyOtherFeature,
       'destroyRockUnit': destroyRockUnit,
+      'destroyTag': destroyTag,
+      'destroyTags': destroyTags,
       'getActiveDatasets': getActiveDatasets,
       'getCurrentDatasets': getCurrentDatasets,
       'getCurrentProject': getCurrentProject,
@@ -42,6 +44,8 @@
       'getSpotPrefix': getSpotPrefix,
       'getSpotsDataset': getSpotsDataset,
       'getSpotIds': getSpotIds,
+      'getTag': getTag,
+      'getTags': getTags,
       'incrementSampleNumber': incrementSampleNumber,
       'incrementSpotNumber': incrementSpotNumber,
       'isSyncReady': isSyncReady,
@@ -51,6 +55,7 @@
       'removeSpotFromDataset': removeSpotFromDataset,
       'saveActiveDatasets': saveActiveDatasets,
       'saveProjectItem': saveProjectItem,
+      'saveTag': saveTag,
       'saveSpotsDataset': saveSpotsDataset,
       'setUser': setUser,
       'switchProject': switchProject,
@@ -225,6 +230,29 @@
       saveProjectItem('rock_units', currentProject.rock_units);
     }
 
+    function destroyTag(id) {
+      var deferred = $q.defer(); // init promise
+      currentProject.tags = _.reject(currentProject.tags, function (tag) {
+        return tag.id === id;
+      });
+      if (currentProject.tags.length === 0) destroyTags().then(deferred.resolve);
+      else {
+        saveProjectItem('tags', currentProject.tags).then(function () {
+          deferred.resolve();
+        });
+      }
+      return deferred.promise;
+    }
+
+    function destroyTags() {
+      var deferred = $q.defer(); // init promise
+      delete currentProject.tags;
+      LocalStorageFactory.getDb().projectDb.removeItem('tags').then(function () {
+        deferred.resolve();
+      });
+      return deferred.promise;
+    }
+
     function getSpotsDataset() {
       return spotsDataset;
     }
@@ -297,6 +325,18 @@
     function getSpotPrefix() {
       if (!currentProject.preferences) return undefined;
       return currentProject.preferences.spot_prefix;
+    }
+
+    function getTag(id) {
+      if (!currentProject.tags) return {};
+      return _.find(currentProject.tags,
+          function (tag) {
+            return tag.id === id;
+          }) || {};
+    }
+
+    function getTags() {
+      return currentProject.tags || [];
     }
 
     // Increment starting spot number by 1
@@ -428,6 +468,18 @@
             deferred.resolve();
           });
         }
+      });
+      return deferred.promise;
+    }
+
+    function saveTag(tagToSave) {
+      var deferred = $q.defer(); // init promise
+      currentProject.tags = _.reject(currentProject.tags, function (tag) {
+        return tag.id === tagToSave.id;
+      });
+      currentProject.tags.push(tagToSave);
+      saveProjectItem('tags', currentProject.tags).then(function () {
+        deferred.resolve();
       });
       return deferred.promise;
     }

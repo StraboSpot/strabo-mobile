@@ -59,6 +59,12 @@
         'choices': {},
         'choices_file': 'app/data-models/sample-choices.csv'
       },
+      'tag': {
+        'survey': {},
+        'survey_file': 'app/data-models/tag-survey.csv',
+        'choices': {},
+        'choices_file': 'app/data-models/tag-choices.csv'
+      },
       'tools': {
         'survey': {},
         'survey_file': 'app/data-models/tools-survey.csv'
