@@ -1,0 +1,6 @@
+name,type,label,required,relevant
+name,text,Tag Name,false,
+categorization,select_one nc1iz96,Categorization,false,
+other_categorization,text,Other Categorization,true,${categorization} = 'other'
+start,start,,,
+end,end,,,
