@@ -5,12 +5,7 @@ node_modules/
 hooks/
 platforms/
 plugins/
-resources/android/icon
-resources/android/splash
-resources/ios/icon
-resources/ios/splash
-resources/wp8/splash
-resources/wp8/icon
+resources/
 scss/
 .bowerrc
 bower.json
