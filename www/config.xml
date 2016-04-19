@@ -17,7 +17,7 @@
   <gap:platform name="android"/>
   <content src="index.html"/>
   <access origin="*"/>
-  <preference name="phonegap-version" value="cli-5.2.0"/>
+  <preference name="phonegap-version" value="cli-6.0.0"/>
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>
