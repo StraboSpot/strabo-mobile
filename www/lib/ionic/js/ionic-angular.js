@@ -2,7 +2,7 @@
  * Copyright 2015 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v1.2.4
+ * Ionic, v1.2.4-nightly-1917
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -905,7 +905,7 @@ function($rootScope, $state, $location, $window, $timeout, $ionicViewSwitcher, $
         // create an element from the viewLocals template
         ele = $ionicViewSwitcher.createViewEle(viewLocals);
         if (this.isAbstractEle(ele, viewLocals)) {
-          console.log('VIEW', 'abstractView', DIRECTION_NONE, viewHistory.currentView);
+          void 0;
           return {
             action: 'abstractView',
             direction: DIRECTION_NONE,
@@ -1026,7 +1026,7 @@ function($rootScope, $state, $location, $window, $timeout, $ionicViewSwitcher, $
         }
       }
 
-      console.log('VIEW', action, direction, viewHistory.currentView);
+      void 0;
 
       hist.cursor = viewHistory.currentView.index;
 

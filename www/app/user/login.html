@@ -2,8 +2,11 @@
   <ion-content>
     <div class='login-page scroll' align='center'>
       <div class='login-inset'>
-        <h1 class='login-title-text'>strabo</h1>
-
+        <div class='login-title'>
+            <span class='login-title-line-1'>strabo
+            <span class='login-title-line-2'>spot</span>
+          </span>
+        </div>
         <div class='list list-inset'>
           <ion-input class='item item-input'>
             <input class='login-input' type='text' placeholder='Username' ng-model='vm.login.email'>
@@ -17,11 +20,10 @@
                   ng-disabled='!(vm.login.email && vm.login.password)'>Login
           </button>
         </div>
-        <div align='center'>
-          <a class='create-account-text' href='#' onclick='window.open("http://strabospot.org/register", "_system", "location=yes"); return false;'>
-            Create an account
-          </a>
-        </div>
+        <a class='create-account-text' href='#'
+           onclick='window.open("http://strabospot.org/register", "_system", "location=yes"); return false;'>
+          Create an account
+        </a>
       </div>
       <button class='button icon-left button-positive button-small ion-forward pull-right skip' ng-click='vm.skip()'>
         Skip

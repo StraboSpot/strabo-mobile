@@ -5,9 +5,9 @@
     .module('app')
     .controller('AboutController', AboutController);
 
-  AboutController.$inject = ['$ionicLoading', '$log', '$scope'];
+  AboutController.$inject = ['$ionicLoading', '$ionicPopup', '$log', '$scope'];
 
-  function AboutController($ionicLoading, $log, $scope) {
+  function AboutController($ionicLoading, $ionicPopup, $log, $scope) {
     var vm = this;
     var deploy = new Ionic.Deploy();
 
@@ -49,13 +49,15 @@
         'template': '<ion-spinner></ion-spinner>'
       });
       deploy.update().then(function (res) {
-        $ionicLoading.hide();
         $log.log('Ionic Deploy: Update Success! ', res);
       }, function (err) {
         $ionicLoading.hide();
+        $ionicPopup.alert({
+          'title': 'Error!',
+          'template': 'Error downloading update: ' + err
+        });
         $log.log('Ionic Deploy: Update error! ', err);
       }, function (prog) {
-        $ionicLoading.hide();
         $log.log('Ionic Deploy: Progress... ', prog);
       });
     }

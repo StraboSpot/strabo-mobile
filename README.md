@@ -37,6 +37,10 @@ Restore the Plugins and Platforms from `package.json`:
 
 *Note: These plugins were originally added with the command `ionic plugin add` which adds the plugin to `package.json` whereas `cordova plugin add` does not.*
     
+Generate Resources (icons and splash screens):
+    
+    ionic resources
+    
 ### Tested Environment - Plugins    
     cordova-plugin-camera 2.1.1 "Camera"
     cordova-plugin-console 1.0.2 "Console"
@@ -44,6 +48,7 @@ Restore the Plugins and Platforms from `package.json`:
     cordova-plugin-file 4.1.1 "File"
     cordova-plugin-filepath 1.0.2 "FilePath"
     cordova-plugin-geolocation 2.1.0 "Geolocation"
+    cordova-plugin-inappbrowser 1.3.0 "InAppBrowser"
     cordova-plugin-network-information 1.2.0 "Network Information"
     cordova-plugin-splashscreen 3.2.1 "Splashscreen"
     cordova-plugin-statusbar 2.1.2 "StatusBar"
@@ -69,18 +74,20 @@ Restore the Plugins and Platforms from `package.json`:
 
 ## Running/Testing the App
 
+*Note: When updates to the app are made, edit the version number of the app in `www/app/about/about.html`, `config.xml`, `www/config.xml` and `package.json`.*
+
 ### In a Desktop Web Browser:  
 
     ionic serve
 
 ### As a Native App, Built App with Ionic
 - Packages were built in the step above with `ionic state restore`.
-- Set up an [Ionic Security Profile](http://docs.ionic.io/docs/security-profiles), named strabo. 
+- Set up an [Ionic Security Profile](http://docs.ionic.io/docs/security-profiles), named strabodev. 
 - Use [Ionic Package](http://docs.ionic.io/docs/package-overview) to build new packages for changes that require binary modifications.
 
 ```
-    ionic package build android --release --profile strabo
-    ionic package build ios --release --profile strabo
+    ionic package build android --profile strabodev
+    ionic package build ios --profile strabodev
 ```
     
 - Changes to the HTML/CSS/JS/Images/Audio/Video files (basically anything inside `/www`) only need to be updated with [Ionic Deploy](http://docs.ionic.io/docs/deploy-overview).
@@ -89,6 +96,14 @@ To Deploy Updates:
 
     ionic upload --note "new version" --deploy=production
 
+### As a Native App, Built App with PhoneGap Build
+
+- `config.xml` must be within the `www` folder
+- `config.xml` must include plugins
+- `config.xml` must include `<preference name="phonegap-version" value="cli-5.2.0"/>`
+
+See [PhoneGap Build](https://build.phonegap.com).
+
 ### As a Native App, Built Locally
 
 To test as a native app see the Ionic [guide](http://ionicframework.com/docs/guide/testing.html).
@@ -96,7 +111,7 @@ To test as a native app see the Ionic [guide](http://ionicframework.com/docs/gui
 For a USB connected Android device first copy `config.xml` from `strabo-moble/www` into the `strabo-mobile` root. Then:
 
     ionic platform add android
-    ionic run
+    ionic run android
     
 ## Library Updates
 

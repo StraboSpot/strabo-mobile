@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="gov.az.azgs.strabomobile" version="0.11" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:gap="http://phonegap.com/ns/1.0">
-  <name>Strabo Mobile</name>
+<widget id="org.strabospot.strabomobile" version="0.11.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:gap="http://phonegap.com/ns/1.0">
+  <name>Strabo Spot</name>
   <description>
-    Strabo Mobile is a cross-platform mobile application for geologic field data acquisition.
+    Strabo Spot is a cross-platform application for geologic field data acquisition.
   </description>
   <author email="jessica.good@azgs.az.gov" href="https://github.com/StraboSpot/strabo-mobile">
     Jessica Good
@@ -21,6 +21,7 @@
   <preference name="AndroidPersistentFileLocation" value="Internal"/>
   <preference name="iosPersistentFileLocation" value="Library"/>
   <preference name="SplashScreen" value="screen"/>
+  <preference name="AutoHideSplashScreen" value="false"/>
   <preference name="SplashScreenDelay" value="3000"/>
   <gap:config-file platform="ios" parent="UIFileSharingEnabled" mode="replace">
     <true></true>
@@ -28,27 +29,8 @@
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
   </feature>
-  <platform name="android">
-    <icon src="resources\android\icon\drawable-ldpi-icon.png" density="ldpi"/>
-    <icon src="resources\android\icon\drawable-mdpi-icon.png" density="mdpi"/>
-    <icon src="resources\android\icon\drawable-hdpi-icon.png" density="hdpi"/>
-    <icon src="resources\android\icon\drawable-xhdpi-icon.png" density="xhdpi"/>
-    <icon src="resources\android\icon\drawable-xxhdpi-icon.png" density="xxhdpi"/>
-    <icon src="resources\android\icon\drawable-xxxhdpi-icon.png" density="xxxhdpi"/>
-    <splash src="resources\android\splash\drawable-land-ldpi-screen.png" density="land-ldpi"/>
-    <splash src="resources\android\splash\drawable-land-mdpi-screen.png" density="land-mdpi"/>
-    <splash src="resources\android\splash\drawable-land-hdpi-screen.png" density="land-hdpi"/>
-    <splash src="resources\android\splash\drawable-land-xhdpi-screen.png" density="land-xhdpi"/>
-    <splash src="resources\android\splash\drawable-land-xxhdpi-screen.png" density="land-xxhdpi"/>
-    <splash src="resources\android\splash\drawable-land-xxxhdpi-screen.png" density="land-xxxhdpi"/>
-    <splash src="resources\android\splash\drawable-port-ldpi-screen.png" density="port-ldpi"/>
-    <splash src="resources\android\splash\drawable-port-mdpi-screen.png" density="port-mdpi"/>
-    <splash src="resources\android\splash\drawable-port-hdpi-screen.png" density="port-hdpi"/>
-    <splash src="resources\android\splash\drawable-port-xhdpi-screen.png" density="port-xhdpi"/>
-    <splash src="resources\android\splash\drawable-port-xxhdpi-screen.png" density="port-xxhdpi"/>
-    <splash src="resources\android\splash\drawable-port-xxxhdpi-screen.png" density="port-xxxhdpi"/>
-  </platform>
   <platform name="ios">
+    <preference name="Orientation" value="all"/>
     <icon src="resources\ios\icon\icon.png" width="57" height="57"/>
     <icon src="resources\ios\icon\icon@2x.png" width="114" height="114"/>
     <icon src="resources\ios\icon\icon-40.png" width="40" height="40"/>
@@ -75,6 +57,26 @@
     <splash src="resources\ios\splash\Default-Portrait~ipad.png" width="768" height="1024"/>
     <splash src="resources\ios\splash\Default@2x~iphone.png" width="640" height="960"/>
     <splash src="resources\ios\splash\Default~iphone.png" width="320" height="480"/>
+  </platform>
+  <platform name="android">
+    <icon src="resources\android\icon\drawable-ldpi-icon.png" density="ldpi"/>
+    <icon src="resources\android\icon\drawable-mdpi-icon.png" density="mdpi"/>
+    <icon src="resources\android\icon\drawable-hdpi-icon.png" density="hdpi"/>
+    <icon src="resources\android\icon\drawable-xhdpi-icon.png" density="xhdpi"/>
+    <icon src="resources\android\icon\drawable-xxhdpi-icon.png" density="xxhdpi"/>
+    <icon src="resources\android\icon\drawable-xxxhdpi-icon.png" density="xxxhdpi"/>
+    <splash src="resources\android\splash\drawable-land-ldpi-screen.png" density="land-ldpi"/>
+    <splash src="resources\android\splash\drawable-land-mdpi-screen.png" density="land-mdpi"/>
+    <splash src="resources\android\splash\drawable-land-hdpi-screen.png" density="land-hdpi"/>
+    <splash src="resources\android\splash\drawable-land-xhdpi-screen.png" density="land-xhdpi"/>
+    <splash src="resources\android\splash\drawable-land-xxhdpi-screen.png" density="land-xxhdpi"/>
+    <splash src="resources\android\splash\drawable-land-xxxhdpi-screen.png" density="land-xxxhdpi"/>
+    <splash src="resources\android\splash\drawable-port-ldpi-screen.png" density="port-ldpi"/>
+    <splash src="resources\android\splash\drawable-port-mdpi-screen.png" density="port-mdpi"/>
+    <splash src="resources\android\splash\drawable-port-hdpi-screen.png" density="port-hdpi"/>
+    <splash src="resources\android\splash\drawable-port-xhdpi-screen.png" density="port-xhdpi"/>
+    <splash src="resources\android\splash\drawable-port-xxhdpi-screen.png" density="port-xxhdpi"/>
+    <splash src="resources\android\splash\drawable-port-xxxhdpi-screen.png" density="port-xxxhdpi"/>
   </platform>
   <platform name="wp8">
     <icon src="resources\wp8\icon\ApplicationIcon.png" width="99" height="99"/>

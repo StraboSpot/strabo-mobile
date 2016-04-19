@@ -9,7 +9,7 @@
  * Copyright 2015 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v1.2.4
+ * Ionic, v1.2.4-nightly-1917
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -25,7 +25,7 @@
 // build processes may have already created an ionic obj
 window.ionic = window.ionic || {};
 window.ionic.views = {};
-window.ionic.version = '1.2.4';
+window.ionic.version = '1.2.4-nightly-1917';
 
 (function (ionic) {
 
@@ -734,7 +734,7 @@ window.ionic.version = '1.2.4';
     // whatever lookup was done to find this element failed to find it
     // so we can't listen for events on it.
     if(element === null) {
-      console.error('Null element passed to gesture (element does not exist). Not listening for gesture');
+      void 0;
       return this;
     }
 
@@ -2455,9 +2455,7 @@ window.ionic.version = '1.2.4';
   function verifyPlatformReady() {
     setTimeout(function() {
       if(!self.isReady && self.isWebView()) {
-        console.warn('Possible issue: deviceready did not fire in a reasonable amount of time. ' +
-        'This can be caused by plugins in an inconsistent state. One possible solution: uninstall/remove all ' +
-        'plugins and reinstall them. Additionally, one or more plugins might be faulty or out of date.');
+        void 0;
       }
     }, platformReadyTimer);
   }
@@ -6984,7 +6982,7 @@ ionic.scroll = {
 (function(ionic) {
   var NOOP = function() {};
   var deprecated = function(name) {
-    console.error('Method not available in native scrolling: ' + name);
+    void 0;
   };
   ionic.views.ScrollNative = ionic.views.View.inherit({
 
@@ -50346,7 +50344,7 @@ angular.module('ui.router.state')
  * Copyright 2015 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v1.2.4
+ * Ionic, v1.2.4-nightly-1917
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -51249,7 +51247,7 @@ function($rootScope, $state, $location, $window, $timeout, $ionicViewSwitcher, $
         // create an element from the viewLocals template
         ele = $ionicViewSwitcher.createViewEle(viewLocals);
         if (this.isAbstractEle(ele, viewLocals)) {
-          console.log('VIEW', 'abstractView', DIRECTION_NONE, viewHistory.currentView);
+          void 0;
           return {
             action: 'abstractView',
             direction: DIRECTION_NONE,
@@ -51370,7 +51368,7 @@ function($rootScope, $state, $location, $window, $timeout, $ionicViewSwitcher, $
         }
       }
 
-      console.log('VIEW', action, direction, viewHistory.currentView);
+      void 0;
 
       hist.cursor = viewHistory.currentView.index;
 

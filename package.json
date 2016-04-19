@@ -1,6 +1,6 @@
 {
   "name": "Strabo Mobile",
-  "version": "0.11",
+  "version": "0.11.1",
   "description": "Strabo Mobile: An app for Structural Geology and Tectonics (SG&T)",
   "dependencies": {
     "gulp": "^3.5.6",
@@ -24,21 +24,23 @@
     "shelljs": "^0.3.0"
   },
   "cordovaPlugins": [
-    "cordova-plugin-device",
-    "cordova-plugin-console",
-    "cordova-plugin-whitelist",
-    "cordova-plugin-splashscreen",
-    "cordova-plugin-statusbar",
-    "ionic-plugin-keyboard",
-    "ionic-plugin-deploy",
-    "cordova-plugin-geolocation",
-    "cordova-plugin-network-information",
     "cordova-plugin-camera",
+    "cordova-plugin-console",
+    "cordova-plugin-device",
     "cordova-plugin-file",
     "cordova-plugin-filepath",
-    "cordova-sqlite-storage@0.7.14"
+    "cordova-plugin-geolocation",
+    "cordova-plugin-inappbrowser",
+    "cordova-plugin-network-information",
+    "cordova-plugin-splashscreen",
+    "cordova-plugin-statusbar",
+    "cordova-plugin-whitelist",
+    "cordova-sqlite-storage@0.7.14",
+    "ionic-plugin-deploy",
+    "ionic-plugin-keyboard"
   ],
   "cordovaPlatforms": [
-    "android"
+    "android",
+    "ios"
   ]
 }

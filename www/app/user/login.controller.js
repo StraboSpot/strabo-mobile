@@ -5,9 +5,10 @@
     .module('app')
     .controller('LoginController', LoginController);
 
-  LoginController.$inject = ['$ionicLoading', '$ionicPopup', '$log', '$state', 'ProjectFactory', 'UserFactory'];
+  LoginController.$inject = ['$ionicLoading', '$ionicPopup', '$log', '$scope', '$state', 'ProjectFactory',
+    'UserFactory'];
 
-  function LoginController($ionicLoading, $ionicPopup, $log, $state, ProjectFactory, UserFactory) {
+  function LoginController($ionicLoading, $ionicPopup, $log, $scope, $state, ProjectFactory, UserFactory) {
     var vm = this;
 
     vm.login = null;
@@ -18,6 +19,12 @@
 
     function activate() {
       checkForLogin();
+
+      $scope.$on('$ionicView.loaded', function () {
+        ionic.Platform.ready(function () {
+          if (navigator && navigator.splashscreen) navigator.splashscreen.hide();
+        });
+      });
     }
 
     function checkForLogin() {

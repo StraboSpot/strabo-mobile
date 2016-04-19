@@ -416,23 +416,56 @@ Login Page
   background-size: cover;
 }
 
-.login-title-text {
-  text-align: center;
-  font-size: 400%;
-  font-family: Impact, Charcoal, sans-serif;
-  padding-top: 20px;
-  color: black;
-  text-shadow: 0 0 6px #FFF;
-  letter-spacing: 10px;
+.scroll {
+  min-height: 100%;
+  height: 100%;
 }
 
 .login-inset {
   max-width: 400px;
+  position: relative;
+  top: 30px;
+  text-align: center;
+  font-family: Calibri, Tahoma, Verdana, Arial, sans-serif;
+  color: black;
 }
 
-.scroll {
-  min-height: 100%;
-  height: 100%;
+.login-title {
+  padding-bottom: 25px;
+}
+
+.login-title-line-1 {
+  position: relative;
+  font-weight: bold;
+  font-size: 45px;
+}
+
+.login-title-line-2{
+  position: absolute;
+  top: 90%;
+  right: 0;
+  font-weight: normal;
+  font-size: 35px;
+}
+
+/* Larger Screens */
+@media (min-width: 768px) {
+  .login-inset {
+    top: 100px;
+  }
+
+  .login-title {
+    padding-bottom: 70px;
+  }
+
+  .login-title-line-1 {
+    font-size: 80px;
+  }
+
+  .login-title-line-2{
+    top: 100%;
+    font-size: 60px;
+  }
 }
 
 button.skip {
@@ -443,21 +476,11 @@ button.skip {
 
 .create-account-text{
   font-weight: bold;
-  font-size: 120%;
   color: black;
+  font-size: 120%;
   text-transform: uppercase;
   text-shadow: 0 0 6px #FFF;
   text-decoration: none;
-}
-
-.caption {
-  font-style: italic;
-  font-size: small;
-  font-weight: bold;
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  color: #3D3D3D;
 }
 
 /*--------------------
