@@ -5,14 +5,13 @@
     .module('app')
     .controller('SpotController', SpotController);
 
-  SpotController.$inject = ['$document', '$ionicHistory', '$ionicPopover', '$ionicPopup', '$location', '$log', '$scope',
-    '$state', 'FormFactory', 'ProjectFactory', 'SpotFactory'];
+  SpotController.$inject = ['$document', '$ionicPopover', '$ionicPopup', '$location', '$log', '$scope', '$state',
+    'FormFactory', 'HelpersFactory', 'ProjectFactory', 'SpotFactory'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
-  function SpotController($document, $ionicHistory, $ionicPopover, $ionicPopup, $location, $log, $scope, $state,
-                          FormFactory, ProjectFactory, SpotFactory) {
+  function SpotController($document, $ionicPopover, $ionicPopup, $location, $log, $scope, $state, FormFactory,
+                          HelpersFactory, ProjectFactory, SpotFactory) {
     var vm = this;
-    var returnToMap = false;
 
     vm.choices = undefined;
     vm.copyThisSpot = copyThisSpot;
@@ -154,34 +153,18 @@
 
     function goBack() {
       SpotFactory.clearCurrentSpot();
-      if (returnToMap && vm.spot.properties.image_basemap) {
-        submit('app/image-basemaps/' + vm.spot.properties.image_basemap);
-      }
-      else if (returnToMap && !vm.spot.properties.image_basemap) submit('app/map');
-      else submit('app/spots');
-      returnToMap = false;
+      submit(HelpersFactory.getBackView());
     }
 
     function isOptionChecked(field, choice) {
       if (vm.spot) {
-        if (vm.data[field]) {
-          return vm.data[field].indexOf(choice) !== -1;
-        }
+        if (vm.data[field]) return vm.data[field].indexOf(choice) !== -1;
       }
-      else {
-        return false;
-      }
+      else return false;
     }
 
     function loadTab(state) {
       SpotFactory.moveSpot = false;
-
-      if ($ionicHistory.backView()) {
-        if ($ionicHistory.backView().stateName === 'app.map' ||
-          $ionicHistory.backView().stateName === 'app.image-basemap') {
-          returnToMap = true;
-        }
-      }
       vm.stateName = state.current.name;
       setSpot(state.params.spotId);
 

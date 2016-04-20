@@ -5,11 +5,12 @@
     .module('app')
     .controller('SpotsController', Spots);
 
-  Spots.$inject = ['$cordovaDevice', '$cordovaFile', '$document', '$ionicModal', '$ionicPopover', '$ionicPopup',
-    '$location', '$log', '$scope', '$window', 'ProjectFactory', 'SpotFactory', 'UserFactory'];
+  Spots.$inject = ['$cordovaDevice', '$cordovaFile', '$document', '$ionicHistory', '$ionicModal', '$ionicPopover',
+    '$ionicPopup', '$location', '$log', '$scope', '$window', 'HelpersFactory', 'ProjectFactory', 'SpotFactory',
+    'UserFactory'];
 
-  function Spots($cordovaDevice, $cordovaFile, $document, $ionicModal, $ionicPopover, $ionicPopup, $location, $log,
-                 $scope, $window, ProjectFactory, SpotFactory, UserFactory) {
+  function Spots($cordovaDevice, $cordovaFile, $document, $ionicHistory, $ionicModal, $ionicPopover, $ionicPopup,
+                 $location, $log, $scope, $window, HelpersFactory, ProjectFactory, SpotFactory, UserFactory) {
     var vm = this;
 
     var visibleDatasets = [];
@@ -33,6 +34,7 @@
     vm.spots = [];
     vm.spotsDisplayed = [];
 
+    HelpersFactory.setBackView($ionicHistory.currentView().url);
     activate();
 
     /**

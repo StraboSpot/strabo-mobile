@@ -5,11 +5,13 @@
     .module('app')
     .controller('ImageBasemapController', ImageBasemapController);
 
-  ImageBasemapController.$inject = ['$ionicPopover', '$ionicSideMenuDelegate', '$location', '$log', '$scope',
-    '$state', 'MapDrawFactory', 'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory', 'SpotFactory'];
+  ImageBasemapController.$inject = ['$ionicHistory', '$ionicPopover', '$ionicSideMenuDelegate', '$location', '$log',
+    '$scope', '$state', 'HelpersFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory',
+    'SpotFactory'];
 
-  function ImageBasemapController($ionicPopover, $ionicSideMenuDelegate, $location, $log, $scope, $state,
-                                  MapDrawFactory, MapFeaturesFactory, MapSetupFactory, MapViewFactory, SpotFactory) {
+  function ImageBasemapController($ionicHistory, $ionicPopover, $ionicSideMenuDelegate, $location, $log, $scope, $state,
+                                  HelpersFactory, MapDrawFactory, MapFeaturesFactory, MapSetupFactory, MapViewFactory,
+                                  SpotFactory) {
     var vm = this;
 
     vm.goBack = goBack;
@@ -18,12 +20,14 @@
     vm.zoomToSpotsExtent = zoomToSpotsExtent;
 
     var map;
+    var currentSpot = SpotFactory.getCurrentSpot();
+    if (!currentSpot) HelpersFactory.setBackView($ionicHistory.currentView().url);
+
+    activate();
 
     /**
      * Private Functions
      */
-
-    activate();
 
     function activate() {
       // Disable dragging back to ionic side menu because this affects drawing tools
@@ -108,7 +112,6 @@
      */
 
     function goBack() {
-      var currentSpot = SpotFactory.getCurrentSpot();
       if (!currentSpot) $location.path('/app/image-basemaps');
       // Return to spot tab unless we got to this image from the images tab (that is if the id
       // of the image basemap we're leaving matches the id of an image of this spot)

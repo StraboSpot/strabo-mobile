@@ -5,13 +5,13 @@
     .module('app')
     .controller('MapController', MapController);
 
-  MapController.$inject = ['$ionicPopover', '$ionicPopup', '$ionicSideMenuDelegate', '$location', '$log', '$scope',
-    'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory', 'MapSetupFactory', 'MapViewFactory', 'SpotFactory',
-    'OfflineTilesFactory'];
+  MapController.$inject = ['$ionicHistory', '$ionicPopover', '$ionicPopup', '$ionicSideMenuDelegate', '$location',
+    '$log', '$scope', 'HelpersFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory', 'MapSetupFactory',
+    'MapViewFactory', 'SpotFactory', 'OfflineTilesFactory'];
 
-  function MapController($ionicPopover, $ionicPopup, $ionicSideMenuDelegate, $location, $log, $scope, MapDrawFactory,
-                         MapFeaturesFactory, MapLayerFactory, MapSetupFactory, MapViewFactory, SpotFactory,
-                         OfflineTilesFactory) {
+  function MapController($ionicHistory, $ionicPopover, $ionicPopup, $ionicSideMenuDelegate, $location, $log, $scope,
+                         HelpersFactory, MapDrawFactory, MapFeaturesFactory, MapLayerFactory, MapSetupFactory,
+                         MapViewFactory, SpotFactory, OfflineTilesFactory) {
     var vm = this;
 
     vm.cacheOfflineTiles = cacheOfflineTiles;
@@ -24,8 +24,13 @@
     vm.zoomToSpotsExtent = zoomToSpotsExtent;
 
     var map;
+    if (!vm.currentSpot) HelpersFactory.setBackView($ionicHistory.currentView().url);
 
     activate();
+
+    /**
+     *  Private Functions
+     */
 
     function activate() {
       // Disable dragging back to ionic side menu because this affects drawing tools
@@ -104,10 +109,6 @@
         vm.popover.remove();
       });
     }
-
-    /**
-     *  Private Functions
-     */
 
     // If there is a Map View set then reset the map to that view,
     // otherwise zoom to the extent of the spots

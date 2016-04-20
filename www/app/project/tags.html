@@ -22,6 +22,10 @@
                 ng-repeat='tag in vm.tags | orderBy:"name" track by tag.id'
                 ng-click='vm.goToTag(tag.id)'>
         {{tag.name}}
+        <small>({{ tag.spots.length || 0 }}
+          <span ng-if='tag.spots.length > 1 || !tag.spots.length'>Spots)</span>
+          <span ng-if='tag.spots.length === 1'>Spot)</span>
+        </small>
         <button class='button button-clear button-assertive'
                 ng-click='vm.deleteTag(tag)'>
           <i class='icon ion-minus-circled'></i>

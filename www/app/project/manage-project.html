@@ -83,7 +83,7 @@
     </div>
     <ion-list>
       <div class='padding' ng-show='vm.rockUnits.length === 0'>
-        No rock units added yet. Add rock units using the '+' button in the top right.
+        No rock units added yet. Add rock units using the '+' button to the right.
       </div>
       <ion-item class='item-text-wrap'
                 ng-repeat='rockUnit in vm.rockUnits | orderBy:"unit_label_abbreviation" track by rockUnit.unit_label_abbreviation'

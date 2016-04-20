@@ -70,12 +70,14 @@
         vmParent.submit('/app/image-basemaps/' + vmParent.spot.properties.image_basemap);
       }
       else {
-        var center = SpotFactory.getCenter(vmParent.spot);
-        var spotCenter = ol.proj.transform([center.lon, center.lat], 'EPSG:4326', 'EPSG:3857');
-        MapViewFactory.setMapView(new ol.View({
-          'center': spotCenter,
-          'zoom': 16
-        }));
+        if (vmParent.spot.geometry) {
+          var center = SpotFactory.getCenter(vmParent.spot);
+          var spotCenter = ol.proj.transform([center.lon, center.lat], 'EPSG:4326', 'EPSG:3857');
+          MapViewFactory.setMapView(new ol.View({
+            'center': spotCenter,
+            'zoom': 16
+          }));
+        }
         vmParent.submit('/app/map');
       }
     }
