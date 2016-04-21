@@ -73,6 +73,13 @@ navigation history that also transitions its views in and out.
         Nest
       </a>
     </span>
+    <span ng-show='vm.showTab("tags")'>
+      <a class='button button-clear spot-tab-inactive'
+         ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab.tags"}'
+         ng-click='vm.submit("/app/spotTab/" + vm.spot.properties.id + "/tags");'>
+        Tag Groups
+      </a>
+    </span>
     <span>
       <a class='button button-clear spot-tab-inactive'
          ng-click='vm.submit("/app/preferences");'>

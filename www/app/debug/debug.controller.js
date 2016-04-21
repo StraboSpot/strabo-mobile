@@ -5,17 +5,18 @@
     .module('app')
     .controller('DebugController', DebugController);
 
-  DebugController.$inject = ['$document', '$ionicModal', '$log', '$scope', '$window', 'DataModelsFactory',
-    'SpotFactory'];
+  DebugController.$inject = ['$document', '$ionicLoading', '$ionicModal', '$ionicPopup', '$log', '$q', '$scope',
+    '$state', '$window', 'DataModelsFactory', 'ProjectFactory', 'SpotFactory'];
 
-  function DebugController($document, $ionicModal, $log, $scope, $window, DataModelsFactory, SpotFactory) {
+  function DebugController($document, $ionicLoading, $ionicModal, $ionicPopup, $log, $q, $scope, $state, $window,
+                           DataModelsFactory, ProjectFactory, SpotFactory) {
     var vm = this;
 
     vm.spotDataModel = {};
 
     vm.closeModal = closeModal;
     vm.getSpotDataModel = getSpotDataModel;
-    vm.pointsGenerated = undefined;
+    vm.msg = undefined;
     vm.pointsToGenerate = undefined;
     vm.spotModelModal = {};
     vm.submit = submit;
@@ -33,6 +34,13 @@
       }).then(function (modal) {
         vm.spotModelModal = modal;
       });
+    }
+
+    // Return a random number between min and max
+    function randCoords(min, max, interval) {
+      if (angular.isUndefined(interval)) interval = 1;
+      var r = Math.floor(Math.random() * (max - min + interval) / interval);
+      return r * interval + min;
     }
 
     function syntaxHighlight(json) {
@@ -65,60 +73,57 @@
     }
 
     function generateRandomGeojsonPoint(num) {
-      // Bounding area for United States
-      /* var bounds = {
-       'topRight': {'lat': 58, 'lng': -76},
-       'bottomLeft': {'lat': 11, 'lng': -122}
-       };*/
-
-      // Bounding area for downtown Tucson
-      var bounds = {
-        'topRight': {'lat': 32.226293, 'lng': -110.972307},
-        'bottomLeft': {'lat': 32.214196, 'lng': -110.985042}
-      };
-
-      // Return a random number between min and max
-      function rand(min, max, interval) {
-        if (angular.isUndefined(interval)) interval = 1;
-        var r = Math.floor(Math.random() * (max - min + interval) / interval);
-        return r * interval + min;
+      if (_.isEmpty(ProjectFactory.getSpotsDataset())) {
+        $ionicPopup.alert({
+          'title': 'No Default Dataset',
+          'template': 'A default dataset for new Spots has not been specified. Set this from the Manage Project page.'
+        });
+        $state.go('app.manage-project');
       }
+      else {
+        $ionicLoading.show({
+          'template': '<ion-spinner></ion-spinner>'
+        });
+        // Bounding area for United States
+        /* var bounds = {
+         'topRight': {'lat': 58, 'lng': -76},
+         'bottomLeft': {'lat': 11, 'lng': -122}
+         };*/
 
-      var feature_types = ['bedding', 'contact', 'foliation', 'fracture', 'fault', 'shear_zone_boundary', 'other',
-        'vein'];
-
-      var initialNumberOfSpots = SpotFactory.getSpots().length;
-
-      for (var i = 0; i < num; i++) {
-        // Set the date and time to now
-        var d = new Date(Date.now());
-        d.setMilliseconds(0);
-
-        var geojsonPoint = {
-          'geometry': {
-            'type': 'Point',
-            'coordinates': [
-              rand(bounds.bottomLeft.lng, bounds.topRight.lng, 0.0001),
-              rand(bounds.topRight.lat, bounds.bottomLeft.lat, 0.0001)
-            ]
-          },
-          'type': 'Feature',
-          'properties': {
-            'orientation_data': [{
-              'dip': _.random(0, 90),
-              'feature_type': feature_types[Math.floor(Math.random() * feature_types.length)],
-              'orientation_type': 'planar_orientation',
-              'strike': _.random(0, 180)
-            }],
-            'date': d,
-            'time': d,
-            'name': 'x' + _.random(10, 99) + i.toString(),
-            'id': Math.floor((new Date().getTime() + Math.random()) * 10)
-          }
+        // Bounding area for downtown Tucson
+        var bounds = {
+          'topRight': {'lat': 32.226293, 'lng': -110.972307},
+          'bottomLeft': {'lat': 32.214196, 'lng': -110.985042}
         };
 
-        SpotFactory.save(geojsonPoint).then(function (spots) {
-          vm.pointsGenerated = spots.length - initialNumberOfSpots;
+        var feature_types = ['bedding', 'contact', 'foliation', 'fracture', 'fault', 'shear_zone_boundary', 'other',
+          'vein'];
+
+        var promises = [];
+        for (var i = 0; i < num; i++) {
+          var geojsonPoint = {
+            'geometry': {
+              'type': 'Point',
+              'coordinates': [
+                randCoords(bounds.bottomLeft.lng, bounds.topRight.lng, 0.0001),
+                randCoords(bounds.topRight.lat, bounds.bottomLeft.lat, 0.0001)
+              ]
+            },
+            'properties': {
+              'orientation_data': [{
+                'dip': _.random(0, 90),
+                'feature_type': feature_types[Math.floor(Math.random() * feature_types.length)],
+                'orientation_type': 'planar_orientation',
+                'strike': _.random(0, 180)
+              }],
+              'name': 'x' + _.random(10, 99) + i.toString()
+            }
+          };
+          promises.push(SpotFactory.setNewSpot(geojsonPoint));
+        }
+        $q.all(promises).then(function () {
+          vm.msg = 'Finished generating Spots';
+          $ionicLoading.hide();
         });
       }
     }

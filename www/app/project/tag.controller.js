@@ -107,10 +107,15 @@
       isDelete = true;
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Remove Spot',
-        'template': 'Are you sure you want to remove this Spot from the Tag Group? This will <b>not</b> delete the Spot itself.'
+        'template': 'Are you sure you want to remove the Spot <b>' + getSpotName(
+          spotId) + '</b> from this Tag Group? This will <b>not</b> delete the Spot itself.'
       });
       confirmPopup.then(function (res) {
-        if (res) vm.data.spots.splice(vm.data.spots[spotId], 1);
+        if (res) {
+          ProjectFactory.removeTagFromSpot(vm.data.id, spotId).then(function () {
+            loadTag();
+          });
+        }
         isDelete = false;
       });
     }

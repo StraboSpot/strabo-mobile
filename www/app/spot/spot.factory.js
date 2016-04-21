@@ -63,6 +63,13 @@
       return deferred.promise;
     }
 
+    function removeSpotFromTags(spotId) {
+      var tags = ProjectFactory.getTagsBySpotId(spotId);
+      _.each(tags, function (tag) {
+        ProjectFactory.removeTagFromSpot(tag.id, spotId);
+      });
+    }
+
     /**
      * Public Functions
      */
@@ -72,6 +79,7 @@
       var deferred = $q.defer(); // init promise
       var promises = [];
       _.each(activeSpots, function (activeSpot) {
+        removeSpotFromTags(activeSpot.properties.id);
         spots = _.reject(spots, function (spot) {
           return spot.properties.id === activeSpot.properties.id;
         });
@@ -80,7 +88,7 @@
         }));
       });
 
-      $q.all().then(function () {
+      $q.all(promises).then(function () {
         activeSpots = undefined;
         deferred.resolve();
       });
@@ -106,6 +114,7 @@
     // delete the spot
     function destroy(key) {
       var deferred = $q.defer(); // init promise
+      removeSpotFromTags(key);
       spots = _.reject(spots, function (spot) {
         return spot.properties.id === key;
       });

@@ -260,6 +260,16 @@
           }
         }
       })
+      .state('app.spotTab.tags', {
+        'cache': false,
+        'url': '/:spotId/tags',
+        'views': {
+          'spottab-childview': {
+            'templateUrl': 'app/spot/tags-tab.html',
+            'controller': 'TagsTabController as vmChild'
+          }
+        }
+      })
       .state('app.orientation', {
         'cache': false,
         'url': '/orientation',
@@ -310,6 +320,7 @@
         }
       })
       .state('app.debug', {
+        'cache': false,
         'url': '/debug',
         'views': {
           'menuContent': {

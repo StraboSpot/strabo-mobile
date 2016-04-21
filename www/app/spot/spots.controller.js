@@ -5,12 +5,13 @@
     .module('app')
     .controller('SpotsController', Spots);
 
-  Spots.$inject = ['$cordovaDevice', '$cordovaFile', '$document', '$ionicHistory', '$ionicModal', '$ionicPopover',
-    '$ionicPopup', '$location', '$log', '$scope', '$window', 'HelpersFactory', 'ProjectFactory', 'SpotFactory',
-    'UserFactory'];
+  Spots.$inject = ['$cordovaDevice', '$cordovaFile', '$document', '$ionicHistory', '$ionicLoading', '$ionicModal',
+    '$ionicPopover', '$ionicPopup', '$location', '$log', '$scope', '$window', 'HelpersFactory', 'ProjectFactory',
+    'SpotFactory', 'UserFactory'];
 
-  function Spots($cordovaDevice, $cordovaFile, $document, $ionicHistory, $ionicModal, $ionicPopover, $ionicPopup,
-                 $location, $log, $scope, $window, HelpersFactory, ProjectFactory, SpotFactory, UserFactory) {
+  function Spots($cordovaDevice, $cordovaFile, $document, $ionicHistory, $ionicLoading, $ionicModal, $ionicPopover,
+                 $ionicPopup, $location, $log, $scope, $window, HelpersFactory, ProjectFactory, SpotFactory,
+                 UserFactory) {
     var vm = this;
 
     var visibleDatasets = [];
@@ -127,10 +128,14 @@
       confirmPopup.then(
         function (res) {
           if (res) {
+            $ionicLoading.show({
+              'template': '<ion-spinner></ion-spinner>'
+            });
             SpotFactory.clearActiveSpots().then(function () {
               // update the spots list
               vm.spots = [];
               vm.spotsDisplayed = [];
+              $ionicLoading.hide();
             });
           }
         }

@@ -46,6 +46,7 @@
       'getSpotIds': getSpotIds,
       'getTag': getTag,
       'getTags': getTags,
+      'getTagsBySpotId': getTagsBySpotId,
       'incrementSampleNumber': incrementSampleNumber,
       'incrementSpotNumber': incrementSpotNumber,
       'isSyncReady': isSyncReady,
@@ -53,6 +54,7 @@
       'loadProjectsRemote': loadProjectsRemote,
       'prepProject': prepProject,                     // Run from app config
       'removeSpotFromDataset': removeSpotFromDataset,
+      'removeTagFromSpot': removeTagFromSpot,
       'saveActiveDatasets': saveActiveDatasets,
       'saveProjectItem': saveProjectItem,
       'saveTag': saveTag,
@@ -339,6 +341,12 @@
       return currentProject.tags || [];
     }
 
+    function getTagsBySpotId(spotId) {
+      return _.filter(currentProject.tags, function (tag) {
+        if (tag.spots) return _.contains(tag.spots, spotId);
+      });
+    }
+
     // Increment starting spot number by 1
     function incrementSpotNumber() {
       var start_number = getSpotNumber();
@@ -438,6 +446,17 @@
           $log.log('Removed Spot id from dataset', datasetId, 'SpotIds:', spotIds);
           saveProjectItem('spots_' + datasetId, spotIds[datasetId]);
         }
+      });
+      return deferred.promise;
+    }
+
+    function removeTagFromSpot(tagId, spotId) {
+      var deferred = $q.defer(); // init promise
+      var tag = _.findWhere(currentProject.tags, {'id': tagId});
+      tag.spots = _.without(tag.spots, spotId);
+      if (_.isEmpty(tag.spots)) delete tag.spots;
+      saveTag(tag).then(function () {
+        deferred.resolve();
       });
       return deferred.promise;
     }
