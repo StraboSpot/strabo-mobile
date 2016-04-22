@@ -255,40 +255,32 @@
 
     // Validate Spot Tab
     function validateForm() {
-      switch (vm.stateName) {
-        case 'app.spotTab.spot':
-          if (!vm.spot.properties.name) {
-            $ionicPopup.alert({
-              'title': 'Validation Error!',
-              'template': '<b>Spot Name</b> is required.'
-            });
-            return false;
-          }
-          if (vm.spot.geometry) {
-            if (vm.spot.geometry.type === 'Point') {
-              var geoError;
-              if (!vm.spot.geometry.coordinates[0] && !vm.spot.geometry.coordinates[1]) {
-                geoError = '<b>Latitude</b> and <b>longitude</b> are required.';
-              }
-              else if (!vm.spot.geometry.coordinates[0]) geoError = '<b>Longitude</b> is required.';
-              else if (!vm.spot.geometry.coordinates[1]) geoError = '<b>Latitude</b> is required.';
-              if (geoError) {
-                $ionicPopup.alert({
-                  'title': 'Validation Error!',
-                  'template': geoError
-                });
-                return false;
-              }
+      if (vm.stateName === 'app.spotTab.spot') {
+        if (!vm.spot.properties.name) {
+          $ionicPopup.alert({
+            'title': 'Validation Error!',
+            'template': '<b>Spot Name</b> is required.'
+          });
+          return false;
+        }
+        if (vm.spot.geometry) {
+          if (vm.spot.geometry.type === 'Point') {
+            var geoError;
+            if (!vm.spot.geometry.coordinates[0] && !vm.spot.geometry.coordinates[1]) {
+              geoError = '<b>Latitude</b> and <b>longitude</b> are required.';
+            }
+            else if (!vm.spot.geometry.coordinates[0]) geoError = '<b>Longitude</b> is required.';
+            else if (!vm.spot.geometry.coordinates[1]) geoError = '<b>Latitude</b> is required.';
+            if (geoError) {
+              $ionicPopup.alert({
+                'title': 'Validation Error!',
+                'template': geoError
+              });
+              return false;
             }
           }
-          return vm.survey && FormFactory.validate(vm.survey, vm.data);
-        case 'app.spotTab._3dstructures':
-          if (vm.survey && FormFactory.validate(vm.survey, vm.data)) {
-            vm.spot.properties._3d_structures = vm.data;
-            return true;
-          }
-          return false;
-
+        }
+        return vm.survey && FormFactory.validate(vm.survey, vm.data);
       }
       return true;
     }

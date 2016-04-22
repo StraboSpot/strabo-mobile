@@ -1,0 +1,26 @@
+label,name,list name
+tectonite,tectonite,sv2ru77
+mullion,mullion,sv2ru77
+igneous/migmatite,igneous_migmat,sv2ru77
+soft sediment deformation,soft_sediment_,sv2ru77
+other fabric,other_fabric,sv2ru77
+S tectonite,s_tectonite,tectonite_type_ny4wm6D8TYk_
+SL tectonite,sl_tectonite,tectonite_type_ny4wm6D8TYk_
+LS tectonite,ls_tectonite,tectonite_type_ny4wm6D8TYk_
+L tectonite,l_tectonite,tectonite_type_ny4wm6D8TYk_
+S only,s_only,tectonite_character_gSrbYXndbvA_
+S >> L,s___l,tectonite_character_gSrbYXndbvA_
+S > L,s___l_1,tectonite_character_gSrbYXndbvA_
+S = L,s___l_2,tectonite_character_gSrbYXndbvA_
+L > S,l___s,tectonite_character_gSrbYXndbvA_
+L >> S,l___s_1,tectonite_character_gSrbYXndbvA_
+L only,l_only,tectonite_character_gSrbYXndbvA_
+unidirectional,unidirectional,mullion_geometry_fp6DFIJzyoE_
+bidirectional,bidirectional,mullion_geometry_fp6DFIJzyoE_
+symmetrical,symmetrical,mullion_symmetry_psAZYtG5Up4_
+asymmetrical,asymmetrical,mullion_symmetry_psAZYtG5Up4_
+5 - best - accurate,5,mullion_linear_measure_quality_c1cEhvbJNzg_
+4,4,mullion_linear_measure_quality_c1cEhvbJNzg_
+3 - approximate,3,mullion_linear_measure_quality_c1cEhvbJNzg_
+2,2,mullion_linear_measure_quality_c1cEhvbJNzg_
+1 - poor - irregular - uncertain,1,mullion_linear_measure_quality_c1cEhvbJNzg_

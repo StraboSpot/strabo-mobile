@@ -10,10 +10,30 @@
   function DataModelsFactory($log, $http, $q) {
     var dataModels = {
       '_3d_structures': {
-        'survey': {},
-        'survey_file': 'app/data-models/3d_structures-survey.csv',
-        'choices': {},
-        'choices_file': 'app/data-models/3d_structures-choices.csv'
+        'fabric': {
+          'survey': {},
+          'survey_file': 'app/data-models/fabric-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/fabric-choices.csv'
+        },
+        'fold': {
+          'survey': {},
+          'survey_file': 'app/data-models/fold-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/fold-choices.csv'
+        },
+        'other': {
+          'survey': {},
+          'survey_file': 'app/data-models/other_3d_structure-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/other_3d_structure-choices.csv'
+        },
+        'tensor': {
+          'survey': {},
+          'survey_file': 'app/data-models/tensor-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/tensor-choices.csv'
+        }
       },
       'image': {
         'survey': {},
@@ -101,16 +121,22 @@
     function createFeatureTypesDictionary() {
       var models = [dataModels.orientation_data.linear_orientation,
         dataModels.orientation_data.planar_orientation,
-        dataModels.orientation_data.tabular_orientation];
+        dataModels.orientation_data.tabular_orientation,
+        dataModels._3d_structures.fabric,
+        dataModels._3d_structures.fold,
+        dataModels._3d_structures.other,
+        dataModels._3d_structures.tensor];
       _.each(models, function (model) {
         var type = _.findWhere(model.survey, {'name': 'feature_type'});
-        var list = type.type.split(' ')[1];
-        var choices = _.filter(model.choices, function (choice) {
-          return choice['list name'] === list;
-        });
-        _.each(choices, function (choice) {
-          featureTypeLabels[choice.name] = choice.label;
-        });
+        if (type) {
+          var list = type.type.split(' ')[1];
+          var choices = _.filter(model.choices, function (choice) {
+            return choice['list name'] === list;
+          });
+          _.each(choices, function (choice) {
+            featureTypeLabels[choice.name] = choice.label;
+          });
+        }
       });
       $log.log('Feature Types:', featureTypeLabels);
     }
@@ -149,7 +175,10 @@
       };
 
       var models = {
-        '_3d_structures': dataModels._3d_structures,
+        'fabric': dataModels._3d_structures.fabric,
+        'fold': dataModels._3d_structures.fold,
+        'other': dataModels._3d_structures.other,
+        'tensor': dataModels._3d_structures.tensor,
         'images': dataModels.image,
         'linear_orientation': dataModels.orientation_data.linear_orientation,
         'planar_orientation': dataModels.orientation_data.planar_orientation,
@@ -176,6 +205,12 @@
           description.associated_orientation = [];
           description = sortby(description);
           spotDataModel.properties.orientation_data.push(description);
+        }
+        else if (key === 'fabric' || key === 'fold' || key === 'other' || key === 'tensor') {
+          description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id); REQUIRED';
+          description.type = key + '; REQUIRED';
+          description = sortby(description);
+          spotDataModel.properties._3d_structures.push(description);
         }
         else if (key === 'trace' || key === 'rock_unit') {
           _.extend(spotDataModel.properties[key], description);
@@ -250,10 +285,10 @@
 
       $log.log('Loading data models ...');
       _.each(dataModels, function (dataModel, key) {
-        if (key === 'orientation_data') {
-          _.each(dataModel, function (orientationDataModel, orientationKey) {
-            // $log.log('Loading', key, orientationKey, ' ...');
-            promises.push(loadDataModel(orientationDataModel));
+        if (key === 'orientation_data' || key === '_3d_structures') {
+          _.each(dataModel, function (childDataModel, childKey) {
+            //$log.log('Loading', key, childKey, ' ...');
+            promises.push(loadDataModel(childDataModel));
           });
         }
         else {

@@ -1,0 +1,45 @@
+name,label,list name
+anticline,anticline,fold_geometry_YZp6QecM4sc_
+syncline,syncline,fold_geometry_YZp6QecM4sc_
+monocline,monocline,fold_geometry_YZp6QecM4sc_
+antiform,antiform,fold_geometry_YZp6QecM4sc_
+synform,synform,fold_geometry_YZp6QecM4sc_
+s_fold,s-fold,fold_geometry_YZp6QecM4sc_
+z_fold,z-fold,fold_geometry_YZp6QecM4sc_
+m_fold,m-fold,fold_geometry_YZp6QecM4sc_
+sheath,sheath,fold_geometry_YZp6QecM4sc_
+single_layer_b,single-layer buckle,fold_geometry_YZp6QecM4sc_
+ptygmatic,ptygmatic,fold_geometry_YZp6QecM4sc_
+crenulation,crenulation,fold_geometry_YZp6QecM4sc_
+interfolial,interfolial,fold_geometry_YZp6QecM4sc_
+other,other,fold_geometry_YZp6QecM4sc_
+chevron,chevron,fold_shape_zAkwyn9tNVk_
+cuspate,cuspate,fold_shape_zAkwyn9tNVk_
+circular,circular,fold_shape_zAkwyn9tNVk_
+elliptical,elliptical,fold_shape_zAkwyn9tNVk_
+upright,upright,fold_attitude_JRxvawYUuD4_
+overturned,overturned,fold_attitude_JRxvawYUuD4_
+vertical,vertical,fold_attitude_JRxvawYUuD4_
+horizontal,horizontal,fold_attitude_JRxvawYUuD4_
+recumbent,recumbent,fold_attitude_JRxvawYUuD4_
+inclined,inclined,fold_attitude_JRxvawYUuD4_
+gentle,gentle   (180º –120º),tightness_1u_TZ7ZL3Tg_
+open,open   (120º–70º),tightness_1u_TZ7ZL3Tg_
+close,close   (70º–30º),tightness_1u_TZ7ZL3Tg_
+tight,tight   (30º–10º),tightness_1u_TZ7ZL3Tg_
+isoclinal,isoclinal   (10º–0º),tightness_1u_TZ7ZL3Tg_
+north,North,vergence_n4QvBpOQFvw_
+ne,NE,vergence_n4QvBpOQFvw_
+east,East,vergence_n4QvBpOQFvw_
+se,SE,vergence_n4QvBpOQFvw_
+south,South,vergence_n4QvBpOQFvw_
+sw,SW,vergence_n4QvBpOQFvw_
+west,West,vergence_n4QvBpOQFvw_
+nw,NW,vergence_n4QvBpOQFvw_
+accurate,accurate,fold_fol_quality_5Cye72eaqyA_
+approximate,approximate,fold_fol_quality_5Cye72eaqyA_
+irregular,irregular,fold_fol_quality_5Cye72eaqyA_
+axial_planar,axial planar,fold_foliation_Type_VKGfG3jCKt8_
+fanning_conver,fanning-convergent,fold_foliation_Type_VKGfG3jCKt8_
+fanning_diverg,fanning-divergent,fold_foliation_Type_VKGfG3jCKt8_
+transected,transected,fold_foliation_Type_VKGfG3jCKt8_

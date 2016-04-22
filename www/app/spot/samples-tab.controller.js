@@ -6,9 +6,10 @@
     .controller('SamplesTabController', SamplesTabController);
 
   SamplesTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'DataModelsFactory',
-    'ProjectFactory'];
+    'FormFactory', 'ProjectFactory'];
 
-  function SamplesTabController($ionicModal, $ionicPopup, $log, $scope, $state, DataModelsFactory, ProjectFactory) {
+  function SamplesTabController($ionicModal, $ionicPopup, $log, $scope, $state, DataModelsFactory, FormFactory,
+                                ProjectFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.survey = DataModelsFactory.getDataModel('sample').survey;
@@ -39,7 +40,8 @@
     function createModal() {
       $ionicModal.fromTemplateUrl('app/spot/sample-modal.html', {
         'scope': $scope,
-        'animation': 'slide-in-up'
+        'animation': 'slide-in-up',
+        'focusFirstInput': true
       }).then(function (modal) {
         vm.sampleModal = modal;
       });
@@ -52,9 +54,9 @@
     function addSample() {
       sampleToEdit = undefined;
       vmParent.data = {};
-      var number = ProjectFactory.getSampleNumber();
-      number = (number) ? number.toString() : '';
-      vmParent.data.sample_id_name = ProjectFactory.getSamplePrefix() + number;
+      var number = ProjectFactory.getSampleNumber() || '';
+      var prefix = ProjectFactory.getSamplePrefix() || '';
+      if (number != '' || prefix !== '') vmParent.data.sample_id_name = prefix + number.toString();
       vm.sampleModal.show();
     }
 
@@ -88,13 +90,8 @@
     }
 
     function submitSample() {
-      if (!vmParent.data.sample_id_name) {
-        $ionicPopup.alert({
-          'title': 'No Sample Id/Name',
-          'template': 'Please enter a Sample Id/Name.'
-        });
-      }
-      else {
+      var valid = FormFactory.validate(vmParent.survey, vmParent.data);
+      if (valid) {
         if (!vmParent.spot.properties.samples) vmParent.spot.properties.samples = [];
         var dup = _.find(vmParent.spot.properties.samples, function (sample) {
           return sample.sample_id_name === vmParent.data.sample_id_name;
@@ -102,7 +99,8 @@
         if (_.indexOf(vmParent.spot.properties.samples, dup) === sampleToEdit) dup = undefined;
         if (!dup) {
           // Editing Sample
-          if (angular.isDefined(sampleToEdit)) vmParent.spot.properties.samples.splice(sampleToEdit, 1, vmParent.data);
+          if (angular.isDefined(sampleToEdit)) vmParent.spot.properties.samples.splice(sampleToEdit, 1,
+            vmParent.data);
           // New Sample
           else {
             vmParent.spot.properties.samples.push(vmParent.data);

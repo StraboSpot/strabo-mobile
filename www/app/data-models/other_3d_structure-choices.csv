@@ -1,0 +1,42 @@
+label,name,order,list name
+boudinage,boudinage,0,zi8se01
+mullion,mullion,1,zi8se01
+lobate-cuspate,lobate_cuspate,2,zi8se01
+other 3D structure,other_3d_structure,3,zi8se01
+unidirectional,unidirectional,,boudinage_geometry_cIwYEvF1UV4_
+bidirectional,bidirectional,,boudinage_geometry_cIwYEvF1UV4_
+symmetrical,symmetrical,,boudinage_shape_ZD9cxOdth_M_
+asymmetrical,asymmetrical,,boudinage_shape_ZD9cxOdth_M_
+N side up,n_side_up,,movement_WnUOwSY9L_U_
+NE side up,ne_side_up,,movement_WnUOwSY9L_U_
+E side up,e_side_up,,movement_WnUOwSY9L_U_
+SE side up,se_side_up,,movement_WnUOwSY9L_U_
+S side up,s_side_up,,movement_WnUOwSY9L_U_
+SW side up,sw_side_up,,movement_WnUOwSY9L_U_
+W side up,w_side_up,,movement_WnUOwSY9L_U_
+NW side up,nw_side_up,,movement_WnUOwSY9L_U_
+top to N,top_to_n,,movement_WnUOwSY9L_U_
+top to NE,top_to_ne,,movement_WnUOwSY9L_U_
+top to E,top_to_e,,movement_WnUOwSY9L_U_
+top to SE,top_to_se,,movement_WnUOwSY9L_U_
+top to S,top_to_s,,movement_WnUOwSY9L_U_
+top to SW,top_to_sw,,movement_WnUOwSY9L_U_
+top to W,top_to_w,,movement_WnUOwSY9L_U_
+top to NW,top_to_nw,,movement_WnUOwSY9L_U_
+right-lateral,right_lateral,,movement_WnUOwSY9L_U_
+left-lateral,left_lateral,,movement_WnUOwSY9L_U_
+other,other,,movement_WnUOwSY9L_U_
+5 - best - accurate,5,,boudin_linear_measure_quality_MsZ_GRdvYC8_
+4,4,,boudin_linear_measure_quality_MsZ_GRdvYC8_
+3 - approximate,3,,boudin_linear_measure_quality_MsZ_GRdvYC8_
+2,2,,boudin_linear_measure_quality_MsZ_GRdvYC8_
+1 - poor - irregular - uncertain,1,,boudin_linear_measure_quality_MsZ_GRdvYC8_
+unidirectional,unidirectional,,mullion_geometry_lXB2_OMfsSs_
+bidirectional,bidirectional,,mullion_geometry_lXB2_OMfsSs_
+symmetrical,symmetrical,,mullion_symmetry_sTJijyawqd8_
+asymmetrical,asymmetrical,,mullion_symmetry_sTJijyawqd8_
+5 - best - accurate,5,,mullion_linear_measure_quality_RHTisa3LUcA_
+4,4,,mullion_linear_measure_quality_RHTisa3LUcA_
+3 - approximate,3,,mullion_linear_measure_quality_RHTisa3LUcA_
+2,2,,mullion_linear_measure_quality_RHTisa3LUcA_
+1 - poor - irregular - uncertain,1,,mullion_linear_measure_quality_RHTisa3LUcA_

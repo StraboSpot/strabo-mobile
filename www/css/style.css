@@ -6,6 +6,13 @@
 }
 
 /*--------------------
+Basic Style
+--------------------*/
+.title {
+  text-transform: capitalize;
+}
+
+/*--------------------
 Project Info
 --------------------*/
 .project-info {
