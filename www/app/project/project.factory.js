@@ -390,6 +390,7 @@
           if (remoteProject.rock_units) promises.push(saveProjectItem('rock_units', remoteProject.rock_units));
           if (remoteProject.preferences) promises.push(saveProjectItem('preferences', remoteProject.preferences));
           if (remoteProject.daily_setup) promises.push(saveProjectItem('daily_setup', remoteProject.daily_setup));
+          if (remoteProject.tags) promises.push(saveProjectItem('tags', remoteProject.tags));
           if (remoteProject.tools) promises.push(saveProjectItem('tools', remoteProject.tools));
           $q.all(promises).then(function () {
             loadDatasetsRemote().then(function () {

@@ -5,15 +5,15 @@
     .module('app')
     .factory('SpotFactory', SpotFactory);
 
-  SpotFactory.$inject = ['$ionicPopup', '$log', '$state', '$q', 'LocalStorageFactory', 'ProjectFactory'];
+  SpotFactory.$inject = ['$ionicPopup', '$location', '$log', '$state', '$q', 'LocalStorageFactory', 'ProjectFactory'];
 
-  function SpotFactory($ionicPopup, $log, $state, $q, LocalStorageFactory, ProjectFactory) {
-    var activeSpots;
+  function SpotFactory($ionicPopup, $location, $log, $state, $q, LocalStorageFactory, ProjectFactory) {
+    var activeSpots;  // Only Spots in the active datasets
     var currentSpot;
     var currentAssociatedOrientationIndex;
     var currentOrientationIndex;
     var moveSpot = false;
-    var spots;
+    var spots;        // All Spots
     var visibleDatasets = [];
 
     return {
@@ -34,6 +34,7 @@
       'getSpotCount': getSpotCount,
       'getSpots': getSpots,
       'getVisibleDatasets': getVisibleDatasets,
+      'goToSpot': goToSpot,
       'isRockUnitUsed': isRockUnitUsed,
       'isSafeDelete': isSafeDelete,
       'loadSpots': loadSpots,
@@ -206,7 +207,8 @@
       var spotCur = _.find(spots, function (spot) {
         return spot.properties.id === id;
       });
-      return spotCur.properties.name;
+      if (spotCur) return spotCur.properties.name;
+      return 'Spot Not Found (Id: ' + id + ')';
     }
 
     function getOrientations() {
@@ -231,6 +233,19 @@
 
     function getVisibleDatasets() {
       return visibleDatasets;
+    }
+
+    function goToSpot(id) {
+      var spotCur = _.find(spots, function (spot) {
+        return spot.properties.id === id;
+      });
+      if (spotCur) $location.path('/app/spotTab/' + id + '/spot');
+      else {
+        $ionicPopup.alert({
+          'title': 'Spot Not Found!',
+          'template': 'This Spot was not found in the local database. It may need to be downloaded from the server or an unknown error has occurred.'
+        });
+      }
     }
 
     function isRockUnitUsed(key, value) {

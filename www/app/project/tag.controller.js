@@ -137,9 +137,7 @@
     }
 
     function goToSpot(spotId) {
-      if (!isDelete) {
-        $location.path('/app/spotTab/' + spotId + '/spot');
-      }
+      if (!isDelete) SpotFactory.goToSpot(spotId);
     }
 
     function isOptionChecked(spotId) {
