@@ -7,10 +7,10 @@
     </button>
     <ion-list>
       <ion-item class='item-text-wrap item-button-right'
-                ng-click='vmChild.editSample($index)'
-                ng-repeat='sample in vm.spot.properties.samples'>
-        {{ sample.sample_id_name }}
-        <button class='button button-clear button-assertive' ng-click='vmChild.deleteSample($index)'>
+                ng-repeat='sample in vm.spot.properties.samples | orderBy: "label" track by sample.id'
+                ng-click='vmChild.editSample(sample)'>
+        {{ sample.label }}
+        <button class='button button-clear button-assertive' ng-click='vmChild.deleteSample(sample)'>
           <i class='icon ion-minus-circled'></i>
         </button>
       </ion-item>

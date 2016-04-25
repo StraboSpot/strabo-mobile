@@ -17,6 +17,7 @@
     var isDelete;
 
     vm._3dStructures = [];
+    vm.basicFormModal = {};
     vm.add3dStructure = add3dStructure;
     vm.closeModal = closeModal;
     vm.delete3dStructure = delete3dStructure;

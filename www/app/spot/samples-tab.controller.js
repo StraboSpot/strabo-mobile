@@ -6,25 +6,23 @@
     .controller('SamplesTabController', SamplesTabController);
 
   SamplesTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'DataModelsFactory',
-    'FormFactory', 'ProjectFactory'];
+    'FormFactory', 'HelpersFactory', 'ProjectFactory'];
 
   function SamplesTabController($ionicModal, $ionicPopup, $log, $scope, $state, DataModelsFactory, FormFactory,
-                                ProjectFactory) {
+                                HelpersFactory, ProjectFactory) {
     var vm = this;
     var vmParent = $scope.vm;
-    vmParent.survey = DataModelsFactory.getDataModel('sample').survey;
-    vmParent.choices = DataModelsFactory.getDataModel('sample').choices;
     vmParent.loadTab($state);     // Need to load current state into parent
 
-    var sampleToEdit;
-    var delSample;
+    var isDelete;
 
     vm.addSample = addSample;
+    vm.basicFormModal = {};
     vm.closeModal = closeModal;
     vm.deleteSample = deleteSample;
     vm.editSample = editSample;
-    vm.sampleModal = {};
-    vm.submitSample = submitSample;
+    vm.submit = submit;
+
     activate();
 
     /**
@@ -33,17 +31,23 @@
 
     function activate() {
       $log.log('In SampleTabController');
-
+      vmParent.survey = DataModelsFactory.getDataModel('sample').survey;
+      vmParent.choices = DataModelsFactory.getDataModel('sample').choices;
       createModal();
     }
 
     function createModal() {
-      $ionicModal.fromTemplateUrl('app/spot/sample-modal.html', {
+      $ionicModal.fromTemplateUrl('app/spot/basic-form-modal.html', {
         'scope': $scope,
         'animation': 'slide-in-up',
         'focusFirstInput': true
       }).then(function (modal) {
-        vm.sampleModal = modal;
+        vm.basicFormModal = modal;
+      });
+
+      // Cleanup the modal when we're done with it!
+      $scope.$on('$destroy', function () {
+        vm.basicFormModal.remove();
       });
     }
 
@@ -52,69 +56,59 @@
      */
 
     function addSample() {
-      sampleToEdit = undefined;
       vmParent.data = {};
+      vmParent.data.id = HelpersFactory.newId();
       var number = ProjectFactory.getSampleNumber() || '';
       var prefix = ProjectFactory.getSamplePrefix() || '';
-      if (number != '' || prefix !== '') vmParent.data.sample_id_name = prefix + number.toString();
-      vm.sampleModal.show();
+      if (number !== '' || prefix !== '') vmParent.data.sample_id_name = prefix + number.toString();
+      vm.modalTitle = 'Add a Sample';
+      vm.basicFormModal.show();
     }
 
-    function closeModal(modal) {
-      vm[modal].hide();
+    function closeModal() {
+      vm.basicFormModal.hide();
     }
 
-    function deleteSample(i) {
-      delSample = true;
+    function deleteSample(sampleToDelete) {
+      isDelete = true;
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete Sample',
-        'template': 'Are you sure you want to delete this sample?'
+        'template': 'Are you sure you want to delete the Sample <b>' + sampleToDelete.label + '</b>?'
       });
       confirmPopup.then(function (res) {
         if (res) {
-          vmParent.spot.properties.samples.splice(i, 1);
-          if (vmParent.spot.properties.samples.length === 0) {
-            delete vmParent.spot.properties.samples;
-          }
+          vmParent.spot.properties.samples = _.reject(vmParent.spot.properties.samples, function (sample) {
+            return sample.id === sampleToDelete.id;
+          });
+          if (vmParent.spot.properties.samples.length === 0) delete vmParent.spot.properties.samples;
         }
-        delSample = false;
+        isDelete = false;
       });
     }
 
-    function editSample(i) {
-      if (!delSample) {
-        vmParent.data = angular.fromJson(angular.toJson(vmParent.spot.properties.samples[i]));  // Copy value, not reference
-        sampleToEdit = i;
-        vm.sampleModal.show();
+    function editSample(sampleToEdit) {
+      if (!isDelete) {
+        vmParent.data = angular.fromJson(angular.toJson(sampleToEdit));  // Copy value, not reference
+        vm.modalTitle = 'Edit Sample';
+        vm.basicFormModal.show();
       }
     }
 
-    function submitSample() {
+    function submit() {
+      if (!vmParent.data.label) vmParent.data.label = vmParent.data.sample_id_name || 'sample';
       var valid = FormFactory.validate(vmParent.survey, vmParent.data);
       if (valid) {
         if (!vmParent.spot.properties.samples) vmParent.spot.properties.samples = [];
-        var dup = _.find(vmParent.spot.properties.samples, function (sample) {
-          return sample.sample_id_name === vmParent.data.sample_id_name;
+        var found = _.find(vmParent.spot.properties.samples, function (sample) {
+          return sample.id === vmParent.data.id;
         });
-        if (_.indexOf(vmParent.spot.properties.samples, dup) === sampleToEdit) dup = undefined;
-        if (!dup) {
-          // Editing Sample
-          if (angular.isDefined(sampleToEdit)) vmParent.spot.properties.samples.splice(sampleToEdit, 1,
-            vmParent.data);
-          // New Sample
-          else {
-            vmParent.spot.properties.samples.push(vmParent.data);
-            ProjectFactory.incrementSampleNumber();
-          }
-          vm.sampleModal.hide();
-          vmParent.data = {};
-        }
-        else {
-          $ionicPopup.alert({
-            'title': 'Duplicate Sample Id/Name',
-            'template': 'Please use a unique Sample Id/Name.'
-          });
-        }
+        if (!found) ProjectFactory.incrementSampleNumber();
+        vmParent.spot.properties.samples = _.reject(vmParent.spot.properties.samples, function (sample) {
+          return sample.id === vmParent.data.id;
+        });
+        vmParent.spot.properties.samples.push(vmParent.data);
+        vmParent.data = {};
+        vm.basicFormModal.hide();
       }
     }
   }
