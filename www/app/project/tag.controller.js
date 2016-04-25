@@ -17,16 +17,20 @@
 
     vm.addSpot = addSpot;
     vm.addSpotModal = {};
+    vm.checkedDataset = checkedDataset;
     vm.choices = [];
     vm.closeModal = closeModal;
     vm.data = {};
+    vm.filter = filter;
     vm.getSpotName = getSpotName;
     vm.go = go;
     vm.goToSpot = goToSpot;
+    vm.isDatasetChecked = isDatasetChecked;
     vm.isOptionChecked = isOptionChecked;
     vm.loadMoreSpots = loadMoreSpots;
     vm.moreSpotsCanBeLoaded = moreSpotsCanBeLoaded;
     vm.removeSpot = removeSpot;
+    vm.resetFilters = resetFilters;
     vm.showField = showField;
     vm.spots = [];
     vm.spotsDisplayed = [];
@@ -56,6 +60,20 @@
       // Cleanup the modal when we're done with it!
       $scope.$on('$destroy', function () {
         vm.addSpotModal.remove();
+      });
+
+      $ionicModal.fromTemplateUrl('app/spot/spots-filter-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false,
+        'hardwareBackButtonClose': false
+      }).then(function (modal) {
+        vm.filterModal = modal;
+      });
+
+      // Cleanup the modal when we're done with it!
+      $scope.$on('$destroy', function () {
+        vm.filterModal.remove();
       });
     }
 
@@ -99,24 +117,31 @@
       setVisibleSpots();
     }
 
-    function closeModal(modal) {
-      vm[modal].hide();
+    function checkedDataset(dataset) {
+      $log.log('visibleDatasets:', visibleDatasets);
+      var i = _.indexOf(visibleDatasets, dataset);
+      if (i === -1) visibleDatasets.push(dataset);
+      else visibleDatasets.splice(i, 1);
+      SpotFactory.setVisibleDatasets(visibleDatasets);
+      $log.log('visibleDatasets after:', visibleDatasets);
     }
 
-    function removeSpot(spotId) {
-      isDelete = true;
-      var confirmPopup = $ionicPopup.confirm({
-        'title': 'Remove Spot',
-        'template': 'Are you sure you want to remove the Spot <b>' + getSpotName(
-          spotId) + '</b> from this Tag Group? This will <b>not</b> delete the Spot itself.'
-      });
-      confirmPopup.then(function (res) {
-        if (res) {
-          ProjectFactory.removeTagFromSpot(vm.data.id, spotId).then(function () {
-            loadTag();
-          });
-        }
-        isDelete = false;
+    function closeModal(modal) {
+      if (!modal) {
+        setVisibleSpots();
+        vm.filterModal.hide();
+      }
+      else vm[modal].hide();
+    }
+
+    function filter() {
+      vm.activeDatasets = ProjectFactory.getActiveDatasets();
+      vm.filterModal.show();
+    }
+
+    function isDatasetChecked(id) {
+      return _.find(visibleDatasets, function (visibleDataset) {
+        return visibleDataset === id;
       });
     }
 
@@ -154,6 +179,28 @@
 
     function moreSpotsCanBeLoaded() {
       return vm.spotsDisplayed.length !== vm.spots.length;
+    }
+
+    function removeSpot(spotId) {
+      isDelete = true;
+      var confirmPopup = $ionicPopup.confirm({
+        'title': 'Remove Spot',
+        'template': 'Are you sure you want to remove the Spot <b>' + getSpotName(
+          spotId) + '</b> from this Tag Group? This will <b>not</b> delete the Spot itself.'
+      });
+      confirmPopup.then(function (res) {
+        if (res) {
+          ProjectFactory.removeTagFromSpot(vm.data.id, spotId).then(function () {
+            loadTag();
+          });
+        }
+        isDelete = false;
+      });
+    }
+
+    function resetFilters() {
+      visibleDatasets = [];
+      setVisibleSpots();
     }
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair

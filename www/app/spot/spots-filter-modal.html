@@ -12,5 +12,11 @@
                   ng-click='vm.checkedDataset(dataset.id)'>
       {{ dataset.name }}
     </ion-checkbox>
+    <br>
+    <button ng-click='vm.resetFilters()'
+            class='button button-clear button-positive'>
+      <i class='icon ion-refresh'></i>
+      <span class='button-text-big'>Reset All Filters</span>
+    </button>
   </ion-content>
 </ion-modal-view>

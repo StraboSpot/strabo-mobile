@@ -32,6 +32,7 @@
     vm.loadMoreSpots = loadMoreSpots;
     vm.moreSpotsCanBeLoaded = moreSpotsCanBeLoaded;
     vm.newSpot = newSpot;
+    vm.resetFilters = resetFilters;
     vm.spots = [];
     vm.spotsDisplayed = [];
 
@@ -366,6 +367,11 @@
       SpotFactory.setNewSpot({}).then(function (id) {
         $location.path('/app/spotTab/' + id + '/spot');
       });
+    }
+
+    function resetFilters() {
+      visibleDatasets = [];
+      setVisibleSpots();
     }
   }
 }());
