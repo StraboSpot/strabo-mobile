@@ -5,9 +5,9 @@
     xmlns="http://www.w3.org/ns/widgets"
     xmlns:cdv="http://cordova.apache.org/ns/1.0"
     xmlns:gap="http://phonegap.com/ns/1.0">
-  <name>Strabo Spot</name>
+  <name>Strabo Mobile</name>
   <description>
-    Strabo Spot is a cross-platform application for geologic field data acquisition.
+    Strabo Mobile is a cross-platform application for geologic field data acquisition.
   </description>
   <author email="jessica.good@azgs.az.gov" href="https://github.com/StraboSpot/strabo-mobile">
     Jessica Good
