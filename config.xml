@@ -26,9 +26,6 @@
   <gap:config-file platform="ios" parent="UIFileSharingEnabled" mode="replace">
     <true></true>
   </gap:config-file>
-  <feature name="StatusBar">
-    <param name="ios-package" value="CDVStatusBar" onload="true"/>
-  </feature>
   <platform name="ios">
     <preference name="Orientation" value="all"/>
     <icon src="resources\ios\icon\icon.png" width="57" height="57"/>

@@ -12,6 +12,7 @@ globals:
   localforage: true
   turf: true
   Camera: true
+  StatusBar: true
   Base64: true
   Papa: true
 
