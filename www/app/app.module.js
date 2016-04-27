@@ -4,7 +4,6 @@
   angular
     .module('app', [
       'ionic',
-      'ionic.service.core',
       'ngCordova',
       'ngMessages'
     ]);
