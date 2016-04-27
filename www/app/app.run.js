@@ -13,7 +13,7 @@
         }
         if ($window.StatusBar) {
           // org.apache.cordova.statusbar required
-          $window.StatusBar.styleDefault();
+          $window.StatusBar.styleBlackOpaque();
           $window.StatusBar.overlaysWebView(false);
         }
       });
