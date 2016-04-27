@@ -14,7 +14,7 @@
         if ($window.StatusBar) {
           // org.apache.cordova.statusbar required
           $window.StatusBar.styleDefault();
-          $window.StatusBar.styleLightContent();
+          StatusBar.styleBlackTranslucent();
           $window.StatusBar.overlaysWebView(false);
         }
       });
