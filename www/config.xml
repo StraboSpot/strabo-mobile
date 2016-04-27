@@ -28,8 +28,8 @@
   <preference name="AndroidPersistentFileLocation" value="Internal"/>
   <preference name="iosPersistentFileLocation" value="Library"/>
   <preference name="SplashScreen" value="splash"/>
-  <preference name="AutoHideSplashScreen" value="false"/>
-  <preference name="SplashScreenDelay" value="3000"/>
+  <!--<preference name="AutoHideSplashScreen" value="false"/>
+  <preference name="SplashScreenDelay" value="3000"/>-->
   <preference platform="ios" name="Orientation" value="all"/>
   <gap:config-file platform="ios" parent="UIFileSharingEnabled" mode="replace">
     <true/>
