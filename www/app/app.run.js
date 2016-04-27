@@ -14,7 +14,7 @@
         if ($window.StatusBar) {
           // org.apache.cordova.statusbar required
           $window.StatusBar.styleLightContent();
-          $window.StatusBar.backgroundColorByName("red");
+          $window.StatusBar.backgroundColorByHexString('#444444');
           $window.StatusBar.overlaysWebView(false);
         }
       });
