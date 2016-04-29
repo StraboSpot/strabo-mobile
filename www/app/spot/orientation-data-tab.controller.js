@@ -18,6 +18,8 @@
     vm.addOrientation = addOrientation;
     vm.basicFormModal = {};
     vm.closeModal = closeModal;
+    vm.copyAssociatedOrientation = copyAssociatedOrientation;
+    vm.copyOrientation = copyOrientation;
     vm.deleteAssociatedOrientation = deleteAssociatedOrientation;
     vm.deleteOrientation = deleteOrientation;
     vm.editAssociatedOrientation = editAssociatedOrientation;
@@ -111,6 +113,24 @@
     function closeModal() {
       vm.parentOrientation = undefined;
       vm.basicFormModal.hide();
+    }
+
+    function copyAssociatedOrientation(parentThisOrientation, orientation) {
+      var copy = angular.copy(orientation);
+      delete copy.id;
+      assignProperties(copy);
+      parentThisOrientation.associated_orientation.push(copy);
+    }
+
+    function copyOrientation(orientation) {
+      var copy = angular.copy(orientation);
+      delete copy.id;
+      _.each(copy.associated_orientation, function (associatedOrientation) {
+        delete associatedOrientation.id;
+        assignProperties(associatedOrientation);
+      });
+      assignProperties(copy);
+      vmParent.spot.properties.orientation_data.push(copy);
     }
 
     function deleteAssociatedOrientation(parentThisOrientation, orientationToDelete) {
