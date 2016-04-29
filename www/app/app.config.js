@@ -270,46 +270,6 @@
           }
         }
       })
-      .state('app.orientation', {
-        'cache': false,
-        'url': '/orientation',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/spot/orientation.html',
-            'controller': 'OrientationController as vm'
-          }
-        }
-      })
-      .state('app.new-linear-orientation', {
-        'cache': false,
-        'url': '/new-linear-orientation',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/spot/orientation.html',
-            'controller': 'OrientationController as vm'
-          }
-        }
-      })
-      .state('app.new-planar-orientation', {
-        'cache': false,
-        'url': '/new-planar-orientation',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/spot/orientation.html',
-            'controller': 'OrientationController as vm'
-          }
-        }
-      })
-      .state('app.new-tabular-zone-orientation', {
-        'cache': false,
-        'url': '/new-tabular-zone-orientation',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/spot/orientation.html',
-            'controller': 'OrientationController as vm'
-          }
-        }
-      })
       .state('app.archiveTiles', {
         'url': '/map/archiveTiles',
         'views': {

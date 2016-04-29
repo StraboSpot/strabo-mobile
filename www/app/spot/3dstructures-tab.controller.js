@@ -16,9 +16,8 @@
 
     var isDelete;
 
-    vm._3dStructures = [];
-    vm.basicFormModal = {};
     vm.add3dStructure = add3dStructure;
+    vm.basicFormModal = {};
     vm.closeModal = closeModal;
     vm.delete3dStructure = delete3dStructure;
     vm.edit3dStructure = edit3dStructure;
@@ -32,41 +31,20 @@
      */
 
     function activate() {
-      $log.log('In 3DStructuresTabController');
-
+      $log.log('3D Structures:', vmParent.spot.properties._3d_structures);
       checkProperties();
       createModal();
-    }
-
-    function createDefaultLabel(_3dStructureToLabel) {
-      return DataModelsFactory.getFeatureTypeLabel(_3dStructureToLabel.feature_type) || _3dStructureToLabel.type || '';
-
-      /* This part assigns a number to each label
-      var sameTypeCount = {};
-      var count = 0;
-      // Feature type is a required field for Fabric, Other and Tensor
-      if (_3dStructureToLabel.feature_type) {
-        sameTypeCount = _.countBy(vmParent.spot.properties._3d_structures, function (_3dStructure) {
-          return _3dStructure.feature_type === _3dStructureToLabel.feature_type;
-        });
-        count = sameTypeCount.true + 1 || 1;
-        return DataModelsFactory.getFeatureTypeLabel(_3dStructureToLabel.feature_type) + ' ' + count;
-      }
-      else {
-        // Folds don't have a feature type so just use the main type
-        sameTypeCount = _.countBy(vmParent.spot.properties._3d_structures, function (_3dStructure) {
-          return _3dStructure.type === _3dStructureToLabel.type;
-        });
-        count = sameTypeCount.true + 1 || 1;
-        return _3dStructureToLabel.type  + ' ' + count;
-      }*/
     }
 
     function checkProperties() {
       _.each(vmParent.spot.properties._3d_structures, function (_3dStructure) {
         if (!_3dStructure.label) _3dStructure.label = createDefaultLabel(_3dStructure);
-        if (!_3dStructure.id) HelpersFactory.newId();
+        if (!_3dStructure.id) _3dStructure.id = HelpersFactory.newId();
       });
+    }
+
+    function createDefaultLabel(_3dStructureToLabel) {
+      return DataModelsFactory.getFeatureTypeLabel(_3dStructureToLabel.feature_type) || _3dStructureToLabel.type || '';
     }
 
     function createModal() {

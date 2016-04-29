@@ -125,30 +125,12 @@
       }
     }
 
-    // Get the max value allowed for a number field
     function getMax(constraint) {
-      try {
-        // Look for <= in constraint, followed by a space and then a number
-        var regexMax = /<=\s(\d*)/i;
-        // Return just the number
-        return regexMax.exec(constraint)[1];
-      }
-      catch (e) {
-        return undefined;
-      }
+      return FormFactory.getMax(constraint);
     }
 
-    // Get the min value allowed for a number field
     function getMin(constraint) {
-      try {
-        // Look for >= in constraint, followed by a space and any number of digits
-        var regexMin = />=\s(\d*)/i;
-        // Return just the number
-        return regexMin.exec(constraint)[1];
-      }
-      catch (e) {
-        return undefined;
-      }
+      return FormFactory.getMin(constraint);
     }
 
     function goBack() {

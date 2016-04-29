@@ -199,9 +199,8 @@
         });
         description = sortby(description);
         if (key === 'linear_orientation' || key === 'planar_orientation' || key === 'tabular_orientation') {
-          description.name = 'Type: text; REQUIRED';
           description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id); REQUIRED';
-          description.orientation_type = key + '; REQUIRED';
+          description.type = key + '; REQUIRED';
           description.associated_orientation = [];
           description = sortby(description);
           spotDataModel.properties.orientation_data.push(description);

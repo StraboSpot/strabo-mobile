@@ -9,6 +9,8 @@
 
   function FormFactory($document, $ionicPopup, $log) {
     return {
+      'getMax': getMax,
+      'getMin': getMin,
       'isRelevant': isRelevant,
       'toggleAcknowledgeChecked': toggleAcknowledgeChecked,
       'validate': validate
@@ -17,6 +19,32 @@
     /**
      * Public Functions
      */
+
+    // Get the max value allowed for a number field
+    function getMax(constraint) {
+      try {
+        // Look for <= in constraint, followed by a space and then a number
+        var regexMax = /<=\s(\d*)/i;
+        // Return just the number
+        return regexMax.exec(constraint)[1];
+      }
+      catch (e) {
+        return undefined;
+      }
+    }
+
+    // Get the min value allowed for a number field
+    function getMin(constraint) {
+      try {
+        // Look for >= in constraint, followed by a space and any number of digits
+        var regexMin = />=\s(\d*)/i;
+        // Return just the number
+        return regexMin.exec(constraint)[1];
+      }
+      catch (e) {
+        return undefined;
+      }
+    }
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair
     // The 2nd param, properties, is used in the eval method

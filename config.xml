@@ -23,7 +23,6 @@
   <preference name="SplashScreen" value="screen"/>
   <preference name="AutoHideSplashScreen" value="false"/>
   <preference name="SplashScreenDelay" value="3000"/>
-  <preference name="StatusBarOverlaysWebView" value="false"/>
   <gap:config-file platform="ios" parent="UIFileSharingEnabled" mode="replace">
     <true></true>
   </gap:config-file>

@@ -9,6 +9,10 @@
     </button>
   </ion-header-bar>
   <ion-content class='has-header'>
+    <div class='padding orientation-reference' ng-show="vmChild.parentOrientation">
+      <b>REFERENCE ORIENTATION:</b></span>
+      {{ vmChild.parentOrientation.label }}
+    </div>
     <form name='straboForm' novalidate=''>
       <auto-fields/>
     </form>

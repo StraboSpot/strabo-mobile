@@ -13,7 +13,9 @@
         }
         if ($window.StatusBar) {
           // org.apache.cordova.statusbar required
-          StatusBar.styleDefault();
+          $window.StatusBar.styleLightContent();
+          $window.StatusBar.backgroundColorByName('black');
+          $window.StatusBar.overlaysWebView(false);
         }
       });
     });

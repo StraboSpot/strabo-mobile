@@ -21,6 +21,7 @@
     vm.closeModal = closeModal;
     vm.deleteSample = deleteSample;
     vm.editSample = editSample;
+    vm.modalTitle = '';
     vm.submit = submit;
 
     activate();
@@ -30,10 +31,22 @@
      */
 
     function activate() {
-      $log.log('In SampleTabController');
+      $log.log('Samples:', vmParent.spot.properties.samples);
       vmParent.survey = DataModelsFactory.getDataModel('sample').survey;
       vmParent.choices = DataModelsFactory.getDataModel('sample').choices;
+      checkProperties();
       createModal();
+    }
+
+    function checkProperties() {
+      _.each(vmParent.spot.properties.samples, function (sample) {
+        if (!sample.label) sample.label = createDefaultLabel(sample);
+        if (!sample.id) sample.id = HelpersFactory.newId();
+      });
+    }
+
+    function createDefaultLabel(sampleToLabel) {
+      return sampleToLabel.sample_id_name || 'sample';
     }
 
     function createModal() {
@@ -49,6 +62,13 @@
       $scope.$on('$destroy', function () {
         vm.basicFormModal.remove();
       });
+    }
+
+    function handleSampleNumber() {
+      var found = _.find(vmParent.spot.properties.samples, function (sample) {
+        return sample.id === vmParent.data.id;
+      });
+      if (!found) ProjectFactory.incrementSampleNumber();
     }
 
     /**
@@ -95,14 +115,10 @@
     }
 
     function submit() {
-      if (!vmParent.data.label) vmParent.data.label = vmParent.data.sample_id_name || 'sample';
-      var valid = FormFactory.validate(vmParent.survey, vmParent.data);
-      if (valid) {
+      if (!vmParent.data.label) vmParent.data.label = createDefaultLabel(vmParent.data);
+      if (FormFactory.validate(vmParent.survey, vmParent.data)) {
         if (!vmParent.spot.properties.samples) vmParent.spot.properties.samples = [];
-        var found = _.find(vmParent.spot.properties.samples, function (sample) {
-          return sample.id === vmParent.data.id;
-        });
-        if (!found) ProjectFactory.incrementSampleNumber();
+        handleSampleNumber();
         vmParent.spot.properties.samples = _.reject(vmParent.spot.properties.samples, function (sample) {
           return sample.id === vmParent.data.id;
         });
