@@ -13,7 +13,7 @@
     Jessica Good
   </author>
   <icon src="icon.png"/>
-  <splash src="splash.png"/> <!-- No www/splash.png. Not generating splash screens bc too large for PhoneGap Build.-->
+  <!-- <splash src="splash.png"/> No www/splash.png. Not generating splash screens bc too large for PhoneGap Build.-->
   <gap:platform name="ios"/>
   <gap:platform name="android"/>
   <content src="index.html"/>
