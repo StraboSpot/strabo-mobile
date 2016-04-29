@@ -211,6 +211,10 @@
           description = sortby(description);
           spotDataModel.properties._3d_structures.push(description);
         }
+        else if (key === 'samples') {
+          description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id); REQUIRED';
+          spotDataModel.properties[key].push(description);
+        }
         else if (key === 'trace' || key === 'rock_unit') {
           _.extend(spotDataModel.properties[key], description);
         }
