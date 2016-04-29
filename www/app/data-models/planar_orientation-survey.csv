@@ -1,4 +1,5 @@
 name,type,label,hint,required,constraint,constraint_message,appearance,relevant
+label,text,Label,If a label is not specified a default label will be given.,false,,,,
 strike,integer,Strike,Azimuth in degrees,false,. >= 0 and . <= 360,Strike must be between 0-360.,,
 dip_direction,integer,Dip Direction,,false,. >= 0 and . <= 360,values must be between 0-360,,
 dip,integer,Dip,,false,. >= 0 and . <= 90,values must be between 0-90,,

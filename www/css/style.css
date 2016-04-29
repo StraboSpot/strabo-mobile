@@ -193,7 +193,7 @@ Orientation Tab Style
   text-transform: uppercase;
 }
 
-.orientation-name {
+.orientation-label {
   font-weight: normal;
   font-size: small;
   text-transform: initial;
