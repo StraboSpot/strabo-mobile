@@ -26,10 +26,14 @@
      */
 
     function activate() {
+      $ionicLoading.show({
+        'template': '<ion-spinner></ion-spinner><br>Loading Maps'
+      });
       OfflineTilesFactory.getMaps().then(function (maps) {
         vm.maps = maps;
         $log.log('Offline Maps:', vm.maps);
         updateOfflineTileSize(vm.maps);
+        $ionicLoading.hide();
       });
     }
 
