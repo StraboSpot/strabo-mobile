@@ -62,9 +62,9 @@
 
     function gatherOrientationData() {
       _.each(vmParent.spot.properties.orientation_data, function (orientation) {
-        vm.orientationData[orientation.id] = orientation.name;
+        vm.orientationData[orientation.id] = orientation.label;
         _.each(orientation.associated_orientation, function (associated_orientation) {
-          vm.orientationData[associated_orientation.id] = associated_orientation.name;
+          vm.orientationData[associated_orientation.id] = associated_orientation.label;
         });
       });
     }
