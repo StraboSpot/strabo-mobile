@@ -5,22 +5,18 @@
     .module('app')
     .controller('OfflineMapController', OfflineMapController);
 
-  OfflineMapController.$inject = ['$ionicLoading', '$ionicPopup', '$scope', 'OfflineTilesFactory'];
+  OfflineMapController.$inject = ['$ionicLoading', '$ionicPopup', '$log', '$scope', 'OfflineTilesFactory'];
 
-  function OfflineMapController($ionicLoading, $ionicPopup, $scope, OfflineTilesFactory) {
+  function OfflineMapController($ionicLoading, $ionicPopup, $log, $scope, OfflineTilesFactory) {
     var vm = this;
     var deleteMap;
 
     vm.clearOfflineTile = clearOfflineTile;
     vm.deleteTiles = deleteTiles;
     vm.edit = edit;
-    vm.maps = {                   // a collection of maps
-      'maps': null
-    };
+    vm.maps = {};
     vm.numOfflineTiles = 0;       // number of tiles we have in offline storage
     vm.offlineTilesSize = 0;
-    vm.refreshOfflineMapList = refreshOfflineMapList;
-    vm.updateOfflineTileCount = updateOfflineTileCount;
     vm.updateOfflineTileSize = updateOfflineTileSize;
 
     activate();
@@ -30,34 +26,17 @@
      */
 
     function activate() {
-      refreshOfflineMapList();
-      updateOfflineTileCount();
-      updateOfflineTileSize();
-    }
-
-    function refreshOfflineMapList() {
       OfflineTilesFactory.getMaps().then(function (maps) {
-        vm.maps.maps = maps;
-      });
-    }
-
-    function updateOfflineTileCount() {
-      // get the image count
-      OfflineTilesFactory.getOfflineTileCount(function (count) {
-        // console.log(count);
-        vm.numOfflineTiles = count;
-        $scope.$apply();
+        vm.maps = maps;
+        $log.log('Offline Maps:', vm.maps);
+        updateOfflineTileSize(vm.maps);
       });
     }
 
     function updateOfflineTileSize() {
-      OfflineTilesFactory.getOfflineTileSize(function (size) {
-        if (size >= 1000 && size < 1000000) size = String(Math.round(size / 1000)) + ' KB';
-        if (size >= 1000000 && size < 1000000000) size = String(Math.round(size / 1000000)) + ' MB';
-        if (size >= 1000000000) size = String(Math.round(size / 1000000000)) + ' GB';
-        vm.offlineTilesSize = size;
-        $scope.$apply();
-      });
+      var offlineSize = OfflineTilesFactory.getOfflineTileSize(vm.maps);
+      vm.offlineTilesSize = offlineSize.size;
+      vm.numOfflineTiles = offlineSize.count;
     }
 
     /**
@@ -136,7 +115,7 @@
             // rename the map
             OfflineTilesFactory.renameMap(map.name, vm.mapDetail.newName)
               .then(function () {
-                refreshOfflineMapList();
+                activate();
               });
           }
         });

@@ -178,7 +178,7 @@
     function nameSelectChanged() {
       if (vm.selectedName.name === '-- New Offline Map --') {
         vm.showNameField = true;
-        vm.map = {};
+        vm.map.name = '';
       }
       else {
         vm.showNameField = false;

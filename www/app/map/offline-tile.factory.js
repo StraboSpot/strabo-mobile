@@ -90,7 +90,8 @@
           'http://otile4-s.mqcdn.com/tiles/1.0.0/sat/'
         ],
         'imageType': 'jpg',
-        'mime': 'image/jpeg'
+        'mime': 'image/jpeg',
+        'maxZoom': 18
       }, {
         'id': 'mqOsm',
         'name': 'MapQuest - OSM',
@@ -295,14 +296,19 @@
       });
     }
 
-    // Get the number of tiles from offline storage
-    function getOfflineTileSize(callback) {
+    // Get the number of tiles & size from offline storage
+    function getOfflineTileSize(maps) {
       var size = 0;
-      LocalStorageFactory.getDb().mapTilesDb.iterate(function (value) {
-        size += value.size;
-      }).then(function () {
-        callback(size);
+      var tiles = [];
+      _.each(maps, function (map) {
+        _.each(map.tileArray, function (tile) {
+          if (!_.contains(tiles, tile.tile_provider + tile.tile_id)) {
+            size += tile.size;
+            tiles.push(tile.tile_provider + tile.tile_id);
+          }
+        });
       });
+      return {'size': size, 'count': tiles.length};
     }
 
     // Read from storage

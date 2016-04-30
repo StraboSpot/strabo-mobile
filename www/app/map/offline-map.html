@@ -12,9 +12,11 @@
     </div>
     <div ng-hide='vm.numOfflineTiles === 0'>
       <ion-list>
-        <ion-item class='item-text-wrap item-button-right' ng-repeat='map in vm.maps.maps' ng-click='vm.edit(map)'>
-          <b>{{map.name}}</b><br>
-          <small>{{map.tileArray.length}} tiles, {{map.size | normalizeBytes}}, {{map.mapProvider}}<span
+        <ion-item class='item-text-wrap item-button-right'
+                  ng-repeat='map in vm.maps | orderBy: "name"'
+                  ng-click='vm.edit(map)'>
+          <b>{{ map.name }}</b><br>
+          <small>{{ map.tileArray.length }} tiles, {{ map.size | normalizeBytes }}, {{ map.mapProvider }}<span
             ng-if='map.date'>, Saved: {{ map.date }}</span></small>
             <button class='button button-clear button-assertive'
                     ng-click='vm.deleteTiles(map)'>
@@ -24,7 +26,7 @@
       </ion-list>
       <div class='padding'>
         Total Number of Saved Tiles: {{ vm.numOfflineTiles }} <br>
-        Total Size of Saved Tiles: {{ vm.offlineTilesSize }} <br>
+        Total Size of Saved Tiles: {{ vm.offlineTilesSize | normalizeBytes }} <br>
         <small>Note some tiles may be used in more than one saved map so the total number and total size of saved tiles
           is not simply a sum of the individual map properties. Deleting an individual map will only delete those tiles
           not used in any other map.
