@@ -310,12 +310,15 @@
     });
   }
 
-  function prepMenu(LocalStorageFactory, DataModelsFactory, ProjectFactory, SpotFactory, UserFactory) {
+  function prepMenu(LocalStorageFactory, DataModelsFactory, ProjectFactory, RemoteServerFactory, SpotFactory,
+                    UserFactory) {
     return DataModelsFactory.loadDataModels().then(function () {
       return LocalStorageFactory.setupLocalforage().then(function () {
         return UserFactory.loadUser().then(function () {
           return ProjectFactory.prepProject().then(function () {
-            return SpotFactory.loadSpots();
+            return SpotFactory.loadSpots().then(function () {
+              return RemoteServerFactory.loadDbUrl();
+            });
           });
         });
       });

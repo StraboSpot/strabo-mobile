@@ -5,9 +5,9 @@
     .module('app')
     .factory('RemoteServerFactory', RemoteServerFactory);
 
-  RemoteServerFactory.$inject = ['$http', '$log', '$q'];
+  RemoteServerFactory.$inject = ['$http', '$log', '$q', 'LocalStorageFactory'];
 
-  function RemoteServerFactory($http, $log, $q) {
+  function RemoteServerFactory($http, $log, $q, LocalStorageFactory) {
     var baseUrl = 'http://strabospot.org';
 
     // Return public API
@@ -24,6 +24,7 @@
       'downloadImage': downloadImage,
       'getDatasets': getDatasets,
       'getDatasetSpots': getDatasetSpots,
+      'getDbUrl': getDbUrl,
       'getImage': getImage,
       'getImages': getImages,
       'getMyProjects': getMyProjects,
@@ -31,6 +32,8 @@
       'getProfileImage': getProfileImage,
       'getProject': getProject,
       'getProjectDatasets': getProjectDatasets,
+      'loadDbUrl': loadDbUrl,
+      'setDbUrl': setDbUrl,
       'setProfile': setProfile,
       'setProfileImage': setProfileImage,
       'updateFeature': updateFeature,
@@ -221,6 +224,10 @@
       return (request.then(handleSuccess, handleError));
     }
 
+    function getDbUrl() {
+      return baseUrl;
+    }
+
     function getImage(imageId, encodedLogin) {
       var request = $http({
         'method': 'get',
@@ -291,6 +298,27 @@
         }
       });
       return (request.then(handleSuccess, handleError));
+    }
+
+    function loadDbUrl() {
+      var deferred = $q.defer(); // init promise
+
+      $log.log('Loading Databse URL ....');
+      LocalStorageFactory.getDb().configDb.getItem('db_url').then(function (savedDbUrl) {
+        if (savedDbUrl) baseUrl = savedDbUrl;
+        $log.log('Database URL:', baseUrl);
+        deferred.resolve();
+      });
+      return deferred.promise;
+    }
+
+    function setDbUrl(url) {
+      if (baseUrl !== url) {
+        baseUrl = url;
+        LocalStorageFactory.getDb().configDb.setItem('db_url', url).then(function (savedData) {
+          $log.log('Saved Database URL: ', savedData);
+        });
+      }
     }
 
     // Create/Update user profile

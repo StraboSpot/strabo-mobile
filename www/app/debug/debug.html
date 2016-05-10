@@ -1,10 +1,19 @@
 <ion-view title='Miscellaneous'>
 
   <ion-nav-buttons side='left'>
-    <button menu-toggle='left' class='button button-icon icon ion-navicon'></button>
+    <button menu-toggle='left' class='button button-icon icon ion-navicon' ng-click='vm.save()'></button>
   </ion-nav-buttons>
 
-  <ion-content class='has-header'>
+  <ion-content class='has-header divider-buttons-right'>
+    <div class='field-group item item-divider'>
+      Specify Database Endpoint
+      <i class='button button-icon ion-refresh' ng-click='vm.resetDbUrl()'></i>
+    </div>
+    <ion-input class='item item-input'>
+      <ion-label>URL:</ion-label>
+      <input type='text' ng-model='vm.dbUrl'>
+    </ion-input>
+
     <div class='field-group item item-divider'>
       Generate Random Spots
     </div>

@@ -194,6 +194,10 @@
           deferred.reject(err);
         });
       }, function (err) {
+        $ionicPopup.alert({
+          'title': 'Error communicating with server!',
+          'template': err
+        });
         deferred.reject(err);
       });
       return deferred.promise;
@@ -220,6 +224,11 @@
         ProjectFactory.loadProjectRemote(project).then(function () {
           vm.closeModal();
           initializeProject();
+        }, function (err) {
+          $ionicPopup.alert({
+            'title': 'Error communicating with server!',
+            'template': err
+          });
         });
       });
     }
@@ -583,6 +592,11 @@
             }
             ProjectFactory.loadProjectsRemote().then(function (projects) {
               vm.projects = projects;
+            }, function (err) {
+              $ionicPopup.alert({
+                'title': 'Error communicating with server!',
+                'template': err
+              });
             });
           });
         }
@@ -919,7 +933,6 @@
           });
         }
       }
-
       ProjectFactory.saveActiveDatasets(vm.activeDatasets);
     }
 
@@ -931,8 +944,16 @@
       else {
         vm.showExistingProjectsList = true;
         vm.showNewProjectDetail = false;
+        $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Getting Projects from Server ...'});
         ProjectFactory.loadProjectsRemote().then(function (projects) {
           vm.projects = projects;
+        }, function (err) {
+          $ionicPopup.alert({
+            'title': 'Error communicating with server!',
+            'template': err
+          });
+        }).finally(function () {
+          $ionicLoading.hide();
         });
       }
     }

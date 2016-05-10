@@ -6,10 +6,10 @@
     .controller('DebugController', DebugController);
 
   DebugController.$inject = ['$document', '$ionicLoading', '$ionicModal', '$ionicPopup', '$log', '$q', '$scope',
-    '$state', '$window', 'DataModelsFactory', 'ProjectFactory', 'SpotFactory'];
+    '$state', '$window', 'DataModelsFactory', 'ProjectFactory', 'RemoteServerFactory', 'SpotFactory'];
 
   function DebugController($document, $ionicLoading, $ionicModal, $ionicPopup, $log, $q, $scope, $state, $window,
-                           DataModelsFactory, ProjectFactory, SpotFactory) {
+                           DataModelsFactory, ProjectFactory, RemoteServerFactory, SpotFactory) {
     var vm = this;
 
     vm.spotDataModel = {};
@@ -18,7 +18,9 @@
     vm.getSpotDataModel = getSpotDataModel;
     vm.msg = undefined;
     vm.pointsToGenerate = undefined;
+    vm.resetDbUrl = resetDbUrl;
     vm.spotModelModal = {};
+    vm.save = save;
     vm.submit = submit;
 
     activate();
@@ -28,6 +30,8 @@
      */
 
     function activate() {
+      vm.dbUrl = RemoteServerFactory.getDbUrl();
+
       $ionicModal.fromTemplateUrl('app/debug/debug-modal.html', {
         'scope': $scope,
         'animation': 'slide-in-up'
@@ -146,6 +150,14 @@
         win.document.writeln(html);
       }
       else vm.spotModelModal.show();
+    }
+
+    function resetDbUrl() {
+      vm.dbUrl = 'http://strabospot.org';
+    }
+
+    function save() {
+      RemoteServerFactory.setDbUrl(vm.dbUrl);
     }
 
     function submit(pointsToGenerate) {

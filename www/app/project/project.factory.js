@@ -402,7 +402,7 @@
           deferred.reject(response.data.Error);
         });
       }
-      else deferred.reject();
+      else deferred.reject('You must be online and logged in to load a remote project.');
       return deferred.promise;
     }
 
@@ -416,8 +416,14 @@
             $log.log('Loaded list of all projects from server:', response);
             remoteProjects = response.data.projects;
           }
-          else $log.log('Error communicating with server!');
+          else {
+            $log.log('Error loading list of all projects from server. Response:', response);
+            deferred.reject('Error loading the list of projects from server!');
+          }
           deferred.resolve(remoteProjects);
+        }, function (response) {
+          $log.log('Error loading list of all projects from server. Response:', response);
+          deferred.reject('Error loading the list of projects from server!');
         });
       }
       else deferred.resolve();
