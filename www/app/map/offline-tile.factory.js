@@ -23,7 +23,7 @@
       'getMapProviders': getMapProviders,
       'getMaps': getMaps,
       'getOfflineTileCount': getOfflineTileCount,
-      'getOfflineTileSize': getOfflineTileSize,
+      //'getOfflineTileSize': getOfflineTileSize,  <-- ToDo - This is too slow
       'read': read,
       'renameMap': renameMap,
       'saveMaps': saveMaps,
@@ -297,7 +297,7 @@
     }
 
     // Get the number of tiles & size from offline storage
-    function getOfflineTileSize(maps) {
+    /*function getOfflineTileSize(maps) {
       var size = 0;
       var tiles = [];
       _.each(maps, function (map) {
@@ -309,7 +309,7 @@
         });
       });
       return {'size': size, 'count': tiles.length};
-    }
+    }*/
 
     // Read from storage
     function read(mapProvider, tile, callback) {

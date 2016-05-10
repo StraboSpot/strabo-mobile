@@ -16,8 +16,8 @@
     vm.edit = edit;
     vm.maps = {};
     vm.numOfflineTiles = 0;       // number of tiles we have in offline storage
-    vm.offlineTilesSize = 0;
-    vm.updateOfflineTileSize = updateOfflineTileSize;
+    //vm.offlineTilesSize = 0;
+    //vm.updateOfflineTileSize = updateOfflineTileSize;
 
     activate();
 
@@ -32,16 +32,22 @@
       OfflineTilesFactory.getMaps().then(function (maps) {
         vm.maps = maps;
         $log.log('Offline Maps:', vm.maps);
-        updateOfflineTileSize(vm.maps);
+        OfflineTilesFactory.getOfflineTileCount(function (count) {
+          // update the number of offline tiles to scope
+          vm.numOfflineTiles = count;
+          $scope.$apply();
+        });
+        //updateOfflineTileSize(vm.maps);
         $ionicLoading.hide();
       });
     }
 
+    /* ToDo - This function is too slow
     function updateOfflineTileSize() {
       var offlineSize = OfflineTilesFactory.getOfflineTileSize(vm.maps);
       vm.offlineTilesSize = offlineSize.size;
       vm.numOfflineTiles = offlineSize.count;
-    }
+    }*/
 
     /**
      * Public Functions
