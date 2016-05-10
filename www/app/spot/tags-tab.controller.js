@@ -5,17 +5,19 @@
     .module('app')
     .controller('TagsTabController', TagsTabController);
 
-  TagsTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'ProjectFactory'];
+  TagsTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'HelpersFactory',
+    'ProjectFactory'];
 
-  function TagsTabController($ionicModal, $ionicPopup, $log, $scope, $state, ProjectFactory) {
+  function TagsTabController($ionicModal, $ionicPopup, $log, $scope, $state, HelpersFactory, ProjectFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.loadTab($state);  // Need to load current state into parent
 
     var isDelete = false;
 
-    vm.closeModal = closeModal;
     vm.addTag = addTag;
+    vm.closeModal = closeModal;
+    vm.createTag = createTag;
     vm.goToTag = goToTag;
     vm.isOptionChecked = isOptionChecked;
     vm.removeTag = removeTag;
@@ -57,6 +59,12 @@
 
     function closeModal(modal) {
       vm[modal].hide();
+    }
+
+    function createTag() {
+      vm.addTagModal.hide();
+      var id = HelpersFactory.newId();
+      vmParent.submit('/app/tags/' + id);
     }
 
     function goToTag(id) {

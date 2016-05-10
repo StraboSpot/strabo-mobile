@@ -5,11 +5,11 @@
     .module('app')
     .controller('TagController', TagController);
 
-  TagController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopup', '$location', '$log', '$scope', '$state', 'DataModelsFactory',
-    'HelpersFactory', 'FormFactory', 'ProjectFactory', 'SpotFactory'];
+  TagController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopup', '$location', '$log', '$scope', '$state',
+    'DataModelsFactory', 'HelpersFactory', 'FormFactory', 'ProjectFactory', 'SpotFactory'];
 
-  function TagController($ionicHistory, $ionicModal, $ionicPopup, $location, $log, $scope, $state, DataModelsFactory, HelpersFactory, FormFactory,
-                         ProjectFactory, SpotFactory) {
+  function TagController($ionicHistory, $ionicModal, $ionicPopup, $location, $log, $scope, $state, DataModelsFactory,
+                         HelpersFactory, FormFactory, ProjectFactory, SpotFactory) {
     var vm = this;
 
     var isDelete = false;
@@ -37,7 +37,6 @@
     vm.survey = [];
     vm.toggleChecked = toggleChecked;
 
-    HelpersFactory.setBackView($ionicHistory.currentView().url);
     activate();
 
     /**
@@ -49,6 +48,14 @@
       vm.survey = DataModelsFactory.getDataModel('tag').survey;
       vm.choices = DataModelsFactory.getDataModel('tag').choices;
       visibleDatasets = SpotFactory.getVisibleDatasets();
+
+      vm.currentSpot = SpotFactory.getCurrentSpot();
+      if (!vm.currentSpot) HelpersFactory.setBackView($ionicHistory.currentView().url);
+      else {
+        // If we're adding a new tag from within a spot
+        if (!vm.data.spots) vm.data.spots = [];
+        if (!_.contains(vm.data.spots, vm.currentSpot.properties.id)) vm.data.spots.push(vm.currentSpot.properties.id);
+      }
 
       $ionicModal.fromTemplateUrl('app/project/add-spot-modal.html', {
         'scope': $scope,
