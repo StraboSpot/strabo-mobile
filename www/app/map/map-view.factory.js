@@ -72,10 +72,11 @@
         geolocationWatchId.then(
           null,
           function (err) {
-            $ionicPopup.alert({
+            // Too many alerts on iOS
+            /*$ionicPopup.alert({
               'title': 'Alert!',
               'template': 'Unable to get location for geolocationWatchId: ' + geolocationWatchId.watchID + ' (' + err.message + ')'
-            });
+            });*/
             // TODO: what do we do here?
           },
           function (position) {
