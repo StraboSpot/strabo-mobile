@@ -112,7 +112,7 @@
       vm.spots = _.sortBy(vm.spots, function (spot) {
         return spot.properties.modified_timestamp;
       }).reverse();
-      vm.spotsDisplayed = angular.fromJson(angular.toJson(vm.spots)).slice(0, 2);
+      vm.spotsDisplayed = angular.fromJson(angular.toJson(vm.spots)).slice(0, 25);
     }
 
     /**
