@@ -38,18 +38,18 @@ navigation history that also transitions its views in and out.
         3D Structures
       </a>
     </span>
-        <span ng-show='vm.showTab("other_features")'>
-      <a class='button button-clear spot-tab-inactive'
-         ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab.other-features"}'
-         ng-click='vm.submit("/app/spotTab/" + vm.spot.properties.id + "/other-features");'>
-        Other Features
-      </a>
-    </span>
     <span ng-show='vm.showTab("images")'>
       <a class='button button-clear spot-tab-inactive'
          ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab.images"}'
          ng-click='vm.submit("/app/spotTab/" + vm.spot.properties.id + "/images");'>
         Images
+      </a>
+    </span>
+    <span ng-show='vm.showTab("tags")'>
+      <a class='button button-clear spot-tab-inactive'
+         ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab.tags"}'
+         ng-click='vm.submit("/app/spotTab/" + vm.spot.properties.id + "/tags");'>
+        Tag Groups
       </a>
     </span>
     <span ng-show='vm.showTab("samples")'>
@@ -59,11 +59,11 @@ navigation history that also transitions its views in and out.
         Samples
       </a>
     </span>
-    <span ng-show='vm.showTab("inferences")'>
+    <span ng-show='vm.showTab("other_features")'>
       <a class='button button-clear spot-tab-inactive'
-         ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab.inferences"}'
-         ng-click='vm.submit("/app/spotTab/" + vm.spot.properties.id + "/inferences");'>
-        Inferences
+         ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab.other-features"}'
+         ng-click='vm.submit("/app/spotTab/" + vm.spot.properties.id + "/other-features");'>
+        Other Features
       </a>
     </span>
     <span ng-show='vm.showTab("nest")'>
@@ -73,11 +73,11 @@ navigation history that also transitions its views in and out.
         Nest
       </a>
     </span>
-    <span ng-show='vm.showTab("tags")'>
+    <span ng-show='vm.showTab("inferences")'>
       <a class='button button-clear spot-tab-inactive'
-         ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab.tags"}'
-         ng-click='vm.submit("/app/spotTab/" + vm.spot.properties.id + "/tags");'>
-        Tag Groups
+         ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab.inferences"}'
+         ng-click='vm.submit("/app/spotTab/" + vm.spot.properties.id + "/inferences");'>
+        Inferences
       </a>
     </span>
     <span>
