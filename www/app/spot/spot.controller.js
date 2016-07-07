@@ -95,7 +95,7 @@
       vm.popover.hide();
       var newSpot = _.omit(vm.spot, 'properties');
       newSpot.properties = _.omit(vm.spot.properties,
-        ['name', 'id', 'date', 'time', 'modified_timestamp']);
+        ['name', 'id', 'date', 'time', 'modified_timestamp', 'images', 'nests', 'samples', 'inferences']);
       SpotFactory.setNewSpot(newSpot).then(function (id) {
         submit('/app/spotTab/' + id + '/spot');
       });
