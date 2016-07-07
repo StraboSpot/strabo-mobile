@@ -323,7 +323,7 @@
 
         if (orientation) {
           content += '<br>';
-          content += '<small>' + orientation.orientation_type + '</small>';
+          content += '<small>' + orientation.type + '</small>';
 
           if (orientation.strike && orientation.dip) {
             content += '<br>';
