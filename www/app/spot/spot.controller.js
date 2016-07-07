@@ -111,7 +111,7 @@
         confirmPopup.then(function (res) {
           if (res) {
             SpotFactory.destroy(vm.spot.properties.id).then(function () {
-              $location.path('/app/spots');
+              goBack();
             });
           }
         });
