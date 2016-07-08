@@ -633,3 +633,8 @@ Spots Page
 .filter-on {
   background-color: lightgray;
 }
+.geometry-icon {
+  height: 20px;
+  width: 20px;
+  vertical-align: bottom;
+}
