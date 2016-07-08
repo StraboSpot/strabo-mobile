@@ -195,6 +195,12 @@
         'title': 'Online Maps',
         'layers': [
           new ol.layer.Tile({
+            'title': 'No Basemap',
+            'id': 'nobasemap',
+            'type': 'base',
+            'visible': false
+          }),
+          new ol.layer.Tile({
             'title': 'Mapbox Topo',
             'id': 'mbTopo',
             'type': 'base',
