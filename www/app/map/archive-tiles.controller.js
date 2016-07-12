@@ -167,7 +167,14 @@
         if (!_.isEmpty(vm.tiles.need)) {
           $log.log('Need', vm.tiles.need.length, 'of these tiles:', vm.tiles.need);
         }
-        vm.submitBtnText = 'Save this Map';
+
+
+        if (mapExtent.zoom > vm.map.maxZoom) {
+          vm.tiles.need.length = 0;
+          vm.submitBtnText = 'Zoom Out on Map to Save';
+          vm.downloading = true; // Disable the Save button
+        }
+        else vm.submitBtnText = 'Save this Map';
       });
     }
 

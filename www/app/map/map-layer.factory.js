@@ -146,22 +146,12 @@
             })
           }),
           new ol.layer.Tile({
-            'title': 'MapQuest Satellite',
-            'id': 'mqSat',
-            'type': 'base',
-            'visible': false,
-            'source': new ol.source.OSM({
-              'tileLoadFunction': tileLoadFunction('mqSat', false)
-            }) // ,
-            // 'extent': mapExtent
-          }),
-          new ol.layer.Tile({
-            'title': 'Streets',
-            'id': 'mqOsm',
+            'title': 'OSM Streets',
+            'id': 'osm',
             'type': 'base',
             'visible': true, // default visible layer
             'source': new ol.source.OSM({
-              'tileLoadFunction': tileLoadFunction('mqOsm', false)
+              'tileLoadFunction': tileLoadFunction('osm', false)
             }) // ,
             // 'extent': mapExtent
           })
@@ -229,21 +219,11 @@
             })
           }),
           new ol.layer.Tile({
-            'title': 'MapQuest Satellite',
-            'id': 'mqSat',
-            'type': 'base',
-            'visible': false,
-            'source': new ol.source.MapQuest({
-              'layer': 'sat'
-            }) // ,
-            // 'extent': mapExtent
-          }),
-          new ol.layer.Tile({
-            'title': 'Streets',
-            'id': 'mqOsm',
+            'title': 'OSM Streets',
+            'id': 'osm',
             'type': 'base',
             'visible': true, // default visible layer
-            'source': new ol.source.MapQuest({
+            'source': new ol.source.OSM({
               'layer': 'osm'
             })
             // ,

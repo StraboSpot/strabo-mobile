@@ -79,31 +79,7 @@
         ],
         'imageType': 'png',
         'mime': 'image/png',
-        'maxZoom': 18
-      }, {
-        'id': 'mqSat',
-        'name': 'MapQuest - Satellite',
-        'url': [
-          'http://otile1-s.mqcdn.com/tiles/1.0.0/sat/',
-          'http://otile2-s.mqcdn.com/tiles/1.0.0/sat/',
-          'http://otile3-s.mqcdn.com/tiles/1.0.0/sat/',
-          'http://otile4-s.mqcdn.com/tiles/1.0.0/sat/'
-        ],
-        'imageType': 'jpg',
-        'mime': 'image/jpeg',
-        'maxZoom': 18
-      }, {
-        'id': 'mqOsm',
-        'name': 'MapQuest - OSM',
-        'url': [
-          'http://otile1-s.mqcdn.com/tiles/1.0.0/osm/',
-          'http://otile2-s.mqcdn.com/tiles/1.0.0/osm/',
-          'http://otile3-s.mqcdn.com/tiles/1.0.0/osm/',
-          'http://otile4-s.mqcdn.com/tiles/1.0.0/osm/'
-        ],
-        'imageType': 'jpg',
-        'mime': 'image/jpeg',
-        'maxZoom': 18
+        'maxZoom': 17
       }, {
         'id': 'macrostratGeologic',
         'name': 'Macrostrat - Geologic',
