@@ -14,16 +14,12 @@
       <div class='padding' ng-if='!vmChild.mapped'>
         This spot has not been mapped yet.
       </div>
-      <button ng-click='vmChild.viewSpot();' ng-show='vmChild.mapped' class='button button-clear button-positive'>
-        <i class='icon ion-eye'></i>
-        <span class='button-text-small'>View on Map</span>
-      </button>
-      <button ng-click='vmChild.getCurrentLocation();' ng-hide='vmChild.showXY'
+      <button ng-click='vmChild.getCurrentLocation();' ng-hide='vmChild.showXY || vmChild.mapped'
               class='button button-clear button-positive'>
         <i class='icon ion-pinpoint'></i>
         <span class='button-text-small'>Set to My Location</span>
       </button>
-      <button ng-click='vmChild.setFromMap();' class='button button-clear button-positive'>
+      <button ng-click='vmChild.setFromMap();' ng-hide='vmChild.mapped' class='button button-clear button-positive'>
         <i class='icon ion-map'></i>
         <span class='button-text-small'>Set From Map</span>
       </button>

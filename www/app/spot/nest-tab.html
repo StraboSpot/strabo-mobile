@@ -1,31 +1,5 @@
 <ion-view>
   <ion-content class='strabo-form'>
-    <button ng-click='vmChild.goToMap()'
-            class='button button-clear button-positive'>
-      <i class='icon ion-map'></i>
-      <span class='button-text-big'>Go to the Map</span>
-    </button>
-
-    <div ng-hide='vm.spot.properties.nests.length > 0'>
-      <div class='item item-divider'>
-        Other Nests
-      </div>
-      <div class='padding'>This Spot is not a member of any other Nests. Create a Nest from the Action menu in the
-        top right corner of the Map or Image Basemap.</div>
-    </div>
-    <div ng-repeat='nest in vm.spot.properties.nests'>
-      <div class='item item-divider'>
-        {{ nest.name || 'Nest' }}
-      </div>
-      <ion-list>
-        <ion-item>
-          This Spot
-        </ion-item>
-        <ion-item ng-repeat='member in nest.members' ng-click='vmChild.goToSpot(member)'>
-          {{ vmChild.getName(member) }}
-        </ion-item>
-      </ion-list>
-    </div>
 
     <div class='item item-divider'>
       Image Basemap Nest
@@ -64,6 +38,26 @@
       </div>
     </div>
 
+    <div ng-hide='vm.spot.properties.nests.length > 0'>
+      <div class='item item-divider'>
+        Other Nests
+      </div>
+      <div class='padding'>This Spot is not a member of any other Nests. Create a Nest from the Action menu in the
+        top right corner of the Map or Image Basemap.</div>
+    </div>
+    <div ng-repeat='nest in vm.spot.properties.nests'>
+      <div class='item item-divider'>
+        {{ nest.name || 'Nest' }}
+      </div>
+      <ion-list>
+        <ion-item>
+          This Spot
+        </ion-item>
+        <ion-item ng-repeat='member in nest.members' ng-click='vmChild.goToSpot(member)'>
+          {{ vmChild.getName(member) }}
+        </ion-item>
+      </ion-list>
+    </div>
 
     <div class='item item-divider'>
       Notes

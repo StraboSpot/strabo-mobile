@@ -6,11 +6,11 @@
     .controller('SpotController', SpotController);
 
   SpotController.$inject = ['$document', '$ionicPopover', '$ionicPopup', '$location', '$log', '$scope', '$state',
-    'FormFactory', 'HelpersFactory', 'ProjectFactory', 'SpotFactory'];
+    'FormFactory', 'HelpersFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
   function SpotController($document, $ionicPopover, $ionicPopup, $location, $log, $scope, $state, FormFactory,
-                          HelpersFactory, ProjectFactory, SpotFactory) {
+                          HelpersFactory, MapViewFactory, ProjectFactory, SpotFactory) {
     var vm = this;
 
     vm.choices = undefined;
@@ -36,6 +36,7 @@
     vm.toggleAcknowledgeChecked = toggleAcknowledgeChecked;
     vm.toggleChecked = toggleChecked;
     vm.validateForm = validateForm;
+    vm.viewMap = viewMap;
 
     activate();
 
@@ -265,6 +266,24 @@
         return vm.survey && FormFactory.validate(vm.survey, vm.data);
       }
       return true;
+    }
+
+    // View the spot on the map
+    function viewMap() {
+      if (_.has(vm.spot.properties, 'image_basemap')) {
+        vm.submit('/app/image-basemaps/' + vm.spot.properties.image_basemap);
+      }
+      else {
+        if (vm.spot.geometry) {
+          var center = SpotFactory.getCenter(vm.spot);
+          var spotCenter = ol.proj.transform([center.lon, center.lat], 'EPSG:4326', 'EPSG:3857');
+          MapViewFactory.setMapView(new ol.View({
+            'center': spotCenter,
+            'zoom': 16
+          }));
+        }
+        vm.submit('/app/map');
+      }
     }
   }
 }());
