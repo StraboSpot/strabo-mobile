@@ -20,6 +20,9 @@
     vm.groupSpots = groupSpots;
     vm.isOnline = isOnline;
     vm.returnToSpot = returnToSpot;
+    vm.saveEdits = saveEdits;
+    vm.saveEditsText = 'Save Edits';
+    vm.showSaveEditsBtn = false;
     vm.toggleLocation = toggleLocation;
     vm.zoomToSpotsExtent = zoomToSpotsExtent;
 
@@ -65,6 +68,12 @@
         $log.log(event);
       });
 
+      // Cleanup when we leave the page
+      $scope.$on('$ionicView.leave', function () {
+        MapDrawFactory.cancelEdits();    // Cancel any edits
+        vm.popover.remove();            // Remove the popover
+      });
+
       // Add a `change:visible` listener to all layers currently within the map
       ol.control.LayerSwitcher.forEachRecursive(map, function (l, idx, a) {
         l.on('change', function (e) {
@@ -95,6 +104,14 @@
       $scope.$watch('vm.isOnline()', function (online) {
         MapLayerFactory.setVisibleLayers(map, online);
       });
+
+      $scope.$on('enableSaveEdits', function (e, data) {
+        vm.showSaveEditsBtn = data;
+        vm.saveEditsText = 'Save Edits';
+        _.defer(function () {
+          $scope.$apply();
+        });
+      });
     }
 
     function createPopover() {
@@ -102,11 +119,6 @@
         'scope': $scope
       }).then(function (popover) {
         vm.popover = popover;
-      });
-
-      // Cleanup the popover when we're done with it!
-      $scope.$on('$destroy', function () {
-        vm.popover.remove();
       });
     }
 
@@ -162,6 +174,11 @@
 
     function returnToSpot() {
       $location.path('/app/spotTab/' + vm.currentSpot.properties.id + '/spot');
+    }
+
+    function saveEdits() {
+      vm.saveEditsText = 'Saved Edits';
+      MapDrawFactory.saveEdits();
     }
 
     // Get current position
