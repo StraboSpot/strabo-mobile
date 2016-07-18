@@ -65,12 +65,13 @@ Generate Resources (icons and splash screens):
 ### Tested Environment - Other Packages/Libraries
 
     ionic library: 1.2.4
-    ionic cli : 1.7.14
+    ionic cli : 1.7.16
     cordova: 6.6.1
     nodejs: 5.0.0
     npm: 2.12.1
     bower: 1.7.2
-    ng-cordova: v0.1.23-alpha
+    ng-cordova: 0.1.23-alpha
+    openlayers: 3.17.1
 
 ## Running/Testing the App
 
