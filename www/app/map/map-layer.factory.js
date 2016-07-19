@@ -188,7 +188,15 @@
             'title': 'No Basemap',
             'id': 'nobasemap',
             'type': 'base',
-            'visible': false
+            'visible': false,
+            'source': new ol.source.XYZ({
+              'attributions': [
+                new ol.Attribution({
+                  'html': ''
+                })
+              ],
+              'url': ''
+            })
           }),
           new ol.layer.Tile({
             'title': 'Mapbox Topo',

@@ -56,8 +56,28 @@ img.profile-image {
 }
 
 /*--------------------
-Map Draw Controls Style
+Map Controls Style
 --------------------*/
+.ol-control {
+  background: none !important;
+}
+.ol-control button{
+  background: white;
+  color: black;
+  border-radius: 8px;
+  border: 1px solid lightgray;
+}
+.ol-control button:focus, .ol-control button:hover {
+  background-color: lightgray !important;
+}
+.ol-zoom-in {
+  border-radius: 8px 8px 0 0 !important;
+}
+.ol-zoom-out {
+  border-radius: 0 0 8px 8px !important;
+  border-top: none !important;
+  margin-top: -1px !important;
+}
 .draw-controls {
   position: absolute;
   margin-top: 4em;
@@ -124,6 +144,7 @@ Map Draw Controls Style
   margin-left: -25px;
   font-weight: bold;
   border-radius: 8px;
+  border: 1px solid lightgray;
 }
 .ol-zoom {
   top: 60px;
@@ -135,19 +156,25 @@ Map Draw Controls Style
   transition: opacity .25s
 }
 #zoomInfo {
- position: absolute;
- font-size: 0.7em;
- bottom: 4em;
- left: 0.5em;
- background-color: white;
- padding: 0.5em;
+  position: absolute;
+  font-size: 0.7em;
+  bottom: 4em;
+  left: 0.5em;
+  background-color: white;
+  padding: 0.5em;
+  border-radius: 8px;
+  border: 1px solid lightgray;
+  opacity: 0.75;
 }
-
-/*--------------------
-Map Popups Style
---------------------*/
-.ol-popup {
-  padding: 5px;
+.ol-scale-line{
+  background: white;
+  opacity: 0.75;
+}
+.ol-scale-line-inner {
+  color: black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
 }
 
 /*--------------------
@@ -156,26 +183,31 @@ Map Layer Switcher Style
 .layer-switcher {
   margin-top: 4em;
   top: 208px;
-  left: 0.65em;
+  left: 0.50em;
   right: auto;
-  background: white;
-  border-radius: 8px;
-  border: 1px solid lightgray;
 }
 .layer-switcher .panel {
   background: white;
-  border-radius: 0;
+  border-radius: 8px;
 }
 .layer-switcher.shown .panel {
-  padding-left:15px;
+  padding-left: 15px;
 }
 .layer-switcher button {
   float: left;
   width: 22px;
   height: 22px;
-  padding: 12px;
+  padding: 15px;
   background-image: url('../img/layers.png');
+  background-repeat: no-repeat;
   background-position: center;
+}
+
+/*--------------------
+Map Popups Style
+--------------------*/
+.ol-popup {
+  padding: 5px;
 }
 
 /*--------------------
