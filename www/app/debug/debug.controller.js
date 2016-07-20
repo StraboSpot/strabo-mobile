@@ -117,7 +117,7 @@
               'orientation_data': [{
                 'dip': _.random(0, 90),
                 'feature_type': feature_types[Math.floor(Math.random() * feature_types.length)],
-                'orientation_type': 'planar_orientation',
+                'type': 'planar_orientation',
                 'strike': _.random(0, 180)
               }],
               'name': 'x' + _.random(10, 99) + i.toString()

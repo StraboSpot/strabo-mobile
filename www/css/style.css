@@ -2,7 +2,7 @@
   height: 100%;
 }
 .glyph-active {
-	border: 1 solid #000;
+  border: 1 solid #000;
 }
 
 /*--------------------
@@ -62,6 +62,8 @@ Map Controls Style
   background: none !important;
 }
 .ol-control button{
+  height: 30px;
+  width: 30px;
   background: white;
   color: black;
   border-radius: 8px;
@@ -81,26 +83,23 @@ Map Controls Style
 .draw-controls {
   position: absolute;
   margin-top: 4em;
-  top: 6em;
+  top: 80px;
   left: .65em;
   background: white;
   border-radius: 8px;
   border: 1px solid lightgray;
 }
 .ol-touch .draw-controls {
-  top: 80px;
+  top: 85px;
 }
 .draw-controls a {
   display: block;
-  color: black;
-  font-size: 16px;
-  font-family: 'Lucida Grande', Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif;
-  font-weight: bold;
-  text-decoration: none;
-  text-align: center;
-  height: 22px;
-  width: 22px;
-  padding: 14px;
+  font-size: 20px;
+  height: 30px;
+  width: 30px;
+}
+.draw-controls a:hover {
+  background-color: lightgray;
 }
 .draw-controls .point {
   background-image: url('../img/point.png');
@@ -115,24 +114,15 @@ Map Controls Style
   border-bottom: 1px solid lightgray;
 }
 .draw-controls .poly {
-   background-image: url('../img/polygon.png');
-   background-position: center;
-   background-repeat: no-repeat;
+  background-image: url('../img/polygon.png');
+  background-position: center;
+  background-repeat: no-repeat;
   border-bottom: 1px solid lightgray;
- }
+}
 .draw-controls .edit {
   background-image: url('../img/edit.png');
   background-position: center;
   background-repeat: no-repeat;
-}
-.ol-touch .draw-controls a {
-  font-size: 20px;
-  height: 30px;
-  width: 30px;
-  line-height: 26px;
-}
-.draw-controls a:hover {
-  background-color: lightgray;
 }
 .saveEdits {
   position: absolute;
@@ -183,7 +173,7 @@ Map Layer Switcher Style
 .layer-switcher {
   margin-top: 4em;
   top: 208px;
-  left: 0.50em;
+  left: .45em;
   right: auto;
 }
 .layer-switcher .panel {
@@ -195,12 +185,13 @@ Map Layer Switcher Style
 }
 .layer-switcher button {
   float: left;
-  width: 22px;
-  height: 22px;
-  padding: 15px;
+  padding: 16px;
   background-image: url('../img/layers.png');
   background-repeat: no-repeat;
   background-position: center;
+}
+.ol-touch .layer-switcher button{
+  padding: 15px;
 }
 
 /*--------------------
