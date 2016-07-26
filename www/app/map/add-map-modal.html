@@ -19,5 +19,9 @@
       <span class='input-label'>Access Token</span>
       <input type='text' ng-model='vm.data.key'>
     </label>
+    <button class='button button-clear button-positive ion ion-information-circled' ng-click='vm.toggleHelpText()'></button>
+    <div class='padding-left padding-right'>
+      <span ng-show='vm.showHelpText'>{{ vm.helpText }}</span>
+    </div>
   </ion-content>
 </ion-modal-view>

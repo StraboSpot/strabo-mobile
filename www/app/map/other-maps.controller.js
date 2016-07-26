@@ -20,6 +20,7 @@
     vm.data = {};
     vm.deleteMap = deleteMap;
     vm.editMap = editMap;
+    vm.helpText = '';
     vm.mapProviders = {
       'apiUrl': 'http://api.mapbox.com/v4/',
       'attributionHtml': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -35,10 +36,12 @@
       'mime': 'image/jpeg',
       'maxZoom': 19
     };
+    vm.modalTitle = 'Add a Mapbox Classic Map';
     vm.openModal = openModal;
     vm.otherMaps = [];
     vm.save = save;
-    vm.modalTitle = 'Add a Mapbox Classic Map';
+    vm.showHelpText = false;
+    vm.toggleHelpText = toggleHelpText;
 
     activate();
 
@@ -49,6 +52,7 @@
     function activate() {
       createModals();
       cleanupModals();
+      setHelpText();
       OtherMapsFactory.loadOtherMaps().then(function () {
         vm.otherMaps = OtherMapsFactory.getOtherMaps();
       });
@@ -88,6 +92,13 @@
         })[0];
       }
       return _.isEmpty(match);
+    }
+
+    function setHelpText() {
+      vm.helpText = 'If you haven\'t done so already, create a Mapbox account. Create a Mapbox Classic map. Under' +
+        ' Account in Mapbox also create an API access token. The name used for the map is up to you but shorter' +
+        ' names are better. The Map ID and Access Token you\'ll need to get from your Mapbox account. Save your' +
+        ' Mapbox access token in your Strabo user profile to auto-populate this field.';
     }
 
     function testMapConnection() {
@@ -157,6 +168,7 @@
     }
 
     function openModal(modal) {
+      vm.showHelpText = false;
       vm[modal].show();
     }
 
@@ -186,6 +198,10 @@
           'template': 'The map id <b>' + vm.data.id + '</b> is already being used for a map.'
         });
       }
+    }
+
+    function toggleHelpText() {
+      vm.showHelpText = !vm.showHelpText;
     }
   }
 }());
