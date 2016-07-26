@@ -1,0 +1,23 @@
+<ion-modal-view>
+  <ion-header-bar class='bar-dark nav-title-slide-ios7'>
+    <button class='button icon ion-checkmark-circled button-clear'
+            ng-click='vm.save()'>
+    </button>
+    <h1 class='title'>{{ vm.modalTitle }}</h1>
+    <div class='button button-clear' ng-click='vm.closeModal("addMapModal")'><span class='icon ion-close'></span></div>
+  </ion-header-bar>
+  <ion-content class='has-header strabo-form'>
+    <label class='item item-input item-stacked-label item-text-wrap'>
+      <span class='input-label'>My Map Name</span>
+      <input type='text' ng-model='vm.data.name'>
+    </label>
+    <label class='item item-input item-stacked-label item-text-wrap'>
+      <span class='input-label'>Map ID</span>
+      <input type='text' ng-model='vm.data.id'>
+    </label>
+    <label class='item item-input item-stacked-label item-text-wrap'>
+      <span class='input-label'>Access Token</span>
+      <input type='text' ng-model='vm.data.key'>
+    </label>
+  </ion-content>
+</ion-modal-view>

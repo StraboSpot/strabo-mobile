@@ -12,17 +12,26 @@
                           OfflineTilesFactory, SpotFactory) {
     var mapView;
     var viewExtent;
+    var visibleMap;
+    var visibleMapDefault = 'osm';       // Default to mapquest streets
 
     return {
       'clearExtent': clearExtent,
       'getCurrentLocation': getCurrentLocation,
       'getExtent': getExtent,
-      'setExtent': setExtent,
+      'getVisibleMap': getVisibleMap,
       'getMapView': getMapView,
       'getMapViewExtent': getMapViewExtent,
+      'setExtent': setExtent,
+      'setVisibleMap': setVisibleMap,
+      'setVisibleMapDefault': setVisibleMapDefault,
       'setMapView': setMapView,
       'zoomToSpotsExtent': zoomToSpotsExtent
     };
+
+    /**
+     * Public Functions
+     */
 
     function clearExtent() {
       viewExtent = null;
@@ -126,15 +135,6 @@
       return viewExtent;
     }
 
-    function setExtent(mapProvider, topRight, bottomLeft, zoom) {
-      viewExtent = {
-        'mapProvider': mapProvider,
-        'topRight': topRight,
-        'bottomLeft': bottomLeft,
-        'zoom': zoom
-      };
-    }
-
     function getMapView() {
       // did we come back from a map provider?
       if (OfflineTilesFactory.getCurrentMapProvider()) {
@@ -177,8 +177,32 @@
       };
     }
 
+    function getVisibleMap() {
+      return visibleMap;
+    }
+
+    function setExtent(mapProvider, topRight, bottomLeft, zoom) {
+      viewExtent = {
+        'mapProvider': mapProvider,
+        'topRight': topRight,
+        'bottomLeft': bottomLeft,
+        'zoom': zoom
+      };
+    }
+
     function setMapView(view) {
+      $log.log('Saving map view as', view);
       mapView = view;
+    }
+
+    function setVisibleMap(map) {
+      $log.log('Setting visible map as', map);
+      visibleMap = map;
+    }
+
+    function setVisibleMapDefault() {
+      $log.log('Setting default visible map as', visibleMapDefault);
+      visibleMap = visibleMapDefault;
     }
 
     function zoomToSpotsExtent(map, imageBasemap) {

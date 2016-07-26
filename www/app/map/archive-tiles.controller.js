@@ -54,7 +54,8 @@
       });
       vm.downloading = false;
       vm.map.currentZoom = mapExtent.zoom;
-      vm.map.maxZoom = _.findWhere(OfflineTilesFactory.getMapProviders(), {'id': mapExtent.mapProvider}).maxZoom;
+      var mapProviderInfo = _.findWhere(OfflineTilesFactory.getMapProviders(), {'id': mapExtent.mapProvider});
+      vm.map.maxZoom = mapProviderInfo ? mapProviderInfo.maxZoom : 19;
       vm.map.showDownloadInnerZooms = mapExtent.zoom >= 14 && mapExtent.zoom < vm.map.maxZoom;
       estimateArchiveTile();
       updateOfflineTileCount();

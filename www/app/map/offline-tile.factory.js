@@ -5,10 +5,10 @@
     .module('app')
     .factory('OfflineTilesFactory', OfflineTilesFactory);
 
-  OfflineTilesFactory.$inject = ['$http', '$ionicPopup', '$log', '$q', 'LocalStorageFactory'];
+  OfflineTilesFactory.$inject = ['$http', '$ionicPopup', '$log', '$q', 'LocalStorageFactory', 'OtherMapsFactory'];
 
   // used to determine what the map provider is before we archive a tileset
-  function OfflineTilesFactory($http, $ionicPopup, $log, $q, LocalStorageFactory) {
+  function OfflineTilesFactory($http, $ionicPopup, $log, $q, LocalStorageFactory, OtherMapsFactory) {
     var currentMapProvider = null;
     var mapProviders;
     var downloadErrors = 0;
@@ -41,31 +41,45 @@
     function downloadTile(tile) {
       var deferred = $q.defer(); // init promise
 
-      var mapProviderInfo = _.findWhere(mapProviders, {'id': tile.tile_provider});
-      var url = _.sample(mapProviderInfo.url);
-      var imageUrl = url + tile.tile_id + '.' + mapProviderInfo.imageType;
-      if (mapProviderInfo.key) imageUrl = imageUrl + '?' + mapProviderInfo.key;
+      var mapProviderInfo = getMapProviderInfo(tile.tile_provider);
+      if (mapProviderInfo) {
+        var url = _.sample(mapProviderInfo.url);
+        var imageUrl = url + tile.tile_id + '.' + mapProviderInfo.imageType;
+        if (mapProviderInfo.key) imageUrl = imageUrl + '?access_token=' + mapProviderInfo.key;
 
-      var request = $http({
-        'method': 'get',
-        'url': imageUrl,
-        'responseType': 'arraybuffer'
-      });
-      request.then(function (response) {
-        // Request Success
-        // $log.log('Downloaded tile', mapProviderInfo.id + '/' + tile.tile_id, 'Response: ', response);
-        var blob = new Blob([response.data], {
-          'type': mapProviderInfo.mime
+        var request = $http({
+          'method': 'get',
+          'url': imageUrl,
+          'responseType': 'arraybuffer'
         });
-        writeTile(mapProviderInfo.id, tile.tile_id, blob).then(function (size) {
-          deferred.resolve(size);
+        request.then(function (response) {
+          // Request Success
+          // $log.log('Downloaded tile', mapProviderInfo.id + '/' + tile.tile_id, 'Response: ', response);
+          var blob = new Blob([response.data], {
+            'type': mapProviderInfo.mime
+          });
+          writeTile(mapProviderInfo.id, tile.tile_id, blob).then(function (size) {
+            deferred.resolve(size);
+          });
+        }, function (response) {
+          // Request Failure
+          downloadErrors += 1;
+          deferred.reject(response);
         });
-      }, function (response) {
-        // Request Failure
-        downloadErrors += 1;
-        deferred.reject(response);
-      });
+      }
+      else deferred.reject('Unknown Map Provider');
       return deferred.promise;
+    }
+
+    function getMapProviderInfo(tileProvider) {
+      var mapProviderInfo = _.findWhere(mapProviders, {'id': tileProvider});
+      if (!mapProviderInfo) {
+        mapProviderInfo = _.filter(OtherMapsFactory.getOtherMaps(), function (otherMap) {
+          return otherMap.id === tileProvider;
+        })[0];
+        if (mapProviderInfo) mapProviderInfo.url = [_.sample(mapProviderInfo.basePath) + mapProviderInfo.id + '/'];
+      }
+      return mapProviderInfo;
     }
 
     function setMapProviders() {
@@ -90,7 +104,7 @@
         'mime': 'image/png',
         'maxZoom': 13
       }, {
-        'id': 'mbSat',
+        'id': 'mapbox.satellite',
         'name': 'Mapbox Satellite',
         'url': [
           'http://a.tiles.mapbox.com/v4/mapbox.satellite/',
@@ -101,9 +115,9 @@
         'imageType': 'jpg',
         'mime': 'image/jpeg',
         'maxZoom': 19,
-        'key': 'access_token=pk.eyJ1Ijoic3RyYWJvLWdlb2xvZ3kiLCJhIjoiY2lpYzdhbzEwMDA1ZnZhbTEzcTV3Z3ZnOSJ9.myyChr6lmmHfP8LYwhH5Sg'
+        'key': 'pk.eyJ1Ijoic3RyYWJvLWdlb2xvZ3kiLCJhIjoiY2lpYzdhbzEwMDA1ZnZhbTEzcTV3Z3ZnOSJ9.myyChr6lmmHfP8LYwhH5Sg'
       }, {
-        'id': 'mbTopo',
+        'id': 'mapbox.outdoors',
         'name': 'Mapbox Topo',
         'url': [
           'http://a.tiles.mapbox.com/v4/mapbox.outdoors/',
@@ -114,7 +128,7 @@
         'imageType': 'jpg',
         'mime': 'image/jpeg',
         'maxZoom': 19,
-        'key': 'access_token=pk.eyJ1Ijoic3RyYWJvLWdlb2xvZ3kiLCJhIjoiY2lpYzdhbzEwMDA1ZnZhbTEzcTV3Z3ZnOSJ9.myyChr6lmmHfP8LYwhH5Sg'
+        'key': 'pk.eyJ1Ijoic3RyYWJvLWdlb2xvZ3kiLCJhIjoiY2lpYzdhbzEwMDA1ZnZhbTEzcTV3Z3ZnOSJ9.myyChr6lmmHfP8LYwhH5Sg'
       }];
     }
 
@@ -274,18 +288,18 @@
 
     // Get the number of tiles & size from offline storage
     /*function getOfflineTileSize(maps) {
-      var size = 0;
-      var tiles = [];
-      _.each(maps, function (map) {
-        _.each(map.tileArray, function (tile) {
-          if (!_.contains(tiles, tile.tile_provider + tile.tile_id)) {
-            size += tile.size;
-            tiles.push(tile.tile_provider + tile.tile_id);
-          }
-        });
-      });
-      return {'size': size, 'count': tiles.length};
-    }*/
+     var size = 0;
+     var tiles = [];
+     _.each(maps, function (map) {
+     _.each(map.tileArray, function (tile) {
+     if (!_.contains(tiles, tile.tile_provider + tile.tile_id)) {
+     size += tile.size;
+     tiles.push(tile.tile_provider + tile.tile_id);
+     }
+     });
+     });
+     return {'size': size, 'count': tiles.length};
+     }*/
 
     // Read from storage
     function read(mapProvider, tile, callback) {
@@ -319,7 +333,8 @@
       var promises = [];
       _.each(mapsToSave, function (mapToSave) {
         if (mapToSave.tiles.need.length > 0) {
-          $log.log('Requesting to download', mapToSave.tiles.need.length, 'tiles from ', mapToSave.mapProvider, 'for map', mapToSave.name);
+          $log.log('Requesting to download', mapToSave.tiles.need.length, 'tiles from ', mapToSave.mapProvider,
+            'for map', mapToSave.name);
           _.each(mapToSave.tiles.need, function (tile) {
             var deferred2 = $q.defer(); // init promise
             var promise = downloadTile(tile).then(function (size) {
@@ -349,7 +364,8 @@
             return memo + num;
           }, 0);
           writeMap(mapToSave.name, mapToSave.mapProvider, mapSize, mapToSave.tiles.saved).then(function () {
-            $log.log('Saved map:', mapToSave.name, 'from', mapToSave.mapProvider, 'with size', mapSize, ':', mapToSave.tiles.saved);
+            $log.log('Saved map:', mapToSave.name, 'from', mapToSave.mapProvider, 'with size', mapSize, ':',
+              mapToSave.tiles.saved);
             deferred.resolve();
           });
         });

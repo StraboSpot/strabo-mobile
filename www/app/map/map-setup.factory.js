@@ -43,9 +43,13 @@
       return popup;
     }
 
-    function setLayers() {
+    function setLayers(visibleMap) {
       if (!imageBasemap) {
         map.addLayer(MapLayerFactory.getGeolocationLayer());
+        MapLayerFactory.setDefaultOnlineLayers(visibleMap);
+        MapLayerFactory.setOtherOnlineLayers(visibleMap);
+        MapLayerFactory.setDefaultOfflineLayers(visibleMap);
+        MapLayerFactory.setOtherOfflineLayers(visibleMap);
       }
       else {
         var imageBasemapLayer = new ol.layer.Image({

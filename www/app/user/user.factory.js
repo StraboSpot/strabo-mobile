@@ -124,7 +124,7 @@
     function updateUser() {
       var deferred = $q.defer(); // init promise
       RemoteServerFactory.getProfile(user.encoded_login).then(function (profileResponse) {
-        user.name = profileResponse.data.name;
+        _.extend(user, profileResponse.data);
         RemoteServerFactory.getProfileImage(user.encoded_login).then(function (profileImageResponse) {
           if (profileImageResponse.data) {
             readDataUrl(profileImageResponse.data, function (base64Image) {
@@ -142,7 +142,8 @@
           deferred.resolve();
         });
       }, function (profileResponse) {
-        deferred.reject(profileResponse.data.Error);
+        var err = profileResponse.data && profileResponse.data.Error ? profileResponse.data.Error : 'Unknown Error';
+        deferred.reject(err);
       });
       return deferred.promise;
     }

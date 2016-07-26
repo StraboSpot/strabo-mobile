@@ -45,7 +45,7 @@
       MapSetupFactory.setImageBasemap(null);
       MapSetupFactory.setInitialMapView();
       MapSetupFactory.setMap();
-      MapSetupFactory.setLayers();
+      MapSetupFactory.setLayers(MapViewFactory.getVisibleMap());
       MapSetupFactory.setMapControls(switcher);
       MapSetupFactory.setPopupOverlay();
 
@@ -58,7 +58,6 @@
 
       // When the map is moved save the new view and update the zoom control
       map.on('moveend', function (evt) {
-        MapViewFactory.setMapView(map.getView());
         vm.currentZoom = evt.map.getView().getZoom();
         $scope.$apply();
       });
@@ -68,8 +67,22 @@
         $log.log(event);
       });
 
+      // After map drawn check that a basemap is marked as visible, if not set default visible map
+      map.on('postrender', function () {
+        if (!MapLayerFactory.getCurrentVisibleLayer(map)) {
+          var mapTileLayers = map.getLayers().getArray()[0].getLayers().getArray();
+          // loop through and set default
+          _.each(mapTileLayers, function (layer) {
+            if (layer.get('id') === 'osm') layer.setVisible(true);
+          });
+          MapViewFactory.setVisibleMapDefault();
+        }
+      });
+
       // Cleanup when we leave the page
-      $scope.$on('$ionicView.leave', function () {
+      $scope.$on('$ionicView.unloaded', function () {
+        MapViewFactory.setMapView(map.getView());
+        MapViewFactory.setVisibleMap(MapLayerFactory.getCurrentVisibleLayer(map));
         MapDrawFactory.cancelEdits();    // Cancel any edits
         vm.popover.remove();            // Remove the popover
       });

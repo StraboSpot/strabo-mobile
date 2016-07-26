@@ -129,6 +129,16 @@
           }
         }
       })
+      .state('app.other-maps', {
+        'cache': false,
+        'url': '/other-maps',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/map/other-maps.html',
+            'controller': 'OtherMapsController as vm'
+          }
+        }
+      })
       .state('app.preferences', {
         'cache': false,
         'url': '/preferences',
@@ -311,13 +321,15 @@
   }
 
   function prepMenu(LocalStorageFactory, DataModelsFactory, ProjectFactory, RemoteServerFactory, SpotFactory,
-                    UserFactory) {
+                    UserFactory, OtherMapsFactory) {
     return DataModelsFactory.loadDataModels().then(function () {
       return LocalStorageFactory.setupLocalforage().then(function () {
         return UserFactory.loadUser().then(function () {
           return ProjectFactory.prepProject().then(function () {
             return SpotFactory.loadSpots().then(function () {
-              return RemoteServerFactory.loadDbUrl();
+              return RemoteServerFactory.loadDbUrl().then(function () {
+                return OtherMapsFactory.loadOtherMaps();
+              });
             });
           });
         });
