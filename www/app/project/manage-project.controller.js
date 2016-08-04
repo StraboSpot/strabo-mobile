@@ -89,6 +89,17 @@
       });
     }
 
+    function allValidSpots(spots) {
+      var validSpots = true;
+      _.each(spots, function (spotId) {
+        if (!SpotFactory.getSpotById(spotId)) {
+          validSpots = false;
+          ProjectFactory.removeSpotFromDataset(spotId);
+        }
+      });
+      return validSpots;
+    }
+
     function destroyProject() {
       var deferred = $q.defer(); // init promise
       ProjectFactory.destroyProject().then(function () {
@@ -749,9 +760,12 @@
 
     function getNumberOfSpots(dataset) {
       var spots = ProjectFactory.getSpotIds()[dataset.id];
-      if (_.isEmpty(spots)) return '(0 Spots)';
-      else if (spots.length === 1) return '(1 Spot)';
-      return '(' + spots.length + ' Spots)';
+      if (!allValidSpots(spots)) getNumberOfSpots(dataset);
+      else {
+        if (_.isEmpty(spots)) return '(0 Spots)';
+        else if (spots.length === 1) return '(1 Spot)';
+        return '(' + spots.length + ' Spots)';
+      }
     }
 
     function isDatasetOn(dataset) {
