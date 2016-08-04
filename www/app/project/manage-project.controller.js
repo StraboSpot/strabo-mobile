@@ -332,12 +332,16 @@
       };
       _.each(spotIds, function (spotId) {
         var spot = SpotFactory.getSpotById(spotId);
-        var spotNoImages = angular.fromJson(angular.toJson(spot));  // Deep clone
-        _.each(spotNoImages.properties.images, function (image, i) {
-          spotNoImages.properties.images[i] = _.omit(image, 'src');
-        });
-        spotCollection.features.push(spotNoImages);
+        if (!spot) ProjectFactory.removeSpotFromDataset(spotId);
+        else {
+          var spotNoImages = angular.fromJson(angular.toJson(spot));  // Deep clone
+          _.each(spotNoImages.properties.images, function (image, i) {
+            spotNoImages.properties.images[i] = _.omit(image, 'src');
+          });
+          spotCollection.features.push(spotNoImages);
+        }
       });
+
 
       if (_.isEmpty(spotCollection.features)) deferred.resolve();
       else {
