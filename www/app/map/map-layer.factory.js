@@ -5,18 +5,16 @@
     .module('app')
     .factory('MapLayerFactory', MapLayerFactory);
 
-  MapLayerFactory.$inject = ['$http', '$log', '$q', '$window', 'HelpersFactory', 'OfflineTilesFactory',
-    'OtherMapsFactory'];
+  MapLayerFactory.$inject = ['$window', 'HelpersFactory', 'OfflineTilesFactory', 'MapFactory'];
 
-  function MapLayerFactory($http, $log, $q, $window, HelpersFactory, OfflineTilesFactory, OtherMapsFactory) {
+  function MapLayerFactory($window, HelpersFactory, OfflineTilesFactory, MapFactory) {
     var drawLayer;
     var featureLayer;
     var datasetsLayer;
     var geolocationLayer;
-    var offlineLayer;
-    var offlineOverlayLayer;
-    var onlineLayer;
-    var onlineOverlayLayer;
+    var offlineLayers;
+    var onlineLayers;
+    var visibleLayer;
 
     // Geolocation Layer Styles
     var geolocationCenterIconStyle;
@@ -32,13 +30,14 @@
       'getDrawLayer': getDrawLayer,
       'getFeatureLayer': getFeatureLayer,
       'getGeolocationLayer': getGeolocationLayer,
-      'getOfflineLayer': getOfflineLayer,
-      'getOnlineLayer': getOnlineLayer,
-      'setDefaultOnlineLayers': setDefaultOnlineLayers,
-      'setDefaultOfflineLayers': setDefaultOfflineLayers,
-      'setOtherOfflineLayers': setOtherOfflineLayers,
-      'setOtherOnlineLayers': setOtherOnlineLayers,
-      'setVisibleLayers': setVisibleLayers
+      'getOfflineLayers': getOfflineLayers,
+      'getOnlineLayers': getOnlineLayers,
+      'getVisibleLayer': getVisibleLayer,
+      'setOfflineLayers': setOfflineLayers,
+      'setOfflineLayersVisible': setOfflineLayersVisible,
+      'setOnlineLayers': setOnlineLayers,
+      'setOnlineLayersVisible': setOnlineLayersVisible,
+      'setVisibleLayer': setVisibleLayer
     };
 
     /**
@@ -51,8 +50,6 @@
       setFeatureLayer();
       setDatasetsLayer();
       setGeolocationLayer();
-      // setOfflineOverlayLayer();
-      // setOnlineOverlayLayer();
 
       // Initialize Geolocation Layer Styles
       setGeolocationCenterIconStyle();
@@ -111,44 +108,6 @@
             geolocationSpeedTextStyle(feature.get('speed'))
           ];
         }
-      });
-    }
-
-    function setOfflineOverlayLayer() {
-      offlineOverlayLayer = new ol.layer.Group({
-        'name': 'offlineOverlayLayer',
-        'title': 'Overlays (offline)',
-        'layers': [
-          new ol.layer.Tile({
-            'title': 'Geologic (z4-12)',
-            'id': 'macrostratGeologic',
-            'type': 'overlay',
-            'opacity': 0.5,
-            'visible': false,
-            'source': new ol.source.OSM({
-              'tileLoadFunction': tileLoadFunction('macrostratGeologic', true)
-            })
-          })
-        ]
-      });
-    }
-
-    function setOnlineOverlayLayer() {
-      onlineOverlayLayer = new ol.layer.Group({
-        'name': 'onlineOverlayLayer',
-        'title': 'Overlays (online)',
-        'layers': [
-          new ol.layer.Tile({
-            'title': 'Geologic (z4-12)',
-            'id': 'macrostratGeologic',
-            'type': 'overlay',
-            'opacity': 0.5,
-            'visible': false,
-            'source': new ol.source.XYZ({
-              'url': 'http://macrostrat.org/tiles/geologic/{z}/{x}/{y}.png'
-            })
-          })
-        ]
       });
     }
 
@@ -220,32 +179,66 @@
       };
     }
 
-    function testConnection(map) {
-      $log.log('Trying to connect to custom map', map.name, map);
-      var deferred = $q.defer(); // init promise
-      var request = $http({
-        'method': 'get',
-        'url': map.apiUrl + map.id + '.json?access_token=' + map.key
+    // Create map basemap layers
+    function setLayers(layers, isOnline) {
+      _.each(layers, function (layer) {
+        var newMapLayer = new ol.layer.Tile();
+        newMapLayer.setProperties({
+          'title': layer.title,
+          'id': layer.id,
+          'type': 'base'
+        });
+
+        // Set Source
+        var sourceUrl = '';
+        if (!isOnline && layer.source) {
+          newMapLayer.setSource(
+            new ol.source.OSM({
+              'tileLoadFunction': tileLoadFunction(layer.id)
+            }));
+        }
+        else if (layer.source === 'osm') newMapLayer.setSource(new ol.source.OSM({'layer': 'osm'}));
+        else if (layer.source === 'mapbox_classic') {
+          sourceUrl = layer.basePath + layer.id + '/{z}/{x}/{y}.png?access_token=' + layer.key;
+        }
+        if (!newMapLayer.getSource()) {
+          newMapLayer.setSource(
+            new ol.source.XYZ({
+              'url': sourceUrl
+            }));
+        }
+
+        // Set Attribution
+        if (layer.attributions) {
+          newMapLayer.getSource().setAttributions(
+            layer.attributions);
+        }
+        else {
+          newMapLayer.getSource().setAttributions([
+            new ol.Attribution({'html': ''})
+          ]);
+        }
+        if (isOnline) onlineLayers.getLayers().push(newMapLayer);
+        else offlineLayers.getLayers().push(newMapLayer);
       });
-      request.then(function successCallback(response) {
-        // This callback will be called asynchronously when the response is available
-        $log.log('Successfully connected to custom map', map.name, '- Response: ', response);
-        deferred.resolve(true);
-      }, function errorCallback(response) {
-        // Called asynchronously if an error occurs or server returns response with an error status.
-        $log.log('Failed connection to custom map', map.name, '- Response: ', response);
-        deferred.resolve(false);
+    }
+
+    function setVisibleLayerDefault(map) {
+      map.getLayers().forEach(function (layer) {
+        if (layer.get('name') === 'onlineLayer' || layer.get('name') === 'offlineLayer') {
+          layer.getLayers().forEach(function (mapLayer) {
+            if (mapLayer.get('id') === 'osm') {
+              visibleLayer = mapLayer;
+              visibleLayer.setVisible(true);
+            }
+          });
+        }
       });
-      return deferred.promise;
     }
 
     // tileLoadFunction is used for offline access mode, required by OL3 for specifying how tiles are retrieved
-    function tileLoadFunction(mapProvider, isOverlay) {
-      return function (imageTile, src) {
-        // console.log(mapProvider, isOverlay);
-        // console.log(imageTile);
-        // console.log(src);
-
+    function tileLoadFunction(mapProvider) {
+      return function (imageTile) {
         // the tile we will be loading
         var imgElement = imageTile.getImage();
 
@@ -281,12 +274,7 @@
           }
           else {
             // no, there is no such image in cache
-
-            // is this a non-overlay tile?  we only show the unavailable tile image for non overlay tiles
-            if (!isOverlay) {
-              // not an overlay so show the user that the tile is unavailable
-              imgElement.src = 'img/offlineTiles/zoom' + z + '.png';
-            }
+            imgElement.src = 'img/offlineTiles/zoom' + z + '.png';
           }
         });
       };
@@ -295,17 +283,17 @@
     /**
      * Public Functions
      */
+
     function getCurrentVisibleLayer(map) {
-      // the first element in the layers array is our ol.layer.group that contains all the map tile layers
-      var mapTileLayers = map.getLayers().getArray()[0].getLayers().getArray();
-
-      // loop through and get the first layer that is visible
-      var mapTileId = _.find(mapTileLayers, function (layer) {
-        return layer.getVisible();
+      var visibleMap;
+      map.getLayers().forEach(function (layer) {
+        if (layer.get('name') === 'onlineLayer' || layer.get('name') === 'offlineLayer') {
+          layer.getLayers().forEach(function (mapLayer) {
+            if (mapLayer.getVisible()) visibleMap = mapLayer.get('id');
+          });
+        }
       });
-
-      if (mapTileId) return mapTileId.get('id');
-      return undefined;
+      return visibleMap;
     }
 
     function getDatasetsLayer() {
@@ -324,209 +312,53 @@
       return geolocationLayer;
     }
 
-    function getOfflineLayer() {
-      return offlineLayer;
+    function getOfflineLayers() {
+      return offlineLayers;
     }
 
-    function getOnlineLayer() {
-      return onlineLayer;
+    function getOnlineLayers() {
+      return onlineLayers;
     }
 
-    // offline layer using tileLoadFunction source
-    function setDefaultOfflineLayers(visibleMap) {
-      offlineLayer = new ol.layer.Group({
+    function getVisibleLayer() {
+      return visibleLayer;
+    }
+
+    function setOfflineLayers() {
+      offlineLayers = new ol.layer.Group({
         'name': 'offlineLayer',
-        'title': 'Offline Maps',
-        'layers': [
-          new ol.layer.Tile({
-            'title': 'No Basemap',
-            'id': 'nobasemap',
-            'type': 'base',
-            'visible': visibleMap === 'nobasemap',
-            'source': new ol.source.XYZ({
-              'attributions': [
-                new ol.Attribution({
-                  'html': ''
-                })
-              ],
-              'url': ''
-            })
-          }),
-          new ol.layer.Tile({
-            'title': 'Mapbox Topo',
-            'id': 'mapbox.outdoors',
-            'type': 'base',
-            'visible': visibleMap === 'mapbox.outdoors',
-            'source': new ol.source.OSM({       // Think this should by XYZ but then tileLoadFunction never called
-              'attributions': [
-                new ol.Attribution({
-                  'html': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                })
-              ],
-              'tileLoadFunction': tileLoadFunction('mapbox.outdoors', false)
-            })
-          }),
-          new ol.layer.Tile({
-            'title': 'Mapbox Satellite',
-            'id': 'mapbox.satellite',
-            'type': 'base',
-            'visible': visibleMap === 'mapbox.satellite',
-            'source': new ol.source.OSM({       // Think this should by XYZ but then tileLoadFunction never called
-              'attributions': [
-                new ol.Attribution({
-                  'html': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                })
-              ],
-              'tileLoadFunction': tileLoadFunction('mapbox.satellite', false)
-            })
-          }),
-          new ol.layer.Tile({
-            'title': 'OSM Streets',
-            'id': 'osm',
-            'type': 'base',
-            'visible': visibleMap === 'osm', // default visible layer
-            'source': new ol.source.OSM({
-              'tileLoadFunction': tileLoadFunction('osm', false)
-            }) // ,
-            // 'extent': mapExtent
-          })
-        ]
+        'title': 'Offline Maps'
       });
+      setLayers(MapFactory.getMaps(), false);
     }
 
-    // online map layer of all possible online map providers
-    function setDefaultOnlineLayers(visibleMap) {
-      onlineLayer = new ol.layer.Group({
+    function setOfflineLayersVisible(map) {
+      map.removeLayer(onlineLayers);
+      map.getLayers().insertAt(0, offlineLayers);
+    }
+
+    function setOnlineLayers() {
+      onlineLayers = new ol.layer.Group({
         'name': 'onlineLayer',
-        'title': 'Online Maps',
-        'layers': [
-          new ol.layer.Tile({
-            'title': 'No Basemap',
-            'id': 'nobasemap',
-            'type': 'base',
-            'visible': visibleMap === 'nobasemap',
-            'source': new ol.source.XYZ({
-              'attributions': [
-                new ol.Attribution({
-                  'html': ''
-                })
-              ],
-              'url': ''
-            })
-          }),
-          new ol.layer.Tile({
-            'title': 'Mapbox Topo',
-            'id': 'mapbox.outdoors',
-            'type': 'base',
-            'visible': visibleMap === 'mapbox.outdoors',
-            'source': new ol.source.XYZ({
-              'attributions': [
-                new ol.Attribution({
-                  'html': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                })
-              ],
-              'url': 'http://api.tiles.mapbox.com/v4/mapbox.outdoors/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic3RyYWJvLWdlb2xvZ3kiLCJhIjoiY2lpYzdhbzEwMDA1ZnZhbTEzcTV3Z3ZnOSJ9.myyChr6lmmHfP8LYwhH5Sg'
-            })
-          }),
-          new ol.layer.Tile({
-            'title': 'Mapbox Satellite',
-            'id': 'mapbox.satellite',
-            'type': 'base',
-            'visible': visibleMap === 'mapbox.satellite',
-            'source': new ol.source.XYZ({
-              'attributions': [
-                new ol.Attribution({
-                  'html': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                })
-              ],
-              'url': 'http://api.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic3RyYWJvLWdlb2xvZ3kiLCJhIjoiY2lpYzdhbzEwMDA1ZnZhbTEzcTV3Z3ZnOSJ9.myyChr6lmmHfP8LYwhH5Sg'
-            })
-          }),
-          new ol.layer.Tile({
-            'title': 'OSM Streets',
-            'id': 'osm',
-            'type': 'base',
-            'visible': visibleMap === 'osm', // default visible layer
-            'source': new ol.source.OSM({
-              'layer': 'osm'
-            })
-            // ,
-            // extent: mapExtent
-          })
-        ]
+        'title': 'Online Maps'
       });
+      setLayers(MapFactory.getMaps(), true);
     }
 
-    function setOtherOfflineLayers(visibleMap) {
-      var otherMaps = OtherMapsFactory.getOtherMaps();
-      _.each(otherMaps, function (otherMap) {
-        offlineLayer.getLayers().push(new ol.layer.Tile({
-          'title': otherMap.name,
-          'id': otherMap.id,
-          'type': 'base',
-          'visible': visibleMap === otherMap.id,
-          'source': new ol.source.OSM({       // Think this should by XYZ but then tileLoadFunction never called
-            'attributions': [
-              new ol.Attribution({
-                'html': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              })
-            ],
-            'tileLoadFunction': tileLoadFunction(otherMap.id, false)
-          })
-        }));
-      });
+    function setOnlineLayersVisible(map) {
+      map.removeLayer(offlineLayers);
+      map.getLayers().insertAt(0, onlineLayers);
     }
 
-    function setOtherOnlineLayers(visibleMap) {
-      var otherMaps = OtherMapsFactory.getOtherMaps();
-      _.each(otherMaps, function (otherMap) {
-        // testConnection(otherMap).then(function (validConnection) {
-        // if (validConnection) {
-        onlineLayer.getLayers().push(new ol.layer.Tile({
-          'title': otherMap.name,
-          'id': otherMap.id,
-          'type': 'base',
-          'visible': visibleMap === otherMap.id,
-          'source': new ol.source.XYZ({
-            'attributions': [
-              new ol.Attribution({
-                'html': otherMap.attributionHtml
-              })
-            ],
-            'url': otherMap.tileBaseUrl + otherMap.id + '/{z}/{x}/{y}.png?access_token=' + otherMap.key
-          })
-        }));
-        // }
-        // });
+    function setVisibleLayer(map) {
+      map.getLayers().forEach(function (layer) {
+        if (layer.get('name') === 'onlineLayer' || layer.get('name') === 'offlineLayer') {
+          layer.getLayers().forEach(function (mapLayer) {
+            if (mapLayer.getVisible()) visibleLayer = mapLayer;
+          });
+        }
       });
-    }
-
-    function setVisibleLayers(map, online) {
-      if (!online) {
-        $log.log('Offline');
-
-        // remove the online maps
-        map.removeLayer(onlineLayer);
-        // map.removeLayer(onlineOverlayLayer);
-
-        // Add offline tile layer
-        map.getLayers().insertAt(0, offlineLayer);
-        // map.getLayers().insertAt(1, offlineOverlayLayer);
-
-        // re-render the map, grabs 'new' tiles from storage
-        map.render();
-      }
-      else {
-        $log.log('Online');
-
-        // remove the offline layers
-        map.removeLayer(offlineLayer);
-        // map.removeLayer(offlineOverlayLayer);
-
-        // Add online map layer
-        map.getLayers().insertAt(0, onlineLayer);
-        // map.getLayers().insertAt(1, onlineOverlayLayer);
-      }
+      if (!visibleLayer) setVisibleLayerDefault(map);
     }
   }
 }());

@@ -6,10 +6,10 @@
     .controller('OtherMapsController', OtherMapsController);
 
   OtherMapsController.$inject = ['$http', '$ionicLoading', '$ionicModal', '$ionicPopup', '$log', '$q', '$scope',
-    'MapViewFactory', 'OfflineTilesFactory', 'OtherMapsFactory', 'UserFactory'];
+    'MapFactory', 'OtherMapsFactory', 'UserFactory'];
 
-  function OtherMapsController($http, $ionicLoading, $ionicModal, $ionicPopup, $log, $q, $scope, MapViewFactory,
-                               OfflineTilesFactory, OtherMapsFactory, UserFactory) {
+  function OtherMapsController($http, $ionicLoading, $ionicModal, $ionicPopup, $log, $q, $scope, MapFactory,
+                               OtherMapsFactory, UserFactory) {
     var vm = this;
     var deleteSelected = false;
     var isEdit = false;
@@ -21,21 +21,10 @@
     vm.deleteMap = deleteMap;
     vm.editMap = editMap;
     vm.helpText = '';
-    vm.mapProviders = {
-      'apiUrl': 'http://api.mapbox.com/v4/',
-      'attributionHtml': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      'providerName': 'Mapbox',
-      'tileBaseUrl': 'http://api.tiles.mapbox.com/v4/',
-      'basePath': [
-        'http://a.tiles.mapbox.com/v4/',
-        'http://b.tiles.mapbox.com/v4/',
-        'http://c.tiles.mapbox.com/v4/',
-        'http://d.tiles.mapbox.com/v4/'
-      ],
-      'imageType': 'jpg',
-      'mime': 'image/jpeg',
-      'maxZoom': 19
-    };
+    vm.mapSources = [{
+      'name': 'Mapbox Classic',
+      'source': 'mapbox_classic'
+    }];
     vm.modalTitle = 'Add a Mapbox Classic Map';
     vm.openModal = openModal;
     vm.otherMaps = [];
@@ -83,30 +72,31 @@
     }
 
     function isNewMapId() {
-      var match = _.filter(vm.otherMaps, function (otherMap) {
+      var match = _.find(vm.otherMaps, function (otherMap) {
         return otherMap.id === vm.data.id;
-      })[0];
+      });
       if (_.isEmpty(match)) {
-        match = _.filter(OfflineTilesFactory.getMapProviders(), function (mapProvider) {
-          return mapProvider.id === vm.data.id;
-        })[0];
+        if (!MapFactory.getMaps()) MapFactory.setMaps();
+        match = _.find(MapFactory.getMaps(), function (map) {
+          return map.id === vm.data.id;
+        });
       }
       return _.isEmpty(match);
     }
 
     function setHelpText() {
       vm.helpText = 'If you haven\'t done so already, create a Mapbox account. Create a Mapbox Classic map. Under' +
-        ' Account in Mapbox also create an API access token. The name used for the map is up to you but shorter' +
-        ' names are better. The Map ID and Access Token you\'ll need to get from your Mapbox account. Save your' +
+        ' Account in Mapbox also create an API access token. The title used for the map is up to you but shorter' +
+        ' titles are better. The Map ID and Access Token you\'ll need to get from your Mapbox account. Save your' +
         ' Mapbox access token in your Strabo user profile to auto-populate this field.';
     }
 
-    function testMapConnection() {
+    function testMapConnection(testUrl) {
       var deferred = $q.defer(); // init promise
       $log.log('Trying to connect to a new map ...');
       var request = $http({
         'method': 'get',
-        'url': vm.data.testUrl
+        'url': testUrl
       });
       request.then(function successCallback(response) {
         $log.log('Passed Connection Test - Response: ', response);
@@ -131,7 +121,7 @@
     function addMap() {
       isEdit = false;
       vm.modalTitle = 'Add a Mapbox Classic Map';
-      vm.data = angular.copy(vm.mapProviders);
+      vm.data = {};
       getMapboxId();
       vm.openModal('addMapModal');
     }
@@ -148,7 +138,6 @@
       });
       confirmPopup.then(function (res) {
         if (res) {
-          if (MapViewFactory.getVisibleMap() === id) MapViewFactory.setVisibleMapDefault();
           vm.otherMaps = _.reject(vm.otherMaps, function (otherMap) {
             return otherMap.id === id;
           });
@@ -173,17 +162,23 @@
     }
 
     function save() {
-      if (!vm.data.name || !vm.data.id || !vm.data.key) {
+      if (!vm.data.title || !vm.data.id || !vm.data.key) {
         $ionicPopup.alert({
           'title': 'Incomplete Map Info!',
-          'template': 'The map Name, ID and Access Token are all required fields.'
+          'template': 'The map Title, ID and Access Token are all required fields.'
         });
       }
       else if (isEdit || isNewMapId()) {
-        vm.data = _.extend(vm.data, vm.mapProviders);
-        vm.data.testUrl = vm.data.apiUrl + vm.data.id + '.json?access_token=' + vm.data.key;
+        vm.data.source = vm.mapSources[0].source;
+        var mapProvider = MapFactory.getMapProviderInfo(vm.data.source);
+        var testUrl;
+        switch (vm.data.source) {
+          case 'mapbox_classic':
+            testUrl = mapProvider.apiUrl + vm.data.id + '.json?access_token=' + vm.data.key;
+            break;
+        }
         $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Testing Connection...'});
-        testMapConnection().then(function () {
+        testMapConnection(testUrl).then(function () {
           vm.otherMaps = _.reject(vm.otherMaps, function (otherMap) {
             return otherMap.id === vm.data.id;
           });

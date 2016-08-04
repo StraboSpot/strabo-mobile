@@ -6,13 +6,14 @@
     .controller('MapController', MapController);
 
   MapController.$inject = ['$ionicHistory', '$ionicPopover', '$ionicPopup', '$ionicSideMenuDelegate', '$location',
-    '$log', '$scope', 'HelpersFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory', 'MapSetupFactory',
-    'MapViewFactory', 'SpotFactory', 'OfflineTilesFactory'];
+    '$log', '$scope', 'HelpersFactory', 'MapFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory',
+    'MapSetupFactory', 'MapViewFactory', 'SpotFactory'];
 
   function MapController($ionicHistory, $ionicPopover, $ionicPopup, $ionicSideMenuDelegate, $location, $log, $scope,
-                         HelpersFactory, MapDrawFactory, MapFeaturesFactory, MapLayerFactory, MapSetupFactory,
-                         MapViewFactory, SpotFactory, OfflineTilesFactory) {
+                         HelpersFactory, MapFactory, MapDrawFactory, MapFeaturesFactory, MapLayerFactory,
+                         MapSetupFactory, MapViewFactory, SpotFactory) {
     var vm = this;
+    var onlineState;
 
     vm.cacheOfflineTiles = cacheOfflineTiles;
     vm.currentSpot = SpotFactory.getCurrentSpot();
@@ -42,16 +43,22 @@
       createPopover();
       var switcher = new ol.control.LayerSwitcher();
 
+      // Setup the Map
+      MapViewFactory.setInitialMapView();
       MapSetupFactory.setImageBasemap(null);
-      MapSetupFactory.setInitialMapView();
       MapSetupFactory.setMap();
-      MapSetupFactory.setLayers(MapViewFactory.getVisibleMap());
+      MapSetupFactory.setLayers();
       MapSetupFactory.setMapControls(switcher);
       MapSetupFactory.setPopupOverlay();
 
+      // Get the Map
       map = MapSetupFactory.getMap();
 
-      getMapView();
+      // Set the Map View
+      if (MapViewFactory.getMapView()) map.setView(MapViewFactory.getMapView());
+      else MapViewFactory.zoomToSpotsExtent(map);
+
+      // Set the Map Vector Layers
       var datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map);
       MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map);
       MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
@@ -67,22 +74,11 @@
         $log.log(event);
       });
 
-      // After map drawn check that a basemap is marked as visible, if not set default visible map
-      map.on('postrender', function () {
-        if (!MapLayerFactory.getCurrentVisibleLayer(map)) {
-          var mapTileLayers = map.getLayers().getArray()[0].getLayers().getArray();
-          // loop through and set default
-          _.each(mapTileLayers, function (layer) {
-            if (layer.get('id') === 'osm') layer.setVisible(true);
-          });
-          MapViewFactory.setVisibleMapDefault();
-        }
-      });
-
-      // Cleanup when we leave the page
+      // Cleanup when we leave the page (need unloaded, as opposed to leave, so this fires when
+      // opening an item from the options button)
       $scope.$on('$ionicView.unloaded', function () {
-        MapViewFactory.setMapView(map.getView());
-        MapViewFactory.setVisibleMap(MapLayerFactory.getCurrentVisibleLayer(map));
+        MapViewFactory.setMapView(map);
+        MapLayerFactory.setVisibleLayer(map);
         MapDrawFactory.cancelEdits();    // Cancel any edits
         vm.popover.remove();            // Remove the popover
       });
@@ -115,7 +111,11 @@
 
       // Watch whether we have internet access or not
       $scope.$watch('vm.isOnline()', function (online) {
-        MapLayerFactory.setVisibleLayers(map, online);
+        if (onlineState !== online) {
+          onlineState = online;
+          if (online) MapLayerFactory.setOnlineLayersVisible(map);
+          else MapLayerFactory.setOfflineLayersVisible(map);
+        }
       });
 
       $scope.$on('enableSaveEdits', function (e, data) {
@@ -135,18 +135,6 @@
       });
     }
 
-    // If there is a Map View set then reset the map to that view,
-    // otherwise zoom to the extent of the spots
-    function getMapView() {
-      if (MapViewFactory.getMapView()) {
-        $log.log('A mapview is set, changing map view to that');
-        map.setView(MapViewFactory.getMapView());
-      }
-      else {
-        MapViewFactory.zoomToSpotsExtent(map);
-      }
-    }
-
     /**
      *  Public Functions
      */
@@ -154,19 +142,22 @@
     // Cache the tiles in the current view but don't switch to the offline layer
     function cacheOfflineTiles() {
       vm.popover.hide();
-      if (navigator.onLine) {
-        // Get the map extent
-        var mapViewExtent = MapViewFactory.getMapViewExtent(map);
 
-        // set the extent into the MapViewFactory
-        MapViewFactory.setExtent(MapLayerFactory.getCurrentVisibleLayer(map), mapViewExtent.topRight,
-          mapViewExtent.bottomLeft,
-          mapViewExtent.zoom);
+      if (onlineState) {
+        MapViewFactory.setMapView(map);
+        MapLayerFactory.setVisibleLayer(map);
 
-        // we set the current map provider so if we ever come back, we should try to use that map provider instead of the default provider
-        OfflineTilesFactory.setCurrentMapProvider(MapLayerFactory.getCurrentVisibleLayer(map));
-
-        $location.path('/app/map/archiveTiles');
+        // Check valid zoom level
+        var maxZoom = _.find(MapFactory.getMaps(), function (gotMap) {
+          return gotMap.id === MapLayerFactory.getVisibleLayer().get('id');
+        }).maxZoom;
+        if (map.getView().getZoom() > maxZoom) {
+          $ionicPopup.alert({
+            'title': 'Map Zoom Max Exceeded!',
+            'template': 'Max zoom level for this map is ' + maxZoom + '. Zoom out to save map.'
+          });
+        }
+        else $location.path('/app/map/archiveTiles');
       }
       else {
         $ionicPopup.alert({
@@ -196,8 +187,9 @@
 
     // Get current position
     function toggleLocation() {
-      vm.locationOn = angular.isUndefined(vm.locationOn) || vm.locationOn === false;
-      MapViewFactory.getCurrentLocation(map, vm.locationOn);
+      vm.locationOn = !vm.locationOn;
+      MapViewFactory.setLocationOn(vm.locationOn);
+      MapViewFactory.getCurrentLocation(map);
     }
 
     function zoomToSpotsExtent() {

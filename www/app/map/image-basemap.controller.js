@@ -41,7 +41,7 @@
 
       setImageBasemap();
       MapSetupFactory.setImageBasemap(vm.imageBasemap);
-      MapSetupFactory.setInitialMapView();
+      MapViewFactory.setInitialMapView(vm.imageBasemap);
       MapSetupFactory.setMap();
       MapSetupFactory.setLayers();
       MapSetupFactory.setMapControls(switcher);
@@ -62,8 +62,9 @@
         $log.log(event);
       });
 
-      // Cleanup when we leave the page
-      $scope.$on('$ionicView.leave', function () {
+      // Cleanup when we leave the page (need unloaded, as opposed to leave, so this fires when
+      // opening an item from the options button)
+      $scope.$on('$ionicView.unloaded', function () {
         MapDrawFactory.cancelEdits();    // Cancel any edits
         vm.popover.remove();            // Remove the popover
       });

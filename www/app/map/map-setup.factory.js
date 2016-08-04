@@ -5,31 +5,28 @@
     .module('app')
     .factory('MapSetupFactory', MapSetupFactory);
 
-  MapSetupFactory.$inject = ['MapDrawFactory', 'MapLayerFactory'];
+  MapSetupFactory.$inject = ['MapDrawFactory', 'MapFactory', 'MapLayerFactory', 'MapViewFactory'];
 
-  function MapSetupFactory(MapDrawFactory, MapLayerFactory) {
-    // Map Properties
+  function MapSetupFactory(MapDrawFactory, MapFactory, MapLayerFactory, MapViewFactory) {
     var map;
-    var extent;
     var imageBasemap;
     var initialMapView;
-    var projection;
-
-    // Popup Overlay
     var popup;
 
     return {
       'getInitialMapView': getInitialMapView,
       'getMap': getMap,
       'getPopupOverlay': getPopupOverlay,
-
       'setImageBasemap': setImageBasemap,
-      'setInitialMapView': setInitialMapView,
       'setLayers': setLayers,
       'setMap': setMap,
       'setMapControls': setMapControls,
       'setPopupOverlay': setPopupOverlay
     };
+
+    /**
+     * Public Functions
+     */
 
     function getInitialMapView() {
       return initialMapView;
@@ -43,15 +40,30 @@
       return popup;
     }
 
-    function setLayers(visibleMap) {
+    function setVisibleLayer(layers) {
+      var visibleLayer = MapLayerFactory.getVisibleLayer();
+      var visibleMapId;
+      if (!visibleLayer) visibleMapId = 'osm';
+      else visibleMapId = visibleLayer.get('id');
+
+      layers.getLayers().forEach(function (layer) {
+        if (layer.get('id') === visibleMapId) layer.set('visible', true);
+        else layer.set('visible', false);
+      });
+    }
+
+    function setLayers() {
       if (!imageBasemap) {
+        MapFactory.setMaps();
+        MapLayerFactory.setOnlineLayers();
+        MapLayerFactory.setOfflineLayers();
+        setVisibleLayer(MapLayerFactory.getOnlineLayers());
+        setVisibleLayer(MapLayerFactory.getOfflineLayers());
+
         map.addLayer(MapLayerFactory.getGeolocationLayer());
-        MapLayerFactory.setDefaultOnlineLayers(visibleMap);
-        MapLayerFactory.setOtherOnlineLayers(visibleMap);
-        MapLayerFactory.setDefaultOfflineLayers(visibleMap);
-        MapLayerFactory.setOtherOfflineLayers(visibleMap);
       }
       else {
+        var extent = [0, 0, imageBasemap.width, imageBasemap.height];
         var imageBasemapLayer = new ol.layer.Image({
           'source': new ol.source.ImageStatic({
             'attributions': [
@@ -60,13 +72,16 @@
               })
             ],
             'url': imageBasemap.src,
-            'projection': projection,
+            'projection': new ol.proj.Projection({
+              'code': 'map-image',
+              'units': 'pixels',
+              'extent': extent
+            }),
             'imageExtent': extent
           })
         });
         map.addLayer(imageBasemapLayer);
       }
-
       map.addLayer(MapLayerFactory.getDatasetsLayer());
       map.addLayer(MapLayerFactory.getFeatureLayer());
       map.addLayer(MapLayerFactory.getDrawLayer());
@@ -76,38 +91,10 @@
       imageBasemap = im;
     }
 
-    function setInitialMapView() {
-      var zoom;
-      var center;
-
-      if (!imageBasemap) {
-        projection = 'EPSG:3857';
-        center = [-11000000, 4600000];
-        zoom = 4;
-      }
-      else {
-        extent = [0, 0, imageBasemap.width, imageBasemap.height];
-        projection = new ol.proj.Projection({
-          'code': 'map-image',
-          'units': 'pixels',
-          'extent': extent
-        });
-        center = ol.extent.getCenter(extent);
-        zoom = 2;
-      }
-
-      initialMapView = new ol.View({
-        'projection': projection,
-        'center': center,
-        'zoom': zoom,
-        'minZoom': zoom
-      });
-    }
-
     function setMap() {
       map = new ol.Map({
         'target': 'mapdiv',
-        'view': initialMapView,
+        'view': MapViewFactory.getInitialMapView(),
         // turn off ability to rotate map via keyboard+mouse and using fingers on a mobile device
         'controls': ol.control.defaults({
           'rotate': false

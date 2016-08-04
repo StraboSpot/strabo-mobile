@@ -179,10 +179,10 @@
                 }, {
                   'text': '<b>Save</b>',
                   'type': 'button-positive',
-                  'onTap': function (e) {
+                  'onTap': function (err) {
                     if (!scope.vm.name) {
-                      // don't allow the user to close unless he enters wifi password
-                      e.preventDefault();
+                      // Don't allow the user to close unless a name is entered
+                      err.preventDefault();
                     }
                     else return scope.vm.name;
                   }

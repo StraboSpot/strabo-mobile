@@ -29,7 +29,7 @@
       $ionicLoading.show({
         'template': '<ion-spinner></ion-spinner><br>Loading Maps'
       });
-      OfflineTilesFactory.getMaps().then(function (maps) {
+      OfflineTilesFactory.getOfflineMaps().then(function (maps) {
         vm.maps = maps;
         $log.log('Offline Maps:', vm.maps);
         OfflineTilesFactory.getOfflineTileCount(function (count) {
@@ -108,13 +108,8 @@
               'text': '<b>Save</b>',
               'type': 'button-positive',
               'onTap': function (e) {
-                if (!vm.mapDetail.newName) {
-                  // don't allow the user to close unless he enters the new name
-                  e.preventDefault();
-                }
-                else {
-                  return vm.mapDetail.newName;
-                }
+                if (!vm.mapDetail.newName) e.preventDefault();
+                else return vm.mapDetail.newName;
               }
             }
           ]
@@ -123,7 +118,7 @@
         myPopup.then(function (name) {
           if (name) {
             // rename the map
-            OfflineTilesFactory.renameMap(map.name, vm.mapDetail.newName)
+            OfflineTilesFactory.renameMap(map, vm.mapDetail.newName)
               .then(function () {
                 activate();
               });
