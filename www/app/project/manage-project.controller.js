@@ -100,6 +100,21 @@
       return validSpots;
     }
 
+    function checkValidDateTime(spot) {
+      // Make sure the date and time aren't null
+      if (!spot.properties.date || !spot.properties.time) {
+        if (!spot.properties.date) {
+          if (spot.properties.time) spot.properties.date = spot.properties.time;
+          else spot.properties.date = new Date(Date.now()).setMilliseconds(0);
+        }
+        if (!spot.properties.time && spot.properties.date) {
+          if (spot.properties.date) spot.properties.time = spot.properties.date;
+          else spot.properties.time = new Date(Date.now()).setMilliseconds(0);
+        }
+        SpotFactory.save(spot);
+      }
+    }
+
     function destroyProject() {
       var deferred = $q.defer(); // init promise
       ProjectFactory.destroyProject().then(function () {
@@ -345,7 +360,8 @@
         var spot = SpotFactory.getSpotById(spotId);
         if (!spot) ProjectFactory.removeSpotFromDataset(spotId);
         else {
-          var spotNoImages = angular.fromJson(angular.toJson(spot));  // Deep clone
+          checkValidDateTime(spot);
+          var spotNoImages = angular.copy(spot);
           _.each(spotNoImages.properties.images, function (image, i) {
             spotNoImages.properties.images[i] = _.omit(image, 'src');
           });
