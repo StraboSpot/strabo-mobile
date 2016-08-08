@@ -5,9 +5,9 @@
     .module('app')
     .factory('ProjectFactory', ProjectFactory);
 
-  ProjectFactory.$inject = ['$log', '$q', 'LocalStorageFactory', 'RemoteServerFactory'];
+  ProjectFactory.$inject = ['$log', '$q', 'LocalStorageFactory', 'OtherMapsFactory', 'RemoteServerFactory'];
 
-  function ProjectFactory($log, $q, LocalStorageFactory, RemoteServerFactory) {
+  function ProjectFactory($log, $q, LocalStorageFactory, OtherMapsFactory, RemoteServerFactory) {
     var currentDatasets = [];
     var currentProject = {};
     var activeDatasets = [];
@@ -392,6 +392,7 @@
           if (remoteProject.daily_setup) promises.push(saveProjectItem('daily_setup', remoteProject.daily_setup));
           if (remoteProject.tags) promises.push(saveProjectItem('tags', remoteProject.tags));
           if (remoteProject.tools) promises.push(saveProjectItem('tools', remoteProject.tools));
+          if (remoteProject.other_maps) promises.push(OtherMapsFactory.addRemoteOtherMaps(remoteProject.other_maps));
           $q.all(promises).then(function () {
             loadDatasetsRemote().then(function () {
               deferred.resolve();

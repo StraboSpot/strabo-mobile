@@ -6,10 +6,10 @@
     .controller('ManageProjectController', ManageProjectController);
 
   ManageProjectController.$inject = ['$ionicModal', '$ionicLoading', '$ionicPopup', '$log', '$scope', '$state', '$q',
-    'DataModelsFactory', 'FormFactory', 'ProjectFactory', 'RemoteServerFactory', 'SpotFactory', 'UserFactory'];
+    'DataModelsFactory', 'FormFactory', 'OtherMapsFactory', 'ProjectFactory', 'RemoteServerFactory', 'SpotFactory', 'UserFactory'];
 
   function ManageProjectController($ionicModal, $ionicLoading, $ionicPopup, $log, $scope, $state, $q, DataModelsFactory,
-                                   FormFactory, ProjectFactory, RemoteServerFactory, SpotFactory, UserFactory) {
+                                   FormFactory, OtherMapsFactory, ProjectFactory, RemoteServerFactory, SpotFactory, UserFactory) {
     var vm = this;
 
     var deleteSelected;
@@ -321,7 +321,8 @@
 
     function doUploadProject() {
       var deferred = $q.defer(); // init promise
-      var project = ProjectFactory.getCurrentProject();
+      var project = angular.copy(ProjectFactory.getCurrentProject());
+      if (!_.isEmpty(OtherMapsFactory.getOtherMaps())) project.other_maps = OtherMapsFactory.getOtherMaps();
       RemoteServerFactory.updateProject(project, UserFactory.getUser().encoded_login).then(
         function (response) {
           $log.log('Finished uploading project', project, '. Response:', response);

@@ -10,7 +10,8 @@
       No other maps have been added yet. Add a map by using the '+' button in the top right.
     </div>
     <ion-list>
-      <ion-item ng-repeat='map in vm.otherMaps track by map.id'
+      <ion-item class='item-text-wrap'
+                ng-repeat='map in vm.otherMaps track by map.id'
                 ng-click='vm.editMap(map)'>
         <b>{{ map.title }}</b>
         <small>(Type: {{ vm.getMapTypeName(map.source) }}, ID: {{ map.id }})</small>
