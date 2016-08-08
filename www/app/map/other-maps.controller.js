@@ -20,12 +20,15 @@
     vm.data = {};
     vm.deleteMap = deleteMap;
     vm.editMap = editMap;
+    vm.getHelpText = getHelpText;
+    vm.getIdLabel = getIdLabel;
+    vm.getMapTypeName = getMapTypeName;
     vm.helpText = '';
-    vm.mapSources = [{
-      'name': 'Mapbox Classic',
-      'source': 'mapbox_classic'
-    }];
-    vm.modalTitle = 'Add a Mapbox Classic Map';
+    vm.mapSources = [
+      {'name': 'Mapbox Classic', 'source': 'mapbox_classic', 'idLabel': 'Map Id'},
+      {'name': 'Mapbox Styles', 'source': 'mapbox_styles', 'idLabel': 'Style URL'}
+    ];
+    vm.modalTitle = '';
     vm.openModal = openModal;
     vm.otherMaps = [];
     vm.save = save;
@@ -85,10 +88,10 @@
     }
 
     function setHelpText() {
-      vm.helpText = 'If you haven\'t done so already, create a Mapbox account. Create a Mapbox Classic map. Under' +
-        ' Account in Mapbox also create an API access token. The title used for the map is up to you but shorter' +
-        ' titles are better. The Map ID and Access Token you\'ll need to get from your Mapbox account. Save your' +
-        ' Mapbox access token in your Strabo user profile to auto-populate this field.';
+      var helpText = 'Create a Mapbox account and an API Access Token.';
+      vm.mapSources[0].helpText = helpText + ' To get the Map ID create a Classic map with Mapbox Editor or create a Tileset.';
+      vm.mapSources[1].helpText = helpText + ' To get the Style URL create a Style map, then select' +
+        ' \'Share, develop & use\'. Below \'Develop with this style\' copy the entire Mapbox Style URL.';
     }
 
     function testMapConnection(testUrl) {
@@ -120,7 +123,7 @@
 
     function addMap() {
       isEdit = false;
-      vm.modalTitle = 'Add a Mapbox Classic Map';
+      vm.modalTitle = 'Add a Mapbox Map';
       vm.data = {};
       getMapboxId();
       vm.openModal('addMapModal');
@@ -150,10 +153,33 @@
     function editMap(map) {
       if (!deleteSelected) {
         isEdit = true;
-        vm.modalTitle = 'Edit Mapbox Classic Map';
+        vm.modalTitle = 'Edit Mapbox Map';
         vm.data = angular.copy(map);  // Copy value, not reference
         vm.openModal('addMapModal');
       }
+    }
+
+    function getHelpText() {
+      if (!vm.data.source) return '';
+      var mapType = _.find(vm.mapSources, function (mapSource) {
+        return mapSource.source === vm.data.source;
+      });
+      return mapType.helpText;
+    }
+
+    function getIdLabel() {
+      if (!vm.data.source) return 'Map Id';
+      var mapType = _.find(vm.mapSources, function (mapSource) {
+        return mapSource.source === vm.data.source;
+      });
+      return mapType.idLabel;
+    }
+
+    function getMapTypeName(source) {
+      var mapType = _.find(vm.mapSources, function (mapSource) {
+        return mapSource.source === source;
+      });
+      return mapType.name;
     }
 
     function openModal(modal) {
@@ -162,19 +188,23 @@
     }
 
     function save() {
-      if (!vm.data.title || !vm.data.id || !vm.data.key) {
+      if (!vm.data.source || !vm.data.title || !vm.data.id || !vm.data.key) {
         $ionicPopup.alert({
           'title': 'Incomplete Map Info!',
-          'template': 'The map Title, ID and Access Token are all required fields.'
+          'template': 'The map Source, Title, ID or Style and Access Token are all required fields.'
         });
       }
       else if (isEdit || isNewMapId()) {
-        vm.data.source = vm.mapSources[0].source;
         var mapProvider = MapFactory.getMapProviderInfo(vm.data.source);
         var testUrl;
         switch (vm.data.source) {
           case 'mapbox_classic':
             testUrl = mapProvider.apiUrl + vm.data.id + '.json?access_token=' + vm.data.key;
+            break;
+          case 'mapbox_styles':
+            var idArray = vm.data.id.split('/');
+            vm.data.id = idArray[idArray.length - 2] + '/' + idArray[idArray.length - 1];
+            testUrl = mapProvider.apiUrl + vm.data.id + '?access_token=' + vm.data.key;
             break;
         }
         $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Testing Connection...'});
@@ -196,7 +226,7 @@
     }
 
     function toggleHelpText() {
-      vm.showHelpText = !vm.showHelpText;
+      vm.showHelpText = vm.data.source === 'mapbox_classic' || vm.data.source === 'mapbox_styles';
     }
   }
 }());

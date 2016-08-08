@@ -201,6 +201,9 @@
         else if (layer.source === 'mapbox_classic') {
           sourceUrl = layer.basePath + layer.id + '/{z}/{x}/{y}.png?access_token=' + layer.key;
         }
+        else if (layer.source === 'mapbox_styles') {
+          sourceUrl = layer.basePath + layer.id + '/tiles/256/{z}/{x}/{y}?access_token=' + layer.key;
+        }
         if (!newMapLayer.getSource()) {
           newMapLayer.setSource(
             new ol.source.XYZ({

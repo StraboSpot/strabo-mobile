@@ -13,7 +13,7 @@
       <ion-item ng-repeat='map in vm.otherMaps track by map.id'
                 ng-click='vm.editMap(map)'>
         <b>{{ map.title }}</b>
-        <small>(Type: {{ map.source === 'mapbox_classic' ? 'Mapbox Classic' : ''}}, ID: {{ map.id }})</small>
+        <small>(Type: {{ vm.getMapTypeName(map.source) }}, ID: {{ map.id }})</small>
         <span class='item-button-right'>
           <button class='button button-clear button-assertive'
                   ng-click='vm.deleteMap(map.id)'>

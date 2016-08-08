@@ -7,21 +7,30 @@
     <div class='button button-clear' ng-click='vm.closeModal("addMapModal")'><span class='icon ion-close'></span></div>
   </ion-header-bar>
   <ion-content class='has-header strabo-form'>
+    <ion-input class='item item-input item-select item-text-wrap'>
+      <ion-label>Mapbox Type</ion-label>
+      <select ng-model='vm.data.source'
+              ng-options='mapSource.source as mapSource.name for mapSource in vm.mapSources'
+              ng-change='vm.toggleHelpText()'>
+        <option value=''></option>
+      </select>
+    </ion-input>
     <label class='item item-input item-stacked-label item-text-wrap'>
       <span class='input-label'>My Map Title</span>
       <input type='text' ng-model='vm.data.title'>
     </label>
     <label class='item item-input item-stacked-label item-text-wrap'>
-      <span class='input-label'>Map ID</span>
+      <span class='input-label'>{{ vm.getIdLabel() }}</span>
       <input type='text' ng-model='vm.data.id'>
     </label>
     <label class='item item-input item-stacked-label item-text-wrap'>
       <span class='input-label'>Access Token</span>
       <input type='text' ng-model='vm.data.key'>
     </label>
-    <button class='button button-clear button-positive ion ion-information-circled' ng-click='vm.toggleHelpText()'></button>
-    <div class='padding-left padding-right'>
-      <span ng-show='vm.showHelpText'>{{ vm.helpText }}</span>
+    <div ng-show='vm.showHelpText'>
+      <div class='padding'><b>Connection Properties Help</b><br>
+        {{ vm.getHelpText() }}
+      </div>
     </div>
   </ion-content>
 </ion-modal-view>

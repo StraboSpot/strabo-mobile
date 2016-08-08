@@ -64,6 +64,18 @@
             'http://d.tiles.mapbox.com/v4/'
           ]
         },
+        'mapbox_styles': {
+          'attributions': [
+            new ol.Attribution({
+              'html': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            })
+          ],
+          'apiUrl': 'https://api.mapbox.com/styles/v1/',
+          'basePath': 'https://api.mapbox.com/styles/v1/',
+          'mime': 'image/jpeg',
+          'maxZoom': 19,
+          'url': ['https://api.mapbox.com/styles/v1/']
+        },
         'osm': {
           'imageType': 'png',
           'mime': 'image/png',
@@ -87,7 +99,7 @@
       maps = angular.copy(getDefaultMaps());
       _.each(maps, function (map, i) {
         maps[i] = _.extend(maps[i], getMapProviderInfo(map.source));
-        if (map.source === 'mapbox_classic') maps[i].key = defaultMapboxKey;
+        if (map.source === 'mapbox_classic' || 'mapbox_styles') maps[i].key = defaultMapboxKey;
       });
 
       // Load Other Maps
