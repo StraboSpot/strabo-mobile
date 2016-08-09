@@ -141,7 +141,7 @@
       if (!_.contains(spotIds[datasetId], spotId)) {
         spotIds[datasetId].push(spotId);
         saveProjectItem('spots_' + datasetId, spotIds[datasetId]).then(function () {
-          $log.log('Added spot to dataset ' + datasetId + ': ' + spotIds[datasetId]);
+          //$log.log('Added spot to dataset ' + datasetId + ': ' + spotIds[datasetId]);
         });
       }
     }
@@ -484,7 +484,7 @@
         if (value) {
           if (!key.startsWith('dataset_') && !key.startsWith('spots_')) currentProject[key] = value;
           LocalStorageFactory.getDb().projectDb.setItem(key, value).then(function () {
-            $log.log('Saved', key, ':', value);
+            // $log.log('Saved', key, ':', value);
             deferred.resolve();
           });
         }

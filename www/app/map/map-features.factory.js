@@ -108,22 +108,20 @@
 
 
       // Create features to map from the mappable spots.
-      // Create a deep clone of each mappable spot. For spots with orientation data, create a clone of the entire spot
+      // For spots with orientation data, create a copy of the entire spot
       // for each orienation measurement, add the orientation measurement to a new element called orientation and
       // then delete the orientation_data element
       var mappedFeatures = [];
       _.each(mappableSpots, function (spot) {
         if (spot.properties.orientation_data) {
           _.each(spot.properties.orientation_data, function (orientation) {
-            var feature = angular.fromJson(angular.toJson(spot));
+            var feature = angular.copy(spot);
             delete feature.properties.orientation_data;
             feature.properties.orientation = orientation;
             mappedFeatures.push(feature);
           });
         }
-        else {
-          mappedFeatures.push(angular.fromJson(angular.toJson(spot)));
-        }
+        else mappedFeatures.push(angular.copy(spot));
       });
 
       // get distinct groups and aggregate spots by group type

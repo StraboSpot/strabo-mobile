@@ -681,3 +681,38 @@ Spots Page
   width: 20px;
   vertical-align: bottom;
 }
+.spot-tabs-on{
+  font-size: 10px;
+  border-radius: 5px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+.orientation-on{
+  background-color: #8dd3c7;
+}
+._3d-structures-on{
+  background-color: #ffffb3;
+}
+.images-on{
+  background-color: #bebada;
+}
+.tags-on{
+  background-color: #fb8072;
+}
+.samples-on{
+  background-color: #80b1d3;
+}
+.other-features-on{
+  background-color: #fdb462;
+}
+.nests-on{
+  background-color: #b3de69;
+}
+.inferences-on{
+  background-color: #fccde5;
+}
+.list-sub{
+  font-size: small;
+  padding-left: 24px;
+  font-style: oblique;
+}

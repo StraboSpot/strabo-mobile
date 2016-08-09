@@ -7,32 +7,38 @@
 
   Spots.$inject = ['$cordovaDevice', '$cordovaFile', '$document', '$ionicHistory', '$ionicLoading', '$ionicModal',
     '$ionicPopover', '$ionicPopup', '$location', '$log', '$scope', '$window', 'HelpersFactory', 'ProjectFactory',
-    'SpotFactory', 'UserFactory'];
+    'SpotFactory', 'SpotsFactory', 'UserFactory'];
 
   function Spots($cordovaDevice, $cordovaFile, $document, $ionicHistory, $ionicLoading, $ionicModal, $ionicPopover,
                  $ionicPopup, $location, $log, $scope, $window, HelpersFactory, ProjectFactory, SpotFactory,
-                 UserFactory) {
+                 SpotsFactory, UserFactory) {
     var vm = this;
 
     var visibleDatasets = [];
 
     vm.activeDatasets = [];
     vm.checkedDataset = checkedDataset;
-    vm.closeModal = closeModal;
+    vm.closeDetailModal = closeDetailModal;
+    vm.closeFilterModal = closeFilterModal;
     vm.deleteAllActiveSpots = deleteAllActiveSpots;
     vm.deleteSelected = false;
     vm.deleteSpot = deleteSpot;
     vm.exportToCSV = exportToCSV;
+    vm.getNestNames = getNestNames;
+    vm.getTagNames = getTagNames;
     vm.filter = filter;
     vm.filterModal = {};
     vm.filterOn = false;
     vm.goToSpot = goToSpot;
+    vm.hasTags = hasTags;
     vm.isDatasetChecked = isDatasetChecked;
     vm.isOnlineLoggedIn = isOnlineLoggedIn;
     vm.loadMoreSpots = loadMoreSpots;
     vm.moreSpotsCanBeLoaded = moreSpotsCanBeLoaded;
     vm.newSpot = newSpot;
     vm.resetFilters = resetFilters;
+    vm.setListDetail = setListDetail;
+    vm.showDetail = SpotsFactory.getSpotsListDetail();
     vm.spots = [];
     vm.spotsDisplayed = [];
 
@@ -58,9 +64,19 @@
         vm.filterModal = modal;
       });
 
+      $ionicModal.fromTemplateUrl('app/spot/spots-list-detail-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false,
+        'hardwareBackButtonClose': false
+      }).then(function (modal) {
+        vm.detailModal = modal;
+      });
+
       // Cleanup the modal when we're done with it!
       $scope.$on('$destroy', function () {
         vm.filterModal.remove();
+        vm.detailModal.remove();
       });
     }
 
@@ -114,9 +130,14 @@
       $log.log('visibleDatasets after:', visibleDatasets);
     }
 
-    function closeModal() {
+    function closeFilterModal() {
       setVisibleSpots();
       vm.filterModal.hide();
+    }
+
+    function closeDetailModal() {
+      SpotsFactory.setSpotsListDetail(vm.showDetail);
+      vm.detailModal.hide();
     }
 
     // clears all spots
@@ -334,10 +355,24 @@
       vm.filterModal.show();
     }
 
+    function getNestNames(spot) {
+      var nests = spot.properties.nests;
+      return _.pluck(nests, 'name').join(', ');
+    }
+
+    function getTagNames(spotId) {
+      var tags = ProjectFactory.getTagsBySpotId(spotId);
+      return _.pluck(tags, 'name').join(', ');
+    }
+
     function goToSpot(id) {
       if (!vm.deleteSelected) {
         $location.path('/app/spotTab/' + id + '/spot');
       }
+    }
+
+    function hasTags(spotId) {
+      return !_.isEmpty(ProjectFactory.getTagsBySpotId(spotId));
     }
 
     function isDatasetChecked(id) {
@@ -372,6 +407,11 @@
     function resetFilters() {
       visibleDatasets = [];
       setVisibleSpots();
+    }
+
+    function setListDetail() {
+      vm.popover.hide();
+      vm.detailModal.show();
     }
   }
 }());
