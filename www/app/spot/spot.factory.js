@@ -283,7 +283,6 @@
 
       var deferred = $q.defer(); // init promise
       LocalStorageFactory.getDb().spotsDb.setItem(saveSpot.properties.id, saveSpot).then(function () {
-        $log.log('Saved spot: ', saveSpot);
         spots = _.reject(spots, function (spot) {
           return spot.properties.id === saveSpot.properties.id;
         });
@@ -291,7 +290,6 @@
         spots = _.sortBy(spots, function (spot) {
           return spot.properties.modified_timestamp;
         }).reverse();
-        $log.log('All spots: ', spots);
         deferred.notify();
         deferred.resolve(spots);
       });

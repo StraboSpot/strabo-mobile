@@ -131,10 +131,14 @@
       $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Downloading Spots...'});
       doDownloadSpots(dataset).then(function (spots) {
         var promises = [];
-        var spotsToKeep = [];
         var currentSpots = ProjectFactory.getSpotIds()[dataset.id];
+        var spotsToKeep = _.map(spots, function (spot) {
+          return spot.properties.id;
+        });
+        notifyMessages.push('Downloading Images ...');
+        notifyMessages.push('Saving Spots ...');
+        $ionicLoading.show({'template': notifyMessages.join('<br>')});
         _.each(spots, function (spot) {
-          if (_.contains(currentSpots, spot.properties.id)) spotsToKeep.push(spot.properties.id);
           var promise = doDownloadImages(spot).then(function (spotToSave) {
             return saveSpot(spotToSave, dataset);
           });
@@ -537,7 +541,7 @@
        });
        if (!foundSpot) {*/
       SpotFactory.save(spot).then(function () {
-        $log.log('Saved new Spot from server:', spot);
+        //$log.log('Saved new Spot from server:', spot);
         ProjectFactory.addSpotToDataset(spot.properties.id, dataset.id);
         deferred.resolve();
       }, function (err) {

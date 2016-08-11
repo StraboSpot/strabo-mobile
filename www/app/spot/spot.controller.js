@@ -202,7 +202,9 @@
       // Validate the form first
       if (vm.validateForm()) {
         $log.log('Spot to save: ', vm.spot);
-        SpotFactory.save(vm.spot).then(function () {
+        SpotFactory.save(vm.spot).then(function (spots) {
+          $log.log('Saved spot: ', vm.spot);
+          $log.log('All spots: ', spots);
           $location.path(toPath);
         });
       }
