@@ -98,10 +98,12 @@
     };
     var featureTypeLabels = {};
     var spotDataModel = {};
+    var tagTypeLabels = {};
 
     return {
       'getDataModel': getDataModel,
       'getFeatureTypeLabel': getFeatureTypeLabel,
+      'getTagTypeLabel': getTagTypeLabel,
       'getSpotDataModel': getSpotDataModel,
       'loadDataModels': loadDataModels,
       'readCSV': readCSV
@@ -139,6 +141,13 @@
         }
       });
       $log.log('Feature Types:', featureTypeLabels);
+    }
+
+    function createTagTypesDictionary() {
+      _.each(dataModels.tag.choices, function (choice) {
+        tagTypeLabels[choice.name] = choice.label;
+      });
+      $log.log('Tag Types:', tagTypeLabels);
     }
 
     function createSpotDataModel() {
@@ -278,6 +287,10 @@
       return featureTypeLabels[type];
     }
 
+    function getTagTypeLabel(type) {
+      return tagTypeLabels[type] || type;
+    }
+
     function getSpotDataModel() {
       return spotDataModel;
     }
@@ -303,6 +316,7 @@
         $log.log('Finished loading all data models', dataModels);
         createSpotDataModel();
         createFeatureTypesDictionary();
+        createTagTypesDictionary();
         deferred.resolve();
       });
       return deferred.promise;

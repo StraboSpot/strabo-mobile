@@ -21,7 +21,7 @@
                 ng-repeat='tag in vmChild.tags | orderBy:"name" track by tag.id'
                 ng-click='vmChild.goToTag(tag.id)'>
         <b>{{ tag.name }}</b>
-        <span ng-if='tag.categorization'>{{ tag.categorization }}</span>
+        <span ng-if='tag.categorization'>{{ vmChild.getTagTypeLabel(tag.categorization) }}</span>
         <small>({{ tag.spots.length || 0 }}
           <span ng-if='tag.spots.length > 1 || !tag.spots.length'>Spots)</span>
           <span ng-if='tag.spots.length === 1'>Spot)</span>

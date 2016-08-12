@@ -5,16 +5,18 @@
     .module('app')
     .controller('TagsController', TagsController);
 
-  TagsController.$inject = ['$ionicPopover', '$ionicPopup', '$location', '$log', '$scope', 'HelpersFactory',
-    'ProjectFactory'];
+  TagsController.$inject = ['$ionicPopover', '$ionicPopup', '$location', '$log', '$scope', 'DataModelsFactory',
+    'HelpersFactory', 'ProjectFactory'];
 
-  function TagsController($ionicPopover, $ionicPopup, $location, $log, $scope, HelpersFactory, ProjectFactory) {
+  function TagsController($ionicPopover, $ionicPopup, $location, $log, $scope, DataModelsFactory, HelpersFactory,
+                          ProjectFactory) {
     var vm = this;
 
     var isDelete = false;
 
     vm.deleteAllTags = deleteAllTags;
     vm.deleteTag = deleteTag;
+    vm.getTagTypeLabel = getTagTypeLabel;
     vm.goToTag = goToTag;
     vm.newTag = newTag;
     vm.tags = [];
@@ -81,6 +83,10 @@
         }
         isDelete = false;
       });
+    }
+
+    function getTagTypeLabel(type) {
+      return DataModelsFactory.getTagTypeLabel(type);
     }
 
     function goToTag(id) {

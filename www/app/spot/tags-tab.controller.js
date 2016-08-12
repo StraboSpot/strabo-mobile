@@ -5,10 +5,11 @@
     .module('app')
     .controller('TagsTabController', TagsTabController);
 
-  TagsTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'HelpersFactory',
-    'ProjectFactory'];
+  TagsTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'DataModelsFactory',
+    'HelpersFactory', 'ProjectFactory'];
 
-  function TagsTabController($ionicModal, $ionicPopup, $log, $scope, $state, HelpersFactory, ProjectFactory) {
+  function TagsTabController($ionicModal, $ionicPopup, $log, $scope, $state, DataModelsFactory, HelpersFactory,
+                             ProjectFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.loadTab($state);  // Need to load current state into parent
@@ -21,6 +22,7 @@
     vm.createNewActiveTag = createNewActiveTag;
     vm.createTag = createTag;
     vm.getActiveTags = getActiveTags;
+    vm.getTagTypeLabel = getTagTypeLabel;
     vm.goToTag = goToTag;
     vm.tagText = '';
     vm.isOptionChecked = isOptionChecked;
@@ -110,6 +112,10 @@
         return activeTag.name;
       }).join(', ');
       return 'Active Tags: ' + tagNames;
+    }
+
+    function getTagTypeLabel(type) {
+      return DataModelsFactory.getTagTypeLabel(type);
     }
 
     function goToTag(id) {
