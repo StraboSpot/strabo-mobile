@@ -275,6 +275,9 @@ Tabs Style
 .has-tabs-top {
   top: 73px;
 }
+.active-tags {
+  background-color: lightgray;
+}
 
 /*--------------------
 Image Modal Style: used for image active-slider when choosing spot images

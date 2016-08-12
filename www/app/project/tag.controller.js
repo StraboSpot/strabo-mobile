@@ -112,7 +112,7 @@
       vm.spots = _.sortBy(vm.spots, function (spot) {
         return spot.properties.modified_timestamp;
       }).reverse();
-      vm.spotsDisplayed = angular.fromJson(angular.toJson(vm.spots)).slice(0, 25);
+      vm.spotsDisplayed = angular.copy(vm.spots).slice(0, 25);
     }
 
     /**
@@ -160,6 +160,10 @@
       if (Object.keys(vm.data).length > 1) {
         var valid = FormFactory.validate(vm.survey, vm.data);
         if (valid) {
+          if (ProjectFactory.getAddNewActiveTag()) {
+            ProjectFactory.setActiveTags(vm.data);
+            ProjectFactory.setAddNewActiveTag(false);
+          }
           ProjectFactory.saveTag(vm.data).then(function () {
             $location.path(path);
           });
@@ -178,7 +182,7 @@
     }
 
     function loadMoreSpots() {
-      var moreSpots = angular.fromJson(angular.toJson(vm.spots)).splice(vm.spotsDisplayed.length,
+      var moreSpots = angular.copy(vm.spots).splice(vm.spotsDisplayed.length,
         vm.spotsDisplayed.length + 20);
       vm.spotsDisplayed = _.union(vm.spotsDisplayed, moreSpots);
       $scope.$broadcast('scroll.infiniteScrollComplete');

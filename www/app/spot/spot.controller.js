@@ -67,6 +67,8 @@
       SpotFactory.setCurrentSpotById(id);
       vm.spot = SpotFactory.getCurrentSpot();
 
+      if (ProjectFactory.getActiveTagging()) ProjectFactory.addToActiveTags(vm.spot.properties.id);
+
       // Convert date string to Date type
       vm.spot.properties.date = new Date(vm.spot.properties.date);
       vm.spot.properties.time = new Date(vm.spot.properties.time);

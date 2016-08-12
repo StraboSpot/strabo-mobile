@@ -1,6 +1,6 @@
 <ion-view>
   <ion-nav-title>
-    Tag Groups
+    Tags
   </ion-nav-title>
   <ion-nav-buttons side='left'>
     <button menu-toggle='left' class='button button-icon icon ion-navicon'></button>
@@ -21,7 +21,8 @@
       <ion-item class='item-text-wrap item-button-right'
                 ng-repeat='tag in vm.tags | orderBy:"name" track by tag.id'
                 ng-click='vm.goToTag(tag.id)'>
-        {{tag.name}}
+        <b>{{tag.name}}</b>
+        <span ng-if='tag.categorization'>{{ tag.categorization }}</span>
         <small>({{ tag.spots.length || 0 }}
           <span ng-if='tag.spots.length > 1 || !tag.spots.length'>Spots)</span>
           <span ng-if='tag.spots.length === 1'>Spot)</span>

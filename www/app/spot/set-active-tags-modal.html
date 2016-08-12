@@ -1,10 +1,10 @@
 <ion-modal-view>
   <ion-header-bar class='bar-dark nav-title-slide-ios7' align-title='center'>
-    <button class='button button-clear' ng-click='vmChild.closeModal("addTagModal")'>
+    <button class='button button-clear' ng-click='vmChild.closeModal("setActiveTagsModal")'>
       <span class='icon ion-arrow-left-c'></span>
     </button>
-    <h1 class='title'>Add Tags to Spot</h1>
-    <button class='button button-icon' ng-click='vmChild.createTag()'>
+    <h1 class='title'>Set Active Tags for Continuous Tagging</h1>
+    <button class='button button-icon' ng-click='vmChild.createNewActiveTag()'>
       <span class='icon ion-plus'></span>
     </button>
   </ion-header-bar>
@@ -13,9 +13,8 @@
       No Tags created yet. Create a new tag by using the '+' button in the top right.
     </div>
     <ion-checkbox class='item-text-wrap item-button-right'
-                  ng-repeat='tag in vmChild.allTags | orderBy:"name" track by tag.id'
-                  ng-checked='vmChild.isOptionChecked(tag)'
-                  ng-click='vmChild.toggleChecked(tag)'>
+               ng-repeat='tag in vmChild.allTags | orderBy:"name" track by tag.id'
+               ng-click='vmChild.toggleActiveTagChecked(tag)'>
       <b>{{ tag.name }}</b>
       <span ng-if='tag.categorization'>{{ tag.categorization }}</span>
       <small>({{ tag.spots.length || 0 }}

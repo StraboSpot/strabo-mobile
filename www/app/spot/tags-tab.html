@@ -1,5 +1,14 @@
 <ion-view>
-  <ion-content>
+  <ion-content class='strabo-form'>
+    <div ng-show='vmChild.isTagging' class='padding-left padding-right active-tags'>
+      {{ vmChild.getActiveTags() }}
+    </div>
+    <ion-toggle class='toggle-small'
+                toggle-class='toggle-positive'
+                ng-model='vmChild.isTagging'
+                ng-click='vmChild.toggleTagging()'>
+      <span class='toggle-left-label'>{{ vmChild.tagText }} </span>
+    </ion-toggle>
     <button ng-click='vmChild.addTag();' class='button button-clear button-positive'>
       <i class='icon ion-plus-circled'></i>
       <span class='button-text-big'>Add/Remove a Tag</span>
@@ -11,7 +20,8 @@
       <ion-item class='item-text-wrap item-button-right'
                 ng-repeat='tag in vmChild.tags | orderBy:"name" track by tag.id'
                 ng-click='vmChild.goToTag(tag.id)'>
-        {{ tag.name }}
+        <b>{{ tag.name }}</b>
+        <span ng-if='tag.categorization'>{{ tag.categorization }}</span>
         <small>({{ tag.spots.length || 0 }}
           <span ng-if='tag.spots.length > 1 || !tag.spots.length'>Spots)</span>
           <span ng-if='tag.spots.length === 1'>Spot)</span>

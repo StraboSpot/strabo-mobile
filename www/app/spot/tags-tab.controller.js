@@ -17,12 +17,18 @@
 
     vm.addTag = addTag;
     vm.closeModal = closeModal;
+    vm.createNewActiveTag = createNewActiveTag;
     vm.createTag = createTag;
+    vm.getActiveTags = getActiveTags;
     vm.goToTag = goToTag;
+    vm.tagText = '';
     vm.isOptionChecked = isOptionChecked;
+    vm.isTagging = ProjectFactory.getActiveTagging();
     vm.removeTag = removeTag;
     vm.tags = [];
+    vm.toggleActiveTagChecked = toggleActiveTagChecked;
     vm.toggleChecked = toggleChecked;
+    vm.toggleTagging = toggleTagging;
 
     activate();
 
@@ -35,6 +41,7 @@
       vm.tags = ProjectFactory.getTagsBySpotId(vmParent.spot.properties.id);
       vm.allTags = ProjectFactory.getTags();
       $log.log('Tags for this Spot:', vm.tags);
+      setTagToggleText();
 
       $ionicModal.fromTemplateUrl('app/spot/add-tag-modal.html', {
         'scope': $scope,
@@ -43,10 +50,24 @@
         vm.addTagModal = modal;
       });
 
+      $ionicModal.fromTemplateUrl('app/spot/set-active-tags-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false,
+        'hardwareBackButtonClose': false
+      }).then(function (modal) {
+        vm.setActiveTagsModal = modal;
+      });
+
       // Cleanup the modal when we're done with it!
       $scope.$on('$destroy', function () {
         vm.addTagModal.remove();
+        vm.setActiveTagsModal.remove();
       });
+    }
+
+    function setTagToggleText() {
+      vm.tagText = vm.isTagging ? 'Continuous Tagging On' : 'Continuous Tagging Off';
     }
 
     /**
@@ -59,12 +80,31 @@
 
     function closeModal(modal) {
       vm[modal].hide();
+      if (modal === 'setActiveTagsModal') {
+        ProjectFactory.addToActiveTags(vmParent.spot.properties.id);
+        activate();
+      }
+    }
+
+    function createNewActiveTag() {
+      ProjectFactory.setAddNewActiveTag(true);
+      createTag();
     }
 
     function createTag() {
+      vm.setActiveTagsModal.hide();
       vm.addTagModal.hide();
       var id = HelpersFactory.newId();
       vmParent.submit('/app/tags/' + id);
+    }
+
+    function getActiveTags() {
+      var activeTags = ProjectFactory.getActiveTags();
+      if (_.isEmpty(activeTags)) return '';
+      var tagNames = _.map(activeTags, function (activeTag) {
+        return activeTag.name;
+      }).join(', ');
+      return 'Active Tags: ' + tagNames;
     }
 
     function goToTag(id) {
@@ -101,6 +141,25 @@
       ProjectFactory.saveTag(tag).then(function () {
         vm.tags = ProjectFactory.getTagsBySpotId(vmParent.spot.properties.id);
       });
+    }
+
+    function toggleActiveTagChecked(inTag) {
+      ProjectFactory.setActiveTags(inTag);
+    }
+
+    function toggleTagging() {
+      ProjectFactory.setActiveTagging(vm.isTagging);
+      if (vm.isTagging) {
+        $log.log('Starting Tagging');
+        ProjectFactory.clearActiveTags();
+        setTagToggleText();
+        vm.setActiveTagsModal.show();
+      }
+      else {
+        setTagToggleText();
+        $log.log('Adding spots to tag:', ProjectFactory.getActiveTags());
+        ProjectFactory.clearActiveTags();
+      }
     }
   }
 }());
