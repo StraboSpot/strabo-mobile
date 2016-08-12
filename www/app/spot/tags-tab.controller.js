@@ -15,6 +15,7 @@
 
     var isDelete = false;
 
+    vm.allTags = [];
     vm.addTag = addTag;
     vm.closeModal = closeModal;
     vm.createNewActiveTag = createNewActiveTag;
@@ -41,6 +42,10 @@
       vm.tags = ProjectFactory.getTagsBySpotId(vmParent.spot.properties.id);
       vm.allTags = ProjectFactory.getTags();
       $log.log('Tags for this Spot:', vm.tags);
+      if (vm.isTagging && _.isEmpty(ProjectFactory.getActiveTags())) {
+        vm.isTagging = false;
+        toggleTagging();
+      }
       setTagToggleText();
 
       $ionicModal.fromTemplateUrl('app/spot/add-tag-modal.html', {

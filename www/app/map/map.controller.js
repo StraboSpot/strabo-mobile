@@ -5,17 +5,20 @@
     .module('app')
     .controller('MapController', MapController);
 
-  MapController.$inject = ['$ionicHistory', '$ionicPopover', '$ionicPopup', '$ionicSideMenuDelegate', '$location',
-    '$log', '$scope', 'HelpersFactory', 'MapFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory',
-    'MapSetupFactory', 'MapViewFactory', 'SpotFactory'];
+  MapController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopover', '$ionicPopup', '$ionicSideMenuDelegate',
+    '$location', '$log', '$scope', 'HelpersFactory', 'MapFactory', 'MapDrawFactory', 'MapFeaturesFactory',
+    'MapLayerFactory', 'MapSetupFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory'];
 
-  function MapController($ionicHistory, $ionicPopover, $ionicPopup, $ionicSideMenuDelegate, $location, $log, $scope,
-                         HelpersFactory, MapFactory, MapDrawFactory, MapFeaturesFactory, MapLayerFactory,
-                         MapSetupFactory, MapViewFactory, SpotFactory) {
+  function MapController($ionicHistory, $ionicModal, $ionicPopover, $ionicPopup, $ionicSideMenuDelegate, $location,
+                         $log, $scope, HelpersFactory, MapFactory, MapDrawFactory, MapFeaturesFactory, MapLayerFactory,
+                         MapSetupFactory, MapViewFactory, ProjectFactory, SpotFactory) {
     var vm = this;
     var onlineState;
 
+    vm.allTags = [];
     vm.cacheOfflineTiles = cacheOfflineTiles;
+    vm.closeModal = closeModal;
+    vm.createTag = createTag;
     vm.currentSpot = SpotFactory.getCurrentSpot();
     vm.currentZoom = '';
     vm.groupSpots = groupSpots;
@@ -23,7 +26,10 @@
     vm.returnToSpot = returnToSpot;
     vm.saveEdits = saveEdits;
     vm.saveEditsText = 'Save Edits';
+    vm.selectedSpots = [];
     vm.showSaveEditsBtn = false;
+    vm.tagsToAdd = [];
+    vm.toggleChecked = toggleChecked;
     vm.toggleLocation = toggleLocation;
     vm.zoomToSpotsExtent = zoomToSpotsExtent;
 
@@ -62,6 +68,18 @@
       var datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map);
       MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map);
       MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
+
+      $ionicModal.fromTemplateUrl('app/map/add-tag-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up'
+      }).then(function (modal) {
+        vm.addTagModal = modal;
+      });
+
+      // Cleanup the modal when we're done with it!
+      $scope.$on('$destroy', function () {
+        vm.addTagModal.remove();
+      });
 
       // When the map is moved save the new view and update the zoom control
       map.on('moveend', function (evt) {
@@ -125,6 +143,10 @@
           $scope.$apply();
         });
       });
+
+      $scope.$on('changedDrawMode', function () {
+        setMapDrawInteraction();
+      });
     }
 
     function createPopover() {
@@ -133,6 +155,22 @@
       }).then(function (popover) {
         vm.popover = popover;
       });
+    }
+
+    function setMapDrawInteraction() {
+      var draw = MapDrawFactory.getDrawMode();
+      draw.on('drawend', function (e) {
+        vm.selectedSpots = [];
+        vm.selectedSpots = MapDrawFactory.doOnDrawEnd(e);
+        if (vm.selectedSpots) spotsSelected();
+      });
+    }
+
+    function spotsSelected() {
+      $log.log(vm.selectedSpots);
+      vm.allTags = ProjectFactory.getTags();
+      vm.tagsToAdd = [];
+      vm.addTagModal.show();
     }
 
     /**
@@ -167,9 +205,30 @@
       }
     }
 
+    function closeModal(modal) {
+      vm[modal].hide();
+      if (modal === 'addTagModal') {
+        _.each(vm.tagsToAdd, function (tagToAdd) {
+          _.each(vm.selectedSpots, function (selectedSpot) {
+            if (!tagToAdd.spots) tagToAdd.spots = [];
+            if (!_.contains(tagToAdd.spots, selectedSpot.properties.id)) {
+              tagToAdd.spots.push(selectedSpot.properties.id);
+            }
+          });
+          ProjectFactory.saveTag(tagToAdd);
+        });
+      }
+    }
+
+    function createTag() {
+      vm.addTagModal.hide();
+      var id = HelpersFactory.newId();
+      $location.path('/app/tags/' + id);
+    }
+
     function groupSpots() {
       vm.popover.hide();
-      MapDrawFactory.groupSpots($scope);
+      MapDrawFactory.groupSpots();
     }
 
     function isOnline() {
@@ -183,6 +242,18 @@
     function saveEdits() {
       vm.saveEditsText = 'Saved Edits';
       MapDrawFactory.saveEdits();
+    }
+
+    function toggleChecked(tag) {
+      var found = _.find(vm.tagsToAdd, function (tagToAdd) {
+        return tagToAdd.id === tag.ig;
+      });
+      if (found) {
+        vm.tagsToAdd = _.reject(vm.tagsToAdd, function (tagToAdd) {
+          return tagToAdd.id === tag.id;
+        });
+      }
+      else vm.tagsToAdd.push(tag);
     }
 
     // Get current position

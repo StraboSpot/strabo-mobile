@@ -5,21 +5,27 @@
     .module('app')
     .controller('ImageBasemapController', ImageBasemapController);
 
-  ImageBasemapController.$inject = ['$ionicHistory', '$ionicPopover', '$ionicSideMenuDelegate', '$location', '$log',
-    '$scope', '$state', 'HelpersFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory',
-    'SpotFactory'];
+  ImageBasemapController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopover', '$ionicSideMenuDelegate',
+    '$location', '$log', '$scope', '$state', 'HelpersFactory', 'MapDrawFactory', 'MapFeaturesFactory',
+    'MapSetupFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory'];
 
-  function ImageBasemapController($ionicHistory, $ionicPopover, $ionicSideMenuDelegate, $location, $log, $scope, $state,
-                                  HelpersFactory, MapDrawFactory, MapFeaturesFactory, MapSetupFactory, MapViewFactory,
-                                  SpotFactory) {
+  function ImageBasemapController($ionicHistory, $ionicModal, $ionicPopover, $ionicSideMenuDelegate, $location, $log,
+                                  $scope, $state, HelpersFactory, MapDrawFactory, MapFeaturesFactory, MapSetupFactory,
+                                  MapViewFactory, ProjectFactory, SpotFactory) {
     var vm = this;
 
+    vm.allTags = [];
+    vm.closeModal = closeModal;
+    vm.createTag = createTag;
     vm.goBack = goBack;
     vm.groupSpots = groupSpots;
     vm.imageBasemap = {};
     vm.saveEdits = saveEdits;
     vm.saveEditsText = 'Save Edits';
+    vm.selectedSpots = [];
     vm.showSaveEditsBtn = false;
+    vm.tagsToAdd = [];
+    vm.toggleChecked = toggleChecked;
     vm.zoomToSpotsExtent = zoomToSpotsExtent;
 
     var map;
@@ -51,6 +57,18 @@
       var datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map, vm.imageBasemap);
       MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map, vm.imageBasemap);
       MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
+
+      $ionicModal.fromTemplateUrl('app/map/add-tag-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up'
+      }).then(function (modal) {
+        vm.addTagModal = modal;
+      });
+
+      // Cleanup the modal when we're done with it!
+      $scope.$on('$destroy', function () {
+        vm.addTagModal.remove();
+      });
 
       // When the map is moved update the zoom control
       map.on('moveend', function (evt) {
@@ -102,6 +120,10 @@
           $scope.$apply();
         });
       });
+
+      $scope.$on('changedDrawMode', function () {
+        setMapDrawInteraction();
+      });
     }
 
     function createPopover() {
@@ -110,6 +132,23 @@
       }).then(function (popover) {
         vm.popover = popover;
       });
+    }
+
+    function setMapDrawInteraction() {
+      var draw = MapDrawFactory.getDrawMode();
+      draw.on('drawend', function (e) {
+        $log.log('e', e);
+        vm.selectedSpots = [];
+        vm.selectedSpots = MapDrawFactory.doOnDrawEnd(e);
+        if (vm.selectedSpots) spotsSelected();
+      });
+    }
+
+    function spotsSelected() {
+      $log.log(vm.selectedSpots);
+      vm.allTags = ProjectFactory.getTags();
+      vm.tagsToAdd = [];
+      vm.addTagModal.show();
     }
 
     function setImageBasemap() {
@@ -124,6 +163,27 @@
      * Public Functions
      */
 
+    function closeModal(modal) {
+      vm[modal].hide();
+      if (modal === 'addTagModal') {
+        _.each(vm.tagsToAdd, function (tagToAdd) {
+          _.each(vm.selectedSpots, function (selectedSpot) {
+            if (!tagToAdd.spots) tagToAdd.spots = [];
+            if (!_.contains(tagToAdd.spots, selectedSpot.properties.id)) {
+              tagToAdd.spots.push(selectedSpot.properties.id);
+            }
+          });
+          ProjectFactory.saveTag(tagToAdd);
+        });
+      }
+    }
+
+    function createTag() {
+      vm.addTagModal.hide();
+      var id = HelpersFactory.newId();
+      $location.path('/app/tags/' + id);
+    }
+
     function goBack() {
       if (!currentSpot) $location.path('/app/image-basemaps');
       // Return to spot tab unless we got to this image from the images tab (that is if the id
@@ -137,12 +197,24 @@
 
     function groupSpots() {
       vm.popover.hide();
-      MapDrawFactory.groupSpots($scope);
+      MapDrawFactory.groupSpots();
     }
 
     function saveEdits() {
       vm.saveEditsText = 'Saved Edits';
       MapDrawFactory.saveEdits();
+    }
+
+    function toggleChecked(tag) {
+      var found = _.find(vm.tagsToAdd, function (tagToAdd) {
+        return tagToAdd.id === tag.ig;
+      });
+      if (found) {
+        vm.tagsToAdd = _.reject(vm.tagsToAdd, function (tagToAdd) {
+          return tagToAdd.id === tag.id;
+        });
+      }
+      else vm.tagsToAdd.push(tag);
     }
 
     function zoomToSpotsExtent() {

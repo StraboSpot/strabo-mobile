@@ -312,7 +312,7 @@
       });
 
       // we need to check that we're not clicking on the geolocation layer
-      if (feature && layer.get('name') !== 'geolocationLayer') {
+      if (feature && layer && layer.get('name') !== 'geolocationLayer') {
         // popup content
         var content = '';
         content += '<a href="#/app/spotTab/' + feature.get('id') + '/spot"><b>' + feature.get('name') + '</b></a>';
