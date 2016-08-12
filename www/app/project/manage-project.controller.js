@@ -140,12 +140,14 @@
         $ionicLoading.show({'template': notifyMessages.join('<br>')});
         _.each(spots, function (spot) {
           var promise = doDownloadImages(spot).then(function (spotToSave) {
+            //$log.log('Spot To Save', spotToSave);
             return saveSpot(spotToSave, dataset);
           });
           promises.push(promise);
         });
         $q.all(promises).then(function () {
           var spotsToDestroy = _.difference(currentSpots, spotsToKeep);
+          if (spotsToDestroy) $log.log('Spots to destroy bc they are not on server', spotsToDestroy);
           _.each(spotsToDestroy, function (spotToDestroy) {
             SpotFactory.destroy(spotToDestroy);
           });
@@ -173,31 +175,21 @@
               var foundImage = _.find(foundSpot.properties.images, function (savedImage) {
                 return savedImage.id === image.id;
               });
-              if (foundImage.src) downloadImage = false;
+              if (foundImage.src) {
+                image.src = foundImage.src;
+                downloadImage = false;
+              }
             }
           }
           if (downloadImage) {
             var promise = RemoteServerFactory.getImage(image.id, UserFactory.getUser().encoded_login).then(
               function (response) {
                 $log.log('Downloaded image. Response:', response);
-                function readDataUrl(file, callback) {
-                  var reader = new FileReader();
-                  reader.onloadend = function (evt) {
-                    callback(evt.target.result);
-                  };
-                  reader.readAsDataURL(file);
-                }
-
-                readDataUrl(response.data, function (base64Image) {
-                  image.src = base64Image;
-                  if (!image.height || !image.width) {
-                    var im = new Image();
-                    im.src = base64Image;
-                    image.height = im.height;
-                    image.width = im.width;
-                  }
-                  deferred.resolve(spot);
+                var deferred2 = $q.defer(); // init promise
+                handleDownloadedImage(image, response).then(function () {
+                  deferred2.resolve();
                 });
+                return deferred2.promise;
               });
             promises.push(promise);
           }
@@ -446,6 +438,21 @@
       return deferred.promise;
     }
 
+    function handleDownloadedImage(image, response) {
+      var deferred = $q.defer(); // init promise
+      readDataUrl(response.data).then(function (base64Image) {
+        image.src = base64Image;
+        if (!image.height || !image.width) {
+          var im = new Image();
+          im.src = base64Image;
+          image.height = im.height;
+          image.width = im.width;
+        }
+        deferred.resolve(image);
+      });
+      return deferred.promise;
+    }
+
     function initializeDownloadDataset(dataset) {
       var deferred = $q.defer(); // init promise
       notifyMessages = [];
@@ -523,6 +530,16 @@
           });
         }
       }
+    }
+
+    function readDataUrl(file) {
+      var deferred = $q.defer(); // init promise
+      var reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = function (evt) {
+        deferred.resolve(evt.target.result);
+      };
+      return deferred.promise;
     }
 
     function saveSpot(spot, dataset) {
