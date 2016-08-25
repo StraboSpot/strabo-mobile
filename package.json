@@ -1,6 +1,6 @@
 {
   "name": "Strabo Mobile",
-  "version": "0.13.8",
+  "version": "0.13.9",
   "description": "Strabo Mobile: An app for Structural Geology and Tectonics (SG&T)",
   "dependencies": {
     "gulp": "^3.5.6",
