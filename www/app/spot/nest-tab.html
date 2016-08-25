@@ -1,40 +1,77 @@
 <ion-view>
   <ion-content class='strabo-form'>
 
-    <div class='item item-divider'>
-      Image Basemap Nest
+    <div class='padding' ng-hide='vmChild.parentSpots.length > 0 || vmChild.childrenSpots.length > 0'>
+      This Spot is not nested yet.
     </div>
-    <div class='padding' ng-hide='vmChild.parentSpot || vmChild.childrenSpots.length > 0'>
-      This Spot is not a member of an Image Basemap Nest. Add an Image to this Spot. Set the Image as an Image
-      Basemap then add a Spot to that Image Basemap to create a Nest.
-    </div>
-    <div ng-show='vmChild.parentSpot || vmChild.childrenSpots.length > 0'>
-      <div ng-show='vmChild.parentSpot'>
-        <button ng-click='vmChild.goToSpot(vmChild.parentSpot.properties.id)'
-                class='button button-clear button-positive'>
-          <i class='icon ion-eye'></i>
-          <span class='button-text-big'>{{ vmChild.parentSpot.properties.name }}</span>
-        </button>
+    <div class='padding' ng-show='vmChild.parentSpots.length > 0 || vmChild.childrenSpots.length > 0'>
+
+      <div ng-repeat='parentSpot in vmChild.parentSpots'>
+        <span ng-click='vmChild.goToSpot(parentSpot.properties.id)'>
+          <img ng-if="parentSpot.geometry.type === 'Point' && !parentSpot.properties.image_basemap"
+               class='geometry-icon' src='img/point.png'>
+          <img ng-if="parentSpot.geometry.type === 'LineString' && !parentSpot.properties.image_basemap"
+               class='geometry-icon' src='img/line.png'>
+          <img ng-if="parentSpot.geometry.type === 'Polygon' && !parentSpot.properties.image_basemap"
+               class='geometry-icon' src='img/polygon.png'>
+          <img ng-if="parentSpot.geometry.type === 'Point' && parentSpot.properties.image_basemap"
+               class='geometry-icon' src='img/point-image-basemap.png'>
+          <img ng-if="parentSpot.geometry.type === 'LineString' && parentSpot.properties.image_basemap"
+               class='geometry-icon' src='img/line-image-basemap.png'>
+          <img ng-if="parentSpot.geometry.type === 'Polygon' && parentSpot.properties.image_basemap"
+               class='geometry-icon' src='img/polygon-image-basemap.png'>
+          <img ng-if="parentSpot.geometry.type !== 'Point' && parentSpot.geometry.type !== 'LineString' &&
+         parentSpot.geometry.type !== 'Polygon'" class='geometry-icon' src='img/question.png'>
+          <b>{{ parentSpot.properties.name }}</b>
+        </span>
       </div>
 
-      <div class='padding'>
-      <span ng-show='vmChild.parentSpot'>
-        <i class='ion-arrow-up-c'></i>
+      <span ng-show='vmChild.parentSpots.length > 0'>
+        <br>
+       <i class='ion-arrow-down-c padding-left'></i>
         <br><br>
       </span>
-        This Spot
+
+      <img ng-if="vmChild.spot.geometry.type === 'Point' && !vmChild.spot.properties.image_basemap"
+           class='geometry-icon' src='img/point.png'>
+      <img ng-if="vmChild.spot.geometry.type === 'LineString' && !vmChild.spot.properties.image_basemap"
+           class='geometry-icon' src='img/line.png'>
+      <img ng-if="vmChild.spot.geometry.type === 'Polygon' && !vmChild.spot.properties.image_basemap"
+           class='geometry-icon' src='img/polygon.png'>
+      <img ng-if="vmChild.spot.geometry.type === 'Point' && vmChild.spot.properties.image_basemap"
+           class='geometry-icon' src='img/point-image-basemap.png'>
+      <img ng-if="vmChild.spot.geometry.type === 'LineString' && vmChild.spot.properties.image_basemap"
+           class='geometry-icon' src='img/line-image-basemap.png'>
+      <img ng-if="vmChild.spot.geometry.type === 'Polygon' && vmChild.spot.properties.image_basemap"
+           class='geometry-icon' src='img/polygon-image-basemap.png'>
+      <img ng-if="vmChild.spot.geometry.type !== 'Point' && vmChild.spot.geometry.type !== 'LineString' &&
+         vmChild.spot.geometry.type !== 'Polygon'" class='geometry-icon' src='img/question.png'>
+      This Spot ({{ vmChild.spot.properties.name }})
+
       <span ng-show='vmChild.childrenSpots.length > 0'>
         <br><br>
-       <i class='ion-arrow-down-c'></i>
+       <i class='ion-arrow-down-c padding-left'></i>
+        <br><br>
       </span>
-      </div>
 
       <div ng-repeat='childSpot in vmChild.childrenSpots'>
-        <button ng-click='vmChild.goToSpot(childSpot.properties.id)'
-                class='button button-clear button-positive'>
-          <i class='icon ion-eye'></i>
-          <span class='button-text-big'>{{ childSpot.properties.name }}</span>
-        </button>
+        <span ng-click='vmChild.goToSpot(childSpot.properties.id)'>
+          <img ng-if="childSpot.geometry.type === 'Point' && !childSpot.properties.image_basemap"
+               class='geometry-icon' src='img/point.png'>
+          <img ng-if="childSpot.geometry.type === 'LineString' && !childSpot.properties.image_basemap"
+               class='geometry-icon' src='img/line.png'>
+          <img ng-if="childSpot.geometry.type === 'Polygon' && !childSpot.properties.image_basemap"
+               class='geometry-icon' src='img/polygon.png'>
+          <img ng-if="childSpot.geometry.type === 'Point' && childSpot.properties.image_basemap"
+               class='geometry-icon' src='img/point-image-basemap.png'>
+          <img ng-if="childSpot.geometry.type === 'LineString' && childSpot.properties.image_basemap"
+               class='geometry-icon' src='img/line-image-basemap.png'>
+          <img ng-if="childSpot.geometry.type === 'Polygon' && childSpot.properties.image_basemap"
+               class='geometry-icon' src='img/polygon-image-basemap.png'>
+          <img ng-if="childSpot.geometry.type !== 'Point' && childSpot.geometry.type !== 'LineString' &&
+         childSpot.geometry.type !== 'Polygon'" class='geometry-icon' src='img/question.png'>
+         <b>{{ childSpot.properties.name }}</b>
+        </span>
       </div>
     </div>
 
@@ -42,7 +79,7 @@
       Notes
     </div>
     <ion-input class='item item-input'>
-      <textarea placeholder='Notes about Nests for this Spot ...' rows='12'
+      <textarea placeholder='Notes about the nesting for this Spot ...' rows='12'
                 ng-model='vm.spot.properties.nest.notes'></textarea>
     </ion-input>
 
