@@ -1,0 +1,5 @@
+name,type,label,required,relevant
+surface_feature_type,select_one qn1ps78,Surface Feature Type,false,
+other_surface_feature_type,text,Other Surface Feature Type,false,${surface_feature_type} = 'other'
+start,start,,,
+end,end,,,
