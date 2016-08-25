@@ -8,21 +8,27 @@
   SpotFactory.$inject = ['$ionicPopup', '$location', '$log', '$state', '$q', 'LocalStorageFactory', 'ProjectFactory'];
 
   function SpotFactory($ionicPopup, $location, $log, $state, $q, LocalStorageFactory, ProjectFactory) {
+    var activeNest = [];
     var activeSpots;  // Only Spots in the active datasets
     var currentSpot;
     var currentAssociatedOrientationIndex;
     var currentOrientationIndex;
+    var isActiveNesting = false;
     var moveSpot = false;
     var spots;        // All Spots
     var visibleDatasets = [];
 
     return {
+      'addSpotToActiveNest': addSpotToActiveNest,
+      'clearActiveNest': clearActiveNest,
       'clearActiveSpots': clearActiveSpots,
       'clearAllSpots': clearAllSpots,
       'clearCurrentSpot': clearCurrentSpot,
       'destroy': destroy,
       'destroyOrientation': destroyOrientation,
       'getActiveSpots': getActiveSpots,
+      'getActiveNest': getActiveNest,
+      'getActiveNesting': getActiveNesting,
       'getCenter': getCenter,
       'getCurrentAssociatedOrientationIndex': getCurrentAssociatedOrientationIndex,
       'getCurrentOrientationIndex': getCurrentOrientationIndex,
@@ -40,6 +46,7 @@
       'loadSpots': loadSpots,
       'moveSpot': moveSpot,
       'save': save,
+      'setActiveNesting': setActiveNesting,
       'setCurrentOrientationIndex': setCurrentOrientationIndex,
       'setCurrentSpotById': setCurrentSpotById,
       'setNewSpot': setNewSpot,
@@ -74,6 +81,19 @@
     /**
      * Public Functions
      */
+
+    function addSpotToActiveNest(inSpot) {
+      var found = _.find(activeNest, function(spotInNest) {
+        return spotInNest.properties.id === inSpot.properties.id;
+      });
+      if (!found) activeNest.push(inSpot);
+      $log.log('Active Nest', activeNest);
+    }
+
+    function clearActiveNest() {
+      activeNest = [];
+      $log.log('Cleared active nest:', activeNest);
+    }
 
     // wipes the spots database
     function clearActiveSpots() {
@@ -139,7 +159,6 @@
       }
     }
 
-
     function getActiveSpots() {
       activeSpots = [];
       var activeDatasets = ProjectFactory.getActiveDatasets();
@@ -152,6 +171,14 @@
         });
       });
       return activeSpots;
+    }
+
+    function getActiveNest(){
+      return activeNest;
+    }
+
+    function getActiveNesting() {
+      return isActiveNesting;
     }
 
     // Get the center of a geoshape
@@ -294,6 +321,10 @@
         deferred.resolve(spots);
       });
       return deferred.promise;
+    }
+
+    function setActiveNesting(inNesting) {
+      isActiveNesting = inNesting;
     }
 
     function setCurrentOrientationIndex(index, assoicatedIndex) {

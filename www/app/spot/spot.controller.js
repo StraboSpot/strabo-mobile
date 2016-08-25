@@ -68,6 +68,7 @@
       vm.spot = SpotFactory.getCurrentSpot();
 
       if (ProjectFactory.getActiveTagging()) ProjectFactory.addToActiveTags(vm.spot.properties.id);
+      if (SpotFactory.getActiveNesting()) SpotFactory.addSpotToActiveNest(vm.spot);
 
       // Convert date string to Date type
       vm.spot.properties.date = new Date(vm.spot.properties.date);

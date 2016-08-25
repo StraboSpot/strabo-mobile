@@ -5,9 +5,9 @@
     .module('app')
     .controller('NestTabController', NestTabController);
 
-  NestTabController.$inject = ['$log', '$scope', '$state', 'MapViewFactory', 'SpotFactory'];
+  NestTabController.$inject = ['$location', '$log', '$scope', '$state', 'SpotFactory'];
 
-  function NestTabController($log, $scope, $state, MapViewFactory, SpotFactory) {
+  function NestTabController($location, $log, $scope, $state, SpotFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.survey = undefined;
@@ -15,9 +15,12 @@
     vmParent.loadTab($state);  // Need to load current state into parent
 
     vm.childrenSpots = [];
-    vm.parentSpots = [];
     vm.goToSpot = goToSpot;
+    vm.isNesting = SpotFactory.getActiveNesting();
+    vm.nestText = '';
+    vm.parentSpots = [];
     vm.spot = vmParent.spot;
+    vm.toggleNesting = toggleNesting;
 
     activate();
 
@@ -27,6 +30,12 @@
 
     function activate() {
       $log.log('In NestTabController');
+
+      if (vm.isNesting && _.isEmpty(SpotFactory.getActiveNest())) {
+        vm.isNesting = false;
+        toggleNesting();
+      }
+      setNestToggleText();
 
       vm.parentSpots = getParents(vmParent.spot);
       vm.childrenSpots = getChildren(vmParent.spot);
@@ -111,12 +120,52 @@
       return parentSpots;
     }
 
+    function setNestToggleText() {
+      vm.nestText = vm.isNesting ? 'Continuous Nesting On' : 'Continuous Nesting Off';
+    }
+
     /**
      * Public Functions
      */
 
     function goToSpot(id) {
       vmParent.submit('/app/spotTab/' + id + '/nest');
+    }
+
+    function toggleNesting() {
+      SpotFactory.setActiveNesting(vm.isNesting);
+      if (vm.isNesting) {
+        $log.log('Starting Nesting');
+        SpotFactory.clearActiveNest();
+        setNestToggleText();
+        SpotFactory.addSpotToActiveNest(vm.spot);
+      }
+      else {
+        setNestToggleText();
+        var activeNest = SpotFactory.getActiveNest();
+        SpotFactory.clearActiveNest();
+        $log.log('Adding spots to nest:', activeNest);
+        var fc = turf.featureCollection(activeNest);
+        var newSpot = turf.envelope(fc);
+        // turf.envelope doesn't seem to include any points that are also vertices when
+        // it creates the envelope rectangle so make the rectangle a little bit bigger
+        if (newSpot.geometry && newSpot.geometry.coordinates) {
+          _.each(newSpot.geometry.coordinates, function (rectCoords) {
+            rectCoords[0][0] = rectCoords[0][0] - .0001; // bottom left
+            rectCoords[0][1] = rectCoords[0][1] - .0001;
+            rectCoords[1][0] = rectCoords[1][0] + .0001; // bottom right
+            rectCoords[1][1] = rectCoords[1][1] - .0001;
+            rectCoords[2][0] = rectCoords[2][0] + .0001; // upper right
+            rectCoords[2][1] = rectCoords[2][1] + .0001;
+            rectCoords[3][0] = rectCoords[3][0] - .0001; // upper left
+            rectCoords[3][1] = rectCoords[3][1] + .0001;
+            rectCoords[4] = rectCoords[0];
+          });
+        }
+        SpotFactory.setNewSpot(newSpot).then(function (id) {
+          $location.path('/app/spotTab/' + id + '/spot');
+        });
+      }
     }
   }
 }());

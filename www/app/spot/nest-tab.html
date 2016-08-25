@@ -1,6 +1,12 @@
 <ion-view>
   <ion-content class='strabo-form'>
 
+    <ion-toggle class='toggle-small'
+                toggle-class='toggle-positive'
+                ng-model='vmChild.isNesting'
+                ng-click='vmChild.toggleNesting()'>
+      <span class='toggle-left-label'>{{ vmChild.nestText }} </span>
+    </ion-toggle>
     <div class='padding' ng-hide='vmChild.parentSpots.length > 0 || vmChild.childrenSpots.length > 0'>
       This Spot is not nested yet.
     </div>
