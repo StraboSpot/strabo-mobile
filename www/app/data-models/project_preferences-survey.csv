@@ -1,13 +1,13 @@
 name,type,label,required,hint
 group_tab_control,begin group,Tab Control,,
-orientation,acknowledge,Orientation,false,
+orientation,acknowledge,Orientations,false,
 _3dstructures,acknowledge,3D Structures,false,
 images,acknowledge,Images,false,
-tags,acknowledge,Tags,false,
+nest,acknowledge,Nesting,false,
 samples,acknowledge,Samples,false,
 other_features,acknowledge,Other Features,false,
-nest,acknowledge,Nest,false,
 inferences,acknowledge,Inferences,false,
+tags,acknowledge,Tags,false,
 ,end group,,,
 group_ep4pr46,begin group,Naming Conventions,,
 spot_prefix,text,SPOT Prefix Label,false,Label prefix based on location or other

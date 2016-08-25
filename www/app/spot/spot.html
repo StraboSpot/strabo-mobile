@@ -29,7 +29,7 @@ navigation history that also transitions its views in and out.
       <a class='button button-clear spot-tab-inactive'
          ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab.orientation-data"}'
          ng-click='vm.submit("/app/spotTab/" + vm.spot.properties.id + "/orientation-data")'>
-        Orientation
+        Orientations
       </a>
     </span>
     <span ng-show='vm.showTab("_3dstructures")'>
@@ -46,11 +46,11 @@ navigation history that also transitions its views in and out.
         Images
       </a>
     </span>
-    <span ng-show='vm.showTab("tags")'>
+    <span ng-show='vm.showTab("nest")'>
       <a class='button button-clear spot-tab-inactive'
-         ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab.tags"}'
-         ng-click='vm.submit("/app/spotTab/" + vm.spot.properties.id + "/tags");'>
-        Tags
+         ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab.nest"}'
+         ng-click='vm.submit("/app/spotTab/" + vm.spot.properties.id + "/nest");'>
+        Nesting
       </a>
     </span>
     <span ng-show='vm.showTab("samples")'>
@@ -67,18 +67,18 @@ navigation history that also transitions its views in and out.
         Other Features
       </a>
     </span>
-    <span ng-show='vm.showTab("nest")'>
-      <a class='button button-clear spot-tab-inactive'
-         ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab.nest"}'
-         ng-click='vm.submit("/app/spotTab/" + vm.spot.properties.id + "/nest");'>
-        Nest
-      </a>
-    </span>
     <span ng-show='vm.showTab("inferences")'>
       <a class='button button-clear spot-tab-inactive'
          ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab.inferences"}'
          ng-click='vm.submit("/app/spotTab/" + vm.spot.properties.id + "/inferences");'>
         Inferences
+      </a>
+    </span>
+    <span ng-show='vm.showTab("tags")'>
+      <a class='button button-clear spot-tab-inactive'
+         ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab.tags"}'
+         ng-click='vm.submit("/app/spotTab/" + vm.spot.properties.id + "/tags");'>
+        Tags
       </a>
     </span>
     <span>
