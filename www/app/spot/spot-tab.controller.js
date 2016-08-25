@@ -12,8 +12,6 @@
                              SpotFactory) {
     var vm = this;
     var vmParent = $scope.vm;
-    vmParent.survey = DataModelsFactory.getDataModel('trace').survey;
-    vmParent.choices = DataModelsFactory.getDataModel('trace').choices;
     vmParent.loadTab($state);  // Need to load current state into parent
 
     vm.getCurrentLocation = getCurrentLocation;
@@ -39,6 +37,15 @@
 
     function activate() {
       $log.log('In SpotTabController');
+
+      if (vmParent.showTrace === true) {
+        vmParent.survey = DataModelsFactory.getDataModel('trace').survey;
+        vmParent.choices = DataModelsFactory.getDataModel('trace').choices;
+      }
+      else if (vmParent.showSurfaceFeature === true) {
+        vmParent.survey = DataModelsFactory.getDataModel('surface_feature').survey;
+        vmParent.choices = DataModelsFactory.getDataModel('surface_feature').choices;
+      }
 
       getRockUnits();
       getRockUnit();

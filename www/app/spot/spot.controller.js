@@ -27,6 +27,7 @@
     vm.showField = showField;
     vm.showRadius = true;
     vm.showRockUnit = true;
+    vm.showSurfaceFeature = false;
     vm.showTab = showTab;
     vm.showTrace = false;
     vm.spot = {};
@@ -77,15 +78,7 @@
       vm.spotTitle = vm.spot.properties.name;
       vm.spots = SpotFactory.getActiveSpots();
 
-      switch (vm.stateName) {
-        case 'app.spotTab.spot':
-          if (!vm.spot.properties.trace) vm.spot.properties.trace = {};
-          vm.data = vm.spot.properties.trace;
-          break;
-        default:
-          vm.data = vm.spot.properties;
-          break;
-      }
+      if (vm.stateName === 'app.spotTab.spot') vm.data = vm.spot.properties;
 
       $log.log('Spot loaded: ', vm.spot);
     }
@@ -156,12 +149,18 @@
 
       vm.showTrace = false;
       vm.showRockUnit = true;
+      vm.showSurfaceFeature = false;
       if (vm.spot.geometry && vm.spot.geometry.type === 'LineString') {
         vm.showTrace = true;
+        if (!vm.spot.properties.trace) vm.spot.properties.trace = {};
+        vm.data = vm.spot.properties.trace;
         vm.showRockUnit = false;
       }
       if (vm.spot.geometry && vm.spot.geometry.type === 'Polygon') {
         vm.showRadius = false;
+        vm.showSurfaceFeature = true;
+        if (!vm.spot.properties.surface_feature) vm.spot.properties.surface_feature = {};
+        vm.data = vm.spot.properties.surface_feature;
       }
     }
 
@@ -201,6 +200,7 @@
     // Save the Spot
     function submit(toPath) {
       if (_.isEmpty(vm.spot.properties.trace)) delete vm.spot.properties.trace;
+      if (_.isEmpty(vm.spot.properties.surface_feature)) delete vm.spot.properties.surface_feature;
 
       // Validate the form first
       if (vm.validateForm()) {
@@ -268,7 +268,8 @@
             }
           }
         }
-        return vm.survey && FormFactory.validate(vm.survey, vm.data);
+        if (vm.survey) return FormFactory.validate(vm.survey, vm.data);
+        return true;
       }
       return true;
     }

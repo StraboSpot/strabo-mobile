@@ -79,6 +79,12 @@
         'choices': {},
         'choices_file': 'app/data-models/sample-choices.csv'
       },
+      'surface_feature': {
+        'survey': {},
+        'survey_file': 'app/data-models/surface_feature-survey.csv',
+        'choices': {},
+        'choices_file': 'app/data-models/surface_feature-choices.csv'
+      },
       'tag': {
         'survey': {},
         'survey_file': 'app/data-models/tag-survey.csv',
