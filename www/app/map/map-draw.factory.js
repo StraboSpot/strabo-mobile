@@ -261,7 +261,7 @@
         map.addInteraction(new ol.interaction.DragPan());
 
         // does the drawing contain a kink, aka self-intersecting polygon?
-        if (turf.kinks(geojsonObj).intersections.features.length === 0) {
+        if (turf.kinks(geojsonObj).features.length === 0) {
           // no, good
 
           // contains all the lassoed objects
