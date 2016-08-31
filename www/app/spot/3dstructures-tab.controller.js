@@ -100,7 +100,7 @@
 
     function edit3dStructure(_3dStructureToEdit) {
       if (!isDelete) {
-        vmParent.data = angular.fromJson(angular.toJson(_3dStructureToEdit));  // Copy value, not reference
+        vmParent.data = angular.copy(_3dStructureToEdit);  // Copy value, not reference
         vmParent.survey = DataModelsFactory.getDataModel('_3d_structures')[vmParent.data.type].survey;
         vmParent.choices = DataModelsFactory.getDataModel('_3d_structures')[vmParent.data.type].choices;
         vm.modalTitle = 'Edit ' + vmParent.data.type;

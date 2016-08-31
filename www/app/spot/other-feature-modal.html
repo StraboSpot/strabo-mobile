@@ -9,6 +9,10 @@
     </button>
   </ion-header-bar>
   <ion-content class='has-header strabo-form'>
+    <ion-input class='item item-input'>
+      <ion-label>Label</ion-label>
+      <input type='text' placeholder='If a label is not specified a default label will be given.' ng-model='vmChild.otherFeature.label'>
+    </ion-input>
     <ion-input class='item item-input item-select item-text-wrap'>
       <ion-label>Feature Type</ion-label>
       <select ng-model='vmChild.otherFeature.type'

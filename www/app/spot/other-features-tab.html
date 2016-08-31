@@ -7,15 +7,22 @@
     </button>
     <ion-list>
       <ion-item class='item-text-wrap item-button-right'
-                ng-click='vmChild.editFeature($index)'
-                ng-repeat='feature in vm.spot.properties.other_features'>
-        <b>{{ feature.name }} </b>
-        <small>({{ feature.type }} feature) <br>
-          {{ feature.description.substring(0, 120) }}
-          <span ng-show='feature.description.substring(0, 120) !== feature.description'>. . .</span></small>
-        <button class='button button-clear button-assertive' ng-click='vmChild.deleteFeature($index)'>
-          <i class='icon ion-minus-circled'></i>
-        </button>
+                ng-repeat='feature in vm.spot.properties.other_features | orderBy: "label" track by feature.id'>
+        <div ng-click='vmChild.editFeature(feature)'>
+          <b>{{ feature.label }} </b>
+          <small>({{ feature.type }} feature)</small>
+          <span ng-show='vm.getTagNames(feature)' class='list-sub'>
+            <br>Tags: {{ vm.getTagNames(feature) }}
+          </span>
+        </div>
+        <div class='buttons'>
+          <button class='button button-clear button-dark' ng-click='vm.addTag(feature)'>
+            <i class='icon ion-pricetag'></i>
+          </button>
+          <button class='button button-clear button-assertive' ng-click='vmChild.deleteFeature(feature)'>
+            <i class='icon ion-minus-circled'></i>
+          </button>
+        </div>
       </ion-item>
     </ion-list>
   </ion-content>
