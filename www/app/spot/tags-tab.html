@@ -9,16 +9,19 @@
                 ng-click='vmChild.toggleTagging()'>
       <span class='toggle-left-label'>{{ vmChild.tagText }} </span>
     </ion-toggle>
-    <button ng-click='vmChild.addTag();' class='button button-clear button-positive'>
+    <div class='item item-divider'>
+      Spot Level Tags
+    </div>
+    <button ng-click='vm.addTag();' class='button button-clear button-positive'>
       <i class='icon ion-plus-circled'></i>
-      <span class='button-text-big'>Add/Remove a Tag</span>
+      <span class='button-text-big'>Add/Remove a Spot Level Tag</span>
     </button>
-    <div class='padding' ng-show='vmChild.tags.length === 0'>
-      No Tags added to this Spot yet.
+    <div class='padding' ng-show='vm.spotLevelTags.length === 0'>
+      No Spot level tags added to this Spot yet.
     </div>
     <ion-list>
       <ion-item class='item-text-wrap item-button-right'
-                ng-repeat='tag in vmChild.tags | orderBy:"name" track by tag.id'
+                ng-repeat='tag in vm.spotLevelTags | orderBy:"name" track by tag.id'
                 ng-click='vmChild.goToTag(tag.id)'>
         <b>{{ tag.name }}</b>
         <span ng-if='tag.categorization'>{{ vmChild.getTagTypeLabel(tag.categorization) }}</span>
@@ -32,5 +35,29 @@
         </button>
       </ion-item>
     </ion-list>
+
+    <div class='item item-divider'>
+      Feature Level Tags
+    </div>
+    <div class='padding' ng-show='vm.featureLevelTags.length === 0'>
+      No feature level tags added to this Spot yet.
+    </div>
+    <ion-list>
+      <ion-item class='item-text-wrap item-button-right'
+                ng-repeat='tag in vm.featureLevelTags | orderBy:"name" track by tag.id'
+                ng-click='vmChild.goToTag(tag.id)'>
+        <b>{{ tag.name }}</b>
+        <span ng-if='tag.categorization'>{{ vmChild.getTagTypeLabel(tag.categorization) }}</span>
+        <small>({{ vm.getNumTaggedFeatures(tag) }}
+          <span ng-if='vm.getNumTaggedFeatures(tag) > 1 || !vm.getNumTaggedFeatures(tag)'>Features)</span>
+          <span ng-if='vm.getNumTaggedFeatures(tag) === 1'>Feature)</span>
+        </small>
+        <button class='button button-clear button-assertive'
+                ng-click='vmChild.removeTagFromFeatures(tag)'>
+          <i class='icon ion-minus-circled'></i>
+        </button>
+      </ion-item>
+    </ion-list>
+
   </ion-content>
 </ion-view>

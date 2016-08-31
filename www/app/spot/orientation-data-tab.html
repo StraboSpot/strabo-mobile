@@ -18,8 +18,14 @@
                  orderBy: "label" track by orientation.id'>
         <div ng-click='vmChild.editOrientation(orientation)'>
           <b>{{ orientation.label }}</b>
+          <span ng-show='vm.getTagNames(orientation)' class='list-sub'>
+            <br>Tags: {{ vm.getTagNames(orientation) }}
+          </span>
         </div>
         <div class='buttons'>
+          <button class='button button-clear button-dark' ng-click='vm.addTag(orientation)'>
+            <i class='icon ion-pricetag'></i>
+          </button>
           <button class='button button-clear button-dark' ng-click='vmChild.copyOrientation(orientation)'>
             <i class='icon ion-ios-copy-outline'></i>
           </button>

@@ -16,8 +16,6 @@
 
     var isDelete = false;
 
-    vm.allTags = [];
-    vm.addTag = addTag;
     vm.closeModal = closeModal;
     vm.createNewActiveTag = createNewActiveTag;
     vm.createTag = createTag;
@@ -25,12 +23,10 @@
     vm.getTagTypeLabel = getTagTypeLabel;
     vm.goToTag = goToTag;
     vm.tagText = '';
-    vm.isOptionChecked = isOptionChecked;
     vm.isTagging = ProjectFactory.getActiveTagging();
     vm.removeTag = removeTag;
-    vm.tags = [];
+    vm.removeTagFromFeatures = removeTagFromFeatures;
     vm.toggleActiveTagChecked = toggleActiveTagChecked;
-    vm.toggleChecked = toggleChecked;
     vm.toggleTagging = toggleTagging;
 
     activate();
@@ -41,21 +37,7 @@
 
     function activate() {
       $log.log('In TagsTabController');
-      vm.tags = ProjectFactory.getTagsBySpotId(vmParent.spot.properties.id);
-      vm.allTags = ProjectFactory.getTags();
-      $log.log('Tags for this Spot:', vm.tags);
-      if (vm.isTagging && _.isEmpty(ProjectFactory.getActiveTags())) {
-        vm.isTagging = false;
-        toggleTagging();
-      }
-      setTagToggleText();
-
-      $ionicModal.fromTemplateUrl('app/spot/add-tag-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up'
-      }).then(function (modal) {
-        vm.addTagModal = modal;
-      });
+      loadActiveTagging();
 
       $ionicModal.fromTemplateUrl('app/spot/set-active-tags-modal.html', {
         'scope': $scope,
@@ -68,9 +50,16 @@
 
       // Cleanup the modal when we're done with it!
       $scope.$on('$destroy', function () {
-        vm.addTagModal.remove();
         vm.setActiveTagsModal.remove();
       });
+    }
+
+    function loadActiveTagging() {
+      if (vm.isTagging && _.isEmpty(ProjectFactory.getActiveTags())) {
+        vm.isTagging = false;
+        toggleTagging();
+      }
+      setTagToggleText();
     }
 
     function setTagToggleText() {
@@ -81,15 +70,11 @@
      * Public Functions
      */
 
-    function addTag() {
-      vm.addTagModal.show();
-    }
-
     function closeModal(modal) {
       vm[modal].hide();
       if (modal === 'setActiveTagsModal') {
         ProjectFactory.addToActiveTags(vmParent.spot.properties.id);
-        activate();
+        loadActiveTagging();
       }
     }
 
@@ -100,7 +85,6 @@
 
     function createTag() {
       vm.setActiveTagsModal.hide();
-      vm.addTagModal.hide();
       var id = HelpersFactory.newId();
       vmParent.submit('/app/tags/' + id);
     }
@@ -122,11 +106,6 @@
       if (!isDelete) vmParent.submit('/app/tags/' + id);
     }
 
-    function isOptionChecked(tag) {
-      if (tag.spots) return tag.spots.indexOf(vmParent.spot.properties.id) !== -1;
-      return false;
-    }
-
     function removeTag(tag) {
       isDelete = true;
       var confirmPopup = $ionicPopup.confirm({
@@ -136,21 +115,28 @@
       confirmPopup.then(function (res) {
         if (res) {
           ProjectFactory.removeTagFromSpot(tag.id, vmParent.spot.properties.id).then(function () {
-            vm.tags = ProjectFactory.getTagsBySpotId(vmParent.spot.properties.id);
-            $log.log('Tags for this Spot:', vm.tags);
+            vmParent.loadTags();
+            loadActiveTagging();
           });
         }
         isDelete = false;
       });
     }
 
-    function toggleChecked(tag) {
-      if (!tag.spots) tag.spots = [];
-      var i = tag.spots.indexOf(vmParent.spot.properties.id);
-      if (i === -1) tag.spots.push(vmParent.spot.properties.id);
-      else tag.spots.splice(i, 1);
-      ProjectFactory.saveTag(tag).then(function () {
-        vm.tags = ProjectFactory.getTagsBySpotId(vmParent.spot.properties.id);
+    function removeTagFromFeatures(tag) {
+      isDelete = true;
+      var confirmPopup = $ionicPopup.confirm({
+        'title': 'Remove Tag From Features',
+        'template': 'Are you sure you want to remove the tag ' + tag.name + ' from ALL features in this Spot? This will <b>not</b> delete the tag itself.'
+      });
+      confirmPopup.then(function (res) {
+        if (res) {
+          ProjectFactory.removeTagFromFeatures(tag.id, vmParent.spot.properties.id).then(function () {
+            vmParent.loadTags();
+            loadActiveTagging();
+          });
+        }
+        isDelete = false;
       });
     }
 

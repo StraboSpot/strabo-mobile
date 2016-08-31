@@ -5,16 +5,33 @@
     .module('app')
     .controller('SpotController', SpotController);
 
-  SpotController.$inject = ['$document', '$ionicPopover', '$ionicPopup', '$location', '$log', '$scope', '$state',
-    'FormFactory', 'HelpersFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory'];
+  SpotController.$inject = ['$document', '$ionicModal', '$ionicPopover', '$ionicPopup', '$location', '$log', '$scope',
+    '$state', 'FormFactory', 'HelpersFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
-  function SpotController($document, $ionicPopover, $ionicPopup, $location, $log, $scope, $state, FormFactory,
-                          HelpersFactory, MapViewFactory, ProjectFactory, SpotFactory) {
+  function SpotController($document, $ionicModal, $ionicPopover, $ionicPopup, $location, $log, $scope, $state,
+                          FormFactory, HelpersFactory, MapViewFactory, ProjectFactory, SpotFactory) {
     var vm = this;
 
+    // Tags
+    vm.addTag = addTag;
+    vm.addTagModal = {};
+    vm.addTagModalTitle = undefined;
+    vm.allTags = [];
+    vm.featureId = undefined;
+    vm.featureLevelTags = [];
+    vm.getNumTaggedFeatures = getNumTaggedFeatures;
+    vm.getTagNames = getTagNames;
+    vm.isTagChecked = isTagChecked;
+    vm.loadTags = loadTags;
+    vm.spotLevelTags = [];
+    vm.tags = [];
+    vm.toggleTagChecked = toggleTagChecked;
+
     vm.choices = undefined;
+    vm.closeModal = closeModal;
     vm.copyThisSpot = copyThisSpot;
+    vm.createTag = createTag;
     vm.data = {};
     vm.deleteSpot = deleteSpot;
     vm.getMax = getMax;
@@ -48,6 +65,19 @@
     function activate() {
       $log.log('In SpotController');
       createPopover();
+
+      $ionicModal.fromTemplateUrl('app/spot/add-tag-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up'
+      }).then(function (modal) {
+        vm.addTagModal= modal;
+      });
+
+      // Cleanup the modal when we're done with it!
+      $scope.$on('$destroy', function () {
+        vm.addTagModal.remove();
+        vm.popover.remove();
+      });
     }
 
     function createPopover() {
@@ -55,11 +85,6 @@
         'scope': $scope
       }).then(function (popover) {
         vm.popover = popover;
-      });
-
-      // Cleanup the popover when we're done with it!
-      $scope.$on('$destroy', function () {
-        vm.popover.remove();
       });
     }
 
@@ -87,6 +112,11 @@
      * Public Functions
      */
 
+    function addTag(feature) {
+      vm.featureId = (feature) ? feature.id : undefined;
+      vm.addTagModal.show();
+    }
+
     // Create a new spot with the details from this spot
     function copyThisSpot() {
       vm.popover.hide();
@@ -96,6 +126,16 @@
       SpotFactory.setNewSpot(newSpot).then(function (id) {
         submit('/app/spotTab/' + id + '/spot');
       });
+    }
+
+    function closeModal(modal) {
+      vm[modal].hide();
+    }
+
+    function createTag() {
+      vm.addTagModal.hide();
+      var id = HelpersFactory.newId();
+      vm.submit('/app/tags/' + id);
     }
 
     // Delete the spot
@@ -108,6 +148,7 @@
         confirmPopup.then(function (res) {
           if (res) {
             SpotFactory.destroy(vm.spot.properties.id).then(function () {
+              vm.spot = undefined;
               goBack();
             });
           }
@@ -130,9 +171,23 @@
       return FormFactory.getMin(constraint);
     }
 
+    function getNumTaggedFeatures(tag) {
+      return ProjectFactory.getNumTaggedFeatures(tag);
+    }
+
+    function getTagNames(feature) {
+      var featureTags = _.filter(vm.allTags, function (tag) {
+        if (tag.features && tag.features[vm.spot.properties.id]) {
+          return _.contains(tag.features[vm.spot.properties.id], feature.id);
+        }
+      });
+      return _.pluck(_.sortBy(featureTags, 'name'), 'name').join(', ');
+    }
+
     function goBack() {
       SpotFactory.clearCurrentSpot();
-      submit(HelpersFactory.getBackView());
+      if (vm.spot) submit(HelpersFactory.getBackView());
+      else $location.path(HelpersFactory.getBackView());
     }
 
     function isOptionChecked(field, choice) {
@@ -142,10 +197,25 @@
       else return false;
     }
 
+    function isTagChecked(tag) {
+      if (vm.spot) {
+        if (vm.stateName === 'app.spotTab.tags') {
+          if (tag.spots) return tag.spots.indexOf(vm.spot.properties.id) !== -1;
+        }
+        else {
+          if (tag.features && tag.features[vm.spot.properties.id]) {
+            return tag.features[vm.spot.properties.id].indexOf(vm.featureId) !== -1;
+          }
+        }
+      }
+      return false;
+    }
+
     function loadTab(state) {
       SpotFactory.moveSpot = false;
       vm.stateName = state.current.name;
       setSpot(state.params.spotId);
+      loadTags();
 
       vm.showTrace = false;
       vm.showRockUnit = true;
@@ -162,6 +232,19 @@
         if (!vm.spot.properties.surface_feature) vm.spot.properties.surface_feature = {};
         vm.data = vm.spot.properties.surface_feature;
       }
+    }
+
+    function loadTags() {
+      if (vm.stateName === 'app.spotTab.tags') vm.addTagModalTitle = 'Add Spot Level Tags';
+      else  vm.addTagModalTitle = 'Add Feature Level Tags';
+      vm.allTags = ProjectFactory.getTags();
+      var tags = ProjectFactory.getTagsBySpotId(vm.spot.properties.id);
+      vm.spotLevelTags = _.filter(tags, function (tag) {
+        return tag.spots && _.contains(tag.spots, vm.spot.properties.id);
+      });
+      vm.featureLevelTags = _.filter(tags, function (tag) {
+        return tag.features && tag.features[vm.spot.properties.id];
+      });
     }
 
     // Set the class for the select_multiple fields here because it is not working
@@ -239,6 +322,27 @@
         vm.data[field].splice(i, 1);
         if (vm.data[field].length === 0) delete vm.data[field];
       }
+    }
+
+    function toggleTagChecked(tag) {
+      if (vm.stateName === 'app.spotTab.tags') {
+        if (!tag.spots) tag.spots = [];
+        var i = tag.spots.indexOf(vm.spot.properties.id);
+        if (i === -1) tag.spots.push(vm.spot.properties.id);
+        else tag.spots.splice(i, 1);
+      }
+      else {
+        if (!tag.features) tag.features = {};
+        if (!tag.features[vm.spot.properties.id]) tag.features[vm.spot.properties.id] = [];
+        var i = tag.features[vm.spot.properties.id].indexOf(vm.featureId);
+        if (i === -1) tag.features[vm.spot.properties.id].push(vm.featureId);
+        else tag.features[vm.spot.properties.id].splice(i, 1);
+        if (tag.features[vm.spot.properties.id].length === 0) delete tag.features[vm.spot.properties.id];
+        if (_.isEmpty(tag.features)) delete tag.features;
+      }
+      ProjectFactory.saveTag(tag).then(function () {
+        loadTags();
+      });
     }
 
     // Validate Spot Tab

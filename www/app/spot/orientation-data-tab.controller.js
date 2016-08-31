@@ -6,10 +6,10 @@
     .controller('OrientationDataTabController', OrientationDataTabController);
 
   OrientationDataTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'DataModelsFactory',
-    'FormFactory', 'HelpersFactory', 'SpotFactory'];
+    'FormFactory', 'HelpersFactory', 'ProjectFactory'];
 
   function OrientationDataTabController($ionicModal, $ionicPopup, $log, $scope, $state, DataModelsFactory,
-                                        FormFactory, HelpersFactory, SpotFactory) {
+                                        FormFactory, HelpersFactory, ProjectFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.loadTab($state);  // Need to load current state into parent
@@ -161,6 +161,7 @@
               return orientation.id === orientationToDelete.id;
             });
           if (vmParent.spot.properties.orientation_data === 0) delete vmParent.spot.properties.orientation_data;
+          ProjectFactory.removeFeatureFromTags(vmParent.spot.properties.id, orientationToDelete.id);
         }
       });
     }

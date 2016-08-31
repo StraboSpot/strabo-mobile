@@ -22,6 +22,8 @@
     vm.closeModal = closeModal;
     vm.data = {};
     vm.filter = filter;
+    vm.getNumTaggedFeatures = getNumTaggedFeatures;
+    vm.getFeatureName = getFeatureName;
     vm.getSpotName = getSpotName;
     vm.go = go;
     vm.goToSpot = goToSpot;
@@ -29,6 +31,8 @@
     vm.isOptionChecked = isOptionChecked;
     vm.loadMoreSpots = loadMoreSpots;
     vm.moreSpotsCanBeLoaded = moreSpotsCanBeLoaded;
+    vm.keyToId = keyToId;
+    vm.removeFeature = removeFeature;
     vm.removeSpot = removeSpot;
     vm.resetFilters = resetFilters;
     vm.showField = showField;
@@ -146,10 +150,22 @@
       vm.filterModal.show();
     }
 
-    function isDatasetChecked(id) {
-      return _.find(visibleDatasets, function (visibleDataset) {
-        return visibleDataset === id;
+    function getNumTaggedFeatures(tag) {
+      return ProjectFactory.getNumTaggedFeatures(tag);
+    }
+
+    function getFeatureName(spotId, featureId) {
+      spotId = parseInt(spotId);
+      var spot = SpotFactory.getSpotById(spotId);
+      var found = undefined;
+      _.each(spot.properties, function (property) {
+        if (!found) {
+          found = _.find(property, function (item) {
+            return item.id === featureId;
+          });
+        }
       });
+      return (found && found.label) ? found.label : 'Unknown Name';
     }
 
     function getSpotName(spotId) {
@@ -176,6 +192,16 @@
       if (!isDelete) SpotFactory.goToSpot(spotId);
     }
 
+    function keyToId(key) {
+      return parseInt(key);
+    }
+
+    function isDatasetChecked(id) {
+      return _.find(visibleDatasets, function (visibleDataset) {
+        return visibleDataset === id;
+      });
+    }
+
     function isOptionChecked(spotId) {
       if (vm.data.spots) return vm.data.spots.indexOf(spotId) !== -1;
       return false;
@@ -190,6 +216,23 @@
 
     function moreSpotsCanBeLoaded() {
       return vm.spotsDisplayed.length !== vm.spots.length;
+    }
+
+    function removeFeature(spotId, featureId) {
+      isDelete = true;
+      var confirmPopup = $ionicPopup.confirm({
+        'title': 'Remove Feature',
+        'template': 'Are you sure you want to remove the Feature <b>' + getFeatureName(
+          spotId, featureId) + '</b> from this Tag Group? This will <b>not</b> delete the Feature itself.'
+      });
+      confirmPopup.then(function (res) {
+        if (res) {
+          ProjectFactory.removeTagFromFeature(vm.data.id, spotId, featureId).then(function () {
+            loadTag();
+          });
+        }
+        isDelete = false;
+      });
     }
 
     function removeSpot(spotId) {

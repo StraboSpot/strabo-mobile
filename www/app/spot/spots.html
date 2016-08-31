@@ -55,11 +55,6 @@
             Tags: {{ vm.getTagNames(spot.properties.id) }}
           </span>
         </div>
-        <div ng-show='vm.showDetail.nests'>
-          <span ng-show='vm.getNestNames(spot)' class='list-sub'>
-            Nests: {{ vm.getNestNames(spot) }}
-          </span>
-        </div>
         <div ng-show='vm.showDetail.units'>
           <span ng-show='spot.properties.rock_unit' class='list-sub'>
             Rock Unit: {{ spot.properties.rock_unit.unit_label_abbreviation }}

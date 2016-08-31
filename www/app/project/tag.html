@@ -32,5 +32,26 @@
         </button>
       </ion-item>
     </ion-list>
+    <div class='field-group item item-divider'>
+      {{ vm.getNumTaggedFeatures(vm.data) }}
+      <span ng-if='vm.getNumTaggedFeatures(vm.data) > 1 || vm.getNumTaggedFeatures(vm.data) === 0'>Features</span>
+      <span ng-if='vm.getNumTaggedFeatures(vm.data) === 1'>Feature</span>
+    </div>
+    <div ng-show='!vm.data.features || vm.getNumTaggedFeatures(vm.data) === 0' class='padding'>
+      No Features with this Tag yet.
+    </div>
+    <ion-list>
+      <div ng-repeat='(spotId, featureList) in vm.data.features'>
+        <ion-item class='item-text-wrap item-button-right'
+                  ng-repeat='featureId in featureList'
+                  ng-click='vm.goToSpot(vm.keyToId(spotId))'>
+          {{ vm.getFeatureName(vm.keyToId(spotId), featureId) }} <small>(in Spot: {{ vm.getSpotName(vm.keyToId(spotId)) }})</small>
+          <button class='button button-clear button-assertive'
+                  ng-click='vm.removeFeature(vm.keyToId(spotId), featureId)'>
+            <i class='icon ion-minus-circled'></i>
+          </button>
+        </ion-item>
+      </div>
+    </ion-list>
   </ion-content>
 </ion-view>

@@ -52,6 +52,7 @@
       'getSpotsDataset': getSpotsDataset,
       'getSpotIds': getSpotIds,
       'getActiveTags': getActiveTags,
+      'getNumTaggedFeatures': getNumTaggedFeatures,
       'getTag': getTag,
       'getTags': getTags,
       'getTagsBySpotId': getTagsBySpotId,
@@ -61,7 +62,11 @@
       'loadProjectRemote': loadProjectRemote,
       'loadProjectsRemote': loadProjectsRemote,
       'prepProject': prepProject,                     // Run from app config
+      'removeFeatureFromTags': removeFeatureFromTags,
       'removeSpotFromDataset': removeSpotFromDataset,
+      'removeSpotFromTags':removeSpotFromTags,
+      'removeTagFromFeature': removeTagFromFeature,
+      'removeTagFromFeatures': removeTagFromFeatures,
       'removeTagFromSpot': removeTagFromSpot,
       'saveActiveDatasets': saveActiveDatasets,
       'saveProjectItem': saveProjectItem,
@@ -78,16 +83,6 @@
     /**
      * Private Functions
      */
-
-    function addToActiveTags(spotId) {
-      _.each(activeTags, function (activeTag) {
-        if (!_.contains(activeTag.spots, spotId)) {
-          if (!activeTag.spots) activeTag.spots = [];
-          activeTag.spots.push(spotId);
-          saveTag(activeTag);
-        }
-      });
-    }
 
     // Load all project properties from local storage
     function all() {
@@ -165,6 +160,16 @@
           //$log.log('Added spot to dataset ' + datasetId + ': ' + spotIds[datasetId]);
         });
       }
+    }
+
+    function addToActiveTags(spotId) {
+      _.each(activeTags, function (activeTag) {
+        if (!_.contains(activeTag.spots, spotId)) {
+          if (!activeTag.spots) activeTag.spots = [];
+          activeTag.spots.push(spotId);
+          saveTag(activeTag);
+        }
+      });
     }
 
     function clearActiveTags() {
@@ -387,8 +392,19 @@
 
     function getTagsBySpotId(spotId) {
       return _.filter(currentProject.tags, function (tag) {
-        if (tag.spots) return _.contains(tag.spots, spotId);
+        if (tag.spots && _.contains(tag.spots, spotId)) return true;
+        else return (tag.features && tag.features[spotId]);
       });
+    }
+
+    function getNumTaggedFeatures(tag) {
+      var count = 0;
+      if (tag.features) {
+        _.each(tag.features, function (featuresList) {
+          count += featuresList.length;
+        });
+      }
+      return count;
     }
 
     // Increment starting spot number by 1
@@ -489,6 +505,22 @@
       return deferred.promise;
     }
 
+    function removeFeatureFromTags(spotId, featureId) {
+      var deferred = $q.defer(); // init promise
+      var promises = [];
+      _.each(currentProject.tags, function (tag) {
+        if (tag.features && tag.features[spotId]) {
+          tag.features[spotId] = _.without(tag.features[spotId], featureId);
+          if (tag.features[spotId].length === 0) delete tag.features[spotId];
+        }
+        if (_.isEmpty(tag.features)) delete tag.features;
+        promises.push(saveTag(tag));
+      });
+      $q.all(promises).then(function () {
+        return deferred.promise;
+      });
+    }
+
     function removeSpotFromDataset(spotId) {
       var deferred = $q.defer(); // init promise
       _.each(spotIds, function (spotsInDataset, datasetId) {
@@ -498,6 +530,41 @@
           $log.log('Removed Spot id from dataset', datasetId, 'SpotIds:', spotIds);
           saveProjectItem('spots_' + datasetId, spotIds[datasetId]);
         }
+      });
+      return deferred.promise;
+    }
+
+    function removeSpotFromTags(spotId) {
+      var tags = getTagsBySpotId(spotId);
+      _.each(tags, function (tag) {
+        removeTagFromSpot(tag.id, spotId);
+        if (tag.features && tag.features[spotId]) delete tag.features[spotId];
+        if (_.isEmpty(tag.features)) delete tag.features;
+        saveTag(tag);
+      });
+    }
+
+    function removeTagFromFeature(tagId, spotId, featureId) {
+      var deferred = $q.defer(); // init promise
+      var tag = _.findWhere(currentProject.tags, {'id': tagId});
+      if (tag.features[spotId]) {
+        tag.features[spotId] = _.without(tag.features[spotId], featureId);
+        if (tag.features[spotId].length === 0) delete tag.features[spotId];
+      }
+      if (_.isEmpty(tag.features)) delete tag.features;
+      saveTag(tag).then(function () {
+        deferred.resolve();
+      });
+      return deferred.promise;
+    }
+
+    function removeTagFromFeatures(tagId, spotId) {
+      var deferred = $q.defer(); // init promise
+      var tag = _.findWhere(currentProject.tags, {'id': tagId});
+      delete tag.features[spotId];
+      if (_.isEmpty(tag.features)) delete tag.features;
+      saveTag(tag).then(function () {
+        deferred.resolve();
       });
       return deferred.promise;
     }

@@ -16,6 +16,7 @@
 
     vm.deleteAllTags = deleteAllTags;
     vm.deleteTag = deleteTag;
+    vm.getNumTaggedFeatures = getNumTaggedFeatures;
     vm.getTagTypeLabel = getTagTypeLabel;
     vm.goToTag = goToTag;
     vm.newTag = newTag;
@@ -83,6 +84,10 @@
         }
         isDelete = false;
       });
+    }
+
+    function getNumTaggedFeatures(tag) {
+      return ProjectFactory.getNumTaggedFeatures(tag);
     }
 
     function getTagTypeLabel(type) {

@@ -71,13 +71,6 @@
       return deferred.promise;
     }
 
-    function removeSpotFromTags(spotId) {
-      var tags = ProjectFactory.getTagsBySpotId(spotId);
-      _.each(tags, function (tag) {
-        ProjectFactory.removeTagFromSpot(tag.id, spotId);
-      });
-    }
-
     /**
      * Public Functions
      */
@@ -100,7 +93,7 @@
       var deferred = $q.defer(); // init promise
       var promises = [];
       _.each(activeSpots, function (activeSpot) {
-        removeSpotFromTags(activeSpot.properties.id);
+        ProjectFactory.removeSpotFromTags(activeSpot.properties.id);
         spots = _.reject(spots, function (spot) {
           return spot.properties.id === activeSpot.properties.id;
         });
@@ -135,7 +128,7 @@
     // delete the spot
     function destroy(key) {
       var deferred = $q.defer(); // init promise
-      removeSpotFromTags(key);
+      ProjectFactory.removeSpotFromTags(key);
       spots = _.reject(spots, function (spot) {
         return spot.properties.id === key;
       });

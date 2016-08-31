@@ -24,7 +24,6 @@
     vm.deleteSelected = false;
     vm.deleteSpot = deleteSpot;
     vm.exportToCSV = exportToCSV;
-    vm.getNestNames = getNestNames;
     vm.getTagNames = getTagNames;
     vm.filter = filter;
     vm.filterModal = {};
@@ -353,11 +352,6 @@
     function filter() {
       vm.activeDatasets = ProjectFactory.getActiveDatasets();
       vm.filterModal.show();
-    }
-
-    function getNestNames(spot) {
-      var nests = spot.properties.nests;
-      return _.pluck(nests, 'name').join(', ');
     }
 
     function getTagNames(spotId) {
