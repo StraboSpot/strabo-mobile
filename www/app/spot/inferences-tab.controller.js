@@ -54,7 +54,9 @@
     function createModal() {
       $ionicModal.fromTemplateUrl('app/spot/inferences-relationship-modal.html', {
         'scope': $scope,
-        'animation': 'slide-in-up'
+        'animation': 'slide-in-up',
+        'focusFirstInput': true,
+        'backdropClickToClose': false
       }).then(function (modal) {
         vm.relationshipModal = modal;
       });

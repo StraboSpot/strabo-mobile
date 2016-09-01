@@ -86,7 +86,9 @@
     function createModals() {
       $ionicModal.fromTemplateUrl('app/spot/image-properties-modal.html', {
         'scope': $scope,
-        'animation': 'slide-in-up'
+        'animation': 'slide-in-up',
+        'focusFirstInput': true,
+        'backdropClickToClose': false
       }).then(function (modal) {
         vm.imagePropertiesModal = modal;
       });

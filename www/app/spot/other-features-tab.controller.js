@@ -64,7 +64,9 @@
     function createModal() {
       $ionicModal.fromTemplateUrl('app/spot/other-feature-modal.html', {
         'scope': $scope,
-        'animation': 'slide-in-up'
+        'animation': 'slide-in-up',
+        'focusFirstInput': true,
+        'backdropClickToClose': false
       }).then(function (modal) {
         vm.otherFeatureModal = modal;
       });

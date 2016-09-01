@@ -51,7 +51,8 @@
       $ionicModal.fromTemplateUrl('app/spot/basic-form-modal.html', {
         'scope': $scope,
         'animation': 'slide-in-up',
-        'focusFirstInput': true
+        'focusFirstInput': true,
+        'backdropClickToClose': false
       }).then(function (modal) {
         vm.basicFormModal = modal;
       });

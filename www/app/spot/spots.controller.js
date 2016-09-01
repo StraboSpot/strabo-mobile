@@ -57,8 +57,7 @@
       $ionicModal.fromTemplateUrl('app/spot/spots-filter-modal.html', {
         'scope': $scope,
         'animation': 'slide-in-up',
-        'backdropClickToClose': false,
-        'hardwareBackButtonClose': false
+        'backdropClickToClose': false
       }).then(function (modal) {
         vm.filterModal = modal;
       });
@@ -66,8 +65,7 @@
       $ionicModal.fromTemplateUrl('app/spot/spots-list-detail-modal.html', {
         'scope': $scope,
         'animation': 'slide-in-up',
-        'backdropClickToClose': false,
-        'hardwareBackButtonClose': false
+        'backdropClickToClose': false
       }).then(function (modal) {
         vm.detailModal = modal;
       });

@@ -42,8 +42,7 @@
       $ionicModal.fromTemplateUrl('app/spot/set-active-tags-modal.html', {
         'scope': $scope,
         'animation': 'slide-in-up',
-        'backdropClickToClose': false,
-        'hardwareBackButtonClose': false
+        'backdropClickToClose': false
       }).then(function (modal) {
         vm.setActiveTagsModal = modal;
       });
