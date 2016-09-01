@@ -5,11 +5,13 @@
     .module('app')
     .controller('OrientationDataTabController', OrientationDataTabController);
 
-  OrientationDataTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'DataModelsFactory',
-    'FormFactory', 'HelpersFactory', 'ProjectFactory'];
+  OrientationDataTabController.$inject = ['$cordovaDeviceMotion', '$cordovaDeviceOrientation', '$ionicModal',
+    '$ionicPopup', '$log', '$q', '$scope', '$state', 'DataModelsFactory', 'FormFactory', 'HelpersFactory',
+    'ProjectFactory'];
 
-  function OrientationDataTabController($ionicModal, $ionicPopup, $log, $scope, $state, DataModelsFactory,
-                                        FormFactory, HelpersFactory, ProjectFactory) {
+  function OrientationDataTabController($cordovaDeviceMotion, $cordovaDeviceOrientation, $ionicModal, $ionicPopup, $log,
+                                        $q, $scope, $state, DataModelsFactory, FormFactory, HelpersFactory,
+                                        ProjectFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.loadTab($state);  // Need to load current state into parent
@@ -23,6 +25,7 @@
     vm.deleteOrientation = deleteOrientation;
     vm.editAssociatedOrientation = editAssociatedOrientation;
     vm.editOrientation = editOrientation;
+    vm.getCompassInfo = getCompassInfo;
     vm.modalTitle = '';
     vm.parentOrientation = {};
     vm.submit = submit;
@@ -177,6 +180,40 @@
       vmParent.choices = DataModelsFactory.getDataModel('orientation_data')[vmParent.data.type].choices;
       vm.modalTitle = 'Edit ' + getModalTitlePart();
       vm.basicFormModal.show();
+    }
+
+    function getCompassInfo() {
+      var promises = [];
+      var promise;
+      var msgText = '';
+
+      promise = $cordovaDeviceOrientation.getCurrentHeading().then(function (result) {
+        msgText += 'Magnetic Heading = ' + result.magneticHeading + '<br>';
+      }, function (err) {
+        msgText += 'Compass Error: ' + err + '<br>';
+        $log.log(err);
+      });
+      promises.push(promise);
+
+      if (navigator.accelerometer) {
+        promise = $cordovaDeviceMotion.getCurrentAcceleration().then(function (result) {
+          var timeStamp = result.timestamp;
+          msgText += 'X = ' + result.x + '<br>';
+          msgText += 'Y = ' + result.y + '<br>';
+          msgText += 'Z = ' + result.z + '<br>';
+        }, function (err) {
+          msgText = 'Acceleration Error: ' + err + '<br>';
+        });
+        promises.push(promise);
+      }
+      else msgText += 'Accelerometer Error: No accelerometer on Device<br>';
+
+      $q.all(promises).then(function () {
+        $ionicPopup.alert({
+          'title': 'Compass & Accelerometer Info',
+          'template': msgText
+        });
+      });
     }
 
     function submit() {

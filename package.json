@@ -37,7 +37,9 @@
     "cordova-plugin-whitelist",
     "cordova-sqlite-storage@0.7.14",
     "ionic-plugin-deploy",
-    "ionic-plugin-keyboard"
+    "ionic-plugin-keyboard",
+    "cordova-plugin-device-orientation",
+    "cordova-plugin-device-motion"
   ],
   "cordovaPlatforms": [
     "android",

@@ -37,6 +37,8 @@
   <plugin name="cordova-plugin-camera" version="2.1.1" source="npm"/>
   <plugin name="cordova-plugin-console" version="1.0.2" source="npm"/>
   <plugin name="cordova-plugin-device" version="1.1.1" source="npm"/>
+  <plugin name="cordova-plugin-device-motion" version="1.2.1" source="npm"/>
+  <plugin name="cordova-plugin-device-orientation" version="1.0.3" source="npm"/>
   <plugin name="cordova-plugin-file" version="4.1.1" source="npm"/>
   <plugin name="cordova-plugin-filepath" version="1.0.2" source="npm"/>
   <plugin name="cordova-plugin-geolocation" version="2.1.0" source="npm"/>

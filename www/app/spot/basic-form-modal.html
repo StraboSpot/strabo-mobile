@@ -1,12 +1,12 @@
 <ion-modal-view>
   <ion-header-bar class='bar-dark nav-title-slide-ios7'>
-    <button class='button icon ion-checkmark-circled button-clear'
+    <button class='button icon ion-arrow-left-c button-clear'
             ng-click='vmChild.submit()'>
     </button>
     <h1 class='title'>{{ vmChild.modalTitle }}</h1>
-    <button class='button icon ion-close-round button-clear'
-            ng-click='vmChild.closeModal()'>
-    </button>
+    <button class='button button-clear icon ion-compass'
+            ng-click='vmChild.getCompassInfo()'
+            ng-show='vm.stateName === "app.spotTab.orientation-data"'></button>
   </ion-header-bar>
   <ion-content class='has-header'>
     <div class='padding orientation-reference' ng-show="vmChild.parentOrientation">

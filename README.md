@@ -45,6 +45,8 @@ Generate Resources (icons and splash screens):
     cordova-plugin-camera 2.1.1 "Camera"
     cordova-plugin-console 1.0.2 "Console"
     cordova-plugin-device 1.1.1 "Device"
+    cordova-plugin-device-motion 1.2.1 "Device Motion"
+    cordova-plugin-device-orientation 1.0.3 "Device Orientation"
     cordova-plugin-file 4.1.1 "File"
     cordova-plugin-filepath 1.0.2 "FilePath"
     cordova-plugin-geolocation 2.1.0 "Geolocation"
