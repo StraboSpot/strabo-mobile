@@ -17,7 +17,6 @@
     vm.addAssociatedOrientation = addAssociatedOrientation;
     vm.addOrientation = addOrientation;
     vm.basicFormModal = {};
-    vm.closeModal = closeModal;
     vm.copyAssociatedOrientation = copyAssociatedOrientation;
     vm.copyOrientation = copyOrientation;
     vm.deleteAssociatedOrientation = deleteAssociatedOrientation;
@@ -111,11 +110,6 @@
       vm.basicFormModal.show();
     }
 
-    function closeModal() {
-      vm.parentOrientation = undefined;
-      vm.basicFormModal.hide();
-    }
-
     function copyAssociatedOrientation(parentThisOrientation, orientation) {
       var copy = angular.copy(orientation);
       delete copy.id;
@@ -186,6 +180,13 @@
     }
 
     function submit() {
+      if (_.size(vmParent.data) <= 2) {
+        // If not more than type and id fields no data has been entered so don't continue, just close modal
+        vmParent.data = {};
+        vm.parentOrientation = undefined;
+        vm.basicFormModal.hide();
+        return;
+      }
       if (!vmParent.data.label) vmParent.data.label = createDefaultLabel(vmParent.data);
       if (FormFactory.validate(vmParent.survey, vmParent.data)) {
         if (!vm.parentOrientation) {

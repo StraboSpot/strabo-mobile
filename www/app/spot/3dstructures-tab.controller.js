@@ -18,7 +18,6 @@
 
     vm.add3dStructure = add3dStructure;
     vm.basicFormModal = {};
-    vm.closeModal = closeModal;
     vm.delete3dStructure = delete3dStructure;
     vm.edit3dStructure = edit3dStructure;
     vm.modalTitle = '';
@@ -77,10 +76,6 @@
       vm.basicFormModal.show();
     }
 
-    function closeModal() {
-      vm.basicFormModal.hide();
-    }
-
     function delete3dStructure(_3dStructureToDelete) {
       isDelete = true;
       var confirmPopup = $ionicPopup.confirm({
@@ -110,6 +105,12 @@
     }
 
     function submit() {
+      if (_.size(vmParent.data) <= 2) {
+        // If not more than type and id fields no data has been entered so don't continue, just close modal
+        vmParent.data = {};
+        vm.basicFormModal.hide();
+        return;
+      }
       if (!vmParent.data.label) vmParent.data.label = createDefaultLabel(vmParent.data);
       if (FormFactory.validate(vmParent.survey, vmParent.data)) {
         if (!vmParent.spot.properties._3d_structures) vmParent.spot.properties._3d_structures = [];

@@ -18,7 +18,6 @@
       'other'];
 
     vm.addFeature = addFeature;
-    vm.closeModal = closeModal;
     vm.deleteFeature = deleteFeature;
     vm.editFeature = editFeature;
     vm.newFeatureType = '';
@@ -82,11 +81,6 @@
       vm.otherFeatureModal.show();
     }
 
-    function closeModal(modal) {
-      vm.newFeatureType = '';
-      vm[modal].hide();
-    }
-
     function deleteFeature(feature) {
       isDelete = true;
       var confirmPopup = $ionicPopup.confirm({
@@ -112,6 +106,13 @@
     }
 
     function submitFeature() {
+      if (_.size(vm.otherFeature) <= 1) {
+        // If not more than id field no data has been entered so don't continue, just close modal
+        vm.otherFeature = {};
+        vm.newFeatureType = '';
+        vm.otherFeatureModal.hide();
+        return;
+      }
       if (!vm.otherFeature.type || !vm.otherFeature.name) {
         $ionicPopup.alert({
           'title': 'Incomplete Data',
@@ -151,6 +152,7 @@
         }
         vmParent.spot.properties.other_features.push(vm.otherFeature);
         vm.otherFeature = {};
+        vm.newFeatureType = '';
         vm.otherFeatureModal.hide();
       }
     }

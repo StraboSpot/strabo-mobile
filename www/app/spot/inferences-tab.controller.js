@@ -18,7 +18,6 @@
     var delRelationship;
 
     vm.addRelationship = addRelationship;
-    vm.closeModal = closeModal;
     vm.deleteRelationship = deleteRelationship;
     vm.editRelationship = editRelationship;
     vm.orientationData = {'-- Select an Observation --': '-- Select an Observation --'};
@@ -101,11 +100,6 @@
       vm.relationshipModal.show();
     }
 
-    function closeModal(modal) {
-      resetRelationshipVariables();
-      vm[modal].hide();
-    }
-
     function deleteRelationship(i) {
       delRelationship = true;
       var confirmPopup = $ionicPopup.confirm({
@@ -139,6 +133,14 @@
     }
 
     function submitRelationship() {
+      if (vm.relationship.observationA === '-- Select an Observation --' &&
+        vm.relationship.relationship_type === '-- Select a Relationship --' &&
+        vm.relationship.observationB === '-- Select an Observation --') {
+        // If no relationship has been created no data has been entered so don't continue, just close modal
+        vm.relationshipModal.hide();
+        resetRelationshipVariables();
+        return;
+      }
       if (vm.relationship.observationA === '-- Select an Observation --' ||
         vm.relationship.relationship_type === '-- Select a Relationship --' ||
         vm.relationship.observationB === '-- Select an Observation --') {

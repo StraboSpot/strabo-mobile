@@ -68,7 +68,8 @@
 
       $ionicModal.fromTemplateUrl('app/spot/add-tag-modal.html', {
         'scope': $scope,
-        'animation': 'slide-in-up'
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false
       }).then(function (modal) {
         vm.addTagModal= modal;
       });

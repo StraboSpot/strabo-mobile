@@ -18,7 +18,6 @@
 
     vm.addSample = addSample;
     vm.basicFormModal = {};
-    vm.closeModal = closeModal;
     vm.deleteSample = deleteSample;
     vm.editSample = editSample;
     vm.modalTitle = '';
@@ -86,10 +85,6 @@
       vm.basicFormModal.show();
     }
 
-    function closeModal() {
-      vm.basicFormModal.hide();
-    }
-
     function deleteSample(sampleToDelete) {
       isDelete = true;
       var confirmPopup = $ionicPopup.confirm({
@@ -116,6 +111,12 @@
     }
 
     function submit() {
+      if (_.size(vmParent.data) <= 1) {
+        // If not more than id field no data has been entered so don't continue, just close modal
+        vmParent.data = {};
+        vm.basicFormModal.hide();
+        return;
+      }
       if (!vmParent.data.label) vmParent.data.label = createDefaultLabel(vmParent.data);
       if (FormFactory.validate(vmParent.survey, vmParent.data)) {
         if (!vmParent.spot.properties.samples) vmParent.spot.properties.samples = [];
