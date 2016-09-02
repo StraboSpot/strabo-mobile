@@ -67,7 +67,9 @@
       else if (y <= 0 && x <= 0) dipdir = diry + 90 - b;
       else if (x <= 0 && y >= 0) dipdir = diry + 90 + b;
 
+      if (dipdir < 0) dipdir = 360 + dipdir;
       var strike = dipdir - 90;
+      if (strike < 0) strike = 360 + strike;
       strike = strike % 360;
       dipdir = dipdir % 360;
       var dip = d;
