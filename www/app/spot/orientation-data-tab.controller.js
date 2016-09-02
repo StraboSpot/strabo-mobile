@@ -48,6 +48,48 @@
       if (!item.type) item.type = item.orientation_type || 'planar_orientation';
     }
 
+    function calculateOrientation(magneticHeading, x, y, z) {
+      var g = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
+      var s = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+      var B = Math.acos(Math.abs(y) / s);
+      var R = 90 - B;
+      var d = Math.acos(Math.abs(z) / g);
+      var b = Math.atan(Math.tan(R) * Math.cos(d));
+      var dipdir;
+      var diry = magneticHeading;
+
+      if (x === 0 && y === 0) {
+        d = 0;
+        dipdir = 180;
+      }
+      else if (x >= 0 && y >= 0) dipdir = diry - 90 - b;
+      else if (y <= 0 && x >= 0) dipdir = diry - 90 + b;
+      else if (y <= 0 && x <= 0) dipdir = diry + 90 - b;
+      else if (x <= 0 && y >= 0) dipdir = diry + 90 + b;
+
+      var strike = dipdir - 90;
+      strike = strike % 360;
+      dipdir = dipdir % 360;
+      var dip = d;
+      var trend = diry;
+      var plunge = Math.acos(Math.abs(y) / g);
+
+      if (vmParent.data.type === 'linear_orientation') {
+        vmParent.data.trend = Math.round(trend * 1000) / 1000;
+        vmParent.data.plunge = Math.round(plunge * 1000) / 1000;
+      }
+      else {
+        vmParent.data.strike = Math.round(strike * 1000) / 1000;
+        vmParent.data.dip_direction = Math.round(dipdir * 1000) / 1000;
+        vmParent.data.dip = Math.round(dip * 1000) / 1000;
+      }
+
+      return {
+        'strike': data.strike, 'dipdir': data.dip_direction, 'dip': data.dip,
+        'trend': vmParent.data.trend, 'plunge': vmParent.data.plunge
+      };
+    }
+
     function checkProperties() {
       _.each(vmParent.spot.properties.orientation_data, function (orientation) {
         assignProperties(orientation);
@@ -186,9 +228,11 @@
       var promises = [];
       var promise;
       var msgText = '';
+      var magneticHeading, x, y, z;
 
       promise = $cordovaDeviceOrientation.getCurrentHeading().then(function (result) {
-        msgText += 'Magnetic Heading = ' + result.magneticHeading + '<br>';
+        magneticHeading = result.magneticHeading;
+        msgText += 'Magnetic Heading = ' + magneticHeading + '<br>';
       }, function (err) {
         msgText += 'Compass Error: ' + err + '<br>';
         $log.log(err);
@@ -197,10 +241,12 @@
 
       if (navigator.accelerometer) {
         promise = $cordovaDeviceMotion.getCurrentAcceleration().then(function (result) {
-          var timeStamp = result.timestamp;
-          msgText += 'X = ' + result.x + '<br>';
-          msgText += 'Y = ' + result.y + '<br>';
-          msgText += 'Z = ' + result.z + '<br>';
+          x = result.x;
+          y = result.y;
+          z = result.z;
+          msgText += 'X = ' + x + '<br>';
+          msgText += 'Y = ' + y + '<br>';
+          msgText += 'Z = ' + z + '<br>';
         }, function (err) {
           msgText = 'Acceleration Error: ' + err + '<br>';
         });
@@ -209,6 +255,18 @@
       else msgText += 'Accelerometer Error: No accelerometer on Device<br>';
 
       $q.all(promises).then(function () {
+        if (magneticHeading && x && y && z) {
+          var orientation = calculateOrientation(magneticHeading, x, y, z);
+          if (vmParent.data.type === 'linear_orientation') {
+            msgText += 'Trend = ' + orientation.trend + '<br>';
+            msgText += 'Plunge = ' + orientation.plunge + '<br>';
+          }
+          else {
+            msgText += 'Strike = ' + orientation.strike + '<br>';
+            msgText += 'Dip Direction = ' + orientation.dipdir + '<br>';
+            msgText += 'Dip = ' + orientation.dip + '<br>';
+          }
+        }
         $ionicPopup.alert({
           'title': 'Compass & Accelerometer Info',
           'template': msgText
