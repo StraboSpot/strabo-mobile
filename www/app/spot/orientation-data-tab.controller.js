@@ -85,7 +85,7 @@
       }
 
       return {
-        'strike': data.strike, 'dipdir': data.dip_direction, 'dip': data.dip,
+        'strike': vmParent.data.strike, 'dipdir': vmParent.data.dip_direction, 'dip': vmParent.data.dip,
         'trend': vmParent.data.trend, 'plunge': vmParent.data.plunge
       };
     }
