@@ -73,10 +73,13 @@
       var dip = d;
       var trend = diry;
       var plunge = Math.acos(Math.abs(y) / g);
+      var rake = R;
 
       if (vmParent.data.type === 'linear_orientation') {
         vmParent.data.trend = Math.round(trend * 1000) / 1000;
         vmParent.data.plunge = Math.round(plunge * 1000) / 1000;
+        vmParent.data.rake = Math.round(rake * 1000) / 1000;
+        vmParent.data.rake_calculated = 'yes';
       }
       else {
         vmParent.data.strike = Math.round(strike * 1000) / 1000;
@@ -86,7 +89,7 @@
 
       return {
         'strike': vmParent.data.strike, 'dipdir': vmParent.data.dip_direction, 'dip': vmParent.data.dip,
-        'trend': vmParent.data.trend, 'plunge': vmParent.data.plunge
+        'trend': vmParent.data.trend, 'plunge': vmParent.data.plunge, 'rake': vmParent.data.rake
       };
     }
 
@@ -260,6 +263,7 @@
           if (vmParent.data.type === 'linear_orientation') {
             msgText += 'Trend = ' + orientation.trend + '<br>';
             msgText += 'Plunge = ' + orientation.plunge + '<br>';
+            msgText += 'Rake = ' + orientation.rake + '<br>';
           }
           else {
             msgText += 'Strike = ' + orientation.strike + '<br>';
