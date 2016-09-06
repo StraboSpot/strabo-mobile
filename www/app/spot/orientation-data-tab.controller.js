@@ -49,44 +49,51 @@
     }
 
     function calculateOrientation(magneticHeading, x, y, z) {
+      // Calculate base values given the x, y, and z from the device. The x-axis runs side-to-side across
+      // the mobile phone screen, or the laptop keyboard, and is positive towards the right side. The y-axis
+      // runs front-to-back across the mobile phone screen, or the laptop keyboard, and is positive towards as
+      // it moves away from you. The z-axis comes straight up out of the mobile phone screen, or the laptop
+      // keyboard, and is positive as it moves up.
+      // All results in this section are in radians
       var g = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
       var s = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
       var B = Math.acos(Math.abs(y) / s);
-      var R = 90 - B;
+      var R = HelpersFactory.toRadians(90 - HelpersFactory.toDegrees(B));
       var d = Math.acos(Math.abs(z) / g);
       var b = Math.atan(Math.tan(R) * Math.cos(d));
-      var dipdir;
-      var diry = magneticHeading;
 
+      // Calculate dip direction, strike and dip (in degrees)
+      var dipdir, strike, dip;
+      var diry = magneticHeading;
       if (x === 0 && y === 0) {
         d = 0;
         dipdir = 180;
       }
-      else if (x >= 0 && y >= 0) dipdir = diry - 90 - b;
-      else if (y <= 0 && x >= 0) dipdir = diry - 90 + b;
-      else if (y <= 0 && x <= 0) dipdir = diry + 90 - b;
-      else if (x <= 0 && y >= 0) dipdir = diry + 90 + b;
+      else if (x >= 0 && y >= 0) dipdir = diry - 90 - HelpersFactory.toDegrees(b);
+      else if (y <= 0 && x >= 0) dipdir = diry - 90 + HelpersFactory.toDegrees(b);
+      else if (y <= 0 && x <= 0) dipdir = diry + 90 - HelpersFactory.toDegrees(b);
+      else if (x <= 0 && y >= 0) dipdir = diry + 90 + HelpersFactory.toDegrees(b);
+      dipdir = HelpersFactory.mod(dipdir, 360);
+      strike = dipdir - 90;
+      dip = HelpersFactory.toDegrees(d);
 
-      if (dipdir < 0) dipdir = 360 + dipdir;
-      var strike = dipdir - 90;
-      if (strike < 0) strike = 360 + strike;
-      strike = strike % 360;
-      dipdir = dipdir % 360;
-      var dip = d;
-      var trend = diry;
-      var plunge = Math.acos(Math.abs(y) / g);
-      var rake = R;
+      // Calculate trend, plunge and rake (in degrees)
+      var trend, plunge, rake;
+      if (y > 0) trend = (diry + 180) % 360;
+      if (y <= 0) trend = diry;
+      plunge = HelpersFactory.toDegrees(Math.asin(Math.abs(y) / g));
+      rake = HelpersFactory.toDegrees(R);
 
       if (vmParent.data.type === 'linear_orientation') {
-        vmParent.data.trend = Math.round(trend * 1000) / 1000;
-        vmParent.data.plunge = Math.round(plunge * 1000) / 1000;
-        vmParent.data.rake = Math.round(rake * 1000) / 1000;
+        vmParent.data.trend = HelpersFactory.roundToDecimalPlaces(trend, 2);
+        vmParent.data.plunge = HelpersFactory.roundToDecimalPlaces(plunge, 2);
+        vmParent.data.rake = HelpersFactory.roundToDecimalPlaces(rake, 2);
         vmParent.data.rake_calculated = 'yes';
       }
       else {
-        vmParent.data.strike = Math.round(strike * 1000) / 1000;
-        vmParent.data.dip_direction = Math.round(dipdir * 1000) / 1000;
-        vmParent.data.dip = Math.round(dip * 1000) / 1000;
+        vmParent.data.strike = HelpersFactory.roundToDecimalPlaces(strike, 2);
+        vmParent.data.dip_direction = HelpersFactory.roundToDecimalPlaces(dipdir, 2);
+        vmParent.data.dip = HelpersFactory.roundToDecimalPlaces(dip, 2);
       }
 
       return {
