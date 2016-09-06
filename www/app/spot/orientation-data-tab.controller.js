@@ -74,12 +74,12 @@
       else if (y <= 0 && x <= 0) dipdir = diry + 90 - HelpersFactory.toDegrees(b);
       else if (x <= 0 && y >= 0) dipdir = diry + 90 + HelpersFactory.toDegrees(b);
       dipdir = HelpersFactory.mod(dipdir, 360);
-      strike = dipdir - 90;
+      strike = HelpersFactory.mod(dipdir - 90, 360);
       dip = HelpersFactory.toDegrees(d);
 
       // Calculate trend, plunge and rake (in degrees)
       var trend, plunge, rake;
-      if (y > 0) trend = (diry + 180) % 360;
+      if (y > 0) trend = HelpersFactory.mod(diry + 180, 360);
       if (y <= 0) trend = diry;
       plunge = HelpersFactory.toDegrees(Math.asin(Math.abs(y) / g));
       rake = HelpersFactory.toDegrees(R);
