@@ -39,8 +39,7 @@
     "ionic-plugin-deploy",
     "ionic-plugin-keyboard",
     "cordova-plugin-device-orientation",
-    "cordova-plugin-device-motion",
-    "cordova-plugin-screen-orientation"
+    "cordova-plugin-device-motion"
   ],
   "cordovaPlatforms": [
     "android",

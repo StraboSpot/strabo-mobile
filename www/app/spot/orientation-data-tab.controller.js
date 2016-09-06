@@ -237,8 +237,6 @@
     }
 
     function getCompassInfo() {
-      window.screen.lockOrientation('portrait');
-
       var promises = [];
       var promise;
       var msgText = '';
@@ -269,7 +267,6 @@
       else msgText += 'Accelerometer Error: No accelerometer on Device<br>';
 
       $q.all(promises).then(function () {
-        window.screen.unlockOrientation();
         if (magneticHeading && x && y && z) {
           var orientation = calculateOrientation(magneticHeading, x, y, z);
           if (vmParent.data.type === 'linear_orientation') {
