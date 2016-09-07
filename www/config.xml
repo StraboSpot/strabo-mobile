@@ -38,12 +38,12 @@
   <plugin name="cordova-plugin-console" version="1.0.2" source="npm"/>
   <plugin name="cordova-plugin-device" version="1.1.1" source="npm"/>
   <plugin name="cordova-plugin-device-motion" version="1.2.1" source="npm"/>
+  <plugin name="cordova-plugin-device-orientation" version="1.0.3" source="npm"/>
   <plugin name="cordova-plugin-file" version="4.1.1" source="npm"/>
   <plugin name="cordova-plugin-filepath" version="1.0.2" source="npm"/>
   <plugin name="cordova-plugin-geolocation" version="2.1.0" source="npm"/>
   <plugin name="cordova-plugin-inappbrowser" version="1.0.1" source="npm"/>
   <plugin name="cordova-plugin-network-information" version="1.2.0" source="npm"/>
-  <plugin name="cordova-plugin-screen-orientation" version="1.4.2" source="npm"/>
   <plugin name="cordova-plugin-splashscreen" version="3.2.1" source="npm"/>
   <plugin name="cordova-plugin-whitelist" version="1.2.1" source="npm"/>
   <plugin name="cordova-plugin-statusbar" version="2.1.3" source="npm"/>
