@@ -12,6 +12,11 @@
         <ion-label>Relationship Name</ion-label>
         <input type='text' placeholder='Name this Relationship' ng-model='vm.data.name'>
       </ion-input>
+      <ion-input class='item item-input'>
+        <ion-label>Deformation Event</ion-label>
+        <input type='text' ng-model='vm.data.deformation_event'
+               placeholder='What deformational event(s) are these associated with?'>
+      </ion-input>
     </div>
     <div>
       <button ng-click='vm.selectItem("a")'

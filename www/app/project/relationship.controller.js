@@ -67,11 +67,6 @@
 
       vm.currentSpot = SpotFactory.getCurrentSpot();
       if (!vm.currentSpot) HelpersFactory.setBackView($ionicHistory.currentView().url);
-      else {
-        // If we're adding a new tag from within a spot
-        if (!vm.data.spots) vm.data.spots = [];
-        if (!_.contains(vm.data.spots, vm.currentSpot.properties.id)) vm.data.spots.push(vm.currentSpot.properties.id);
-      }
 
       $ionicModal.fromTemplateUrl('app/project/select-item-modal.html', {
         'scope': $scope,
@@ -345,6 +340,7 @@
         if (_.contains(vm.data[order][item][parentSpotId], id)) vm.data[order][item][parentSpotId] = _.without(
           vm.data[order][item][parentSpotId], id);
         else vm.data[order][item][parentSpotId].push(id);
+        if (_.isEmpty(vm.data[order][item][parentSpotId])) delete vm.data[order][item][parentSpotId];
       }
       else {
         if (!vm.data[order][item]) vm.data[order][item] = [];

@@ -74,6 +74,13 @@ navigation history that also transitions its views in and out.
         Inferences
       </a>
     </span>
+    <span ng-show='vm.showTab("relationships")'>
+      <a class='button button-clear spot-tab-inactive'
+         ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab.relationships"}'
+         ng-click='vm.submit("/app/spotTab/" + vm.spot.properties.id + "/relationships");'>
+        Relationships
+      </a>
+    </span>
     <span ng-show='vm.showTab("tags")'>
       <a class='button button-clear spot-tab-inactive'
          ng-class='{ "spot-tab-active": vm.stateName == "app.spotTab.tags"}'

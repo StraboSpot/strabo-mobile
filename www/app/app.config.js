@@ -260,6 +260,16 @@
           }
         }
       })
+      .state('app.spotTab.relationships', {
+      'cache': false,
+      'url': '/:spotId/relationships',
+      'views': {
+        'spottab-childview': {
+          'templateUrl': 'app/spot/relationships-tab.html',
+          'controller': 'RelationshipsTabController as vmChild'
+        }
+      }
+    })
       .state('app.spotTab.spot', {
         'cache': false,
         'url': '/:spotId/spot',
