@@ -138,11 +138,8 @@
     }
 
     function closeModal(modal) {
-      if (!modal) {
-        setVisibleSpots();
-        vm.filterModal.hide();
-      }
-      else vm[modal].hide();
+      if (modal === 'filterModal') setVisibleSpots();
+      vm[modal].hide();
     }
 
     function filter() {
@@ -254,6 +251,7 @@
 
     function resetFilters() {
       visibleDatasets = [];
+      SpotFactory.setVisibleDatasets(visibleDatasets);
       setVisibleSpots();
     }
 

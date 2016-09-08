@@ -1,0 +1,70 @@
+<ion-modal-view>
+  <ion-header-bar class='bar-dark nav-title-slide-ios7' align-title='center'>
+    <button class='button button-clear' ng-click='vm.closeModal("selectItemModal")'>
+      <span class='icon ion-arrow-left-c'></span>
+    </button>
+    <h1 class='title'>Select Items</h1>
+    <button class='button button-icon ion-funnel button-positive' ng-click='vm.filter()'></button>
+  </ion-header-bar>
+  <ion-content class='has-header'>
+    <div class='button-bar'>
+      <a class='button' ng-click='vm.toggleItem("spots")'
+         ng-class='{"button-positive": vm.isShowItem("spots"), "button-stable": !vm.isShowItem("spots")}'>Spots</a>
+      <a class='button' ng-click='vm.toggleItem("features")'
+         ng-class='{"button-positive": vm.isShowItem("features"), "button-stable": !vm.isShowItem("features")}'>Features</a>
+      <a class='button' ng-click='vm.toggleItem("tags")'
+         ng-class='{"button-positive": vm.isShowItem("tags"), "button-stable": !vm.isShowItem("tags")}'>Tags</a>
+    </div>
+    <div class='padding-left filter-on' ng-show='vm.filterOn'>
+      Results are being filtered.
+    </div>
+    <div ng-show='vm.isShowItem("spots")'>
+      <div class='padding' ng-show='vm.spotsDisplayed.length === 0'>
+        No Spots in your active datasets.
+      </div>
+      <ion-checkbox class='item-text-wrap item-button-right'
+                    ng-repeat='spot in vm.spotsDisplayed track by spot.properties.id'
+                    ng-checked='vm.isOptionChecked("spots", spot.properties.id)'
+                    ng-click='vm.toggleChecked("spots", spot.properties.id)'>
+        {{ spot.properties.name }}
+      </ion-checkbox>
+      <ion-infinite-scroll
+        ng-if='vm.moreSpotsCanBeLoaded()'
+        icon='ion-loading-c'
+        on-infinite='vm.loadMoreSpots()'>
+      </ion-infinite-scroll>
+    </div>
+    <div ng-show='vm.isShowItem("features")'>
+      <div class='padding' ng-show='vm.spotsDisplayed.length === 0'>
+        No Features in your active datasets.
+      </div>
+      <ion-checkbox class='item-text-wrap item-button-right'
+                    ng-repeat='feature in vm.featuresDisplayed track by feature.id'
+                    ng-checked='vm.isOptionChecked("features", feature.id, feature.parentSpotId)'
+                    ng-click='vm.toggleChecked("features", feature.id, feature.parentSpotId)'>
+        {{ feature.label }} <small>(in Spot: {{ vm.getSpotName(feature.parentSpotId) }})</small>
+      </ion-checkbox>
+      <ion-infinite-scroll
+        ng-if='vm.moreFeaturesCanBeLoaded()'
+        icon='ion-loading-c'
+        on-infinite='vm.loadMoreFeatures()'>
+      </ion-infinite-scroll>
+    </div>
+    <div ng-show='vm.isShowItem("tags")'>
+      <div class='padding' ng-show='vm.tagsDisplayed.length === 0'>
+        No Tags in your project.
+      </div>
+      <ion-checkbox class='item-text-wrap item-button-right'
+                    ng-repeat='tag in vm.tagsDisplayed track by tag.id'
+                    ng-checked='vm.isOptionChecked("tags", tag.id)'
+                    ng-click='vm.toggleChecked("tags", tag.id)'>
+        {{ tag.name }}
+      </ion-checkbox>
+      <ion-infinite-scroll
+        ng-if='vm.moreTagsCanBeLoaded()'
+        icon='ion-loading-c'
+        on-infinite='vm.loadMoreTags()'>
+      </ion-infinite-scroll>
+    </div>
+  </ion-content>
+</ion-modal-view>

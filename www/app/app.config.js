@@ -69,6 +69,26 @@
           }
         }
       })
+      .state('app.relationships', {
+        'cache': false,
+        'url': '/relationships',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/project/relationships.html',
+            'controller': 'RelationshipsController as vm'
+          }
+        }
+      })
+      .state('app.relationship', {
+        'cache': false,
+        'url': '/relationships/:relationship_id',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/project/relationship.html',
+            'controller': 'RelationshipController as vm'
+          }
+        }
+      })
       .state('app.tags', {
         'cache': false,
         'url': '/tags',

@@ -15,6 +15,8 @@
     var activeDatasets = [];
     var defaultTypes = ['geomorhic', 'hydrologic', 'paleontological', 'igneous', 'metamorphic', 'sedimentological',
       'other'];
+    var defaultRelationshipTypes = ['cross-cuts', 'is cut by', 'is younger than', 'is older than',
+      'is lower metamorphic grade than', 'is higher metamorphic grade than', 'is included within', 'includes'];
     var isActiveTagging = false;
     var spotsDataset = {};
     var spotIds = {};
@@ -30,20 +32,29 @@
       'destroyDataset': destroyDataset,
       'destroyProject': destroyProject,
       'destroyOtherFeature': destroyOtherFeature,
+      'destroyRelationshipType': destroyRelationshipType,
       'destroyRockUnit': destroyRockUnit,
       'destroyTag': destroyTag,
       'destroyTags': destroyTags,
+      'destroyRelationship': destroyRelationship,
+      'destroyRelationships': destroyRelationships,
       'getActiveDatasets': getActiveDatasets,
       'getActiveTagging': getActiveTagging,
+      'getActiveTags': getActiveTags,
       'getAddNewActiveTag': getAddNewActiveTag,
       'getCurrentDatasets': getCurrentDatasets,
       'getCurrentProject': getCurrentProject,
       'getDefaultOtherFeatureTypes': getDefaultOtherFeatureTypes,
+      'getDefaultRelationshipTypes': getDefaultRelationshipTypes,
+      'getNumTaggedFeatures': getNumTaggedFeatures,
       'getPreferences': getPreferences,
       'getProjectName': getProjectName,
       'getProjectDescription': getProjectDescription,
       'getProjectTools': getProjectTools,
       'getOtherFeatures': getOtherFeatures,
+      'getRelationship': getRelationship,
+      'getRelationships': getRelationships,
+      'getRelationshipTypes': getRelationshipTypes,
       'getRockUnits': getRockUnits,
       'getSampleNumber': getSampleNumber,
       'getSamplePrefix': getSamplePrefix,
@@ -51,8 +62,6 @@
       'getSpotPrefix': getSpotPrefix,
       'getSpotsDataset': getSpotsDataset,
       'getSpotIds': getSpotIds,
-      'getActiveTags': getActiveTags,
-      'getNumTaggedFeatures': getNumTaggedFeatures,
       'getTag': getTag,
       'getTags': getTags,
       'getTagsBySpotId': getTagsBySpotId,
@@ -70,6 +79,7 @@
       'removeTagFromSpot': removeTagFromSpot,
       'saveActiveDatasets': saveActiveDatasets,
       'saveProjectItem': saveProjectItem,
+      'saveRelationship': saveRelationship,
       'saveTag': saveTag,
       'saveSpotsDataset': saveSpotsDataset,
       'setActiveTagging': setActiveTagging,
@@ -200,6 +210,7 @@
       promises.push(saveProjectItem('modified_timestamp', Date.now()));
       promises.push(saveProjectItem('id', id));
       promises.push(saveProjectItem('other_features', defaultTypes));
+      promises.push(saveProjectItem('relationship_types', defaultRelationshipTypes));
       $q.all(promises).then(function () {
         $log.log('New project:', currentProject);
         saveDatasets().then(function () {
@@ -255,6 +266,11 @@
       saveProjectItem('other_features', currentProject.other_features);
     }
 
+    function destroyRelationshipType(i) {
+      currentProject.relationship_types.splice(i, 1);
+      saveProjectItem('relationship_types', currentProject.relationship_types);
+    }
+
     function destroyRockUnit(key, value) {
       currentProject.rock_units = _.reject(currentProject.rock_units, function (obj) {
         return obj[key] === value;
@@ -292,6 +308,29 @@
       return deferred.promise;
     }
 
+    function destroyRelationship(id) {
+      var deferred = $q.defer(); // init promise
+      currentProject.relationships = _.reject(currentProject.relationships, function (relationship) {
+        return relationship.id === id;
+      });
+      if (currentProject.relationships.length === 0) destroyRelationships().then(deferred.resolve);
+      else {
+        saveProjectItem('relationships', currentProject.relationships).then(function () {
+          deferred.resolve();
+        });
+      }
+      return deferred.promise;
+    }
+
+    function destroyRelationships() {
+      var deferred = $q.defer(); // init promise
+      delete currentProject.relationships;
+      LocalStorageFactory.getDb().projectDb.removeItem('relationships').then(function () {
+        deferred.resolve();
+      });
+      return deferred.promise;
+    }
+
     function getActiveTags() {
       return activeTags;
     }
@@ -324,9 +363,18 @@
       return defaultTypes;
     }
 
+    function getDefaultRelationshipTypes() {
+      return defaultRelationshipTypes;
+    }
+
     function getOtherFeatures() {
       if (!currentProject) return undefined;
       return currentProject.other_features ? currentProject.other_features : [];
+    }
+
+    function getRelationshipTypes() {
+      if (!currentProject) return undefined;
+      return currentProject.relationship_types ? currentProject.relationship_types : [];
     }
 
     function getPreferences() {
@@ -347,6 +395,18 @@
     function getProjectTools() {
       if (!currentProject) return undefined;
       return currentProject.tools || {};
+    }
+
+    function getRelationship(id) {
+      if (!currentProject.relationships) return {};
+      return _.find(currentProject.relationships,
+          function (relationship) {
+            return relationship.id === id;
+          }) || {};
+    }
+
+    function getRelationships() {
+      return currentProject.relationships || [];
     }
 
     function getRockUnits() {
@@ -399,7 +459,7 @@
 
     function getNumTaggedFeatures(tag) {
       var count = 0;
-      if (tag.features) {
+      if (tag && tag.features) {
         _.each(tag.features, function (featuresList) {
           count += featuresList.length;
         });
@@ -609,6 +669,19 @@
       });
       return deferred.promise;
     }
+
+    function saveRelationship(relationshipToSave) {
+      var deferred = $q.defer(); // init promise
+      currentProject.relationships = _.reject(currentProject.relationships, function (relationship) {
+        return relationship.id === relationshipToSave.id;
+      });
+      currentProject.relationships.push(relationshipToSave);
+      saveProjectItem('relationships', currentProject.relationships).then(function () {
+        deferred.resolve();
+      });
+      return deferred.promise;
+    }
+
 
     function saveTag(tagToSave) {
       var deferred = $q.defer(); // init promise

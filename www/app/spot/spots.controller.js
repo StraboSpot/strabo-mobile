@@ -19,7 +19,7 @@
     vm.activeDatasets = [];
     vm.checkedDataset = checkedDataset;
     vm.closeDetailModal = closeDetailModal;
-    vm.closeFilterModal = closeFilterModal;
+    vm.closeModal = closeModal;
     vm.deleteAllActiveSpots = deleteAllActiveSpots;
     vm.deleteSelected = false;
     vm.deleteSpot = deleteSpot;
@@ -127,9 +127,9 @@
       $log.log('visibleDatasets after:', visibleDatasets);
     }
 
-    function closeFilterModal() {
+    function closeModal(modal) {
       setVisibleSpots();
-      vm.filterModal.hide();
+      vm[modal].hide();
     }
 
     function closeDetailModal() {
@@ -398,6 +398,7 @@
 
     function resetFilters() {
       visibleDatasets = [];
+      SpotFactory.setVisibleDatasets(visibleDatasets);
       setVisibleSpots();
     }
 

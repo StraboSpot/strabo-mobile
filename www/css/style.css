@@ -719,3 +719,17 @@ Spots Page
   padding-left: 24px;
   font-style: oblique;
 }
+
+/*--------------------
+Relationships Page
+---------------------*/
+
+.relationship-types{
+  font-size: medium;
+  font-weight: bold;
+  text-align: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-top: 2px solid darkgray;
+  border-bottom: 2px solid darkgray;
+}
