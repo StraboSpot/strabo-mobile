@@ -1,0 +1,24 @@
+<div>
+  <label class="item item-input item-select">
+    <div class="input-label">
+      Concept Type
+    </div>
+    <select ng-model='vm.data.concept_type' ng-change='vm.typeSelected()'>
+      <option value='geological_structure'>Geological Structure</option>
+      <option value='marker_layer'>Marker Layer</option>
+      <option value='deformation_event'>Deformation Event</option>
+      <option value='degree_of_deformation'>Degree of Deformation</option>
+      <option value='mineral'>Mineral</option>
+      <option value='metamorphic_facies'>Metamorphic Facies</option>
+      <option value='other_concept'>Other Concept</option>
+    </select>
+  </label>
+  <div ng-show='vm.data.concept_type === "other_concept"'>
+    <ion-input class='item item-input'>
+      <ion-label>Other Concept Type</ion-label>
+      <input type='text' ng-model='vm.data.other_concept_type'>
+    </ion-input>
+  </div>
+  <br>
+  <strabo-tagged-list-directive></strabo-tagged-list-directive>
+</div>

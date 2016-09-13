@@ -1,0 +1,12 @@
+<div>
+  <button ng-click='vm.showMore()'
+          class='button button-clear button-positive'>
+    <i class='icon ion-information-circled'></i>
+    <span class='button-text-small'>Show More Geologic Unit</span>
+  </button>
+  <form name='straboForm' novalidate='' ng-show='vm.isShowMore'>
+    <auto-fields></auto-fields>
+  </form>
+  <br>
+  <strabo-tagged-list-directive></strabo-tagged-list-directive>
+</div>

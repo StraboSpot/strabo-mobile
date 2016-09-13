@@ -69,32 +69,12 @@
           }
         }
       })
-      .state('app.relationships', {
-        'cache': false,
-        'url': '/relationships',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/project/relationships.html',
-            'controller': 'RelationshipsController as vm'
-          }
-        }
-      })
-      .state('app.relationship', {
-        'cache': false,
-        'url': '/relationships/:relationship_id',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/project/relationship.html',
-            'controller': 'RelationshipController as vm'
-          }
-        }
-      })
       .state('app.tags', {
         'cache': false,
         'url': '/tags',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/project/tags.html',
+            'templateUrl': 'app/tag/tags.html',
             'controller': 'TagsController as vm'
           }
         }
@@ -104,7 +84,7 @@
         'url': '/tags/:tag_id',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/project/tag.html',
+            'templateUrl': 'app/tag/tag.html',
             'controller': 'TagController as vm'
           }
         }
@@ -260,16 +240,6 @@
           }
         }
       })
-      .state('app.spotTab.relationships', {
-      'cache': false,
-      'url': '/:spotId/relationships',
-      'views': {
-        'spottab-childview': {
-          'templateUrl': 'app/spot/relationships-tab.html',
-          'controller': 'RelationshipsTabController as vmChild'
-        }
-      }
-    })
       .state('app.spotTab.spot', {
         'cache': false,
         'url': '/:spotId/spot',

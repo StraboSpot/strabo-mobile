@@ -6,13 +6,16 @@
     .controller('TagsController', TagsController);
 
   TagsController.$inject = ['$ionicPopover', '$ionicPopup', '$location', '$log', '$scope', 'DataModelsFactory',
-    'HelpersFactory', 'ProjectFactory'];
+    'HelpersFactory', 'ProjectFactory', 'TagFactory'];
 
   function TagsController($ionicPopover, $ionicPopup, $location, $log, $scope, DataModelsFactory, HelpersFactory,
-                          ProjectFactory) {
+                          ProjectFactory, TagFactory) {
     var vm = this;
 
     var isDelete = false;
+
+    vm.selectedType = 'all';
+    vm.tags = [];
 
     vm.deleteAllTags = deleteAllTags;
     vm.deleteTag = deleteTag;
@@ -20,7 +23,7 @@
     vm.getTagTypeLabel = getTagTypeLabel;
     vm.goToTag = goToTag;
     vm.newTag = newTag;
-    vm.tags = [];
+    vm.typeSelected = typeSelected;
 
     activate();
 
@@ -32,8 +35,19 @@
       if (_.isEmpty(ProjectFactory.getCurrentProject())) $location.path('app/manage-project');
       else {
         vm.tags = ProjectFactory.getTags();
+        vm.tagsToDisplay = vm.tags;
         createPopover();
       }
+
+      _.each(vm.tags, function (tag) {
+        // Fix all old tags which have a categorization element
+        if (tag.categorization) {
+          tag.type = 'other';
+          tag.other_type = tag.categorization;
+          delete tag.categorization;
+          ProjectFactory.saveTag(tag);
+        }
+      })
     }
 
     function createPopover() {
@@ -91,7 +105,7 @@
     }
 
     function getTagTypeLabel(type) {
-      return DataModelsFactory.getTagTypeLabel(type);
+      return TagFactory.getTagTypeLabel(type);
     }
 
     function goToTag(id) {
@@ -101,6 +115,15 @@
     function newTag() {
       var id = HelpersFactory.newId();
       $location.path('/app/tags/' + id);
+    }
+
+    function typeSelected() {
+      if (vm.selectedType === 'all') vm.tagsToDisplay = vm.tags;
+      else {
+        vm.tagsToDisplay = _.filter(vm.tags, function (tag) {
+          return tag.type === vm.selectedType;
+        });
+      }
     }
   }
 }());

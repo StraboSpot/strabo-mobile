@@ -1,0 +1,50 @@
+<div>
+  <button ng-click='vm.selectItem()'
+          class='button button-clear button-positive'>
+    <i class='icon ion-plus-circled'></i>
+    <span class='button-text-big'>Add/Remove Items to this Tag</span>
+  </button>
+
+  <div class='field-group item item-divider' ng-show='vm.data.spots.length > 0'>
+    {{ vm.data.spots.length }}
+    <span ng-if='vm.data.spots.length > 1'>Spots</span>
+    <span ng-if='vm.data.spots.length === 1'>Spot</span>
+  </div>
+  <div ng-show='!vm.data.spots || vm.data.spots.length === 0' class='padding'>
+    No Spots with this Tag yet.
+  </div>
+  <ion-list>
+    <ion-item class='item-text-wrap item-button-right'
+              ng-repeat='spotId in vm.data.spots'
+              ng-click='vm.goToSpot(spotId)'>
+      {{ vm.getSpotName(spotId) }}
+    </ion-item>
+  </ion-list>
+  <div class='field-group item item-divider' ng-show='vm.getNumTaggedFeatures(vm.data) > 0'>
+    {{ vm.getNumTaggedFeatures(vm.data) }}
+    <span ng-if='vm.getNumTaggedFeatures(vm.data) > 1'>Features</span>
+    <span ng-if='vm.getNumTaggedFeatures(vm.data) === 1'>Feature</span>
+  </div>
+  <ion-list>
+    <div ng-repeat='(spotId, featureList) in vm.data.features'>
+      <ion-item class='item-text-wrap item-button-right'
+                ng-repeat='featureId in featureList'
+                ng-click='vm.goToSpot(vm.keyToId(spotId))'>
+        {{ vm.getFeatureName(vm.keyToId(spotId), featureId) }}
+        <small>(in Spot: {{ vm.getSpotName(vm.keyToId(spotId)) }})</small>
+      </ion-item>
+    </div>
+  </ion-list>
+  <div class='field-group item item-divider' ng-show='vm.data.tags.length > 0'>
+    {{ vm.data.tags.length }}
+    <span ng-if='vm.data.tags.length > 1'>Tags</span>
+    <span ng-if='vm.data.tags.length === 1'>Tag</span>
+  </div>
+  <ion-list>
+    <ion-item class='item-text-wrap item-button-right'
+              ng-repeat='tagId in vm.data.tags'
+              ng-click='vm.goToTag(tagId)'>
+      {{ vm.getTagName(tagId) }}
+    </ion-item>
+  </ion-list>
+</div>

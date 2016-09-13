@@ -1,7 +1,0 @@
-name,type,label,required,relevant,appearance
-name,text,Tag Name,true,,
-categorization,select_one nc1iz96,Categorization,false,,
-other_categorization,text,Other Categorization,true,${categorization} = 'other',
-description,text,Description,false,,multiline
-start,start,,,,
-end,end,,,,

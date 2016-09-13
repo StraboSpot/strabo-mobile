@@ -1,0 +1,20 @@
+<div>
+  <label class="item item-input item-select">
+    <div class="input-label">
+      Documentation Type
+    </div>
+    <select ng-model='vm.data.documentation_type' ng-change='vm.typeSelected()'>
+      <option value='observation_timing'>Observation Timing</option>
+      <option value='type_of_data'>Type of Data</option>
+      <option value='other_documentation'>Other Documentation</option>
+    </select>
+  </label>
+  <div ng-show='vm.data.documentation_type === "other_documentation"'>
+    <ion-input class='item item-input'>
+      <ion-label>Other Documentation Type</ion-label>
+      <input type='text' ng-model='vm.data.other_documentation_type'>
+    </ion-input>
+  </div>
+  <br>
+  <strabo-tagged-list-directive></strabo-tagged-list-directive>
+</div>
