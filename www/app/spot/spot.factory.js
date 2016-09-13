@@ -5,9 +5,10 @@
     .module('app')
     .factory('SpotFactory', SpotFactory);
 
-  SpotFactory.$inject = ['$ionicPopup', '$location', '$log', '$state', '$q', 'LocalStorageFactory', 'ProjectFactory'];
+  SpotFactory.$inject = ['$ionicPopup', '$location', '$log', '$state', '$q', 'HelpersFactory', 'LocalStorageFactory',
+    'ProjectFactory'];
 
-  function SpotFactory($ionicPopup, $location, $log, $state, $q, LocalStorageFactory, ProjectFactory) {
+  function SpotFactory($ionicPopup, $location, $log, $state, $q, HelpersFactory, LocalStorageFactory, ProjectFactory) {
     var activeNest = [];
     var activeSpots;  // Only Spots in the active datasets
     var currentSpot;
@@ -76,7 +77,7 @@
      */
 
     function addSpotToActiveNest(inSpot) {
-      var found = _.find(activeNest, function(spotInNest) {
+      var found = _.find(activeNest, function (spotInNest) {
         return spotInNest.properties.id === inSpot.properties.id;
       });
       if (!found) activeNest.push(inSpot);
@@ -166,7 +167,7 @@
       return activeSpots;
     }
 
-    function getActiveNest(){
+    function getActiveNest() {
       return activeNest;
     }
 
@@ -354,9 +355,7 @@
         d.setMilliseconds(0);
         currentSpot.properties.date = d;
         currentSpot.properties.time = d;
-
-        // Set id from the timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id)
-        currentSpot.properties.id = Math.floor((new Date().getTime() + Math.random()) * 10);
+        currentSpot.properties.id = HelpersFactory.getNewId();
 
         // Set default name
         var prefix = ProjectFactory.getSpotPrefix();

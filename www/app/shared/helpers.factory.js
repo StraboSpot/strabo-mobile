@@ -7,11 +7,12 @@
 
   function HelpersFactory() {
     var backView = 'app/spots';
+    var ids = [];
 
     return {
       'getBackView': getBackView,
+      'getNewId': getNewId,
       'mod': mod,
-      'newId': newId,
       'roundToDecimalPlaces': roundToDecimalPlaces,
       'setBackView': setBackView,
       'toDegrees': toDegrees,
@@ -27,8 +28,15 @@
       return ((a % n) + n) % n;
     }
 
-    function newId() {
-      return Math.floor((new Date().getTime() + Math.random()) * 10);
+    // Return id from the timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id)
+    // "Integers (numbers without a period or exponent notation) are considered accurate up to 15 digits."
+    function getNewId() {
+      var newId = Math.floor((new Date().getTime() + Math.random()) * 10);
+      if (_.contains(ids, newId)) getNewId();
+      else {
+        ids.push(newId);
+        return newId;
+      }
     }
 
     // Round value to the number of decimal places in the variable places

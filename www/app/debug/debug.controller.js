@@ -6,19 +6,18 @@
     .controller('DebugController', DebugController);
 
   DebugController.$inject = ['$document', '$ionicLoading', '$ionicModal', '$ionicPopup', '$log', '$q', '$scope',
-    '$state', '$window', 'DataModelsFactory', 'ProjectFactory', 'RemoteServerFactory', 'SpotFactory'];
+    '$state', '$window', 'DataModelsFactory', 'HelpersFactory', 'ProjectFactory', 'RemoteServerFactory', 'SpotFactory'];
 
   function DebugController($document, $ionicLoading, $ionicModal, $ionicPopup, $log, $q, $scope, $state, $window,
-                           DataModelsFactory, ProjectFactory, RemoteServerFactory, SpotFactory) {
+                           DataModelsFactory, HelpersFactory, ProjectFactory, RemoteServerFactory, SpotFactory) {
     var vm = this;
-
-    vm.spotDataModel = {};
 
     vm.closeModal = closeModal;
     vm.getSpotDataModel = getSpotDataModel;
     vm.msg = undefined;
     vm.pointsToGenerate = undefined;
     vm.resetDbUrl = resetDbUrl;
+    vm.spotDataModel = {};
     vm.spotModelModal = {};
     vm.save = save;
     vm.submit = submit;
@@ -115,6 +114,7 @@
             },
             'properties': {
               'orientation_data': [{
+                'id': HelpersFactory.getNewId(),
                 'dip': _.random(0, 90),
                 'feature_type': feature_types[Math.floor(Math.random() * feature_types.length)],
                 'type': 'planar_orientation',

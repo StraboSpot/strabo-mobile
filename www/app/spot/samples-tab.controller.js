@@ -40,7 +40,7 @@
     function checkProperties() {
       _.each(vmParent.spot.properties.samples, function (sample) {
         if (!sample.label) sample.label = createDefaultLabel(sample);
-        if (!sample.id) sample.id = HelpersFactory.newId();
+        if (!sample.id) sample.id = HelpersFactory.getNewId();
       });
     }
 
@@ -77,7 +77,7 @@
 
     function addSample() {
       vmParent.data = {};
-      vmParent.data.id = HelpersFactory.newId();
+      vmParent.data.id = HelpersFactory.getNewId();
       var number = ProjectFactory.getSampleNumber() || '';
       var prefix = ProjectFactory.getSamplePrefix() || '';
       if (number !== '' || prefix !== '') vmParent.data.sample_id_name = prefix + number.toString();

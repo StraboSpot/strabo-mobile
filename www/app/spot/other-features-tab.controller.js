@@ -51,7 +51,7 @@
     function checkProperties() {
       _.each(vmParent.spot.properties.other_features, function (otherFeature) {
         if (!otherFeature.label) otherFeature.label = createDefaultLabel(otherFeature);
-        if (!otherFeature.id) otherFeature.id = HelpersFactory.newId();
+        if (!otherFeature.id) otherFeature.id = HelpersFactory.getNewId();
       });
     }
 
@@ -77,7 +77,7 @@
 
     function addFeature() {
       vm.otherFeature = {};
-      vm.otherFeature.id = HelpersFactory.newId();
+      vm.otherFeature.id = HelpersFactory.getNewId();
       vm.otherFeatureModal.show();
     }
 

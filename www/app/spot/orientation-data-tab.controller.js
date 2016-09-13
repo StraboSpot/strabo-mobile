@@ -44,7 +44,7 @@
 
     function assignProperties(item) {
       if (!item.label) item.label = item.name || createDefaultLabel(item);
-      if (!item.id) item.id = HelpersFactory.newId();
+      if (!item.id) item.id = HelpersFactory.getNewId();
       if (!item.type) item.type = item.orientation_type || 'planar_orientation';
     }
 
@@ -151,7 +151,7 @@
       vmParent.choices = DataModelsFactory.getDataModel('orientation_data')[type].choices;
       vmParent.data = {};
       vmParent.data.type = type;
-      vmParent.data.id = HelpersFactory.newId();
+      vmParent.data.id = HelpersFactory.getNewId();
       vm.modalTitle = 'Add a ' + getModalTitlePart();
       vm.basicFormModal.show();
     }
@@ -162,7 +162,7 @@
       vmParent.choices = DataModelsFactory.getDataModel('orientation_data')[type].choices;
       vmParent.data = {};
       vmParent.data.type = type;
-      vmParent.data.id = HelpersFactory.newId();
+      vmParent.data.id = HelpersFactory.getNewId();
       vm.modalTitle = 'Add a ' + getModalTitlePart();
       vm.basicFormModal.show();
     }

@@ -38,7 +38,7 @@
     function checkProperties() {
       _.each(vmParent.spot.properties._3d_structures, function (_3dStructure) {
         if (!_3dStructure.label) _3dStructure.label = createDefaultLabel(_3dStructure);
-        if (!_3dStructure.id) _3dStructure.id = HelpersFactory.newId();
+        if (!_3dStructure.id) _3dStructure.id = HelpersFactory.getNewId();
       });
     }
 
@@ -71,7 +71,7 @@
       vmParent.choices = DataModelsFactory.getDataModel('_3d_structures')[type].choices;
       vmParent.data = {};
       vmParent.data.type = type;
-      vmParent.data.id = HelpersFactory.newId();
+      vmParent.data.id = HelpersFactory.getNewId();
       vm.modalTitle = 'Add ' + vmParent.data.type;
       vm.basicFormModal.show();
     }

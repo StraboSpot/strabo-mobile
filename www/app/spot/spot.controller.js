@@ -135,7 +135,7 @@
 
     function createTag() {
       vm.addTagModal.hide();
-      var id = HelpersFactory.newId();
+      var id = HelpersFactory.getNewId();
       vm.submit('/app/tags/' + id);
     }
 

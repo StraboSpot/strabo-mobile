@@ -113,7 +113,7 @@
     }
 
     function newTag() {
-      var id = HelpersFactory.newId();
+      var id = HelpersFactory.getNewId();
       $location.path('/app/tags/' + id);
     }
 
