@@ -13,7 +13,7 @@
     var vm = this;
 
     var isDelete = false;
-    var lastType = undefined;
+    var lastType;
     var order = 'a';
     var visibleDatasets = [];
 
@@ -40,6 +40,7 @@
     vm.loadMoreSpots = loadMoreSpots;
     vm.moreSpotsCanBeLoaded = moreSpotsCanBeLoaded;
     vm.keyToId = keyToId;
+    vm.otherRelationshipType = undefined;
     vm.relationshipTypes = [];
     vm.removeFeature = removeFeature;
     vm.removeSpot = removeSpot;
@@ -50,7 +51,6 @@
     vm.selectTypesModal = {};
     vm.showField = showField;
     vm.showItem = 'spots';
-    vm.showMore = showMore;
     vm.spots = [];
     vm.spotsDisplayed = [];
     vm.survey = [];
@@ -58,6 +58,7 @@
     vm.tagsDisplayed = [];
     vm.toggleChecked = toggleChecked;
     vm.toggleItem = toggleItem;
+    vm.toggleShowMore = toggleShowMore;
     vm.toggleTypeChecked = toggleTypeChecked;
     vm.typeSelected = typeSelected;
 
@@ -69,15 +70,6 @@
 
     function activate() {
       loadTag();
-      lastType = vm.data.type;
-
-      // Fix all old tags which have a categorization element
-      if (vm.data.categorization) {
-        vm.data.type = 'other';
-        vm.data.other_type = vm.data.categorization;
-        delete vm.data.categorization;
-      }
-
       visibleDatasets = SpotFactory.getVisibleDatasets();
       setVisibleSpots();
       setFeatures();
@@ -156,6 +148,19 @@
       var id = $state.params.tag_id;
       vm.data = ProjectFactory.getTag(id);
       vm.data.id = id;  // Just in case vm.tag is undefined
+      if (vm.data.type === 'geologic_unit') {
+        vm.survey = DataModelsFactory.getDataModel('rock_unit').survey;
+        vm.choices = DataModelsFactory.getDataModel('rock_unit').choices;
+      }
+      lastType = vm.data.type;
+
+      // Fix all old tags which have a categorization element
+      if (vm.data.categorization) {
+        vm.data.type = 'other';
+        vm.data.other_type = vm.data.categorization;
+        delete vm.data.categorization;
+      }
+
       $log.log('Loaded Tag:', vm.data);
     }
 
@@ -177,10 +182,9 @@
     }
 
     function setRelationshipTypes() {
-      vm.relationshipTypes = ProjectFactory.getDefaultRelationshipTypes();
-      _.each(vm.data.types, function (type) {
-        if (!_.contains(vm.relationshipTypes, type)) vm.relationshipTypes.push(type);
-      });
+      vm.relationshipTypes = _.union(ProjectFactory.getRelationshipTypes(),
+        ProjectFactory.getDefaultRelationshipTypes());
+      vm.relationshipTypes = _.union(vm.relationshipTypes, vm.data.types);
       ProjectFactory.saveProjectItem('relationship_types', vm.relationshipTypes);
     }
 
@@ -218,16 +222,17 @@
      */
 
     function addRelationshipType() {
+      vm.otherRelationshipType = undefined;
       var myPopup = $ionicPopup.show({
-        template: '<input type="text" ng-model="vm.otherRelationshipType">',
-        title: 'Enter Other Relationship Type',
-        scope: $scope,
-        buttons: [
-          {text: 'Cancel'},
+        'template': '<input type="text" ng-model="vm.otherRelationshipType">',
+        'title': 'Enter Other Relationship Type',
+        'scope': $scope,
+        'buttons': [
+          {'text': 'Cancel'},
           {
-            text: '<b>Save</b>',
-            type: 'button-positive',
-            onTap: function (e) {
+            'text': '<b>Save</b>',
+            'type': 'button-positive',
+            'onTap': function (e) {
               if (!vm.otherRelationshipType) e.preventDefault();
               else return vm.otherRelationshipType;
             }
@@ -236,11 +241,10 @@
       });
       myPopup.then(function (res) {
         if (res) {
+          if (!vm.data.types) vm.data.types = [];
           vm.data.types.push(res);
-          vm.otherRelationshipType = undefined;
           setRelationshipTypes();
         }
-        else vm.data.types = _.without(vm.data.types, 'other');
       });
     }
 
@@ -254,7 +258,10 @@
     }
 
     function closeModal(modal) {
-      if (modal === 'filterModal') setVisibleSpots();
+      if (modal === 'filterModal') {
+        setVisibleSpots();
+        setFeatures();
+      }
       vm[modal].hide();
     }
 
@@ -270,7 +277,7 @@
     function getFeatureName(spotId, featureId) {
       spotId = parseInt(spotId);
       var spot = SpotFactory.getSpotById(spotId);
-      var found = undefined;
+      var found;
       _.each(spot.properties, function (property) {
         if (!found) {
           found = _.find(property, function (item) {
@@ -292,6 +299,9 @@
 
     function go(path) {
       if (Object.keys(vm.data).length > 1) {
+        if (vm.data.type === 'geologic_unit' && vm.data.name && !vm.data.unit_label_abbreviation) {
+          vm.data.unit_label_abbreviation = vm.data.name;
+        }
         if (!vm.data.name) {
           $ionicPopup.alert({
             'title': 'No Name Given!',
@@ -309,9 +319,6 @@
             'title': 'Incomplete Relationship!',
             'template': 'Please specify both sides of the relationship and a relationship type.'
           });
-        }
-        else if (vm.data.type === 'geologic_unit' && !FormFactory.validate(vm.survey, vm.data)) {
-          $log.log('Not valid');
         }
         else {
           if (ProjectFactory.getAddNewActiveTag()) {
@@ -436,10 +443,6 @@
       return show;
     }
 
-    function showMore() {
-      vm.isShowMore = !vm.isShowMore;
-    }
-
     function toggleChecked(item, id, parentSpotId) {
       if (vm.data.type === 'relationship') {
         if (!vm.data[order]) vm.data[order] = {};
@@ -484,10 +487,14 @@
       vm.showItem = item;
     }
 
+    function toggleShowMore() {
+      vm.isShowMore = !vm.isShowMore;
+    }
+
     function toggleTypeChecked(type) {
       if (!vm.data.types) vm.data.types = [];
       if (_.contains(vm.data.types, type)) vm.data.types = _.without(vm.data.types, type);
-      else  vm.data.types.push(type);
+      else vm.data.types.push(type);
       if (_.isEmpty(vm.data.types)) delete vm.data.types;
     }
 

@@ -32,11 +32,12 @@
     // "Integers (numbers without a period or exponent notation) are considered accurate up to 15 digits."
     function getNewId() {
       var newId = Math.floor((new Date().getTime() + Math.random()) * 10);
-      if (_.contains(ids, newId)) getNewId();
-      else {
-        ids.push(newId);
-        return newId;
+      if (_.contains(ids, newId)) {
+        newId = Math.floor((new Date().getTime() + Math.random()) * 10);
+        if (_.contains(ids, newId)) newId = Math.floor((new Date().getTime() + Math.random()) * 10);
       }
+      ids.push(newId);
+      return newId;
     }
 
     // Round value to the number of decimal places in the variable places

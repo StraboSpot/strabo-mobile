@@ -33,14 +33,29 @@
                 ng-repeat='tag in vm.tagsToDisplay | orderBy:"name" track by tag.id'
                 ng-click='vm.goToTag(tag.id)'>
         <b>{{tag.name}}</b>
-        <span ng-if='tag.type'>{{ vm.getTagTypeLabel(tag.type) }}</span>
         <small>
-          ({{ tag.spots.length || 0 }}
-          <span ng-if='tag.spots.length > 1 || !tag.spots.length'>Spots, </span>
-          <span ng-if='tag.spots.length === 1'>Spot, </span>
-          {{ vm.getNumTaggedFeatures(tag) }}
-          <span ng-if='vm.getNumTaggedFeatures(tag) === 0 || vm.getNumTaggedFeatures(tag) > 1'>Features)</span>
-          <span ng-if='vm.getNumTaggedFeatures(tag) === 1'>Feature)</span>
+          <span ng-if='tag.type'>{{ vm.getTagTypeLabel(tag.type) }}<span ng-hide='tag.type === "relationship"'>:</span></span>
+          <span ng-show='tag.spots'>
+            {{ tag.spots.length || 0 }}
+            <span ng-if='tag.spots.length > 1 || !tag.spots.length'>Spots<span
+              ng-if='vm.getNumTaggedFeatures(tag) > 0 || tag.tags'>, </span></span>
+            <span ng-if='tag.spots.length === 1'>Spot<span
+              ng-if='vm.getNumTaggedFeatures(tag) > 0 || tag.tags'>, </span></span>
+          </span>
+          <span ng-show='vm.getNumTaggedFeatures(tag) > 0'>
+            {{ vm.getNumTaggedFeatures(tag) }}
+            <span ng-if='vm.getNumTaggedFeatures(tag) === 0 || vm.getNumTaggedFeatures(tag) > 1'>Features<span
+              ng-if='tag.tags'>, </span></span>
+            <span ng-if='vm.getNumTaggedFeatures(tag) === 1'>Feature<span ng-if='tag.tags'>, </span></span>
+          </span>
+          <span ng-show='tag.tags'>
+            {{ tag.tags.length || 0 }}
+            <span ng-if='tag.tags.length > 1 || !tag.tags.length'>Tags</span>
+            <span ng-if='tag.tags.length === 1'>Tag</span>
+          </span>
+          <span ng-show='tag.type !== "relationship" && !tag.spots && vm.getNumTaggedFeatures(tag) === 0 && !tag.tags'>
+            Empty
+          </span>
         </small>
         <button class='button button-clear button-assertive'
                 ng-click='vm.deleteTag(tag)'>

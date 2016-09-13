@@ -35,11 +35,11 @@
       </ion-infinite-scroll>
     </div>
     <div ng-show='vm.isShowItem("features")'>
-      <div class='padding' ng-show='vm.spotsDisplayed.length === 0'>
+      <div class='padding' ng-show='vm.featuresDisplayed.length === 0'>
         No Features in your active datasets.
       </div>
       <ion-checkbox class='item-text-wrap item-button-right'
-                    ng-repeat='feature in vm.featuresDisplayed track by feature.id'
+                    ng-repeat='feature in vm.featuresDisplayed track by feature.parentSpotId.toString() + feature.id.toString()'
                     ng-checked='vm.isOptionChecked("features", feature.id, feature.parentSpotId)'
                     ng-click='vm.toggleChecked("features", feature.id, feature.parentSpotId)'>
         {{ feature.label }} <small>(in Spot: {{ vm.getSpotName(feature.parentSpotId) }})</small>

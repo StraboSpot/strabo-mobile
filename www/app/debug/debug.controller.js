@@ -104,6 +104,8 @@
 
         var promises = [];
         for (var i = 0; i < num; i++) {
+          var strike = _.random(0, 180);
+          var featureType = feature_types[Math.floor(Math.random() * feature_types.length)];
           var geojsonPoint = {
             'geometry': {
               'type': 'Point',
@@ -116,9 +118,10 @@
               'orientation_data': [{
                 'id': HelpersFactory.getNewId(),
                 'dip': _.random(0, 90),
-                'feature_type': feature_types[Math.floor(Math.random() * feature_types.length)],
+                'feature_type': featureType,
+                'label': featureType + strike.toString(),
                 'type': 'planar_orientation',
-                'strike': _.random(0, 180)
+                'strike': strike
               }],
               'name': 'x' + _.random(10, 99) + i.toString()
             }
