@@ -1,0 +1,24 @@
+<small>
+  <span ng-if='tag.type'>{{ vmChild.getTagTypeLabel(tag.type) }}<span ng-hide='tag.type === "relationship"'>:</span></span>
+  <span ng-show='tag.spots'>
+    {{ tag.spots.length || 0 }}
+    <span ng-if='tag.spots.length > 1 || !tag.spots.length'>Spots<span
+      ng-if='vmChild.getNumTaggedFeatures(tag) > 0 || tag.tags'>, </span></span>
+    <span ng-if='tag.spots.length === 1'>Spot<span
+      ng-if='vmChild.getNumTaggedFeatures(tag) > 0 || tag.tags'>, </span></span>
+  </span>
+  <span ng-show='vmChild.getNumTaggedFeatures(tag) > 0'>
+    {{ vmChild.getNumTaggedFeatures(tag) }}
+    <span ng-if='vmChild.getNumTaggedFeatures(tag) === 0 || vmChild.getNumTaggedFeatures(tag) > 1'>Features<span
+      ng-if='tag.tags'>, </span></span>
+    <span ng-if='vmChild.getNumTaggedFeatures(tag) === 1'>Feature<span ng-if='tag.tags'>, </span></span>
+  </span>
+  <span ng-show='tag.tags'>
+    {{ tag.tags.length || 0 }}
+    <span ng-if='tag.tags.length > 1 || !tag.tags.length'>Tags</span>
+    <span ng-if='tag.tags.length === 1'>Tag</span>
+  </span>
+  <span ng-show='tag.type !== "relationship" && !tag.spots && vmChild.getNumTaggedFeatures(tag) === 0 && !tag.tags'>
+    Empty
+  </span>
+</small>

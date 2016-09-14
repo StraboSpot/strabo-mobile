@@ -24,11 +24,7 @@
                 ng-repeat='tag in vm.spotLevelTags | orderBy:"name" track by tag.id'
                 ng-click='vmChild.goToTag(tag.id)'>
         <b>{{ tag.name }}</b>
-        <span ng-if='tag.categorization'>{{ vmChild.getTagTypeLabel(tag.categorization) }}</span>
-        <small>({{ tag.spots.length || 0 }}
-          <span ng-if='tag.spots.length > 1 || !tag.spots.length'>Spots)</span>
-          <span ng-if='tag.spots.length === 1'>Spot)</span>
-        </small>
+        <strabo-tags-tab-list-directive></strabo-tags-tab-list-directive>
         <button class='button button-clear button-assertive'
                 ng-click='vmChild.removeTag(tag)'>
           <i class='icon ion-minus-circled'></i>
@@ -47,11 +43,7 @@
                 ng-repeat='tag in vm.featureLevelTags | orderBy:"name" track by tag.id'
                 ng-click='vmChild.goToTag(tag.id)'>
         <b>{{ tag.name }}</b>
-        <span ng-if='tag.categorization'>{{ vmChild.getTagTypeLabel(tag.categorization) }}</span>
-        <small>({{ vm.getNumTaggedFeatures(tag) }}
-          <span ng-if='vm.getNumTaggedFeatures(tag) > 1 || !vm.getNumTaggedFeatures(tag)'>Features)</span>
-          <span ng-if='vm.getNumTaggedFeatures(tag) === 1'>Feature)</span>
-        </small>
+        <strabo-tags-tab-list-directive></strabo-tags-tab-list-directive>
         <button class='button button-clear button-assertive'
                 ng-click='vmChild.removeTagFromFeatures(tag)'>
           <i class='icon ion-minus-circled'></i>

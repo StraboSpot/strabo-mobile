@@ -73,7 +73,7 @@
       'prepProject': prepProject,                     // Run from app config
       'removeFeatureFromTags': removeFeatureFromTags,
       'removeSpotFromDataset': removeSpotFromDataset,
-      'removeSpotFromTags':removeSpotFromTags,
+      'removeSpotFromTags': removeSpotFromTags,
       'removeTagFromFeature': removeTagFromFeature,
       'removeTagFromFeatures': removeTagFromFeatures,
       'removeTagFromSpot': removeTagFromSpot,
@@ -453,7 +453,13 @@
     function getTagsBySpotId(spotId) {
       return _.filter(currentProject.tags, function (tag) {
         if (tag.spots && _.contains(tag.spots, spotId)) return true;
-        else return (tag.features && tag.features[spotId]);
+        else if (tag.features && tag.features[spotId]) return true;
+        // Get if in a relationship tag
+        else if (tag.a && tag.a.spots && _.contains(tag.a.spots, spotId)) return true;
+        else if (tag.a && tag.a.features && tag.a.features[spotId]) return true;
+        else if (tag.b && tag.b.spots && _.contains(tag.b.spots, spotId)) return true;
+        else if (tag.b && tag.b.features && tag.b.features[spotId]) return true;
+        return false;
       });
     }
 

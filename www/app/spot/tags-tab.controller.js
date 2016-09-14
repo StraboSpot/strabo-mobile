@@ -5,11 +5,11 @@
     .module('app')
     .controller('TagsTabController', TagsTabController);
 
-  TagsTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'DataModelsFactory',
-    'HelpersFactory', 'ProjectFactory'];
+  TagsTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'HelpersFactory',
+    'ProjectFactory', 'TagFactory'];
 
-  function TagsTabController($ionicModal, $ionicPopup, $log, $scope, $state, DataModelsFactory, HelpersFactory,
-                             ProjectFactory) {
+  function TagsTabController($ionicModal, $ionicPopup, $log, $scope, $state, HelpersFactory, ProjectFactory,
+                             TagFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.loadTab($state);  // Need to load current state into parent
@@ -20,6 +20,7 @@
     vm.createNewActiveTag = createNewActiveTag;
     vm.createTag = createTag;
     vm.getActiveTags = getActiveTags;
+    vm.getNumTaggedFeatures = getNumTaggedFeatures;
     vm.getTagTypeLabel = getTagTypeLabel;
     vm.goToTag = goToTag;
     vm.tagText = '';
@@ -62,7 +63,7 @@
     }
 
     function setTagToggleText() {
-      vm.tagText = vm.isTagging ? 'Continuous Tagging On' : 'Continuous Tagging Off';
+      vm.tagText = vm.isTagging ? 'Continuous Tagging On (Spot Level Only)' : 'Continuous Tagging Off (Spot Level Only)';
     }
 
     /**
@@ -97,8 +98,12 @@
       return 'Active Tags: ' + tagNames;
     }
 
+    function getNumTaggedFeatures(tag) {
+      return ProjectFactory.getNumTaggedFeatures(tag);
+    }
+
     function getTagTypeLabel(type) {
-      return DataModelsFactory.getTagTypeLabel(type);
+      return TagFactory.getTagTypeLabel(type);
     }
 
     function goToTag(id) {
