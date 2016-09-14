@@ -13,19 +13,25 @@
                           FormFactory, HelpersFactory, MapViewFactory, ProjectFactory, SpotFactory) {
     var vm = this;
 
-    // Tags
-    vm.addTag = addTag;
+    // Tags Variables
     vm.addTagModal = {};
     vm.addTagModalTitle = undefined;
     vm.allTags = [];
     vm.featureId = undefined;
     vm.featureLevelTags = [];
+    vm.featureLevelTagsToDisplay = [];
+    vm.selectedType = 'all';
+    vm.spotLevelTags = [];
+    vm.spotLevelTagsToDisplay = [];
+    vm.tags = [];
+
+    // Tags Functions
+    vm.addTag = addTag;
+    vm.filterTagType = filterTagType;
     vm.getNumTaggedFeatures = getNumTaggedFeatures;
     vm.getTagNames = getTagNames;
     vm.isTagChecked = isTagChecked;
     vm.loadTags = loadTags;
-    vm.spotLevelTags = [];
-    vm.tags = [];
     vm.toggleTagChecked = toggleTagChecked;
 
     vm.choices = undefined;
@@ -164,6 +170,21 @@
       }
     }
 
+    function filterTagType() {
+      if (vm.selectedType === 'all') {
+        vm.spotLevelTagsToDisplay = vm.spotLevelTags;
+        vm.featureLevelTagsToDisplay = vm.featureLevelTags;
+      }
+      else {
+        vm.spotLevelTagsToDisplay = _.filter(vm.spotLevelTags, function (tag) {
+          return tag.type === vm.selectedType;
+        });
+        vm.featureLevelTagsToDisplay = _.filter(vm.featureLevelTags, function (tag) {
+          return tag.type === vm.selectedType;
+        });
+      }
+    }
+
     function getMax(constraint) {
       return FormFactory.getMax(constraint);
     }
@@ -267,8 +288,8 @@
         if (tag.b && tag.b.features && tag.b.features[vm.spot.properties.id]) {
           if (!_.contains(vm.featureLevelTags, tag)) vm.featureLevelTags.push(tag);
         }
-
       });
+      filterTagType();
     }
 
     // Set the class for the select_multiple fields here because it is not working

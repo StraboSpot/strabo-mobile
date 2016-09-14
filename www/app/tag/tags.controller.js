@@ -19,11 +19,12 @@
 
     vm.deleteAllTags = deleteAllTags;
     vm.deleteTag = deleteTag;
+    vm.filterTagType = filterTagType;
     vm.getNumTaggedFeatures = getNumTaggedFeatures;
     vm.getTagTypeLabel = getTagTypeLabel;
     vm.goToTag = goToTag;
     vm.newTag = newTag;
-    vm.typeSelected = typeSelected;
+    vm.filterTagType = filterTagType;
 
     activate();
 
@@ -100,6 +101,15 @@
       });
     }
 
+    function filterTagType() {
+      if (vm.selectedType === 'all') vm.tagsToDisplay = vm.tags;
+      else {
+        vm.tagsToDisplay = _.filter(vm.tags, function (tag) {
+          return tag.type === vm.selectedType;
+        });
+      }
+    }
+
     function getNumTaggedFeatures(tag) {
       return ProjectFactory.getNumTaggedFeatures(tag);
     }
@@ -115,15 +125,6 @@
     function newTag() {
       var id = HelpersFactory.getNewId();
       $location.path('/app/tags/' + id);
-    }
-
-    function typeSelected() {
-      if (vm.selectedType === 'all') vm.tagsToDisplay = vm.tags;
-      else {
-        vm.tagsToDisplay = _.filter(vm.tags, function (tag) {
-          return tag.type === vm.selectedType;
-        });
-      }
     }
   }
 }());

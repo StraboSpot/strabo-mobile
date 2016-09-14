@@ -16,6 +16,9 @@
 
     var isDelete = false;
 
+    vm.isTagging = ProjectFactory.getActiveTagging();
+    vm.tagText = '';
+
     vm.closeModal = closeModal;
     vm.createNewActiveTag = createNewActiveTag;
     vm.createTag = createTag;
@@ -23,10 +26,6 @@
     vm.getNumTaggedFeatures = getNumTaggedFeatures;
     vm.getTagTypeLabel = getTagTypeLabel;
     vm.goToTag = goToTag;
-    vm.tagText = '';
-    vm.isTagging = ProjectFactory.getActiveTagging();
-    vm.removeTag = removeTag;
-    vm.removeTagFromFeatures = removeTagFromFeatures;
     vm.toggleActiveTagChecked = toggleActiveTagChecked;
     vm.toggleTagging = toggleTagging;
 
@@ -108,40 +107,6 @@
 
     function goToTag(id) {
       if (!isDelete) vmParent.submit('/app/tags/' + id);
-    }
-
-    function removeTag(tag) {
-      isDelete = true;
-      var confirmPopup = $ionicPopup.confirm({
-        'title': 'Remove Tag',
-        'template': 'Are you sure you want to remove the tag ' + tag.name + ' from this Spot? This will <b>not</b> delete the tag itself.'
-      });
-      confirmPopup.then(function (res) {
-        if (res) {
-          ProjectFactory.removeTagFromSpot(tag.id, vmParent.spot.properties.id).then(function () {
-            vmParent.loadTags();
-            loadActiveTagging();
-          });
-        }
-        isDelete = false;
-      });
-    }
-
-    function removeTagFromFeatures(tag) {
-      isDelete = true;
-      var confirmPopup = $ionicPopup.confirm({
-        'title': 'Remove Tag From Features',
-        'template': 'Are you sure you want to remove the tag ' + tag.name + ' from ALL features in this Spot? This will <b>not</b> delete the tag itself.'
-      });
-      confirmPopup.then(function (res) {
-        if (res) {
-          ProjectFactory.removeTagFromFeatures(tag.id, vmParent.spot.properties.id).then(function () {
-            vmParent.loadTags();
-            loadActiveTagging();
-          });
-        }
-        isDelete = false;
-      });
     }
 
     function toggleActiveTagChecked(inTag) {
