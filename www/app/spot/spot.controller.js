@@ -289,28 +289,6 @@
       vm.featureLevelTags = _.filter(tags, function (tag) {
         return tag.features && tag.features[vm.spot.properties.id];
       });
-
-      vm.spotLevelTags = [];
-      vm.featureLevelTags = [];
-
-      _.each(tags, function (tag) {
-        if (tag.spots && _.contains(tag.spots, vm.spot.properties.id)) vm.spotLevelTags.push(tag);
-        if (tag.features && tag.features[vm.spot.properties.id]) vm.featureLevelTags.push(tag);
-
-        // Get if in a relationship tag
-        if (tag.a && tag.a.spots && _.contains(tag.a.spots, vm.spot.properties.id)) {
-          if (!_.contains(vm.spotLevelTags, tag)) vm.spotLevelTags.push(tag);
-        }
-        if (tag.a && tag.a.features && tag.a.features[vm.spot.properties.id]) {
-          if (!_.contains(vm.featureLevelTags, tag)) vm.featureLevelTags.push(tag);
-        }
-        if (tag.b && tag.b.spots && _.contains(tag.b.spots, vm.spot.properties.id)) {
-          if (!_.contains(vm.spotLevelTags, tag)) vm.spotLevelTags.push(tag);
-        }
-        if (tag.b && tag.b.features && tag.b.features[vm.spot.properties.id]) {
-          if (!_.contains(vm.featureLevelTags, tag)) vm.featureLevelTags.push(tag);
-        }
-      });
       filterTagType();
     }
 

@@ -9,7 +9,7 @@
     return {
       'restrict': 'AE',
       'replace': true,
-      'templateUrl': 'app/tag/geologic-unit.directive.html'
+      'templateUrl': 'app/tag-relationship/geologic-unit.directive.html'
     };
   }
 }());

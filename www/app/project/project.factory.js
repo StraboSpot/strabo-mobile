@@ -53,6 +53,7 @@
       'getOtherFeatures': getOtherFeatures,
       'getRelationship': getRelationship,
       'getRelationships': getRelationships,
+      'getRelationshipsBySpotId': getRelationshipsBySpotId,
       'getRelationshipTypes': getRelationshipTypes,
       'getSampleNumber': getSampleNumber,
       'getSamplePrefix': getSamplePrefix,
@@ -399,6 +400,16 @@
       return currentProject.relationships || [];
     }
 
+    function getRelationshipsBySpotId(spotId) {
+      return _.filter(currentProject.relationships, function (tag) {
+        if (tag.a && tag.a.spots && _.contains(tag.a.spots, spotId)) return true;
+        else if (tag.a && tag.a.features && tag.a.features[spotId]) return true;
+        else if (tag.b && tag.b.spots && _.contains(tag.b.spots, spotId)) return true;
+        else if (tag.b && tag.b.features && tag.b.features[spotId]) return true;
+        return false;
+      });
+    }
+
     function getSpotIds() {
       return spotIds;
     }
@@ -439,11 +450,6 @@
       return _.filter(currentProject.tags, function (tag) {
         if (tag.spots && _.contains(tag.spots, spotId)) return true;
         else if (tag.features && tag.features[spotId]) return true;
-        // Get if in a relationship tag
-        else if (tag.a && tag.a.spots && _.contains(tag.a.spots, spotId)) return true;
-        else if (tag.a && tag.a.features && tag.a.features[spotId]) return true;
-        else if (tag.b && tag.b.spots && _.contains(tag.b.spots, spotId)) return true;
-        else if (tag.b && tag.b.features && tag.b.features[spotId]) return true;
         return false;
       });
     }
@@ -500,6 +506,7 @@
           promises.push(saveProjectItem('other_features', remoteProject.other_features));
           if (remoteProject.preferences) promises.push(saveProjectItem('preferences', remoteProject.preferences));
           if (remoteProject.daily_setup) promises.push(saveProjectItem('daily_setup', remoteProject.daily_setup));
+          if (remoteProject.relationships) promises.push(saveProjectItem('relationships', remoteProject.relationships));
           if (remoteProject.tags) promises.push(saveProjectItem('tags', remoteProject.tags));
           if (remoteProject.tools) promises.push(saveProjectItem('tools', remoteProject.tools));
           if (remoteProject.other_maps) promises.push(OtherMapsFactory.addRemoteOtherMaps(remoteProject.other_maps));

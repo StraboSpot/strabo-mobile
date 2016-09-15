@@ -13,11 +13,8 @@
     var vm = this;
 
     var isDelete = false;
-    var lastType;
-    var order = 'a';
     var visibleDatasets = [];
 
-    vm.addRelationshipType = addRelationshipType;
     vm.checkedDataset = checkedDataset;
     vm.choices = [];
     vm.closeModal = closeModal;
@@ -40,8 +37,6 @@
     vm.loadMoreSpots = loadMoreSpots;
     vm.moreSpotsCanBeLoaded = moreSpotsCanBeLoaded;
     vm.keyToId = keyToId;
-    vm.otherRelationshipType = undefined;
-    vm.relationshipTypes = [];
     vm.removeFeature = removeFeature;
     vm.removeSpot = removeSpot;
     vm.resetFilters = resetFilters;
@@ -75,8 +70,7 @@
       setFeatures();
       setTags();
 
-      createRelationshipModals();
-      setRelationshipTypes();
+      createModals();
 
       vm.currentSpot = SpotFactory.getCurrentSpot();
       if (!vm.currentSpot) HelpersFactory.setBackView($ionicHistory.currentView().url);
@@ -85,6 +79,15 @@
         if (!vm.data.spots) vm.data.spots = [];
         if (!_.contains(vm.data.spots, vm.currentSpot.properties.id)) vm.data.spots.push(vm.currentSpot.properties.id);
       }
+    }
+
+    function createModals() {
+      $ionicModal.fromTemplateUrl('app/tag-relationship/select-item-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up'
+      }).then(function (modal) {
+        vm.selectItemModal = modal;
+      });
 
       $ionicModal.fromTemplateUrl('app/spot/spots-filter-modal.html', {
         'scope': $scope,
@@ -97,51 +100,9 @@
 
       // Cleanup the modal when we're done with it!
       $scope.$on('$destroy', function () {
+        vm.selectItemModal.remove();
         vm.filterModal.remove();
       });
-    }
-
-    function confirmRelationship() {
-      var confirmPopup = $ionicPopup.confirm({
-        'title': 'Switch to Relationship Type',
-        'template': 'Switching this Tag to the type Relationship will remove any Spots, Features or Tags already in this Tag. Are you sure you want to continue?'
-      });
-      confirmPopup.then(function (res) {
-        if (res) {
-          lastType = vm.data.type;
-          loadRelationship();
-        }
-        else vm.data.type = lastType;
-      });
-    }
-
-    function createRelationshipModals() {
-      $ionicModal.fromTemplateUrl('app/tag/select-item-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up'
-      }).then(function (modal) {
-        vm.selectItemModal = modal;
-      });
-
-      $ionicModal.fromTemplateUrl('app/tag/select-relationship-types-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up'
-      }).then(function (modal) {
-        vm.selectTypesModal = modal;
-      });
-
-      // Cleanup the modal when we're done with it!
-      $scope.$on('$destroy', function () {
-        vm.selectItemModal.remove();
-        vm.selectTypesModal.remove();
-      });
-    }
-
-    function loadRelationship() {
-      vm.data = {'name': vm.data.name, 'id': vm.data.id, 'type': vm.data.type};
-      var id = $state.params.tag_id;
-      _.extend(vm.data, ProjectFactory.getRelationship(id));
-      $log.log('Loaded Relationship:', vm.data);
     }
 
     function loadTag() {
@@ -152,7 +113,6 @@
         vm.survey = DataModelsFactory.getDataModel('rock_unit').survey;
         vm.choices = DataModelsFactory.getDataModel('rock_unit').choices;
       }
-      lastType = vm.data.type;
 
       // Fix all old tags which have a categorization element
       if (vm.data.categorization) {
@@ -179,13 +139,6 @@
         });
       });
       vm.featuresDisplayed = angular.copy(vm.features).slice(0, 25);
-    }
-
-    function setRelationshipTypes() {
-      vm.relationshipTypes = _.union(ProjectFactory.getRelationshipTypes(),
-        ProjectFactory.getDefaultRelationshipTypes());
-      vm.relationshipTypes = _.union(vm.relationshipTypes, vm.data.types);
-      ProjectFactory.saveProjectItem('relationship_types', vm.relationshipTypes);
     }
 
     function setTags() {
@@ -220,33 +173,6 @@
     /**
      * Public Functions
      */
-
-    function addRelationshipType() {
-      vm.otherRelationshipType = undefined;
-      var myPopup = $ionicPopup.show({
-        'template': '<input type="text" ng-model="vm.otherRelationshipType">',
-        'title': 'Enter Other Relationship Type',
-        'scope': $scope,
-        'buttons': [
-          {'text': 'Cancel'},
-          {
-            'text': '<b>Save</b>',
-            'type': 'button-positive',
-            'onTap': function (e) {
-              if (!vm.otherRelationshipType) e.preventDefault();
-              else return vm.otherRelationshipType;
-            }
-          }
-        ]
-      });
-      myPopup.then(function (res) {
-        if (res) {
-          if (!vm.data.types) vm.data.types = [];
-          vm.data.types.push(res);
-          setRelationshipTypes();
-        }
-      });
-    }
 
     function checkedDataset(dataset) {
       $log.log('visibleDatasets:', visibleDatasets);
@@ -306,21 +232,13 @@
         if (!vm.data.name) {
           $ionicPopup.alert({
             'title': 'No Name Given!',
-            'template': 'Please give a name to this relationship.'
+            'template': 'Please give a name to this tag.'
           });
         }
         else if (!vm.data.type) {
           $ionicPopup.alert({
             'title': 'No Type Given!',
-            'template': 'Please give a type to this relationship.'
-          });
-        }
-        // If the tag is a relationship and any one of a, b or types exist then all must exist or error
-        else if (vm.data.type === 'relationship' &&
-          ((vm.data.a || vm.data.b || vm.data.types) && (!vm.data.a || !vm.data.b || !vm.data.types))) {
-          $ionicPopup.alert({
-            'title': 'Incomplete Relationship!',
-            'template': 'Please specify both sides of the relationship and a relationship type.'
+            'template': 'Please give a type to this tag.'
           });
         }
         else {
@@ -359,13 +277,9 @@
         if (vm.data[item] && vm.data[item][parentSpotId]) {
           return _.contains(vm.data[item][parentSpotId], id);
         }
-        if (vm.data[order] && vm.data[order][item] && vm.data[order][item][parentSpotId]) {
-          return _.contains(vm.data[order][item][parentSpotId], id);
-        }
       }
       else {
         if (vm.data[item]) return _.contains(vm.data[item], id);
-        if (vm.data[order] && vm.data[order][item]) return _.contains(vm.data[order][item], id);
       }
       return false;
     }
@@ -429,8 +343,7 @@
       setVisibleSpots();
     }
 
-    function selectItem(inOrder) {
-      order = inOrder;
+    function selectItem() {
       vm.showItem = 'spots';
       vm.selectItemModal.show();
     }
@@ -447,43 +360,21 @@
     }
 
     function toggleChecked(item, id, parentSpotId) {
-      if (vm.data.type === 'relationship') {
-        if (!vm.data[order]) vm.data[order] = {};
-        if (item === 'features') {
-          if (!vm.data[order][item]) vm.data[order][item] = {};
-          if (!vm.data[order][item][parentSpotId]) vm.data[order][item][parentSpotId] = [];
-          if (_.contains(vm.data[order][item][parentSpotId], id)) {
-            vm.data[order][item][parentSpotId] = _.without(vm.data[order][item][parentSpotId], id);
-          }
-          else vm.data[order][item][parentSpotId].push(id);
-          if (_.isEmpty(vm.data[order][item][parentSpotId])) delete vm.data[order][item][parentSpotId];
+      if (item === 'features') {
+        if (!vm.data[item]) vm.data[item] = {};
+        if (!vm.data[item][parentSpotId]) vm.data[item][parentSpotId] = [];
+        if (_.contains(vm.data[item][parentSpotId], id)) {
+          vm.data[item][parentSpotId] = _.without(vm.data[item][parentSpotId], id);
         }
-        else {
-          if (!vm.data[order][item]) vm.data[order][item] = [];
-          if (_.contains(vm.data[order][item], id)) vm.data[order][item] = _.without(vm.data[order][item], id);
-          else vm.data[order][item].push(id);
-        }
-        if (_.isEmpty(vm.data[order][item])) delete vm.data[order][item];
-        if (_.isEmpty(vm.data[order])) delete vm.data[order];
+        else vm.data[item][parentSpotId].push(id);
+        if (_.isEmpty(vm.data[item][parentSpotId])) delete vm.data[item][parentSpotId];
       }
-      // Not a relationship
       else {
-        if (item === 'features') {
-          if (!vm.data[item]) vm.data[item] = {};
-          if (!vm.data[item][parentSpotId]) vm.data[item][parentSpotId] = [];
-          if (_.contains(vm.data[item][parentSpotId], id)) {
-            vm.data[item][parentSpotId] = _.without(vm.data[item][parentSpotId], id);
-          }
-          else vm.data[item][parentSpotId].push(id);
-          if (_.isEmpty(vm.data[item][parentSpotId])) delete vm.data[item][parentSpotId];
-        }
-        else {
-          if (!vm.data[item]) vm.data[item] = [];
-          if (_.contains(vm.data[item], id)) vm.data[item] = _.without(vm.data[item], id);
-          else vm.data[item].push(id);
-        }
-        if (_.isEmpty(vm.data[item])) delete vm.data.item;
+        if (!vm.data[item]) vm.data[item] = [];
+        if (_.contains(vm.data[item], id)) vm.data[item] = _.without(vm.data[item], id);
+        else vm.data[item].push(id);
       }
+      if (_.isEmpty(vm.data[item])) delete vm.data.item;
     }
 
     function toggleItem(item) {
@@ -505,22 +396,9 @@
       vm.survey = undefined;
       vm.choices = undefined;
 
-      switch (vm.data.type) {
-        case 'geologic_unit':
-          lastType = vm.data.type;
-          vm.survey = DataModelsFactory.getDataModel('rock_unit').survey;
-          vm.choices = DataModelsFactory.getDataModel('rock_unit').choices;
-          break;
-        case 'relationship':
-          if (vm.data.spots || vm.data.features || vm.data.tags) confirmRelationship();
-          else {
-            lastType = vm.data.type;
-            loadRelationship();
-          }
-          break;
-        default:
-          lastType = vm.data.type;
-          break;
+      if (vm.data.type === 'geologic_unit') {
+        vm.survey = DataModelsFactory.getDataModel('rock_unit').survey;
+        vm.choices = DataModelsFactory.getDataModel('rock_unit').choices;
       }
     }
   }

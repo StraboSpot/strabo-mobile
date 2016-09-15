@@ -9,7 +9,7 @@
     return {
       'restrict': 'AE',
       'replace': true,
-      'templateUrl': 'app/tag/list.directive.html'
+      'templateUrl': 'app/tag-relationship/list.directive.html'
     };
   }
 }());

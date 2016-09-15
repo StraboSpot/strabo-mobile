@@ -5,11 +5,11 @@
     .module('app')
     .controller('TagsController', TagsController);
 
-  TagsController.$inject = ['$ionicPopover', '$ionicPopup', '$location', '$log', '$scope', 'DataModelsFactory',
-    'HelpersFactory', 'ProjectFactory', 'TagFactory'];
+  TagsController.$inject = ['$ionicPopover', '$ionicPopup', '$location', '$log', '$scope', 'HelpersFactory',
+    'ProjectFactory', 'TagFactory'];
 
-  function TagsController($ionicPopover, $ionicPopup, $location, $log, $scope, DataModelsFactory, HelpersFactory,
-                          ProjectFactory, TagFactory) {
+  function TagsController($ionicPopover, $ionicPopup, $location, $log, $scope, HelpersFactory, ProjectFactory,
+                          TagFactory) {
     var vm = this;
 
     var isDelete = false;
@@ -48,7 +48,7 @@
           delete tag.categorization;
           ProjectFactory.saveTag(tag);
         }
-      })
+      });
     }
 
     function createPopover() {
