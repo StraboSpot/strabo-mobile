@@ -39,7 +39,7 @@
       <ion-list>
         <ion-item class='item-text-wrap item-button-right'
                   ng-repeat='tag in vm.spotLevelTagsToDisplay | orderBy:"name" track by tag.id'
-                  ng-click='vmChild.goToTag(tag.id)'>
+                  ng-click='vm.goToTag(tag.id)'>
           <b>{{ tag.name }}</b>
           <strabo-tags-tab-list-directive></strabo-tags-tab-list-directive>
         </ion-item>
@@ -54,7 +54,7 @@
       <ion-list>
         <ion-item class='item-text-wrap item-button-right'
                   ng-repeat='tag in vm.featureLevelTagsToDisplay | orderBy:"name" track by tag.id'
-                  ng-click='vmChild.goToTag(tag.id)'>
+                  ng-click='vm.goToTag(tag.id)'>
           <b>{{ tag.name }}</b>
           <strabo-tags-tab-list-directive></strabo-tags-tab-list-directive>
         </ion-item>

@@ -5,14 +5,15 @@
     .module('app')
     .factory('TagFactory', TagFactory);
 
-  TagFactory.$inject = ['$log', '$q'];
+  TagFactory.$inject = ['$log', '$q', 'ProjectFactory'];
 
-  function TagFactory($log, $q) {
+  function TagFactory($log, $q, ProjectFactory) {
     var tagTypeLabels = {};
 
     activate();
 
     return {
+      'getGeologicUnits': getGeologicUnits,
       'getTagTypeLabel': getTagTypeLabel
     };
 
@@ -35,6 +36,13 @@
     /**
      * Public Functions
      */
+
+    function getGeologicUnits() {
+      var tags = ProjectFactory.getTags();
+      return _.filter(tags, function (tag) {
+        return tag.type === 'geologic_unit';
+      })
+    }
 
     function getTagTypeLabel(inType) {
       return tagTypeLabels[inType];

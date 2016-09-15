@@ -167,7 +167,6 @@
           'modified_timestamp': 'timestamp',
           'name': 'Type: text; REQUIRED',
           'orientation_data': [],
-          'rock_unit': {},
           'samples': [],
           'time': 'datetime',
           'trace': {}
@@ -183,7 +182,6 @@
         'linear_orientation': dataModels.orientation_data.linear_orientation,
         'planar_orientation': dataModels.orientation_data.planar_orientation,
         'tabular_orientation': dataModels.orientation_data.tabular_orientation,
-        'rock_unit': dataModels.rock_unit,
         'samples': dataModels.sample,
         'trace': dataModels.trace
       };
@@ -215,7 +213,7 @@
           description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id); REQUIRED';
           spotDataModel.properties[key].push(description);
         }
-        else if (key === 'trace' || key === 'rock_unit') {
+        else if (key === 'trace') {
           _.extend(spotDataModel.properties[key], description);
         }
         else if (key === 'images') {

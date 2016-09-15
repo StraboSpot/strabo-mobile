@@ -78,20 +78,6 @@
       </select>
     </ion-input>
     <div class='field-group item item-divider'>
-      Rock Units
-      <i class='button button-icon ion-plus' ng-click='vm.newRockUnit()'></i>
-    </div>
-    <ion-list>
-      <div class='padding' ng-show='vm.rockUnits.length === 0'>
-        No rock units added yet. Add rock units using the '+' button to the right.
-      </div>
-      <ion-item class='item-text-wrap'
-                ng-repeat='rockUnit in vm.rockUnits | orderBy:"unit_label_abbreviation" track by rockUnit.unit_label_abbreviation'
-                href='#/app/manage-project/{{ rockUnit.unit_label_abbreviation }}'>
-        {{ rockUnit.unit_label_abbreviation }}<span ng-if='rockUnit.map_unit_name'>: {{ rockUnit.map_unit_name }}</span>
-      </ion-item>
-    </ion-list>
-    <div class='field-group item item-divider'>
       Custom Feature Types
     </div>
     <ion-list>

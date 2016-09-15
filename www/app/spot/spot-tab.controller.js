@@ -6,28 +6,25 @@
     .controller('SpotTabController', SpotTabController);
 
   SpotTabController.$inject = ['$cordovaGeolocation', '$ionicPopup', '$log', '$scope', '$state', 'DataModelsFactory',
-    'ProjectFactory', 'SpotFactory'];
+    'ProjectFactory', 'SpotFactory', 'TagFactory'];
 
   function SpotTabController($cordovaGeolocation, $ionicPopup, $log, $scope, $state, DataModelsFactory, ProjectFactory,
-                             SpotFactory) {
+                             SpotFactory, TagFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.loadTab($state);  // Need to load current state into parent
 
-    vm.getCurrentLocation = getCurrentLocation;
-    vm.getRockUnits = getRockUnits;
     vm.mapped = false;
-    vm.rockUnit = {};
-    vm.rockUnits = {};
-    vm.setFromMap = setFromMap;
-    vm.setRockUnit = setRockUnit;
     vm.showLatLng = false;
     vm.showXY = false;
+
+    vm.addGeologicUnitTag = addGeologicUnitTag;
+    vm.getCurrentLocation = getCurrentLocation;
+    vm.setFromMap = setFromMap;
     vm.updateLatitude = updateLatitude;
     vm.updateLongitude = updateLongitude;
     vm.updateX = updateX;
     vm.updateY = updateY;
-    vm.viewRockUnit = viewRockUnit;
 
     activate();
 
@@ -46,9 +43,6 @@
         vmParent.survey = DataModelsFactory.getDataModel('surface_feature').survey;
         vmParent.choices = DataModelsFactory.getDataModel('surface_feature').choices;
       }
-
-      getRockUnits();
-      getRockUnit();
 
       // Has the spot been mapped yet?
       if (vmParent.spot.geometry) {
@@ -77,21 +71,19 @@
       }
     }
 
-    function getRockUnit() {
-      if (vmParent.spot.properties.rock_unit) {
-        var selectedRockUnitIndex;
-        _.each(vm.rockUnits, function (rockUnit, i) {
-          if (rockUnit.unit_label_abbreviation === vmParent.spot.properties.rock_unit.unit_label_abbreviation) {
-            selectedRockUnitIndex = i;
-          }
-        });
-        vm.rockUnit = vm.rockUnits[selectedRockUnitIndex];
-      }
+    function addSpotLevelTag() {
+      vmParent.filterAllTagsType();
+      vmParent.addTagModal.show();
     }
 
     /**
      * Public Functions
      */
+
+    function addGeologicUnitTag() {
+      vmParent.selectedType = 'geologic_unit';
+      addSpotLevelTag();
+    }
 
     // Get current location of the user
     function getCurrentLocation() {
@@ -121,19 +113,6 @@
       else vmParent.submit('/app/map');
     }
 
-    function getRockUnits() {
-      vm.rockUnits = _.clone(ProjectFactory.getRockUnits());
-      vm.rockUnits.push({'unit_label_abbreviation': '-- new rock unit --'});
-    }
-
-    function setRockUnit() {
-      if (!vm.rockUnit) delete vmParent.spot.properties.rock_unit;
-      else if (vm.rockUnit.unit_label_abbreviation === '-- new rock unit --') {
-        $state.go('app.new-rock-unit');
-      }
-      else vmParent.spot.properties.rock_unit = vm.rockUnit;
-    }
-
     // Update the value for the Latitude from the user input
     function updateLatitude(lat) {
       vmParent.spot.geometry.coordinates[1] = lat;
@@ -152,10 +131,6 @@
     // Update the value for the Longitude from the user input
     function updateY(y) {
       vmParent.spot.geometry.coordinates[1] = y;
-    }
-
-    function viewRockUnit() {
-      vmParent.submit('/app/manage-project/' + vmParent.spot.properties.rock_unit.unit_label_abbreviation);
     }
   }
 }());

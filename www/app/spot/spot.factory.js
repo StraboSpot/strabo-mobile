@@ -42,7 +42,6 @@
       'getSpots': getSpots,
       'getVisibleDatasets': getVisibleDatasets,
       'goToSpot': goToSpot,
-      'isRockUnitUsed': isRockUnitUsed,
       'isSafeDelete': isSafeDelete,
       'loadSpots': loadSpots,
       'moveSpot': moveSpot,
@@ -51,8 +50,7 @@
       'setCurrentOrientationIndex': setCurrentOrientationIndex,
       'setCurrentSpotById': setCurrentSpotById,
       'setNewSpot': setNewSpot,
-      'setVisibleDatasets': setVisibleDatasets,
-      'updateSpotsWithRockUnit': updateSpotsWithRockUnit
+      'setVisibleDatasets': setVisibleDatasets
     };
 
     /**
@@ -269,12 +267,6 @@
       }
     }
 
-    function isRockUnitUsed(key, value) {
-      return _.find(spots, function (spot) {
-        if (spot.properties.rock_unit) return spot.properties.rock_unit[key] === value;
-      });
-    }
-
     function isSafeDelete(spotToDelete) {
       if (!spotToDelete.properties.images) return true;
       return !_.find(spotToDelete.properties.images, function (image) {
@@ -375,15 +367,6 @@
 
     function setVisibleDatasets(datasets) {
       visibleDatasets = datasets;
-    }
-
-    function updateSpotsWithRockUnit(key, rock_unit) {
-      _.each(spots, function (spot) {
-        if (spot.properties.rock_unit && spot.properties.rock_unit[key] === rock_unit[key]) {
-          spot.properties.rock_unit = rock_unit;
-          $log.log('Updated Spot using modified rock unit: ', spot);
-        }
-      });
     }
   }
 }());

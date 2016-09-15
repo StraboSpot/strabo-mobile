@@ -34,11 +34,9 @@
     vm.newDataset = newDataset;
     vm.newDatasetName = '';
     vm.newProject = newProject;
-    vm.newRockUnit = newRockUnit;
     vm.otherFeatureTypes = [];
     vm.project = {};
     vm.projects = [];
-    vm.rockUnits = [];
     vm.selectProject = selectProject;
     vm.setSpotsDataset = setSpotsDataset;
     vm.showField = showField;
@@ -500,7 +498,6 @@
     }
 
     function initializeProject() {
-      vm.rockUnits = ProjectFactory.getRockUnits() || [];
       vm.project = ProjectFactory.getCurrentProject();
       vm.datasets = ProjectFactory.getCurrentDatasets();
       vm.activeDatasets = ProjectFactory.getActiveDatasets();
@@ -891,10 +888,6 @@
           });
         }
       }
-    }
-
-    function newRockUnit() {
-      $state.go('app.new-rock-unit');
     }
 
     function selectProject(project) {

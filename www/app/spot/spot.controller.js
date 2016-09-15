@@ -6,17 +6,18 @@
     .controller('SpotController', SpotController);
 
   SpotController.$inject = ['$document', '$ionicModal', '$ionicPopover', '$ionicPopup', '$location', '$log', '$scope',
-    '$state', 'FormFactory', 'HelpersFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory'];
+    '$state', 'FormFactory', 'HelpersFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'TagFactory'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
   function SpotController($document, $ionicModal, $ionicPopover, $ionicPopup, $location, $log, $scope, $state,
-                          FormFactory, HelpersFactory, MapViewFactory, ProjectFactory, SpotFactory) {
+                          FormFactory, HelpersFactory, MapViewFactory, ProjectFactory, SpotFactory, TagFactory) {
     var vm = this;
 
     // Tags Variables
     vm.addTagModal = {};
     vm.addTagModalTitle = undefined;
     vm.allTags = [];
+    vm.allTagsToDisplay = [];
     vm.featureId = undefined;
     vm.featureLevelTags = [];
     vm.featureLevelTagsToDisplay = [];
@@ -28,8 +29,10 @@
     // Tags Functions
     vm.addTag = addTag;
     vm.filterTagType = filterTagType;
+    vm.filterAllTagsType = filterAllTagsType;
     vm.getNumTaggedFeatures = getNumTaggedFeatures;
     vm.getTagNames = getTagNames;
+    vm.getTagTypeLabel = getTagTypeLabel;
     vm.isTagChecked = isTagChecked;
     vm.loadTags = loadTags;
     vm.toggleTagChecked = toggleTagChecked;
@@ -43,13 +46,14 @@
     vm.getMax = getMax;
     vm.getMin = getMin;
     vm.goBack = goBack;
+    vm.goToTag = goToTag;
     vm.isOptionChecked = isOptionChecked;
     vm.loadTab = loadTab;
     vm.popover = {};
     vm.setSelMultClass = setSelMultClass;
     vm.showField = showField;
     vm.showRadius = true;
-    vm.showRockUnit = true;
+    vm.showGeologicUnit = true;
     vm.showSurfaceFeature = false;
     vm.showTab = showTab;
     vm.showTrace = false;
@@ -121,6 +125,7 @@
 
     function addTag(feature) {
       vm.featureId = (feature) ? feature.id : undefined;
+      filterAllTagsType();
       vm.addTagModal.show();
     }
 
@@ -185,6 +190,15 @@
       }
     }
 
+    function filterAllTagsType() {
+      if (vm.selectedType === 'all') vm.allTagsToDisplay = vm.allTags;
+      else {
+        vm.allTagsToDisplay = _.filter(vm.allTags, function (tag) {
+          return tag.type === vm.selectedType;
+        });
+      }
+    }
+
     function getMax(constraint) {
       return FormFactory.getMax(constraint);
     }
@@ -206,10 +220,18 @@
       return _.pluck(_.sortBy(featureTags, 'name'), 'name').join(', ');
     }
 
+    function getTagTypeLabel(type) {
+      return TagFactory.getTagTypeLabel(type);
+    }
+
     function goBack() {
       SpotFactory.clearCurrentSpot();
       if (vm.spot) submit(HelpersFactory.getBackView());
       else $location.path(HelpersFactory.getBackView());
+    }
+
+    function goToTag(id) {
+      submit('/app/tags/' + id);
     }
 
     function isOptionChecked(field, choice) {
@@ -221,7 +243,7 @@
 
     function isTagChecked(tag) {
       if (vm.spot) {
-        if (vm.stateName === 'app.spotTab.tags') {
+        if (vm.stateName === 'app.spotTab.tags' || vm.stateName === 'app.spotTab.spot') {
           if (tag.spots) return tag.spots.indexOf(vm.spot.properties.id) !== -1;
         }
         else {
@@ -240,13 +262,13 @@
       loadTags();
 
       vm.showTrace = false;
-      vm.showRockUnit = true;
+      vm.showGeologicUnit = true;
       vm.showSurfaceFeature = false;
       if (vm.spot.geometry && vm.spot.geometry.type === 'LineString') {
         vm.showTrace = true;
         if (!vm.spot.properties.trace) vm.spot.properties.trace = {};
         vm.data = vm.spot.properties.trace;
-        vm.showRockUnit = false;
+        vm.showGeologicUnit = false;
       }
       if (vm.spot.geometry && vm.spot.geometry.type === 'Polygon') {
         vm.showRadius = false;
@@ -257,7 +279,7 @@
     }
 
     function loadTags() {
-      if (vm.stateName === 'app.spotTab.tags') vm.addTagModalTitle = 'Add Spot Level Tags';
+      if (vm.stateName === 'app.spotTab.tags' || vm.stateName === 'app.spotTab.spot') vm.addTagModalTitle = 'Add Spot Level Tags';
       else vm.addTagModalTitle = 'Add Feature Level Tags';
       vm.allTags = ProjectFactory.getTags();
       var tags = ProjectFactory.getTagsBySpotId(vm.spot.properties.id);
@@ -370,7 +392,8 @@
     }
 
     function toggleTagChecked(tag) {
-      if (vm.stateName === 'app.spotTab.tags') {
+      // Tags and Spot tabs use the Spot level tags, all other tabs have feature level tags
+      if (vm.stateName === 'app.spotTab.tags' || vm.stateName === 'app.spotTab.spot') {
         if (!tag.spots) tag.spots = [];
         var i = tag.spots.indexOf(vm.spot.properties.id);
         if (i === -1) tag.spots.push(vm.spot.properties.id);

@@ -298,7 +298,8 @@
     }
 
     function go(path) {
-      if (Object.keys(vm.data).length > 1) {
+      // If there is something filled out besides two of id, name or type
+      if (Object.keys(vm.data).length > 2) {
         if (vm.data.type === 'geologic_unit' && vm.data.name && !vm.data.unit_label_abbreviation) {
           vm.data.unit_label_abbreviation = vm.data.name;
         }
@@ -314,7 +315,9 @@
             'template': 'Please give a type to this relationship.'
           });
         }
-        else if (vm.data.type === 'relationship' && (!vm.data.a || !vm.data.b || !vm.data.types)) {
+        // If the tag is a relationship and any one of a, b or types exist then all must exist or error
+        else if (vm.data.type === 'relationship' &&
+          ((vm.data.a || vm.data.b || vm.data.types) && (!vm.data.a || !vm.data.b || !vm.data.types))) {
           $ionicPopup.alert({
             'title': 'Incomplete Relationship!',
             'template': 'Please specify both sides of the relationship and a relationship type.'

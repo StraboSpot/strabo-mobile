@@ -14,8 +14,6 @@
     var vmParent = $scope.vm;
     vmParent.loadTab($state);  // Need to load current state into parent
 
-    var isDelete = false;
-
     vm.isTagging = ProjectFactory.getActiveTagging();
     vm.tagText = '';
 
@@ -23,9 +21,6 @@
     vm.createNewActiveTag = createNewActiveTag;
     vm.createTag = createTag;
     vm.getActiveTags = getActiveTags;
-    vm.getNumTaggedFeatures = getNumTaggedFeatures;
-    vm.getTagTypeLabel = getTagTypeLabel;
-    vm.goToTag = goToTag;
     vm.toggleActiveTagChecked = toggleActiveTagChecked;
     vm.toggleTagging = toggleTagging;
 
@@ -95,18 +90,6 @@
         return activeTag.name;
       }).join(', ');
       return 'Active Tags: ' + tagNames;
-    }
-
-    function getNumTaggedFeatures(tag) {
-      return ProjectFactory.getNumTaggedFeatures(tag);
-    }
-
-    function getTagTypeLabel(type) {
-      return TagFactory.getTagTypeLabel(type);
-    }
-
-    function goToTag(id) {
-      if (!isDelete) vmParent.submit('/app/tags/' + id);
     }
 
     function toggleActiveTagChecked(inTag) {

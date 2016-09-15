@@ -49,26 +49,6 @@
           }
         }
       })
-      .state('app.rock-unit', {
-        'cache': false,
-        'url': '/manage-project/:unit_label_abbreviation',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/project/rock-unit.html',
-            'controller': 'RockUnitController as vm'
-          }
-        }
-      })
-      .state('app.new-rock-unit', {
-        'cache': false,
-        'url': '/manage-project/new-rock-unit',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/project/rock-unit.html',
-            'controller': 'RockUnitController as vm'
-          }
-        }
-      })
       .state('app.tags', {
         'cache': false,
         'url': '/tags',

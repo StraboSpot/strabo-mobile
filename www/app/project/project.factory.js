@@ -33,7 +33,6 @@
       'destroyProject': destroyProject,
       'destroyOtherFeature': destroyOtherFeature,
       'destroyRelationshipType': destroyRelationshipType,
-      'destroyRockUnit': destroyRockUnit,
       'destroyTag': destroyTag,
       'destroyTags': destroyTags,
       'destroyRelationship': destroyRelationship,
@@ -55,7 +54,6 @@
       'getRelationship': getRelationship,
       'getRelationships': getRelationships,
       'getRelationshipTypes': getRelationshipTypes,
-      'getRockUnits': getRockUnits,
       'getSampleNumber': getSampleNumber,
       'getSamplePrefix': getSamplePrefix,
       'getSpotNumber': getSpotNumber,
@@ -271,14 +269,6 @@
       saveProjectItem('relationship_types', currentProject.relationship_types);
     }
 
-    function destroyRockUnit(key, value) {
-      currentProject.rock_units = _.reject(currentProject.rock_units, function (obj) {
-        return obj[key] === value;
-      });
-      if (_.isEmpty(currentProject.rock_units)) currentProject.rock_units = undefined;
-      saveProjectItem('rock_units', currentProject.rock_units);
-    }
-
     function destroyTag(id) {
       var deferred = $q.defer(); // init promise
       currentProject.tags = _.reject(currentProject.tags, function (tag) {
@@ -409,11 +399,6 @@
       return currentProject.relationships || [];
     }
 
-    function getRockUnits() {
-      if (!currentProject) return undefined;
-      return currentProject.rock_units ? currentProject.rock_units : [];
-    }
-
     function getSpotIds() {
       return spotIds;
     }
@@ -513,7 +498,6 @@
             saveProjectItem('modified_timestamp', remoteProject.date.modified_timestamp || remoteProject.date));
           promises.push(saveProjectItem('id', remoteProject.id));
           promises.push(saveProjectItem('other_features', remoteProject.other_features));
-          if (remoteProject.rock_units) promises.push(saveProjectItem('rock_units', remoteProject.rock_units));
           if (remoteProject.preferences) promises.push(saveProjectItem('preferences', remoteProject.preferences));
           if (remoteProject.daily_setup) promises.push(saveProjectItem('daily_setup', remoteProject.daily_setup));
           if (remoteProject.tags) promises.push(saveProjectItem('tags', remoteProject.tags));

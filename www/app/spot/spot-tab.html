@@ -112,24 +112,24 @@
         </div>
       </div>
 
-      <div ng-show='vm.showRockUnit'>
+      <div ng-show='vm.showGeologicUnit'>
         <div class='item item-divider'>
           Rock Unit
         </div>
-        <ion-input class='item item-input item-select item-text-wrap'>
-          <ion-label>Unit Label Abbreviation</ion-label>
-          <select ng-model='vmChild.rockUnit'
-                  ng-options='rockUnit as rockUnit.unit_label_abbreviation for rockUnit in vmChild.rockUnits |
-                 orderBy: "unit_label_abbreviation"'
-                  ng-change="vmChild.setRockUnit()">
-            <option value=''></option>
-          </select>
-        </ion-input>
-        <button ng-click='vmChild.viewRockUnit();' ng-show='vm.spot.properties.rock_unit'
-                class='button button-clear button-positive'>
-          <i class='icon ion-eye'></i>
-          <span class='button-text-small'>View/Edit Rock Unit</span>
+        <button ng-click='vmChild.addGeologicUnitTag();' class='button button-clear button-positive'>
+          <i class='icon ion-plus-circled'></i>
+          <span class='button-text-big'>Add/Remove a Geologic Unit</span>
         </button>
+        <div class='strabo-form'>
+          <ion-list>
+            <ion-item class='item-text-wrap item-button-right'
+                      ng-repeat='tag in vm.spotLevelTagsToDisplay | filter: {type: "geologic_unit"} | orderBy: "name" track by tag.id'
+                      ng-click='vm.goToTag(tag.id)'>
+              <b>{{ tag.name }}</b>
+              <strabo-tags-tab-list-directive></strabo-tags-tab-list-directive>
+            </ion-item>
+          </ion-list>
+        </div>
       </div>
 
       <div ng-show='vm.showTrace'>
