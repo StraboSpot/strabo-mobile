@@ -13,7 +13,9 @@
     activate();
 
     return {
+      'filterTagsByType': filterTagsByType,
       'getGeologicUnits': getGeologicUnits,
+      'getNumTaggedFeatures': getNumTaggedFeatures,
       'getTagTypeLabel': getTagTypeLabel
     };
 
@@ -37,11 +39,30 @@
      * Public Functions
      */
 
+    function filterTagsByType(selectedType, allTags) {
+      if (selectedType === 'all') return allTags;
+      else {
+        return _.filter(allTags, function (tag) {
+          return tag.type === selectedType;
+        });
+      }
+    }
+
     function getGeologicUnits() {
       var tags = ProjectFactory.getTags();
       return _.filter(tags, function (tag) {
         return tag.type === 'geologic_unit';
       })
+    }
+
+    function getNumTaggedFeatures(tag) {
+      var count = 0;
+      if (tag && tag.features) {
+        _.each(tag.features, function (featuresList) {
+          count += featuresList.length;
+        });
+      }
+      return count;
     }
 
     function getTagTypeLabel(inType) {

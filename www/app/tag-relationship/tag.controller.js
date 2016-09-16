@@ -6,10 +6,10 @@
     .controller('TagController', TagController);
 
   TagController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopup', '$location', '$log', '$scope', '$state',
-    'DataModelsFactory', 'HelpersFactory', 'FormFactory', 'ProjectFactory', 'SpotFactory'];
+    'DataModelsFactory', 'HelpersFactory', 'FormFactory', 'ProjectFactory', 'SpotFactory'], 'TagFactory';
 
   function TagController($ionicHistory, $ionicModal, $ionicPopup, $location, $log, $scope, $state, DataModelsFactory,
-                         HelpersFactory, FormFactory, ProjectFactory, SpotFactory) {
+                         HelpersFactory, FormFactory, ProjectFactory, SpotFactory, TagFactory) {
     var vm = this;
 
     var isDelete = false;
@@ -197,7 +197,7 @@
     }
 
     function getNumTaggedFeatures(tag) {
-      return ProjectFactory.getNumTaggedFeatures(tag);
+      return TagFactory.getNumTaggedFeatures(tag);
     }
 
     function getFeatureName(spotId, featureId) {

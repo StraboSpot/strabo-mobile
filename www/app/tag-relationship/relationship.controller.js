@@ -6,10 +6,10 @@
     .controller('RelationshipController', RelationshipController);
 
   RelationshipController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopup', '$location', '$log', '$scope',
-    '$state', 'HelpersFactory', 'ProjectFactory', 'SpotFactory'];
+    '$state', 'HelpersFactory', 'ProjectFactory', 'SpotFactory', 'TagFactory'];
 
   function RelationshipController($ionicHistory, $ionicModal, $ionicPopup, $location, $log, $scope, $state,
-                                  HelpersFactory, ProjectFactory, SpotFactory) {
+                                  HelpersFactory, ProjectFactory, SpotFactory, TagFactory) {
     var vm = this;
 
     var order = 'a';
@@ -196,7 +196,7 @@
     }
 
     function getNumTaggedFeatures(tag) {
-      return ProjectFactory.getNumTaggedFeatures(tag);
+      return TagFactory.getNumTaggedFeatures(tag);
     }
 
     function getFeatureName(spotId, featureId) {

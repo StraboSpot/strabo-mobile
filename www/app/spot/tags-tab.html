@@ -33,14 +33,14 @@
       </button>
       <div class='padding' ng-show='vm.spotLevelTagsToDisplay.length === 0 && vm.featureLevelTagsToDisplay.length === 0'>
         <span ng-show='vm.selectedType === "all"'>No tags added to this Spot yet.</span>
-        <span ng-hide='vm.selectedType === "all"'>No tags with the type <b>{{ vmChild.getTagTypeLabel(vm.selectedType) }}</b> added to this Spot yet.</span>
+        <span ng-hide='vm.selectedType === "all"'>No tags with the type <b>{{ vm.getTagTypeLabel(vm.selectedType) }}</b> added to this Spot yet.</span>
       </div>
       <ion-list>
         <ion-item class='item-text-wrap item-button-right'
                   ng-repeat='tag in vm.spotLevelTagsToDisplay | orderBy:"name" track by tag.id'
                   ng-click='vm.goToTag(tag.id)'>
           <b>{{ tag.name }}</b>
-          <strabo-tags-tab-list-directive></strabo-tags-tab-list-directive>
+          <strabo-tags-list-properties-directive></strabo-tags-list-properties-directive>
         </ion-item>
       </ion-list>
       <div class='item item-divider' ng-show='vm.featureLevelTagsToDisplay.length > 0'>
@@ -51,7 +51,7 @@
                   ng-repeat='tag in vm.featureLevelTagsToDisplay | orderBy:"name" track by tag.id'
                   ng-click='vm.goToTag(tag.id)'>
           <b>{{ tag.name }}</b>
-          <strabo-tags-tab-list-directive></strabo-tags-tab-list-directive>
+          <strabo-tags-list-properties-directive></strabo-tags-list-properties-directive>
         </ion-item>
       </ion-list>
     </div>

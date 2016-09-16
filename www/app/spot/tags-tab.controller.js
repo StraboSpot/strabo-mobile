@@ -15,6 +15,7 @@
     vmParent.loadTab($state);  // Need to load current state into parent
 
     vm.isTagging = ProjectFactory.getActiveTagging();
+    vm.setActiveTagsModal = {};
     vm.tagText = '';
 
     vm.closeModal = closeModal;
@@ -97,6 +98,7 @@
     }
 
     function toggleTagging() {
+      vmParent.filterAllTagsType();
       ProjectFactory.setActiveTagging(vm.isTagging);
       if (vm.isTagging) {
         $log.log('Starting Tagging');

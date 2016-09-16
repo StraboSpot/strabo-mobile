@@ -1,19 +1,15 @@
 <ion-modal-view>
   <ion-header-bar class='bar-dark nav-title-slide-ios7' align-title='center'>
-    <button class='button button-clear' ng-click='vm.closeModal("addTagModal")'>
+    <button class='button button-clear' ng-click='vm.closeModal("setActiveTagsModal")'>
       <span class='icon ion-arrow-left-c'></span>
     </button>
-    <h1 class='title'>{{ vm.addTagModalTitle }}</h1>
-    <button class='button button-icon' ng-click='vm.createTag()'>
-      <span class='icon ion-plus'></span>
-    </button>
+    <h1 class='title'>Set Active Tags for Continuous Tagging</h1>
   </ion-header-bar>
   <ion-content class='has-header'>
     <strabo-tags-filter-directive></strabo-tags-filter-directive>
     <ion-checkbox class='item-text-wrap item-button-right'
-                  ng-repeat='tag in vm.allTagsToDisplay | orderBy:"name" track by tag.id'
-                  ng-checked='vm.isTagChecked(tag)'
-                  ng-click='vm.toggleTagChecked(tag)'>
+               ng-repeat='tag in vm.allTagsToDisplay | orderBy:"name" track by tag.id'
+               ng-click='vm.toggleActiveTagChecked(tag)'>
       <b>{{ tag.name }}</b>
       <strabo-tags-list-properties-directive></strabo-tags-list-properties-directive>
     </ion-checkbox>

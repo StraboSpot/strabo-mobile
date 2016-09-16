@@ -126,7 +126,7 @@
                       ng-repeat='tag in vm.spotLevelTagsToDisplay | filter: {type: "geologic_unit"} | orderBy: "name" track by tag.id'
                       ng-click='vm.goToTag(tag.id)'>
               <b>{{ tag.name }}</b>
-              <strabo-tags-tab-list-directive></strabo-tags-tab-list-directive>
+              <strabo-tags-list-properties-directive></strabo-tags-list-properties-directive>
             </ion-item>
           </ion-list>
         </div>

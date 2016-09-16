@@ -45,7 +45,6 @@
       'getCurrentProject': getCurrentProject,
       'getDefaultOtherFeatureTypes': getDefaultOtherFeatureTypes,
       'getDefaultRelationshipTypes': getDefaultRelationshipTypes,
-      'getNumTaggedFeatures': getNumTaggedFeatures,
       'getPreferences': getPreferences,
       'getProjectName': getProjectName,
       'getProjectDescription': getProjectDescription,
@@ -452,16 +451,6 @@
         else if (tag.features && tag.features[spotId]) return true;
         return false;
       });
-    }
-
-    function getNumTaggedFeatures(tag) {
-      var count = 0;
-      if (tag && tag.features) {
-        _.each(tag.features, function (featuresList) {
-          count += featuresList.length;
-        });
-      }
-      return count;
     }
 
     // Increment starting spot number by 1

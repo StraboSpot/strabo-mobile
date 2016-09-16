@@ -5,26 +5,32 @@
     .module('app')
     .controller('TagsController', TagsController);
 
-  TagsController.$inject = ['$ionicPopover', '$ionicPopup', '$location', '$log', '$scope', 'HelpersFactory',
-    'ProjectFactory', 'TagFactory'];
+  TagsController.$inject = ['$ionicModal', '$ionicPopover', '$ionicPopup', '$location', '$log', '$scope',
+    'HelpersFactory', 'ProjectFactory', 'TagFactory'];
 
-  function TagsController($ionicPopover, $ionicPopup, $location, $log, $scope, HelpersFactory, ProjectFactory,
-                          TagFactory) {
+  function TagsController($ionicModal, $ionicPopover, $ionicPopup, $location, $log, $scope, HelpersFactory,
+                          ProjectFactory, TagFactory) {
     var vm = this;
 
     var isDelete = false;
 
+    vm.allTags = [];
+    vm.isTagging = ProjectFactory.getActiveTagging();
     vm.selectedType = 'all';
-    vm.tags = [];
+    vm.setActiveTagsModal = {};
+    vm.tagText = '';
 
+    vm.closeModal = closeModal;
     vm.deleteAllTags = deleteAllTags;
     vm.deleteTag = deleteTag;
-    vm.filterTagType = filterTagType;
+    vm.filterAllTagsType = filterAllTagsType;
+    vm.getActiveTags = getActiveTags;
     vm.getNumTaggedFeatures = getNumTaggedFeatures;
     vm.getTagTypeLabel = getTagTypeLabel;
     vm.goToTag = goToTag;
     vm.newTag = newTag;
-    vm.filterTagType = filterTagType;
+    vm.toggleActiveTagChecked = toggleActiveTagChecked;
+    vm.toggleTagging = toggleTagging;
 
     activate();
 
@@ -35,12 +41,13 @@
     function activate() {
       if (_.isEmpty(ProjectFactory.getCurrentProject())) $location.path('app/manage-project');
       else {
-        vm.tags = ProjectFactory.getTags();
-        vm.tagsToDisplay = vm.tags;
+        loadActiveTagging();
+        vm.allTags = ProjectFactory.getTags();
+        vm.allTagsToDisplay = vm.allTags;
         createPopover();
       }
 
-      _.each(vm.tags, function (tag) {
+      _.each(vm.allTags, function (tag) {
         // Fix all old tags which have a categorization element
         if (tag.categorization) {
           tag.type = 'other';
@@ -48,6 +55,19 @@
           delete tag.categorization;
           ProjectFactory.saveTag(tag);
         }
+      });
+
+      $ionicModal.fromTemplateUrl('app/tag-relationship/set-active-tags-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false
+      }).then(function (modal) {
+        vm.setActiveTagsModal = modal;
+      });
+
+      // Cleanup the modal when we're done with it!
+      $scope.$on('$destroy', function () {
+        vm.setActiveTagsModal.remove();
       });
     }
 
@@ -64,9 +84,28 @@
       });
     }
 
+    function loadActiveTagging() {
+      if (vm.isTagging && _.isEmpty(ProjectFactory.getActiveTags())) {
+        vm.isTagging = false;
+        toggleTagging();
+      }
+      setTagToggleText();
+    }
+
+    function setTagToggleText() {
+      vm.tagText = vm.isTagging ? 'Continuous Tagging On (Spot Level Only)' : 'Continuous Tagging Off (Spot Level Only)';
+    }
+
     /**
      * Public Functions
      */
+
+    function closeModal(modal) {
+      vm[modal].hide();
+      if (modal === 'setActiveTagsModal') {
+        loadActiveTagging();
+      }
+    }
 
     function deleteAllTags() {
       vm.popover.hide();
@@ -101,17 +140,21 @@
       });
     }
 
-    function filterTagType() {
-      if (vm.selectedType === 'all') vm.tagsToDisplay = vm.tags;
-      else {
-        vm.tagsToDisplay = _.filter(vm.tags, function (tag) {
-          return tag.type === vm.selectedType;
-        });
-      }
+    function filterAllTagsType() {
+      vm.allTagsToDisplay = TagFactory.filterTagsByType(vm.selectedType, vm.allTags);
+    }
+
+    function getActiveTags() {
+      var activeTags = ProjectFactory.getActiveTags();
+      if (_.isEmpty(activeTags)) return '';
+      var tagNames = _.map(activeTags, function (activeTag) {
+        return activeTag.name;
+      }).join(', ');
+      return 'Active Tags: ' + tagNames;
     }
 
     function getNumTaggedFeatures(tag) {
-      return ProjectFactory.getNumTaggedFeatures(tag);
+      return TagFactory.getNumTaggedFeatures(tag);
     }
 
     function getTagTypeLabel(type) {
@@ -125,6 +168,25 @@
     function newTag() {
       var id = HelpersFactory.getNewId();
       $location.path('/app/tags/' + id);
+    }
+
+    function toggleActiveTagChecked(inTag) {
+      ProjectFactory.setActiveTags(inTag);
+    }
+
+    function toggleTagging() {
+      ProjectFactory.setActiveTagging(vm.isTagging);
+      if (vm.isTagging) {
+        $log.log('Starting Tagging');
+        ProjectFactory.clearActiveTags();
+        setTagToggleText();
+        vm.setActiveTagsModal.show();
+      }
+      else {
+        setTagToggleText();
+        $log.log('Adding spots to tag:', ProjectFactory.getActiveTags());
+        ProjectFactory.clearActiveTags();
+      }
     }
   }
 }());

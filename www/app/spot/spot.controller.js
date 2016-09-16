@@ -191,12 +191,8 @@
     }
 
     function filterAllTagsType() {
-      if (vm.selectedType === 'all') vm.allTagsToDisplay = vm.allTags;
-      else {
-        vm.allTagsToDisplay = _.filter(vm.allTags, function (tag) {
-          return tag.type === vm.selectedType;
-        });
-      }
+      vm.allTagsToDisplay = TagFactory.filterTagsByType(vm.selectedType, vm.allTags);
+      filterTagType();
     }
 
     function getMax(constraint) {
@@ -208,7 +204,7 @@
     }
 
     function getNumTaggedFeatures(tag) {
-      return ProjectFactory.getNumTaggedFeatures(tag);
+      return TagFactory.getNumTaggedFeatures(tag);
     }
 
     function getTagNames(feature) {

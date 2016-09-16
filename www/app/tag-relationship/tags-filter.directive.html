@@ -1,0 +1,22 @@
+<div>
+  <div ng-hide='vm.allTags.length === 0'>
+    <label class="item item-input item-select">
+      <div class="input-label">
+        <i class='button-icon ion-funnel'></i>Filter by Type
+      </div>
+      <select ng-model='vm.selectedType' ng-change='vm.filterAllTagsType()'>
+        <option value='all'>All</option>
+        <option value='geologic_unit'>Geologic Unit</option>
+        <option value='concept'>Concept</option>
+        <option value='documentation'>Documentation</option>
+        <option value='other'>Other</option>
+      </select>
+    </label>
+  </div>
+  <div class='padding' ng-show='vm.allTags.length === 0'>
+    No Tags created yet. Create a new tag by using the '+' button in the top right.
+  </div>
+  <div class='padding' ng-show='vm.allTags.length !== 0 && vm.allTagsToDisplay.length === 0'>
+    No tags with the type <b>{{ vm.getTagTypeLabel(vm.selectedType) }}</b> yet.
+  </div>
+</div>
