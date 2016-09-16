@@ -301,7 +301,7 @@
             });
           });
       }
-      else vm.error.both = "No compass or accelerometer on this device";
+      else vm.error.both = "No compass or accelerometer on this device.";
     }
 
     function openCompass() {
