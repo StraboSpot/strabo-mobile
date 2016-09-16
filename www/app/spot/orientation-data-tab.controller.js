@@ -293,6 +293,8 @@
         vmParent.data = {};
         vm.parentOrientation = undefined;
         vm.basicFormModal.hide();
+        vmParent.survey = undefined;
+        vmParent.choices = undefined;
         return;
       }
       if (!vmParent.data.label) vmParent.data.label = createDefaultLabel(vmParent.data);
@@ -320,6 +322,8 @@
         }
         vmParent.data = {};
         vm.basicFormModal.hide();
+        vmParent.survey = undefined;
+        vmParent.choices = undefined;
       }
     }
   }

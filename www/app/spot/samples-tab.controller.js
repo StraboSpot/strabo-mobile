@@ -115,6 +115,8 @@
         // If not more than id field no data has been entered so don't continue, just close modal
         vmParent.data = {};
         vm.basicFormModal.hide();
+        vmParent.survey = undefined;
+        vmParent.choices = undefined;
         return;
       }
       if (!vmParent.data.label) vmParent.data.label = createDefaultLabel(vmParent.data);
@@ -127,6 +129,8 @@
         vmParent.spot.properties.samples.push(vmParent.data);
         vmParent.data = {};
         vm.basicFormModal.hide();
+        vmParent.survey = undefined;
+        vmParent.choices = undefined;
       }
     }
   }
