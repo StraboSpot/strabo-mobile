@@ -1,0 +1,50 @@
+<ion-modal-view>
+  <ion-header-bar class='bar-dark nav-title-slide-ios7'>
+    <button class='button icon ion-arrow-left-c button-clear'
+            ng-click='vmChild.closeCompass()'>
+    </button>
+    <h1 class='title'>Strabo Compass</h1>
+  </ion-header-bar>
+  <ion-content class='has-header'>
+    <div class='padding' ng-bind-html='vmChild.msgText'>
+    </div>
+    <br>
+    <div>
+      <div ng-hide='vm.data.type === "linear_orientation"'>
+        <ion-input class='item item-input item-text-wrap'>
+          <ion-label>Strike</ion-label>
+          <input type='number' ng-model='vmChild.compassData.strike'>
+        </ion-input>
+        <ion-input class='item item-input item-text-wrap'>
+          <ion-label>Dip Direction</ion-label>
+          <input type='number' ng-model='vmChild.compassData.dipdir'>
+        </ion-input>
+        <ion-input class='item item-input item-text-wrap'>
+          <ion-label>Dip</ion-label>
+          <input type='number' ng-model='vmChild.compassData.dip'>
+        </ion-input>
+      </div>
+      <div ng-show='vm.data.type === "linear_orientation"'>
+        <ion-input class='item item-input item-text-wrap'>
+          <ion-label>Trend</ion-label>
+          <input type='number' ng-model='vmChild.compassData.trend'>
+        </ion-input>
+        <ion-input class='item item-input item-text-wrap'>
+          <ion-label>Plunge</ion-label>
+          <input type='number' ng-model='vmChild.compassData.plunge'>
+        </ion-input>
+        <ion-input class='item item-input item-text-wrap'>
+          <ion-label>Rake</ion-label>
+          <input type='number' ng-model='vmChild.compassData.rake'>
+        </ion-input>
+      </div>
+    </div>
+    <ion-footer-bar>
+      <div class="button-bar">
+        <a class="button button-assertive" ng-click='vmChild.closeCompass()'>Cancel</a>
+        <a class="button button-positive" ng-click='vmChild.acceptCompass()'>Accept</a>
+      </div>
+    </ion-footer-bar>
+  </ion-content>
+</ion-modal-view>
+

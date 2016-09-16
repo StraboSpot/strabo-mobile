@@ -16,9 +16,17 @@
     var vmParent = $scope.vm;
     vmParent.loadTab($state);  // Need to load current state into parent
 
+    vm.basicFormModal = {};
+    vm.compassData = {};
+    vm.compassModal = {};
+    vm.modalTitle = '';
+    vm.msgText = '';
+    vm.parentOrientation = {};
+
+    vm.acceptCompass = acceptCompass;
     vm.addAssociatedOrientation = addAssociatedOrientation;
     vm.addOrientation = addOrientation;
-    vm.basicFormModal = {};
+    vm.closeCompass = closeCompass;
     vm.copyAssociatedOrientation = copyAssociatedOrientation;
     vm.copyOrientation = copyOrientation;
     vm.deleteAssociatedOrientation = deleteAssociatedOrientation;
@@ -26,8 +34,7 @@
     vm.editAssociatedOrientation = editAssociatedOrientation;
     vm.editOrientation = editOrientation;
     vm.getCompassInfo = getCompassInfo;
-    vm.modalTitle = '';
-    vm.parentOrientation = {};
+    vm.openCompass = openCompass;
     vm.submit = submit;
 
     activate();
@@ -39,7 +46,7 @@
     function activate() {
       $log.log('Orientation Data:', vmParent.spot.properties.orientation_data);
       checkProperties();
-      createModal();
+      createModals();
     }
 
     function assignProperties(item) {
@@ -85,21 +92,16 @@
       rake = HelpersFactory.toDegrees(R);
 
       if (vmParent.data.type === 'linear_orientation') {
-        vmParent.data.trend = HelpersFactory.roundToDecimalPlaces(trend, 2);
-        vmParent.data.plunge = HelpersFactory.roundToDecimalPlaces(plunge, 2);
-        vmParent.data.rake = HelpersFactory.roundToDecimalPlaces(rake, 2);
-        vmParent.data.rake_calculated = 'yes';
+       vm.compassData.trend = HelpersFactory.roundToDecimalPlaces(trend, 2);
+       vm.compassData.plunge = HelpersFactory.roundToDecimalPlaces(plunge, 2);
+       vm.compassData.rake = HelpersFactory.roundToDecimalPlaces(rake, 2);
+       vm.compassData.rake_calculated = 'yes';
       }
       else {
-        vmParent.data.strike = HelpersFactory.roundToDecimalPlaces(strike, 2);
-        vmParent.data.dip_direction = HelpersFactory.roundToDecimalPlaces(dipdir, 2);
-        vmParent.data.dip = HelpersFactory.roundToDecimalPlaces(dip, 2);
+       vm.compassData.strike = HelpersFactory.roundToDecimalPlaces(strike, 2);
+       vm.compassData.dipdir = HelpersFactory.roundToDecimalPlaces(dipdir, 2);
+       vm.compassData.dip = HelpersFactory.roundToDecimalPlaces(dip, 2);
       }
-
-      return {
-        'strike': vmParent.data.strike, 'dipdir': vmParent.data.dip_direction, 'dip': vmParent.data.dip,
-        'trend': vmParent.data.trend, 'plunge': vmParent.data.plunge, 'rake': vmParent.data.rake
-      };
     }
 
     function checkProperties() {
@@ -119,7 +121,7 @@
       return label;
     }
 
-    function createModal() {
+    function createModals() {
       $ionicModal.fromTemplateUrl('app/spot/basic-form-modal.html', {
         'scope': $scope,
         'animation': 'slide-in-up',
@@ -129,9 +131,18 @@
         vm.basicFormModal = modal;
       });
 
+      $ionicModal.fromTemplateUrl('app/spot/compass-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false
+      }).then(function (modal) {
+        vm.compassModal = modal;
+      });
+
       // Cleanup the modal when we're done with it!
       $scope.$on('$destroy', function () {
         vm.basicFormModal.remove();
+        vm.compassModal.remove();
       });
     }
 
@@ -144,6 +155,22 @@
     /**
      * Public Functions
      */
+
+    function acceptCompass() {
+      if (vmParent.data.type === 'linear_orientation' &&
+        vm.compassData.trend && vm.compassData.plunge && vm.compassData.rake) {
+        vmParent.data.trend = vm.compassData.trend;
+        vmParent.data.plunge = vm.compassData.plunge;
+        vmParent.data.rake = vm.compassData.rake;
+        vmParent.data.rake_calculated = 'yes';
+      }
+      else if (vm.compassData.strike && vm.compassData.dipdir && vm.compassData.dip) {
+        vmParent.data.strike = vm.compassData.strike;
+        vmParent.data.dip_direction = vm.compassData.dipdir;
+        vmParent.data.dip = vm.compassData.dip;
+      }
+      vm.compassModal.hide();
+    }
 
     function addAssociatedOrientation(parentThisOrientation, type) {
       vm.parentOrientation = parentThisOrientation;
@@ -165,6 +192,10 @@
       vmParent.data.id = HelpersFactory.getNewId();
       vm.modalTitle = 'Add a ' + getModalTitlePart();
       vm.basicFormModal.show();
+    }
+
+    function closeCompass() {
+      vm.compassModal.hide();
     }
 
     function copyAssociatedOrientation(parentThisOrientation, orientation) {
@@ -239,14 +270,13 @@
     function getCompassInfo() {
       var promises = [];
       var promise;
-      var msgText = '';
       var magneticHeading, x, y, z;
 
       promise = $cordovaDeviceOrientation.getCurrentHeading().then(function (result) {
         magneticHeading = result.magneticHeading;
-        msgText += 'Magnetic Heading = ' + magneticHeading + '<br>';
+        vm.msgText += 'Magnetic Heading = ' + magneticHeading + '<br>';
       }, function (err) {
-        msgText += 'Compass Error: ' + err + '<br>';
+        vm.msgText += 'Compass Error: ' + err + '<br>';
         $log.log(err);
       });
       promises.push(promise);
@@ -256,35 +286,27 @@
           x = result.x;
           y = result.y;
           z = result.z;
-          msgText += 'X = ' + x + '<br>';
-          msgText += 'Y = ' + y + '<br>';
-          msgText += 'Z = ' + z + '<br>';
+          vm.msgText += 'X = ' + x + '<br>';
+          vm.msgText += 'Y = ' + y + '<br>';
+          vm.msgText += 'Z = ' + z + '<br>';
         }, function (err) {
-          msgText = 'Acceleration Error: ' + err + '<br>';
+          vm.msgText = 'Acceleration Error: ' + err + '<br>';
         });
         promises.push(promise);
       }
-      else msgText += 'Accelerometer Error: No accelerometer on Device<br>';
+      else vm.msgText += 'Accelerometer Error: No accelerometer on Device<br>';
 
       $q.all(promises).then(function () {
         if (magneticHeading && x && y && z) {
-          var orientation = calculateOrientation(magneticHeading, x, y, z);
-          if (vmParent.data.type === 'linear_orientation') {
-            msgText += 'Trend = ' + orientation.trend + '<br>';
-            msgText += 'Plunge = ' + orientation.plunge + '<br>';
-            msgText += 'Rake = ' + orientation.rake + '<br>';
-          }
-          else {
-            msgText += 'Strike = ' + orientation.strike + '<br>';
-            msgText += 'Dip Direction = ' + orientation.dipdir + '<br>';
-            msgText += 'Dip = ' + orientation.dip + '<br>';
-          }
+          calculateOrientation(magneticHeading, x, y, z);
         }
-        $ionicPopup.alert({
-          'title': 'Compass & Accelerometer Info',
-          'template': msgText
-        });
       });
+    }
+
+    function openCompass() {
+      vm.msgText = '';
+      vm.compassModal.show();
+      getCompassInfo();
     }
 
     function submit() {
