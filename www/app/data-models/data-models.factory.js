@@ -154,18 +154,14 @@
           'images': [],
           'inferences': {
             'description_of_outcrop': 'Type: text',
+            'notes': 'Type: text',
             'outcrop_in_place': 'one of [5 - definitely in place, 4, 3, 2, 1 - float]',
             'related_rosetta_outcrop': 'id of spot',
-            'relationships': [{
-              'observationA': 'id of first observation',
-              'observationB': 'id of second observation',
-              'other_relationship': 'Type: text',
-              'relationship_type': 'one of [cross-cuts, is cut by, is younger than, is older than, is lower metamorphic grade than, is higher metamorphic grade than, is included within, includes, other]'
-            }],
             'rosetta_outcrop': 'true/false'
           },
           'modified_timestamp': 'timestamp',
           'name': 'Type: text; REQUIRED',
+          'notes': 'Type: text',
           'orientation_data': [],
           'samples': [],
           'time': 'datetime',
