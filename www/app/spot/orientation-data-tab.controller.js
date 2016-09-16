@@ -19,9 +19,12 @@
     vm.basicFormModal = {};
     vm.compassData = {};
     vm.compassModal = {};
+    vm.error = {};
     vm.modalTitle = '';
     vm.msgText = '';
     vm.parentOrientation = {};
+    vm.result = {};
+    vm.watchDeviceAcceleration = {};
 
     vm.acceptCompass = acceptCompass;
     vm.addAssociatedOrientation = addAssociatedOrientation;
@@ -55,7 +58,12 @@
       if (!item.type) item.type = item.orientation_type || 'planar_orientation';
     }
 
-    function calculateOrientation(magneticHeading, x, y, z) {
+    function calculateOrientation() {
+      var x = vm.result.x;
+      var y = vm.result.y;
+      var z = vm.result.z;
+      var magneticHeading = vm.result.magneticHeading;
+
       // Calculate base values given the x, y, and z from the device. The x-axis runs side-to-side across
       // the mobile phone screen, or the laptop keyboard, and is positive towards the right side. The y-axis
       // runs front-to-back across the mobile phone screen, or the laptop keyboard, and is positive towards as
@@ -169,6 +177,7 @@
         vmParent.data.dip_direction = vm.compassData.dipdir;
         vmParent.data.dip = vm.compassData.dip;
       }
+      if (!_.isEmpty(vm.watchDeviceAcceleration)) vm.watchDeviceAcceleration.clearWatch();
       vm.compassModal.hide();
     }
 
@@ -195,6 +204,7 @@
     }
 
     function closeCompass() {
+      if (!_.isEmpty(vm.watchDeviceAcceleration)) vm.watchDeviceAcceleration.clearWatch();
       vm.compassModal.hide();
     }
 
@@ -268,39 +278,30 @@
     }
 
     function getCompassInfo() {
-      var promises = [];
-      var promise;
-      var magneticHeading, x, y, z;
-
-      promise = $cordovaDeviceOrientation.getCurrentHeading().then(function (result) {
-        magneticHeading = result.magneticHeading;
-        vm.msgText += 'Magnetic Heading = ' + magneticHeading + '<br>';
-      }, function (err) {
-        vm.msgText += 'Compass Error: ' + err + '<br>';
-        $log.log(err);
-      });
-      promises.push(promise);
+      var options = {frequency: 2000};
 
       if (navigator.accelerometer) {
-        promise = $cordovaDeviceMotion.getCurrentAcceleration().then(function (result) {
-          x = result.x;
-          y = result.y;
-          z = result.z;
-          vm.msgText += 'X = ' + x + '<br>';
-          vm.msgText += 'Y = ' + y + '<br>';
-          vm.msgText += 'Z = ' + z + '<br>';
-        }, function (err) {
-          vm.msgText = 'Acceleration Error: ' + err + '<br>';
-        });
-        promises.push(promise);
+        vm.watchDeviceAcceleration = $cordovaDeviceMotion.watchAcceleration(options);
+        vm.watchDeviceAcceleration.then(
+          null,
+          function(err) {
+            vm.error.acceleration = err;
+          },
+          function(accelerationResult) {
+            vm.result.x = accelerationResult.x;
+            vm.result.y = accelerationResult.y;
+            vm.result.z = accelerationResult.z;
+            $cordovaDeviceOrientation.getCurrentHeading().then(function (headingResult) {
+              vm.result.magneticHeading = headingResult.magneticHeading;
+              if (vm.result.magneticHeading &&  vm.result.x &&  vm.result.y &&  vm.result.z) {
+                calculateOrientation();
+              }
+            }, function (err) {
+              vm.error.compass = err;
+            });
+          });
       }
-      else vm.msgText += 'Accelerometer Error: No accelerometer on Device<br>';
-
-      $q.all(promises).then(function () {
-        if (magneticHeading && x && y && z) {
-          calculateOrientation(magneticHeading, x, y, z);
-        }
-      });
+      else vm.error.both = "No compass or accelerometer on this device";
     }
 
     function openCompass() {
