@@ -5,16 +5,15 @@
     .module('app')
     .controller('TagsTabController', TagsTabController);
 
-  TagsTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'HelpersFactory',
-    'ProjectFactory', 'TagFactory'];
+  TagsTabController.$inject = ['$ionicModal', '$log', '$scope', '$state', 'HelpersFactory', 'ProjectFactory',
+    'TagFactory'];
 
-  function TagsTabController($ionicModal, $ionicPopup, $log, $scope, $state, HelpersFactory, ProjectFactory,
-                             TagFactory) {
+  function TagsTabController($ionicModal, $log, $scope, $state, HelpersFactory, TagFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.loadTab($state);  // Need to load current state into parent
 
-    vm.isTagging = ProjectFactory.getActiveTagging();
+    vm.isTagging = TagFactory.getActiveTagging();
     vm.setActiveTagsModal = {};
     vm.tagText = '';
 
@@ -50,7 +49,7 @@
     }
 
     function loadActiveTagging() {
-      if (vm.isTagging && _.isEmpty(ProjectFactory.getActiveTags())) {
+      if (vm.isTagging && _.isEmpty(TagFactory.getActiveTags())) {
         vm.isTagging = false;
         toggleTagging();
       }
@@ -68,13 +67,13 @@
     function closeModal(modal) {
       vm[modal].hide();
       if (modal === 'setActiveTagsModal') {
-        ProjectFactory.addToActiveTags(vmParent.spot.properties.id);
+        TagFactory.addToActiveTags(vmParent.spot.properties.id);
         loadActiveTagging();
       }
     }
 
     function createNewActiveTag() {
-      ProjectFactory.setAddNewActiveTag(true);
+      TagFactory.setAddNewActiveTag(true);
       createTag();
     }
 
@@ -85,7 +84,7 @@
     }
 
     function getActiveTags() {
-      var activeTags = ProjectFactory.getActiveTags();
+      var activeTags = TagFactory.getActiveTags();
       if (_.isEmpty(activeTags)) return '';
       var tagNames = _.map(activeTags, function (activeTag) {
         return activeTag.name;
@@ -94,22 +93,22 @@
     }
 
     function toggleActiveTagChecked(inTag) {
-      ProjectFactory.setActiveTags(inTag);
+      TagFactory.setActiveTags(inTag);
     }
 
     function toggleTagging() {
       vmParent.filterAllTagsType();
-      ProjectFactory.setActiveTagging(vm.isTagging);
+      TagFactory.setActiveTagging(vm.isTagging);
       if (vm.isTagging) {
         $log.log('Starting Tagging');
-        ProjectFactory.clearActiveTags();
+        TagFactory.clearActiveTags();
         setTagToggleText();
         vm.setActiveTagsModal.show();
       }
       else {
         setTagToggleText();
-        $log.log('Adding spots to tag:', ProjectFactory.getActiveTags());
-        ProjectFactory.clearActiveTags();
+        $log.log('Adding spots to tag:', TagFactory.getActiveTags());
+        TagFactory.clearActiveTags();
       }
     }
   }

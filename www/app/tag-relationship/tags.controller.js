@@ -15,7 +15,7 @@
     var isDelete = false;
 
     vm.allTags = [];
-    vm.isTagging = ProjectFactory.getActiveTagging();
+    vm.isTagging = TagFactory.getActiveTagging();
     vm.selectedType = 'all';
     vm.setActiveTagsModal = {};
     vm.tagText = '';
@@ -85,7 +85,7 @@
     }
 
     function loadActiveTagging() {
-      if (vm.isTagging && _.isEmpty(ProjectFactory.getActiveTags())) {
+      if (vm.isTagging && _.isEmpty(TagFactory.getActiveTags())) {
         vm.isTagging = false;
         toggleTagging();
       }
@@ -116,6 +116,7 @@
       confirmPopup.then(
         function (res) {
           if (res) {
+            TagFactory.removeActiveTagging();
             ProjectFactory.destroyTags().then(function () {
               activate();
             });
@@ -132,6 +133,7 @@
       });
       confirmPopup.then(function (res) {
         if (res) {
+          TagFactory.removeActiveTag(tag.id);
           ProjectFactory.destroyTag(tag.id).then(function () {
             activate();
           });
@@ -145,7 +147,7 @@
     }
 
     function getActiveTags() {
-      var activeTags = ProjectFactory.getActiveTags();
+      var activeTags = TagFactory.getActiveTags();
       if (_.isEmpty(activeTags)) return '';
       var tagNames = _.map(activeTags, function (activeTag) {
         return activeTag.name;
@@ -171,21 +173,21 @@
     }
 
     function toggleActiveTagChecked(inTag) {
-      ProjectFactory.setActiveTags(inTag);
+      TagFactory.setActiveTags(inTag);
     }
 
     function toggleTagging() {
-      ProjectFactory.setActiveTagging(vm.isTagging);
+      TagFactory.setActiveTagging(vm.isTagging);
       if (vm.isTagging) {
         $log.log('Starting Tagging');
-        ProjectFactory.clearActiveTags();
+        TagFactory.clearActiveTags();
         setTagToggleText();
         vm.setActiveTagsModal.show();
       }
       else {
         setTagToggleText();
-        $log.log('Adding spots to tag:', ProjectFactory.getActiveTags());
-        ProjectFactory.clearActiveTags();
+        $log.log('Adding spots to tag:', TagFactory.getActiveTags());
+        TagFactory.clearActiveTags();
       }
     }
   }

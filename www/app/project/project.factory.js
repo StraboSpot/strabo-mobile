@@ -8,8 +8,6 @@
   ProjectFactory.$inject = ['$log', '$q', 'LocalStorageFactory', 'OtherMapsFactory', 'RemoteServerFactory'];
 
   function ProjectFactory($log, $q, LocalStorageFactory, OtherMapsFactory, RemoteServerFactory) {
-    var addNewActiveTag = false;
-    var activeTags = [];
     var currentDatasets = [];
     var currentProject = {};
     var activeDatasets = [];
@@ -17,15 +15,12 @@
       'other'];
     var defaultRelationshipTypes = ['cross-cuts', 'is cut by', 'is younger than', 'is older than',
       'is lower metamorphic grade than', 'is higher metamorphic grade than', 'is included within', 'includes'];
-    var isActiveTagging = false;
     var spotsDataset = {};
     var spotIds = {};
     var switchProject = false;
     var user = {};
 
     return {
-      'addToActiveTags': addToActiveTags,
-      'clearActiveTags': clearActiveTags,
       'addSpotToDataset': addSpotToDataset,
       'createNewDataset': createNewDataset,
       'createNewProject': createNewProject,
@@ -38,9 +33,6 @@
       'destroyRelationship': destroyRelationship,
       'destroyRelationships': destroyRelationships,
       'getActiveDatasets': getActiveDatasets,
-      'getActiveTagging': getActiveTagging,
-      'getActiveTags': getActiveTags,
-      'getAddNewActiveTag': getAddNewActiveTag,
       'getCurrentDatasets': getCurrentDatasets,
       'getCurrentProject': getCurrentProject,
       'getDefaultOtherFeatureTypes': getDefaultOtherFeatureTypes,
@@ -80,9 +72,6 @@
       'saveRelationship': saveRelationship,
       'saveTag': saveTag,
       'saveSpotsDataset': saveSpotsDataset,
-      'setActiveTagging': setActiveTagging,
-      'setActiveTags': setActiveTags,
-      'setAddNewActiveTag': setAddNewActiveTag,
       'setUser': setUser,
       'switchProject': switchProject,
       'uploadProject': uploadProject
@@ -168,21 +157,6 @@
           //$log.log('Added spot to dataset ' + datasetId + ': ' + spotIds[datasetId]);
         });
       }
-    }
-
-    function addToActiveTags(spotId) {
-      _.each(activeTags, function (activeTag) {
-        if (!_.contains(activeTag.spots, spotId)) {
-          if (!activeTag.spots) activeTag.spots = [];
-          activeTag.spots.push(spotId);
-          saveTag(activeTag);
-        }
-      });
-    }
-
-    function clearActiveTags() {
-      activeTags = [];
-      $log.log('Cleared active tag:', activeTags);
     }
 
     function createNewDataset(datasetName) {
@@ -274,11 +248,9 @@
       currentProject.tags = _.reject(currentProject.tags, function (tag) {
         return tag.id === id;
       });
-      activeTags = _.reject(activeTags, function (activeTag) {
-        return activeTag.id === id;
+      if (currentProject.tags.length === 0) destroyTags().then(function () {
+        deferred.resolve()
       });
-      if (_.isEmpty(activeTags)) isActiveTagging = false;
-      if (currentProject.tags.length === 0) destroyTags().then(deferred.resolve);
       else {
         saveProjectItem('tags', currentProject.tags).then(function () {
           deferred.resolve();
@@ -290,8 +262,6 @@
     function destroyTags() {
       var deferred = $q.defer(); // init promise
       delete currentProject.tags;
-      activeTags = [];
-      isActiveTagging = false;
       LocalStorageFactory.getDb().projectDb.removeItem('tags').then(function () {
         deferred.resolve();
       });
@@ -319,18 +289,6 @@
         deferred.resolve();
       });
       return deferred.promise;
-    }
-
-    function getActiveTags() {
-      return activeTags;
-    }
-
-    function getActiveTagging() {
-      return isActiveTagging;
-    }
-
-    function getAddNewActiveTag() {
-      return addNewActiveTag;
     }
 
     function getSpotsDataset() {
@@ -686,27 +644,6 @@
       LocalStorageFactory.getDb().projectDb.setItem('spots_dataset', spotsDataset).then(function () {
         $log.log('Saved spots dataset:', spotsDataset);
       });
-    }
-
-    function setActiveTags(inTag) {
-      var found = _.find(activeTags, function (activeTag) {
-        return activeTag.id === inTag.id;
-      });
-      if (!found) activeTags.push(inTag);
-      else {
-        activeTags = _.reject(activeTags, function (activeTag) {
-          return activeTag.id === inTag.id;
-        });
-      }
-      $log.log('Active Tags:', activeTags);
-    }
-
-    function setActiveTagging(inTagging) {
-      isActiveTagging = inTagging;
-    }
-
-    function setAddNewActiveTag(inBool) {
-      addNewActiveTag = inBool;
     }
 
     function setUser(inUser) {

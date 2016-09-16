@@ -6,7 +6,7 @@
     .controller('TagController', TagController);
 
   TagController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopup', '$location', '$log', '$scope', '$state',
-    'DataModelsFactory', 'HelpersFactory', 'FormFactory', 'ProjectFactory', 'SpotFactory'], 'TagFactory';
+    'DataModelsFactory', 'HelpersFactory', 'FormFactory', 'ProjectFactory', 'SpotFactory', 'TagFactory'];
 
   function TagController($ionicHistory, $ionicModal, $ionicPopup, $location, $log, $scope, $state, DataModelsFactory,
                          HelpersFactory, FormFactory, ProjectFactory, SpotFactory, TagFactory) {
@@ -242,9 +242,9 @@
           });
         }
         else {
-          if (ProjectFactory.getAddNewActiveTag()) {
-            ProjectFactory.setActiveTags(vm.data);
-            ProjectFactory.setAddNewActiveTag(false);
+          if (TagFactory.getAddNewActiveTag()) {
+            TagFactory.setActiveTags(vm.data);
+            TagFactory.setAddNewActiveTag(false);
           }
           ProjectFactory.saveTag(vm.data).then(function () {
             $location.path(path);

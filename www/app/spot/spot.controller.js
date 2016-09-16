@@ -104,7 +104,7 @@
       SpotFactory.setCurrentSpotById(id);
       vm.spot = SpotFactory.getCurrentSpot();
 
-      if (ProjectFactory.getActiveTagging()) ProjectFactory.addToActiveTags(vm.spot.properties.id);
+      if (TagFactory.getActiveTagging()) TagFactory.addToActiveTags(vm.spot.properties.id);
       if (SpotFactory.getActiveNesting()) SpotFactory.addSpotToActiveNest(vm.spot);
 
       // Convert date string to Date type
