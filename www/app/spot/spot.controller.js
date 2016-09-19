@@ -132,7 +132,7 @@
     // Create a new spot with the details from this spot
     function copyThisSpot() {
       vm.popover.hide();
-      var newSpot = _.omit(vm.spot, 'properties');
+      var newSpot = {'type': 'Feature'};
       newSpot.properties = _.omit(vm.spot.properties,
         ['name', 'id', 'date', 'time', 'modified_timestamp', 'images', 'samples', 'inferences']);
       SpotFactory.setNewSpot(newSpot).then(function (id) {
