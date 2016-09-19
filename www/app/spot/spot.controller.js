@@ -91,6 +91,28 @@
       });
     }
 
+    function copyTags(id) {
+      _.each(vm.spotLevelTags, function (tag) {
+        tag.spots.push(id);
+        ProjectFactory.saveTag(tag);
+      });
+
+      _.each(vm.featureLevelTags, function (tag) {
+        var features = tag.features[vm.spot.properties.id];
+        _.each(features, function (featureId) {
+          // Samples are omitted from the copy process so don't copy any tags from samples
+          var found = _.find(vm.spot.properties.samples, function (sample) {
+            return sample.id === featureId;
+          });
+          if (!found) {
+            if (!tag.features[id]) tag.features[id] = [];
+            tag.features[id].push(featureId);
+          }
+        });
+        ProjectFactory.saveTag(tag);
+      });
+    }
+
     function createPopover() {
       $ionicPopover.fromTemplateUrl('app/spot/spot-popover.html', {
         'scope': $scope
@@ -137,6 +159,7 @@
         ['name', 'id', 'date', 'time', 'modified_timestamp', 'images', 'samples', 'inferences']);
       SpotFactory.setNewSpot(newSpot).then(function (id) {
         submit('/app/spotTab/' + id + '/spot');
+        copyTags(id);
       });
     }
 

@@ -5,8 +5,7 @@
     .module('app')
     .controller('TagsTabController', TagsTabController);
 
-  TagsTabController.$inject = ['$ionicModal', '$log', '$scope', '$state', 'HelpersFactory', 'ProjectFactory',
-    'TagFactory'];
+  TagsTabController.$inject = ['$ionicModal', '$log', '$scope', '$state', 'HelpersFactory', 'TagFactory'];
 
   function TagsTabController($ionicModal, $log, $scope, $state, HelpersFactory, TagFactory) {
     var vm = this;

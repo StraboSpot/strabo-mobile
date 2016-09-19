@@ -29,7 +29,7 @@
       'removeActiveTagging': removeActiveTagging,
       'setActiveTagging': setActiveTagging,
       'setActiveTags': setActiveTags,
-      'setAddNewActiveTag': setAddNewActiveTag,
+      'setAddNewActiveTag': setAddNewActiveTag
     };
 
     /**
@@ -45,7 +45,7 @@
         'marker_layer': 'Marker Layer',
         'other': 'Other',
         'concept': 'Concept'
-      }
+      };
     }
 
     /**
@@ -80,7 +80,7 @@
       var tags = ProjectFactory.getTags();
       return _.filter(tags, function (tag) {
         return tag.type === 'geologic_unit';
-      })
+      });
     }
 
     function getActiveTags() {
