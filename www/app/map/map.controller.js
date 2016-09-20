@@ -31,7 +31,7 @@
     vm.isOnline = isOnline;
     vm.returnToSpot = returnToSpot;
     vm.saveEdits = saveEdits;
-    vm.toggleChecked = toggleChecked;
+    vm.toggleTagChecked = toggleTagChecked;
     vm.toggleLocation = toggleLocation;
     vm.zoomToSpotsExtent = zoomToSpotsExtent;
 
@@ -246,7 +246,7 @@
       MapDrawFactory.saveEdits();
     }
 
-    function toggleChecked(tag) {
+    function toggleTagChecked(tag) {
       var found = _.find(tagsToAdd, function (tagToAdd) {
         return tagToAdd.id === tag.ig;
       });
