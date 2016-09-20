@@ -16,6 +16,7 @@
     var currentOrientationIndex;
     var isActiveNesting = false;
     var moveSpot = false;
+    var selectedSpots = {};
     var spots;        // All Spots
     var visibleDatasets = [];
 
@@ -25,6 +26,7 @@
       'clearActiveSpots': clearActiveSpots,
       'clearAllSpots': clearAllSpots,
       'clearCurrentSpot': clearCurrentSpot,
+      'clearSelectedSpots': clearSelectedSpots,
       'destroy': destroy,
       'destroyOrientation': destroyOrientation,
       'getActiveSpots': getActiveSpots,
@@ -37,6 +39,7 @@
       'getFirstSpot': getFirstSpot,
       'getNameFromId': getNameFromId,
       'getOrientations': getOrientations,
+      'getSelectedSpots': getSelectedSpots,
       'getSpotById': getSpotById,
       'getSpotCount': getSpotCount,
       'getSpots': getSpots,
@@ -50,6 +53,7 @@
       'setCurrentOrientationIndex': setCurrentOrientationIndex,
       'setCurrentSpotById': setCurrentSpotById,
       'setNewSpot': setNewSpot,
+      'setSelectedSpots': setSelectedSpots,
       'setVisibleDatasets': setVisibleDatasets
     };
 
@@ -122,6 +126,10 @@
 
     function clearCurrentSpot() {
       currentSpot = null;
+    }
+
+    function clearSelectedSpots() {
+      selectedSpots = {};
     }
 
     // delete the spot
@@ -232,6 +240,10 @@
 
     function getOrientations() {
       return currentSpot.properties.orientation || [];
+    }
+
+    function getSelectedSpots() {
+      return selectedSpots;
     }
 
     function getSpotById(id) {
@@ -363,6 +375,10 @@
         });
       }
       return deferred.promise;
+    }
+
+    function setSelectedSpots(spots) {
+      selectedSpots = spots;
     }
 
     function setVisibleDatasets(datasets) {

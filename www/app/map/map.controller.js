@@ -13,28 +13,27 @@
                          $log, $scope, HelpersFactory, MapFactory, MapDrawFactory, MapFeaturesFactory, MapLayerFactory,
                          MapSetupFactory, MapViewFactory, ProjectFactory, SpotFactory) {
     var vm = this;
+
     var onlineState;
+    var map;
+    var tagsToAdd = [];
 
     vm.allTags = [];
+    vm.currentSpot = SpotFactory.getCurrentSpot();
+    vm.currentZoom = '';
+    vm.saveEditsText = 'Save Edits';
+    vm.showSaveEditsBtn = false;
+
     vm.cacheOfflineTiles = cacheOfflineTiles;
     vm.closeModal = closeModal;
     vm.createTag = createTag;
-    vm.currentSpot = SpotFactory.getCurrentSpot();
-    vm.currentZoom = '';
     vm.groupSpots = groupSpots;
     vm.isOnline = isOnline;
     vm.returnToSpot = returnToSpot;
     vm.saveEdits = saveEdits;
-    vm.saveEditsText = 'Save Edits';
-    vm.selectedSpots = [];
-    vm.showSaveEditsBtn = false;
-    vm.tagsToAdd = [];
     vm.toggleChecked = toggleChecked;
     vm.toggleLocation = toggleLocation;
     vm.zoomToSpotsExtent = zoomToSpotsExtent;
-
-    var map;
-    if (!vm.currentSpot) HelpersFactory.setBackView($ionicHistory.currentView().url);
 
     activate();
 
@@ -45,6 +44,8 @@
     function activate() {
       // Disable dragging back to ionic side menu because this affects drawing tools
       $ionicSideMenuDelegate.canDragContent(false);
+
+      if (!vm.currentSpot) HelpersFactory.setBackView($ionicHistory.currentView().url);
 
       createPopover();
       var switcher = new ol.control.LayerSwitcher();
@@ -71,7 +72,8 @@
 
       $ionicModal.fromTemplateUrl('app/map/add-tag-modal.html', {
         'scope': $scope,
-        'animation': 'slide-in-up'
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false
       }).then(function (modal) {
         vm.addTagModal = modal;
       });
@@ -160,17 +162,15 @@
     function setMapDrawInteraction() {
       var draw = MapDrawFactory.getDrawMode();
       draw.on('drawend', function (e) {
-        vm.selectedSpots = [];
-        vm.selectedSpots = MapDrawFactory.doOnDrawEnd(e);
-        if (vm.selectedSpots) spotsSelected();
+        MapDrawFactory.doOnDrawEnd(e);
+        var selectedSpots = SpotFactory.getSelectedSpots();
+        if (!_.isEmpty(selectedSpots)) {
+          $log.log('Selected Spots:', selectedSpots);
+          vm.allTags = ProjectFactory.getTags();
+          tagsToAdd = [];
+          vm.addTagModal.show();
+        }
       });
-    }
-
-    function spotsSelected() {
-      $log.log(vm.selectedSpots);
-      vm.allTags = ProjectFactory.getTags();
-      vm.tagsToAdd = [];
-      vm.addTagModal.show();
     }
 
     /**
@@ -208,8 +208,9 @@
     function closeModal(modal) {
       vm[modal].hide();
       if (modal === 'addTagModal') {
-        _.each(vm.tagsToAdd, function (tagToAdd) {
-          _.each(vm.selectedSpots, function (selectedSpot) {
+        var selectedSpots = SpotFactory.getSelectedSpots();
+        _.each(tagsToAdd, function (tagToAdd) {
+          _.each(selectedSpots, function (selectedSpot) {
             if (!tagToAdd.spots) tagToAdd.spots = [];
             if (!_.contains(tagToAdd.spots, selectedSpot.properties.id)) {
               tagToAdd.spots.push(selectedSpot.properties.id);
@@ -218,6 +219,7 @@
           ProjectFactory.saveTag(tagToAdd);
         });
       }
+      SpotFactory.clearSelectedSpots();
     }
 
     function createTag() {
@@ -245,15 +247,15 @@
     }
 
     function toggleChecked(tag) {
-      var found = _.find(vm.tagsToAdd, function (tagToAdd) {
+      var found = _.find(tagsToAdd, function (tagToAdd) {
         return tagToAdd.id === tag.ig;
       });
       if (found) {
-        vm.tagsToAdd = _.reject(vm.tagsToAdd, function (tagToAdd) {
+        tagsToAdd = _.reject(tagsToAdd, function (tagToAdd) {
           return tagToAdd.id === tag.id;
         });
       }
-      else vm.tagsToAdd.push(tag);
+      else tagsToAdd.push(tag);
     }
 
     // Get current position

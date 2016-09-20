@@ -79,6 +79,14 @@
         if (!vm.data.spots) vm.data.spots = [];
         if (!_.contains(vm.data.spots, vm.currentSpot.properties.id)) vm.data.spots.push(vm.currentSpot.properties.id);
       }
+      var selectedSpots = SpotFactory.getSelectedSpots();
+      if (!_.isEmpty(selectedSpots)) {
+        if (!vm.data.spots) vm.data.spots = [];
+        _.each(selectedSpots, function (selectedSpot) {
+          vm.data.spots.push(selectedSpot.properties.id);
+        });
+        SpotFactory.clearSelectedSpots();
+      }
     }
 
     function createModals() {

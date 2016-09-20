@@ -299,7 +299,7 @@
               }
             }
           });
-          return lassoedSpots;
+          SpotFactory.setSelectedSpots(lassoedSpots);
         }
         else {
           // contains a kink, aka self-intersecting polygon
