@@ -157,6 +157,15 @@
       var newSpot = {'type': 'Feature'};
       newSpot.properties = _.omit(vm.spot.properties,
         ['name', 'id', 'date', 'time', 'modified_timestamp', 'images', 'samples', 'inferences']);
+      _.each(newSpot.properties.orientation_data, function (orientation, i) {
+        newSpot.properties.orientation_data[i] = _.omit(orientation,
+          ['strike', 'dip_direction', 'dip', 'trend', 'plunge', 'rake', 'rake_calculated']);
+        _.each(orientation.associated_orientation, function (associatedOrientation, j) {
+          newSpot.properties.orientation_data[i].associated_orientation[j] = _.omit(associatedOrientation,
+            ['strike', 'dip_direction', 'dip', 'trend', 'plunge', 'rake', 'rake_calculated']);
+        });
+      });
+
       SpotFactory.setNewSpot(newSpot).then(function (id) {
         submit('/app/spotTab/' + id + '/spot');
         copyTags(id);

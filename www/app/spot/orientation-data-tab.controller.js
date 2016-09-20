@@ -278,7 +278,7 @@
     }
 
     function getCompassInfo() {
-      var options = {frequency: 2000};
+      var options = {frequency: 1000};
 
       if (navigator.accelerometer) {
         vm.watchDeviceAcceleration = $cordovaDeviceMotion.watchAcceleration(options);
