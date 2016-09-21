@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget
     id="gov.az.azgs.strabomobile"
-    version="0.14.7"
+    version="0.14.8"
     xmlns="http://www.w3.org/ns/widgets"
     xmlns:gap="http://phonegap.com/ns/1.0">
   <name>Strabo Mobile</name>
   <description>
     Strabo Mobile is a cross-platform app for geologic field data acquisition.
   </description>
-  <author email="jessicagood0@email.arizona.edu" href="https://github.com/StraboSpot/strabo-mobile">
+  <author email="jessicagood@email.arizona.edu" href="https://github.com/StraboSpot/strabo-mobile">
     Jessica Good
   </author>
 

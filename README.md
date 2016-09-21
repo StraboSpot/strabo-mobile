@@ -50,7 +50,7 @@ Generate Resources (icons and splash screens):
     cordova-plugin-file 4.1.1 "File"
     cordova-plugin-filepath 1.0.2 "FilePath"
     cordova-plugin-geolocation 2.1.0 "Geolocation"
-    cordova-plugin-inappbrowser 1.3.0 "InAppBrowser"
+    cordova-plugin-inappbrowser 1.5.0 "InAppBrowser"
     cordova-plugin-network-information 1.2.0 "Network Information"
     cordova-plugin-splashscreen 3.2.1 "Splashscreen"
     cordova-plugin-statusbar 2.1.2 "StatusBar"
