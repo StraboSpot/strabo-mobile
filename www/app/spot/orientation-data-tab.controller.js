@@ -210,19 +210,23 @@
 
     function copyAssociatedOrientation(parentThisOrientation, orientation) {
       var copy = angular.copy(orientation);
-      delete copy.id;
-      assignProperties(copy);
+      copy = _.omit(copy, ['id', 'strike', 'dip_direction', 'dip', 'trend', 'plunge', 'rake', 'rake_calculated']);
+      copy.label = copy.label + 'Copy';
+      copy.id = HelpersFactory.getNewId();
       parentThisOrientation.associated_orientation.push(copy);
     }
 
     function copyOrientation(orientation) {
       var copy = angular.copy(orientation);
-      delete copy.id;
-      _.each(copy.associated_orientation, function (associatedOrientation) {
-        delete associatedOrientation.id;
-        assignProperties(associatedOrientation);
+      copy = _.omit(copy, ['id', 'strike', 'dip_direction', 'dip', 'trend', 'plunge', 'rake', 'rake_calculated']);
+      copy.id = HelpersFactory.getNewId();
+      copy.label = copy.label + 'Copy';
+      _.each(copy.associated_orientation, function (associatedOrientation, i) {
+        copy.associated_orientation[i] = _.omit(associatedOrientation,
+          ['id', 'strike', 'dip_direction', 'dip', 'trend', 'plunge', 'rake', 'rake_calculated']);
+        copy.associated_orientation[i].label = associatedOrientation.label + 'Copy';
+        copy.associated_orientation[i].id = HelpersFactory.getNewId();
       });
-      assignProperties(copy);
       vmParent.spot.properties.orientation_data.push(copy);
     }
 
