@@ -17,6 +17,18 @@
         <input type='text' ng-model='vm.data.deformation_event'
                placeholder='What deformational event(s) are these associated with?'>
       </ion-input>
+      <label class="item item-input item-select">
+        <div class="input-label">
+          Relationship Confidence
+        </div>
+        <select ng-model='vm.data.confidence'>
+          <option value='completely'>Completely Confident</option>
+          <option value='very'>Very Confident</option>
+          <option value='fairly'>Fairly Confident</option>
+          <option value='little'>Only a Little Confident</option>
+          <option value='not'>Not At All Confident</option>
+        </select>
+      </label>
     </div>
     <div>
       <button ng-click='vm.selectItem("a")'
