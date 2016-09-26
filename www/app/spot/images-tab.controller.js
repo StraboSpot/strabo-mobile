@@ -5,16 +5,18 @@
     .module('app')
     .controller('ImagesTabController', ImagesTabController);
 
-  ImagesTabController.$inject = ['$cordovaCamera', '$document', '$ionicModal', '$ionicPopup', '$log', '$scope',
-    '$state', '$window', 'DataModelsFactory'];
+  ImagesTabController.$inject = ['$cordovaCamera', '$cordovaGeolocation', '$document', '$ionicModal', '$ionicPopup',
+    '$log', '$scope', '$state', '$window', 'DataModelsFactory', 'HelpersFactory'];
 
-  function ImagesTabController($cordovaCamera, $document, $ionicModal, $ionicPopup, $log, $scope, $state, $window,
-                               DataModelsFactory) {
+  function ImagesTabController($cordovaCamera, $cordovaGeolocation, $document, $ionicModal, $ionicPopup, $log, $scope,
+                               $state, $window, DataModelsFactory, HelpersFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.survey = DataModelsFactory.getDataModel('image').survey;
     vmParent.choices = undefined;
     vmParent.loadTab($state);  // Need to load current state into parent
+
+    var getGeoInfo = false;
 
     vm.addImage = addImage;
     vm.cameraSource = [{
@@ -133,14 +135,12 @@
     function launchCamera(source) {
       // all plugins must be wrapped in a ready function
       document.addEventListener('deviceready', function () {
-        if (source === 'PHOTOLIBRARY') {
-          source = Camera.PictureSourceType.PHOTOLIBRARY;
-        }
+        getGeoInfo = false;
+        if (source === 'PHOTOLIBRARY') source = Camera.PictureSourceType.PHOTOLIBRARY;
+        else if (source === 'SAVEDPHOTOALBUM') source = Camera.PictureSourceType.SAVEDPHOTOALBUM;
         else if (source === 'CAMERA') {
+          getGeoInfo = true;
           source = Camera.PictureSourceType.CAMERA;
-        }
-        else if (source === 'SAVEDPHOTOALBUM') {
-          source = Camera.PictureSourceType.SAVEDPHOTOALBUM;
         }
 
         var cameraOptions = {
@@ -185,6 +185,7 @@
           }
 
           function resolveFail(message) {
+            getGeoInfo = false;
             $log.log('failed to resolve URI', message);
           }
 
@@ -218,6 +219,17 @@
       });
     }
 
+    function addGeoInfo(imageData) {
+      getGeoInfo = false;
+      $cordovaGeolocation.getCurrentPosition().then(function (position) {
+        imageData.lat = position.coords.latitude;
+        imageData.lng = position.coords.longitude;
+        vmParent.spot.properties.images.push(imageData);
+      }, function (err) {
+        vmParent.spot.properties.images.push(imageData);
+      });
+    }
+
     function readDataUrl(file) {
       // $log.log('inside readDataUrl');
 
@@ -233,15 +245,24 @@
         // $log.log(evt.target.result);
         image.src = evt.target.result;
         image.onload = function () {
-          // push the image data to our camera images array
-          $scope.$apply(function () {
-            vmParent.spot.properties.images.push({
-              'src': image.src,
-              'height': image.height,
-              'width': image.width,
-              'id': Math.floor((new Date().getTime() + Math.random()) * 10)
+          var imageData = {
+            'src': image.src,
+            'height': image.height,
+            'width': image.width,
+            'id': HelpersFactory.getNewId()
+          };
+          if (getGeoInfo) addGeoInfo(imageData);
+          else {
+            var confirmPopup = $ionicPopup.confirm({
+              'title': 'Get Geolocation?',
+              'template': 'Use current latitude and longitude for this image?',
+              'cancelText': 'No'
             });
-          });
+            confirmPopup.then(function (res) {
+              if (res) addGeoInfo(imageData);
+              else vmParent.spot.properties.images.push(imageData);
+            });
+          }
         };
         image.onerror = function () {
           $ionicPopup.alert({
