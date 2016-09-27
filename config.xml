@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget
     id="gov.az.azgs.strabomobile"
-    version="0.14.8"
+    version="0.15.0"
     xmlns="http://www.w3.org/ns/widgets"
     xmlns:gap="http://phonegap.com/ns/1.0">
   <name>Strabo Mobile</name>
@@ -102,7 +102,6 @@
 
   <!-- This part for Ionic native build --><!--
   <platform name="ios">
-    <preference name="Orientation" value="all"/>
     <icon src="resources\ios\icon\icon.png" width="57" height="57"/>
     <icon src="resources\ios\icon\icon@2x.png" width="114" height="114"/>
     <icon src="resources\ios\icon\icon-40.png" width="40" height="40"/>
