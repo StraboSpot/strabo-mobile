@@ -54,6 +54,19 @@
       ionic.on('change', getFile, $document[0].getElementById('file'));
     }
 
+    function addGeoInfo(imageData) {
+      $cordovaGeolocation.getCurrentPosition().then(function (position) {
+        getGeoInfo = false;
+        imageData.lat = position.coords.latitude;
+        imageData.lng = position.coords.longitude;
+        vmParent.spot.properties.images.push(imageData);
+      }, function (err) {
+        getGeoInfo = false;
+        $log.log('Error getting the current position. Ignoring geolocation.');
+        vmParent.spot.properties.images.push(imageData);
+      });
+    }
+
     function cameraModal() {
       // camera modal popup
       var myPopup = $ionicPopup.show({
@@ -83,7 +96,6 @@
         }
       });
     }
-
 
     function createModals() {
       $ionicModal.fromTemplateUrl('app/spot/image-properties-modal.html', {
@@ -216,17 +228,6 @@
         }, function (err) {
           $log.log('error: ', err);
         });
-      });
-    }
-
-    function addGeoInfo(imageData) {
-      getGeoInfo = false;
-      $cordovaGeolocation.getCurrentPosition().then(function (position) {
-        imageData.lat = position.coords.latitude;
-        imageData.lng = position.coords.longitude;
-        vmParent.spot.properties.images.push(imageData);
-      }, function (err) {
-        vmParent.spot.properties.images.push(imageData);
       });
     }
 
