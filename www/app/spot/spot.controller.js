@@ -5,12 +5,14 @@
     .module('app')
     .controller('SpotController', SpotController);
 
-  SpotController.$inject = ['$document', '$ionicModal', '$ionicPopover', '$ionicPopup', '$location', '$log', '$scope',
-    '$state', 'FormFactory', 'HelpersFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'TagFactory'];
+  SpotController.$inject = ['$document', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup', '$location',
+    '$log', '$scope', '$state', 'FormFactory', 'HelpersFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory',
+    'TagFactory'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
-  function SpotController($document, $ionicModal, $ionicPopover, $ionicPopup, $location, $log, $scope, $state,
-                          FormFactory, HelpersFactory, MapViewFactory, ProjectFactory, SpotFactory, TagFactory) {
+  function SpotController($document, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup, $location, $log, $scope,
+                          $state, FormFactory, HelpersFactory, MapViewFactory, ProjectFactory, SpotFactory,
+                          TagFactory) {
     var vm = this;
 
     // Tags Variables
@@ -254,8 +256,15 @@
 
     function goBack() {
       SpotFactory.clearCurrentSpot();
-      if (vm.spot) submit(HelpersFactory.getBackView());
-      else $location.path(HelpersFactory.getBackView());
+      var backLocation = HelpersFactory.getBackView();
+      if (backLocation === '/app/map') {
+        $ionicLoading.show({
+          'template': '<ion-spinner></ion-spinner><br>Loading Map...'
+        });
+        $log.log('Loading Map ...');
+      }
+      if (vm.spot) submit(backLocation);
+      else $location.path(backLocation);
     }
 
     function goToTag(id) {
@@ -367,6 +376,7 @@
           $location.path(toPath);
         });
       }
+      else $ionicLoading.hide();
     }
 
     function toggleAcknowledgeChecked(field) {

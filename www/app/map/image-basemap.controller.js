@@ -5,13 +5,13 @@
     .module('app')
     .controller('ImageBasemapController', ImageBasemapController);
 
-  ImageBasemapController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopover', '$ionicSideMenuDelegate',
-    '$location', '$log', '$scope', '$state', 'HelpersFactory', 'MapDrawFactory', 'MapFeaturesFactory',
-    'MapSetupFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory'];
+  ImageBasemapController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover',
+    '$ionicSideMenuDelegate', '$location', '$log', '$scope', '$state', 'HelpersFactory', 'MapDrawFactory',
+    'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory'];
 
-  function ImageBasemapController($ionicHistory, $ionicModal, $ionicPopover, $ionicSideMenuDelegate, $location, $log,
-                                  $scope, $state, HelpersFactory, MapDrawFactory, MapFeaturesFactory, MapSetupFactory,
-                                  MapViewFactory, ProjectFactory, SpotFactory) {
+  function ImageBasemapController($ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicSideMenuDelegate,
+                                  $location, $log, $scope, $state, HelpersFactory, MapDrawFactory, MapFeaturesFactory,
+                                  MapSetupFactory, MapViewFactory, ProjectFactory, SpotFactory) {
     var vm = this;
 
     var currentSpot = SpotFactory.getCurrentSpot();
@@ -38,6 +38,11 @@
      */
 
     function activate() {
+      $ionicLoading.show({
+        'template': '<ion-spinner></ion-spinner><br>Loading Image Basemap...'
+      });
+      $log.log('Loading Image Basemap ...');
+
       // Disable dragging back to ionic side menu because this affects drawing tools
       $ionicSideMenuDelegate.canDragContent(false);
 
@@ -89,11 +94,16 @@
         vm.popover.remove();            // Remove the popover
       });
 
+      $scope.$on('$ionicView.enter', function () {
+        $ionicLoading.hide();
+        $log.log('Done Loading Image Basemap');
+      });
+
       // Add a `change:visible` listener to all layers currently within the map
       ol.control.LayerSwitcher.forEachRecursive(map, function (l, idx, a) {
-        l.on('change', function (e) {
+        l.on('change:visible', function (e) {
           var lyr = e.target;
-          if (lyr.get('title') === 'Datasets') {
+          if (lyr.get('layergroup') === 'Datasets') {
             _.each(lyr.getLayerStatesArray(), function (layerState) {
               if (datasetsLayerStates[layerState.layer.get('id')] !== layerState.visible) {
                 datasetsLayerStates[layerState.layer.get('id')] = layerState.visible;

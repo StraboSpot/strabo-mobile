@@ -10,6 +10,8 @@
 
   function MapFeatures(DataModelsFactory, HelpersFactory, MapLayerFactory, MapSetupFactory, ProjectFactory, SpotFactory,
                        SymbologyFactory) {
+    var mappableSpots = {};
+
     return {
       'createDatasetsLayer': createDatasetsLayer,
       'createFeatureLayer': createFeatureLayer,
@@ -22,35 +24,39 @@
      * Private Functions
      */
 
-    function getMappableSpots(map, imageBasemap) {
+    function setMappableSpots(map, imageBasemap) {
       var activeSpots = SpotFactory.getActiveSpots();
       if (map.getView().getProjection().getUnits() === 'pixels') {
-        return _.filter(activeSpots, function (spot) {
+        mappableSpots = _.filter(activeSpots, function (spot) {
           return spot.properties.image_basemap === imageBasemap.id;
         });
       }
       // Remove spots that don't have a geometry defined or are mapped on an image
-      return _.reject(activeSpots, function (spot) {
-        return !_.has(spot, 'geometry') || _.has(spot.properties, 'image_basemap');
-      });
+      else {
+        mappableSpots = _.reject(activeSpots, function (spot) {
+          return !_.has(spot, 'geometry') || _.has(spot.properties, 'image_basemap');
+        });
+      }
     }
 
-    function getVisibleSpots(mappableSpots, states) {
+    function getVisibleSpots(states) {
       // Get the spot ids of mappable spots in the visible datasets
-      var datasetIdsToSpotIds = ProjectFactory.getSpotIds();
-      var spotIds = {};
+      var allDatasetIdsToSpotIds = ProjectFactory.getSpotIds();
+      var datasetIdsToSpotIds = {};
+      var visibleSpotsByDataset = {};
+
       _.each(states, function (value, key) {
-        if (value) spotIds[key] = datasetIdsToSpotIds[key];
-        else spotIds[key] = [];
+        if (value) datasetIdsToSpotIds[key] = allDatasetIdsToSpotIds[key];
+        else datasetIdsToSpotIds[key] = [];
+        visibleSpotsByDataset[key] = [];
       });
 
-      var visibleSpots = {};
-      _.each(spotIds, function (spotId, key) {
-        visibleSpots[key] = _.filter(mappableSpots, function (activeSpot) {
-          return _.contains(spotId, activeSpot.properties.id);
+      _.each(mappableSpots, function (spot) {
+        _.each(datasetIdsToSpotIds, function (datasetIdToSpotIds, key) {
+          if (_.contains(datasetIdToSpotIds, spot.properties.id)) visibleSpotsByDataset[key].push(spot);
         });
       });
-      return visibleSpots;
+      return visibleSpotsByDataset;
     }
 
     /**
@@ -58,43 +64,29 @@
      */
 
     function createDatasetsLayer(states, map, imageBasemap) {
-      var mappableSpots = getMappableSpots(map, imageBasemap);
-      var visibleSpotsDatasets = getVisibleSpots(mappableSpots, states);
+      var visibleSpotsDatasets = getVisibleSpots(states);
       var datasets = ProjectFactory.getActiveDatasets();
       var datasetsLayer = MapLayerFactory.getDatasetsLayer();
       datasetsLayer.getLayers().clear();
 
       _.each(visibleSpotsDatasets, function (visibleSpotsDataset, key) {
-        var d = {};
-        var datasetLayer = {};
-        if (visibleSpotsDataset.length === 1) {
-          d = _.find(datasets, function (dataset) {
-            return dataset.id.toString() === key;
-          });
-          datasetLayer = new ol.layer.Tile({
-            'id': d.id,
-            'title': d.name + ' (1 Spot)'
-          });
-          datasetsLayer.getLayers().push(datasetLayer);
-        }
-        else if (visibleSpotsDataset.length > 1) {
-          d = _.find(datasets, function (dataset) {
-            return dataset.id.toString() === key;
-          });
-          datasetLayer = new ol.layer.Tile({
-            'id': d.id,
-            'title': d.name + ' (' + visibleSpotsDataset.length + ' Spots)'
-          });
-          datasetsLayer.getLayers().push(datasetLayer);
-        }
+        var d = _.find(datasets, function (dataset) {
+          return dataset.id.toString() === key;
+        });
+        var titlePart = visibleSpotsDataset.length === 1 ? '(1 Spot)' : '(' + visibleSpotsDataset.length + ' Spots)';
+        var datasetLayer = new ol.layer.Tile({
+          'id': d.id,
+          'title': d.name + ' ' + titlePart,
+          'layergroup': 'Datasets'
+        });
+        datasetsLayer.getLayers().push(datasetLayer);
       });
     }
 
     function createFeatureLayer(states, map, imageBasemap) {
       // Loop through all spots and create ol vector layers
-
-      var mappableSpots = getMappableSpots(map, imageBasemap);
-      var visibleSpotsDatasets = getVisibleSpots(mappableSpots, states);
+      setMappableSpots(map, imageBasemap);
+      var visibleSpotsDatasets = getVisibleSpots(states);
       var visibleSpots = [];
       _.each(visibleSpotsDatasets, function (visibleSpotsDataset) {
         if (visibleSpotsDataset.length > 0) visibleSpots.push(visibleSpotsDataset);
@@ -282,9 +274,9 @@
       _.each(datasets, function (dataset) {
         datasetsLayerStates[dataset.id] = true;
       });
-      var mappableSpots = getMappableSpots(map, imageBasemap);
+      setMappableSpots(map, imageBasemap);
       var states = {};
-      var visibleSpotsDatasets = getVisibleSpots(mappableSpots, datasetsLayerStates);
+      var visibleSpotsDatasets = getVisibleSpots(datasetsLayerStates);
       _.each(visibleSpotsDatasets, function (visibleSpotsDataset, key) {
         if (visibleSpotsDataset.length > 0) states[key] = true;
       });
