@@ -67,7 +67,8 @@
       spots = [];
 
       LocalStorageFactory.getDb().spotsDb.iterate(function (value, key) {
-        spots.push(value);
+        if (value) spots.push(value);
+        else LocalStorageFactory.getDb().spotsDb.removeItem(key);
       }, function () {
         deferred.resolve(spots);
       });
