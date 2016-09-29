@@ -66,7 +66,7 @@ Generate Resources (icons and splash screens):
 
 ### Tested Environment - Other Packages/Libraries
 
-    ionic library: 1.3.0
+    ionic library: 1.3.1
     ionic cli : 1.7.16
     cordova: 6.6.1
     nodejs: 5.0.0
