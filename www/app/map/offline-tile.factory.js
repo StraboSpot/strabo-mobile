@@ -159,7 +159,7 @@
 
       _.each(offlineMaps, function (offlineMap) {
         if (mapToDelete.name !== offlineMap.name) {
-          var offlineMapTiles = angular.copy(offlineMap.tileArray);
+          var offlineMapTiles = angular.fromJson(angular.toJson(offlineMap.tileArray));
           _.each(offlineMapTiles, function (offlineMapTile) {
             offlineMapTile.map_id = offlineMap.id;
           });

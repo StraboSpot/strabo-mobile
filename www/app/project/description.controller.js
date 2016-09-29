@@ -74,7 +74,7 @@
           if (!vm.data.daily_setup) vm.data.daily_setup = [];
           var i = _.indexOf(vm.data.daily_setup, vm.dailySetup);
           if (i !== -1) vm.data.daily_setup.splice(i, 1);
-          vm.data.daily_setup.push(angular.copy(vm.dailySetup));
+          vm.data.daily_setup.push(angular.fromJson(angular.toJson(vm.dailySetup)));
         }
       }
       else {

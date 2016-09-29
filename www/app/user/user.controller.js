@@ -43,7 +43,7 @@
 
     function activate() {
       vm.data = UserFactory.getUser();
-      dataOrig = angular.copy(vm.data);
+      dataOrig = angular.fromJson(angular.toJson(vm.data));
       $log.log('User data:', vm.data);
       ionic.on('change', getFile, $document[0].getElementById('file'));
     }
@@ -218,7 +218,7 @@
         });
         UserFactory.doLogin(vm.login).then(function () {
           vm.data = UserFactory.getUser();
-          dataOrig = angular.copy(vm.data);
+          dataOrig = angular.fromJson(angular.toJson(vm.data));
         }, function (err) {
           $ionicPopup.alert({
             'title': 'Error communicating with server!',
@@ -258,7 +258,7 @@
         UserFactory.saveUser(vm.data);
         if (!angular.equals(_.omit(vm.data, 'image'), _.omit(dataOrig, 'image'))) UserFactory.uploadUserProfile();
         if (!angular.equals(vm.data.image, dataOrig.image)) UserFactory.uploadUserImage();
-        dataOrig = angular.copy(vm.data);
+        dataOrig = angular.fromJson(angular.toJson(vm.data));
       }
     }
 
@@ -267,7 +267,7 @@
         vm.showOfflineWarning = false;
         UserFactory.updateUser().then(function () {
           vm.data = UserFactory.getUser();
-          dataOrig = angular.copy(vm.data);
+          dataOrig = angular.fromJson(angular.toJson(vm.data));
         }).finally(function () {
           // Stop the ion-refresher from spinning
           $scope.$broadcast('scroll.refreshComplete');

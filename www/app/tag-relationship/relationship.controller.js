@@ -139,7 +139,7 @@
       vm.spots = _.sortBy(vm.spots, function (spot) {
         return spot.properties.modified_timestamp;
       }).reverse();
-      vm.spotsDisplayed = angular.copy(vm.spots).slice(0, 25);
+      vm.spotsDisplayed = angular.fromJson(angular.toJson(vm.spots)).slice(0, 25);
     }
 
     /**
@@ -286,7 +286,7 @@
     }
 
     function loadMoreSpots() {
-      var moreSpots = angular.copy(vm.spots).splice(vm.spotsDisplayed.length,
+      var moreSpots = angular.fromJson(angular.toJson(vm.spots)).splice(vm.spotsDisplayed.length,
         vm.spotsDisplayed.length + 20);
       vm.spotsDisplayed = _.union(vm.spotsDisplayed, moreSpots);
       $scope.$broadcast('scroll.infiniteScrollComplete');
@@ -318,7 +318,7 @@
       _.each(vm.spots, function (spot) {
         _.each(featureElements, function (featureElement) {
           if (spot.properties[featureElement]) {
-            var featuresCopy = angular.copy(spot.properties[featureElement]);
+            var featuresCopy = angular.fromJson(angular.toJson(spot.properties[featureElement]));
             _.each(featuresCopy, function (featureCopy) {
               featureCopy.parentSpotId = spot.properties.id;
             });
@@ -326,12 +326,12 @@
           }
         });
       });
-      vm.featuresDisplayed = angular.copy(vm.features).slice(0, 25);
+      vm.featuresDisplayed = angular.fromJson(angular.toJson(vm.features)).slice(0, 25);
     }
 
     function setTags() {
       vm.tags = ProjectFactory.getTags();
-      vm.tagsDisplayed = angular.copy(vm.tags).slice(0, 25);
+      vm.tagsDisplayed = angular.fromJson(angular.toJson(vm.tags)).slice(0, 25);
     }
 
     function toggleChecked(item, id, parentSpotId) {

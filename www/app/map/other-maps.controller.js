@@ -154,7 +154,7 @@
       if (!deleteSelected) {
         isEdit = true;
         vm.modalTitle = 'Edit Mapbox Map';
-        vm.data = angular.copy(map);  // Copy value, not reference
+        vm.data = angular.fromJson(angular.toJson(map));  // Copy value, not reference
         vm.openModal('addMapModal');
       }
     }
@@ -212,7 +212,7 @@
           vm.otherMaps = _.reject(vm.otherMaps, function (otherMap) {
             return otherMap.id === vm.data.id;
           });
-          vm.otherMaps.push(angular.copy(vm.data));
+          vm.otherMaps.push(angular.fromJson(angular.toJson(vm.data)));
           OtherMapsFactory.setOtherMaps(vm.otherMaps);
           closeModal('addMapModal');
         });

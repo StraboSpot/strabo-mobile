@@ -100,7 +100,7 @@
 
     function editFeature(feature) {
       if (!isDelete) {
-        vm.otherFeature = angular.copy(feature);
+        vm.otherFeature = angular.fromJson(angular.toJson(feature));
         vm.otherFeatureModal.show();
       }
     }

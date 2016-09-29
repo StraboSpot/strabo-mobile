@@ -209,7 +209,7 @@
     }
 
     function copyAssociatedOrientation(parentThisOrientation, orientation) {
-      var copy = angular.copy(orientation);
+      var copy = angular.fromJson(angular.toJson(orientation));
       copy = _.omit(copy, ['id', 'strike', 'dip_direction', 'dip', 'trend', 'plunge', 'rake', 'rake_calculated']);
       copy.label = copy.label + 'Copy';
       copy.id = HelpersFactory.getNewId();
@@ -217,7 +217,7 @@
     }
 
     function copyOrientation(orientation) {
-      var copy = angular.copy(orientation);
+      var copy = angular.fromJson(angular.toJson(orientation));
       copy = _.omit(copy, ['id', 'strike', 'dip_direction', 'dip', 'trend', 'plunge', 'rake', 'rake_calculated']);
       copy.id = HelpersFactory.getNewId();
       copy.label = copy.label + 'Copy';

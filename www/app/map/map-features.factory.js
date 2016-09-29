@@ -107,13 +107,13 @@
       _.each(mappableSpots, function (spot) {
         if (spot.properties.orientation_data) {
           _.each(spot.properties.orientation_data, function (orientation) {
-            var feature = angular.copy(spot);
+            var feature = angular.fromJson(angular.toJson(spot));
             delete feature.properties.orientation_data;
             feature.properties.orientation = orientation;
             mappedFeatures.push(feature);
           });
         }
-        else mappedFeatures.push(angular.copy(spot));
+        else mappedFeatures.push(angular.fromJson(angular.toJson(spot)));
       });
 
       // get distinct groups and aggregate spots by group type

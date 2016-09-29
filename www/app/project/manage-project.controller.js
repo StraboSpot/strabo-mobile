@@ -315,7 +315,7 @@
 
     function doUploadProject() {
       var deferred = $q.defer(); // init promise
-      var project = angular.copy(ProjectFactory.getCurrentProject());
+      var project = angular.fromJson(angular.toJson(ProjectFactory.getCurrentProject()));
       if (!_.isEmpty(OtherMapsFactory.getOtherMaps())) project.other_maps = OtherMapsFactory.getOtherMaps();
       RemoteServerFactory.updateProject(project, UserFactory.getUser().encoded_login).then(
         function (response) {
@@ -355,7 +355,7 @@
         var spot = SpotFactory.getSpotById(spotId);
         if (spot) {
           spot = checkValidDateTime(spot);
-          var spotNoImages = angular.copy(spot);
+          var spotNoImages = angular.fromJson(angular.toJson(spot));
           _.each(spotNoImages.properties.images, function (image, i) {
             spotNoImages.properties.images[i] = _.omit(image, 'src');
           });

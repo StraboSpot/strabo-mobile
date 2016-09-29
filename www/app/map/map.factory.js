@@ -96,14 +96,14 @@
 
     function setMaps() {
       // Load Default Maps
-      maps = angular.copy(getDefaultMaps());
+      maps = angular.fromJson(angular.toJson(getDefaultMaps()));
       _.each(maps, function (map, i) {
         maps[i] = _.extend(maps[i], getMapProviderInfo(map.source));
         if (map.source === 'mapbox_classic' || 'mapbox_styles') maps[i].key = defaultMapboxKey;
       });
 
       // Load Other Maps
-      var otherMaps = angular.copy(OtherMapsFactory.getOtherMaps());
+      var otherMaps = angular.fromJson(angular.toJson(OtherMapsFactory.getOtherMaps()));
       _.each(otherMaps, function (map) {
         maps.push(_.extend(map, getMapProviderInfo(map.source)));
       });

@@ -38,9 +38,9 @@
       mapExtent = MapViewFactory.getMapViewExtent();
       mapLayer = MapLayerFactory.getVisibleLayer();
 
-      vm.map = angular.copy(_.find(MapFactory.getMaps(), function (gotMap) {
+      vm.map = angular.fromJson(angular.toJson(_.find(MapFactory.getMaps(), function (gotMap) {
         return gotMap.id === mapLayer.get('id');
-      }));
+      })));
       _.extend(vm.map, {
         'currentZoom': mapExtent.zoom,
         'showDownloadInnerZooms': mapExtent.zoom >= 14 && mapExtent.zoom < vm.map.maxZoom,
@@ -71,7 +71,7 @@
 
     function loadSavedMaps() {
       OfflineTilesFactory.getOfflineMaps().then(function (maps) {
-        vm.maps = angular.copy(maps);
+        vm.maps = angular.fromJson(angular.toJson(maps));
         vm.selectedName = _.last(_.sortBy(vm.maps, 'date'));
         if (vm.selectedName) vm.map.name = vm.selectedName.name;
         vm.showNameField = _.isEmpty(vm.maps);
