@@ -121,6 +121,14 @@
       });
     }
 
+    function copyFeatureTags(feature, copy) {
+      _.each(vmParent.featureLevelTags, function (tag) {
+        var features = tag.features[vmParent.spot.properties.id];
+        if (_.contains(features, feature.id)) tag.features[vmParent.spot.properties.id].push(copy.id);
+        ProjectFactory.saveTag(tag);
+      });
+    }
+
     function createDefaultLabel(orientationToLabel) {
       var label = DataModelsFactory.getFeatureTypeLabel(orientationToLabel.feature_type);
       if (!label && orientationToLabel.type) label = orientationToLabel.type.split('_')[0] + ' feature';
@@ -228,6 +236,7 @@
         copy.associated_orientation[i].id = HelpersFactory.getNewId();
       });
       vmParent.spot.properties.orientation_data.push(copy);
+      copyFeatureTags(orientation, copy);
     }
 
     function deleteAssociatedOrientation(parentThisOrientation, orientationToDelete) {
