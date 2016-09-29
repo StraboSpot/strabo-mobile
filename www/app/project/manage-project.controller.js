@@ -5,11 +5,13 @@
     .module('app')
     .controller('ManageProjectController', ManageProjectController);
 
-  ManageProjectController.$inject = ['$ionicModal', '$ionicLoading', '$ionicPopup', '$log', '$scope', '$state', '$q',
-    'DataModelsFactory', 'FormFactory', 'OtherMapsFactory', 'ProjectFactory', 'RemoteServerFactory', 'SpotFactory', 'UserFactory'];
+  ManageProjectController.$inject = ['$ionicModal', '$ionicLoading', '$ionicPopup', '$log', '$scope', '$q',
+    'DataModelsFactory', 'FormFactory', 'OtherMapsFactory', 'ProjectFactory', 'RemoteServerFactory', 'SpotFactory',
+    'UserFactory'];
 
-  function ManageProjectController($ionicModal, $ionicLoading, $ionicPopup, $log, $scope, $state, $q, DataModelsFactory,
-                                   FormFactory, OtherMapsFactory, ProjectFactory, RemoteServerFactory, SpotFactory, UserFactory) {
+  function ManageProjectController($ionicModal, $ionicLoading, $ionicPopup, $log, $scope, $q, DataModelsFactory,
+                                   FormFactory, OtherMapsFactory, ProjectFactory, RemoteServerFactory, SpotFactory,
+                                   UserFactory) {
     var vm = this;
 
     var deleteSelected;
@@ -98,19 +100,19 @@
       return validSpots;
     }
 
+    // Make sure the date and time aren't null
+    // ToDo: This can be cleaned up when we no longer need date and time, just datetime
     function checkValidDateTime(spot) {
-      // Make sure the date and time aren't null
       if (!spot.properties.date || !spot.properties.time) {
-        if (!spot.properties.date) {
-          if (spot.properties.time) spot.properties.date = spot.properties.time;
-          else spot.properties.date = new Date(Date.now()).setMilliseconds(0);
+        var date = spot.properties.date || spot.properties.time;
+        if (!date) {
+          date = new Date(Date.now());
+          date.setMilliseconds(0);
         }
-        if (!spot.properties.time && spot.properties.date) {
-          if (spot.properties.date) spot.properties.time = spot.properties.date;
-          else spot.properties.time = new Date(Date.now()).setMilliseconds(0);
-        }
+        spot.properties.date = spot.properties.time = date.toISOString();
         SpotFactory.save(spot);
       }
+      return spot;
     }
 
     function destroyProject() {
@@ -133,7 +135,7 @@
         var spotsToKeep = _.map(spots, function (spot) {
           return spot.properties.id;
         });
-        notifyMessages.push('Downloading Images ...');
+        notifyMessages.push('Checking for Images ...');
         notifyMessages.push('Saving Spots ...');
         $ionicLoading.show({'template': notifyMessages.join('<br>')});
         _.each(spots, function (spot) {
@@ -165,9 +167,7 @@
         _.each(spot.properties.images, function (image) {
           // Check if we have the image already, otherwise download the image
           var downloadImage = true;
-          var foundSpot = _.find(SpotFactory.getSpots(), function (savedSpot) {
-            return savedSpot.properties.id === spot.properties.id;
-          });
+          var foundSpot = SpotFactory.getSpotById(spot.properties.id);
           if (foundSpot) {
             if (foundSpot.properties.images) {
               var foundImage = _.find(foundSpot.properties.images, function (savedImage) {
@@ -353,17 +353,16 @@
       };
       _.each(spotIds, function (spotId) {
         var spot = SpotFactory.getSpotById(spotId);
-        if (!spot) ProjectFactory.removeSpotFromDataset(spotId);
-        else {
-          checkValidDateTime(spot);
+        if (spot) {
+          spot = checkValidDateTime(spot);
           var spotNoImages = angular.copy(spot);
           _.each(spotNoImages.properties.images, function (image, i) {
             spotNoImages.properties.images[i] = _.omit(image, 'src');
           });
           spotCollection.features.push(spotNoImages);
         }
+        else $log.error('Spot', spotId, 'in Dataset', dataset, 'but Spot not found.');
       });
-
 
       if (_.isEmpty(spotCollection.features)) deferred.resolve();
       else {
@@ -376,7 +375,7 @@
             var promises = [];
             _.each(spotIds, function (spotId) {
               var spot = SpotFactory.getSpotById(spotId);
-              promises.push(doUploadImages(spot));
+              if (spot) promises.push(doUploadImages(spot));
             });
 
             $q.all(promises).then(
@@ -457,7 +456,7 @@
       $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Downloading Spots...'});
       doDownloadDataset(dataset).then(function () {
         $ionicLoading.hide();
-        if (vm.getNumberOfSpots(dataset) === '(0 Spots)') {
+        if (getNumberOfSpots(dataset) === '(0 Spots)') {
           $ionicPopup.alert({
             'title': 'Success!',
             'template': 'No Spots to download.'
@@ -542,18 +541,11 @@
     function saveSpot(spot, dataset) {
       var deferred = $q.defer(); // init promise
       // If the geometry coordinates contain any null values, delete the geometry; it shouldn't be defined
-      if (spot.geometry) {
-        if (spot.geometry.coordinates) {
-          if (_.indexOf(_.flatten(spot.geometry.coordinates), null) !== -1) {
-            delete spot.geometry;
-          }
+      if (spot.geometry && spot.geometry.coordinates) {
+        if (_.indexOf(_.flatten(spot.geometry.coordinates), null) !== -1) {
+          delete spot.geometry;
         }
       }
-      // Look for any current spots that match the id of the downloaded spot and remove the current spot
-      /* var foundSpot = _.find(SpotFactory.getSpots(), function (savedSpot) {
-       return savedSpot.properties.id === spot.properties.id;
-       });
-       if (!foundSpot) {*/
       SpotFactory.save(spot).then(function () {
         //$log.log('Saved new Spot from server:', spot);
         ProjectFactory.addSpotToDataset(spot.properties.id, dataset.id);
@@ -562,25 +554,6 @@
         $log.log('Error saving Spot to local storage');
         deferred.reject(err);
       });
-      //}
-      /*else if (foundSpot.properties.modified_timestamp < new Date(spot.properties.modified_timestamp)) {
-       SpotFactory.save(spot).then(function () {
-       $log.log('Updated Spot from server:', spot);
-       ProjectFactory.addSpotToDataset(spot.properties.id, dataset.id);
-       deferred.resolve();
-       }, function (err) {
-       $log.log('Error saving Spot to local storage');
-       deferred.reject(err);
-       });
-       }
-       else if (foundSpot.properties.modified_timestamp > new Date(spot.properties.modified_timestamp)) {
-       $log.log('Local Spot newer than Spot on server. Taking no action.');
-       deferred.resolve();
-       }
-       else {
-       $log.log('Local Spot has the same timestamp as the Spot on the server. Taking no action.');
-       deferred.resolve();
-       }*/
       return deferred.promise;
     }
 

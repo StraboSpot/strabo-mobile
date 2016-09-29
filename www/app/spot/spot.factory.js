@@ -17,7 +17,7 @@
     var isActiveNesting = false;
     var moveSpot = false;
     var selectedSpots = {};
-    var spots;        // All Spots
+    var spots = {};        // All Spots
     var visibleDatasets = [];
 
     return {
@@ -41,7 +41,6 @@
       'getOrientations': getOrientations,
       'getSelectedSpots': getSelectedSpots,
       'getSpotById': getSpotById,
-      'getSpotCount': getSpotCount,
       'getSpots': getSpots,
       'getVisibleDatasets': getVisibleDatasets,
       'goToSpot': goToSpot,
@@ -56,24 +55,6 @@
       'setSelectedSpots': setSelectedSpots,
       'setVisibleDatasets': setVisibleDatasets
     };
-
-    /**
-     * Private Functions
-     */
-
-    // Load all spots from local storage
-    function all() {
-      var deferred = $q.defer(); // init promise
-      spots = [];
-
-      LocalStorageFactory.getDb().spotsDb.iterate(function (value, key) {
-        if (value) spots.push(value);
-        else LocalStorageFactory.getDb().spotsDb.removeItem(key);
-      }, function () {
-        deferred.resolve(spots);
-      });
-      return deferred.promise;
-    }
 
     /**
      * Public Functions
@@ -98,16 +79,14 @@
       var promises = [];
       _.each(activeSpots, function (activeSpot) {
         ProjectFactory.removeSpotFromTags(activeSpot.properties.id);
-        spots = _.reject(spots, function (spot) {
-          return spot.properties.id === activeSpot.properties.id;
-        });
+        delete spots[activeSpot.properties.id];
         promises.push(LocalStorageFactory.getDb().spotsDb.removeItem(activeSpot.properties.id).then(function () {
           ProjectFactory.removeSpotFromDataset(activeSpot.properties.id);
         }));
       });
 
       $q.all(promises).then(function () {
-        activeSpots = undefined;
+        activeSpots = {};
         deferred.resolve();
       });
       return deferred.promise;
@@ -118,15 +97,15 @@
       var deferred = $q.defer(); // init promise
       LocalStorageFactory.getDb().spotsDb.clear().then(function () {
         $log.log('All spots deleted from local storage.');
-        spots = undefined;
-        activeSpots = undefined;
+        spots = {};
+        activeSpots = {};
         deferred.resolve();
       });
       return deferred.promise;
     }
 
     function clearCurrentSpot() {
-      currentSpot = null;
+      currentSpot = undefined;
     }
 
     function clearSelectedSpots() {
@@ -137,10 +116,8 @@
     function destroy(key) {
       var deferred = $q.defer(); // init promise
       ProjectFactory.removeSpotFromTags(key);
-      spots = _.reject(spots, function (spot) {
-        return spot.properties.id === key;
-      });
       ProjectFactory.removeSpotFromDataset(key);
+      delete spots[key];
       LocalStorageFactory.getDb().spotsDb.removeItem(key).then(function () {
         deferred.resolve();
       });
@@ -161,14 +138,14 @@
     }
 
     function getActiveSpots() {
-      activeSpots = [];
+      activeSpots = {};
       var activeDatasets = ProjectFactory.getActiveDatasets();
       _.each(activeDatasets, function (activeDataset) {
-        _.each(ProjectFactory.getSpotIds()[activeDataset.id], function (spotId) {
-          var found = _.find(spots, function (spot) {
-            return spot.properties.id === spotId;
-          });
-          if (found) activeSpots.push(found);
+        var spotIds = ProjectFactory.getSpotIds()[activeDataset.id];
+        _.each(spotIds, function (spotId) {
+          var spot = spots[spotId];
+          if (spot) activeSpots[spotId] = spot;
+          else $log.log('Missing Spot', spotId, 'which should be in dataset', activeDataset);
         });
       });
       return activeSpots;
@@ -220,21 +197,14 @@
       var deferred = $q.defer(); // init promise
 
       LocalStorageFactory.getDb().spotsDb.keys().then(function (keys, err) {
-        if (angular.isUndefined(keys[0])) {
-          deferred.resolve(undefined);
-        }
-        else {
-          deferred.resolve(LocalStorageFactory.getDb().spotsDb.getItem(keys[0]));
-        }
+        if (angular.isUndefined(keys[0])) deferred.resolve(undefined);
+        else deferred.resolve(LocalStorageFactory.getDb().spotsDb.getItem(keys[0]));
       });
-
       return deferred.promise;
     }
 
     function getNameFromId(id) {
-      var spotCur = _.find(spots, function (spot) {
-        return spot.properties.id === id;
-      });
+      var spotCur = spots[id];
       if (spotCur) return spotCur.properties.name;
       return 'Spot Not Found (Id: ' + id + ')';
     }
@@ -248,19 +218,11 @@
     }
 
     function getSpotById(id) {
-      var spotCur = _.find(spots, function (spot) {
-        return spot.properties.id === id;
-      });
-      return spotCur;
-    }
-
-    // gets the number of spots
-    function getSpotCount() {
-      return LocalStorageFactory.getDb().spotsDb.length();
+      return spots[id];
     }
 
     function getSpots() {
-      return spots || [];
+      return spots;
     }
 
     function getVisibleDatasets() {
@@ -268,9 +230,7 @@
     }
 
     function goToSpot(id) {
-      var spotCur = _.find(spots, function (spot) {
-        return spot.properties.id === id;
-      });
+      var spotCur = spots[id];
       if (spotCur) $location.path('/app/spotTab/' + id + '/spot');
       else {
         $ionicPopup.alert({
@@ -289,36 +249,33 @@
 
     function loadSpots() {
       var deferred = $q.defer(); // init promise
-      if (!spots) {
+      if (_.isEmpty(spots)) {
         $log.log('Loading Spots ....');
-        all().then(function (savedData) {
-          spots = savedData;
-          spots = _.sortBy(spots, function (spot) {
-            return spot.properties.modified_timestamp;
-          }).reverse();
-          $log.log('Finished loading Spots: ', spots);
+        LocalStorageFactory.getDb().spotsDb.iterate(function (value, key) {
+          if (value) spots[key] = value;
+          else LocalStorageFactory.getDb().spotsDb.removeItem(key);
+        }, function () {
           deferred.resolve();
+          $log.log('Finished loading Spots: ', spots);
         });
       }
       else deferred.resolve();
       return deferred.promise;
     }
 
+    // Save the Spot to the local database if it's been changed
     function save(saveSpot) {
-      saveSpot.properties.modified_timestamp = Date.now();
-
       var deferred = $q.defer(); // init promise
-      LocalStorageFactory.getDb().spotsDb.setItem(saveSpot.properties.id, saveSpot).then(function () {
-        spots = _.reject(spots, function (spot) {
-          return spot.properties.id === saveSpot.properties.id;
+      var isEqual = _.isEqual(saveSpot, spots[saveSpot.properties.id]);
+      if (isEqual) deferred.resolve(spots);
+      else {
+        saveSpot.properties.modified_timestamp = Date.now();
+        LocalStorageFactory.getDb().spotsDb.setItem(saveSpot.properties.id.toString(), saveSpot).then(function () {
+          spots[saveSpot.properties.id] = saveSpot;
+          deferred.notify();
+          deferred.resolve(spots);
         });
-        spots.push(saveSpot);
-        spots = _.sortBy(spots, function (spot) {
-          return spot.properties.modified_timestamp;
-        }).reverse();
-        deferred.notify();
-        deferred.resolve(spots);
-      });
+      }
       return deferred.promise;
     }
 
@@ -332,10 +289,7 @@
     }
 
     function setCurrentSpotById(id) {
-      var match = _.filter(spots, function (spot) {
-        return String(spot.properties.id) === String(id);
-      })[0];  // Should only be one match
-      currentSpot = angular.fromJson(angular.toJson(match));  // Deep clone
+      currentSpot = angular.fromJson(angular.toJson(spots[id]));
     }
 
     // Initialize a new Spot
@@ -358,8 +312,8 @@
         // Set the date and time to now
         var d = new Date(Date.now());
         d.setMilliseconds(0);
-        currentSpot.properties.date = d;
-        currentSpot.properties.time = d;
+        currentSpot.properties.date = d.toISOString();
+        currentSpot.properties.time = d.toISOString();  // ToDo: Can remove time when switch to only using date
         currentSpot.properties.id = HelpersFactory.getNewId();
 
         // Set default name

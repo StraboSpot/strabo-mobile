@@ -157,11 +157,11 @@
       </ion-input>
       <ion-input class='item item-input item-stacked-label item-text-wrap'>
         <ion-label>Date</ion-label>
-        <input type='date' ng-model='vm.spot.properties.date'>
+        <input type='date' ng-model='vm.datetime' ng-change='vmChild.updateDatetime(vm.datetime)'>
       </ion-input>
       <ion-input class='item item-input item-stacked-label item-text-wrap'>
         <ion-label>Time</ion-label>
-        <input type='time' ng-model='vm.spot.properties.time'>
+        <input type='time' ng-model='vm.datetime' ng-change='vmChild.updateDatetime(vm.datetime)'>
       </ion-input>
 
     </ion-content>

@@ -44,6 +44,7 @@
     vm.copyThisSpot = copyThisSpot;
     vm.createTag = createTag;
     vm.data = {};
+    vm.date = undefined;
     vm.deleteSpot = deleteSpot;
     vm.getMax = getMax;
     vm.getMin = getMin;
@@ -127,20 +128,27 @@
     function setSpot(id) {
       SpotFactory.setCurrentSpotById(id);
       vm.spot = SpotFactory.getCurrentSpot();
+      if (vm.spot) {
+        if (TagFactory.getActiveTagging()) TagFactory.addToActiveTags(vm.spot.properties.id);
+        if (SpotFactory.getActiveNesting()) SpotFactory.addSpotToActiveNest(vm.spot);
 
-      if (TagFactory.getActiveTagging()) TagFactory.addToActiveTags(vm.spot.properties.id);
-      if (SpotFactory.getActiveNesting()) SpotFactory.addSpotToActiveNest(vm.spot);
+        // Convert datetime from ISO to Date string
+        vm.datetime = new Date(vm.spot.properties.date);
 
-      // Convert date string to Date type
-      vm.spot.properties.date = new Date(vm.spot.properties.date);
-      vm.spot.properties.time = new Date(vm.spot.properties.time);
+        vm.spotTitle = vm.spot.properties.name;
+        vm.spots = SpotFactory.getActiveSpots();
 
-      vm.spotTitle = vm.spot.properties.name;
-      vm.spots = SpotFactory.getActiveSpots();
+        if (vm.stateName === 'app.spotTab.spot') vm.data = vm.spot.properties;
 
-      if (vm.stateName === 'app.spotTab.spot') vm.data = vm.spot.properties;
-
-      $log.log('Spot loaded: ', vm.spot);
+        $log.log('Spot loaded: ', vm.spot);
+      }
+      else {
+        $ionicPopup.alert({
+          'title': 'Spot Not Found!',
+          'template': 'This Spot was not found in the local database. It may need to be downloaded from the server or an unknown error has occurred.'
+        });
+        $location.path('app/spots');
+      }
     }
 
     /**
@@ -296,22 +304,24 @@
       SpotFactory.moveSpot = false;
       vm.stateName = state.current.name;
       setSpot(state.params.spotId);
-      loadTags();
+      if (vm.spot) {
+        loadTags();
 
-      vm.showTrace = false;
-      vm.showGeologicUnit = true;
-      vm.showSurfaceFeature = false;
-      if (vm.spot.geometry && vm.spot.geometry.type === 'LineString') {
-        vm.showTrace = true;
-        if (!vm.spot.properties.trace) vm.spot.properties.trace = {};
-        vm.data = vm.spot.properties.trace;
-        vm.showGeologicUnit = false;
-      }
-      if (vm.spot.geometry && vm.spot.geometry.type === 'Polygon') {
-        vm.showRadius = false;
-        vm.showSurfaceFeature = true;
-        if (!vm.spot.properties.surface_feature) vm.spot.properties.surface_feature = {};
-        vm.data = vm.spot.properties.surface_feature;
+        vm.showTrace = false;
+        vm.showGeologicUnit = true;
+        vm.showSurfaceFeature = false;
+        if (vm.spot.geometry && vm.spot.geometry.type === 'LineString') {
+          vm.showTrace = true;
+          if (!vm.spot.properties.trace) vm.spot.properties.trace = {};
+          vm.data = vm.spot.properties.trace;
+          vm.showGeologicUnit = false;
+        }
+        if (vm.spot.geometry && vm.spot.geometry.type === 'Polygon') {
+          vm.showRadius = false;
+          vm.showSurfaceFeature = true;
+          if (!vm.spot.properties.surface_feature) vm.spot.properties.surface_feature = {};
+          vm.data = vm.spot.properties.surface_feature;
+        }
       }
     }
 
