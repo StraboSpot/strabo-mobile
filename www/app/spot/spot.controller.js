@@ -478,6 +478,9 @@
         vm.submit('/app/image-basemaps/' + vm.spot.properties.image_basemap);
       }
       else {
+        $ionicLoading.show({
+          'template': '<ion-spinner></ion-spinner><br>Loading Map...'
+        });
         MapViewFactory.setMapViewToSpot(vm.spot);
         vm.submit('/app/map');
       }

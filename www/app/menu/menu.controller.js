@@ -5,9 +5,9 @@
     .module('app')
     .controller('MenuController', MenuController);
 
-  MenuController.$inject = ['$log', '$scope', '$state', 'ProjectFactory', 'UserFactory'];
+  MenuController.$inject = ['$ionicLoading', '$log', '$scope', '$state', 'ProjectFactory', 'UserFactory'];
 
-  function MenuController($log, $scope, $state, ProjectFactory, UserFactory) {
+  function MenuController($ionicLoading, $log, $scope, $state, ProjectFactory, UserFactory) {
     var vm = this;
     vm.editUser = editUser;
     vm.getProjectName = getProjectName;
@@ -16,6 +16,7 @@
     vm.switchProject = switchProject;
     vm.projectDetail = projectDetail;
     vm.projectName = '';
+    vm.showLoadingSpinner = showLoadingSpinner;
     vm.userImage = null;
     vm.userName = null;
 
@@ -69,6 +70,14 @@
 
     function projectDetail() {
       $state.go('app.project');
+    }
+
+    function showLoadingSpinner() {
+      if ($state.current.name !== 'app.map') {
+        $ionicLoading.show({
+          'template': '<ion-spinner></ion-spinner><br>Loading Map...'
+        });
+      }
     }
 
     function switchProject() {
