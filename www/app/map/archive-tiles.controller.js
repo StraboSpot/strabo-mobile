@@ -17,7 +17,7 @@
     vm.downloading = false;
     vm.estimateArchiveTile = estimateArchiveTile;
     vm.goToMap = goToMap;
-    vm.maps = {};
+    vm.maps = [];
     vm.nameSelectChanged = nameSelectChanged;
     vm.numOfflineTiles = 0;  // number of tiles we have in offline storage
     vm.selectedName = {};
