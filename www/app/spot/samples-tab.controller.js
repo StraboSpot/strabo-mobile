@@ -76,6 +76,8 @@
      */
 
     function addSample() {
+      vmParent.survey = DataModelsFactory.getDataModel('sample').survey;
+      vmParent.choices = DataModelsFactory.getDataModel('sample').choices;
       vmParent.data = {};
       vmParent.data.id = HelpersFactory.getNewId();
       var number = ProjectFactory.getSampleNumber() || '';
