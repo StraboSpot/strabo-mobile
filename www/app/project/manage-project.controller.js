@@ -17,6 +17,7 @@
     var deleteSelected;
     var notifyMessages = [];
     var user = UserFactory.getUser();
+    var totalImagesFailed = 0;
 
     vm.areDatasetsOn = areDatasetsOn;
     vm.closeModal = closeModal;
@@ -29,6 +30,7 @@
     //vm.doSync = doSync;
     vm.filterDefaultTypes = filterDefaultTypes;
     vm.getNumberOfSpots = getNumberOfSpots;
+    vm.hideLoading = hideLoading;
     vm.initializeUpload = initializeUpload;
     vm.initializeDownload = initializeDownload;
     vm.isDatasetOn = isDatasetOn;
@@ -126,117 +128,45 @@
     }
 
     function doDownloadDataset(dataset) {
-      var deferred = $q.defer(); // init promise
-      notifyMessages = [];
-      $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Downloading Spots...'});
-      doDownloadSpots(dataset).then(function (spots) {
-        var promises = [];
-        var currentSpots = ProjectFactory.getSpotIds()[dataset.id];
-        var spotsToKeep = _.map(spots, function (spot) {
-          return spot.properties.id;
+      outputMessage('Downloading Dataset ' + dataset.name + '...');
+      $ionicLoading.show({'template': notifyMessages.join('<br>')});
+      return downloadSpots(dataset.id)
+        .then(downloadImages)
+        .then(saveSpots)
+        .finally(function () {
+          outputMessage('Finished updating Dataset ' + dataset.name);
+        })
+        .catch(function (err) {
+          if (err.statusText) throw 'Error downloading dataset ' + dataset.id + '. Server message: ' + err.statusText;
+          else throw 'Error downloading dataset ' + dataset.id;
         });
-        notifyMessages.push('Checking for Images ...');
-        notifyMessages.push('Saving Spots ...');
-        $ionicLoading.show({'template': notifyMessages.join('<br>')});
-        _.each(spots, function (spot) {
-          var promise = doDownloadImages(spot).then(function (spotToSave) {
-            //$log.log('Spot To Save', spotToSave);
-            return saveSpot(spotToSave, dataset);
-          });
-          promises.push(promise);
-        });
-        $q.all(promises).then(function () {
-          var spotsToDestroy = _.difference(currentSpots, spotsToKeep);
-          if (spotsToDestroy) $log.log('Spots to destroy bc they are not on server', spotsToDestroy);
-          _.each(spotsToDestroy, function (spotToDestroy) {
-            SpotFactory.destroy(spotToDestroy);
-          });
-          deferred.resolve();
-        });
-      }, function (err) {
-        $log.log(err);
-        deferred.reject(err);
-      });
-      return deferred.promise;
-    }
-
-    function doDownloadImages(spot) {
-      var deferred = $q.defer(); // init promise
-      if (spot.properties.images) {
-        var promises = [];
-        _.each(spot.properties.images, function (image) {
-          // Check if we have the image already, otherwise download the image
-          var downloadImage = true;
-          var foundSpot = SpotFactory.getSpotById(spot.properties.id);
-          if (foundSpot) {
-            if (foundSpot.properties.images) {
-              var foundImage = _.find(foundSpot.properties.images, function (savedImage) {
-                return savedImage.id === image.id;
-              });
-              if (foundImage.src) {
-                image.src = foundImage.src;
-                downloadImage = false;
-              }
-            }
-          }
-          if (downloadImage) {
-            var promise = RemoteServerFactory.getImage(image.id, UserFactory.getUser().encoded_login).then(
-              function (response) {
-                $log.log('Downloaded image. Response:', response);
-                var deferred2 = $q.defer(); // init promise
-                handleDownloadedImage(image, response).then(function () {
-                  deferred2.resolve();
-                });
-                return deferred2.promise;
-              });
-            promises.push(promise);
-          }
-        });
-        $q.all(promises).then(function () {
-          deferred.resolve(spot);
-        });
-      }
-      else deferred.resolve(spot);
-      return deferred.promise;
     }
 
     function doDownloadProject() {
-      notifyMessages = ['<ion-spinner></ion-spinner><br>'];
-      var deferred = $q.defer(); // init promise
-      ProjectFactory.loadProjectRemote(vm.project).then(function () {
-        var promises = [];
-        _.each(vm.activeDatasets, function (dataset) {
-          promises.push(doDownloadDataset(dataset));
-        });
-        $q.all(promises).then(function () {
-          deferred.resolve();
-        }, function (err) {
-          deferred.reject(err);
-        });
-      }, function (err) {
-        $ionicPopup.alert({
-          'title': 'Error communicating with server!',
-          'template': err
-        });
-        deferred.reject(err);
-      });
-      return deferred.promise;
-    }
+      notifyMessages = ['<ion-spinner></ion-spinner><br>Downloading Project...'];
+      $ionicLoading.show({'template': notifyMessages});
+      return ProjectFactory.loadProjectRemote(vm.project).then(function () {
+        var deferred = $q.defer();
+        var currentRequest = 0;
 
-    function doDownloadSpots(dataset) {
-      var deferred = $q.defer(); // init promise
-      RemoteServerFactory.getDatasetSpots(dataset.id, UserFactory.getUser().encoded_login).then(function (response) {
-        $log.log('Downloaded Spots. Response:', response);
-        notifyMessages = ['<ion-spinner></ion-spinner><br>'];
-        notifyMessages.push('Downloaded Spots');
-        $ionicLoading.show({'template': notifyMessages.join('<br>')});
-        if (response.data) deferred.resolve(response.data.features);
-        else deferred.resolve({});
-      }, function (response) {
-        $log.log('Error geting spots in dataset. Response:', response);
-        deferred.reject(response.data.Error);
+        // Download datasets synchronously
+        function makeNextRequest() {
+          doDownloadDataset(vm.activeDatasets[currentRequest]).then(function () {
+            currentRequest++;
+            if (currentRequest > 0 && currentRequest < vm.activeDatasets.length) {
+              notifyMessages.push('------------------------');
+              $ionicLoading.show({'template': notifyMessages.join('<br>')});
+            }
+            if (currentRequest < vm.activeDatasets.length) makeNextRequest();
+            else deferred.resolve();
+          });
+        }
+
+        makeNextRequest();
+        return deferred.promise;
+      }).catch(function (err) {
+        throw err
       });
-      return deferred.promise;
     }
 
     function doLoadProjectRemote(project) {
@@ -328,7 +258,8 @@
         },
         function (response) {
           $log.log('Error uploading project', project, '. Response:', response);
-          deferred.reject(response.data.Error);
+          if (response.data && response.data.Error) deferred.reject(response.data.Error);
+          else deferred.reject('Unknown Error Uploading Project');
         });
       return deferred.promise;
     }
@@ -435,49 +366,98 @@
       return deferred.promise;
     }
 
-    function handleDownloadedImage(image, response) {
-      var deferred = $q.defer(); // init promise
-      readDataUrl(response.data).then(function (base64Image) {
-        image.src = base64Image;
-        if (!image.height || !image.width) {
-          var im = new Image();
-          im.src = base64Image;
-          image.height = im.height;
-          image.width = im.width;
+    function downloadSpots(datasetId) {
+      notifyMessages.push('Downloading Spots ...');
+      return RemoteServerFactory.getDatasetSpots(datasetId, UserFactory.getUser().encoded_login)
+        .then(function (response) {
+          notifyMessages.pop();
+          notifyMessages.push('Downloaded Spots');
+          var spots = {};
+          if (response.data && response.data.features) spots = response.data.features;
+          return {'spots': spots, 'datasetId': datasetId}
+        });
+    }
+
+    function downloadImageError(image, spot, err) {
+      if (err && err.statusText) $log.error('Error downloading Image', image.id, 'for Spot', spot.properties.id, spot,
+        'Error Message:', err.statusText);
+      else $log.error('Error downloading Image', image.id, 'for Spot', spot.properties.id, spot);
+    }
+
+    function downloadImages(data) {
+      var spots = data.spots;
+      //$log.log(spots);
+      var promises = [];
+      var imagesNeededCount = 0;
+      var imagesDownloadedCount = 0;
+      var imagesFailedCount = 0;
+      _.each(spots, function (spot) {
+        if (spot.properties.images) {
+          _.each(spot.properties.images, function (image) {
+            if (isImageNeeded(image, spot.properties.id)) {
+              imagesNeededCount++;
+              var promise = RemoteServerFactory.getImage(image.id, UserFactory.getUser().encoded_login)
+                .then(function (response) {
+                  if (response.data) {
+                    imagesDownloadedCount++;
+                    notifyMessages.pop();
+                    outputMessage('NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + imagesNeededCount);
+                    return handleDownloadedImage(image, response.data);
+                  }
+                  else {
+                    imagesFailedCount++;
+                    downloadImageError(image, spot);
+                  }
+                }, function (err) {
+                  imagesFailedCount++;
+                  downloadImageError(image, spot, err);
+                });
+              promises.push(promise);
+            }
+          });
         }
-        deferred.resolve(image);
       });
-      return deferred.promise;
+      outputMessage('NEW images to download: ' + imagesNeededCount);
+      return $q.all(promises)
+        .then(function () {
+          if (imagesFailedCount > 0) {
+            outputMessage('Image Downloads Failed: ' + imagesFailedCount);
+            totalImagesFailed += imagesFailedCount;
+          }
+          return data;
+        });
+    }
+
+    function handleDownloadedImage(image, imageSrc) {
+      return readDataUrl(imageSrc)
+        .then(function (base64Image) {
+          image.src = base64Image;
+          if (!image.height || !image.width) {
+            var im = new Image();
+            im.src = base64Image;
+            image.height = im.height;
+            image.width = im.width;
+          }
+          return image;
+        });
     }
 
     function initializeDownloadDataset(dataset) {
-      var deferred = $q.defer(); // init promise
       notifyMessages = [];
-      $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Downloading Spots...'});
+      notifyMessages = ['<ion-spinner></ion-spinner>'];
+      $ionicLoading.show({'template': notifyMessages});
       doDownloadDataset(dataset).then(function () {
-        $ionicLoading.hide();
-        if (getNumberOfSpots(dataset) === '(0 Spots)') {
-          $ionicPopup.alert({
-            'title': 'Success!',
-            'template': 'No Spots to download.'
-          });
-        }
-        else {
-          $ionicPopup.alert({
-            'title': 'Success!',
-            'template': 'Spots downloaded successfully.'
-          });
-        }
-        deferred.resolve();
+        notifyMessages.splice(0, 1);
+        if (totalImagesFailed === 0) outputMessage('<br>Dataset Updated Successfully!');
+        else outputMessage('<br>Errors Updating Dataset! <br> '
+          + totalImagesFailed + ' image(s) failed to download');
+        setSpotsDataset();
       }, function (err) {
-        $ionicLoading.hide();
-        $ionicPopup.alert({
-          'title': 'Error communicating with server!',
-          'template': 'There was a problem downloading the Spots for this dataset. Try again later. Server error message: ' + err
-        });
-        deferred.reject();
+        outputMessage('<br>Error Updating Dataset! Error:' + err);
+      }).finally (function() {
+        $ionicLoading.show({scope: $scope, template: notifyMessages.join('<br>') + '<br><br>' +
+        '<a class="button button-clear button-outline button-light" ng-click="vm.hideLoading()">OK</a>'});
       });
-      return deferred.promise;
     }
 
     function initializeModal() {
@@ -510,6 +490,27 @@
       vm.showProject = !_.isEmpty(vm.project);
     }
 
+    function isImageNeeded(image, spotId) {
+      var downloadImage = true;
+      var foundSpot = SpotFactory.getSpotById(spotId);
+      if (foundSpot && foundSpot.properties.images) {
+        var foundImage = _.find(foundSpot.properties.images, function (savedImage) {
+          return savedImage.id === image.id;
+        });
+        if (foundImage && foundImage.src) {
+          image.src = foundImage.src;
+          downloadImage = false;
+        }
+      }
+      return downloadImage;
+    }
+
+    function outputMessage(msg) {
+      //$log.log(msg);
+      notifyMessages.push(msg);
+      $ionicLoading.show({'template': notifyMessages.join('<br>')});
+    }
+
     function openModal() {
       initializeModal();
       if (_.isEmpty(vm.project)) vm.projectModal.show();
@@ -538,23 +539,53 @@
       return deferred.promise;
     }
 
-    function saveSpot(spot, dataset) {
-      var deferred = $q.defer(); // init promise
+    function saveSpot(spot, datasetId) {
       // If the geometry coordinates contain any null values, delete the geometry; it shouldn't be defined
       if (spot.geometry && spot.geometry.coordinates) {
         if (_.indexOf(_.flatten(spot.geometry.coordinates), null) !== -1) {
           delete spot.geometry;
         }
       }
-      SpotFactory.save(spot).then(function () {
-        //$log.log('Saved new Spot from server:', spot);
-        ProjectFactory.addSpotToDataset(spot.properties.id, dataset.id);
-        deferred.resolve();
-      }, function (err) {
-        $log.log('Error saving Spot to local storage');
-        deferred.reject(err);
+      return SpotFactory.saveDownloadedSpot(spot).then(function () {
+        ProjectFactory.addSpotToDataset(spot.properties.id, datasetId);
       });
-      return deferred.promise;
+    }
+
+    function saveSpots(data) {
+      var spots = data.spots;
+      var datasetId = data.datasetId;
+      var originalSpotsIds = ProjectFactory.getSpotIds()[datasetId];
+      //$log.log(spots);
+      var promises = [];
+      var spotsNeededCount = 0;
+      var spotsSavedCount = 0;
+      $ionicLoading.show({'template': notifyMessages.join('<br>')});
+      _.each(spots, function (spot) {
+        // Only need to save Spot if downloaded Spot differs from local Spot
+        if (!_.isEqual(spot, SpotFactory.getSpotById(spot.properties.id))) {
+          spotsNeededCount++;
+          var promise = saveSpot(spot, datasetId)
+            .then(function () {
+              spotsSavedCount++;
+              notifyMessages.pop();
+              outputMessage('NEW/MODIFIED Spots Saved: ' + spotsSavedCount + ' of ' + spotsNeededCount + ' Spots');
+            });
+          promises.push(promise);
+        }
+      });
+      outputMessage('NEW/MODIFIED Spots to save: ' + spotsNeededCount);
+      return $q.all(promises).then(function () {
+        $log.log('Finished saving Spots');
+        // Delete Spots for this dataset that are stored locally but are not on the server
+        var downloadedSpotsIds = _.map(spots, function (spot) {
+          return spot.properties.id;
+        });
+        var spotsToDestroyIds = _.difference(originalSpotsIds, downloadedSpotsIds);
+        if (spotsToDestroyIds.length > 0) $log.log('Spots to destroy bc they are not on server', spotsToDestroyIds);
+        _.each(spotsToDestroyIds, function (spotToDestroyId) {
+          SpotFactory.destroy(spotToDestroyId);
+        });
+      });
     }
 
     /**
@@ -700,6 +731,28 @@
      }
      }*/
 
+    function areDatasetsOn() {
+      return !_.isEmpty(vm.activeDatasets);
+    }
+
+    function filterDefaultTypes(type) {
+      return _.indexOf(ProjectFactory.getDefaultOtherFeatureTypes(), type) === -1;
+    }
+
+    function getNumberOfSpots(dataset) {
+      var spots = ProjectFactory.getSpotIds()[dataset.id];
+      if (!allValidSpots(spots)) getNumberOfSpots(dataset);
+      else {
+        if (_.isEmpty(spots)) return '(0 Spots)';
+        else if (spots.length === 1) return '(1 Spot)';
+        return '(' + spots.length + ' Spots)';
+      }
+    }
+
+    function hideLoading() {
+      $ionicLoading.hide();
+    }
+
     function initializeDownload() {
       var names = _.pluck(vm.activeDatasets, 'name');
       var confirmPopup = $ionicPopup.confirm({
@@ -709,21 +762,18 @@
       });
       confirmPopup.then(function (res) {
         if (res) {
-          notifyMessages = [];
-          $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Downloading Project...'});
+          totalImagesFailed = 0;
           doDownloadProject().then(function () {
-            $ionicLoading.hide();
-            $ionicPopup.alert({
-              'title': 'Success!',
-              'template': 'Project updated successfully.'
-            });
+            notifyMessages.splice(0, 1);
+            if (totalImagesFailed === 0) outputMessage('<br>Project Updated Successfully!');
+            else outputMessage('<br>Errors Updating Project! <br> '
+              + totalImagesFailed + ' image(s) failed to download');
             initializeProject();
           }, function (err) {
-            $ionicLoading.hide();
-            $ionicPopup.alert({
-              'title': 'Error communicating with server!',
-              'template': 'There was a problem updating project. Try again later. Server error message: ' + err
-            });
+            outputMessage('<br>Error Updating Project! Error:' + err);
+          }).finally (function() {
+            $ionicLoading.show({scope: $scope, template: notifyMessages.join('<br>') + '<br><br>' +
+            '<a class="button button-clear button-outline button-light" ng-click="vm.hideLoading()">OK</a>'});
           });
         }
       });
@@ -762,28 +812,10 @@
       return deferred.promise;
     }
 
-    function filterDefaultTypes(type) {
-      return _.indexOf(ProjectFactory.getDefaultOtherFeatureTypes(), type) === -1;
-    }
-
-    function getNumberOfSpots(dataset) {
-      var spots = ProjectFactory.getSpotIds()[dataset.id];
-      if (!allValidSpots(spots)) getNumberOfSpots(dataset);
-      else {
-        if (_.isEmpty(spots)) return '(0 Spots)';
-        else if (spots.length === 1) return '(1 Spot)';
-        return '(' + spots.length + ' Spots)';
-      }
-    }
-
     function isDatasetOn(dataset) {
       return _.find(vm.activeDatasets, function (datasetOn) {
         return datasetOn.id === dataset.id;
       });
-    }
-
-    function areDatasetsOn() {
-      return !_.isEmpty(vm.activeDatasets);
     }
 
     function newDataset() {
@@ -944,9 +976,7 @@
       else {
         vm.activeDatasets.push(datasetToggled);
         if (_.isEmpty(ProjectFactory.getSpotIds()[datasetToggled.id]) && isSyncReady()) {
-          initializeDownloadDataset(datasetToggled).then(function () {
-            setSpotsDataset();
-          });
+          initializeDownloadDataset(datasetToggled);
         }
         else if (_.isEmpty(ProjectFactory.getSpotIds()[datasetToggled.id]) && !isSyncReady()) {
           $ionicPopup.alert({

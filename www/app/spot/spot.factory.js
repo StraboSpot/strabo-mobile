@@ -48,6 +48,7 @@
       'loadSpots': loadSpots,
       'moveSpot': moveSpot,
       'save': save,
+      'saveDownloadedSpot': saveDownloadedSpot,
       'setActiveNesting': setActiveNesting,
       'setCurrentOrientationIndex': setCurrentOrientationIndex,
       'setCurrentSpotById': setCurrentSpotById,
@@ -276,6 +277,17 @@
           deferred.resolve(spots);
         });
       }
+      return deferred.promise;
+    }
+
+    // Save the Spot to the local database if it's been changed
+    function saveDownloadedSpot(saveSpot) {
+      var deferred = $q.defer(); // init promise
+      LocalStorageFactory.getDb().spotsDb.setItem(saveSpot.properties.id.toString(), saveSpot).then(function () {
+        spots[saveSpot.properties.id] = saveSpot;
+        deferred.notify();
+        deferred.resolve(spots);
+      });
       return deferred.promise;
     }
 

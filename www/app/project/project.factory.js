@@ -464,7 +464,8 @@
           });
         }, function (response) {
           $log.log('Error downloading project', project, '. Response:', response);
-          deferred.reject(response.data.Error);
+          if (response.data && response.data.Error) deferred.reject(response.data.Error);
+          else deferred.reject('Unknown Error Loading  Remote Project');
         });
       }
       else deferred.reject('You must be online and logged in to load a remote project.');
