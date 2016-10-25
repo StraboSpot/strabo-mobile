@@ -111,7 +111,7 @@
       vm.spots = _.sortBy(vm.spots, function (spot) {
         return spot.properties.modified_timestamp;
       }).reverse();
-      vm.spotsDisplayed = angular.fromJson(angular.toJson(vm.spots)).slice(0, 25);
+      vm.spotsDisplayed = vm.spots.slice(0, 25);
     }
 
     /**
@@ -379,9 +379,7 @@
     }
 
     function loadMoreSpots() {
-      var moreSpots = angular.fromJson(angular.toJson(vm.spots)).splice(vm.spotsDisplayed.length,
-        vm.spotsDisplayed.length + 20);
-      vm.spotsDisplayed = _.union(vm.spotsDisplayed, moreSpots);
+      vm.spotsDisplayed = vm.spots.slice(0, vm.spotsDisplayed.length + 20);
       $scope.$broadcast('scroll.infiniteScrollComplete');
     }
 
