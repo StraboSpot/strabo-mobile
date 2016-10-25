@@ -320,13 +320,19 @@
     });
   }
 
-  function prepMenu(LocalStorageFactory, DataModelsFactory, ProjectFactory, RemoteServerFactory, SpotFactory,
+  function prepMenu($ionicLoading, LocalStorageFactory, DataModelsFactory, ProjectFactory, RemoteServerFactory, SpotFactory,
                     UserFactory, OtherMapsFactory) {
+    $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loading Data Models...'});
     return DataModelsFactory.loadDataModels().then(function () {
+      $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loading Database...'});
       return LocalStorageFactory.setupLocalforage().then(function () {
+        $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loaded Database<br>Loading User...'});
         return UserFactory.loadUser().then(function () {
+          $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loaded Database<br>Loaded User<br>Loading Project...'});
           return ProjectFactory.prepProject().then(function () {
+            $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loaded Database<br>Loaded User<br>Loaded Project<br>Loading Spots...'});
             return SpotFactory.loadSpots().then(function () {
+              $ionicLoading.hide();
               return RemoteServerFactory.loadDbUrl().then(function () {
                 return OtherMapsFactory.loadOtherMaps();
               });
