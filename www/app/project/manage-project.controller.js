@@ -366,18 +366,6 @@
       return deferred.promise;
     }
 
-    function downloadSpots(datasetId) {
-      notifyMessages.push('Downloading Spots ...');
-      return RemoteServerFactory.getDatasetSpots(datasetId, UserFactory.getUser().encoded_login)
-        .then(function (response) {
-          notifyMessages.pop();
-          notifyMessages.push('Downloaded Spots');
-          var spots = {};
-          if (response.data && response.data.features) spots = response.data.features;
-          return {'spots': spots, 'datasetId': datasetId}
-        });
-    }
-
     function downloadImageError(image, spot, err) {
       if (err && err.statusText) $log.error('Error downloading Image', image.id, 'for Spot', spot.properties.id, spot,
         'Error Message:', err.statusText);
@@ -428,6 +416,18 @@
         });
     }
 
+    function downloadSpots(datasetId) {
+      notifyMessages.push('Downloading Spots ...');
+      return RemoteServerFactory.getDatasetSpots(datasetId, UserFactory.getUser().encoded_login)
+        .then(function (response) {
+          notifyMessages.pop();
+          notifyMessages.push('Downloaded Spots');
+          var spots = {};
+          if (response.data && response.data.features) spots = response.data.features;
+          return {'spots': spots, 'datasetId': datasetId}
+        });
+    }
+
     function handleDownloadedImage(image, imageSrc) {
       return readDataUrl(imageSrc)
         .then(function (base64Image) {
@@ -443,20 +443,25 @@
     }
 
     function initializeDownloadDataset(dataset) {
-      notifyMessages = [];
-      notifyMessages = ['<ion-spinner></ion-spinner>'];
-      $ionicLoading.show({'template': notifyMessages});
-      doDownloadDataset(dataset).then(function () {
-        notifyMessages.splice(0, 1);
-        if (totalImagesFailed === 0) outputMessage('<br>Dataset Updated Successfully!');
-        else outputMessage('<br>Errors Updating Dataset! <br> '
-          + totalImagesFailed + ' image(s) failed to download');
+      // Make sure dataset exists on server first (ie. it is not a new dataset)
+      RemoteServerFactory.getDataset(dataset.id, UserFactory.getUser().encoded_login).then(function () {
+        notifyMessages = [];
+        notifyMessages = ['<ion-spinner></ion-spinner>'];
+        $ionicLoading.show({'template': notifyMessages});
+        doDownloadDataset(dataset).then(function () {
+          notifyMessages.splice(0, 1);
+          if (totalImagesFailed === 0) outputMessage('<br>Dataset Updated Successfully!');
+          else outputMessage('<br>Errors Updating Dataset! <br> '
+            + totalImagesFailed + ' image(s) failed to download');
+          setSpotsDataset();
+        }, function (err) {
+          outputMessage('<br>Error Updating Dataset! Error:' + err);
+        }).finally (function() {
+          $ionicLoading.show({scope: $scope, template: notifyMessages.join('<br>') + '<br><br>' +
+          '<a class="button button-clear button-outline button-light" ng-click="vm.hideLoading()">OK</a>'});
+        });
+      }, function () {
         setSpotsDataset();
-      }, function (err) {
-        outputMessage('<br>Error Updating Dataset! Error:' + err);
-      }).finally (function() {
-        $ionicLoading.show({scope: $scope, template: notifyMessages.join('<br>') + '<br><br>' +
-        '<a class="button button-clear button-outline button-light" ng-click="vm.hideLoading()">OK</a>'});
       });
     }
 

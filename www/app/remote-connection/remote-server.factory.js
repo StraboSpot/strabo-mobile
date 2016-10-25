@@ -22,6 +22,7 @@
       'deleteProject': deleteProject,
       'deleteSpots': deleteSpots,
       'downloadImage': downloadImage,
+      'getDataset': getDataset,
       'getDatasets': getDatasets,
       'getDatasetSpots': getDatasetSpots,
       'getDbUrl': getDbUrl,
@@ -203,6 +204,12 @@
           'Authorization': 'Basic ' + encodedLogin + '\''
         }
       });
+      return (request.then(handleSuccess, handleError));
+    }
+
+    // Get dataset
+    function getDataset(datasetId, encodedLogin) {
+      var request = buildGetRequest('/db/dataset/' + datasetId, encodedLogin);
       return (request.then(handleSuccess, handleError));
     }
 
