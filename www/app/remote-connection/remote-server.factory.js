@@ -8,7 +8,7 @@
   RemoteServerFactory.$inject = ['$http', '$log', '$q', 'LocalStorageFactory'];
 
   function RemoteServerFactory($http, $log, $q, LocalStorageFactory) {
-    var baseUrl = 'http://strabospot.org';
+    var baseUrl = 'http://strabospot.org/db';
 
     // Return public API
     return {
@@ -120,9 +120,14 @@
 
     // Authenticate the user
     function authenticateUser(loginData) {
-      var request = buildPostRequest('/userAuthenticate', {
-        'email': loginData.email,
-        'password': loginData.password
+      var url = baseUrl.substring(0, baseUrl.lastIndexOf('/'));
+      var request = $http({
+        'method': 'post',
+        'url': url + '/userAuthenticate',
+        'data': {
+          'email': loginData.email,
+          'password': loginData.password
+        }
       });
       return (request.then(handleSuccess, handleError));
     }
@@ -145,7 +150,7 @@
     function createFeature(spot, encodedLogin) {
       var request = $http({
         'method': 'post',
-        'url': baseUrl + '/db/feature',
+        'url': baseUrl + '/feature',
         'headers': {
           'Authorization': 'Basic ' + encodedLogin,
           'Content-Type': 'application/json'
@@ -159,7 +164,7 @@
     function deleteAllDatasetSpots(dataset_id, encodedLogin) {
       var request = $http({
         'method': 'delete',
-        'url': baseUrl + '/db/datasetSpots/' + dataset_id,
+        'url': baseUrl + '/datasetSpots/' + dataset_id,
         'headers': {
           'Authorization': 'Basic ' + encodedLogin,
           'Content-Type': 'application/json'
@@ -185,7 +190,7 @@
     function deleteSpots(encodedLogin) {
       var request = $http({
         'method': 'delete',
-        'url': baseUrl + '/db/myFeatures',
+        'url': baseUrl + '/myFeatures',
         'headers': {
           'Authorization': 'Basic ' + encodedLogin,
           'Content-Type': 'application/json'
@@ -209,7 +214,7 @@
 
     // Get dataset
     function getDataset(datasetId, encodedLogin) {
-      var request = buildGetRequest('/db/dataset/' + datasetId, encodedLogin);
+      var request = buildGetRequest('/dataset/' + datasetId, encodedLogin);
       return (request.then(handleSuccess, handleError));
     }
 
@@ -217,7 +222,7 @@
     function getDatasets(encodedLogin) {
       var request = $http({
         'method': 'get',
-        'url': baseUrl + '/db/myDatasets',
+        'url': baseUrl + '/myDatasets',
         'headers': {
           'Authorization': 'Basic ' + encodedLogin
         }
@@ -227,7 +232,7 @@
 
     // Get all spots for a dataset
     function getDatasetSpots(datasetId, encodedLogin) {
-      var request = buildGetRequest('/db/datasetSpots/' + datasetId, encodedLogin);
+      var request = buildGetRequest('/datasetSpots/' + datasetId, encodedLogin);
       return (request.then(handleSuccess, handleError));
     }
 
@@ -238,7 +243,7 @@
     function getImage(imageId, encodedLogin) {
       var request = $http({
         'method': 'get',
-        'url': baseUrl + '/db/image/' + imageId,
+        'url': baseUrl + '/image/' + imageId,
         'responseType': 'blob',
         'headers': {
           'Authorization': 'Basic ' + encodedLogin + '\''
@@ -251,7 +256,7 @@
     function getImages(datasetId, encodedLogin) {
       var request = $http({
         'method': 'get',
-        'url': baseUrl + '/db/featureImages/' + datasetId,
+        'url': baseUrl + '/featureImages/' + datasetId,
         'headers': {
           'Authorization': 'Basic ' + encodedLogin + '\''
         }
@@ -263,7 +268,7 @@
     function getMyProjects(encodedLogin) {
       var request = $http({
         'method': 'get',
-        'url': baseUrl + '/db/myProjects',
+        'url': baseUrl + '/myProjects',
         'headers': {
           'Authorization': 'Basic ' + encodedLogin + '\''
         }
@@ -273,7 +278,7 @@
 
     // Get user profile
     function getProfile(encodedLogin) {
-      var request = buildGetRequest('/db/profile', encodedLogin);
+      var request = buildGetRequest('/profile', encodedLogin);
       return (request.then(handleSuccess, handleError));
     }
 
@@ -281,7 +286,7 @@
     function getProfileImage(encodedLogin) {
       var request = $http({
         'method': 'get',
-        'url': baseUrl + '/db/profileimage',
+        'url': baseUrl + '/profileimage',
         'responseType': 'blob',
         'headers': {
           'Authorization': 'Basic ' + encodedLogin
@@ -291,7 +296,7 @@
     }
 
     function getProject(projectId, encodedLogin) {
-      var request = buildGetRequest('/db/project/' + projectId, encodedLogin);
+      var request = buildGetRequest('/project/' + projectId, encodedLogin);
       $log.log('Getting project...');
       return (request.then(handleSuccess, handleError));
     }
@@ -299,7 +304,7 @@
     function getProjectDatasets(id, encodedLogin) {
       var request = $http({
         'method': 'get',
-        'url': baseUrl + '/db/projectDatasets/' + id,
+        'url': baseUrl + '/projectDatasets/' + id,
         'headers': {
           'Authorization': 'Basic ' + encodedLogin + '\''
         }
@@ -330,7 +335,7 @@
 
     // Create/Update user profile
     function setProfile(user, encodedLogin) {
-      var request = buildPostRequest('/db/profile', user, encodedLogin);
+      var request = buildPostRequest('/profile', user, encodedLogin);
       return (request.then(handleSuccess, handleError));
     }
 
@@ -344,7 +349,7 @@
 
       var request = $http({
         'method': 'post',
-        'url': baseUrl + '/db/profileimage',
+        'url': baseUrl + '/profileimage',
         'transformRequest': angular.identity,
         'headers': {
           'Authorization': 'Basic ' + encodedLogin,
@@ -356,39 +361,39 @@
     }
 
     function addDatasetToProject(projectId, datasetId, encodedLogin) {
-      var request = buildPostRequest('/db/projectDatasets/' + projectId, {'id': datasetId}, encodedLogin);
+      var request = buildPostRequest('/projectDatasets/' + projectId, {'id': datasetId}, encodedLogin);
       return (request.then(handleSuccess, handleError));
     }
 
     // Add a spot to a dataset
     function addSpotToDataset(spotId, datasetId, encodedLogin) {
-      var request = buildPostRequest('/db/datasetSpots/' + datasetId, {'id': spotId}, encodedLogin);
+      var request = buildPostRequest('/datasetSpots/' + datasetId, {'id': spotId}, encodedLogin);
       return (request.then(handleSuccess, handleError));
     }
 
     function deleteProject(projectId, encodedLogin) {
-      var request = buildDeleteRequest('/db/project/' + projectId, encodedLogin);
+      var request = buildDeleteRequest('/project/' + projectId, encodedLogin);
       return (request.then(handleSuccess, handleError));
     }
 
     function updateDataset(dataset, encodedLogin) {
-      var request = buildPostRequest('/db/dataset', dataset, encodedLogin);
+      var request = buildPostRequest('/dataset', dataset, encodedLogin);
       return (request.then(handleSuccess, handleError));
     }
 
     function updateDatasetSpots(datasetId, spotCollection, encodedLogin) {
-      var request = buildPostRequest('/db/datasetspots/' + datasetId, spotCollection, encodedLogin);
+      var request = buildPostRequest('/datasetspots/' + datasetId, spotCollection, encodedLogin);
       return (request.then(handleSuccess, handleError));
     }
 
     // Update a feature
     function updateFeature(spot, encodedLogin) {
-      var request = buildPostRequest('/db/feature', removeImages(spot), encodedLogin);
+      var request = buildPostRequest('/feature', removeImages(spot), encodedLogin);
       return (request.then(handleSuccess, handleError));
     }
 
     function updateProject(project, encodedLogin) {
-      var request = buildPostRequest('/db/project', project, encodedLogin);
+      var request = buildPostRequest('/project', project, encodedLogin);
       return (request.then(handleSuccess, handleError));
     }
 
@@ -403,7 +408,7 @@
 
       var request = $http({
         'method': 'post',
-        'url': baseUrl + '/db/image',
+        'url': baseUrl + '/image',
         'transformRequest': angular.identity,
         'headers': {
           'Authorization': 'Basic ' + encodedLogin,
@@ -415,7 +420,7 @@
     }
 
     function verifyImageExistance(id, encodedLogin) {
-      var request = buildGetRequest('/db/verifyimage/' + id, encodedLogin);
+      var request = buildGetRequest('/verifyimage/' + id, encodedLogin);
       return (request.then(handleSuccess, handleError));
     }
   }

@@ -156,7 +156,7 @@
     }
 
     function resetDbUrl() {
-      vm.dbUrl = 'http://strabospot.org';
+      vm.dbUrl = 'http://strabospot.org/db';
     }
 
     function save() {
