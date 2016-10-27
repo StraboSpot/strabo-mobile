@@ -52,32 +52,16 @@
 
     // Authenticate user login
     function doLogin(login) {
-      var deferred = $q.defer(); // init promise
       login.email = login.email.toLowerCase();
-      RemoteServerFactory.authenticateUser(login).then(function (response) {
-        if (response.data.valid === 'true') {
-          $log.log('Logged in successfully as', login.email, 'Server Response:', response);
-          user = {
-            'email': login.email,
-            'encoded_login': Base64.encode(login.email + ':' + login.password)
-          };
-          updateUser().then(function () {
-            deferred.resolve();
-          }, function (err) {
-            deferred.reject(err);
-          });
-        }
-        else {
-          $ionicPopup.alert({
-            'title': 'Login Failure!',
-            'template': 'Incorrect username or password.'
-          });
-          deferred.resolve();
-        }
-      }, function (response) {
-        deferred.reject(response.data);
+      var tryLogin = Base64.encode(login.email + ':' + login.password);
+      return RemoteServerFactory.authenticateUser(tryLogin).then(function (response) {
+        user = {
+          'email': login.email,
+          'encoded_login': Base64.encode(login.email + ':' + login.password)
+        };
+        $log.log('Logged in successfully as', login.email, 'Server Response:', response);
+        return updateUser();
       });
-      return deferred.promise;
     }
 
     function getUserName() {

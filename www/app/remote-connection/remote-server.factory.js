@@ -119,16 +119,8 @@
      */
 
     // Authenticate the user
-    function authenticateUser(loginData) {
-      var url = baseUrl.substring(0, baseUrl.lastIndexOf('/'));
-      var request = $http({
-        'method': 'post',
-        'url': url + '/userAuthenticate',
-        'data': {
-          'email': loginData.email,
-          'password': loginData.password
-        }
-      });
+    function authenticateUser(encodedLogin) {
+      var request = buildPostRequest('/userAuthenticate', null, encodedLogin);
       return (request.then(handleSuccess, handleError));
     }
 
