@@ -50,8 +50,8 @@
       'getSamplePrefix': getSamplePrefix,
       'getSpotNumber': getSpotNumber,
       'getSpotPrefix': getSpotPrefix,
-      'getSpotsDataset': getSpotsDataset,
       'getSpotIds': getSpotIds,
+      'getSpotsDataset': getSpotsDataset,
       'getTag': getTag,
       'getTags': getTags,
       'getTagsBySpotId': getTagsBySpotId,
@@ -291,10 +291,6 @@
       return deferred.promise;
     }
 
-    function getSpotsDataset() {
-      return spotsDataset;
-    }
-
     function getCurrentDatasets() {
       return currentDatasets;
     }
@@ -369,6 +365,10 @@
 
     function getSpotIds() {
       return spotIds;
+    }
+
+    function getSpotsDataset() {
+      return spotsDataset;
     }
 
     function getSampleNumber() {

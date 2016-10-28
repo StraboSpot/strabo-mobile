@@ -40,6 +40,7 @@
       'getNameFromId': getNameFromId,
       'getOrientations': getOrientations,
       'getSelectedSpots': getSelectedSpots,
+      'getSpotsByDatasetId': getSpotsByDatasetId,
       'getSpotById': getSpotById,
       'getSpots': getSpots,
       'getVisibleDatasets': getVisibleDatasets,
@@ -226,6 +227,16 @@
       return spots;
     }
 
+    function getSpotsByDatasetId(datasetId) {
+      var spotsIds = ProjectFactory.getSpotIds()[datasetId];
+      var spotsTemp = {};
+      _.each(spotsIds, function (spotId) {
+        if (spots[spotId]) spotsTemp[spotId] = spots[spotId];
+        else ProjectFactory.removeSpotFromDataset(spotId);
+      });
+      return spotsTemp;
+    }
+
     function getVisibleDatasets() {
       return visibleDatasets;
     }
@@ -330,7 +341,7 @@
 
         // Set default name
         var prefix = ProjectFactory.getSpotPrefix();
-        if (!prefix) prefix = new Date().getTime().toString();
+        if (!prefix) prefix = currentSpot.properties.id.toString();
         var number = ProjectFactory.getSpotNumber();
         if (!number) number = '';
         currentSpot.properties.name = prefix + number;

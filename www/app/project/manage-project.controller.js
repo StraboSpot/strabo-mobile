@@ -15,9 +15,10 @@
     var vm = this;
 
     var deleteSelected;
+    var downloadErrors = false;
     var notifyMessages = [];
+    var uploadErrors = false;
     var user = UserFactory.getUser();
-    var totalImagesFailed = 0;
 
     vm.areDatasetsOn = areDatasetsOn;
     vm.closeModal = closeModal;
@@ -127,242 +128,19 @@
       return deferred.promise;
     }
 
-    function doDownloadDataset(dataset) {
+    function downloadDataset(dataset) {
+      var deferred = $q.defer(); // init promise
       outputMessage('Downloading Dataset ' + dataset.name + '...');
-      $ionicLoading.show({'template': notifyMessages.join('<br>')});
-      return downloadSpots(dataset.id)
+      downloadSpots(dataset.id)
         .then(downloadImages)
         .then(saveSpots)
         .finally(function () {
-          outputMessage('Finished updating Dataset ' + dataset.name);
+          deferred.resolve();
         })
         .catch(function (err) {
-          if (err.statusText) throw 'Error downloading dataset ' + dataset.id + '. Server message: ' + err.statusText;
-          else throw 'Error downloading dataset ' + dataset.id;
+          downloadErrors = true;
+          $log.log('Error downloading dataset', err);
         });
-    }
-
-    function doDownloadProject() {
-      notifyMessages = ['<ion-spinner></ion-spinner><br>Downloading Project...'];
-      $ionicLoading.show({'template': notifyMessages});
-      return ProjectFactory.loadProjectRemote(vm.project).then(function () {
-        var deferred = $q.defer();
-        var currentRequest = 0;
-
-        // Download datasets synchronously
-        function makeNextRequest() {
-          doDownloadDataset(vm.activeDatasets[currentRequest]).then(function () {
-            currentRequest++;
-            if (currentRequest > 0 && currentRequest < vm.activeDatasets.length) {
-              notifyMessages.push('------------------------');
-              $ionicLoading.show({'template': notifyMessages.join('<br>')});
-            }
-            if (currentRequest < vm.activeDatasets.length) makeNextRequest();
-            else deferred.resolve();
-          });
-        }
-
-        makeNextRequest();
-        return deferred.promise;
-      }).catch(function (err) {
-        throw err
-      });
-    }
-
-    function doLoadProjectRemote(project) {
-      destroyProject().then(function () {
-        ProjectFactory.loadProjectRemote(project).then(function () {
-          vm.closeModal();
-          initializeProject();
-        }, function (err) {
-          $ionicPopup.alert({
-            'title': 'Error communicating with server!',
-            'template': err
-          });
-        });
-      });
-    }
-
-    function doUpload() {
-      notifyMessages = ['<ion-spinner></ion-spinner><br>'];
-      var deferred = $q.defer(); // init promise
-      doUploadProject().then(
-        function () {
-          doUploadDatasets().then(
-            function () {
-              $log.log('Finished uploading project');
-              notifyMessages.push('Finished uploading project');
-              $ionicLoading.show({'template': notifyMessages.join('<br>')});
-              deferred.resolve();
-            },
-            function (err) {
-              deferred.reject(err);
-            });
-        },
-        function (err) {
-          deferred.reject(err);
-        });
-      return deferred.promise;
-    }
-
-    function doUploadDatasets() {
-      var deferred = $q.defer(); // init promise
-      var promises = [];
-      var project = ProjectFactory.getCurrentProject();
-      var datasets = ProjectFactory.getActiveDatasets();
-      _.each(datasets, function (dataset) {
-        var promise = RemoteServerFactory.updateDataset(dataset, UserFactory.getUser().encoded_login).then(
-          function (response) {
-            $log.log('Finished updating dataset', dataset, '. Response:', response);
-            return RemoteServerFactory.addDatasetToProject(project.id, dataset.id,
-              UserFactory.getUser().encoded_login).then(
-              function (response2) {
-                $log.log('Finished adding dataset to project', project, '. Response:', response2);
-                return doUploadSpots(dataset).then(
-                  null,
-                  function (err) {
-                    deferred.reject(err);
-                  });
-              },
-              function (response2) {
-                $log.log('Error adding dataset to project. Response:', response2);
-                deferred.reject(response2.data.Error);
-              });
-          },
-          function (response) {
-            $log.log('Error uploading dataset', dataset, '. Response:', response);
-            deferred.reject(response.data.Error);
-          });
-        promises.push(promise);
-      });
-      $q.all(promises).then(function () {
-        deferred.resolve();
-      }, function (err) {
-        deferred.reject(err);
-      });
-      return deferred.promise;
-    }
-
-    function doUploadProject() {
-      var deferred = $q.defer(); // init promise
-      var project = angular.fromJson(angular.toJson(ProjectFactory.getCurrentProject()));
-      if (!_.isEmpty(OtherMapsFactory.getOtherMaps())) project.other_maps = OtherMapsFactory.getOtherMaps();
-      RemoteServerFactory.updateProject(project, UserFactory.getUser().encoded_login).then(
-        function (response) {
-          $log.log('Finished uploading project', project, '. Response:', response);
-          notifyMessages.push('Uploaded project properties.');
-          $ionicLoading.show({
-            'template': notifyMessages.join('<br>')
-          });
-          deferred.resolve();
-        },
-        function (response) {
-          $log.log('Error uploading project', project, '. Response:', response);
-          if (response.data && response.data.Error) deferred.reject(response.data.Error);
-          else deferred.reject('Unknown Error Uploading Project');
-        });
-      return deferred.promise;
-    }
-
-    function doUploadSpots(dataset) {
-      var deferred = $q.defer(); // init promise
-      var spotIds = ProjectFactory.getSpotIds()[dataset.id];
-      if (spotIds) {
-        var totalSpotCount = spotIds.length;
-        notifyMessages.push('Dataset ' + dataset.name + ': Uploading ' + totalSpotCount + ' Spots...');
-        $ionicLoading.show({'template': notifyMessages.join('<br>')});
-      }
-      else {
-        notifyMessages.push('Dataset ' + dataset.name + ': No Spots to upload.');
-        $ionicLoading.show({'template': notifyMessages.join('<br>')});
-      }
-
-      // Create a feature collection of spots to upload for this dataset
-      var spotCollection = {
-        'type': 'FeatureCollection',
-        'features': []
-      };
-      _.each(spotIds, function (spotId) {
-        var spot = SpotFactory.getSpotById(spotId);
-        if (spot) {
-          spot = checkValidDateTime(spot);
-          var spotNoImages = angular.fromJson(angular.toJson(spot));
-          _.each(spotNoImages.properties.images, function (image, i) {
-            spotNoImages.properties.images[i] = _.omit(image, 'src');
-          });
-          spotCollection.features.push(spotNoImages);
-        }
-        else $log.error('Spot', spotId, 'in Dataset', dataset, 'but Spot not found.');
-      });
-
-      if (_.isEmpty(spotCollection.features)) deferred.resolve();
-      else {
-        RemoteServerFactory.updateDatasetSpots(dataset.id, spotCollection, UserFactory.getUser().encoded_login).then(
-          function (response) {
-            $log.log('Dataset ' + dataset.name + ': Finished uploading Spots. Response:', response);
-            notifyMessages.push('Dataset ' + dataset.name + ': Finished uploading Spots');
-            $ionicLoading.show({'template': notifyMessages.join('<br>')});
-
-            var promises = [];
-            _.each(spotIds, function (spotId) {
-              var spot = SpotFactory.getSpotById(spotId);
-              if (spot) promises.push(doUploadImages(spot));
-            });
-
-            $q.all(promises).then(
-              function () {
-                deferred.resolve();
-              },
-              function (err) {
-                deferred.reject(err);
-              });
-          },
-          function (response2) {
-            $log.log('Error updating Spots in dataset' + dataset.name + '. Response:', response2);
-            deferred.reject(response2.data.Error);
-          });
-      }
-      return deferred.promise;
-    }
-
-    function doUploadImages(spot) {
-      var deferred = $q.defer(); // init promise
-      var promises = [];
-      if (spot.properties.images) {
-        _.each(spot.properties.images, function (image) {
-          var promise = RemoteServerFactory.verifyImageExistance(image.id, UserFactory.getUser().encoded_login).then(
-            null,
-            function () {
-              var deferred2 = $q.defer(); // init promise
-              // If the image doesn't exist on the server, upload the image
-              $log.log('Uploading image for Spot ' + spot.properties.name + '...');
-              notifyMessages.push('Uploading image for Spot ' + spot.properties.name + '...');
-              $ionicLoading.show({'template': notifyMessages.join('<br>')});
-              RemoteServerFactory.uploadImage(image, UserFactory.getUser().encoded_login).then(
-                function (response) {
-                  var i = _.findIndex(notifyMessages, function (notifyMessage) {
-                    return notifyMessage.startsWith('Uploading image for Spot ' + spot.properties.name);
-                  });
-                  notifyMessages.splice(i, 1);
-                  $log.log('Image uploaded for Spot', spot, 'Server response:', response);
-                  $ionicLoading.show({'template': notifyMessages.join('<br>')});
-                  deferred2.resolve();
-                },
-                function (response) {
-                  $log.log('Error uploading image for', spot, 'Server response:', response);
-                  deferred2.reject(response.data.Error);
-                });
-              return deferred2.promise;
-            });
-          promises.push(promise);
-        });
-        $q.all(promises).then(function () {
-          deferred.resolve();
-        }, function (err) {
-          deferred.reject(err);
-        });
-      }
-      else deferred.resolve();
       return deferred.promise;
     }
 
@@ -409,11 +187,36 @@
       return $q.all(promises)
         .then(function () {
           if (imagesFailedCount > 0) {
+            downloadErrors = true;
             outputMessage('Image Downloads Failed: ' + imagesFailedCount);
-            totalImagesFailed += imagesFailedCount;
           }
           return data;
         });
+    }
+
+    function downloadProject() {
+      notifyMessages = ['<ion-spinner></ion-spinner><br>Downloading Project...'];
+      $ionicLoading.show({'template': notifyMessages});
+      return ProjectFactory.loadProjectRemote(vm.project).then(function () {
+        var deferred = $q.defer();
+        var currentRequest = 0;
+
+        // Download datasets synchronously
+        function makeNextRequest() {
+          downloadDataset(vm.activeDatasets[currentRequest]).then(function () {
+            currentRequest++;
+            if (currentRequest > 0 && currentRequest < vm.activeDatasets.length) {
+              notifyMessages.push('------------------------');
+              $ionicLoading.show({'template': notifyMessages.join('<br>')});
+            }
+            if (currentRequest < vm.activeDatasets.length) makeNextRequest();
+            else deferred.resolve();
+          });
+        }
+
+        makeNextRequest();
+        return deferred.promise;
+      });
     }
 
     function downloadSpots(datasetId) {
@@ -421,10 +224,16 @@
       return RemoteServerFactory.getDatasetSpots(datasetId, UserFactory.getUser().encoded_login)
         .then(function (response) {
           notifyMessages.pop();
-          notifyMessages.push('Downloaded Spots');
+          outputMessage('Downloaded Spots');
           var spots = {};
           if (response.data && response.data.features) spots = response.data.features;
           return {'spots': spots, 'datasetId': datasetId}
+        }, function (err) {
+          downloadErrors = true;
+          notifyMessages.pop();
+          outputMessage('Error Downloading Spots');
+          if (err.statusText) outputMessage('Server Error: ' + err.statusText);
+          throw err;
         });
     }
 
@@ -443,22 +252,25 @@
     }
 
     function initializeDownloadDataset(dataset) {
+      downloadErrors = false;
       // Make sure dataset exists on server first (ie. it is not a new dataset)
       RemoteServerFactory.getDataset(dataset.id, UserFactory.getUser().encoded_login).then(function () {
         notifyMessages = [];
         notifyMessages = ['<ion-spinner></ion-spinner>'];
         $ionicLoading.show({'template': notifyMessages});
-        doDownloadDataset(dataset).then(function () {
+        downloadDataset(dataset).then(function () {
           notifyMessages.splice(0, 1);
-          if (totalImagesFailed === 0) outputMessage('<br>Dataset Updated Successfully!');
-          else outputMessage('<br>Errors Updating Dataset! <br> '
-            + totalImagesFailed + ' image(s) failed to download');
+          if (!downloadErrors) outputMessage('<br>Dataset Updated Successfully!');
+          else outputMessage('<br>Errors Updating Dataset!');
           setSpotsDataset();
         }, function (err) {
+          notifyMessages.splice(0, 1);
           outputMessage('<br>Error Updating Dataset! Error:' + err);
-        }).finally (function() {
-          $ionicLoading.show({scope: $scope, template: notifyMessages.join('<br>') + '<br><br>' +
-          '<a class="button button-clear button-outline button-light" ng-click="vm.hideLoading()">OK</a>'});
+        }).finally(function () {
+          $ionicLoading.show({
+            scope: $scope, template: notifyMessages.join('<br>') + '<br><br>' +
+            '<a class="button button-clear button-outline button-light" ng-click="vm.hideLoading()">OK</a>'
+          });
         });
       }, function () {
         setSpotsDataset();
@@ -508,6 +320,20 @@
         }
       }
       return downloadImage;
+    }
+
+    function loadProjectRemote(project) {
+      destroyProject().then(function () {
+        ProjectFactory.loadProjectRemote(project).then(function () {
+          vm.closeModal();
+          initializeProject();
+        }, function (err) {
+          $ionicPopup.alert({
+            'title': 'Error communicating with server!',
+            'template': err
+          });
+        });
+      });
     }
 
     function outputMessage(msg) {
@@ -568,6 +394,7 @@
       _.each(spots, function (spot) {
         // Only need to save Spot if downloaded Spot differs from local Spot
         if (!_.isEqual(spot, SpotFactory.getSpotById(spot.properties.id))) {
+          //$log.log('New/Modified Spot:', spot);
           spotsNeededCount++;
           var promise = saveSpot(spot, datasetId)
             .then(function () {
@@ -591,6 +418,172 @@
           SpotFactory.destroy(spotToDestroyId);
         });
       });
+    }
+
+    function upload() {
+      notifyMessages = ['<ion-spinner></ion-spinner><br>'];
+      return uploadProject()
+        .then(uploadDatasets)
+        .catch(function (err) {
+          uploadErrors = true;
+          throw err;
+        });
+    }
+
+    function uploadDataset(dataset) {
+      var deferred = $q.defer(); // init promise
+      outputMessage('Uploading Dataset ' + dataset.name + '...');
+      var project = ProjectFactory.getCurrentProject();
+
+      RemoteServerFactory.updateDataset(dataset, UserFactory.getUser().encoded_login)
+        .then(function (response) {
+          $log.log('Finished updating dataset', dataset, '. Response:', response);
+          return RemoteServerFactory.addDatasetToProject(project.id, dataset.id, UserFactory.getUser().encoded_login)
+            .then(function (response2) {
+                $log.log('Finished adding dataset to project', project, '. Response:', response2);
+                return uploadSpots(dataset).then(function () {
+                  deferred.resolve();
+                });
+              },
+              function (err) {
+                uploadErrors = true;
+                $log.log('Error adding dataset to project. Response:', err);
+                outputMessage('Error Updating Dataset.');
+                if (err.statusText) outputMessage('Server Error: ' + err.statusText);
+                deferred.resolve();
+              });
+        }, function (err) {
+          uploadErrors = true;
+          outputMessage('Error Updating Dataset.');
+          if (err.statusText) outputMessage('Server Error: ' + err.statusText);
+          deferred.resolve();
+        });
+      return deferred.promise;
+    }
+
+    function uploadDatasets() {
+      var deferred = $q.defer(); // init promise
+      var datasets = ProjectFactory.getActiveDatasets();
+      var currentRequest = 0;
+
+      // Upload datasets synchronously
+      function makeNextRequest() {
+        uploadDataset(datasets[currentRequest]).then(function () {
+          currentRequest++;
+          if (currentRequest > 0 && currentRequest < datasets.length) {
+            notifyMessages.push('------------------------');
+            $ionicLoading.show({'template': notifyMessages.join('<br>')});
+          }
+          if (currentRequest < datasets.length) makeNextRequest();
+          else deferred.resolve();
+        });
+      }
+
+      makeNextRequest();
+      return deferred.promise;
+    }
+
+    function uploadImages(spots) {
+      var imagesToUploadCount = 0;
+      var imagesUploadedCount = 0;
+      var imagesUploadFailedCount = 0;
+      var promises = [];
+      outputMessage('Checking Images to Upload...');
+      _.each(spots, function (spot) {
+        _.each(spot.properties.images, function (image) {
+          if (!image.src) $log.error('No Src for Image:', image, 'in', spot.properties.id, spot);
+          else {
+            var promise = RemoteServerFactory.verifyImageExistance(image.id, UserFactory.getUser().encoded_login).then(
+              null,
+              function () {
+                imagesToUploadCount++;
+                notifyMessages.pop();
+                outputMessage('Images to Upload: ' + imagesToUploadCount);
+                return RemoteServerFactory.uploadImage(image, UserFactory.getUser().encoded_login).then(function () {
+                  imagesUploadedCount++;
+                  notifyMessages.pop();
+                  outputMessage('Images Uploaded: ' + imagesUploadedCount + ' of ' + imagesToUploadCount);
+                }, function () {
+                  uploadErrors = true;
+                  imagesUploadFailedCount++;
+                });
+              });
+            promises.push(promise);
+          }
+        });
+      });
+      return $q.all(promises).then(function () {
+        if (imagesToUploadCount === 0) {
+          notifyMessages.pop();
+          outputMessage('No NEW Images to Upload');
+        }
+        else {
+          outputMessage('Finished Uploading Images');
+          if (imagesUploadFailedCount > 0) outputMessage('Images Failed: ' + imagesUploadFailedCount);
+        }
+      });
+    }
+
+    function uploadProject() {
+      var deferred = $q.defer(); // init promise
+      var project = angular.fromJson(angular.toJson(ProjectFactory.getCurrentProject()));
+      if (!_.isEmpty(OtherMapsFactory.getOtherMaps())) project.other_maps = OtherMapsFactory.getOtherMaps();
+      RemoteServerFactory.updateProject(project, UserFactory.getUser().encoded_login).then(
+        function (response) {
+          $log.log('Finished uploading project', project, '. Response:', response);
+          notifyMessages.push('Uploaded project properties.');
+          $ionicLoading.show({'template': notifyMessages.join('<br>')});
+          deferred.resolve();
+        },
+        function (response) {
+          uploadErrors = true;
+          $log.log('Error uploading project', project, '. Response:', response);
+          if (response.data && response.data.Error) deferred.reject(response.data.Error);
+          deferred.reject();
+        });
+      return deferred.promise;
+    }
+
+    function uploadSpots(dataset) {
+      var spots = SpotFactory.getSpotsByDatasetId(dataset.id);
+      var totalSpotCount = _.size(spots);
+
+      _.each(spots, function (spot) {
+        spot = checkValidDateTime(spot);
+      });
+
+      var spotsNoImages = angular.fromJson(angular.toJson(_.values(spots)));
+      _.each(spotsNoImages, function (spot) {
+        _.each(spot.properties.images, function (image, i) {
+          spot.properties.images[i] = _.omit(image, 'src');
+        });
+      });
+
+      if (_.isEmpty(spotsNoImages)) {
+        outputMessage('No Spots to Upload');
+        return $q.when(null);
+      }
+      else {
+        // Create a feature collection of spots to upload for this dataset
+        var spotCollection = {
+          'type': 'FeatureCollection',
+          'features': spotsNoImages
+        };
+        outputMessage('Uploading ' + totalSpotCount + ' Spots...');
+        return RemoteServerFactory.updateDatasetSpots(dataset.id, spotCollection,
+          UserFactory.getUser().encoded_login).then(
+          function () {
+            notifyMessages.pop();
+            outputMessage('Finished Uploading ' + totalSpotCount + ' Spots');
+            return uploadImages(spots);
+          }, function (err) {
+            uploadErrors = true;
+            outputMessage('Error updating Spots in dataset' + dataset.name);
+            if (err && err.data && err.data.Error) $log.error(err.data.Error);
+            if (err && err.statusText) outputMessage('Server Error: ' + err.statusText);
+            return $q.when(null);
+          });
+      }
     }
 
     /**
@@ -698,8 +691,10 @@
     }
 
     function doCreateNewProject() {
+      $ionicLoading.show({'template': '<ion-spinner></ion-spinner>'});
       destroyProject().then(function () {
         ProjectFactory.createNewProject(vm.data).then(function () {
+          $ionicLoading.hide();
           vm.closeModal();
           initializeProject();
         });
@@ -709,13 +704,13 @@
     /*function doSync() {
      if (isSyncReady()) {
      vm.showOfflineWarning = false;
-     SyncFactory.doDownloadProject(vm.project, UserFactory.getUser().encoded_login).then(function (msg) {
+     SyncFactory.downloadProject(vm.project, UserFactory.getUser().encoded_login).then(function (msg) {
      $log.log(msg);
      SyncFactory.doDownloadDatasets(vm.activeDatasets, UserFactory.getUser().encoded_login).then(function () {
      $log.log('Finished sync');
      });
 
-     //doDownloadProject().then(function () {
+     //downloadProject().then(function () {
      if (remoteProject date > local Project date) {
      destory local project
      save remote Project
@@ -759,6 +754,7 @@
     }
 
     function initializeDownload() {
+      downloadErrors = false;
       var names = _.pluck(vm.activeDatasets, 'name');
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Download Project!',
@@ -767,18 +763,19 @@
       });
       confirmPopup.then(function (res) {
         if (res) {
-          totalImagesFailed = 0;
-          doDownloadProject().then(function () {
+          downloadProject().then(function () {
             notifyMessages.splice(0, 1);
-            if (totalImagesFailed === 0) outputMessage('<br>Project Updated Successfully!');
-            else outputMessage('<br>Errors Updating Project! <br> '
-              + totalImagesFailed + ' image(s) failed to download');
+            if (!downloadErrors) outputMessage('<br>Project Updated Successfully!');
+            else outputMessage('<br>Errors Updating Project!');
             initializeProject();
           }, function (err) {
+            notifyMessages.splice(0, 1);
             outputMessage('<br>Error Updating Project! Error:' + err);
-          }).finally (function() {
-            $ionicLoading.show({scope: $scope, template: notifyMessages.join('<br>') + '<br><br>' +
-            '<a class="button button-clear button-outline button-light" ng-click="vm.hideLoading()">OK</a>'});
+          }).finally(function () {
+            $ionicLoading.show({
+              scope: $scope, template: notifyMessages.join('<br>') + '<br><br>' +
+              '<a class="button button-clear button-outline button-light" ng-click="vm.hideLoading()">OK</a>'
+            });
           });
         }
       });
@@ -786,6 +783,7 @@
 
     function initializeUpload() {
       var deferred = $q.defer(); // init promise
+      uploadErrors = false;
       var names = _.pluck(vm.activeDatasets, 'name');
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Upload Project!',
@@ -796,20 +794,21 @@
         if (res) {
           notifyMessages = [];
           $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Uploading...'});
-          doUpload().then(function () {
-            $ionicLoading.hide();
-            $ionicPopup.alert({
-              'title': 'Success!',
-              'template': 'Project uploaded successfully.'
-            });
+          upload().then(function () {
+            notifyMessages.splice(0, 1); // Remove spinner
+            if (uploadErrors) outputMessage('<br>Project Finished Uploading but with Errors!');
+            else outputMessage('<br>Project Uploaded Successfully!');
             deferred.resolve();
           }, function (err) {
-            $ionicLoading.hide();
-            $ionicPopup.alert({
-              'title': 'Error communicating with server!',
-              'template': 'There was a problem uploading your project. Try again later. Server error message: ' + err
-            });
+            notifyMessages.splice(0, 1); // Remove spinner
+            outputMessage('<br>Error Uploading Project!');
+            if (err) outputMessage('Server Error: ' + err);
             deferred.reject();
+          }).finally(function () {
+            $ionicLoading.show({
+              scope: $scope, template: notifyMessages.join('<br>') + '<br><br>' +
+              '<a class="button button-clear button-outline button-light" ng-click="vm.hideLoading()">OK</a>'
+            });
           });
         }
         else deferred.resolve();
@@ -903,7 +902,7 @@
     function selectProject(project) {
       if (!deleteSelected) {
         $log.log('Selected:', project);
-        if (_.isEmpty(vm.project)) doLoadProjectRemote(project);
+        if (_.isEmpty(vm.project)) loadProjectRemote(project);
         else {
           var confirmPopup = $ionicPopup.confirm({
             'title': 'Upload Current Project?',
@@ -915,7 +914,7 @@
           confirmPopup.then(function (res) {
             if (res) {
               initializeUpload().then(function () {
-                doLoadProjectRemote(project);
+                loadProjectRemote(project);
               }, function () {
                 var confirmPopup2 = $ionicPopup.confirm({
                   'title': 'Upload Error',
@@ -925,11 +924,11 @@
                   ' all datasets and Spots contained within the project?'
                 });
                 confirmPopup2.then(function (res2) {
-                  if (res2) doLoadProjectRemote(project);
+                  if (res2) loadProjectRemote(project);
                 });
               });
             }
-            else doLoadProjectRemote(project);
+            else loadProjectRemote(project);
           });
         }
       }
