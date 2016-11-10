@@ -5,10 +5,10 @@
     .module('app')
     .factory('UserFactory', UserFactory);
 
-  UserFactory.$inject = ['$ionicPopup', '$log', '$state', '$q', 'LocalStorageFactory', 'ProjectFactory', 'RemoteServerFactory',
+  UserFactory.$inject = ['$log', '$q', 'ImageFactory', 'LocalStorageFactory', 'ProjectFactory', 'RemoteServerFactory',
     'SpotFactory'];
 
-  function UserFactory($ionicPopup, $log, $state, $q, LocalStorageFactory, ProjectFactory, RemoteServerFactory, SpotFactory) {
+  function UserFactory($log, $q, ImageFactory, LocalStorageFactory, ProjectFactory, RemoteServerFactory, SpotFactory) {
     var user;
 
     return {
@@ -46,6 +46,7 @@
         $log.log('Cleared user data from local storage');
         ProjectFactory.destroyProject();
         SpotFactory.clearAllSpots();
+        ImageFactory.deleteAllImages();
         //$state.go('app.manage-project');
       });
     }

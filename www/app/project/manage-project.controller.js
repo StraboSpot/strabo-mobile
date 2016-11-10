@@ -6,12 +6,12 @@
     .controller('ManageProjectController', ManageProjectController);
 
   ManageProjectController.$inject = ['$ionicModal', '$ionicLoading', '$ionicPopup', '$log', '$scope', '$q',
-    'DataModelsFactory', 'FormFactory', 'OtherMapsFactory', 'ProjectFactory', 'RemoteServerFactory', 'SpotFactory',
-    'UserFactory'];
+    'DataModelsFactory', 'FormFactory', 'ImageFactory', 'OtherMapsFactory', 'ProjectFactory', 'RemoteServerFactory',
+    'SpotFactory', 'UserFactory'];
 
   function ManageProjectController($ionicModal, $ionicLoading, $ionicPopup, $log, $scope, $q, DataModelsFactory,
-                                   FormFactory, OtherMapsFactory, ProjectFactory, RemoteServerFactory, SpotFactory,
-                                   UserFactory) {
+                                   FormFactory, ImageFactory, OtherMapsFactory, ProjectFactory, RemoteServerFactory,
+                                   SpotFactory, UserFactory) {
     var vm = this;
 
     var deleteSelected;
@@ -119,21 +119,20 @@
     }
 
     function destroyProject() {
-      var deferred = $q.defer(); // init promise
-      ProjectFactory.destroyProject().then(function () {
-        SpotFactory.clearAllSpots().then(function () {
-          deferred.resolve();
+      return ProjectFactory.destroyProject().then(function () {
+        return SpotFactory.clearAllSpots().then(function () {
+          return ImageFactory.deleteAllImages();
         });
       });
-      return deferred.promise;
     }
 
     function downloadDataset(dataset) {
       var deferred = $q.defer(); // init promise
       outputMessage('Downloading Dataset ' + dataset.name + '...');
       downloadSpots(dataset.id)
-        .then(downloadImages)
         .then(saveSpots)
+        .then(gatherNeededImages)
+        .then(downloadImages)
         .finally(function () {
           deferred.resolve();
         })
@@ -150,48 +149,44 @@
       else $log.error('Error downloading Image', image.id, 'for Spot', spot.properties.id, spot);
     }
 
-    function downloadImages(data) {
-      var spots = data.spots;
-      //$log.log(spots);
+    function downloadImages(neededImagesIds) {
       var promises = [];
-      var imagesNeededCount = 0;
       var imagesDownloadedCount = 0;
       var imagesFailedCount = 0;
-      _.each(spots, function (spot) {
-        if (spot.properties.images) {
-          _.each(spot.properties.images, function (image) {
-            if (isImageNeeded(image, spot.properties.id)) {
-              imagesNeededCount++;
-              var promise = RemoteServerFactory.getImage(image.id, UserFactory.getUser().encoded_login)
-                .then(function (response) {
-                  if (response.data) {
-                    imagesDownloadedCount++;
-                    notifyMessages.pop();
-                    outputMessage('NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + imagesNeededCount);
-                    return handleDownloadedImage(image, response.data);
-                  }
-                  else {
-                    imagesFailedCount++;
-                    downloadImageError(image, spot);
-                  }
-                }, function (err) {
-                  imagesFailedCount++;
-                  downloadImageError(image, spot, err);
+      var savedImagesCount = 0;
+      _.each(neededImagesIds, function (neededImageId) {
+        var promise = RemoteServerFactory.getImage(neededImageId, UserFactory.getUser().encoded_login)
+          .then(function (response) {
+            if (response.data) {
+              imagesDownloadedCount++;
+              notifyMessages.pop();
+              outputMessage('NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
+                '<br>NEW Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
+              return readDataUrl(response.data).then(function (base64Image) {
+                return ImageFactory.saveImage(neededImageId, base64Image).then(function () {
+                  savedImagesCount++;
+                  notifyMessages.pop();
+                  outputMessage('NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
+                    '<br>NEW Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
                 });
-              promises.push(promise);
+              });
             }
+            else {
+              imagesFailedCount++;
+              downloadImageError(image, spot);
+            }
+          }, function (err) {
+            imagesFailedCount++;
+            downloadImageError(image, spot, err);
           });
+        promises.push(promise);
+      });
+      return $q.all(promises).then(function () {
+        if (imagesFailedCount > 0) {
+          downloadErrors = true;
+          outputMessage('Image Downloads Failed: ' + imagesFailedCount);
         }
       });
-      outputMessage('NEW images to download: ' + imagesNeededCount);
-      return $q.all(promises)
-        .then(function () {
-          if (imagesFailedCount > 0) {
-            downloadErrors = true;
-            outputMessage('Image Downloads Failed: ' + imagesFailedCount);
-          }
-          return data;
-        });
     }
 
     function downloadProject() {
@@ -223,6 +218,7 @@
       notifyMessages.push('Downloading Spots ...');
       return RemoteServerFactory.getDatasetSpots(datasetId, UserFactory.getUser().encoded_login)
         .then(function (response) {
+          $log.log('Get DatasetSpots Response:', response);
           notifyMessages.pop();
           outputMessage('Downloaded Spots');
           var spots = {};
@@ -237,18 +233,25 @@
         });
     }
 
-    function handleDownloadedImage(image, imageSrc) {
-      return readDataUrl(imageSrc)
-        .then(function (base64Image) {
-          image.src = base64Image;
-          if (!image.height || !image.width) {
-            var im = new Image();
-            im.src = base64Image;
-            image.height = im.height;
-            image.width = im.width;
-          }
-          return image;
-        });
+    function gatherNeededImages(spots) {
+      var neededImagesIds = [];
+      var promises = [];
+      outputMessage('Determining needed images...');
+      _.each(spots, function (spot) {
+        if (spot.properties.images) {
+          _.each(spot.properties.images, function (image) {
+            var promise = ImageFactory.getImageById(image.id).then(function (value) {
+              if (!value && !_.contains(neededImagesIds, image.id)) neededImagesIds.push(image.id);
+            });
+            promises.push(promise);
+          });
+        }
+      });
+      return $q.all(promises).then(function () {
+        notifyMessages.pop();
+        outputMessage('NEW images to download: ' + neededImagesIds.length);
+        return neededImagesIds;
+      });
     }
 
     function initializeDownloadDataset(dataset) {
@@ -307,21 +310,6 @@
       vm.showProject = !_.isEmpty(vm.project);
     }
 
-    function isImageNeeded(image, spotId) {
-      var downloadImage = true;
-      var foundSpot = SpotFactory.getSpotById(spotId);
-      if (foundSpot && foundSpot.properties.images) {
-        var foundImage = _.find(foundSpot.properties.images, function (savedImage) {
-          return savedImage.id === image.id;
-        });
-        if (foundImage && foundImage.src) {
-          image.src = foundImage.src;
-          downloadImage = false;
-        }
-      }
-      return downloadImage;
-    }
-
     function loadProjectRemote(project) {
       destroyProject().then(function () {
         ProjectFactory.loadProjectRemote(project).then(function () {
@@ -337,7 +325,6 @@
     }
 
     function outputMessage(msg) {
-      //$log.log(msg);
       notifyMessages.push(msg);
       $ionicLoading.show({'template': notifyMessages.join('<br>')});
     }
@@ -400,7 +387,7 @@
             .then(function () {
               spotsSavedCount++;
               notifyMessages.pop();
-              outputMessage('NEW/MODIFIED Spots Saved: ' + spotsSavedCount + ' of ' + spotsNeededCount + ' Spots');
+              outputMessage('NEW/MODIFIED Spots Saved: ' + spotsSavedCount + ' of ' + spotsNeededCount);
             });
           promises.push(promise);
         }
@@ -417,6 +404,7 @@
         _.each(spotsToDestroyIds, function (spotToDestroyId) {
           SpotFactory.destroy(spotToDestroyId);
         });
+        return spots;
       });
     }
 
@@ -484,6 +472,7 @@
     }
 
     function uploadImages(spots) {
+      var imagesToUpload = [];
       var imagesToUploadCount = 0;
       var imagesUploadedCount = 0;
       var imagesUploadFailedCount = 0;
@@ -491,25 +480,36 @@
       outputMessage('Checking Images to Upload...');
       _.each(spots, function (spot) {
         _.each(spot.properties.images, function (image) {
-          if (!image.src) $log.error('No Src for Image:', image, 'in', spot.properties.id, spot);
-          else {
-            var promise = RemoteServerFactory.verifyImageExistance(image.id, UserFactory.getUser().encoded_login).then(
-              null,
-              function () {
-                imagesToUploadCount++;
-                notifyMessages.pop();
-                outputMessage('Images to Upload: ' + imagesToUploadCount);
-                return RemoteServerFactory.uploadImage(image, UserFactory.getUser().encoded_login).then(function () {
-                  imagesUploadedCount++;
-                  notifyMessages.pop();
-                  outputMessage('Images Uploaded: ' + imagesUploadedCount + ' of ' + imagesToUploadCount);
-                }, function () {
+          var promise = RemoteServerFactory.verifyImageExistance(image.id, UserFactory.getUser().encoded_login).then(
+            function (response) {
+              $log.log('Image', image, 'in Spot', spot.properties.id, spot, 'EXISTS on server. Server response',
+                response);
+            },
+            function () {
+              imagesToUpload.push(image);
+              imagesToUploadCount++;
+              notifyMessages.pop();
+              outputMessage('Images to Upload: ' + imagesToUploadCount);
+              return ImageFactory.getImageById(image.id).then(function (src) {
+                if (src) {
+                  return RemoteServerFactory.uploadImage(image.id, src, UserFactory.getUser().encoded_login).then(function () {
+                    imagesUploadedCount++;
+                    notifyMessages.pop();
+                    outputMessage('Images Uploaded: ' + imagesUploadedCount + ' of ' + imagesToUploadCount);
+                  }, function () {
+                    uploadErrors = true;
+                    imagesUploadFailedCount++;
+                  });
+                }
+                else {
+                  $log.log('No image source found for image', image.id, 'in Spot', spot.properties.id, spot );
                   uploadErrors = true;
                   imagesUploadFailedCount++;
-                });
+                  return $q.when(null);
+                }
               });
-            promises.push(promise);
-          }
+            });
+          promises.push(promise);
         });
       });
       return $q.all(promises).then(function () {
@@ -550,16 +550,13 @@
 
       _.each(spots, function (spot) {
         spot = checkValidDateTime(spot);
-      });
-
-      var spotsNoImages = angular.fromJson(angular.toJson(_.values(spots)));
-      _.each(spotsNoImages, function (spot) {
+        // ToDo: With new image database src isn't supposed to be in Spot but leave this code for now just in case
         _.each(spot.properties.images, function (image, i) {
           spot.properties.images[i] = _.omit(image, 'src');
         });
       });
 
-      if (_.isEmpty(spotsNoImages)) {
+      if (_.isEmpty(spots)) {
         outputMessage('No Spots to Upload');
         return $q.when(null);
       }
@@ -567,7 +564,7 @@
         // Create a feature collection of spots to upload for this dataset
         var spotCollection = {
           'type': 'FeatureCollection',
-          'features': spotsNoImages
+          'features': spots
         };
         outputMessage('Uploading ' + totalSpotCount + ' Spots...');
         return RemoteServerFactory.updateDatasetSpots(dataset.id, spotCollection,

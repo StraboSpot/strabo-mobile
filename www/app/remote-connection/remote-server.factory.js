@@ -390,13 +390,13 @@
     }
 
     // Upload load an image
-    function uploadImage(image, encodedLogin) {
+    function uploadImage(imageId, src, encodedLogin) {
       // base64 encoded string needs to be a blob type in formdata
-      var blob = dataURItoBlob(image.src);
+      var blob = dataURItoBlob(src);
 
       var formdata = new FormData();
       formdata.append('image_file', blob, 'image.jpeg');
-      formdata.append('id', image.id);
+      formdata.append('id', imageId);
 
       var request = $http({
         'method': 'post',

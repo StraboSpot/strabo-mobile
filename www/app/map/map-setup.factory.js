@@ -5,9 +5,9 @@
     .module('app')
     .factory('MapSetupFactory', MapSetupFactory);
 
-  MapSetupFactory.$inject = ['MapDrawFactory', 'MapFactory', 'MapLayerFactory', 'MapViewFactory'];
+  MapSetupFactory.$inject = ['ImageFactory', 'MapDrawFactory', 'MapFactory', 'MapLayerFactory', 'MapViewFactory'];
 
-  function MapSetupFactory(MapDrawFactory, MapFactory, MapLayerFactory, MapViewFactory) {
+  function MapSetupFactory(ImageFactory, MapDrawFactory, MapFactory, MapLayerFactory, MapViewFactory) {
     var map;
     var imageBasemap;
     var initialMapView;
@@ -61,30 +61,36 @@
         setVisibleLayer(MapLayerFactory.getOfflineLayers());
 
         map.addLayer(MapLayerFactory.getGeolocationLayer());
+        map.addLayer(MapLayerFactory.getDatasetsLayer());
+        map.addLayer(MapLayerFactory.getFeatureLayer());
+        map.addLayer(MapLayerFactory.getDrawLayer());
       }
       else {
-        var extent = [0, 0, imageBasemap.width, imageBasemap.height];
-        var imageBasemapLayer = new ol.layer.Image({
-          'source': new ol.source.ImageStatic({
-            'attributions': [
-              new ol.Attribution({
-                'html': '&copy; <a href="">Need image source here.</a>'
-              })
-            ],
-            'url': imageBasemap.src,
-            'projection': new ol.proj.Projection({
-              'code': 'map-image',
-              'units': 'pixels',
-              'extent': extent
-            }),
-            'imageExtent': extent
-          })
+        ImageFactory.getImageById(imageBasemap.id).then(function (src) {
+          if (!src) src = 'img/image-not-found.png';
+          var extent = [0, 0, imageBasemap.width, imageBasemap.height];
+          var imageBasemapLayer = new ol.layer.Image({
+            'source': new ol.source.ImageStatic({
+              'attributions': [
+                new ol.Attribution({
+                  'html': '&copy; <a href="">Need image source here.</a>'
+                })
+              ],
+              'url': src,
+              'projection': new ol.proj.Projection({
+                'code': 'map-image',
+                'units': 'pixels',
+                'extent': extent
+              }),
+              'imageExtent': extent
+            })
+          });
+          map.addLayer(imageBasemapLayer);
+          map.addLayer(MapLayerFactory.getDatasetsLayer());
+          map.addLayer(MapLayerFactory.getFeatureLayer());
+          map.addLayer(MapLayerFactory.getDrawLayer());
         });
-        map.addLayer(imageBasemapLayer);
       }
-      map.addLayer(MapLayerFactory.getDatasetsLayer());
-      map.addLayer(MapLayerFactory.getFeatureLayer());
-      map.addLayer(MapLayerFactory.getDrawLayer());
     }
 
     function setImageBasemap(im) {

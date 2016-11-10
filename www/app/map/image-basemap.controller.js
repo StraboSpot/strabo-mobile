@@ -6,12 +6,12 @@
     .controller('ImageBasemapController', ImageBasemapController);
 
   ImageBasemapController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover',
-    '$ionicSideMenuDelegate', '$location', '$log', '$scope', '$state', 'HelpersFactory', 'MapDrawFactory',
-    'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory'];
+    '$ionicSideMenuDelegate', '$location', '$log', '$q', '$scope', '$state', 'HelpersFactory', 'ImageFactory',
+    'MapDrawFactory', 'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory'];
 
   function ImageBasemapController($ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicSideMenuDelegate,
-                                  $location, $log, $scope, $state, HelpersFactory, MapDrawFactory, MapFeaturesFactory,
-                                  MapSetupFactory, MapViewFactory, ProjectFactory, SpotFactory) {
+                                  $location, $log, $q, $scope, $state, HelpersFactory, ImageFactory, MapDrawFactory,
+                                  MapFeaturesFactory, MapSetupFactory, MapViewFactory, ProjectFactory, SpotFactory) {
     var vm = this;
 
     var currentSpot = SpotFactory.getCurrentSpot();
@@ -51,18 +51,55 @@
       createPopover();
       var switcher = new ol.control.LayerSwitcher();
 
-      setImageBasemap();
-      MapSetupFactory.setImageBasemap(vm.imageBasemap);
-      MapViewFactory.setInitialMapView(vm.imageBasemap);
-      MapSetupFactory.setMap();
-      MapSetupFactory.setLayers();
-      MapSetupFactory.setMapControls(switcher);
-      MapSetupFactory.setPopupOverlay();
+      setImageBasemap().then(function () {
+        MapSetupFactory.setImageBasemap(vm.imageBasemap);
+        MapViewFactory.setInitialMapView(vm.imageBasemap);
+        MapSetupFactory.setMap();
+        MapSetupFactory.setLayers();
+        MapSetupFactory.setMapControls(switcher);
+        MapSetupFactory.setPopupOverlay();
 
-      map = MapSetupFactory.getMap();
-      var datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map, vm.imageBasemap);
-      MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map, vm.imageBasemap);
-      MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
+        map = MapSetupFactory.getMap();
+        var datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map, vm.imageBasemap);
+        MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map, vm.imageBasemap);
+        MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
+
+        // When the map is moved update the zoom control
+        map.on('moveend', function (evt) {
+          vm.currentZoom = evt.map.getView().getZoom();
+        });
+
+        map.on('touchstart', function (event) {
+          $log.log('touch');
+          $log.log(event);
+        });
+
+        // display popup on click
+        map.on('click', function (evt) {
+          $log.log('map clicked');
+
+          // are we in draw mode?  If so we dont want to display any popovers during draw mode
+          if (!MapDrawFactory.isDrawMode()) {
+            MapFeaturesFactory.showPopup(map, evt);
+          }
+        });
+
+        // Add a `change:visible` listener to all layers currently within the map
+        ol.control.LayerSwitcher.forEachRecursive(map, function (l, idx, a) {
+          l.on('change:visible', function (e) {
+            var lyr = e.target;
+            if (lyr.get('layergroup') === 'Datasets') {
+              _.each(lyr.getLayerStatesArray(), function (layerState) {
+                if (datasetsLayerStates[layerState.layer.get('id')] !== layerState.visible) {
+                  datasetsLayerStates[layerState.layer.get('id')] = layerState.visible;
+                }
+              });
+              MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
+              switcher.renderPanel();
+            }
+          });
+        });
+      });
 
       $ionicModal.fromTemplateUrl('app/map/add-tag-modal.html', {
         'scope': $scope,
@@ -77,16 +114,6 @@
         vm.addTagModal.remove();
       });
 
-      // When the map is moved update the zoom control
-      map.on('moveend', function (evt) {
-        vm.currentZoom = evt.map.getView().getZoom();
-      });
-
-      map.on('touchstart', function (event) {
-        $log.log('touch');
-        $log.log(event);
-      });
-
       // Cleanup when we leave the page (need unloaded, as opposed to leave, so this fires when
       // opening an item from the options button)
       $scope.$on('$ionicView.unloaded', function () {
@@ -97,32 +124,6 @@
       $scope.$on('$ionicView.enter', function () {
         $ionicLoading.hide();
         $log.log('Done Loading Image Basemap');
-      });
-
-      // Add a `change:visible` listener to all layers currently within the map
-      ol.control.LayerSwitcher.forEachRecursive(map, function (l, idx, a) {
-        l.on('change:visible', function (e) {
-          var lyr = e.target;
-          if (lyr.get('layergroup') === 'Datasets') {
-            _.each(lyr.getLayerStatesArray(), function (layerState) {
-              if (datasetsLayerStates[layerState.layer.get('id')] !== layerState.visible) {
-                datasetsLayerStates[layerState.layer.get('id')] = layerState.visible;
-              }
-            });
-            MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
-            switcher.renderPanel();
-          }
-        });
-      });
-
-      // display popup on click
-      map.on('click', function (evt) {
-        $log.log('map clicked');
-
-        // are we in draw mode?  If so we dont want to display any popovers during draw mode
-        if (!MapDrawFactory.isDrawMode()) {
-          MapFeaturesFactory.showPopup(map, evt);
-        }
       });
 
       $scope.$on('enableSaveEdits', function (e, data) {
@@ -167,6 +168,16 @@
           if (image.id.toString() === $state.params.imagebasemapId) vm.imageBasemap = image;
         });
       });
+      if (vm.imageBasemap.height && vm.imageBasemap.width) return $q.when(null);
+      else {
+        return ImageFactory.getImageById(vm.imageBasemap.id).then(function (src) {
+          if (!src) src = 'img/image-not-found.png';
+          var im = new Image();
+          im.src = src;
+          vm.imageBasemap.height = im.height;
+          vm.imageBasemap.width = im.width;
+        });
+      }
     }
 
     /**

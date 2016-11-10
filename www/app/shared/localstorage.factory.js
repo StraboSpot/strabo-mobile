@@ -10,6 +10,7 @@
   function LocalStorageFactory($log, $q) {
     var dbs = {};
     dbs.configDb = {};        // global LocalForage for configuration and user data
+    dbs.imagesDb = {};        // global LocalForage for images
     dbs.mapNamesDb = {};      // global LocalForage for map names
     dbs.mapTilesDb = {};      // global LocalForage for offline map tiles
     dbs.projectDb = {};       // global LocalForage for project data

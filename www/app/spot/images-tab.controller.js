@@ -6,10 +6,10 @@
     .controller('ImagesTabController', ImagesTabController);
 
   ImagesTabController.$inject = ['$cordovaCamera', '$cordovaGeolocation', '$document', '$ionicModal', '$ionicPopup',
-    '$log', '$scope', '$state', '$window', 'DataModelsFactory', 'HelpersFactory'];
+    '$log', '$q', '$scope', '$state', '$window', 'DataModelsFactory', 'HelpersFactory', 'ImageFactory'];
 
-  function ImagesTabController($cordovaCamera, $cordovaGeolocation, $document, $ionicModal, $ionicPopup, $log, $scope,
-                               $state, $window, DataModelsFactory, HelpersFactory) {
+  function ImagesTabController($cordovaCamera, $cordovaGeolocation, $document, $ionicModal, $ionicPopup, $log, $q,
+                               $scope, $state, $window, DataModelsFactory, HelpersFactory, ImageFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.survey = DataModelsFactory.getDataModel('image').survey;
@@ -17,8 +17,8 @@
     vmParent.loadTab($state);  // Need to load current state into parent
 
     var getGeoInfo = false;
+    var imageSources = {};
 
-    vm.addImage = addImage;
     vm.cameraSource = [{
       'text': 'Photo Library',
       'value': 'PHOTOLIBRARY'
@@ -29,15 +29,16 @@
       'text': 'Saved Photo Album',
       'value': 'SAVEDPHOTOALBUM'
     }];
+    vm.selectedCameraSource = {
+      'source': 'CAMERA'  // default is always camera
+    };
+
+    vm.addImage = addImage;
     vm.closeModal = closeModal;
-    vm.closeImageModal = closeImageModal;
     vm.deleteImage = deleteImage;
+    vm.getImageSrc = getImageSrc;
     vm.goToImageBasemap = goToImageBasemap;
     vm.moreDetail = moreDetail;
-    vm.selectedCameraSource = {
-      // default is always camera
-      'source': 'CAMERA'
-    };
     vm.showImages = showImages;
     vm.toggleImageBasemap = toggleImageBasemap;
 
@@ -51,6 +52,7 @@
       $log.log('In ImagesTabController');
 
       createModals();
+      getImageSources();
       ionic.on('change', getFile, $document[0].getElementById('file'));
     }
 
@@ -112,6 +114,21 @@
       $log.log('Getting file ....');
       var file = event.target.files[0];
       readDataUrl(file);
+    }
+
+    function getImageSources() {
+      var promises = [];
+      imageSources = [];
+      _.each(vmParent.spot.properties.images, function (image) {
+        var promise = ImageFactory.getImageById(image.id).then(function (src) {
+          if (src) imageSources[image.id] = src;
+          else imageSources[image.id] = 'img/image-not-found.png';
+        });
+        promises.push(promise);
+      });
+      return $q.all(promises).then(function () {
+        $log.log('Image Sources:', imageSources);
+      });
     }
 
     function isImageUsed(image) {
@@ -247,11 +264,12 @@
         image.src = evt.target.result;
         image.onload = function () {
           var imageData = {
-            'src': image.src,
             'height': image.height,
             'width': image.width,
             'id': HelpersFactory.getNewId()
           };
+          ImageFactory.saveImage(imageData.id, image.src);
+          imageSources[imageData.id] = image.src;
           if (getGeoInfo) addGeoInfo(imageData);
           else {
             var confirmPopup = $ionicPopup.confirm({
@@ -291,11 +309,6 @@
       vm[modal].hide();
     }
 
-    function closeImageModal() {
-      vm.imageModal.hide();
-      vm.imageModal.remove();
-    }
-
     function deleteImage() {
       if (!isImageUsed(vmParent.data)) {
         var confirmPopup = $ionicPopup.confirm({
@@ -307,11 +320,17 @@
             vmParent.spot.properties.images = _.reject(vmParent.spot.properties.images, function (image) {
               return vmParent.data.id === image.id;
             });
+            ImageFactory.deleteImage(vmParent.data.id);
+            delete imageSources[vmParent.data.id];
             vmParent.data = {};
             closeModal('imagePropertiesModal');
           }
         });
       }
+    }
+
+    function getImageSrc(imageId) {
+      return imageSources[imageId] || 'img/loading-image.png';
     }
 
     function goToImageBasemap(image) {
