@@ -173,7 +173,10 @@
           if (res) {
             SpotFactory.destroy(spot.properties.id).then(function () {
               vm.spots = SpotFactory.getActiveSpots();
-              vm.spotsDisplayed = angular.fromJson(angular.toJson(vm.spots)).slice(0, 20);
+              vm.spots = _.sortBy(vm.spots, function (spot) {
+                return spot.properties.modified_timestamp;
+              }).reverse();
+              vm.spotsDisplayed = vm.spots.slice(0, 25);
             });
           }
           vm.deleteSelected = false;
