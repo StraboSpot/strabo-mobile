@@ -3,6 +3,7 @@
 
     <ion-toggle class='toggle-small'
                 toggle-class='toggle-positive'
+                ng-hide='vmChild.hideContNesting'
                 ng-model='vmChild.isNesting'
                 ng-click='vmChild.toggleNesting()'>
       <span class='toggle-left-label'>{{ vmChild.nestText }} </span>

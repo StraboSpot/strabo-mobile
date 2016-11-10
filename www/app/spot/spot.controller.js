@@ -130,7 +130,7 @@
       vm.spot = SpotFactory.getCurrentSpot();
       if (vm.spot) {
         if (TagFactory.getActiveTagging()) TagFactory.addToActiveTags(vm.spot.properties.id);
-        if (SpotFactory.getActiveNesting()) SpotFactory.addSpotToActiveNest(vm.spot);
+        if (SpotFactory.getActiveNesting() && vm.spot.geometry) SpotFactory.addSpotToActiveNest(vm.spot);
 
         // Convert datetime from ISO to Date string
         vm.datetime = new Date(vm.spot.properties.date);
