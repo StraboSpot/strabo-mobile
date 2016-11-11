@@ -5,23 +5,27 @@
     .module('app')
     .controller('NestTabController', NestTabController);
 
-  NestTabController.$inject = ['$location', '$log', '$scope', '$state', 'SpotFactory'];
+  NestTabController.$inject = ['$ionicModal', '$log', '$scope', '$state', 'DataModelsFactory',  'SpotFactory'];
 
-  function NestTabController($location, $log, $scope, $state, SpotFactory) {
+  function NestTabController($ionicModal, $log, $scope, $state, DataModelsFactory, SpotFactory) {
     var vm = this;
     var vmParent = $scope.vm;
-    vmParent.survey = undefined;
-    vmParent.choices = undefined;
-    vmParent.loadTab($state);  // Need to load current state into parent
+    vmParent.loadTab($state);   // Need to load current state into parent
+    vmParent.nestTab = vm;
+    vmParent.survey = DataModelsFactory.getDataModel('surface_feature').survey;
+    vmParent.choices = DataModelsFactory.getDataModel('surface_feature').choices;
 
     vm.childrenSpots = [];
-    vm.goToSpot = goToSpot;
     vm.isNesting = SpotFactory.getActiveNesting();
     vm.hideContNesting = !vmParent.spot.geometry;
     vm.nestText = '';
     vm.parentSpots = [];
     vm.spot = vmParent.spot;
+
+    vm.goToSpot = goToSpot;
+    vm.showField = showField;
     vm.toggleNesting = toggleNesting;
+    vm.updateNest = updateNest;
 
     activate();
 
@@ -37,9 +41,16 @@
         toggleNesting();
       }
       setNestToggleText();
+      updateNest();
 
-      vm.parentSpots = getParents(vmParent.spot);
-      vm.childrenSpots = getChildren(vmParent.spot);
+      $ionicModal.fromTemplateUrl('app/shared/new-nest-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false,
+        'hardwareBackButtonClose': false
+      }).then(function (modal) {
+        vmParent.newNestModal = modal;
+      });
     }
 
     function getChildren(thisSpot) {
@@ -137,40 +148,44 @@
       vmParent.submit('/app/spotTab/' + id + '/nest');
     }
 
+    // Determine if the field should be shown or not by looking at the relevant key-value pair
+    function showField(field) {
+      var show = FormFactory.isRelevant(field.relevant, vm.data);
+      if (show && field.default) {
+        if (!vm.data[field.name]) vm.data[field.name] = field.default;
+      }
+      if (!show) {
+        if (vm.data[field.name]) delete vm.data[field.name];
+      }
+      return show;
+    }
+
     function toggleNesting() {
       SpotFactory.setActiveNesting(vm.isNesting);
       if (vm.isNesting) {
         $log.log('Starting Nesting');
         SpotFactory.clearActiveNest();
         setNestToggleText();
-        SpotFactory.addSpotToActiveNest(vm.spot);
+        vmParent.data = {};
+        vmParent.newNestProperties = {};
+        vmParent.newNestModal.show();
       }
       else {
         setNestToggleText();
         var activeNest = SpotFactory.getActiveNest();
         SpotFactory.clearActiveNest();
-        $log.log('Adding spots to nest:', activeNest);
-        var fc = turf.featureCollection(activeNest);
-        var newSpot = turf.envelope(fc);
-        // turf.envelope doesn't seem to include any points that are also vertices when
-        // it creates the envelope rectangle so make the rectangle a little bit bigger
-        if (newSpot.geometry && newSpot.geometry.coordinates) {
-          _.each(newSpot.geometry.coordinates, function (rectCoords) {
-            rectCoords[0][0] = rectCoords[0][0] - .0001; // bottom left
-            rectCoords[0][1] = rectCoords[0][1] - .0001;
-            rectCoords[1][0] = rectCoords[1][0] + .0001; // bottom right
-            rectCoords[1][1] = rectCoords[1][1] - .0001;
-            rectCoords[2][0] = rectCoords[2][0] + .0001; // upper right
-            rectCoords[2][1] = rectCoords[2][1] + .0001;
-            rectCoords[3][0] = rectCoords[3][0] - .0001; // upper left
-            rectCoords[3][1] = rectCoords[3][1] + .0001;
-            rectCoords[4] = rectCoords[0];
+        if(_.isEmpty(activeNest)) {
+          $ionicPopup.alert({
+            'title': 'Empty Nest!',
+            'template': 'No Spots were added to the Nest.'
           });
         }
-        SpotFactory.setNewSpot(newSpot).then(function (id) {
-          $location.path('/app/spotTab/' + id + '/spot');
-        });
       }
+    }
+
+    function updateNest() {
+      vm.parentSpots = getParents(vmParent.spot);
+      vm.childrenSpots = getChildren(vmParent.spot);
     }
   }
 }());

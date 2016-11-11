@@ -39,12 +39,25 @@
     vm.loadTags = loadTags;
     vm.toggleTagChecked = toggleTagChecked;
 
+    // Other Variables
     vm.choices = undefined;
+    vm.data = {};
+    vm.date = undefined;
+    vm.newNestModal = {};
+    vm.newNestProperties = {};
+    vm.popover = {};
+    vm.showRadius = true;
+    vm.showGeologicUnit = true;
+    vm.showSurfaceFeature = false;
+    vm.showTrace = false;
+    vm.spot = {};
+    vm.stateName = $state.current.name;
+    vm.survey = undefined;
+
+    // Other Functions
     vm.closeModal = closeModal;
     vm.copyThisSpot = copyThisSpot;
     vm.createTag = createTag;
-    vm.data = {};
-    vm.date = undefined;
     vm.deleteSpot = deleteSpot;
     vm.getMax = getMax;
     vm.getMin = getMin;
@@ -52,18 +65,10 @@
     vm.goToTag = goToTag;
     vm.isOptionChecked = isOptionChecked;
     vm.loadTab = loadTab;
-    vm.popover = {};
     vm.setSelMultClass = setSelMultClass;
     vm.showField = showField;
-    vm.showRadius = true;
-    vm.showGeologicUnit = true;
-    vm.showSurfaceFeature = false;
     vm.showTab = showTab;
-    vm.showTrace = false;
-    vm.spot = {};
-    vm.stateName = $state.current.name;
     vm.submit = submit;
-    vm.survey = undefined;
     vm.toggleAcknowledgeChecked = toggleAcknowledgeChecked;
     vm.toggleChecked = toggleChecked;
     vm.validateForm = validateForm;
@@ -130,7 +135,11 @@
       vm.spot = SpotFactory.getCurrentSpot();
       if (vm.spot) {
         if (TagFactory.getActiveTagging()) TagFactory.addToActiveTags(vm.spot.properties.id);
-        if (SpotFactory.getActiveNesting() && vm.spot.geometry) SpotFactory.addSpotToActiveNest(vm.spot);
+        if (SpotFactory.getActiveNesting() && vm.spot.geometry) {
+          SpotFactory.addSpotToActiveNest(vm.spot).then(function(){
+            vm.spots = SpotFactory.getActiveSpots();
+          });
+        }
 
         // Convert datetime from ISO to Date string
         vm.datetime = new Date(vm.spot.properties.date);
@@ -184,6 +193,16 @@
 
     function closeModal(modal) {
       vm[modal].hide();
+      if (modal === 'newNestModal') {
+        if (!_.isEmpty(vm.data)) vm.newNestProperties.surface_feature = {};
+        _.extend(vm.newNestProperties.surface_feature, vm.data);
+        SpotFactory.setNewNestProperties(vm.newNestProperties);
+        SpotFactory.addSpotToActiveNest(vm.spot).then(function() {
+          vm.spots = SpotFactory.getActiveSpots();
+          vm.nestTab.updateNest();
+        });
+        vm.data = {};
+      }
     }
 
     function createTag() {

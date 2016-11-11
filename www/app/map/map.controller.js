@@ -6,12 +6,15 @@
     .controller('MapController', MapController);
 
   MapController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup',
-    '$ionicSideMenuDelegate', '$location', '$log', '$scope', 'HelpersFactory', 'MapFactory', 'MapDrawFactory',
-    'MapFeaturesFactory', 'MapLayerFactory', 'MapSetupFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory'];
+    '$ionicSideMenuDelegate', '$location', '$log', '$scope', 'DataModelsFactory', 'FormFactory', 'HelpersFactory',
+    'MapFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory', 'MapSetupFactory', 'MapViewFactory',
+    'ProjectFactory',
+    'SpotFactory'];
 
   function MapController($ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup, $ionicSideMenuDelegate,
-                         $location, $log, $scope, HelpersFactory, MapFactory, MapDrawFactory, MapFeaturesFactory,
-                         MapLayerFactory, MapSetupFactory, MapViewFactory, ProjectFactory, SpotFactory) {
+                         $location, $log, $scope, DataModelsFactory, FormFactory, HelpersFactory, MapFactory,
+                         MapDrawFactory, MapFeaturesFactory, MapLayerFactory, MapSetupFactory, MapViewFactory,
+                         ProjectFactory, SpotFactory) {
     var vm = this;
 
     var onlineState;
@@ -21,6 +24,10 @@
     vm.allTags = [];
     vm.currentSpot = SpotFactory.getCurrentSpot();
     vm.currentZoom = '';
+    vm.data = {};
+    vm.isNesting = SpotFactory.getActiveNesting();
+    vm.newNestModal = {};
+    vm.newNestProperties = {};
     vm.saveEditsText = 'Save Edits';
     vm.showSaveEditsBtn = false;
 
@@ -31,6 +38,8 @@
     vm.isOnline = isOnline;
     vm.returnToSpot = returnToSpot;
     vm.saveEdits = saveEdits;
+    vm.showField = showField;
+    vm.toggleNesting = toggleNesting;
     vm.toggleTagChecked = toggleTagChecked;
     vm.toggleLocation = toggleLocation;
     vm.zoomToSpotsExtent = zoomToSpotsExtent;
@@ -81,6 +90,15 @@
         'backdropClickToClose': false
       }).then(function (modal) {
         vm.addTagModal = modal;
+      });
+
+      $ionicModal.fromTemplateUrl('app/shared/new-nest-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false,
+        'hardwareBackButtonClose': false
+      }).then(function (modal) {
+        vm.newNestModal = modal;
       });
 
       // Cleanup the modal when we're done with it!
@@ -229,6 +247,12 @@
           ProjectFactory.saveTag(tagToAdd);
         });
       }
+      else if (modal === 'newNestModal') {
+        if (!_.isEmpty(vm.data)) vm.newNestProperties.surface_feature = {};
+        _.extend(vm.newNestProperties.surface_feature, vm.data);
+        SpotFactory.setNewNestProperties(vm.newNestProperties);
+        vm.data = {};
+      }
       SpotFactory.clearSelectedSpots();
     }
 
@@ -254,6 +278,42 @@
     function saveEdits() {
       vm.saveEditsText = 'Saved Edits';
       MapDrawFactory.saveEdits();
+    }
+
+    // Determine if the field should be shown or not by looking at the relevant key-value pair
+    function showField(field) {
+      var show = FormFactory.isRelevant(field.relevant, vm.data);
+      if (show && field.default) {
+        if (!vm.data[field.name]) vm.data[field.name] = field.default;
+      }
+      if (!show) {
+        if (vm.data[field.name]) delete vm.data[field.name];
+      }
+      return show;
+    }
+
+    function toggleNesting() {
+      vm.popover.hide();
+      vm.isNesting = !vm.isNesting;
+      SpotFactory.setActiveNesting(vm.isNesting);
+      if (vm.isNesting) {
+        $log.log('Starting Nesting');
+        SpotFactory.clearActiveNest();
+        vm.survey = DataModelsFactory.getDataModel('surface_feature').survey;
+        vm.choices = DataModelsFactory.getDataModel('surface_feature').choices;
+        vm.data = {};
+        vm.newNestModal.show();
+      }
+      else {
+        var activeNest = SpotFactory.getActiveNest();
+        SpotFactory.clearActiveNest();
+        if(_.isEmpty(activeNest)) {
+          $ionicPopup.alert({
+            'title': 'Empty Nest!',
+            'template': 'No Spots were added to the Nest.'
+          });
+        }
+      }
     }
 
     function toggleTagChecked(tag) {

@@ -4,6 +4,7 @@
     <button ng-click='vm.goBack();' class='button button-icon icon ion-arrow-left-c'></button>
   </ion-nav-buttons>
   <ion-nav-buttons side='right'>
+    <div ng-show='vm.isNesting' class='nesting-notification'>Nesting<br>On</div>
     <button ng-click='vm.popover.show($event)' class='button button-icon icon ion-more rotate-90'></button>
   </ion-nav-buttons>
   <ion-pane data-tap-disabled='true'>

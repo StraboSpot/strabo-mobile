@@ -167,6 +167,12 @@ Map Controls Style
   border-bottom: 1px solid black;
 }
 
+.nesting-notification {
+  text-align: center;
+  line-height: 90%;
+  padding-top: 5px;
+}
+
 /*--------------------
 Map Layer Switcher Style
 --------------------*/

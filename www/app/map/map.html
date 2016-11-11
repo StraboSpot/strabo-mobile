@@ -6,6 +6,7 @@
             class='button button-icon icon ion-arrow-left-c'></button>
   </ion-nav-buttons>
   <ion-nav-buttons side='right'>
+    <div ng-show='vm.isNesting' class='nesting-notification'>Nesting<br>On</div>
     <button ng-click='vm.toggleLocation()'
             ng-class='{"button button-icon icon ion-pinpoint": !vm.locationOn, "button button-icon icon ion-android-locate": vm.locationOn}'></button>
     <button ng-click='vm.popover.show($event)'

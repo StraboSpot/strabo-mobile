@@ -16,6 +16,8 @@
     var currentOrientationIndex;
     var isActiveNesting = false;
     var moveSpot = false;
+    var newNest = {};
+    var newNestProperties = {};
     var selectedSpots = {};
     var spots = {};        // All Spots
     var visibleDatasets = [];
@@ -54,6 +56,7 @@
       'setCurrentOrientationIndex': setCurrentOrientationIndex,
       'setCurrentSpotById': setCurrentSpotById,
       'setNewSpot': setNewSpot,
+      'setNewNestProperties': setNewNestProperties,
       'setSelectedSpots': setSelectedSpots,
       'setVisibleDatasets': setVisibleDatasets
     };
@@ -68,10 +71,39 @@
       });
       if (!found) activeNest.push(inSpot);
       $log.log('Active Nest', activeNest);
+      var calculatedNest = calculateNest();
+      if (_.isEmpty(newNest)) {
+        _.extend(calculatedNest.properties, newNestProperties);
+        return setNewSpot(calculatedNest).then(function (id) {
+          newNest = angular.fromJson(angular.toJson(getSpotById(id)));
+        });
+      }
+      else {
+        newNest.geometry = calculatedNest.geometry;
+        return save(angular.fromJson(angular.toJson(newNest)));
+      }
+    }
+
+    function calculateNest() {
+      var fc = turf.featureCollection(activeNest);
+      var newSpot = {};
+      if (_.size(activeNest) === 1) newSpot = fc.features[0];
+      else if (_.size(activeNest) === 2
+        && activeNest[0].geometry.type === 'Point' && activeNest[1].geometry.type === 'Point') {
+        newSpot = turf.lineString([activeNest[0].geometry.coordinates, activeNest[1].geometry.coordinates]);
+      }
+      else newSpot = turf.convex(fc);
+
+      // Buffer the polygon so Spots are included within the polygon, not just as vertices
+      var unit = 'meters';
+      newSpot = turf.buffer(newSpot, 5, unit);
+      return newSpot;
     }
 
     function clearActiveNest() {
       activeNest = [];
+      newNestProperties = {};
+      newNest = {};
       $log.log('Cleared active nest:', activeNest);
     }
 
@@ -315,6 +347,10 @@
       currentSpot = angular.fromJson(angular.toJson(spots[id]));
     }
 
+    function setNewNestProperties(properties) {
+      newNestProperties = properties;
+    }
+
     // Initialize a new Spot
     function setNewSpot(jsonObj) {
       var deferred = $q.defer(); // init promise
@@ -340,11 +376,13 @@
         currentSpot.properties.id = HelpersFactory.getNewId();
 
         // Set default name
-        var prefix = ProjectFactory.getSpotPrefix();
-        if (!prefix) prefix = currentSpot.properties.id.toString();
-        var number = ProjectFactory.getSpotNumber();
-        if (!number) number = '';
-        currentSpot.properties.name = prefix + number;
+        if (!currentSpot.properties.name) {
+          var prefix = ProjectFactory.getSpotPrefix();
+          if (!prefix) prefix = currentSpot.properties.id.toString();
+          var number = ProjectFactory.getSpotNumber();
+          if (!number) number = '';
+          currentSpot.properties.name = prefix + number;
+        }
 
         ProjectFactory.incrementSpotNumber();
         ProjectFactory.addSpotToDataset(currentSpot.properties.id, ProjectFactory.getSpotsDataset().id);
