@@ -219,15 +219,6 @@
         UserFactory.doLogin(vm.login).then(function () {
           vm.data = UserFactory.getUser();
           dataOrig = angular.fromJson(angular.toJson(vm.data));
-        }, function (err) {
-          var errMsg = '';
-          if (err.data) errMsg = 'Server error message:' + err.data;
-          else if (err.statusText) errMsg = 'Server error message:' + err.statusText;
-          else errMsg = 'Unknown server error.';
-          $ionicPopup.alert({
-            'title': 'Error Logging In!',
-            'template': errMsg
-          });
         }).finally(function () {
           $ionicLoading.hide();
         });

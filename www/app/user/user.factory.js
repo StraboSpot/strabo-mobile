@@ -5,10 +5,10 @@
     .module('app')
     .factory('UserFactory', UserFactory);
 
-  UserFactory.$inject = ['$log', '$q', 'ImageFactory', 'LocalStorageFactory', 'ProjectFactory', 'RemoteServerFactory',
+  UserFactory.$inject = ['$ionicPopup', '$log', '$q', 'ImageFactory', 'LocalStorageFactory', 'ProjectFactory', 'RemoteServerFactory',
     'SpotFactory'];
 
-  function UserFactory($log, $q, ImageFactory, LocalStorageFactory, ProjectFactory, RemoteServerFactory, SpotFactory) {
+  function UserFactory($ionicPopup, $log, $q, ImageFactory, LocalStorageFactory, ProjectFactory, RemoteServerFactory, SpotFactory) {
     var user;
 
     return {
@@ -54,14 +54,21 @@
     // Authenticate user login
     function doLogin(login) {
       login.email = login.email.toLowerCase();
-      var tryLogin = Base64.encode(login.email + ':' + login.password);
-      return RemoteServerFactory.authenticateUser(tryLogin).then(function (response) {
-        user = {
-          'email': login.email,
-          'encoded_login': Base64.encode(login.email + ':' + login.password)
-        };
-        $log.log('Logged in successfully as', login.email, 'Server Response:', response);
-        return updateUser();
+      return RemoteServerFactory.authenticateUser(login).then(function (response) {
+        if (response.data.valid === 'true') {
+          user = {
+            'email': login.email,
+            'encoded_login': Base64.encode(login.email + ':' + login.password)
+          };
+          $log.log('Logged in successfully as', login.email, 'Server Response:', response);
+          return updateUser();
+        }
+        else {
+          $ionicPopup.alert({
+            'title': 'Login Failure!',
+            'template': 'Incorrect username and/or password'
+          });
+        }
       });
     }
 
