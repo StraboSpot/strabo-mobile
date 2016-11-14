@@ -65,11 +65,24 @@
      * Public Functions
      */
 
+    // Add the Spot to the Nest but only if
+    // {1} the Nest is empty or
+    // (2) neither the Spot nor any Spots already in the Nest are mapped on image basemaps or
+    // (3) the Spot and all Spots already in the Nest are mapped on the same image basemap
     function addSpotToActiveNest(inSpot) {
-      var found = _.find(activeNest, function (spotInNest) {
+      if (!_.isEmpty(newNest) && inSpot.properties.id === newNest.properties.id) return $q.when(null);
+      activeNest = _.reject(activeNest, function (spotInNest) {
         return spotInNest.properties.id === inSpot.properties.id;
       });
-      if (!found) activeNest.push(inSpot);
+      if (_.isEmpty(activeNest)) activeNest.push(inSpot);
+      else if (!_.has(activeNest[0].properties, 'image_basemap') && !_.has(inSpot.properties, 'image_basemap')) {
+        activeNest.push(inSpot);
+      }
+      else if (_.has(activeNest[0].properties, 'image_basemap') && _.has(inSpot.properties, 'image_basemap')
+        && activeNest[0].properties.image_basemap === inSpot.properties.image_basemap) {
+        activeNest.push(inSpot);
+      }
+      else return $q.when(null);
       $log.log('Active Nest', activeNest);
       var calculatedNest = calculateNest();
       if (_.isEmpty(newNest)) {
@@ -87,7 +100,7 @@
     function calculateNest() {
       var fc = turf.featureCollection(activeNest);
       var newSpot = {};
-      if (_.size(activeNest) === 1) newSpot = fc.features[0];
+      if (_.size(activeNest) === 1) newSpot = angular.fromJson(angular.toJson(activeNest[0]));
       else if (_.size(activeNest) === 2
         && activeNest[0].geometry.type === 'Point' && activeNest[1].geometry.type === 'Point') {
         newSpot = turf.lineString([activeNest[0].geometry.coordinates, activeNest[1].geometry.coordinates]);
@@ -95,8 +108,25 @@
       else newSpot = turf.convex(fc);
 
       // Buffer the polygon so Spots are included within the polygon, not just as vertices
-      var unit = 'meters';
-      newSpot = turf.buffer(newSpot, 5, unit);
+      if (!_.has(activeNest[0].properties, 'image_basemap')) {
+        var unit = 'meters';
+        newSpot = turf.buffer(newSpot, 5, unit);
+      }
+      else {
+        // Need to JSTS to buffer if pixel geometry
+        // convert the OpenLayers geometry to a JSTS geometry
+        var format = new ol.format.GeoJSON();
+        var features = format.readFeatures(newSpot);
+        var feature = features[0];
+        var parser = new jsts.io.OL3Parser();
+        var jstsGeom = parser.read(feature.getGeometry());
+
+        var buffered = jstsGeom.buffer(20);
+
+        // convert back from JSTS and replace the geometry on the feature
+        feature.setGeometry(parser.write(buffered));
+        newSpot = format.writeFeatureObject(feature);
+      }
       return newSpot;
     }
 

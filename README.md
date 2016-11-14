@@ -8,6 +8,8 @@ Strabo Mobile is a cross-platform mobile application for Structural Geology and 
 - UI Framework (CSS & JS): [Ionic](http://ionicframework.com/)
 - MVC: [Angular JS](https://angularjs.org/)
 - Map Library: [OpenLayers 3](http://openlayers.org/)
+- Geospatial Analysis: [Turf](http://turfjs.org/) and [JSTS](http://bjornharrtell.github.io/jsts/)
+- Helpers: [Underscore](http://underscorejs.org/)
 - AngularJS Extensions for Cordova API: [ngCordova](http://ngcordova.com/)
 - Local Storage: [localForage with Cordova SQLite Driver](https://github.com/thgreasi/localForage-cordovaSQLiteDriver)
 - Testing Framework: [Jasmine](http://jasmine.github.io/)
@@ -74,6 +76,9 @@ Generate Resources (icons and splash screens):
     bower: 1.7.2
     ng-cordova: 0.1.23-alpha
     openlayers: 3.17.1
+    turfjs: 3.5.2
+    jsts: 1.3.0
+    underscore: 1.8.3
 
 ## Running/Testing the App
 

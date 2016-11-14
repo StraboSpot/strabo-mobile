@@ -22,6 +22,7 @@
     var tagsToAdd = [];
 
     vm.allTags = [];
+    vm.choices = {};
     vm.currentSpot = SpotFactory.getCurrentSpot();
     vm.currentZoom = '';
     vm.data = {};
@@ -30,6 +31,7 @@
     vm.newNestProperties = {};
     vm.saveEditsText = 'Save Edits';
     vm.showSaveEditsBtn = false;
+    vm.survey = {};
 
     vm.cacheOfflineTiles = cacheOfflineTiles;
     vm.closeModal = closeModal;
@@ -101,11 +103,6 @@
         vm.newNestModal = modal;
       });
 
-      // Cleanup the modal when we're done with it!
-      $scope.$on('$destroy', function () {
-        vm.addTagModal.remove();
-      });
-
       // When the map is moved save the new view and update the zoom control
       map.on('moveend', function (evt) {
         vm.currentZoom = evt.map.getView().getZoom();
@@ -117,18 +114,14 @@
         $log.log(event);
       });
 
-      // Cleanup when we leave the page (need unloaded, as opposed to leave, so this fires when
-      // opening an item from the options button)
-      $scope.$on('$ionicView.unloaded', function () {
-        MapViewFactory.setMapView(map);
-        MapLayerFactory.setVisibleLayer(map);
-        MapDrawFactory.cancelEdits();    // Cancel any edits
-        vm.popover.remove();            // Remove the popover
-      });
+      // Display popup on click
+      map.on('click', function (evt) {
+        $log.log('map clicked');
 
-      $scope.$on('$ionicView.enter', function () {
-        $ionicLoading.hide();
-        $log.log('Done Loading Map');
+        // Are we in draw mode?  If so we don't want to display any popovers during draw mode
+        if (!MapDrawFactory.isDrawMode()) {
+          MapFeaturesFactory.showPopup(map, evt);
+        }
       });
 
       // Add a `change:visible` listener to all layers currently within the map
@@ -147,23 +140,23 @@
         });
       });
 
-      // Display popup on click
-      map.on('click', function (evt) {
-        $log.log('map clicked');
-
-        // Are we in draw mode?  If so we don't want to display any popovers during draw mode
-        if (!MapDrawFactory.isDrawMode()) {
-          MapFeaturesFactory.showPopup(map, evt);
-        }
+      // Cleanup the modal when we're done with it!
+      $scope.$on('$destroy', function () {
+        vm.addTagModal.remove();
       });
 
-      // Watch whether we have internet access or not
-      $scope.$watch('vm.isOnline()', function (online) {
-        if (onlineState !== online) {
-          onlineState = online;
-          if (online) MapLayerFactory.setOnlineLayersVisible(map);
-          else MapLayerFactory.setOfflineLayersVisible(map);
-        }
+      // Cleanup when we leave the page (need unloaded, as opposed to leave, so this fires when
+      // opening an item from the options button)
+      $scope.$on('$ionicView.unloaded', function () {
+        MapViewFactory.setMapView(map);
+        MapLayerFactory.setVisibleLayer(map);
+        MapDrawFactory.cancelEdits();    // Cancel any edits
+        vm.popover.remove();            // Remove the popover
+      });
+
+      $scope.$on('$ionicView.enter', function () {
+        $ionicLoading.hide();
+        $log.log('Done Loading Map');
       });
 
       $scope.$on('enableSaveEdits', function (e, data) {
@@ -176,6 +169,15 @@
 
       $scope.$on('changedDrawMode', function () {
         setMapDrawInteraction();
+      });
+
+      // Watch whether we have internet access or not
+      $scope.$watch('vm.isOnline()', function (online) {
+        if (onlineState !== online) {
+          onlineState = online;
+          if (online) MapLayerFactory.setOnlineLayersVisible(map);
+          else MapLayerFactory.setOfflineLayersVisible(map);
+        }
       });
     }
 
@@ -248,6 +250,7 @@
         });
       }
       else if (modal === 'newNestModal') {
+        if (!vm.newNestProperties.name) vm.newNestProperties.name = HelpersFactory.getNewId().toString();
         if (!_.isEmpty(vm.data)) vm.newNestProperties.surface_feature = {};
         _.extend(vm.newNestProperties.surface_feature, vm.data);
         SpotFactory.setNewNestProperties(vm.newNestProperties);
