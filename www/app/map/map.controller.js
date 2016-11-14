@@ -310,6 +310,7 @@
       else {
         var activeNest = SpotFactory.getActiveNest();
         SpotFactory.clearActiveNest();
+        vm.newNestProperties = {};
         if(_.isEmpty(activeNest)) {
           $ionicPopup.alert({
             'title': 'Empty Nest!',
