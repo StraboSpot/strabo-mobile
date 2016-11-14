@@ -564,7 +564,7 @@
         // Create a feature collection of spots to upload for this dataset
         var spotCollection = {
           'type': 'FeatureCollection',
-          'features': spots
+          'features': _.values(spots)
         };
         outputMessage('Uploading ' + totalSpotCount + ' Spots...');
         return RemoteServerFactory.updateDatasetSpots(dataset.id, spotCollection,
