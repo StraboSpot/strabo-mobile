@@ -36,6 +36,7 @@
     vm.addImage = addImage;
     vm.closeModal = closeModal;
     vm.deleteImage = deleteImage;
+    vm.exportImage = exportImage;
     vm.getImageSrc = getImageSrc;
     vm.goToImageBasemap = goToImageBasemap;
     vm.moreDetail = moreDetail;
@@ -327,6 +328,24 @@
           }
         });
       }
+    }
+
+    function exportImage() {
+      ImageFactory.getImageById(vmParent.data.id).then(function (base64Image) {
+        // If this is a web browser and not using cordova
+        if ($document[0].location.protocol !== 'file:') { // Phonegap is not present }
+          $window.open(base64Image, '_blank');
+        }
+        else {
+          // Process the base64 string - split the base64 string into the data and data type
+          var block = base64Image.split(';');
+          var dataType = block[0].split(':')[1];    // In this case 'image/jpg'
+          var base64Data = block[1].split(',')[1];  // In this case 'iVBORw0KGg....'
+          var dataBlob = HelpersFactory.b64toBlob(base64Data, dataType);
+          var filename = (vmParent.data.title || vmParent.data.id) + '.jpg';
+          HelpersFactory.saveFileToDevice(filename, dataBlob);
+        }
+      });
     }
 
     function getImageSrc(imageId) {
