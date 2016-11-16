@@ -143,12 +143,6 @@
       return deferred.promise;
     }
 
-    function downloadImageError(image, spot, err) {
-      if (err && err.statusText) $log.error('Error downloading Image', image.id, 'for Spot', spot.properties.id, spot,
-        'Error Message:', err.statusText);
-      else $log.error('Error downloading Image', image.id, 'for Spot', spot.properties.id, spot);
-    }
-
     function downloadImages(neededImagesIds) {
       var promises = [];
       var imagesDownloadedCount = 0;
@@ -173,11 +167,11 @@
             }
             else {
               imagesFailedCount++;
-              downloadImageError(image, spot);
+              $log.error('Error downloading Image', neededImageId, 'Server Response:', response);
             }
           }, function (err) {
             imagesFailedCount++;
-            downloadImageError(image, spot, err);
+            $log.error('Error downloading Image', neededImageId, 'Error:', err);
           });
         promises.push(promise);
       });
