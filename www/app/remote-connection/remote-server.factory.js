@@ -8,7 +8,7 @@
     RemoteServerFactory.$inject = ['$http', '$log', '$q', 'LocalStorageFactory'];
 
     function RemoteServerFactory($http, $log, $q, LocalStorageFactory) {
-      var baseUrl = 'http://strabospot.org/db';
+      var baseUrl = 'https://strabospot.org/db';
 
       // Return public API
       return {
