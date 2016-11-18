@@ -5,7 +5,7 @@
     </button>
     <h1 class='title'>Strabo Compass</h1>
   </ion-header-bar>
-  <ion-content class='has-header'>
+  <ion-content class='has-header' ng-click='vmChild.pause()'>
     <div class='padding'>
       <span ng-show='!vmChild.result.x && !vmChild.result.y && !vmChild.result.z && !vmChild.result.magneticHeading &&
        !vmChild.error.both && !vmChild.error.compass && !vmChild.error.acceleration'>Working, please wait ...</span>
@@ -47,6 +47,8 @@
         </ion-input>
       </div>
     </div>
+    <div class='padding' ng-show='!vmChild.error.both && !vmChild.error.compass && !vmChild.error.acceleration'>
+      Tap anywhere to Pause/Resume Calculations</div>
     <ion-footer-bar>
       <div class="button-bar">
         <a class="button button-assertive" ng-click='vmChild.closeCompass()'>Cancel</a>

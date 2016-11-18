@@ -6,15 +6,17 @@
     .controller('OrientationDataTabController', OrientationDataTabController);
 
   OrientationDataTabController.$inject = ['$cordovaDeviceMotion', '$cordovaDeviceOrientation', '$ionicModal',
-    '$ionicPopup', '$log', '$q', '$scope', '$state', 'DataModelsFactory', 'FormFactory', 'HelpersFactory',
-    'ProjectFactory'];
+    '$ionicPopup', '$log', '$scope', '$state', 'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'ProjectFactory'];
 
   function OrientationDataTabController($cordovaDeviceMotion, $cordovaDeviceOrientation, $ionicModal, $ionicPopup, $log,
-                                        $q, $scope, $state, DataModelsFactory, FormFactory, HelpersFactory,
+                                        $scope, $state, DataModelsFactory, FormFactory, HelpersFactory,
                                         ProjectFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.loadTab($state);  // Need to load current state into parent
+
+    var isCancelOrAccept = false;
+    var watchDeviceAcceleration = {};
 
     vm.basicFormModal = {};
     vm.compassData = {};
@@ -24,7 +26,6 @@
     vm.msgText = '';
     vm.parentOrientation = {};
     vm.result = {};
-    vm.watchDeviceAcceleration = {};
 
     vm.acceptCompass = acceptCompass;
     vm.addAssociatedOrientation = addAssociatedOrientation;
@@ -38,6 +39,7 @@
     vm.editOrientation = editOrientation;
     vm.getCompassInfo = getCompassInfo;
     vm.openCompass = openCompass;
+    vm.pause = pause;
     vm.submit = submit;
 
     activate();
@@ -173,6 +175,7 @@
      */
 
     function acceptCompass() {
+      isCancelOrAccept = true;
       if (vmParent.data.type === 'linear_orientation' &&
         vm.compassData.trend && vm.compassData.plunge && vm.compassData.rake) {
         vmParent.data.trend = vm.compassData.trend;
@@ -185,7 +188,10 @@
         vmParent.data.dip_direction = vm.compassData.dipdir;
         vmParent.data.dip = vm.compassData.dip;
       }
-      if (!_.isEmpty(vm.watchDeviceAcceleration)) vm.watchDeviceAcceleration.clearWatch();
+      if (!_.isEmpty(watchDeviceAcceleration)) {
+        watchDeviceAcceleration.clearWatch();
+        watchDeviceAcceleration = {};
+      }
       vm.compassModal.hide();
     }
 
@@ -212,7 +218,11 @@
     }
 
     function closeCompass() {
-      if (!_.isEmpty(vm.watchDeviceAcceleration)) vm.watchDeviceAcceleration.clearWatch();
+      isCancelOrAccept = true;
+      if (!_.isEmpty(watchDeviceAcceleration)) {
+        watchDeviceAcceleration.clearWatch();
+        watchDeviceAcceleration = {};
+      }
       vm.compassModal.hide();
     }
 
@@ -291,11 +301,11 @@
     }
 
     function getCompassInfo() {
+      isCancelOrAccept = false;
       var options = {frequency: 1000};
-
       if (navigator.accelerometer) {
-        vm.watchDeviceAcceleration = $cordovaDeviceMotion.watchAcceleration(options);
-        vm.watchDeviceAcceleration.then(
+        watchDeviceAcceleration = $cordovaDeviceMotion.watchAcceleration(options);
+        watchDeviceAcceleration.then(
           null,
           function (err) {
             vm.error.acceleration = err;
@@ -315,6 +325,16 @@
           });
       }
       else vm.error.both = "No compass or accelerometer on this device.";
+    }
+
+    function pause() {
+      if (!isCancelOrAccept) {
+        if (_.isEmpty(watchDeviceAcceleration)) getCompassInfo();
+        else {
+          watchDeviceAcceleration.clearWatch();
+          watchDeviceAcceleration = {};
+        }
+      }
     }
 
     function openCompass() {
