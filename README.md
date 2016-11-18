@@ -73,7 +73,7 @@ Generate Resources (icons and splash screens):
     cordova: 6.6.1
     nodejs: 5.0.0
     npm: 2.12.1
-    bower: 1.7.2
+    bower: 1.8.0
     ng-cordova: 0.1.23-alpha
     openlayers: 3.17.1
     turfjs: 3.5.2
@@ -82,7 +82,7 @@ Generate Resources (icons and splash screens):
 
 ## Running/Testing the App
 
-*Note: When updates to the app are made, edit the version number of the app in `www/app/about/about.html`, `config.xml`, `www/config.xml` and `package.json`.*
+*Note: When updates to the app are made, edit the version number of the app in `www/app/about/about.html`, `www/app/user/login.html`, `config.xml`, and `package.json`.*
 
 ### In a Desktop Web Browser:  
 
