@@ -79,9 +79,11 @@ rill,3,rill,er5hu03
 stream bed,4,stream_bed,er5hu03
 shoreline/strandline,5,shoreline_stra,er5hu03
 other,6,other,er5hu03
-fence line,,fence_line,gw8je20
-property line,,property_line,gw8je20
-other,,other,gw8je20
+fence line,0,fence_line,gw8je20
+property line,1,property_line,gw8je20
+road,2,road,gw8je20
+trail,3,trail,gw8je20
+other,4,other,gw8je20
 extent of mapping,,extent_of_mapp,lh87q41
 extent of biological marker,,extent_of_biol,lh87q41
 other,,other,lh87q41

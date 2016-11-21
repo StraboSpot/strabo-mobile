@@ -70,7 +70,7 @@
     function setFeatureLayer() {
       featureLayer = new ol.layer.Group({
         'name': 'featureLayer',
-        'title': 'Spot Orientations',
+        'title': 'Spots',
         'layers': []
       });
     }

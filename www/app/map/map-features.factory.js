@@ -100,12 +100,12 @@
 
 
       // Create features to map from the mappable spots.
-      // For spots with orientation data, create a copy of the entire spot
+      // For POINT Spots with orientation data, create a copy of the entire spot
       // for each orienation measurement, add the orientation measurement to a new element called orientation and
       // then delete the orientation_data element
       var mappedFeatures = [];
       _.each(mappableSpots, function (spot) {
-        if (spot.properties.orientation_data) {
+        if ((spot.geometry.type === 'Point' || spot.geometry.type === 'MultiPoint') && spot.properties.orientation_data) {
           _.each(spot.properties.orientation_data, function (orientation) {
             var feature = angular.fromJson(angular.toJson(spot));
             delete feature.properties.orientation_data;
@@ -118,8 +118,25 @@
 
       // get distinct groups and aggregate spots by group type
       var featureGroup = _.groupBy(mappedFeatures, function (feature) {
-        if (feature.properties.orientation) {
-          return DataModelsFactory.getFeatureTypeLabel(feature.properties.orientation.feature_type) || 'no type';
+        if (feature.geometry.type === 'Point' || feature.geometry.type === 'MultiPoint') {
+          if (feature.properties.orientation && feature.properties.orientation.feature_type) {
+            return DataModelsFactory.getFeatureTypeLabel(
+                feature.properties.orientation.feature_type) || 'no orientation type';
+          }
+          else return 'no orientation type'
+        }
+        else if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
+          if (feature.properties.trace && feature.properties.trace.trace_type) {
+            return DataModelsFactory.getTraceTypeLabel(feature.properties.trace.trace_type) || 'no trace type';
+          }
+          else return 'no trace type';
+        }
+        else if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
+          if (feature.properties.surface_feature && feature.properties.surface_feature.surface_feature_type) {
+            return DataModelsFactory.getSurfaceFeatureTypeLabel(
+                feature.properties.surface_feature.surface_feature_type) || 'no surface feature type';
+          }
+          else return 'no surface feature type';
         }
         return 'no type';
       });
@@ -177,21 +194,23 @@
       }
 
       function getStrokeStyle(feature) {
-        var color = '#000000';
-        var width = 1;
+        var color = '#FFFF00';
+        var width = 2;
         var lineDash = [1, 0];
 
-        if (feature.get('orientation')) {
-          var orientation = feature.get('orientation');
-          if (orientation.feature_type && orientation.feature_type === 'fault') {
-            color = '#FF0000';
-            width = 3;
-            lineDash = [.01, 15];
-            if (orientation.quality) {
-              if (orientation.quality === '5') lineDash = [1, 0];
-              else if (orientation.quality === '2' || orientation.quality === '3' || orientation.quality === '4') lineDash = [20, 15];
+        if (feature.get('trace')) {
+          var trace = feature.get('trace');
+          if (trace.trace_type && trace.trace_type === 'geologic_struc'){
+            if (trace.geologic_structure_type && trace.geologic_structure_type === 'fault') {
+              color = '#FF0000';
+              width = 4;
+              lineDash = [.01, 15];
+              if (trace.trace_quality && trace.trace_quality === 'known') lineDash = [1, 0];
+              else if (trace.trace_quality && trace.trace_quality === 'approximate'
+                || trace.trace_quality === 'questionable') lineDash = lineDash = [20, 15];
             }
           }
+          else if (trace.trace_type && trace.trace_type === 'contact') color = '#000000';
         }
 
         return new ol.style.Stroke({

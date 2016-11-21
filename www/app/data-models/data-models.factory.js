@@ -98,11 +98,15 @@
     };
     var featureTypeLabels = {};
     var spotDataModel = {};
+    var surfaceFeatureTypeLabels = {};
+    var traceTypeLabels = {};
 
     return {
       'getDataModel': getDataModel,
       'getFeatureTypeLabel': getFeatureTypeLabel,
       'getSpotDataModel': getSpotDataModel,
+      'getSurfaceFeatureTypeLabel': getSurfaceFeatureTypeLabel,
+      'getTraceTypeLabel': getTraceTypeLabel,
       'loadDataModels': loadDataModels,
       'readCSV': readCSV
     };
@@ -126,19 +130,13 @@
         dataModels._3d_structures.fold,
         dataModels._3d_structures.other,
         dataModels._3d_structures.tensor];
-      _.each(models, function (model) {
-        var type = _.findWhere(model.survey, {'name': 'feature_type'});
-        if (type) {
-          var list = type.type.split(' ')[1];
-          var choices = _.filter(model.choices, function (choice) {
-            return choice['list name'] === list;
-          });
-          _.each(choices, function (choice) {
-            featureTypeLabels[choice.name] = choice.label;
-          });
-        }
-      });
+
+      featureTypeLabels = gatherTypeLabels(models, 'feature_type');
       $log.log('Feature Types:', featureTypeLabels);
+      traceTypeLabels = gatherTypeLabels([dataModels.trace], 'trace_type');
+      $log.log('Trace Feature Types:', traceTypeLabels);
+      surfaceFeatureTypeLabels = gatherTypeLabels([dataModels.surface_feature], 'surface_feature_type');
+      $log.log('Surface Feature Types:', surfaceFeatureTypeLabels);
     }
 
     function createSpotDataModel() {
@@ -222,6 +220,27 @@
       });
     }
 
+
+    function gatherTypeLabels(models, typeField) {
+      var tempTypeLabels = {};
+      _.each(models, function (model) {
+        var type = _.findWhere(model.survey, {'name': typeField});
+        if (type) {
+          var list = type.type.split(' ')[1];
+          var choices = _.filter(model.choices, function (choice) {
+            return choice['list name'] === list;
+          });
+          _.each(choices, function (choice) {
+            if (tempTypeLabels[choice.name] && tempTypeLabels[choice.name] !== choice.label) {
+              $log.error('Dup feature type!', choice.name, tempTypeLabels[choice.name], choice.label);
+            }
+            tempTypeLabels[choice.name] = choice.label;
+          });
+        }
+      });
+      return tempTypeLabels;
+    }
+
     function getType(type, model) {
       if (type.split(' ')[0] === 'select_one') {
         var choices = _.filter(model.choices, function (choice) {
@@ -274,6 +293,14 @@
 
     function getSpotDataModel() {
       return spotDataModel;
+    }
+
+    function getSurfaceFeatureTypeLabel(type) {
+      return surfaceFeatureTypeLabels[type];
+    }
+
+    function getTraceTypeLabel(type) {
+      return traceTypeLabels[type];
     }
 
     function loadDataModels() {
