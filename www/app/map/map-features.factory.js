@@ -176,6 +176,31 @@
         });
       }
 
+      function getStrokeStyle(feature) {
+        var color = '#000000';
+        var width = 1;
+        var lineDash = [1, 0];
+
+        if (feature.get('orientation')) {
+          var orientation = feature.get('orientation');
+          if (orientation.feature_type && orientation.feature_type === 'fault') {
+            color = '#FF0000';
+            width = 3;
+            lineDash = [.01, 15];
+            if (orientation.quality) {
+              if (orientation.quality === '5') lineDash = [1, 0];
+              else if (orientation.quality === '2' || orientation.quality === '3' || orientation.quality === '4') lineDash = [20, 15];
+            }
+          }
+        }
+
+        return new ol.style.Stroke({
+          'color': color,
+          'width': width,
+          'lineDash': lineDash
+        });
+      }
+
       function getIconForFeature(feature) {
         var feature_type = 'none';
         var rotation = 0;
@@ -217,10 +242,7 @@
         ];
         var lineStyle = [
           new ol.style.Style({
-            'stroke': new ol.style.Stroke({
-              'color': 'rgba(204, 0, 0, 0.7)',
-              'width': 3
-            }),
+            'stroke': getStrokeStyle(feature),
             'text': textStyle(feature.get('name'))
           })
         ];
