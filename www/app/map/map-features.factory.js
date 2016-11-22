@@ -251,6 +251,45 @@
         });
       }
 
+      function getPolyFill(feature) {
+        var color = 'rgba(0, 0, 255, 0.4)';       // blue
+        if (feature.get('surface_feature')) {
+          var surfaceFeature = feature.get('surface_feature');
+          switch (surfaceFeature.surface_feature_type) {
+            case 'rock_unit':
+              color = 'rgba(0, 255, 255, 0.4)';   // light blue
+              break;
+            case 'contiguous_outcrop':
+              color = 'rgba(240, 128, 128, 0.4)'; // pink
+              break;
+            case 'geologic_structure':
+              color = 'rgba(0, 255, 255, 0.4)';   // light blue
+              break;
+            case 'geomorphic_feature':
+              color = 'rgba(0, 128, 0, 0.4)';     // green
+              break;
+            case 'anthropogenic_feature':
+              color = 'rgba(128, 0, 128, 0.4)';   // purple
+              break;
+            case 'extent_of_mapping':
+              color = 'rgba(128, 0, 128, 0)';     // no fill
+              break;
+            case 'extent_of_biological_marker':   // green
+              color = 'rgba(0, 128, 0, 0.4)';
+              break;
+            case 'subjected_to_similar_process':
+              color = 'rgba(255, 165, 0,0.4)';    // orange
+              break;
+            case 'gradients':
+              color = 'rgba(255, 165, 0,0.4)';    // orange
+              break;
+          }
+        }
+        return new ol.style.Fill({
+          'color': color
+        });
+      }
+
       // Set styles for points, lines and polygon and groups
       function styleFunction(feature, resolution) {
         var rotation = 0;
@@ -280,9 +319,7 @@
               'color': '#000000',
               'width': 0.5
             }),
-            'fill': new ol.style.Fill({
-              'color': 'rgba(102, 0, 204, 0.4)'
-            }),
+            'fill': getPolyFill(feature),
             'text': textStyle(polyText)
           })
         ];
