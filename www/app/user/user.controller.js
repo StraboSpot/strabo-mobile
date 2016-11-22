@@ -235,7 +235,7 @@
     function doLogout() {
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Log Out Warning!',
-        'template': 'Logging out will <b>erase</b> any data on this device not synced to the server. Are you sure you want to continue?'
+        'template': 'Logging out will <b>erase</b> all local data. Are you sure you want to continue?'
       });
       confirmPopup.then(function (res) {
         if (res) {

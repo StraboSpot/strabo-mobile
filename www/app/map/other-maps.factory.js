@@ -12,6 +12,7 @@
 
     return {
       'addRemoteOtherMaps': addRemoteOtherMaps,
+      'destroyOtherMaps': destroyOtherMaps,
       'getOtherMaps': getOtherMaps,
       'loadOtherMaps': loadOtherMaps,
       'setOtherMaps': setOtherMaps
@@ -32,6 +33,11 @@
         });
         setOtherMaps(otherMaps);
       }
+    }
+
+    function destroyOtherMaps() {
+      otherMaps = [];
+      LocalStorageFactory.getDb().configDb.removeItem('other_maps');
     }
 
     function getOtherMaps() {

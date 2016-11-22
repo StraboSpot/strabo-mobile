@@ -5,10 +5,12 @@
     .module('app')
     .factory('UserFactory', UserFactory);
 
-  UserFactory.$inject = ['$ionicPopup', '$log', '$q', 'ImageFactory', 'LocalStorageFactory', 'ProjectFactory', 'RemoteServerFactory',
+  UserFactory.$inject = ['$ionicPopup', '$log', '$q', 'ImageFactory', 'LocalStorageFactory', 'OtherMapsFactory',
+    'ProjectFactory', 'RemoteServerFactory',
     'SpotFactory'];
 
-  function UserFactory($ionicPopup, $log, $q, ImageFactory, LocalStorageFactory, ProjectFactory, RemoteServerFactory, SpotFactory) {
+  function UserFactory($ionicPopup, $log, $q, ImageFactory, LocalStorageFactory, OtherMapsFactory, ProjectFactory,
+                       RemoteServerFactory, SpotFactory) {
     var user;
 
     return {
@@ -47,6 +49,7 @@
         ProjectFactory.destroyProject();
         SpotFactory.clearAllSpots();
         ImageFactory.deleteAllImages();
+        OtherMapsFactory.destroyOtherMaps();
         //$state.go('app.manage-project');
       });
     }
