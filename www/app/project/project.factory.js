@@ -478,7 +478,7 @@
         $log.log('Loading list of projects from server...');
         RemoteServerFactory.getMyProjects(user.encoded_login).then(function (response) {
           var remoteProjects = [];
-          if (response.status === 200 && response.data.projects) {
+          if (response.status === 200 &&  response.data && response.data.projects) {
             $log.log('Loaded list of all projects from server:', response);
             remoteProjects = response.data.projects;
           }
