@@ -203,7 +203,8 @@
           });
         }
 
-        makeNextRequest();
+        if (currentRequest < vm.activeDatasets.length) makeNextRequest();
+        else deferred.resolve();
         return deferred.promise;
       });
     }
@@ -291,6 +292,7 @@
     }
 
     function initializeProject() {
+      $ionicLoading.show();
       vm.project = ProjectFactory.getCurrentProject();
       vm.datasets = ProjectFactory.getCurrentDatasets();
       vm.activeDatasets = ProjectFactory.getActiveDatasets();
@@ -302,9 +304,11 @@
         vm.spotsDataset = ProjectFactory.getSpotsDataset();
       }
       vm.showProject = !_.isEmpty(vm.project);
+      $ionicLoading.hide();
     }
 
     function loadProjectRemote(project) {
+      $ionicLoading.show();
       destroyProject().then(function () {
         ProjectFactory.loadProjectRemote(project).then(function () {
           vm.closeModal();
@@ -314,7 +318,10 @@
             'title': 'Error communicating with server!',
             'template': err
           });
+          $ionicLoading.hide();
         });
+      }, function () {
+        $ionicLoading.hide();
       });
     }
 
@@ -461,7 +468,8 @@
         });
       }
 
-      makeNextRequest();
+      if (currentRequest < datasets.length) makeNextRequest();
+      else deferred.resolve();
       return deferred.promise;
     }
 
@@ -486,17 +494,18 @@
               outputMessage('Images to Upload: ' + imagesToUploadCount);
               return ImageFactory.getImageById(image.id).then(function (src) {
                 if (src) {
-                  return RemoteServerFactory.uploadImage(image.id, src, UserFactory.getUser().encoded_login).then(function () {
-                    imagesUploadedCount++;
-                    notifyMessages.pop();
-                    outputMessage('Images Uploaded: ' + imagesUploadedCount + ' of ' + imagesToUploadCount);
-                  }, function () {
-                    uploadErrors = true;
-                    imagesUploadFailedCount++;
-                  });
+                  return RemoteServerFactory.uploadImage(image.id, src, UserFactory.getUser().encoded_login).then(
+                    function () {
+                      imagesUploadedCount++;
+                      notifyMessages.pop();
+                      outputMessage('Images Uploaded: ' + imagesUploadedCount + ' of ' + imagesToUploadCount);
+                    }, function () {
+                      uploadErrors = true;
+                      imagesUploadFailedCount++;
+                    });
                 }
                 else {
-                  $log.log('No image source found for image', image.id, 'in Spot', spot.properties.id, spot );
+                  $log.log('No image source found for image', image.id, 'in Spot', spot.properties.id, spot);
                   uploadErrors = true;
                   imagesUploadFailedCount++;
                   return $q.when(null);
@@ -746,11 +755,19 @@
 
     function initializeDownload() {
       downloadErrors = false;
-      var names = _.pluck(vm.activeDatasets, 'name');
+      var downloadConfirmText = '';
+      if (_.isEmpty(vm.activeDatasets)) {
+        downloadConfirmText = 'No active datasets! Project properties will be downloaded and will REPLACE' +
+          ' local project properties. Continue?'
+      }
+      else {
+        var names = _.pluck(vm.activeDatasets, 'name');
+        downloadConfirmText = 'Project properties and datasets <b>' + names.join(', ') + '</b> will be downloaded' +
+          ' and will REPLACE local copies. Continue?';
+      }
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Download Project!',
-        'template': 'Local project properties and local copies of the datasets <b>' + names.join(
-          ', ') + '</b> will be replaced with the copies on the server. Continue?'
+        'template': downloadConfirmText
       });
       confirmPopup.then(function (res) {
         if (res) {
@@ -775,11 +792,19 @@
     function initializeUpload() {
       var deferred = $q.defer(); // init promise
       uploadErrors = false;
-      var names = _.pluck(vm.activeDatasets, 'name');
+      var uploadConfirmText = '';
+      if (_.isEmpty(vm.activeDatasets)) {
+        uploadConfirmText = 'No active datasets! Project properties will be uploaded and will REPLACE' +
+          ' project properties on the server. Continue?';
+      }
+      else {
+        var names = _.pluck(vm.activeDatasets, 'name');
+        uploadConfirmText = 'Project properties and datasets <b>' + names.join(', ') + '</b> will be uploaded' +
+          ' and will REPLACE copies on the server. Continue?'
+      }
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Upload Project!',
-        'template': 'Project properties and copies of the datasets <b>' + names.join(
-          ', ') + '</b> on the server will be replaced by your local copies. Continue?'
+        'template': uploadConfirmText
       });
       confirmPopup.then(function (res) {
         if (res) {
