@@ -200,17 +200,24 @@
 
         if (feature.get('trace')) {
           var trace = feature.get('trace');
-          if (trace.trace_type && trace.trace_type === 'geologic_struc'){
-            if (trace.geologic_structure_type && trace.geologic_structure_type === 'fault') {
-              color = '#FF0000';
-              width = 4;
-              lineDash = [.01, 15];
-              if (trace.trace_quality && trace.trace_quality === 'known') lineDash = [1, 0];
-              else if (trace.trace_quality && trace.trace_quality === 'approximate'
-                || trace.trace_quality === 'questionable') lineDash = lineDash = [20, 15];
-            }
-          }
+
+          // Set line color and weight
+          if (trace.trace_type && trace.trace_type === 'geologic_struc') color = '#FF0000';
           else if (trace.trace_type && trace.trace_type === 'contact') color = '#000000';
+          else if (trace.trace_type && trace.trace_type === 'geomorphic_fea') {
+            width = 4;
+            color = '#0000FF';
+          }
+          else if (trace.trace_type && trace.trace_type === 'anthropenic_fe') {
+            width = 4;
+            color = '#800080';
+          }
+
+          // Set line pattern
+          lineDash = [.01, 10];
+          if (trace.trace_quality && trace.trace_quality === 'known') lineDash = [1, 0];
+          else if (trace.trace_quality && trace.trace_quality === 'approximate'
+            || trace.trace_quality === 'questionable') lineDash = lineDash = [20, 15];
         }
 
         return new ol.style.Stroke({
