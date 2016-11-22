@@ -1,6 +1,6 @@
 name,type,label,required,hint,relevant,appearance,default
 trace_feature,acknowledge,Trace Feature,false,,,,
-trace_type,select_one pl5yo85,Trace Type,false,"contact, structure, geomorphic, anthropogenic, other",${trace_feature} != '',,
+trace_type,select_one pl5yo85,Trace Type,true,"contact, structure, geomorphic, anthropogenic, other",${trace_feature} != '',,
 contact_type,select_one lx9ax28,Contact Type,false,"depositional, metamorphic, igneous, marker, other",${trace_type} = 'contact',horizontal,
 other_contact_type,text,Other Contact Type,true,,${contact_type} = 'other',,
 depositional_contact_type,select_one bi4sw60,Depositional Contact Type,false,"stratigraphic, alluvial, unconformities",${contact_type} = 'depositional',horizontal,
