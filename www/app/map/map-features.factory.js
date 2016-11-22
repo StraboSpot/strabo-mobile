@@ -217,7 +217,8 @@
           lineDash = [.01, 10];
           if (trace.trace_quality && trace.trace_quality === 'known') lineDash = [1, 0];
           else if (trace.trace_quality && trace.trace_quality === 'approximate'
-            || trace.trace_quality === 'questionable') lineDash = lineDash = [20, 15];
+            || trace.trace_quality === 'questionable') lineDash = [20, 15];
+          else if (trace.trace_quality && trace.trace_quality === 'other') lineDash = [20, 15, 0, 15];
         }
 
         return new ol.style.Stroke({
