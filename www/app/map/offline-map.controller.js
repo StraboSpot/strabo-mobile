@@ -14,7 +14,7 @@
     vm.clearOfflineTile = clearOfflineTile;
     vm.deleteTiles = deleteTiles;
     vm.edit = edit;
-    vm.maps = {};
+    vm.maps = [];
     vm.numOfflineTiles = 0;       // number of tiles we have in offline storage
     //vm.offlineTilesSize = 0;
     //vm.updateOfflineTileSize = updateOfflineTileSize;
