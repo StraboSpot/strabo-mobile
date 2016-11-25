@@ -995,13 +995,13 @@
       // Toggled On - add dataset to the list of active datasets
       else {
         vm.activeDatasets.push(datasetToggled);
-        if (_.isEmpty(ProjectFactory.getSpotIds()[datasetToggled.id]) && isSyncReady()) {
+        if (_.isEmpty(ProjectFactory.getSpotIds()[datasetToggled.id]) && !_.isEmpty(UserFactory.getUser()) && navigator.onLine) {
           initializeDownloadDataset(datasetToggled);
         }
-        else if (_.isEmpty(ProjectFactory.getSpotIds()[datasetToggled.id]) && !isSyncReady()) {
+        else if (_.isEmpty(ProjectFactory.getSpotIds()[datasetToggled.id]) && !_.isEmpty(UserFactory.getUser()) && !navigator.onLine) {
           $ionicPopup.alert({
-            'title': 'Cannot Update!',
-            'template': 'Unable to reach the server to download any Spots that may be in this dataset.'
+            'title': 'Cannot Update Dataset!',
+            'template': 'Unable to reach the server to check if there are already Spots in this dataset to download.'
           });
         }
       }
