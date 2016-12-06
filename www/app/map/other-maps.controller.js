@@ -97,7 +97,6 @@
         ' \'Share, develop & use\'. Below \'Develop with this style\' copy the entire Mapbox Style URL.';
       vm.mapSources[2].helpText = ' To get the 5 digit Map ID, select \'Export\' and' +
         ' find the number following \'tile/\' in the Tiles URL.';
-
     }
 
     function testMapConnection(testUrl) {
