@@ -85,6 +85,18 @@
             'http://b.tile.openstreetmap.org/',
             'http://c.tile.openstreetmap.org/'
           ]
+        },
+        'map_warper': {
+          'attributions': [
+            new ol.Attribution({
+              'html': '© <a href="http://mapwarper.net/home/about">Map Warper</a>'
+            })
+          ],
+          'apiUrl': 'http://mapwarper.net/maps/tile/',
+          'basePath': 'http://mapwarper.net/maps/tile/',
+          'mime': 'image/jpeg',
+          'maxZoom': 19,
+          'url': ['http://mapwarper.net/maps/wms/']
         }
       };
       return mapProviders[mapSource];

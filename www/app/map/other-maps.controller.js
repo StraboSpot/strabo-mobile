@@ -26,14 +26,17 @@
     vm.helpText = '';
     vm.mapSources = [
       {'name': 'Mapbox Classic', 'source': 'mapbox_classic', 'idLabel': 'Map Id'},
-      {'name': 'Mapbox Styles', 'source': 'mapbox_styles', 'idLabel': 'Style URL'}
+      {'name': 'Mapbox Styles', 'source': 'mapbox_styles', 'idLabel': 'Style URL'},
+      {'name': 'Map Warper ', 'source': 'map_warper', 'idLabel': '5 Digit Map ID'}
     ];
     vm.modalTitle = '';
     vm.openModal = openModal;
     vm.otherMaps = [];
     vm.save = save;
     vm.showHelpText = false;
+    vm.showTokenInput = false;
     vm.toggleHelpText = toggleHelpText;
+    vm.toggleTokenInput = toggleTokenInput;
 
     activate();
 
@@ -92,13 +95,16 @@
       vm.mapSources[0].helpText = helpText + ' To get the Map ID create a Classic map with Mapbox Editor or create a Tileset.';
       vm.mapSources[1].helpText = helpText + ' To get the Style URL create a Style map, then select' +
         ' \'Share, develop & use\'. Below \'Develop with this style\' copy the entire Mapbox Style URL.';
+      vm.mapSources[2].helpText = ' To get the 5 digit Map ID, select \'Export\' and' +
+        ' find the number following \'tile/\' in the Tiles URL.';
+
     }
 
     function testMapConnection(testUrl) {
       var deferred = $q.defer(); // init promise
-      $log.log('Trying to connect to a new map ...');
+      $log.log('Trying to connect to a new map ...' + testUrl);
       var request = $http({
-        'method': 'get',
+        'method': 'GET',
         'url': testUrl
       });
       request.then(function successCallback(response) {
@@ -123,7 +129,7 @@
 
     function addMap() {
       isEdit = false;
-      vm.modalTitle = 'Add a Mapbox Map';
+      vm.modalTitle = 'Add a Map';
       vm.data = {};
       getMapboxId();
       vm.openModal('addMapModal');
@@ -188,7 +194,13 @@
     }
 
     function save() {
-      if (!vm.data.source || !vm.data.title || !vm.data.id || !vm.data.key) {
+      if (vm.data.source === 'map_warper' && (!vm.data.title || !vm.data.id )) {
+        $ionicPopup.alert({
+          'title': 'Incomplete Map Info!',
+          'template': 'Title and Map ID required fields.'
+        });
+      }
+      else if (( vm.data.source === 'mapbox_classic' || vm.data.source === 'mapbox_styles' ) && (!vm.data.source || !vm.data.title || !vm.data.id || !vm.data.key)) {
         $ionicPopup.alert({
           'title': 'Incomplete Map Info!',
           'template': 'The map Source, Title, ID or Style and Access Token are all required fields.'
@@ -205,6 +217,9 @@
             var idArray = vm.data.id.split('/');
             vm.data.id = idArray[idArray.length - 2] + '/' + idArray[idArray.length - 1];
             testUrl = mapProvider.apiUrl + vm.data.id + '?access_token=' + vm.data.key;
+            break;
+          case 'map_warper':
+            testUrl = 'https://strabospot.org/map_warper_check/' + vm.data.id;
             break;
         }
         $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Testing Connection...'});
@@ -226,7 +241,14 @@
     }
 
     function toggleHelpText() {
-      vm.showHelpText = vm.data.source === 'mapbox_classic' || vm.data.source === 'mapbox_styles';
+      vm.showHelpText = vm.data.source === 'mapbox_classic' || vm.data.source === 'mapbox_styles' || vm.data.source === 'map_warper';
     }
+
+    function toggleTokenInput() {
+      vm.showTokenInput = vm.data.source === 'mapbox_classic' || vm.data.source === 'mapbox_styles';
+    }
+
+
+
   }
 }());

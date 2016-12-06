@@ -8,10 +8,10 @@
   </ion-header-bar>
   <ion-content class='has-header strabo-form'>
     <ion-input class='item item-input item-select item-text-wrap'>
-      <ion-label>Mapbox Type</ion-label>
+      <ion-label>Map Type</ion-label>
       <select ng-model='vm.data.source'
               ng-options='mapSource.source as mapSource.name for mapSource in vm.mapSources'
-              ng-change='vm.toggleHelpText()'>
+              ng-change='vm.toggleHelpText();vm.toggleTokenInput();'>
         <option value=''></option>
       </select>
     </ion-input>
@@ -23,10 +23,12 @@
       <span class='input-label'>{{ vm.getIdLabel() }}</span>
       <input type='text' ng-model='vm.data.id'>
     </label>
+    <div ng-show='vm.showTokenInput'>
     <label class='item item-input item-stacked-label item-text-wrap'>
       <span class='input-label'>Access Token</span>
       <input type='text' ng-model='vm.data.key'>
     </label>
+    </div>
     <div ng-show='vm.showHelpText'>
       <div class='padding'><b>Connection Properties Help</b><br>
         {{ vm.getHelpText() }}
