@@ -91,7 +91,7 @@
             'Try saving the map again with the same name to download the missing tile.';
         }
         else if (vm.map.progress.failed > 1) {
-          var statusMsg = 'Map saved, however ' + vm.map.progress.failed + ' tiles were not downloaded. ' +
+          statusMsg = 'Map saved, however ' + vm.map.progress.failed + ' tiles were not downloaded. ' +
             'Try saving the map again with the same name to download the missing tiles.';
         }
         deferred.resolve(statusMsg);

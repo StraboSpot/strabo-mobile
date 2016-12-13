@@ -94,9 +94,10 @@
           ],
           'apiUrl': 'http://mapwarper.net/maps/tile/',
           'basePath': 'http://mapwarper.net/maps/tile/',
-          'mime': 'image/jpeg',
+          'imageType': 'png',
+          'mime': 'image/png',
           'maxZoom': 19,
-          'url': ['http://mapwarper.net/maps/wms/']
+          'url': ['https://www.strabospot.org/mwproxy/']
         }
       };
       return mapProviders[mapSource];

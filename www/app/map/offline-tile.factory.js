@@ -32,7 +32,8 @@
 
       var url = _.sample(mapToSave.url);
       if (mapToSave.source === 'mapbox_classic') url = url + mapToSave.id + '/';
-      if (mapToSave.source === 'mapbox_styles') url = url + mapToSave.id + '/tiles/256/';
+      else if (mapToSave.source === 'mapbox_styles') url = url + mapToSave.id + '/tiles/256/';
+      else if (mapToSave.source === 'map_warper') url = url + mapToSave.id + '/';
       var imageUrl = url + tile;
       if (mapToSave.imageType) imageUrl += '.' + mapToSave.imageType;
       if (mapToSave.key) imageUrl = imageUrl + '?access_token=' + mapToSave.key;
