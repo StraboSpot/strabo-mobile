@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget
     id="gov.az.azgs.strabomobile"
-    version="0.17.10"
+    version="0.17.11"
     xmlns="http://www.w3.org/ns/widgets"
     xmlns:gap="http://phonegap.com/ns/1.0">
   <name>Strabo Mobile</name>
