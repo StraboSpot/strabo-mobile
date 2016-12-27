@@ -101,7 +101,7 @@
       features.forEach(function (feature) {
         featuresOrig.push(feature.clone());
         feature.on('change', function (e) {
-          var spot = SpotFactory.getSpotById(e.target.get('id'));
+          var spot = JSON.parse(JSON.stringify(SpotFactory.getSpotById(e.target.get('id'))));
 
           var newGeom = e.target.get('geometry');
           var newCoords = newGeom.getCoordinates();
