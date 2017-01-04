@@ -107,6 +107,8 @@
     function editSample(sampleToEdit) {
       if (!isDelete) {
         vmParent.data = angular.fromJson(angular.toJson(sampleToEdit));  // Copy value, not reference
+        vmParent.survey = DataModelsFactory.getDataModel('sample').survey;
+        vmParent.choices = DataModelsFactory.getDataModel('sample').choices;
         vm.modalTitle = 'Edit Sample';
         vm.basicFormModal.show();
       }
