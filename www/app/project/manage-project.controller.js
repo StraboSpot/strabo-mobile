@@ -6,12 +6,12 @@
     .controller('ManageProjectController', ManageProjectController);
 
   ManageProjectController.$inject = ['$ionicModal', '$ionicLoading', '$ionicPopup', '$log', '$scope', '$q',
-    'DataModelsFactory', 'FormFactory', 'ImageFactory', 'LiveDBFactory', 'OtherMapsFactory', 'ProjectFactory', 'RemoteServerFactory',
-    'SpotFactory', 'UserFactory'];
+    'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'ImageFactory', 'LiveDBFactory', 'OtherMapsFactory',
+    'ProjectFactory', 'RemoteServerFactory', 'SpotFactory', 'UserFactory'];
 
   function ManageProjectController($ionicModal, $ionicLoading, $ionicPopup, $log, $scope, $q, DataModelsFactory,
-                                   FormFactory, ImageFactory, LiveDBFactory, OtherMapsFactory, ProjectFactory, RemoteServerFactory,
-                                   SpotFactory, UserFactory) {
+                                   FormFactory, HelpersFactory, ImageFactory, LiveDBFactory, OtherMapsFactory,
+                                   ProjectFactory, RemoteServerFactory, SpotFactory, UserFactory) {
     var vm = this;
 
     var deleteSelected;
@@ -36,6 +36,7 @@
     vm.initializeDownload = initializeDownload;
     vm.isDatasetOn = isDatasetOn;
     vm.isSyncReady = isSyncReady;
+    vm.isWeb = isWeb;
     vm.newDataset = newDataset;
     vm.newDatasetName = '';
     vm.newProject = newProject;
@@ -590,10 +591,6 @@
      * Public Functions
      */
 
-    function isSyncReady() {
-      return ProjectFactory.isSyncReady();
-    }
-
     function closeModal() {
       initializeModal();
       vm.projectModal.hide();
@@ -838,6 +835,14 @@
       return _.find(vm.activeDatasets, function (datasetOn) {
         return datasetOn.id === dataset.id;
       });
+    }
+
+    function isSyncReady() {
+      return ProjectFactory.isSyncReady();
+    }
+
+    function isWeb() {
+      return HelpersFactory.isWeb();
     }
 
     function newDataset() {
