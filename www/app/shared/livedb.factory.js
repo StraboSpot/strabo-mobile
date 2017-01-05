@@ -30,13 +30,13 @@
      // Delete image from DB
      function deleteImageFile(imageId) {
        var deferred = $q.defer(); // init promise
-       if(HelpersFactory.isWeb()){ //are we on the desktop?
+       if(HelpersFactory.isWeb() && UserFactory.getUser()){ //are we on the desktop?
          $log.log('Inside LiveDBFactory.deleteImageFile deleting image.');
          RemoteServerFactory.deleteImage(imageId, UserFactory.getUser().encoded_login).then(function () {
            deferred.resolve();
          });
        }else{
-         $log.log('Inside LiveDBFactory.deleteImageFile but not in browser.');
+         $log.log('Inside LiveDBFactory.deleteImageFile but not in browser or logged out.');
          deferred.resolve();
        }
        return deferred.promise;
@@ -47,7 +47,7 @@
        var deferred = $q.defer(); // init promise
        var objectToSend = {};
        var jsonToSend = "";
-       if(HelpersFactory.isWeb()){ //are we on the desktop?
+       if(HelpersFactory.isWeb() && UserFactory.getUser()){ //are we on the desktop?
          if(!_.isEmpty(spot)){objectToSend.spot=spot;}
          if(!_.isEmpty(project)){objectToSend.project=project;}
          if(!_.isEmpty(dataset)){objectToSend.dataset=dataset;}
@@ -57,7 +57,7 @@
            deferred.resolve();
          });
        }else{
-         $log.log('Inside LiveDBFactory.save but not in browser.');
+         $log.log('Inside LiveDBFactory.save but not in browser or logged out.');
          deferred.resolve();
        }
 
@@ -66,13 +66,13 @@
      // Save image to DB
      function saveImageFile(imageId, src) {
        var deferred = $q.defer(); // init promise
-       if(HelpersFactory.isWeb()){ //are we on the desktop?
+       if(HelpersFactory.isWeb() && UserFactory.getUser()){ //are we on the desktop?
          $log.log('Inside LiveDBFactory.saveImageFile sending image.');
          RemoteServerFactory.uploadImage(imageId, src, UserFactory.getUser().encoded_login).then(function () {
            deferred.resolve();
          });
        }else{
-         $log.log('Inside LiveDBFactory.saveImageFile but not in browser.');
+         $log.log('Inside LiveDBFactory.saveImageFile but not in browser or logged out.');
          deferred.resolve();
        }
        return deferred.promise;

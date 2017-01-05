@@ -533,7 +533,7 @@
         if (_.contains(spotsInDataset, spotId)) {
           spotIds[datasetId] = _.without(spotsInDataset, spotId);
           if (_.isEmpty(spotIds[datasetId])) spotIds[datasetId] = undefined;
-          if(HelpersFactory.isWeb()){ //are we on the desktop?
+          if(HelpersFactory.isWeb() && UserFactory.getUser()){ //are we on the desktop?
             $log.log('Remove Spot from LiveDB here', spotId, UserFactory.getUser().encoded_login);
             RemoteServerFactory.deleteSpot(spotId, UserFactory.getUser().encoded_login);
           }
