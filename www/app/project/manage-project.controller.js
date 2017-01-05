@@ -6,11 +6,11 @@
     .controller('ManageProjectController', ManageProjectController);
 
   ManageProjectController.$inject = ['$ionicModal', '$ionicLoading', '$ionicPopup', '$log', '$scope', '$q',
-    'DataModelsFactory', 'FormFactory', 'ImageFactory', 'OtherMapsFactory', 'ProjectFactory', 'RemoteServerFactory',
+    'DataModelsFactory', 'FormFactory', 'ImageFactory', 'LiveDBFactory', 'OtherMapsFactory', 'ProjectFactory', 'RemoteServerFactory',
     'SpotFactory', 'UserFactory'];
 
   function ManageProjectController($ionicModal, $ionicLoading, $ionicPopup, $log, $scope, $q, DataModelsFactory,
-                                   FormFactory, ImageFactory, OtherMapsFactory, ProjectFactory, RemoteServerFactory,
+                                   FormFactory, ImageFactory, LiveDBFactory, OtherMapsFactory, ProjectFactory, RemoteServerFactory,
                                    SpotFactory, UserFactory) {
     var vm = this;
 
@@ -694,6 +694,8 @@
       $ionicLoading.show({'template': '<ion-spinner></ion-spinner>'});
       destroyProject().then(function () {
         ProjectFactory.createNewProject(vm.data).then(function () {
+          $log.log('Save Project to LiveDB:', ProjectFactory.getCurrentProject());
+          LiveDBFactory.save(null,ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
           $ionicLoading.hide();
           vm.closeModal();
           initializeProject();

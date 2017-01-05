@@ -5,10 +5,10 @@
     .module('app')
     .factory('SpotFactory', SpotFactory);
 
-  SpotFactory.$inject = ['$ionicPopup', '$location', '$log', '$state', '$q', 'HelpersFactory', 'LocalStorageFactory',
+  SpotFactory.$inject = ['$ionicPopup', '$location', '$log', '$state', '$q', 'HelpersFactory', 'LiveDBFactory', 'LocalStorageFactory',
     'ProjectFactory'];
 
-  function SpotFactory($ionicPopup, $location, $log, $state, $q, HelpersFactory, LocalStorageFactory, ProjectFactory) {
+  function SpotFactory($ionicPopup, $location, $log, $state, $q, HelpersFactory, LiveDBFactory, LocalStorageFactory, ProjectFactory) {
     var activeNest = [];
     var activeSpots;  // Only Spots in the active datasets
     var currentSpot;
@@ -339,11 +339,20 @@
 
     // Save the Spot to the local database if it's been changed
     function save(saveSpot) {
+      $log.log('In Spot Factory Save();');
+      $log.log('Incoming Spot: ', saveSpot);
+      $log.log('Existing Spot: ', spots[saveSpot.properties.id]);
+      $log.log('In Spot Factory Save();');
       var deferred = $q.defer(); // init promise
       var isEqual = _.isEqual(saveSpot, spots[saveSpot.properties.id]);
-      if (isEqual) deferred.resolve(spots);
-      else {
+      if (isEqual){
+        $log.log('Spot has not changed.');
+        deferred.resolve(spots);
+      }else {
+        $log.log('Spot has changed.');
         saveSpot.properties.modified_timestamp = Date.now();
+        $log.log('Call LiveDBFactory here:');
+        LiveDBFactory.save(saveSpot, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
         LocalStorageFactory.getDb().spotsDb.setItem(saveSpot.properties.id.toString(), saveSpot).then(function () {
           spots[saveSpot.properties.id] = saveSpot;
           deferred.notify();

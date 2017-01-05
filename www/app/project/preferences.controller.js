@@ -5,9 +5,9 @@
     .module('app')
     .controller('PreferencesController', PreferencesController);
 
-  PreferencesController.$inject = ['$location', 'DataModelsFactory', 'FormFactory', 'ProjectFactory', 'SpotFactory'];
+  PreferencesController.$inject = ['$location', '$log', 'DataModelsFactory', 'FormFactory', 'LiveDBFactory', 'ProjectFactory', 'SpotFactory'];
 
-  function PreferencesController($location, DataModelsFactory, FormFactory, ProjectFactory, SpotFactory) {
+  function PreferencesController($location, $log, DataModelsFactory, FormFactory, LiveDBFactory, ProjectFactory, SpotFactory) {
     var vm = this;
 
     vm.currentSpot = SpotFactory.getCurrentSpot();
@@ -47,6 +47,8 @@
       var valid = FormFactory.validate(vm.survey, vm.data);
       if (valid) {
         ProjectFactory.saveProjectItem('preferences', vm.data).then(function () {
+          $log.log('Save Project to LiveDB Here.', ProjectFactory.getCurrentProject());
+          LiveDBFactory.save(null, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
           if (toPath) $location.path(toPath);
         });
       }

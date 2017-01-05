@@ -6,10 +6,10 @@
     .controller('TagsController', TagsController);
 
   TagsController.$inject = ['$ionicModal', '$ionicPopover', '$ionicPopup', '$location', '$log', '$scope',
-    'HelpersFactory', 'ProjectFactory', 'TagFactory'];
+    'HelpersFactory', 'LiveDBFactory', 'ProjectFactory', 'TagFactory'];
 
   function TagsController($ionicModal, $ionicPopover, $ionicPopup, $location, $log, $scope, HelpersFactory,
-                          ProjectFactory, TagFactory) {
+                          LiveDBFactory, ProjectFactory, TagFactory) {
     var vm = this;
 
     var isDelete = false;
@@ -42,6 +42,8 @@
       if (_.isEmpty(ProjectFactory.getCurrentProject())) $location.path('app/manage-project');
       else {
         loadActiveTagging();
+        $log.log('Save project to LiveDB.', ProjectFactory.getCurrentProject());
+        LiveDBFactory.save(null, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
         vm.allTags = ProjectFactory.getTags();
         vm.allTagsToDisplay = vm.allTags;
         createPopover();

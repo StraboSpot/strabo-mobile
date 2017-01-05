@@ -5,9 +5,9 @@
     .module('app')
     .factory('ProjectFactory', ProjectFactory);
 
-  ProjectFactory.$inject = ['$log', '$q', 'LocalStorageFactory', 'OtherMapsFactory', 'RemoteServerFactory'];
+  ProjectFactory.$inject = ['$log', '$q', 'HelpersFactory', 'LocalStorageFactory', 'OtherMapsFactory', 'RemoteServerFactory', 'UserFactory'];
 
-  function ProjectFactory($log, $q, LocalStorageFactory, OtherMapsFactory, RemoteServerFactory) {
+  function ProjectFactory($log, $q, HelpersFactory, LocalStorageFactory, OtherMapsFactory, RemoteServerFactory, UserFactory) {
     var currentDatasets = [];
     var currentProject = {};
     var activeDatasets = [];
@@ -72,6 +72,7 @@
       'saveRelationship': saveRelationship,
       'saveTag': saveTag,
       'saveSpotsDataset': saveSpotsDataset,
+      'setModifiedTimestamp': setModifiedTimestamp,
       'setUser': setUser,
       'switchProject': switchProject,
       'uploadProject': uploadProject
@@ -532,6 +533,10 @@
         if (_.contains(spotsInDataset, spotId)) {
           spotIds[datasetId] = _.without(spotsInDataset, spotId);
           if (_.isEmpty(spotIds[datasetId])) spotIds[datasetId] = undefined;
+          if(HelpersFactory.isWeb()){ //are we on the desktop?
+            $log.log('Remove Spot from LiveDB here', spotId, UserFactory.getUser().encoded_login);
+            RemoteServerFactory.deleteSpot(spotId, UserFactory.getUser().encoded_login);
+          }
           $log.log('Removed Spot id from dataset', datasetId, 'SpotIds:', spotIds);
           saveProjectItem('spots_' + datasetId, spotIds[datasetId]);
         }
@@ -645,6 +650,10 @@
       LocalStorageFactory.getDb().projectDb.setItem('spots_dataset', spotsDataset).then(function () {
         $log.log('Saved spots dataset:', spotsDataset);
       });
+    }
+
+    function setModifiedTimestamp() {
+      currentProject.modified_timestamp=Date.now();
     }
 
     function setUser(inUser) {

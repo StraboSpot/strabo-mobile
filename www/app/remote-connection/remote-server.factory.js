@@ -19,7 +19,9 @@
       'createFeature': createFeature,
       'deleteAllDatasetSpots': deleteAllDatasetSpots,
       'deleteDataset': deleteDataset,
+      'deleteImage': deleteImage,
       'deleteProject': deleteProject,
+      'deleteSpot': deleteSpot,
       'deleteSpots': deleteSpots,
       'downloadImage': downloadImage,
       'getDataset': getDataset,
@@ -42,6 +44,7 @@
       'updateDataset': updateDataset,
       'updateDatasetSpots': updateDatasetSpots,
       'uploadImage': uploadImage,
+      'uploadProjectDatasetSpot': uploadProjectDatasetSpot,
       'verifyImageExistance': verifyImageExistance
     };
 
@@ -185,6 +188,32 @@
       });
       return (request.then(handleSuccess, handleError));
     }
+
+// Delete Image
+	function deleteImage(image_id,encodedLogin) {
+	  var request = $http({
+		'method': 'delete',
+		'url': baseUrl + '/Image/' + image_id,
+		'headers': {
+		  'Authorization': 'Basic ' + encodedLogin,
+		  'Content-Type': 'application/json'
+		}
+	  });
+	  return (request.then(handleSuccess, handleError));
+	}
+
+    // Delete single Spot
+        function deleteSpot(spotid,encodedLogin) {
+          var request = $http({
+            'method': 'delete',
+            'url': baseUrl + '/Feature/' + spotid,
+            'headers': {
+              'Authorization': 'Basic ' + encodedLogin,
+              'Content-Type': 'application/json'
+            }
+          });
+          return (request.then(handleSuccess, handleError));
+        }
 
 // Delete ALL spots for a user
     function deleteSpots(encodedLogin) {
@@ -423,5 +452,12 @@
       var request = buildGetRequest('/verifyimage/' + id, encodedLogin);
       return (request.then(handleSuccess, handleError));
     }
+
+// Upload Project/Dataset/Spot for live DB connection
+    function uploadProjectDatasetSpot(projectdatasetspot, encodedLogin) {
+      var request = buildPostRequest('/projectdatasetspot', projectdatasetspot, encodedLogin);
+      return (request.then(handleSuccess, handleError));
+    }
+
   }
 }());

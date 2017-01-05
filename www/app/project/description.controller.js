@@ -5,10 +5,10 @@
     .module('app')
     .controller('DescriptionController', DescriptionController);
 
-  DescriptionController.$inject = ['$ionicModal', '$ionicPopup', '$location', '$scope', 'DataModelsFactory',
-    'FormFactory', 'ProjectFactory'];
+  DescriptionController.$inject = ['$ionicModal', '$ionicPopup', '$location', '$log', '$scope', 'DataModelsFactory',
+    'FormFactory', 'LiveDBFactory', 'ProjectFactory'];
 
-  function DescriptionController($ionicModal, $ionicPopup, $location, $scope, DataModelsFactory, FormFactory, ProjectFactory) {
+  function DescriptionController($ionicModal, $ionicPopup, $location, $log, $scope, DataModelsFactory, FormFactory, LiveDBFactory, ProjectFactory) {
     var vm = this;
     var isDelete = false;
 
@@ -79,7 +79,13 @@
       }
       else {
         var valid = FormFactory.validate(vm.survey, vm.data);
-        if (valid) vm[modal].hide();
+        if (valid){
+          vm[modal].hide();
+          //Project modified_timestamp isn't getting set here... need to fix
+          ProjectFactory.setModifiedTimestamp();
+          $log.log('Save project changes to liveDB:', ProjectFactory.getCurrentProject());
+          LiveDBFactory.save(null, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
+        }
       }
     }
 

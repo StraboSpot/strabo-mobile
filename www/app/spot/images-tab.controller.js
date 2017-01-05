@@ -6,10 +6,10 @@
     .controller('ImagesTabController', ImagesTabController);
 
   ImagesTabController.$inject = ['$cordovaCamera', '$cordovaGeolocation', '$document', '$ionicModal', '$ionicPopup',
-    '$log', '$q', '$scope', '$state', '$window', 'DataModelsFactory', 'HelpersFactory', 'ImageFactory'];
+    '$log', '$q', '$scope', '$state', '$window', 'DataModelsFactory', 'HelpersFactory', 'ImageFactory', 'LiveDBFactory', 'ProjectFactory', 'SpotFactory'];
 
   function ImagesTabController($cordovaCamera, $cordovaGeolocation, $document, $ionicModal, $ionicPopup, $log, $q,
-                               $scope, $state, $window, DataModelsFactory, HelpersFactory, ImageFactory) {
+                               $scope, $state, $window, DataModelsFactory, HelpersFactory, ImageFactory, LiveDBFactory, ProjectFactory, SpotFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.survey = DataModelsFactory.getDataModel('image').survey;
@@ -270,6 +270,9 @@
             'id': HelpersFactory.getNewId()
           };
           ImageFactory.saveImage(imageData.id, image.src);
+
+
+
           imageSources[imageData.id] = image.src;
           if (getGeoInfo) addGeoInfo(imageData);
           else {
@@ -283,6 +286,13 @@
               else vmParent.spot.properties.images.push(imageData);
             });
           }
+          $log.log('Also save image to live db here');
+          LiveDBFactory.saveImageFile(imageData.id, image.src).then(function (id) {  //save image to db
+            $log.log('Also save spot to make sure database updates.', vmParent.spot);
+            var spot = JSON.parse(JSON.stringify(vmParent.spot));
+            spot.properties.images.push(imageData);
+            LiveDBFactory.save(spot, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
+          });
         };
         image.onerror = function () {
           $ionicPopup.alert({
@@ -322,6 +332,8 @@
               return vmParent.data.id === image.id;
             });
             ImageFactory.deleteImage(vmParent.data.id);
+            $log.log('delete remote image: ' + vmParent.data.id);
+            LiveDBFactory.deleteImageFile(vmParent.data.id);
             delete imageSources[vmParent.data.id];
             vmParent.data = {};
             closeModal('imagePropertiesModal');

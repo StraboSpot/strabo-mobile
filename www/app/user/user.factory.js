@@ -5,12 +5,10 @@
     .module('app')
     .factory('UserFactory', UserFactory);
 
-  UserFactory.$inject = ['$ionicPopup', '$log', '$q', 'ImageFactory', 'LocalStorageFactory', 'OtherMapsFactory',
-    'ProjectFactory', 'RemoteServerFactory',
-    'SpotFactory'];
+  UserFactory.$inject = ['$ionicPopup', '$log', '$q', 'LocalStorageFactory', 'OtherMapsFactory',
+    'RemoteServerFactory'];
 
-  function UserFactory($ionicPopup, $log, $q, ImageFactory, LocalStorageFactory, OtherMapsFactory, ProjectFactory,
-                       RemoteServerFactory, SpotFactory) {
+  function UserFactory($ionicPopup, $log, $q, LocalStorageFactory, OtherMapsFactory, RemoteServerFactory) {
     var user;
 
     return {
@@ -41,17 +39,9 @@
     /**
      * Public Functions
      */
-
     function clearUser() {
-      user = undefined;
-      LocalStorageFactory.getDb().configDb.removeItem('user').then(function () {
-        $log.log('Cleared user data from local storage');
-        ProjectFactory.destroyProject();
-        SpotFactory.clearAllSpots();
-        ImageFactory.deleteAllImages();
-        OtherMapsFactory.destroyOtherMaps();
-        //$state.go('app.manage-project');
-      });
+    user = undefined;
+    return LocalStorageFactory.getDb().configDb.removeItem('user');
     }
 
     // Authenticate user login

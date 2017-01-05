@@ -5,10 +5,10 @@
     .module('app')
     .controller('RelationshipsController', RelationshipsController);
 
-  RelationshipsController.$inject = ['$ionicPopover', '$ionicPopup', '$location', '$scope', 'HelpersFactory',
+  RelationshipsController.$inject = ['$ionicPopover', '$ionicPopup', '$location', '$log', '$scope', 'HelpersFactory', 'LiveDBFactory',
     'ProjectFactory'];
 
-  function RelationshipsController($ionicPopover, $ionicPopup, $location, $scope, HelpersFactory, ProjectFactory) {
+  function RelationshipsController($ionicPopover, $ionicPopup, $location, $log, $scope, HelpersFactory, LiveDBFactory, ProjectFactory) {
     var vm = this;
 
     var isDelete = false;
@@ -28,6 +28,8 @@
     function activate() {
       if (_.isEmpty(ProjectFactory.getCurrentProject())) $location.path('app/manage-project');
       else {
+        $log.log('Save project to LiveDB.', ProjectFactory.getCurrentProject());
+        LiveDBFactory.save(null, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
         vm.relationships = ProjectFactory.getRelationships();
         createPopover();
       }
