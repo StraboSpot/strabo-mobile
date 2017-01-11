@@ -5,10 +5,10 @@
     .module('app')
     .controller('LoginController', LoginController);
 
-  LoginController.$inject = ['$ionicLoading', '$ionicPopup', '$log', '$scope', '$state', 'HelpersFactory', 'ProjectFactory', 'SpotFactory',
+  LoginController.$inject = ['$ionicLoading', '$ionicPopup', '$location', '$log', '$scope', '$state', 'HelpersFactory', 'ProjectFactory', 'SpotFactory',
     'UserFactory'];
 
-  function LoginController($ionicLoading, $ionicPopup, $log, $scope, $state, HelpersFactory, ProjectFactory, SpotFactory, UserFactory) {
+  function LoginController($ionicLoading, $ionicPopup, $location, $log, $scope, $state, HelpersFactory, ProjectFactory, SpotFactory, UserFactory) {
     var vm = this;
 
     vm.login = null;
