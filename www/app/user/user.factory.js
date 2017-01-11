@@ -46,23 +46,28 @@
 
     // Authenticate user login
     function doLogin(login) {
+      var deferred = $q.defer(); // init promise
       login.email = login.email.toLowerCase();
-      return RemoteServerFactory.authenticateUser(login).then(function (response) {
+      RemoteServerFactory.authenticateUser(login).then(function (response) {
         if (response.data.valid === 'true') {
           user = {
             'email': login.email,
             'encoded_login': Base64.encode(login.email + ':' + login.password)
           };
           $log.log('Logged in successfully as', login.email, 'Server Response:', response);
-          return updateUser();
+          updateUser().then(function() {
+            deferred.resolve();
+          });
         }
         else {
           $ionicPopup.alert({
             'title': 'Login Failure!',
             'template': 'Incorrect username and/or password'
           });
+          deferred.resolve();
         }
       });
+      return deferred.promise;
     }
 
     function getUserName() {
@@ -100,10 +105,13 @@
 
     // Save all user data in local storage
     function saveUser(userData) {
+      var deferred = $q.defer(); // init promise
       user = userData;
       LocalStorageFactory.getDb().configDb.setItem('user', userData).then(function (savedData) {
         $log.log('Saved user: ', savedData);
+        deferred.resolve();
       });
+      return deferred.promise;
     }
 
     function updateUser() {
@@ -114,17 +122,20 @@
           if (profileImageResponse.data) {
             readDataUrl(profileImageResponse.data, function (base64Image) {
               user.image = base64Image;
-              saveUser(user);
-              deferred.resolve();
+              saveUser(user).then(function (){
+                deferred.resolve();
+              });
             });
           }
           else {
-            saveUser(user);
-            deferred.resolve();
+            saveUser(user).then(function (){
+              deferred.resolve();
+            });
           }
         }, function () {
-          saveUser(user);
-          deferred.resolve();
+          saveUser(user).then(function (){
+            deferred.resolve();
+          });
         });
       }, function (profileResponse) {
         var err = profileResponse.data && profileResponse.data.Error ? profileResponse.data.Error : 'Unknown Error';

@@ -646,10 +646,13 @@
     }
 
     function saveSpotsDataset(dataset) {
+      var deferred = $q.defer(); // init promise
       spotsDataset = dataset;
       LocalStorageFactory.getDb().projectDb.setItem('spots_dataset', spotsDataset).then(function () {
         $log.log('Saved spots dataset:', spotsDataset);
+        deferred.resolve();
       });
+      return deferred.promise;
     }
 
     function setModifiedTimestamp() {
