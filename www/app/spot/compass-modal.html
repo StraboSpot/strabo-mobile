@@ -9,10 +9,10 @@
     <div class='padding'>
       <span ng-show='!vmChild.result.x && !vmChild.result.y && !vmChild.result.z && !vmChild.result.magneticHeading &&
        !vmChild.error.both && !vmChild.error.compass && !vmChild.error.acceleration'>Working, please wait ...</span>
-      <span ng-show='vmChild.result.x'>X = {{ vmChild.result.x }}<br></span>
+      <!--<span ng-show='vmChild.result.x'>X = {{ vmChild.result.x }}<br></span>
       <span ng-show='vmChild.result.y'>Y = {{ vmChild.result.y }}<br></span>
       <span ng-show='vmChild.result.z'>Z = {{ vmChild.result.z }}<br></span>
-      <span ng-show='vmChild.result.magneticHeading'>Magnetic Heading = {{ vmChild.result.magneticHeading }}<br></span>
+      <span ng-show='vmChild.result.magneticHeading'>Magnetic Heading = {{ vmChild.result.magneticHeading }}<br></span>-->
       <span ng-show='vmChild.error.both'>{{ vmChild.error.both }}<br></span>
       <span ng-show='vmChild.error.compass'>Compass Error = {{ vmChild.error.compass }}<br></span>
       <span ng-show='vmChild.error.acceleration'>Acceleration Error = {{ vmChild.error.acceleration }}<br></span>
@@ -48,7 +48,8 @@
       </div>
     </div>
     <div class='padding' ng-show='!vmChild.error.both && !vmChild.error.compass && !vmChild.error.acceleration'>
-      Tap anywhere in this window to pause or resume calculations</div>
+      Tap anywhere in this window to pause or resume calculations
+    </div>
     <ion-footer-bar>
       <div class="button-bar">
         <a class="button button-assertive" ng-click='vmChild.closeCompass()'>Cancel</a>
