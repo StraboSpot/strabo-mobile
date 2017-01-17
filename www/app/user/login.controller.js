@@ -5,10 +5,12 @@
     .module('app')
     .controller('LoginController', LoginController);
 
-  LoginController.$inject = ['$ionicLoading', '$ionicPopup', '$location', '$log', '$scope', '$state', 'HelpersFactory', 'ProjectFactory', 'SpotFactory',
+  LoginController.$inject = ['$ionicLoading', '$ionicPopup', '$location', '$log', '$scope', '$state', 'ImageFactory',
+    'HelpersFactory', 'OtherMapsFactory', 'ProjectFactory', 'SpotFactory',
     'UserFactory'];
 
-  function LoginController($ionicLoading, $ionicPopup, $location, $log, $scope, $state, HelpersFactory, ProjectFactory, SpotFactory, UserFactory) {
+  function LoginController($ionicLoading, $ionicPopup, $location, $log, $scope, $state, ImageFactory, HelpersFactory,
+                           OtherMapsFactory, ProjectFactory, SpotFactory, UserFactory) {
     var vm = this;
 
     vm.login = null;
@@ -42,6 +44,8 @@
         UserFactory.clearUser();
         ProjectFactory.destroyProject();
         SpotFactory.clearAllSpots();
+        ImageFactory.deleteAllImages();
+        OtherMapsFactory.destroyOtherMaps();
         $log.log('Credentials set, check for validity.');
         GETcredentials = atob(GETcredentials);
         $log.log('Credentials decoded: ',GETcredentials);

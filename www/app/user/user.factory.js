@@ -5,10 +5,9 @@
     .module('app')
     .factory('UserFactory', UserFactory);
 
-  UserFactory.$inject = ['$ionicPopup', '$log', '$q', 'LocalStorageFactory', 'OtherMapsFactory',
-    'RemoteServerFactory'];
+  UserFactory.$inject = ['$ionicPopup', '$log', '$q', 'LocalStorageFactory', 'RemoteServerFactory'];
 
-  function UserFactory($ionicPopup, $log, $q, LocalStorageFactory, OtherMapsFactory, RemoteServerFactory) {
+  function UserFactory($ionicPopup, $log, $q, LocalStorageFactory, RemoteServerFactory) {
     var user;
 
     return {
@@ -40,8 +39,8 @@
      * Public Functions
      */
     function clearUser() {
-    user = undefined;
-    return LocalStorageFactory.getDb().configDb.removeItem('user');
+      user = undefined;
+      return LocalStorageFactory.getDb().configDb.removeItem('user');
     }
 
     // Authenticate user login
@@ -55,7 +54,7 @@
             'encoded_login': Base64.encode(login.email + ':' + login.password)
           };
           $log.log('Logged in successfully as', login.email, 'Server Response:', response);
-          updateUser().then(function() {
+          updateUser().then(function () {
             deferred.resolve();
           });
         }
@@ -122,18 +121,18 @@
           if (profileImageResponse.data) {
             readDataUrl(profileImageResponse.data, function (base64Image) {
               user.image = base64Image;
-              saveUser(user).then(function (){
+              saveUser(user).then(function () {
                 deferred.resolve();
               });
             });
           }
           else {
-            saveUser(user).then(function (){
+            saveUser(user).then(function () {
               deferred.resolve();
             });
           }
         }, function () {
-          saveUser(user).then(function (){
+          saveUser(user).then(function () {
             deferred.resolve();
           });
         });

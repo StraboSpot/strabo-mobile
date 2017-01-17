@@ -6,9 +6,10 @@
     .controller('UserController', UserController);
 
   UserController.$inject = ['$cordovaCamera', '$document', '$ionicLoading', '$ionicPopup', '$log', '$scope', '$window',
-    'UserFactory'];
+    'ImageFactory', 'ProjectFactory', 'OtherMapsFactory', 'SpotFactory', 'UserFactory'];
 
-  function UserController($cordovaCamera, $document, $ionicLoading, $ionicPopup, $log, $scope, $window, UserFactory) {
+  function UserController($cordovaCamera, $document, $ionicLoading, $ionicPopup, $log, $scope, $window, ImageFactory,
+                          ProjectFactory, OtherMapsFactory, SpotFactory, UserFactory) {
     var vm = this;
     var dataOrig;
 
@@ -231,7 +232,7 @@
       }
     }
 
-    // Destory the user data on when the logout button pressed
+    // Destroy the user data on when the logout button pressed
     function doLogout() {
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Log Out Warning!',
@@ -242,7 +243,13 @@
           vm.login = null;
           vm.data = null;
           dataOrig = null;
-          UserFactory.clearUser();
+          UserFactory.clearUser().then(function () {
+            $log.log('Cleared user data from local storage. Clearing project now.');
+            ProjectFactory.destroyProject();
+            SpotFactory.clearAllSpots();
+            ImageFactory.deleteAllImages();
+            OtherMapsFactory.destroyOtherMaps();
+          });
           $log.log('Logged out');
         }
       });
