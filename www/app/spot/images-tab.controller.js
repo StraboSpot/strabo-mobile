@@ -62,11 +62,11 @@
         getGeoInfo = false;
         imageData.lat = position.coords.latitude;
         imageData.lng = position.coords.longitude;
-        vmParent.spot.properties.images.push(imageData);
+        saveSpot(imageData);
       }, function (err) {
         getGeoInfo = false;
         $log.log('Error getting the current position. Ignoring geolocation.');
-        vmParent.spot.properties.images.push(imageData);
+        saveSpot(imageData);
       });
     }
 
@@ -270,8 +270,8 @@
             'id': HelpersFactory.getNewId()
           };
           ImageFactory.saveImage(imageData.id, image.src);
-
-
+          $log.log('Also save image to live db here');
+          LiveDBFactory.saveImageFile(imageData.id, image.src);
 
           imageSources[imageData.id] = image.src;
           if (getGeoInfo) addGeoInfo(imageData);
@@ -283,16 +283,9 @@
             });
             confirmPopup.then(function (res) {
               if (res) addGeoInfo(imageData);
-              else vmParent.spot.properties.images.push(imageData);
+              else saveSpot(imageData);
             });
           }
-          $log.log('Also save image to live db here');
-          LiveDBFactory.saveImageFile(imageData.id, image.src).then(function (id) {  //save image to db
-            $log.log('Also save spot to make sure database updates.', vmParent.spot);
-            var spot = JSON.parse(JSON.stringify(vmParent.spot));
-            spot.properties.images.push(imageData);
-            LiveDBFactory.save(spot, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
-          });
         };
         image.onerror = function () {
           $ionicPopup.alert({
@@ -302,6 +295,13 @@
         };
       };
       reader.readAsDataURL(file);
+    }
+
+    function saveSpot(imageData) {
+      vmParent.spot.properties.images.push(imageData);
+      vmParent.submit();
+      $log.log('Also save spot to live db', vmParent.spot);
+      LiveDBFactory.save(vmParent.spot, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
     }
 
     /**
