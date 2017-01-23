@@ -39,6 +39,7 @@
     vm.exportImage = exportImage;
     vm.getImageSrc = getImageSrc;
     vm.goToImageBasemap = goToImageBasemap;
+    vm.isWeb = isWeb;
     vm.moreDetail = moreDetail;
     vm.showImages = showImages;
     vm.toggleImageBasemap = toggleImageBasemap;
@@ -311,9 +312,13 @@
     function addImage() {
       // If this is a web browser and not using cordova
       if ($document[0].location.protocol !== 'file:') { // Phonegap is not present }
-        ionic.trigger('click', {'target': $document[0].getElementById('file')});
+        $log.log('Phonegap not present. Trigger click here.');
+        //ionic.trigger('click', {'target': $document[0].getElementById('file')});
+        angular.element(document.querySelectorAll('file')).trigger('click');
+      }else{
+        $log.log('Run Camera Modal');
+        cameraModal();
       }
-      else cameraModal();
     }
 
     function closeModal(modal) {
@@ -366,6 +371,10 @@
 
     function goToImageBasemap(image) {
       vmParent.submit('/app/image-basemaps/' + image.id);
+    }
+
+    function isWeb() {
+      return HelpersFactory.isWeb();
     }
 
     function moreDetail(image) {

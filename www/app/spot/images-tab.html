@@ -1,6 +1,11 @@
 <ion-view>
   <ion-content class='strabo-image'>
-    <button ng-click='vmChild.addImage()'
+    <button ng-click='vmChild.addImage()' ng-show='vm.isWeb()'
+            class='button button-clear button-positive'>
+      <i class='icon ion-camera'></i>
+      <span class='button-text-big'>Add Photo or Image</span>
+    </button>
+    <button ng-hide='vm.isWeb()' onclick="document.getElementById('file').click()"
             class='button button-clear button-positive'>
       <i class='icon ion-camera'></i>
       <span class='button-text-big'>Add Photo or Image</span>
