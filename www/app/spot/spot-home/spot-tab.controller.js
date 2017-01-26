@@ -14,9 +14,13 @@
     var vmParent = $scope.vm;
     vmParent.loadTab($state);  // Need to load current state into parent
 
+    vm.lat = undefined;
+    vm.lng = undefined;
     vm.mapped = false;
     vm.showLatLng = false;
     vm.showXY = false;
+    vm.x = undefined;
+    vm.y = undefined;
 
     vm.addGeologicUnitTag = addGeologicUnitTag;
     vm.getCurrentLocation = getCurrentLocation;
@@ -95,6 +99,7 @@
         };
         vm.showLatLng = true;
         vm.mapped = true;
+        if (position.coords.altitude) vmParent.spot.properties.altitude = position.coords.altitude;
       }, function (err) {
         $ionicPopup.alert({
           'title': 'Alert!',

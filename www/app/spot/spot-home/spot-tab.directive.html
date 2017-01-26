@@ -54,6 +54,11 @@
           <div ng-messages-include='app/form/error-messages.html'></div>
         </div>
       </div>
+
+      <ion-input class='item item-input item-stacked-label item-text-wrap'>
+        <ion-label>Altitude (m)</ion-label>
+        <input type='number' placeholder='Height of the position in meters above the ellipsoid of the earth.' ng-model='vm.spot.properties.altitude'>
+      </ion-input>
     </div>
 
     <!-- X and Y text boxes for Point features mapped on an image -->
