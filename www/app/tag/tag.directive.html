@@ -1,0 +1,34 @@
+<div class='divider-buttons-right'>
+  <div class='strabo-form'>
+    <ion-input class='item item-input item-stacked-label item-text-wrap'>
+      <ion-label>Name</ion-label>
+      <input type='text' placeholder='Name this Tag' ng-model='vm.data.name'>
+    </ion-input>
+    <label class="item item-input item-select">
+      <div class="input-label">
+        Type
+      </div>
+      <select ng-model='vm.data.type' ng-change='vm.typeSelected()'>
+        <option value='geologic_unit'>Geologic Unit</option>
+        <option value='concept'>Concept</option>
+        <option value='documentation'>Documentation</option>
+        <option value='other'>Other</option>
+      </select>
+    </label>
+    <div ng-show='vm.data.type === "geologic_unit"'>
+      <strabo-geologic-unit-tag-directive></strabo-geologic-unit-tag-directive>
+    </div>
+    <div ng-show='vm.data.type === "concept"'>
+      <strabo-concept-tag-directive></strabo-concept-tag-directive>
+    </div>
+    <div ng-show='vm.data.type === "documentation"'>
+      <strabo-documentation-tag-directive></strabo-documentation-tag-directive>
+    </div>
+    <div ng-show='vm.data.type === "relationship"'>
+      <strabo-relationship-tag-directive></strabo-relationship-tag-directive>
+    </div>
+    <div ng-show='vm.data.type === "other"'>
+      <strabo-other-tag-directive></strabo-other-tag-directive>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,82 @@
+<div class='strabo-form'>
+  <ion-toggle class='toggle-small'
+              toggle-class='toggle-positive'
+              ng-hide='vmChild.hideContNesting'
+              ng-model='vmChild.isNesting'
+              ng-click='vmChild.toggleNesting()'>
+    <span class='toggle-left-label'>{{ vmChild.nestText }} </span>
+  </ion-toggle>
+  <div class='padding' ng-hide='vmChild.parentSpots.length > 0 || vmChild.childrenSpots.length > 0'>
+    This Spot is not nested yet.
+  </div>
+  <div class='padding' ng-show='vmChild.parentSpots.length > 0 || vmChild.childrenSpots.length > 0'>
+
+    <div ng-repeat='parentSpot in vmChild.parentSpots'>
+        <span ng-click='vmChild.goToSpot(parentSpot.properties.id)'>
+          <img ng-if="parentSpot.geometry.type === 'Point' && !parentSpot.properties.image_basemap"
+               class='geometry-icon' src='img/point.png'>
+          <img ng-if="parentSpot.geometry.type === 'LineString' && !parentSpot.properties.image_basemap"
+               class='geometry-icon' src='img/line.png'>
+          <img ng-if="parentSpot.geometry.type === 'Polygon' && !parentSpot.properties.image_basemap"
+               class='geometry-icon' src='img/polygon.png'>
+          <img ng-if="parentSpot.geometry.type === 'Point' && parentSpot.properties.image_basemap"
+               class='geometry-icon' src='img/point-image-basemap.png'>
+          <img ng-if="parentSpot.geometry.type === 'LineString' && parentSpot.properties.image_basemap"
+               class='geometry-icon' src='img/line-image-basemap.png'>
+          <img ng-if="parentSpot.geometry.type === 'Polygon' && parentSpot.properties.image_basemap"
+               class='geometry-icon' src='img/polygon-image-basemap.png'>
+          <img ng-if="parentSpot.geometry.type !== 'Point' && parentSpot.geometry.type !== 'LineString' &&
+         parentSpot.geometry.type !== 'Polygon'" class='geometry-icon' src='img/question.png'>
+          <b>{{ parentSpot.properties.name }}</b>
+        </span>
+    </div>
+
+    <span ng-show='vmChild.parentSpots.length > 0'>
+        <br>
+       <i class='ion-arrow-down-c padding-left'></i>
+        <br><br>
+      </span>
+
+    <img ng-if="vmChild.spot.geometry.type === 'Point' && !vmChild.spot.properties.image_basemap"
+         class='geometry-icon' src='img/point.png'>
+    <img ng-if="vmChild.spot.geometry.type === 'LineString' && !vmChild.spot.properties.image_basemap"
+         class='geometry-icon' src='img/line.png'>
+    <img ng-if="vmChild.spot.geometry.type === 'Polygon' && !vmChild.spot.properties.image_basemap"
+         class='geometry-icon' src='img/polygon.png'>
+    <img ng-if="vmChild.spot.geometry.type === 'Point' && vmChild.spot.properties.image_basemap"
+         class='geometry-icon' src='img/point-image-basemap.png'>
+    <img ng-if="vmChild.spot.geometry.type === 'LineString' && vmChild.spot.properties.image_basemap"
+         class='geometry-icon' src='img/line-image-basemap.png'>
+    <img ng-if="vmChild.spot.geometry.type === 'Polygon' && vmChild.spot.properties.image_basemap"
+         class='geometry-icon' src='img/polygon-image-basemap.png'>
+    <img ng-if="vmChild.spot.geometry.type !== 'Point' && vmChild.spot.geometry.type !== 'LineString' &&
+         vmChild.spot.geometry.type !== 'Polygon'" class='geometry-icon' src='img/question.png'>
+    This Spot ({{ vmChild.spot.properties.name }})
+
+    <span ng-show='vmChild.childrenSpots.length > 0'>
+        <br><br>
+       <i class='ion-arrow-down-c padding-left'></i>
+        <br><br>
+      </span>
+
+    <div ng-repeat='childSpot in vmChild.childrenSpots'>
+        <span ng-click='vmChild.goToSpot(childSpot.properties.id)'>
+          <img ng-if="childSpot.geometry.type === 'Point' && !childSpot.properties.image_basemap"
+               class='geometry-icon' src='img/point.png'>
+          <img ng-if="childSpot.geometry.type === 'LineString' && !childSpot.properties.image_basemap"
+               class='geometry-icon' src='img/line.png'>
+          <img ng-if="childSpot.geometry.type === 'Polygon' && !childSpot.properties.image_basemap"
+               class='geometry-icon' src='img/polygon.png'>
+          <img ng-if="childSpot.geometry.type === 'Point' && childSpot.properties.image_basemap"
+               class='geometry-icon' src='img/point-image-basemap.png'>
+          <img ng-if="childSpot.geometry.type === 'LineString' && childSpot.properties.image_basemap"
+               class='geometry-icon' src='img/line-image-basemap.png'>
+          <img ng-if="childSpot.geometry.type === 'Polygon' && childSpot.properties.image_basemap"
+               class='geometry-icon' src='img/polygon-image-basemap.png'>
+          <img ng-if="childSpot.geometry.type !== 'Point' && childSpot.geometry.type !== 'LineString' &&
+         childSpot.geometry.type !== 'Polygon'" class='geometry-icon' src='img/question.png'>
+         <b>{{ childSpot.properties.name }}</b>
+        </span>
+    </div>
+  </div>
+</div>

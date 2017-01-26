@@ -3,58 +3,6 @@
     <button menu-toggle='left' class='button button-icon icon ion-navicon'></button>
   </ion-nav-buttons>
   <ion-content class='has-header'>
-    <div class='padding'>
-      Strabo Spot Mobile is a part of a larger Data System for Structural Geology and Tectonics (SG&T).
-      It consists of a database, a web site and a mobile app.
-      The entire Strabo Spot project is still in development and as such the mobile app is not yet in the Google Play
-      Store or the iOS App Store but can be tested by accessing it as described below.
-      <br><br>
-      Current Version 0.17.12
-      <br><br>
-      <!--<div ng-hide='vm.isWeb'>
-        <button ng-click='vm.checkForUpdates()'
-                class='button button-clear button-positive padding-left'>
-          <i class='icon ion-refresh'></i>
-          <span class='button-text-big'>Check for Updates</span>
-        </button>
-        <div ng-show='vm.msg'>{{ vm.msg }} </div>
-        <div ng-show='vm.hasUpdate'><br></div>
-        <button ng-show='vm.hasUpdate' ng-click='vm.doUpdate()'
-                class='button button-clear button-positive padding-left'>
-          <i class='icon ion-arrow-down-a'></i>
-          <span class='button-text-big'>Download Update</span>
-        </button>
-        <div class='padding-left' ng-show='vm.hasUpdate'>*After update downloads, app will restart. Please wait. Updating does not working correctly on iOS yet.*</div>
-        <br>
-      </div>-->
-      <h5>Accessing the Main Site</h5>
-      <hr>
-      <a href='#' onclick='window.open("http://strabospot.org/", "_system", "location=yes"); return false;'>http://strabospot.org/</a>
-      <br><br>
-      <h5>Downloading the Mobile App</h5>
-      <hr>
-      <a href='#'
-         onclick='window.open("http://strabospot.org/download", "_system", "location=yes"); return false;'>http://strabospot.org/download</a>
-      <br><br>
-      **Note for iOS users:**<br>
-      The link above will not work for iOS devices unless your device has been previously registered as a valid
-      testing device for this particular project.
-      The app can be installed on iOS devices through the use of the Ionic View app. Search the App Store for <b>Ionic
-      View</b>. Preview a Shared App and use the id <b>fbd0e989</b>.
-      Some functionality is limited when using the app through Ionic View however, such as the camera/photos.
-      <br><br>
-      A web version of the app can be accessed at <a href='#'
-                                                     onclick='window.open("https://app.strabospot.org/", "_system", "location=yes"); return false;'>https://app.strabospot.org/</a>.
-      Again, as above, functionality is limited when using the app this way.
-      <br><br>
-      <h5>Bugs, Feature Requests and Other Issues</h5>
-      <hr>
-      - The preferred method of reporting is to post an issue at <a href='#'
-                                                                    onclick='window.open("https://github.com/StraboSpot/strabo-mobile/issues", "_system", "location=yes"); return false;'>https://github.com/StraboSpot/strabo-mobile/issues</a>.
-      Please post one issue per bug/issue/feature request and include the version number.
-      <br>
-      - Alternatively, you can send an email to <a href='mailto:strabospot@gmail.com?Subject=StraboSpotMobile'
-                                                   target='_top'>strabospot@gmail.com</a>.
-    </div>
+    <strabo-about-directive></strabo-about-directive>
   </ion-content>
 </ion-view>

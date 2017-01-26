@@ -1,0 +1,12 @@
+<ion-view title='Relationship'>
+  <ion-nav-buttons side='left'>
+    <button ng-hide='vm.currentSpot' ng-click='vm.go("/app/relationships");'
+            class='button button-icon icon ion-arrow-left-c'></button>
+    <button ng-show='vm.currentSpot'
+            ng-click='vm.go("/app/spotTab/" + vm.currentSpot.properties.id + "/inferences");'
+            class='button button-icon icon ion-arrow-left-c'></button>
+  </ion-nav-buttons>
+  <ion-content class='has-header'>
+    <strabo-relationship-directive></strabo-relationship-directive>
+  </ion-content>
+</ion-view>

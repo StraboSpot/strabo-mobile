@@ -5,9 +5,10 @@
     .module('app')
     .factory('ProjectFactory', ProjectFactory);
 
-  ProjectFactory.$inject = ['$log', '$q', 'HelpersFactory', 'LocalStorageFactory', 'OtherMapsFactory', 'RemoteServerFactory', 'UserFactory'];
+  ProjectFactory.$inject = ['$log', '$q', 'LocalStorageFactory', 'OtherMapsFactory', 'RemoteServerFactory',
+    'UserFactory', 'IS_WEB'];
 
-  function ProjectFactory($log, $q, HelpersFactory, LocalStorageFactory, OtherMapsFactory, RemoteServerFactory, UserFactory) {
+  function ProjectFactory($log, $q, LocalStorageFactory, OtherMapsFactory, RemoteServerFactory, UserFactory, IS_WEB) {
     var currentDatasets = [];
     var currentProject = {};
     var activeDatasets = [];
@@ -533,7 +534,7 @@
         if (_.contains(spotsInDataset, spotId)) {
           spotIds[datasetId] = _.without(spotsInDataset, spotId);
           if (_.isEmpty(spotIds[datasetId])) spotIds[datasetId] = undefined;
-          if(HelpersFactory.isWeb() && UserFactory.getUser()){ //are we on the desktop?
+          if(IS_WEB && UserFactory.getUser()){ //are we on the desktop?
             $log.log('Remove Spot from LiveDB here', spotId, UserFactory.getUser().encoded_login);
             RemoteServerFactory.deleteSpot(spotId, UserFactory.getUser().encoded_login);
           }

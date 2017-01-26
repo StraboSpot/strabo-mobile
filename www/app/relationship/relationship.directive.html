@@ -1,0 +1,136 @@
+<div class='divider-buttons-right'>
+  <div class='strabo-form'>
+    <ion-input class='item item-input item-stacked-label item-text-wrap'>
+      <ion-label>Relationship Name</ion-label>
+      <input type='text' placeholder='Name this Relationship' ng-model='vm.data.name'>
+    </ion-input>
+    <ion-input class='item item-input'>
+      <ion-label>Deformation Event</ion-label>
+      <input type='text' ng-model='vm.data.deformation_event'
+             placeholder='What deformational event(s) are these associated with?'>
+    </ion-input>
+    <label class="item item-input item-select">
+      <div class="input-label">
+        Relationship Confidence
+      </div>
+      <select ng-model='vm.data.confidence'>
+        <option value='completely'>Completely Confident</option>
+        <option value='very'>Very Confident</option>
+        <option value='fairly'>Fairly Confident</option>
+        <option value='little'>Only a Little Confident</option>
+        <option value='not'>Not At All Confident</option>
+      </select>
+    </label>
+  </div>
+  <div>
+    <button ng-click='vm.selectItem("a")'
+            class='button button-clear button-positive'>
+      <i class='icon ion-plus-circled'></i>
+      <span class='button-text-big'>Build the first side</span>
+    </button>
+    <button ng-click='vm.selectTypes()'
+            class='button button-clear button-positive'>
+      <i class='icon ion-plus-circled'></i>
+      <span class='button-text-big'>Select the relationship type(s)</span>
+    </button>
+    <button ng-click='vm.selectItem("b")'
+            class='button button-clear button-positive'>
+      <i class='icon ion-plus-circled'></i>
+      <span class='button-text-big'>Build the second side</span>
+    </button>
+  </div>
+  <br>
+
+  <div ng-show='!vm.data.a.spots && !vm.data.a.features && !vm.data.a.tags' class='padding-left'>
+    No Spots, Features or Tags selected for this side of the relationship yet.
+  </div>
+  <div class='field-group item item-divider' ng-show='vm.data.a.spots'>
+    {{ vm.data.a.spots.length || 0 }}
+    <span ng-if='vm.data.a.spots.length > 1 || !vm.data.a.spots.length'>Spots</span>
+    <span ng-if='vm.data.a.spots.length === 1'>Spot</span>
+  </div>
+  <ion-list>
+    <ion-item class='item-text-wrap item-button-right'
+              ng-repeat='spotId in vm.data.a.spots'
+              ng-click='vm.goToSpot(spotId)'>
+      {{ vm.getSpotName(spotId) }}
+    </ion-item>
+  </ion-list>
+  <div class='field-group item item-divider' ng-show='vm.data.a.features'>
+    {{ vm.getNumTaggedFeatures(vm.data.a) }}
+    <span ng-if='vm.getNumTaggedFeatures(vm.data.a) > 1 || vm.getNumTaggedFeatures(vm.data.a) === 0'>Features</span>
+    <span ng-if='vm.getNumTaggedFeatures(vm.data.a) === 1'>Feature</span>
+  </div>
+  <ion-list>
+    <div ng-repeat='(spotId, featureList) in vm.data.a.features'>
+      <ion-item class='item-text-wrap item-button-right'
+                ng-repeat='featureId in featureList'
+                ng-click='vm.goToSpot(vm.keyToId(spotId))'>
+        {{ vm.getFeatureName(vm.keyToId(spotId), featureId) }}
+        <small>(in Spot: {{ vm.getSpotName(vm.keyToId(spotId)) }})</small>
+      </ion-item>
+    </div>
+  </ion-list>
+  <div class='field-group item item-divider' ng-show='vm.data.a.tags'>
+    {{ vm.data.a.tags.length || 0 }}
+    <span ng-if='vm.data.a.tags.length > 1 || !vm.data.a.tags.length'>Tags</span>
+    <span ng-if='vm.data.a.tags.length === 1'>Tags</span>
+  </div>
+  <ion-list>
+    <ion-item class='item-text-wrap item-button-right'
+              ng-repeat='id in vm.data.a.tags'
+              ng-click='vm.goToTag(id)'>
+      {{ vm.getTagName(id) }}
+    </ion-item>
+  </ion-list>
+
+  <br>
+  <div class='relationship-types'>
+    <span ng-hide='vm.data.types'>No relationship type(s) selected</span>
+    <span ng-show='vm.data.types'>{{ vm.data.types.join(' and ') }}</span>
+  </div>
+  <br>
+
+  <div ng-show='!vm.data.b.spots && !vm.data.b.features && !vm.data.b.tags' class='padding-left'>
+    No Spots, Features or Tags selected for this side of the relationship yet.
+  </div>
+  <div class='field-group item item-divider' ng-show='vm.data.b.spots'>
+    {{ vm.data.b.spots.length || 0 }}
+    <span ng-if='vm.data.b.spots.length > 1 || !vm.data.b.spots.length'>Spots</span>
+    <span ng-if='vm.data.b.spots.length === 1'>Spot</span>
+  </div>
+  <ion-list>
+    <ion-item class='item-text-wrap item-button-right'
+              ng-repeat='spotId in vm.data.b.spots'
+              ng-click='vm.goToSpot(spotId)'>
+      {{ vm.getSpotName(spotId) }}
+    </ion-item>
+  </ion-list>
+  <div class='field-group item item-divider' ng-show='vm.data.b.features'>
+    {{ vm.getNumTaggedFeatures(vm.data.b) }}
+    <span ng-if='vm.getNumTaggedFeatures(vm.data.b) > 1 || vm.getNumTaggedFeatures(vm.data.b) === 0'>Features</span>
+    <span ng-if='vm.getNumTaggedFeatures(vm.data.b) === 1'>Feature</span>
+  </div>
+  <ion-list>
+    <div ng-repeat='(spotId, featureList) in vm.data.b.features'>
+      <ion-item class='item-text-wrap item-button-right'
+                ng-repeat='featureId in featureList'
+                ng-click='vm.goToSpot(vm.keyToId(spotId))'>
+        {{ vm.getFeatureName(vm.keyToId(spotId), featureId) }}
+        <small>(in Spot: {{ vm.getSpotName(vm.keyToId(spotId)) }})</small>
+      </ion-item>
+    </div>
+  </ion-list>
+  <div class='field-group item item-divider' ng-show='vm.data.b.tags'>
+    {{ vm.data.b.tags.length || 0 }}
+    <span ng-if='vm.data.b.tags.length > 1 || !vm.data.b.tags.length'>Tags</span>
+    <span ng-if='vm.data.b.tags.length === 1'>Tag</span>
+  </div>
+  <ion-list>
+    <ion-item class='item-text-wrap item-button-right'
+              ng-repeat='id in vm.data.b.tags'
+              ng-click='vm.goToTag(id)'>
+      {{ vm.getTagName(id) }}
+    </ion-item>
+  </ion-list>
+</div>

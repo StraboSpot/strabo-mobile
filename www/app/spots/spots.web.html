@@ -1,0 +1,24 @@
+<div class="col-xs-3" id="left">
+  <div class="strabo-subheader">
+    <div class="subheader-left">
+      <div class="text-left strabo-subheader-text">
+        {{ vm.spots.length }}
+        <span ng-show='vm.spots.length === 1'> Spot</span>
+        <span ng-show='vm.spots.length === 0 || vm.spots.length > 1'> Spots</span>
+      </div>
+    </div>
+    <div class="subheader-right">
+      <button class='button button-icon ion-funnel button-positive' ng-click='vm.filter()'></button>
+      <button class='button button-icon ion-plus' ng-click='vm.newSpot()'></button>
+      <button ng-click='vm.popover.show($event)' class='button button-icon icon ion-more rotate-90'></button>
+    </div>
+  </div>
+  <strabo-spots-directive></strabo-spots-directive>
+</div>
+
+<div class="col-xs-9" id="right">
+  <div ng-hide="vm.spotIdSelected" class="padding">No Spot Selected</div>
+  <div ng-show="vm.spotIdSelected">
+    <div ui-view="spot-data"></div>
+  </div>
+</div>

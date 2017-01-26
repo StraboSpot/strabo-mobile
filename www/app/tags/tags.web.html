@@ -1,0 +1,19 @@
+<div class="col-xs-3" id="left">
+  <div class="strabo-subheader">
+    <div class="subheader-left">
+      <div class="text-left strabo-subheader-text">Tags</div>
+    </div>
+    <div class="subheader-right">
+      <button class='button button-icon ion-plus' ng-click='vm.newTag()'></button>
+      <button ng-click='vm.popover.show($event)' class='button button-icon icon ion-more rotate-90'></button>
+    </div>
+  </div>
+  <strabo-tags-directive></strabo-tags-directive>
+</div>
+
+<div class="col-xs-9" id="right">
+  <div ng-hide="vm.tagIdSelected" class="padding">No Tag Selected</div>
+  <div ng-show="vm.tagIdSelected">
+    <div ui-view="tag-view"></div>
+  </div>
+</div>

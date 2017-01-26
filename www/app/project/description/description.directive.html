@@ -1,0 +1,29 @@
+<div class="strabo-form">
+  <ion-input class='item item-input item-stacked-label item-text-wrap'>
+    <ion-label>Project Name</ion-label>
+    <input type='text' placeholder='Name this Project' ng-model='vm.data.project_name'>
+  </ion-input>
+  <button ng-click='vm.showDescriptionModal()'
+          class='button button-clear button-small button-positive'>
+    <i class='icon ion-information-circled'></i>
+    <span class='button-text-small'>More</span>
+  </button>
+  <div class='item item-divider'>
+    Daily Setup
+  </div>
+  <button ng-click='vm.showDailySetupModal()' class='button button-clear button-small button-positive'>
+    <i class='icon ion-plus-circled'></i>
+    <span class='button-text-small'>Set up a new day</span>
+  </button>
+  <ion-list>
+    <ion-item class='item-text-wrap item-button-right'
+              ng-repeat='dailySetup in vm.data.daily_setup | orderBy: -date: true'
+              ng-click='vm.showDailySetupModal(dailySetup)'>
+      Log {{vm.data.daily_setup.length - $index}}: {{ dailySetup.date | date:'medium' }}
+      <button class='button button-clear button-assertive'
+              ng-click='vm.deleteDailySetup($index)'>
+        <i class='icon ion-minus-circled'></i>
+      </button>
+    </ion-item>
+  </ion-list>
+</div>

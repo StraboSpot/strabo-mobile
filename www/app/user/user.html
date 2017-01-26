@@ -7,49 +7,6 @@
       pulling-text="Pull to refresh..."
       on-refresh="vm.doRefresh()">
     </ion-refresher>
-    <div ng-show='vm.showOfflineWarning' class='text-center'>
-      <i class='icon button-large ion-alert-circled'></i>Unable to connect
-    </div>
-    <div class='padding' ng-show='vm.data.email'>
-      <small>You are currently logged in as: {{ vm.data.email }}</small>
-    </div>
-    <ion-input class='item item-input' ng-hide='vm.data.email'>
-      <input class='login-input' type='text' placeholder='Email' ng-model='vm.login.email'>
-    </ion-input>
-    <ion-input class='item item-input' ng-hide='vm.data.email'>
-      <input class='login-input' type='password' placeholder='Password' ng-model='vm.login.password'>
-    </ion-input>
-    <div class='padding'>
-      <button ng-click='vm.doLogin()' ng-hide='vm.data.email'
-              ng-disabled='!(vm.login.email && vm.login.password)'
-              class='button button-clear button-positive'>
-        <i class='icon ion-log-in'></i>
-        <span class='button-text-big'>Log In</span>
-      </button>
-      <button ng-click='vm.doLogout()' ng-show='vm.data.email'
-              class='button button-clear button-positive'>
-        <i class='icon ion-log-out'></i>
-        <span class='button-text-big'>Logout</span>
-      </button>
-    </div>
-    <div ng-show='vm.data.email' class='strabo-form'>
-      <div class='padding' ng-click='vm.addImage()'>
-        <div ng-hide='vm.data.image'>
-          <img src='img/ninja.png'>
-        </div>
-        <div ng-show='vm.data.image'>
-          <img class='profile-image' ng-src='{{vm.data.image}}'>
-        </div>
-      </div>
-      <input type='file' id='file' style='display: none;'/>
-      <ion-input class='item item-input item-stacked-label'>
-        <ion-label>Name</ion-label>
-        <input type='text' placeholder='John Doe' ng-model='vm.data.name'>
-      </ion-input>
-      <label class='item item-input item-stacked-label item-text-wrap'>
-        <span class='input-label'>Mapbox Access Token</span>
-        <input type='text' placeholder='Find the token under API access tokens in your Mapbox account.' ng-model='vm.data.mapboxToken'>
-      </label>
-    </div>
+    <strabo-user-directive></strabo-user-directive>
   </ion-content>
 </ion-view>

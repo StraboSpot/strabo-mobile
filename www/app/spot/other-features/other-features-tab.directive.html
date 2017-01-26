@@ -1,0 +1,27 @@
+<div class='strabo-form'>
+  <button ng-click='vmChild.addFeature()'
+          class='button button-clear button-positive'>
+    <i class='icon ion-plus-circled'></i>
+    <span class='button-text-big'>Add a Feature</span>
+  </button>
+  <ion-list>
+    <ion-item class='item-text-wrap item-button-right'
+              ng-repeat='feature in vm.spot.properties.other_features | orderBy: "label" track by feature.id'>
+      <div ng-click='vmChild.editFeature(feature)'>
+        <b>{{ feature.label }} </b>
+        <small>({{ feature.type }} feature)</small>
+        <span ng-show='vm.getTagNames(feature)' class='list-sub'>
+            <br>Tags: {{ vm.getTagNames(feature) }}
+          </span>
+      </div>
+      <div class='buttons'>
+        <button class='button button-clear button-dark' ng-click='vm.addTag(feature)'>
+          <i class='icon ion-pricetag'></i>
+        </button>
+        <button class='button button-clear button-assertive' ng-click='vmChild.deleteFeature(feature)'>
+          <i class='icon ion-minus-circled'></i>
+        </button>
+      </div>
+    </ion-item>
+  </ion-list>
+</div>

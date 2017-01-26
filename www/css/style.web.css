@@ -1,0 +1,97 @@
+html, body, .container-fluid, .strabo-page-content {
+  height: 100%;
+}
+
+.strabo-page-content {
+  overflow: auto;
+}
+
+#mapdiv {
+  height: 100%;
+  border-top: 0 solid #fff;
+  border-bottom: 50px solid #fff;
+}
+
+.map-menu {
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  background-color: white;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid lightgray;
+}
+
+.image-basemap-menu {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: white;
+  padding: 4px;
+  border-radius: 4px;
+  border: 1px solid lightgray;
+}
+
+.nesting-notification-web {
+  vertical-align: middle;
+}
+
+.center-block {
+  max-width: 800px;
+}
+
+.navbar {
+  margin-bottom: 0;
+}
+
+.strabo-subheader {
+  min-height: 45px;
+}
+
+.subheader-left {
+  text-align: left;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+}
+
+.subheader-right {
+  text-align: right;
+  right: 0;
+  position: absolute;
+}
+
+.strabo-subheader-text {
+  font-weight: bold;
+  font-size: 22px;
+  min-height: inherit;
+  padding-top: 5px;
+}
+
+.strabo-tabs-web .button-clear {  /* Overwrite Ionic css so we don't have to change the HTML for the Spot Tabs */
+  color: unset;
+  background-color: #F6F6F6;
+}
+
+.modal-backdrop {
+  background-color: transparent;
+}
+
+/*--------------------
+GoldenLayout Dashboard
+---------------------*/
+
+.section {
+  color: black;
+  font: 14px Arial, sans-serif;
+  padding: 10px;
+}
+
+strong {
+  font-weight: bold;
+  color: red;
+}
+
+template {
+  display: none;
+}

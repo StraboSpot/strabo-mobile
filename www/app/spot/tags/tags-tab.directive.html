@@ -1,0 +1,57 @@
+<div>
+  <div ng-show='vmChild.isTagging' class='padding-left padding-right active-tags'>
+    {{ vmChild.getActiveTags() }}
+  </div>
+  <ion-toggle class='toggle-small strabo-form'
+              toggle-class='toggle-positive'
+              ng-model='vmChild.isTagging'
+              ng-click='vmChild.toggleTagging()'>
+    <span class='toggle-left-label'>{{ vmChild.tagText }} </span>
+  </ion-toggle>
+  <div ng-hide='vm.spotLevelTags.length === 0 && vm.featureLevelTags.length === 0'>
+    <label class="item item-input item-select">
+      <div class="input-label">
+        <i class='button-icon ion-funnel'></i>Filter by Type
+      </div>
+      <select ng-model='vm.selectedType' ng-change='vm.filterTagType()'>
+        <option value='all'>All</option>
+        <option value='geologic_unit'>Geologic Unit</option>
+        <option value='concept'>Concept</option>
+        <option value='documentation'>Documentation</option>
+        <option value='other'>Other</option>
+      </select>
+    </label>
+  </div>
+  <div class='strabo-form'>
+    <div class='item item-divider' ng-show='vm.spotLevelTagsToDisplay.length > 0'>
+      Spot Level Tags
+    </div>
+    <button ng-click='vm.addTag();' class='button button-clear button-positive'>
+      <i class='icon ion-plus-circled'></i>
+      <span class='button-text-big'>Add/Remove a Spot Level Tag</span>
+    </button>
+    <div class='padding' ng-show='vm.spotLevelTagsToDisplay.length === 0 && vm.featureLevelTagsToDisplay.length === 0'>
+      <span ng-show='vm.selectedType === "all"'>No tags added to this Spot yet.</span>
+      <span ng-hide='vm.selectedType === "all"'>No tags with the type <b>{{ vm.getTagTypeLabel(vm.selectedType) }}</b> added to this Spot yet.</span>
+    </div>
+    <ion-list>
+      <ion-item class='item-text-wrap item-button-right'
+                ng-repeat='tag in vm.spotLevelTagsToDisplay | orderBy:"name" track by tag.id'
+                ng-click='vm.goToTag(tag.id)'>
+        <b>{{ tag.name }}</b>
+        <strabo-tags-list-properties-directive></strabo-tags-list-properties-directive>
+      </ion-item>
+    </ion-list>
+    <div class='item item-divider' ng-show='vm.featureLevelTagsToDisplay.length > 0'>
+      Feature Level Tags
+    </div>
+    <ion-list>
+      <ion-item class='item-text-wrap item-button-right'
+                ng-repeat='tag in vm.featureLevelTagsToDisplay | orderBy:"name" track by tag.id'
+                ng-click='vm.goToTag(tag.id)'>
+        <b>{{ tag.name }}</b>
+        <strabo-tags-list-properties-directive></strabo-tags-list-properties-directive>
+      </ion-item>
+    </ion-list>
+  </div>
+</div>

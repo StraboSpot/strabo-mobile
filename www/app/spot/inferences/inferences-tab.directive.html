@@ -1,0 +1,94 @@
+<div class="strabo-form">
+  <ion-toggle class='toggle-small'
+              toggle-class='toggle-positive'
+              ng-model='vm.spot.properties.inferences.rosetta_outcrop'>
+          <span class='toggle-left-label'>Rosetta (e.g., Particularly Significant) Outcrop?
+          </span>
+  </ion-toggle>
+  <ion-input class='item item-input'>
+    <ion-label>Description of Outcrop</ion-label>
+    <textarea placeholder='Write the description of the outcrop here ...' rows='4'
+              ng-model='vm.spot.properties.inferences.description_of_outcrop'></textarea>
+  </ion-input>
+  <div class='padding' ng-show="vmChild.relatedRosettaChoices.length === 0">
+    <ion-label>Related Rosetta Outcrop</ion-label>
+    <span class='padding-left'>No other Rosettas</span>
+  </div>
+  <div ng-show="vmChild.relatedRosettaChoices.length > 0">
+    <ion-input class='item item-input item-select item-text-wrap'>
+      <ion-label>Related Rosetta Outcrop</ion-label>
+      <select ng-model='vm.spot.properties.inferences.related_rosetta_outcrop'
+              ng-options='choice.properties.id as choice.properties.name for choice in vmChild.relatedRosettaChoices'>
+        <option value=''></option>
+      </select>
+    </ion-input>
+  </div>
+  <ion-input class='item item-input item-select item-text-wrap'>
+    <ion-label>Is outcrop in place?</ion-label>
+    <select ng-model='vm.spot.properties.inferences.outcrop_in_place'
+            ng-options='choice as choice for choice in vmChild.outcropInPlaceChoices'>
+      <option value=''></option>
+    </select>
+  </ion-input>
+
+  <div class='item item-divider'>
+    Relationships
+  </div>
+  <button ng-click='vmChild.goToRelationships();' class='button button-clear button-positive'>
+    <i class='icon ion-plus-circled'></i>
+    <span class='button-text-big'>Add/Edit a Relationship</span>
+  </button>
+  <div class='padding'
+       ng-show='vmChild.spotLevelRelationships.length === 0 && vmChild.featureLevelRelationships.length === 0'>
+    No relationships added to this Spot yet.
+  </div>
+
+  <div class='item item-divider' ng-show='vmChild.spotLevelRelationships.length > 0'>
+    Spot Level Relationships
+  </div>
+  <ion-list>
+    <ion-item class='item-text-wrap item-button-right'
+              ng-repeat='relationship in vmChild.spotLevelRelationships | orderBy:"name" track by relationship.id'
+              ng-click='vmChild.goToRelationship(relationship.id)'>
+      {{ relationship.name }}
+    </ion-item>
+  </ion-list>
+  <div class='item item-divider' ng-show='vmChild.featureLevelRelationships.length > 0'>
+    Feature Level Relationships
+  </div>
+  <ion-list>
+    <ion-item class='item-text-wrap item-button-right'
+              ng-repeat='relationship in vmChild.featureLevelRelationships | orderBy:"name" track by relationship.id'
+              ng-click='vmChild.goToRelationship(relationship.id)'>
+      {{ relationship.name }}
+    </ion-item>
+  </ion-list>
+
+
+  <div ng-show='vm.spot.properties.inferences.relationships'>
+    <ion-list>
+      <ion-item class='item-text-wrap item-button-right'
+                ng-click='vmChild.editRelationship($index)'
+                ng-repeat='relationship in vm.spot.properties.inferences.relationships'>
+        {{ vmChild.orientationData[relationship.observationA] || 'Unknown' }}
+        <b><span ng-hide='relationship.relationship_type === "other"'>{{ relationship.relationship_type }}</span>
+          <span ng-show='relationship.relationship_type === "other"'>{{ relationship.other_relationship }}</span></b>
+        {{ vmChild.orientationData[relationship.observationB] || 'Unknown' }}
+        <span ng-show='relationship.deformation_event'><br><small>Deformation Event: {{
+              relationship.deformation_event }}
+            </small></span>
+        <button class='button button-clear button-assertive' ng-click='vmChild.deleteRelationship($index)'>
+          <i class='icon ion-minus-circled'></i>
+        </button>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <div class='item item-divider'>
+    Notes
+  </div>
+  <ion-input class='item item-input'>
+        <textarea placeholder='Notes about these inferences ...' rows='12'
+                  ng-model='vm.spot.properties.inferences.notes'></textarea>
+  </ion-input>
+</div>

@@ -15,7 +15,6 @@
       'b64toBlob': b64toBlob,
       'getBackView': getBackView,
       'getNewId': getNewId,
-      'isWeb': isWeb,
       'mod': mod,
       'roundToDecimalPlaces': roundToDecimalPlaces,
       'saveFileToDevice': saveFileToDevice,
@@ -104,12 +103,6 @@
       }
       ids.push(newId);
       return newId;
-    }
-
-    // Are we running live through a web browser or not
-    function isWeb() {
-    return typeof cordova === 'undefined';
-    //return $document[0].location.protocol !== 'file:'; // Cordova is not present
     }
 
     // Round value to the number of decimal places in the variable places

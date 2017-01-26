@@ -1,0 +1,41 @@
+<div class='strabo-image'>
+  <div class='row' ng-repeat='image in vm.spot.properties.images'>
+    <div class='col image-col'>
+      <a><img ng-src='{{ vmChild.getImageSrc(image.id) }}' width='100' height='100' ng-click='vmChild.showImages($index)'/></a>
+    </div>
+    <div class='col'>
+      <ion-input class='item item-input'>
+        <input class='image-title' type='text' ng-model='image.title' placeholder='Image Name'>
+      </ion-input>
+      <ion-input class='item item-input'>
+        <input class='image-description' placeholder='Image description ...' ng-model='image.caption'>
+      </ion-input>
+      <ion-toggle class='toggle-small'
+                  toggle-class='toggle-positive'
+                  ng-model='image.annotated'
+                  ng-click='vmChild.toggleImageBasemap(image)'>
+          <span class='toggle-left-image-label'>Image as basemap?
+          </span>
+      </ion-toggle>
+
+      <button ng-click='vmChild.moreDetail(image)'
+              class='button button-clear button-small button-positive'>
+        <i class='icon ion-information-circled'></i>
+        <span class='button-text-small'>More</span>
+      </button>
+      <button ng-click='vmChild.goToImageBasemap(image)'
+              class='button button-small button-clear button-positive'
+              ng-show='image.annotated'>
+        <i class='icon ion-map'></i>
+        <span class='button-text-small'>Map</span>
+      </button>
+    </div>
+  </div>
+  <div class='item item-divider'>
+    Notes
+  </div>
+  <ion-input class='item item-input'>
+      <textarea class='padding-left' placeholder='Notes about all images above ...' rows='12'
+                ng-model='vm.spot.properties.images_notes'></textarea>
+  </ion-input>
+</div>

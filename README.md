@@ -1,7 +1,9 @@
-Strabo Mobile
+StraboSpot
 ==============
 
-Strabo Mobile is a cross-platform mobile application for Structural Geology and Tectonics (SG&T) data acquisition.
+StraboSpot is an application for Structural Geology and Tectonics (SG&T) data acquisition. There are two versions in this repository:
+- Mobile/Field/Standalone/Disconnected Version (cross-platform)
+- Web/Connected Version
 
 **Build Stack:**
 - Core Technology: [Cordova](http://cordova.apache.org/)
@@ -15,6 +17,11 @@ Strabo Mobile is a cross-platform mobile application for Structural Geology and 
 - Testing Framework: [Jasmine](http://jasmine.github.io/)
 - Test Runner: [Karma](karma-runner.github.io/)
 - Linting Utility: [ESLint](http://eslint.org/)
+
+**Additional Libraries for Web Version:**
+- [JQuery 3.1.1](https://jquery.com)
+- [Bootstrap 3.3.7](http://getbootstrap.com/)
+- [Golden Layout](https://www.golden-layout.com/)
 
 ## Development Setup
 
@@ -80,13 +87,13 @@ Generate Resources (icons and splash screens):
     jsts: 1.3.0
     underscore: 1.8.3
 
-## Running/Testing the App
-
 *Note: When updates to the app are made, edit the version number of the app in `www/app/about/about.html`, `www/app/user/login.html`, `config.xml`, and `package.json`.*
+
+## Running/Testing the Standalone App
 
 ### In a Desktop Web Browser:  
 
-    ionic serve
+    ionic serve browser
 
 ### As a Native App, Built App with Ionic
 - Packages were built in the step above with `ionic state restore`.
@@ -120,7 +127,17 @@ For a USB connected Android device first copy `config.xml` from `strabo-moble/ww
 
     ionic platform add android
     ionic run android
-    
+
+## Running/Testing the Web App
+
+Run `indexWeb.html` with a local server.
+
+For example with [local-web-server](https://www.npmjs.com/package/local-web-server):
+
+    npm i local-web-server
+    ws --spa indexWeb.html
+
+
 ## Library Updates
 
 **Ionic:**

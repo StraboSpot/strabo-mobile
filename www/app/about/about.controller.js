@@ -5,16 +5,16 @@
     .module('app')
     .controller('AboutController', AboutController);
 
-  AboutController.$inject = ['$ionicLoading', '$ionicPopup', '$log', '$scope'];
+  AboutController.$inject = ['$ionicLoading', '$ionicPopup', '$log', '$scope', 'IS_WEB'];
 
-  function AboutController($ionicLoading, $ionicPopup, $log, $scope) {
+  function AboutController($ionicLoading, $ionicPopup, $log, $scope, IS_WEB) {
     var vm = this;
     var deploy = new Ionic.Deploy();
 
     vm.checkForUpdates = checkForUpdates;
     vm.doUpdate = doUpdate;
     vm.hasUpdate = false;
-    vm.isWeb = typeof cordova === 'undefined';
+    vm.isWeb = IS_WEB;
     vm.msg = undefined;
 
     /**

@@ -6,5 +6,6 @@
       'ionic',
       'ngCordova',
       'ngMessages'
-    ]);
+    ])
+    .constant('IS_WEB', false);
 }());

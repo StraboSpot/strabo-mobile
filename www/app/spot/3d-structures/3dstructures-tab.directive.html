@@ -1,0 +1,41 @@
+<div>
+  <button ng-click='vmChild.add3dStructure("fabric")'
+          class='button button-clear button-positive'>
+    <i class='icon ion-plus-circled'></i>
+    <span class='button-text-big'>Add a Fabric</span>
+  </button>
+  <button ng-click='vmChild.add3dStructure("fold")'
+          class='button button-clear button-positive'>
+    <i class='icon ion-plus-circled'></i>
+    <span class='button-text-big'>Add a Fold</span>
+  </button>
+  <button ng-click='vmChild.add3dStructure("tensor")'
+          class='button button-clear button-positive'>
+    <i class='icon ion-plus-circled'></i>
+    <span class='button-text-big'>Add a Tensor</span>
+  </button>
+  <button ng-click='vmChild.add3dStructure("other")'
+          class='button button-clear button-positive'>
+    <i class='icon ion-plus-circled'></i>
+    <span class='button-text-big'>Add Other</span>
+  </button>
+  <ion-list>
+    <ion-item class='item-text-wrap item-button-right'
+              ng-repeat='_3dStructure in vm.spot.properties._3d_structures | orderBy: "label" track by _3dStructure.id'>
+      <div ng-click='vmChild.edit3dStructure(_3dStructure)'>
+        <b>{{ _3dStructure.label }}</b>
+        <span ng-show='vm.getTagNames(_3dStructure)' class='list-sub'>
+            <br>Tags: {{ vm.getTagNames(_3dStructure) }}
+          </span>
+      </div>
+      <div class='buttons'>
+        <button class='button button-clear button-dark' ng-click='vm.addTag(_3dStructure)'>
+          <i class='icon ion-pricetag'></i>
+        </button>
+        <button class='button button-clear button-assertive' ng-click='vmChild.delete3dStructure(_3dStructure)'>
+          <i class='icon ion-minus-circled'></i>
+        </button>
+      </div>
+    </ion-item>
+  </ion-list>
+</div>

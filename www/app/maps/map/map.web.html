@@ -1,0 +1,13 @@
+<div class="map" data-tap-disabled='true'>
+  <div id='mapdiv'></div>
+  <div class='saveEdits' ng-show='vm.showSaveEditsBtn' ng-click='vm.saveEdits()'>{{ vm.saveEditsText }}</div>
+  <div class='map-menu'>
+    <span ng-show='vm.isNesting' class='nesting-notification-web'>Nesting On</span>
+    <button ng-click='vm.toggleLocation()'
+            ng-class='{"button button-icon icon button-small ion-pinpoint": !vm.locationOn,
+            "button button-icon icon button-small ion-android-locate": vm.locationOn}'></button>
+    <button ng-click='vm.popover.show($event)'
+            class='button button-icon icon button-small ion-more rotate-90'></button>
+  </div>
+  <div id='zoomInfo'>Zoom: {{ vm.currentZoom }}</div>
+</div>

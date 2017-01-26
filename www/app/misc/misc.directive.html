@@ -1,0 +1,42 @@
+<div class="divider-buttons-right">
+  <div class='field-group item item-divider'>
+    Specify Database Endpoint
+    <i class='button button-icon ion-refresh' ng-click='vm.resetDbUrl()'></i>
+  </div>
+  <ion-input class='item item-input'>
+    <ion-label>URL:</ion-label>
+    <input type='text' ng-model='vm.dbUrl'>
+  </ion-input>
+
+  <div class='field-group item item-divider'>
+    Generate Random Spots
+  </div>
+  <div class='padding'>
+    Create a number of random points with random planar orientations ...
+  </div>
+  <ion-input class='item item-input'>
+    <ion-label>Number of Spots:</ion-label>
+    <input type='number' ng-model='vm.pointsToGenerate' value={{vm.pointsToGenerate}} placeholder='How many Spots?'>
+  </ion-input>
+  <button ng-click='vm.submit(vm.pointsToGenerate)'
+          class='button button-clear button-positive padding-left'>
+    <i class='icon ion-grid'></i>
+    <span class='button-text-big'>Start</span>
+  </button>
+
+  <div class='padding' ng-show='vm.msg'>
+    {{ vm.msg }}
+  </div>
+
+  <div class='field-group item item-divider'>
+    View Spot Data Model
+  </div>
+  <div class='padding'>
+    View all possible Spot fields and field definitions ...
+  </div>
+  <button ng-click='vm.getSpotDataModel()'
+          class='button button-clear button-positive padding-left'>
+    <i class='icon ion-document-text'></i>
+    <span class='button-text-big'>Open</span>
+  </button>
+</div>

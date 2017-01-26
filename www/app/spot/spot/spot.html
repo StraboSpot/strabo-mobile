@@ -1,0 +1,27 @@
+<!--
+Create tabs with an icon and label, using the tabs-positive style.
+Each tab's child <ion-nav-view> directive will have its own
+navigation history that also transitions its views in and out.
+-->
+
+<ion-nav-bar class='bar-dark'>
+  <!-- <ion-nav-back-button>
+  </ion-nav-back-button> -->
+  <ion-nav-title>{{ vm.spotTitle }}</ion-nav-title>
+  <ion-nav-buttons side='left'>
+    <button ng-click='vm.goBack()' class='button button-icon icon ion-arrow-left-c'></button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side='right'>
+    <button ng-click='vm.viewMap()' class='button button-icon icon ion-map'></button>
+    <button ng-click='vm.deleteSpot()' class='button button-icon icon ion-trash-b'></button>
+    <button ng-click='vm.popover.show($event)' class='button button-icon icon ion-more rotate-90'></button>
+  </ion-nav-buttons>
+</ion-nav-bar>
+
+<ion-header-bar class='bar-subheader bar-dark'>
+  <ion-scroll direction='x' class='wide-as-needed'>
+    <strabo-spot-tabs-directive></strabo-spot-tabs-directive>
+  </ion-scroll>
+</ion-header-bar>
+
+<ion-nav-view name='spottab-childview'></ion-nav-view>

@@ -1,0 +1,11 @@
+<ion-view title='Tag'>
+  <ion-nav-buttons side='left'>
+    <button ng-hide='vm.currentSpot' ng-click='vm.go("/app/tags");'
+            class='button button-icon icon ion-arrow-left-c'></button>
+    <button ng-show='vm.currentSpot' ng-click='vm.go("/app/spotTab/" + vm.currentSpot.properties.id + "/tags");'
+            class='button button-icon icon ion-arrow-left-c'></button>
+  </ion-nav-buttons>
+  <ion-content class='has-header'>
+    <strabo-tag-directive></strabo-tag-directive>
+  </ion-content>
+</ion-view>

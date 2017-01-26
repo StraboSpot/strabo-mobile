@@ -9,16 +9,19 @@
 
   function MenuController($ionicLoading, $log, $scope, $state, ProjectFactory, UserFactory) {
     var vm = this;
+
+    vm.projectName = '';
+    vm.userImage = null;
+    vm.userName = null;
+
     vm.editUser = editUser;
     vm.getProjectName = getProjectName;
     vm.getUserImage = getUserImage;
     vm.getUserName = getUserName;
-    vm.switchProject = switchProject;
+    vm.isActive = isActive;
     vm.projectDetail = projectDetail;
-    vm.projectName = '';
     vm.showLoadingSpinner = showLoadingSpinner;
-    vm.userImage = null;
-    vm.userName = null;
+    vm.switchProject = switchProject;
 
     activate();
 
@@ -66,6 +69,10 @@
 
     function getUserName() {
       return UserFactory.getUserName();
+    }
+
+    function isActive(state) {
+      return state === $state.current.name || $state.current.name.startsWith(state);
     }
 
     function projectDetail() {

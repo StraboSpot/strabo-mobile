@@ -1,0 +1,19 @@
+<div>
+  <div class='padding-left filter-on' ng-show='vm.filterOn'>
+    Results are being filtered.
+  </div>
+  <div class='padding' ng-show='vm.relationships.length === 0'>
+    No Relationships added yet. Add a relationship using the '+' button in the top right.
+  </div>
+  <ion-list>
+    <ion-item class='item-text-wrap item-button-right'
+              ng-repeat='relationship in vm.relationships | orderBy:"name" track by relationship.id'
+              ng-click='vm.goToRelationship(relationship.id)'>
+      {{relationship.name}}
+      <button class='button button-clear button-assertive'
+              ng-click='vm.deleteRelationship(relationship)'>
+        <i class='icon ion-minus-circled'></i>
+      </button>
+    </ion-item>
+  </ion-list>
+</div>

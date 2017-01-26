@@ -1,0 +1,26 @@
+<div>
+  <button ng-click='vmChild.addSample()'
+          class='button button-clear button-positive'>
+    <i class='icon ion-plus-circled'></i>
+    <span class='button-text-big'>Add a Sample</span>
+  </button>
+  <ion-list>
+    <ion-item class='item-text-wrap item-button-right'
+              ng-repeat='sample in vm.spot.properties.samples | orderBy: "label" track by sample.id'>
+      <div ng-click='vmChild.editSample(sample)'>
+        <b>{{ sample.label }}</b>
+        <span ng-show='vm.getTagNames(sample)' class='list-sub'>
+            <br>Tags: {{ vm.getTagNames(sample) }}
+          </span>
+      </div>
+      <div class='buttons'>
+        <button class='button button-clear button-dark' ng-click='vm.addTag(sample)'>
+          <i class='icon ion-pricetag'></i>
+        </button>
+        <button class='button button-clear button-assertive' ng-click='vmChild.deleteSample(sample)'>
+          <i class='icon ion-minus-circled'></i>
+        </button>
+      </div>
+    </ion-item>
+  </ion-list>
+</div>

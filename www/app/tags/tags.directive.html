@@ -1,0 +1,24 @@
+<div>
+  <div ng-show='vm.isTagging' class='padding-left padding-right active-tags'>
+    {{ vm.getActiveTags() }}
+  </div>
+  <ion-toggle class='toggle-small strabo-form'
+              toggle-class='toggle-positive'
+              ng-model='vm.isTagging'
+              ng-click='vm.toggleTagging()'>
+    <span class='toggle-left-label'>{{ vm.tagText }} </span>
+  </ion-toggle>
+  <strabo-tags-filter-directive></strabo-tags-filter-directive>
+  <ion-list>
+    <ion-item class='item-text-wrap item-button-right'
+              ng-repeat='tag in vm.allTagsToDisplay | orderBy:"name" track by tag.id'
+              ng-click='vm.goToTag(tag.id)'>
+      <b>{{tag.name}}</b>
+      <strabo-tags-list-properties-directive></strabo-tags-list-properties-directive>
+      <button class='button button-clear button-assertive'
+              ng-click='vm.deleteTag(tag)'>
+        <i class='icon ion-minus-circled'></i>
+      </button>
+    </ion-item>
+  </ion-list>
+</div>

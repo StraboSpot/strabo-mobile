@@ -14,7 +14,7 @@
       .state('login', {
         'cache': false,
         'url': '/login',
-        'templateUrl': 'app/user/login.html',
+        'templateUrl': 'app/login/login.html',
         'controller': 'LoginController as vm',
         'resolve': {
           'prepLogin': prepLogin
@@ -34,7 +34,7 @@
         'url': '/description',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/project/description.html',
+            'templateUrl': 'app/project/description/description.html',
             'controller': 'DescriptionController as vm'
           }
         }
@@ -44,7 +44,7 @@
         'url': '/manage-project',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/project/manage-project.html',
+            'templateUrl': 'app/project/manage/manage-project.html',
             'controller': 'ManageProjectController as vm'
           }
         }
@@ -54,7 +54,7 @@
         'url': '/relationships',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/tag-relationship/relationships.html',
+            'templateUrl': 'app/relationships/relationships.html',
             'controller': 'RelationshipsController as vm'
           }
         }
@@ -64,7 +64,7 @@
         'url': '/relationships/:relationship_id',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/tag-relationship/relationship.html',
+            'templateUrl': 'app/relationship/relationship.html',
             'controller': 'RelationshipController as vm'
           }
         }
@@ -74,7 +74,7 @@
         'url': '/tags',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/tag-relationship/tags.html',
+            'templateUrl': 'app/tags/tags.html',
             'controller': 'TagsController as vm'
           }
         }
@@ -84,7 +84,7 @@
         'url': '/tags/:tag_id',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/tag-relationship/tag.html',
+            'templateUrl': 'app/tag/tag.html',
             'controller': 'TagController as vm'
           }
         }
@@ -94,7 +94,7 @@
         'url': '/tools',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/project/tools.html',
+            'templateUrl': 'app/project/tools/tools.html',
             'controller': 'ToolsController as vm'
           }
         }
@@ -114,7 +114,7 @@
         'url': '/map',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/map/map.html',
+            'templateUrl': 'app/maps/map/map.html',
             'controller': 'MapController as vm'
           }
         }
@@ -124,7 +124,7 @@
         'url': '/offlinemap',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/map/offline-map.html',
+            'templateUrl': 'app/maps/offline-maps/offline-map.html',
             'controller': 'OfflineMapController as vm'
           }
         }
@@ -134,7 +134,7 @@
         'url': '/other-maps',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/map/other-maps.html',
+            'templateUrl': 'app/maps/other-maps/other-maps.html',
             'controller': 'OtherMapsController as vm'
           }
         }
@@ -144,7 +144,7 @@
         'url': '/preferences',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/project/preferences.html',
+            'templateUrl': 'app/project/preferences/preferences.html',
             'controller': 'PreferencesController as vm'
           }
         }
@@ -154,7 +154,7 @@
         'url': '/image-basemaps',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/map/image-basemaps.html',
+            'templateUrl': 'app/maps/image-basemaps/image-basemaps.html',
             'controller': 'ImageBasemapsController as vm'
           }
         }
@@ -164,7 +164,7 @@
         'url': '/image-basemaps/:imagebasemapId',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/map/image-basemap.html',
+            'templateUrl': 'app/maps/image-basemap/image-basemap.html',
             'controller': 'ImageBasemapController as vm'
           }
         }
@@ -174,7 +174,7 @@
         'url': '/spots',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/spot/spots.html',
+            'templateUrl': 'app/spots/spots.html',
             'controller': 'SpotsController as vm'
           }
         }
@@ -185,18 +185,18 @@
         'abstract': true,
         'views': {
           'menuContent': {
-            'templateUrl': 'app/spot/spot.html',
+            'templateUrl': 'app/spot/spot/spot.html',
             'controller': 'SpotController as vm'
           }
         }
       })
-      .state('app.spotTab.orientation-data', {
+      .state('app.spotTab.orientations', {
         'cache': false,
-        'url': '/:spotId/orientation-data',
+        'url': '/:spotId/orientations',
         'views': {
           'spottab-childview': {
-            'templateUrl': 'app/spot/orientation-data-tab.html',
-            'controller': 'OrientationDataTabController as vmChild'
+            'templateUrl': 'app/spot/orientations/orientations-tab.html',
+            'controller': 'OrientationsTabController as vmChild'
           }
         }
       })
@@ -205,7 +205,7 @@
         'url': '/:spotId/images',
         'views': {
           'spottab-childview': {
-            'templateUrl': 'app/spot/images-tab.html',
+            'templateUrl': 'app/spot/images/images-tab.html',
             'controller': 'ImagesTabController as vmChild'
           }
         }
@@ -215,18 +215,18 @@
         'url': '/:spotId/inferences',
         'views': {
           'spottab-childview': {
-            'templateUrl': 'app/spot/inferences-tab.html',
+            'templateUrl': 'app/spot/inferences/inferences-tab.html',
             'controller': 'InferencesTabController as vmChild'
           }
         }
       })
-      .state('app.spotTab.nest', {
+      .state('app.spotTab.nesting', {
         'cache': false,
-        'url': '/:spotId/nest',
+        'url': '/:spotId/nesting',
         'views': {
           'spottab-childview': {
-            'templateUrl': 'app/spot/nest-tab.html',
-            'controller': 'NestTabController as vmChild'
+            'templateUrl': 'app/spot/nesting/nesting-tab.html',
+            'controller': 'NestingTabController as vmChild'
           }
         }
       })
@@ -235,7 +235,7 @@
         'url': '/:spotId/other-features',
         'views': {
           'spottab-childview': {
-            'templateUrl': 'app/spot/other-features-tab.html',
+            'templateUrl': 'app/spot/other-features/other-features-tab.html',
             'controller': 'OtherFeaturesTabController as vmChild'
           }
         }
@@ -245,7 +245,7 @@
         'url': '/:spotId/spot',
         'views': {
           'spottab-childview': {
-            'templateUrl': 'app/spot/spot-tab.html',
+            'templateUrl': 'app/spot/spot-home/spot-tab.html',
             'controller': 'SpotTabController as vmChild'
           }
         }
@@ -255,7 +255,7 @@
         'url': '/:spotId/samples',
         'views': {
           'spottab-childview': {
-            'templateUrl': 'app/spot/samples-tab.html',
+            'templateUrl': 'app/spot/samples/samples-tab.html',
             'controller': 'SamplesTabController as vmChild'
           }
         }
@@ -265,7 +265,7 @@
         'url': '/:spotId/_3dstructures',
         'views': {
           'spottab-childview': {
-            'templateUrl': 'app/spot/3dstructures-tab.html',
+            'templateUrl': 'app/spot/3d-structures/3dstructures-tab.html',
             'controller': '_3DStructuresTabController as vmChild'
           }
         }
@@ -275,7 +275,7 @@
         'url': '/:spotId/tags',
         'views': {
           'spottab-childview': {
-            'templateUrl': 'app/spot/tags-tab.html',
+            'templateUrl': 'app/spot/tags/tags-tab.html',
             'controller': 'TagsTabController as vmChild'
           }
         }
@@ -284,18 +284,18 @@
         'url': '/map/archiveTiles',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/map/archive-tiles.html',
+            'templateUrl': 'app/maps/offline-maps/archive-tiles.html',
             'controller': 'ArchiveTilesController as vm'
           }
         }
       })
-      .state('app.debug', {
+      .state('app.misc', {
         'cache': false,
-        'url': '/debug',
+        'url': '/misc',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/debug/debug.html',
-            'controller': 'DebugController as vm'
+            'templateUrl': 'app/misc/misc.html',
+            'controller': 'MiscController as vm'
           }
         }
       })

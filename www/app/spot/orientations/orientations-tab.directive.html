@@ -1,0 +1,74 @@
+<div>
+  <button ng-click='vmChild.addOrientation("planar_orientation");' class='button button-clear button-positive'>
+    <i class='icon ion-plus-circled'></i>
+    <span class='button-text-big'>Add a Plane</span>
+  </button>
+  <button ng-click='vmChild.addOrientation("linear_orientation");' class='button button-clear button-positive'>
+    <i class='icon ion-plus-circled'></i>
+    <span class='button-text-big'>Add a Line</span>
+  </button>
+  <button ng-click='vmChild.addOrientation("tabular_orientation");' class='button button-clear button-positive'>
+    <i class='icon ion-plus-circled'></i>
+    <span class='button-text-big'>Add a Tabular Zone</span>
+  </button>
+  <ion-list>
+    <ion-item class='item-text-wrap item-button-right'
+              ng-repeat='orientation in vm.spot.properties.orientation_data |
+                 orderBy: "label" track by orientation.id'>
+      <div ng-click='vmChild.editOrientation(orientation)'>
+        <b>{{ orientation.label }}</b>
+        <span ng-show='vm.getTagNames(orientation)' class='list-sub'>
+            <br>Tags: {{ vm.getTagNames(orientation) }}
+          </span>
+      </div>
+      <div class='buttons'>
+        <button class='button button-clear button-dark' ng-click='vm.addTag(orientation)'>
+          <i class='icon ion-pricetag'></i>
+        </button>
+        <button class='button button-clear button-dark' ng-click='vmChild.copyOrientation(orientation)'>
+          <i class='icon ion-ios-copy-outline'></i>
+        </button>
+        <button class='button button-clear button-assertive' ng-click='vmChild.deleteOrientation(orientation)'>
+          <i class='icon ion-minus-circled'></i>
+        </button>
+      </div>
+      <div ng-if='orientation.associated_orientation'>
+        <br>
+        <span>Associated Orientations:</span>
+        <hr>
+        <ion-item class='item-text-wrap item-borderless item-button-right'
+                  ng-repeat='associatedOrientation in orientation.associated_orientation |
+                     orderBy: "label" track by associatedOrientation.id'>
+          <div ng-click='vmChild.editAssociatedOrientation(orientation, associatedOrientation)'>
+            {{ associatedOrientation.label }}
+          </div>
+          <div class='buttons'>
+            <button class='button button-clear button-dark'
+                    ng-click='vmChild.copyAssociatedOrientation(orientation, associatedOrientation)'>
+              <i class='icon ion-ios-copy-outline'></i>
+            </button>
+            <button class='button button-clear button-assertive'
+                    ng-click='vmChild.deleteAssociatedOrientation(orientation, associatedOrientation)'>
+              <i class='icon ion-minus-circled'></i>
+            </button>
+          </div>
+        </ion-item>
+      </div>
+
+      <div ng-if='orientation.type === "linear_orientation"'>
+        <button ng-click='vmChild.addAssociatedOrientation(orientation, "planar_orientation");'
+                class='button button-small button-clear button-positive'>
+          <i class='icon ion-plus-circled'></i>
+          <span class='button-text-small'>Add an Associated Planar Feature</span>
+        </button>
+      </div>
+      <div ng-if='orientation.type === "planar_orientation" || orientation.type === "tabular_orientation" '>
+        <button ng-click='vmChild.addAssociatedOrientation(orientation, "linear_orientation");'
+                class='button button-small button-clear button-positive'>
+          <i class='icon ion-plus-circled'></i>
+          <span class='button-text-small'>Add an Associated Linear Feature</span>
+        </button>
+      </div>
+    </ion-item>
+  </ion-list>
+</div>
