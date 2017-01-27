@@ -233,6 +233,11 @@
     }
 
     function go(path) {
+      // Remove null or empty values but not 0
+      _.each(vm.data, function (val, i) {
+        if (val == null || val === '') delete vm.data[i];
+      });
+
       // If there is something filled out besides two of id, name or type
       if (Object.keys(vm.data).length > 2) {
         if (vm.data.type === 'geologic_unit' && vm.data.name && !vm.data.unit_label_abbreviation) {
