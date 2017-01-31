@@ -5,9 +5,9 @@
     .module('app')
     .factory('MapSetupFactory', MapSetupFactory);
 
-  MapSetupFactory.$inject = ['ImageFactory', 'MapDrawFactory', 'MapFactory', 'MapLayerFactory', 'MapViewFactory'];
+  MapSetupFactory.$inject = ['ImageFactory', 'MapDrawFactory', 'MapFactory', 'MapLayerFactory', 'MapViewFactory', 'IS_WEB'];
 
-  function MapSetupFactory(ImageFactory, MapDrawFactory, MapFactory, MapLayerFactory, MapViewFactory) {
+  function MapSetupFactory(ImageFactory, MapDrawFactory, MapFactory, MapLayerFactory, MapViewFactory, IS_WEB) {
     var map;
     var imageBasemap;
     var initialMapView;
@@ -55,7 +55,11 @@
     function setImageBasemapLayers(im) {
       imageBasemap = im;
       return ImageFactory.getImageById(imageBasemap.id).then(function (src) {
-        if (!src) src = 'img/image-not-found.png';
+        if(IS_WEB){
+          src = 'https://strabospot.org/pi/' + imageBasemap.id;
+        }else if(!src) {
+          src = 'img/image-not-found.png';
+        }
         var extent = [0, 0, imageBasemap.width, imageBasemap.height];
         var imageBasemapLayer = new ol.layer.Image({
           'source': new ol.source.ImageStatic({
