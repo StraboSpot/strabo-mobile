@@ -97,7 +97,7 @@
 
       $ionicLoading.hide();
       $log.log('Done Loading Map');
-      vm.popover.hide();
+      setTimeout( function() { map.updateSize();}, 200); // use OpenLayers API to force map to update
     }
 
     function createMapInteractions() {
@@ -188,7 +188,6 @@
         'scope': $scope
       }).then(function (popover) {
         vm.popover = popover;
-        vm.popover.show(); // ToDo: Fix. This is a hack to get the map to not appear stretched on load
       });
     }
 
