@@ -6,14 +6,15 @@
     .controller('ImageBasemapController', ImageBasemapController);
 
   ImageBasemapController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup',
-    '$ionicSideMenuDelegate', '$location', '$log', '$q', '$scope', '$state', 'DataModelsFactory', 'FormFactory',
-    'HelpersFactory', 'ImageFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory',
-    'ProjectFactory', 'SpotFactory', 'IS_WEB'];
+    '$ionicSideMenuDelegate', '$location', '$log', '$q', '$scope', '$state', '$timeout', 'DataModelsFactory',
+    'FormFactory', 'HelpersFactory', 'ImageFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapSetupFactory',
+    'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
 
   function ImageBasemapController($ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup,
-                                  $ionicSideMenuDelegate, $location, $log, $q, $scope, $state, DataModelsFactory,
-                                  FormFactory, HelpersFactory, ImageFactory, MapDrawFactory, MapFeaturesFactory,
-                                  MapSetupFactory, MapViewFactory, ProjectFactory, SpotFactory, IS_WEB) {
+                                  $ionicSideMenuDelegate, $location, $log, $q, $scope, $state, $timeout,
+                                  DataModelsFactory, FormFactory, HelpersFactory, ImageFactory, MapDrawFactory,
+                                  MapFeaturesFactory, MapSetupFactory, MapViewFactory, ProjectFactory, SpotFactory,
+                                  IS_WEB) {
     var vm = this;
 
     var currentSpot = SpotFactory.getCurrentSpot();
@@ -60,9 +61,8 @@
       if (!currentSpot && !IS_WEB) HelpersFactory.setBackView($ionicHistory.currentView().url);
 
       createModals();
-      createPopover().then(function () {
-        createMap();
-      });
+      createPopover();
+      createMap();
     }
 
     function createMap() {
@@ -86,7 +86,9 @@
 
           $ionicLoading.hide();
           $log.log('Done Loading Image Basemap');
-          vm.popover.hide();
+          $timeout(function () {
+            map.updateSize();         // use OpenLayers API to force map to update
+          });
         });
       });
     }
@@ -164,11 +166,10 @@
     }
 
     function createPopover() {
-      return $ionicPopover.fromTemplateUrl('app/maps/image-basemap/image-basemap-popover.html', {
+      $ionicPopover.fromTemplateUrl('app/maps/image-basemap/image-basemap-popover.html', {
         'scope': $scope
       }).then(function (popover) {
         vm.popover = popover;
-        vm.popover.show();  // ToDo: Fix. This is a hack to get the image to appear on first load
       });
     }
 

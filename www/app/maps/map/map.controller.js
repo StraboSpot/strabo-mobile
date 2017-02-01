@@ -6,14 +6,14 @@
     .controller('MapController', MapController);
 
   MapController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup',
-    '$ionicSideMenuDelegate', '$location', '$log', '$scope', 'DataModelsFactory', 'FormFactory', 'HelpersFactory',
-    'MapFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory', 'MapSetupFactory', 'MapViewFactory',
-    'ProjectFactory', 'SpotFactory', 'IS_WEB'];
+    '$ionicSideMenuDelegate', '$location', '$log', '$rootScope', '$scope', '$timeout', 'DataModelsFactory',
+    'FormFactory', 'HelpersFactory', 'MapFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory',
+    'MapSetupFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
 
   function MapController($ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup, $ionicSideMenuDelegate,
-                         $location, $log, $scope, DataModelsFactory, FormFactory, HelpersFactory, MapFactory,
-                         MapDrawFactory, MapFeaturesFactory, MapLayerFactory, MapSetupFactory, MapViewFactory,
-                         ProjectFactory, SpotFactory, IS_WEB) {
+                         $location, $log, $rootScope, $scope, $timeout, DataModelsFactory, FormFactory, HelpersFactory,
+                         MapFactory, MapDrawFactory, MapFeaturesFactory, MapLayerFactory, MapSetupFactory,
+                         MapViewFactory, ProjectFactory, SpotFactory, IS_WEB) {
     var vm = this;
 
     var onlineState;
@@ -64,9 +64,8 @@
       if (!vm.currentSpot && !IS_WEB) HelpersFactory.setBackView($ionicHistory.currentView().url);
 
       createModals();
-      createPopover().then(function () {
-        createMap();
-      });
+      createPopover();
+      createMap();
     }
 
     function createMap() {
@@ -97,7 +96,9 @@
 
       $ionicLoading.hide();
       $log.log('Done Loading Map');
-      setTimeout( function() { map.updateSize();}, 200); // use OpenLayers API to force map to update
+      $timeout(function () {
+        map.updateSize();         // use OpenLayers API to force map to update
+      });
     }
 
     function createMapInteractions() {
@@ -184,7 +185,7 @@
     }
 
     function createPopover() {
-      return $ionicPopover.fromTemplateUrl('app/maps/map/map-popover.html', {
+      $ionicPopover.fromTemplateUrl('app/maps/map/map-popover.html', {
         'scope': $scope
       }).then(function (popover) {
         vm.popover = popover;
