@@ -44,6 +44,13 @@ html, body, .container-fluid, .strabo-page-content {
   margin-bottom: 0;
 }
 
+.spot-scroll {
+  height: 700px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+
 .strabo-subheader {
   min-height: 45px;
 }
