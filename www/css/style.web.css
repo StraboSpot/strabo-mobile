@@ -1,9 +1,16 @@
-html, body, .container-fluid, .strabo-page-content, .strabo-column {
+html, body, .container-fluid, .strabo-page-content {
   height: 100%;
 }
 
-.strabo-page-content, .strabo-column {
+.strabo-page-content {
   overflow: auto;
+}
+
+.strabo-column {
+  height: 100%;
+  overflow: auto;
+  border-bottom: 50px solid #fff;
+  overflow-x: hidden;
 }
 
 #mapdiv {
