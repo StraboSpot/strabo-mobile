@@ -1,8 +1,8 @@
-html, body, .container-fluid, .strabo-page-content {
+html, body, .container-fluid, .strabo-page-content, .strabo-column {
   height: 100%;
 }
 
-.strabo-page-content {
+.strabo-page-content, .strabo-column {
   overflow: auto;
 }
 
@@ -43,13 +43,6 @@ html, body, .container-fluid, .strabo-page-content {
 .navbar {
   margin-bottom: 0;
 }
-
-.spot-scroll {
-  height: 700px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
 
 .strabo-subheader {
   min-height: 45px;
