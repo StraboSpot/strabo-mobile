@@ -115,7 +115,11 @@
       vm.spots = _.sortBy(vm.spots, function (spot) {
         return spot.properties.modified_timestamp;
       }).reverse();
-      vm.spotsDisplayed = vm.spots.slice(0, 25);
+      if(!IS_WEB){
+        vm.spotsDisplayed = vm.spots.slice(0, 25);
+      }else{
+        vm.spotsDisplayed = vm.spots;
+      }
     }
 
     /**
