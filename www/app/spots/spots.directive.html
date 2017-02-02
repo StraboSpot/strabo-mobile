@@ -46,7 +46,7 @@
       </button>
     </ion-item>
     <ion-infinite-scroll
-      ng-if='vm.moreSpotsCanBeLoaded()'
+      ng-if='!vm.isWeb() && vm.moreSpotsCanBeLoaded()'
       icon='ion-loading-c'
       on-infinite='vm.loadMoreSpots()'>
     </ion-infinite-scroll>

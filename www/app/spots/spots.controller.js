@@ -36,6 +36,7 @@
     vm.hasTags = hasTags;
     vm.isDatasetChecked = isDatasetChecked;
     vm.isOnlineLoggedIn = isOnlineLoggedIn;
+    vm.isWeb = isWeb;
     vm.loadMoreSpots = loadMoreSpots;
     vm.moreSpotsCanBeLoaded = moreSpotsCanBeLoaded;
     vm.newSpot = newSpot;
@@ -389,6 +390,10 @@
     // Is the user online and logged in
     function isOnlineLoggedIn() {
       return navigator.onLine && UserFactory.getUser();
+    }
+
+    function isWeb() {
+      return IS_WEB;
     }
 
     function loadMoreSpots() {
