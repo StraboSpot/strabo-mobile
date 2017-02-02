@@ -137,7 +137,7 @@
       if (vm.spot) {
         if (TagFactory.getActiveTagging()) TagFactory.addToActiveTags(vm.spot.properties.id);
         if (SpotFactory.getActiveNesting() && vm.spot.geometry) {
-          SpotFactory.addSpotToActiveNest(vm.spot).then(function(){
+          SpotFactory.addSpotToActiveNest(vm.spot).then(function () {
             vm.spots = SpotFactory.getActiveSpots();
           });
         }
@@ -198,7 +198,7 @@
         if (!_.isEmpty(vm.data)) vm.newNestProperties.surface_feature = {};
         _.extend(vm.newNestProperties.surface_feature, vm.data);
         SpotFactory.setNewNestProperties(vm.newNestProperties);
-        SpotFactory.addSpotToActiveNest(vm.spot).then(function() {
+        SpotFactory.addSpotToActiveNest(vm.spot).then(function () {
           vm.spots = SpotFactory.getActiveSpots();
           vm.nestTab.updateNest();
         });
@@ -223,7 +223,12 @@
           if (res) {
             SpotFactory.destroy(vm.spot.properties.id).then(function () {
               vm.spot = undefined;
-              goBack();
+              if (!IS_WEB) goBack();
+              else {
+                vmParent.updateSpots();
+                vmParent.spotIdSelected = undefined;
+                $location.path('app/spotTab');
+              }
             });
           }
         });
@@ -401,7 +406,7 @@
       if (vm.validateForm()) {
         $log.log('Spot to save: ', vm.spot);
         SpotFactory.save(vm.spot).then(function (spots) {
-          if (IS_WEB) vmParent.updateSpots();
+          if (IS_WEB && !$state.current.name === 'app.map') vmParent.updateSpots();
           $log.log('Saved spot: ', vm.spot);
           $log.log('All spots: ', spots);
           $location.path(toPath);
