@@ -84,6 +84,12 @@ html, body, .container-fluid, .strabo-page-content {
   background-color: transparent;
 }
 
+/* Map Side Panel*/
+.sidebar{
+  top: 50px;
+  z-index: 5;             /* Added so modals would be on top of the side panel */
+}
+
 /*--------------------
 GoldenLayout Dashboard
 ---------------------*/

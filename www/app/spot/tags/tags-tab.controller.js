@@ -10,7 +10,8 @@
   function TagsTabController($ionicModal, $log, $scope, $state, HelpersFactory, TagFactory) {
     var vm = this;
     var vmParent = $scope.vm;
-    vmParent.loadTab($state);  // Need to load current state into parent
+
+    var thisTabName = 'tags';
 
     vm.isTagging = TagFactory.getActiveTagging();
     vm.setActiveTagsModal = {};
@@ -31,6 +32,24 @@
 
     function activate() {
       $log.log('In TagsTabController');
+
+      // Loading tab from Spots list
+      if ($state.current.name === 'app.spotTab.' + thisTabName) loadTab($state);
+      // Loading tab in Map side panel
+      $scope.$on('load-tab', function (event, args) {
+        if (args.tabName === thisTabName) {
+          vmParent.saveSpot().then(function () {
+            loadTab({
+              'current': {'name': 'app.spotTab.' + thisTabName},
+              'params': {'spotId': args.spotId}
+            });
+          });
+        }
+      });
+    }
+
+    function loadTab(state) {
+      vmParent.loadTab(state);  // Need to load current state into parent
       loadActiveTagging();
 
       $ionicModal.fromTemplateUrl('app/spot/tags/set-active-tags-modal.html', {

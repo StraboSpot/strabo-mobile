@@ -18,6 +18,9 @@
     <!-- Bootstrap -->
     <script src="lib/bootstrap/js/bootstrap.min.js"></script>
     <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Side Menu -->
+    <script src="lib/boot-side-menu/BootSideMenu.js"></script>
+    <link rel="stylesheet" href="lib/boot-side-menu/BootSideMenu.css">
 
     <!-----------------------------------------------------------------
     SHARED LIBRARIES
@@ -165,11 +168,15 @@
     <script src="app/tags/tags.directive.js"></script>
     <script src="app/user/user.directive.js"></script>
 
-    <!-- golden layout test -->
+    <!-- golden layout test (web only) -->
     <script src="app/dashboard/dashboard.module.js"></script>
     <script src="app/dashboard/dashboard.controller.js"></script>
     <script src="app/dashboard/user.controller.js"></script>
     <script src="app/dashboard/user-details.controller.js"></script>
+
+    <!-- map side panel (web only) -->
+    <script src="app/maps/side-panel/side-panel.controller.js"></script>
+    <script src="app/maps/side-panel/side-panel.directive.js"></script>
 
   </head>
   <body ng-app="app">

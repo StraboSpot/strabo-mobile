@@ -1,0 +1,118 @@
+<div>
+  <div ng-show='vm.clickedFeatureId === undefined'>
+    No Spot Selected
+  </div>
+  <div ng-hide='vm.clickedFeatureId === undefined'>
+    <div ng-controller='MapSidePanelController as sidePanel'>
+      <div class='strabo-tabs-web' ng-controller='SpotController as vm'>
+        <div class="strabo-subheader">
+          <div class="subheader-left">
+            <button ng-click='vm.submit()' class='button button-icon icon ion-checkmark-circled'> Save</button>
+          </div>
+          <div class="subheader-right">
+            <button ng-click='vm.deleteSpot()' class='button button-icon icon ion-trash-b'></button>
+            <button ng-click='vm.popover.show($event)' class='button button-icon icon ion-more rotate-90'></button>
+          </div>
+          <div class="text-center strabo-subheader-text">{{ vm.spotTitle }}</div>
+        </div>
+
+        <a class='button button-clear spot-tab-inactive'
+           ng-class='{ "spot-tab-active": sidePanel.isActiveTab("spot") }'
+           ng-click='sidePanel.setActiveTab("spot")'>
+          Spot</a>
+        <span ng-show='vm.showTab("orientations")'>
+          <a class='button button-clear spot-tab-inactive'
+             ng-class='{ "spot-tab-active": sidePanel.isActiveTab("orientations") }'
+             ng-click='sidePanel.setActiveTab("orientations")'>
+            Orientations</a>
+        </span>
+        <span ng-show='vm.showTab("_3dstructures")'>
+          <a class='button button-clear spot-tab-inactive'
+             ng-class='{ "spot-tab-active": sidePanel.isActiveTab("3dstructures") }'
+             ng-click='sidePanel.setActiveTab("_3dstructures")'>
+            3D Structures</a>
+        </span>
+        <span ng-show='vm.showTab("images")'>
+          <a class='button button-clear spot-tab-inactive'
+             ng-class='{ "spot-tab-active": sidePanel.isActiveTab("images") }'
+             ng-click='sidePanel.setActiveTab("images")'>
+            Images</a>
+        </span>
+        <span ng-show='vm.showTab("nesting")'>
+          <a class='button button-clear spot-tab-inactive'
+             ng-class='{ "spot-tab-active": sidePanel.isActiveTab("nesting") }'
+             ng-click='sidePanel.setActiveTab("nesting")'>
+            Nesting</a>
+        </span>
+        <span ng-show='vm.showTab("samples")'>
+          <a class='button button-clear spot-tab-inactive'
+             ng-class='{ "spot-tab-active": sidePanel.isActiveTab("samples") }'
+             ng-click='sidePanel.setActiveTab("samples")'>
+            Samples</a>
+        </span>
+        <span ng-show='vm.showTab("other_features")'>
+          <a class='button button-clear spot-tab-inactive'
+             ng-class='{ "spot-tab-active": sidePanel.isActiveTab("other-features") }'
+             ng-click='sidePanel.setActiveTab("other-features")'>
+            Other Features</a>
+        </span>
+        <span ng-show='vm.showTab("inferences")'>
+          <a class='button button-clear spot-tab-inactive'
+             ng-class='{ "spot-tab-active": sidePanel.isActiveTab("inferences") }'
+             ng-click='sidePanel.setActiveTab("inferences")'>
+            Inferences</a>
+        </span>
+        <span ng-show='vm.showTab("tags")'>
+          <a class='button button-clear spot-tab-inactive'
+             ng-class='{ "spot-tab-active": sidePanel.isActiveTab("tags") }'
+             ng-click='sidePanel.setActiveTab("tags")'>
+            Tags
+          </a>
+        </span>
+        <span>
+          <a class='button button-clear spot-tab-inactive'
+             ng-click='vm.submit("/app/preferences");'>
+            More
+          </a>
+        </span>
+
+        <div ng-show='sidePanel.isActiveTab("spot")' ng-controller='SpotTabController as vmChild'
+             ng-init='sidePanel.onload("spot")'>
+          <form name='straboForm' novalidate='' class='strabo-form'>
+              <strabo-spot-tab-directive></strabo-spot-tab-directive>
+          </form>
+        </div>
+        <div ng-show='sidePanel.isActiveTab("orientations")' ng-controller='OrientationsTabController as vmChild'>
+          <strabo-orientations-tab-directive></strabo-orientations-tab-directive>
+        </div>
+        <div ng-show='sidePanel.isActiveTab("_3dstructures")' ng-controller='_3DStructuresTabController as vmChild'>
+          <strabo3-d-structures-tab-directive></strabo3-d-structures-tab-directive>
+        </div>
+        <div ng-show='sidePanel.isActiveTab("images")' ng-controller='ImagesTabController as vmChild'>
+          <button onclick="document.getElementById('file').click()"
+                  class='button button-clear button-positive'>
+            <i class='icon ion-camera'></i>
+            <span class='button-text-big'>Add Photo or Image</span>
+          </button>
+          <input type='file' id='file' style='display: none;'>
+          <strabo-images-tab-directive></strabo-images-tab-directive>
+        </div>
+        <div ng-show='sidePanel.isActiveTab("nesting")' ng-controller='NestingTabController as vmChild'>
+          <strabo-nesting-tab-directive></strabo-nesting-tab-directive>
+        </div>
+        <div ng-show='sidePanel.isActiveTab("samples")' ng-controller='SamplesTabController as vmChild'>
+          <strabo-samples-tab-directive></strabo-samples-tab-directive>
+        </div>
+        <div ng-show='sidePanel.isActiveTab("other-features")' ng-controller='OtherFeaturesTabController as vmChild'>
+          <strabo-other-features-tab-directive></strabo-other-features-tab-directive>
+        </div>
+        <div ng-show='sidePanel.isActiveTab("inferences")' ng-controller='InferencesTabController as vmChild'>
+          <strabo-inferences-tab-directive></strabo-inferences-tab-directive>
+        </div>
+        <div ng-show='sidePanel.isActiveTab("tags")' ng-controller='TagsTabController as vmChild'>
+          <strabo-tags-tab-directive></strabo-tags-tab-directive>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

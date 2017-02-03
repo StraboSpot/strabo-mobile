@@ -14,12 +14,10 @@
                                ProjectFactory, IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
-    vmParent.survey = DataModelsFactory.getDataModel('image').survey;
-    vmParent.choices = undefined;
-    vmParent.loadTab($state);  // Need to load current state into parent
 
     var getGeoInfo = false;
     var imageSources = {};
+    var thisTabName = 'images';
 
     vm.cameraSource = [{
       'text': 'Photo Library',
@@ -54,6 +52,25 @@
     function activate() {
       $log.log('In ImagesTabController');
 
+      // Loading tab from Spots list
+      if ($state.current.name === 'app.spotTab.' + thisTabName) loadTab($state);
+      // Loading tab in Map side panel
+      $scope.$on('load-tab', function (event, args) {
+        if (args.tabName === thisTabName) {
+          vmParent.saveSpot().then(function () {
+            loadTab({
+              'current': {'name': 'app.spotTab.' + thisTabName},
+              'params': {'spotId': args.spotId}
+            });
+          });
+        }
+      });
+    }
+
+    function loadTab(state) {
+      vmParent.loadTab(state);  // Need to load current state into parent
+      vmParent.survey = DataModelsFactory.getDataModel('image').survey;
+      vmParent.choices = undefined;
       createModals();
       getImageSources();
       ionic.on('change', getFile, $document[0].getElementById('file'));
@@ -124,13 +141,9 @@
       imageSources = [];
       _.each(vmParent.spot.properties.images, function (image) {
         var promise = ImageFactory.getImageById(image.id).then(function (src) {
-          if(IS_WEB){
-            imageSources[image.id] = "https://strabospot.org/pi/" + image.id;
-          }else if (src) {
-            imageSources[image.id] = src;
-          }else{
-            imageSources[image.id] = 'img/image-not-found.png';
-          }
+          if (IS_WEB) imageSources[image.id] = "https://strabospot.org/pi/" + image.id;
+          else if (src) imageSources[image.id] = src;
+          else imageSources[image.id] = 'img/image-not-found.png';
         });
         promises.push(promise);
       });

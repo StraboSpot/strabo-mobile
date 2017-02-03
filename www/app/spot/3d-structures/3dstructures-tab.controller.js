@@ -12,9 +12,9 @@
                                       HelpersFactory) {
     var vm = this;
     var vmParent = $scope.vm;
-    vmParent.loadTab($state);     // Need to load current state into parent
 
     var isDelete;
+    var thisTabName = '_3dstructures';
 
     vm.add3dStructure = add3dStructure;
     vm.basicFormModal = {};
@@ -30,6 +30,25 @@
      */
 
     function activate() {
+      $log.log('In _3DStructuresTabController');
+
+      // Loading tab from Spots list
+      if ($state.current.name === 'app.spotTab.' + thisTabName) loadTab($state);
+      // Loading tab in Map side panel
+      $scope.$on('load-tab', function (event, args) {
+        if (args.tabName === thisTabName) {
+          vmParent.saveSpot().then(function () {
+            loadTab({
+              'current': {'name': 'app.spotTab.' + thisTabName},
+              'params': {'spotId': args.spotId}
+            });
+          });
+        }
+      });
+    }
+
+    function loadTab(state) {
+      vmParent.loadTab(state);     // Need to load current state into parent
       $log.log('3D Structures:', vmParent.spot.properties._3d_structures);
       checkProperties();
       createModal();

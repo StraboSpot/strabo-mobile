@@ -12,7 +12,8 @@
                              SpotFactory, TagFactory) {
     var vm = this;
     var vmParent = $scope.vm;
-    vmParent.loadTab($state);  // Need to load current state into parent
+
+    var thisTabName = 'spot';
 
     vm.lat = undefined;
     vm.lng = undefined;
@@ -39,6 +40,24 @@
 
     function activate() {
       $log.log('In SpotTabController');
+
+      // Loading tab from Spots list
+      if ($state.current.name === 'app.spotTab.' + thisTabName) loadTab($state);
+      // Loading tab in Map side panel
+      $scope.$on('load-tab', function (event, args) {
+        if (args.tabName === thisTabName) {
+          vmParent.saveSpot().then(function () {
+            loadTab({
+              'current': {'name': 'app.spotTab.' + thisTabName},
+              'params': {'spotId': args.spotId}
+            });
+          });
+        }
+      });
+    }
+
+    function loadTab(state) {
+      vmParent.loadTab(state);  // Need to load current state into parent
 
       if (vmParent.showTrace === true) {
         vmParent.survey = DataModelsFactory.getDataModel('trace').survey;

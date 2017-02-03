@@ -6,23 +6,25 @@
     .controller('MapController', MapController);
 
   MapController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup',
-    '$ionicSideMenuDelegate', '$location', '$log', '$rootScope', '$scope', '$timeout', 'DataModelsFactory',
+    '$ionicSideMenuDelegate', '$location', '$log', '$rootScope', '$scope', '$state', '$timeout', 'DataModelsFactory',
     'FormFactory', 'HelpersFactory', 'MapFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory',
     'MapSetupFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
 
   function MapController($ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup, $ionicSideMenuDelegate,
-                         $location, $log, $rootScope, $scope, $timeout, DataModelsFactory, FormFactory, HelpersFactory,
+                         $location, $log, $rootScope, $scope, $state, $timeout, DataModelsFactory, FormFactory, HelpersFactory,
                          MapFactory, MapDrawFactory, MapFeaturesFactory, MapLayerFactory, MapSetupFactory,
                          MapViewFactory, ProjectFactory, SpotFactory, IS_WEB) {
     var vm = this;
 
-    var onlineState;
+    var datasetsLayerStates;
     var map;
+    var onlineState;
     var tagsToAdd = [];
 
     vm.allTags = [];
     vm.choices = {};
-    vm.currentSpot = SpotFactory.getCurrentSpot();
+    vm.clickedFeatureId = undefined;
+    vm.currentSpot = {};
     vm.currentZoom = '';
     vm.data = {};
     vm.isNesting = SpotFactory.getActiveNesting();
@@ -61,6 +63,8 @@
       // Disable dragging back to ionic side menu because this affects drawing tools
       $ionicSideMenuDelegate.canDragContent(false);
 
+      vm.currentSpot = SpotFactory.getCurrentSpot();
+      if (vm.currentSpot) vm.clickedFeatureId = vm.currentSpot.properties.id;
       if (!vm.currentSpot && !IS_WEB) HelpersFactory.setBackView($ionicHistory.currentView().url);
 
       createModals();
@@ -86,10 +90,10 @@
       else MapViewFactory.zoomToSpotsExtent(map);
 
       // Set the Map Vector Layers
-      var datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map);
+      datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map);
       MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map);
       MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
-      createSwitcher(switcher, datasetsLayerStates);
+      createSwitcher(switcher);
 
       createMapInteractions();
       createPageEvents();
@@ -119,7 +123,15 @@
 
         // Are we in draw mode?  If so we don't want to display any popovers during draw mode
         if (!MapDrawFactory.isDrawMode()) {
-          MapFeaturesFactory.showPopup(map, evt);
+          var feature = MapFeaturesFactory.getClickedFeature(map, evt);
+          var layer = MapFeaturesFactory.getClickedLayer(map, evt);
+          if (feature && layer && layer.get('name') !== 'geolocationLayer') {
+            vm.clickedFeatureId = feature.get('id');
+            if (IS_WEB) $rootScope.$broadcast('clicked-mapped-spot', {'spotId': vm.clickedFeatureId});
+            else MapFeaturesFactory.showMapPopup(feature, evt);
+          }
+          else vm.clickedFeatureId = undefined;
+          $scope.$apply();
         }
       });
     }
@@ -144,6 +156,16 @@
     }
 
     function createPageEvents() {
+      $rootScope.$on('updateFeatureLayer', function () {
+        MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
+      });
+
+      // Spot deleted from map side panel
+      $rootScope.$on('deletedSpot', function () {
+        vm.clickedFeatureId = undefined;
+        MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
+      });
+
       $scope.$on('$destroy', function () {
         MapViewFactory.setMapView(map);
         MapLayerFactory.setVisibleLayer(map);
@@ -193,7 +215,7 @@
     }
 
     // Layer switcher
-    function createSwitcher(switcher, datasetsLayerStates) {
+    function createSwitcher(switcher) {
       // Add a `change:visible` listener to all layers currently within the map
       ol.control.LayerSwitcher.forEachRecursive(map, function (l, idx, a) {
         l.on('change:visible', function (e) {

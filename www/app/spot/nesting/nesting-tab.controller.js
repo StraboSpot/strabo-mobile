@@ -5,22 +5,23 @@
     .module('app')
     .controller('NestingTabController', NestingTabController);
 
-  NestingTabController.$inject = ['$ionicModal', '$log', '$scope', '$state', 'DataModelsFactory',  'SpotFactory'];
+  NestingTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$rootScope', '$scope', '$state',
+    'DataModelsFactory', 'SpotFactory'];
 
-  function NestingTabController($ionicModal, $log, $scope, $state, DataModelsFactory, SpotFactory) {
+  function NestingTabController($ionicModal, $ionicPopup, $log, $rootScope, $scope, $state, DataModelsFactory,
+                                SpotFactory) {
     var vm = this;
     var vmParent = $scope.vm;
-    vmParent.loadTab($state);   // Need to load current state into parent
     vmParent.nestTab = vm;
-    vmParent.survey = DataModelsFactory.getDataModel('surface_feature').survey;
-    vmParent.choices = DataModelsFactory.getDataModel('surface_feature').choices;
+
+    var thisTabName = 'nesting';
 
     vm.childrenSpots = [];
     vm.isNesting = SpotFactory.getActiveNesting();
-    vm.hideContNesting = !vmParent.spot.geometry;
+    vm.hideContNesting = undefined;
     vm.nestText = '';
     vm.parentSpots = [];
-    vm.spot = vmParent.spot;
+    vm.spot = {};
 
     vm.goToSpot = goToSpot;
     vm.showField = showField;
@@ -35,6 +36,31 @@
 
     function activate() {
       $log.log('In NestingTabController');
+
+      // Loading tab from Spots list
+      if ($state.current.name === 'app.spotTab.' + thisTabName) loadTab($state);
+      // Loading tab in Map side panel
+      $scope.$on('load-tab', function (event, args) {
+        if (args.tabName === thisTabName) {
+          vmParent.saveSpot().then(function () {
+            loadTab({
+              'current': {'name': 'app.spotTab.' + thisTabName},
+              'params': {'spotId': args.spotId}
+            });
+          });
+        }
+      });
+    }
+
+    function loadTab(state) {
+      vmParent.loadTab(state);   // Need to load current state into parent
+
+      vmParent.survey = DataModelsFactory.getDataModel('surface_feature').survey;
+      vmParent.choices = DataModelsFactory.getDataModel('surface_feature').choices;
+
+      vm.hideContNesting = !vmParent.spot.geometry;
+      vm.isNesting = SpotFactory.getActiveNesting();
+      vm.spot = vmParent.spot;
 
       if (vm.isNesting && _.isEmpty(SpotFactory.getActiveNest())) {
         vm.isNesting = false;
@@ -186,6 +212,7 @@
     function updateNest() {
       vm.parentSpots = getParents(vmParent.spot);
       vm.childrenSpots = getChildren(vmParent.spot);
+      if ($state.current.name === 'app.map') $rootScope.$broadcast('updateFeatureLayer');
     }
   }
 }());

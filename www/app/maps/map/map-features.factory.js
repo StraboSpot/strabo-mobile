@@ -16,7 +16,10 @@
       'createDatasetsLayer': createDatasetsLayer,
       'createFeatureLayer': createFeatureLayer,
       'geojsonToVectorLayer': geojsonToVectorLayer,
+      'getClickedFeature': getClickedFeature,
+      'getClickedLayer': getClickedLayer,
       'getInitialDatasetLayerStates': getInitialDatasetLayerStates,
+      'showMapPopup': showMapPopup,
       'showPopup': showPopup
     };
 
@@ -101,7 +104,7 @@
 
       // Create features to map from the mappable spots.
       // For POINT Spots with orientation data, create a copy of the entire spot
-      // for each orienation measurement, add the orientation measurement to a new element called orientation and
+      // for each orientation measurement, add the orientation measurement to a new element called orientation and
       // then delete the orientation_data element
       var mappedFeatures = [];
       _.each(mappableSpots, function (spot) {
@@ -353,6 +356,26 @@
       });
     }
 
+    function getClickedFeature(map, evt) {
+      return map.forEachFeatureAtPixel(evt.pixel, function (feat, lyr) {
+        return feat;
+      }, this, function (lyr) {
+        // we only want the layer where the spots are located
+        return (lyr instanceof ol.layer.Vector) && lyr.get('name') !== 'drawLayer' && lyr.get(
+            'name') !== 'geolocationLayer';
+      });
+    }
+
+    function getClickedLayer(map, evt) {
+      return map.forEachFeatureAtPixel(evt.pixel, function (feat, lyr) {
+        return lyr;
+      }, this, function (lyr) {
+        // we only want the layer where the spots are located
+        return (lyr instanceof ol.layer.Vector) && lyr.get('name') !== 'drawLayer' && lyr.get(
+            'name') !== 'geolocationLayer';
+      });
+    }
+
     function getInitialDatasetLayerStates(map, imageBasemap) {
       // Set the default visible states for the datasets
       var datasets = ProjectFactory.getActiveDatasets();
@@ -369,6 +392,42 @@
       return states;
     }
 
+    function showMapPopup(feature, evt) {
+      var popup = MapSetupFactory.getPopupOverlay();
+      popup.hide();  // Clear any existing popovers
+
+      // popup content
+      var content = '';
+      content += '<a href="#/app/spotTab/' + feature.get('id') + '/spot"><b>' + feature.get('name') + '</b></a>';
+
+      var orientation = feature.get('orientation');
+
+      if (orientation) {
+        content += '<br>';
+        content += '<small>' + orientation.type + '</small>';
+
+        if (orientation.strike && orientation.dip) {
+          content += '<br>';
+          content += '<small>' + orientation.strike + '&deg; strike / ' + orientation.dip + '&deg; dip</small>';
+        }
+
+        if (orientation.trend && orientation.plunge) {
+          content += '<br>';
+          content += '<small>' + orientation.trend + '&deg; trend / ' + orientation.plunge + '&deg; plunge</small>';
+        }
+
+        if (orientation.feature_type) {
+          content += '<br>';
+          content += '<small>' + orientation.feature_type + '</small>';
+        }
+      }
+      content = content.replace(/_/g, ' ');
+
+      // setup the popup position
+      popup.show(evt.coordinate, content);
+    }
+
+    /* ToDo: Delete this when use showMapPopup with image basemap */
     function showPopup(map, evt) {
       var popup = MapSetupFactory.getPopupOverlay();
       popup.hide();  // Clear any existing popovers

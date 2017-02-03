@@ -6,13 +6,13 @@
     .controller('SpotController', SpotController);
 
   SpotController.$inject = ['$document', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup', '$location',
-    '$log', '$scope', '$state', 'FormFactory', 'HelpersFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory',
-    'TagFactory', 'IS_WEB'];
+    '$log', '$q', '$rootScope', '$scope', '$state', 'FormFactory', 'HelpersFactory', 'MapViewFactory', 'ProjectFactory',
+    'SpotFactory', 'TagFactory', 'IS_WEB'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
-  function SpotController($document, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup, $location, $log, $scope,
-                          $state, FormFactory, HelpersFactory, MapViewFactory, ProjectFactory, SpotFactory,
-                          TagFactory, IS_WEB) {
+  function SpotController($document, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup, $location, $log, $q,
+                          $rootScope, $scope, $state, FormFactory, HelpersFactory, MapViewFactory, ProjectFactory,
+                          SpotFactory, TagFactory, IS_WEB) {
     var vmParent = $scope.vm;
     var vm = this;
 
@@ -66,6 +66,7 @@
     vm.goToTag = goToTag;
     vm.isOptionChecked = isOptionChecked;
     vm.loadTab = loadTab;
+    vm.saveSpot = saveSpot;
     vm.setSelMultClass = setSelMultClass;
     vm.showField = showField;
     vm.showTab = showTab;
@@ -139,6 +140,7 @@
         if (SpotFactory.getActiveNesting() && vm.spot.geometry) {
           SpotFactory.addSpotToActiveNest(vm.spot).then(function () {
             vm.spots = SpotFactory.getActiveSpots();
+            vm.nestTab.updateNest();
           });
         }
 
@@ -225,9 +227,12 @@
               vm.spot = undefined;
               if (!IS_WEB) goBack();
               else {
-                vmParent.updateSpots();
-                vmParent.spotIdSelected = undefined;
-                $location.path('app/spotTab');
+                if ($state.current.name !== 'app.map') {   // Update Spots list
+                  vmParent.updateSpots();
+                  vmParent.spotIdSelected = undefined;
+                  $location.path('app/spotTab');
+                }
+                else $rootScope.$broadcast('deletedSpot');  // Clear Spot from map side panel
               }
             });
           }
@@ -397,22 +402,29 @@
       return preferences[tab];
     }
 
+    function saveSpot() {
+      if (vm.spot && vm.spot.properties) {
+        if (_.isEmpty(vm.spot.properties.trace)) delete vm.spot.properties.trace;
+        if (_.isEmpty(vm.spot.properties.surface_feature)) delete vm.spot.properties.surface_feature;
+
+        // Validate the form first
+        if (vm.validateForm()) {
+          $log.log('Spot to save: ', vm.spot);
+          return SpotFactory.save(vm.spot);
+        }
+        else $ionicLoading.hide();
+      }
+      return $q.when(null);
+    }
+
     // Save the Spot
     function submit(toPath) {
-      if (_.isEmpty(vm.spot.properties.trace)) delete vm.spot.properties.trace;
-      if (_.isEmpty(vm.spot.properties.surface_feature)) delete vm.spot.properties.surface_feature;
-
-      // Validate the form first
-      if (vm.validateForm()) {
-        $log.log('Spot to save: ', vm.spot);
-        SpotFactory.save(vm.spot).then(function (spots) {
-          if (IS_WEB && !$state.current.name === 'app.map') vmParent.updateSpots();
-          $log.log('Saved spot: ', vm.spot);
-          $log.log('All spots: ', spots);
-          $location.path(toPath);
-        });
-      }
-      else $ionicLoading.hide();
+      saveSpot().then(function (spots) {
+        $log.log('Saved spot: ', vm.spot);
+        $log.log('All spots: ', spots);
+        if (IS_WEB && $state.current.name !== 'app.map') vmParent.updateSpots();
+        $location.path(toPath);
+      })
     }
 
     function toggleAcknowledgeChecked(field) {

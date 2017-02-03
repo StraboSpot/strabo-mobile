@@ -18,9 +18,10 @@ StraboSpot is an application for Structural Geology and Tectonics (SG&T) data ac
 - Test Runner: [Karma](karma-runner.github.io/)
 - Linting Utility: [ESLint](http://eslint.org/)
 
-**Additional Libraries for Web Version:**
+**Additional Libraries/Plugins for Web Version:**
 - [JQuery 3.1.1](https://jquery.com)
 - [Bootstrap 3.3.7](http://getbootstrap.com/)
+- [Boot Side Menu jQuery Plugin](http://www.jqueryscript.net/menu/Sliding-Side-Menu-Panel-with-jQuery-Bootstrap-BootSideMenu.html)
 - [Golden Layout](https://www.golden-layout.com/)
 
 ## Development Setup

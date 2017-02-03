@@ -10,9 +10,8 @@
   function InferencesTabController($log, $scope, $state, ProjectFactory) {
     var vm = this;
     var vmParent = $scope.vm;
-    vmParent.survey = undefined;
-    vmParent.choices = undefined;
-    vmParent.loadTab($state);  // Need to load current state into parent
+
+    var thisTabName = 'inferences';
 
     vm.featureLevelRelationships = [];
     vm.outcropInPlaceChoices = ['5 - definitely in place', '4', '3',
@@ -31,6 +30,26 @@
 
     function activate() {
       $log.log('In InferencesTabController');
+
+      // Loading tab from Spots list
+      if ($state.current.name === 'app.spotTab.' + thisTabName) loadTab($state);
+      // Loading tab in Map side panel
+      $scope.$on('load-tab', function (event, args) {
+        if (args.tabName === thisTabName) {
+          vmParent.saveSpot().then(function () {
+            loadTab({
+              'current': {'name': 'app.spotTab.' + thisTabName},
+              'params': {'spotId': args.spotId}
+            });
+          });
+        }
+      });
+    }
+
+    function loadTab (state) {
+      vmParent.loadTab(state);  // Need to load current state into parent
+      vmParent.survey = undefined;
+      vmParent.choices = undefined;
 
       gatherRosettaChoices();
       loadRelationships();

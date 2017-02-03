@@ -1,4 +1,4 @@
-<div class="map" data-tap-disabled='true'>
+<div class='map' data-tap-disabled='true'>
   <div id='mapdiv'></div>
   <div class='saveEdits' ng-show='vm.showSaveEditsBtn' ng-click='vm.saveEdits()'>{{ vm.saveEditsText }}</div>
   <div class='map-menu'>
@@ -10,4 +10,22 @@
             class='button button-icon icon button-small ion-more rotate-90'></button>
   </div>
   <div id='zoomInfo'>Zoom: {{ vm.currentZoom }}</div>
+
+  <!-- Side Slide Content -->
+  <div>
+    <div id='map-side-panel'>
+      <strabo-map-side-panel></strabo-map-side-panel>
+    </div>
+    <script>
+       $('#map-side-panel').BootSideMenu({
+         side: 'right',          // 'left' or 'right'
+         duration: 500,          // animation speed
+         remember: true,         // restore last menu status on page refresh
+         autoClose: false,       // auto close
+         pushBody: false,        // push the whole page
+         closeOnClick: true,     // close on click
+         width: '25%'            // width
+       });
+     </script>
+  </div>
 </div>
