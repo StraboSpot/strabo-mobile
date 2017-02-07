@@ -5,9 +5,10 @@
     .module('app')
     .factory('MapDrawFactory', MapDrawFactory);
 
-  MapDrawFactory.$inject = ['$document', '$ionicPopup', '$location', '$log', '$q', '$rootScope', 'SpotFactory'];
+  MapDrawFactory.$inject = ['$document', '$ionicPopup', '$location', '$log', '$q', '$rootScope', 'SpotFactory',
+    'IS_WEB'];
 
-  function MapDrawFactory($document, $ionicPopup, $location, $log, $q, $rootScope, SpotFactory) {
+  function MapDrawFactory($document, $ionicPopup, $location, $log, $q, $rootScope, SpotFactory, IS_WEB) {
     var draw;               // draw is a ol3 drawing interaction
     var drawButtonActive;   // drawButtonActive used to keep state of which selected drawing tool is active
     var drawLayer;
@@ -460,11 +461,15 @@
       return draw !== null || modify !== null;
     }
 
-    function saveEdits() {
+    function saveEdits(clickedFeatureId) {
       $log.log('Saving edited spots ...', spotsEdited);
       var promises = [];
       _.each(spotsEdited, function (editedSpot) {
         promises.push(SpotFactory.save(editedSpot));
+        // Update the displayed geometry if edited feature is being displayed in the map side panel
+        if (IS_WEB && editedSpot.properties.id === clickedFeatureId) {
+          $rootScope.$broadcast('update-spot-geometry', {'movedSpotGeometry': editedSpot.geometry});
+        }
       });
       $q.all(promises).then(function () {
         featuresOrig = [];

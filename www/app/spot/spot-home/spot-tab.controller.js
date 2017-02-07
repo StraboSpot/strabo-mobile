@@ -54,6 +54,11 @@
           });
         }
       });
+
+      $scope.$on('update-spot-geometry', function (event, args) {
+        vmParent.spot.geometry = args.movedSpotGeometry;
+        setDisplayedCoords();
+      });
     }
 
     function loadTab(state) {
@@ -71,24 +76,10 @@
       // Has the spot been mapped yet?
       if (vmParent.spot && vmParent.spot.geometry && vmParent.spot.geometry.coordinates) {
         // If the geometry coordinates contain any null values, delete the geometry; it shouldn't be defined
-        if (_.indexOf(_.flatten(vmParent.spot.geometry.coordinates), null) !== -1) {
-          delete vmParent.spot.geometry;
-        }
+        if (_.indexOf(_.flatten(vmParent.spot.geometry.coordinates), null) !== -1) delete vmParent.spot.geometry;
         else {
           vm.mapped = true;
-          // Only show Latitude and Longitude input boxes if the geometry type is Point
-          if (vmParent.spot.geometry.type === 'Point') {
-            if (_.has(vmParent.spot.properties, 'image_basemap')) {
-              vm.showXY = true;
-              vm.y = vmParent.spot.geometry.coordinates[1];
-              vm.x = vmParent.spot.geometry.coordinates[0];
-            }
-            else {
-              vm.showLatLng = true;
-              vm.lat = vmParent.spot.geometry.coordinates[1];
-              vm.lng = vmParent.spot.geometry.coordinates[0];
-            }
-          }
+          setDisplayedCoords();
         }
       }
     }
@@ -96,6 +87,22 @@
     function addSpotLevelTag() {
       vmParent.filterAllTagsType();
       vmParent.addTagModal.show();
+    }
+
+    function setDisplayedCoords() {
+      // Only show Latitude and Longitude input boxes if the geometry type is Point
+      if (vmParent.spot.geometry.type === 'Point') {
+        if (_.has(vmParent.spot.properties, 'image_basemap')) {
+          vm.showXY = true;
+          vm.y = vmParent.spot.geometry.coordinates[1];
+          vm.x = vmParent.spot.geometry.coordinates[0];
+        }
+        else {
+          vm.showLatLng = true;
+          vm.lat = vmParent.spot.geometry.coordinates[1];
+          vm.lng = vmParent.spot.geometry.coordinates[0];
+        }
+      }
     }
 
     /**

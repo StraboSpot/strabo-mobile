@@ -6,12 +6,12 @@
     .controller('MapController', MapController);
 
   MapController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup',
-    '$ionicSideMenuDelegate', '$location', '$log', '$rootScope', '$scope', '$state', '$timeout', 'DataModelsFactory',
+    '$ionicSideMenuDelegate', '$location', '$log', '$rootScope', '$scope', '$timeout', 'DataModelsFactory',
     'FormFactory', 'HelpersFactory', 'MapFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory',
     'MapSetupFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
 
   function MapController($ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup, $ionicSideMenuDelegate,
-                         $location, $log, $rootScope, $scope, $state, $timeout, DataModelsFactory, FormFactory, HelpersFactory,
+                         $location, $log, $rootScope, $scope, $timeout, DataModelsFactory, FormFactory, HelpersFactory,
                          MapFactory, MapDrawFactory, MapFeaturesFactory, MapLayerFactory, MapSetupFactory,
                          MapViewFactory, ProjectFactory, SpotFactory, IS_WEB) {
     var vm = this;
@@ -310,7 +310,7 @@
 
     function saveEdits() {
       vm.saveEditsText = 'Saved Edits';
-      MapDrawFactory.saveEdits();
+      MapDrawFactory.saveEdits(vm.clickedFeatureId);
     }
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair
