@@ -364,8 +364,8 @@
         return feat;
       }, this, function (lyr) {
         // we only want the layer where the spots are located
-        return (lyr instanceof ol.layer.Vector) && lyr.get('name') !== 'drawLayer' && lyr.get(
-            'name') !== 'geolocationLayer';
+        return (lyr instanceof ol.layer.Vector) && lyr.get('name') !== 'drawLayer' &&
+          lyr.get('name') !== 'geolocationLayer' && lyr.get('name') !== 'selectedHighlightLayer';
       });
     }
 
@@ -374,8 +374,8 @@
         return lyr;
       }, this, function (lyr) {
         // we only want the layer where the spots are located
-        return (lyr instanceof ol.layer.Vector) && lyr.get('name') !== 'drawLayer' && lyr.get(
-            'name') !== 'geolocationLayer';
+        return (lyr instanceof ol.layer.Vector) && lyr.get('name') !== 'drawLayer' &&
+          lyr.get('name') !== 'geolocationLayer' && lyr.get('name') !== 'selectedHighlightLayer';
       });
     }
 
@@ -442,6 +442,7 @@
       });
 
       selectedHighlightLayer = new ol.layer.Vector({
+        name: 'selectedHighlightLayer',
         source: selectedHighlightSource,
         style: style
       });
