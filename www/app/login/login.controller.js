@@ -51,9 +51,6 @@
         GETlogin.email = GETcredentials.split("*****")[0];
         GETlogin.password = GETcredentials.split("*****")[1];
         GETlogin.encoded_login = btoa(GETlogin.email+':'+GETlogin.password);
-        $log.log('Username: ',GETlogin.email);
-        $log.log('Password: ',GETlogin.password);
-        $log.log('encoded: ',GETlogin.encoded_login);
 
         UserFactory.doLogin(GETlogin).then(function () {
           $log.log('Made it past doLogin.');
