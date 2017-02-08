@@ -11,6 +11,7 @@
   function MapFeatures(DataModelsFactory, HelpersFactory, MapLayerFactory, MapSetupFactory, ProjectFactory, SpotFactory,
                        SymbologyFactory) {
     var mappableSpots = {};
+    var selectedHighlightLayer = {};
 
     return {
       'createDatasetsLayer': createDatasetsLayer,
@@ -19,8 +20,10 @@
       'getClickedFeature': getClickedFeature,
       'getClickedLayer': getClickedLayer,
       'getInitialDatasetLayerStates': getInitialDatasetLayerStates,
+      'setSelectedSymbol': setSelectedSymbol,
       'showMapPopup': showMapPopup,
-      'showPopup': showPopup
+      'showPopup': showPopup,
+      'removeSelectedSymbol': removeSelectedSymbol
     };
 
     /**
@@ -392,6 +395,60 @@
       return states;
     }
 
+    // Add a feature to highlight selected Spot
+    // Encompassing orange circle for a point, orange stroke for a line, and orange fill for a polygon
+    function setSelectedSymbol(map, geometry) {
+      var selected = new ol.Feature({
+        geometry: geometry
+      });
+
+      var style = {};
+      if (geometry.getType() === 'Point') {
+        style = new ol.style.Style({
+          image: new ol.style.Circle({
+            radius: 40,
+            stroke: new ol.style.Stroke({
+              color: 'white',
+              width: 2
+            }),
+            fill: new ol.style.Fill({
+              color: [245, 121, 0, 0.6]
+            })
+          })
+        });
+      }
+      else if (geometry.getType() === 'LineString' || geometry.getType() === 'MultiLineString') {
+        style = new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            color: [245, 121, 0, 0.6],
+            width: 4
+          })
+        })
+      }
+      else {
+        style = new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            color: 'white',
+            width: 2
+          }),
+          fill: new ol.style.Fill({
+            color: [245, 121, 0, 0.6]
+          })
+        })
+      }
+
+      var selectedHighlightSource = new ol.source.Vector({
+        features: [selected]
+      });
+
+      selectedHighlightLayer = new ol.layer.Vector({
+        source: selectedHighlightSource,
+        style: style
+      });
+
+      map.addLayer(selectedHighlightLayer);
+    }
+
     function showMapPopup(feature, evt) {
       var popup = MapSetupFactory.getPopupOverlay();
       popup.hide();  // Clear any existing popovers
@@ -480,6 +537,11 @@
         // setup the popup position
         popup.show(evt.coordinate, content);
       }
+    }
+
+    // Remove feature showing highlighted Spot
+    function removeSelectedSymbol(map) {
+      map.removeLayer(selectedHighlightLayer);
     }
   }
 }());

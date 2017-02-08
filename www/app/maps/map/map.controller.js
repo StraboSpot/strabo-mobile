@@ -120,6 +120,7 @@
       // Display popup on click
       map.on('click', function (evt) {
         $log.log('map clicked');
+        MapFeaturesFactory.removeSelectedSymbol(map);
 
         // Are we in draw mode?  If so we don't want to display any popovers during draw mode
         if (!MapDrawFactory.isDrawMode()) {
@@ -127,7 +128,10 @@
           var layer = MapFeaturesFactory.getClickedLayer(map, evt);
           if (feature && layer && layer.get('name') !== 'geolocationLayer') {
             vm.clickedFeatureId = feature.get('id');
-            if (IS_WEB) $rootScope.$broadcast('clicked-mapped-spot', {'spotId': vm.clickedFeatureId});
+            if (IS_WEB) {
+              MapFeaturesFactory.setSelectedSymbol(map, feature.getGeometry());
+              $rootScope.$broadcast('clicked-mapped-spot', {'spotId': vm.clickedFeatureId});
+            }
             else MapFeaturesFactory.showMapPopup(feature, evt);
           }
           else vm.clickedFeatureId = undefined;
