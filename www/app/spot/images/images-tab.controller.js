@@ -57,7 +57,8 @@
       // Loading tab in Map side panel
       $scope.$on('load-tab', function (event, args) {
         if (args.tabName === thisTabName) {
-          vmParent.saveSpot().then(function () {
+          vmParent.saveSpot().finally(function () {
+            vmParent.spotChanged = false;
             loadTab({
               'current': {'name': 'app.spotTab.' + thisTabName},
               'params': {'spotId': args.spotId}

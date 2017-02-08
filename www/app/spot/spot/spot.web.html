@@ -1,6 +1,9 @@
 <div class="strabo-subheader">
   <div class="subheader-left">
-    <button ng-click='vm.submit()' class='button button-icon icon ion-checkmark-circled'> Save</button>
+    <button ng-click='vm.submit()' class='button button-icon icon'
+    ng-class='{"ion-alert-circled": vm.spotChanged, "ion-checkmark-circled": !vm.spotChanged }'>
+      <span ng-show='vm.spotChanged' class="positive"> Unsaved Changes</span>
+      <span ng-show='!vm.spotChanged'> Spot Saved</span></button>
   </div>
   <div class="subheader-right">
     <button ng-click='vm.viewMap()' class='button button-icon icon ion-map'></button>

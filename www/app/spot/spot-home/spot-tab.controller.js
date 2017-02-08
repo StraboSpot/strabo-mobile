@@ -46,7 +46,8 @@
       // Loading tab in Map side panel
       $scope.$on('load-tab', function (event, args) {
         if (args.tabName === thisTabName) {
-          vmParent.saveSpot().then(function () {
+          vmParent.saveSpot().finally(function () {
+            vmParent.spotChanged = false;
             loadTab({
               'current': {'name': 'app.spotTab.' + thisTabName},
               'params': {'spotId': args.spotId}
@@ -64,11 +65,20 @@
     function loadTab(state) {
       vmParent.loadTab(state);  // Need to load current state into parent
 
-      if (vmParent.showTrace === true) {
+      vmParent.showTrace = false;
+      vmParent.showGeologicUnit = true;
+      vmParent.showSurfaceFeature = false;
+      if (vmParent.spot.geometry && vmParent.spot.geometry.type === 'LineString') {
+        vmParent.showTrace = true;
+        vmParent.showGeologicUnit = false;
+        if (vmParent.spot.properties.trace) vmParent.data = vmParent.spot.properties.trace;
         vmParent.survey = DataModelsFactory.getDataModel('trace').survey;
         vmParent.choices = DataModelsFactory.getDataModel('trace').choices;
       }
-      else if (vmParent.showSurfaceFeature === true) {
+      if (vmParent.spot.geometry && vmParent.spot.geometry.type === 'Polygon') {
+        vmParent.showRadius = false;
+        vmParent.showSurfaceFeature = true;
+        if (vmParent.spot.properties.surface_feature) vmParent.data = vmParent.spot.properties.surface_feature;
         vmParent.survey = DataModelsFactory.getDataModel('surface_feature').survey;
         vmParent.choices = DataModelsFactory.getDataModel('surface_feature').choices;
       }

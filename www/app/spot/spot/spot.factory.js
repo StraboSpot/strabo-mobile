@@ -342,7 +342,6 @@
       $log.log('In Spot Factory Save();');
       $log.log('Incoming Spot: ', saveSpot);
       $log.log('Existing Spot: ', spots[saveSpot.properties.id]);
-      $log.log('In Spot Factory Save();');
       var deferred = $q.defer(); // init promise
       var isEqual = _.isEqual(saveSpot, spots[saveSpot.properties.id]);
       if (isEqual){
@@ -354,7 +353,7 @@
         $log.log('Call LiveDBFactory here:');
         LiveDBFactory.save(saveSpot, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
         LocalStorageFactory.getDb().spotsDb.setItem(saveSpot.properties.id.toString(), saveSpot).then(function () {
-          spots[saveSpot.properties.id] = saveSpot;
+          spots[saveSpot.properties.id] = angular.fromJson(angular.toJson(saveSpot));
           deferred.notify();
           deferred.resolve(spots);
         });

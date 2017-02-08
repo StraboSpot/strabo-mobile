@@ -5,15 +5,18 @@
   <div ng-hide='vm.clickedFeatureId === undefined'>
     <div ng-controller='MapSidePanelController as sidePanel'>
       <div class='strabo-tabs-web' ng-controller='SpotController as vm'>
+        <div class="text-center strabo-subheader-text">{{ vm.spotTitle }}</div>
         <div class="strabo-subheader">
           <div class="subheader-left">
-            <button ng-click='vm.submit()' class='button button-icon icon ion-checkmark-circled'> Save</button>
+            <button ng-click='vm.submit()' class='button button-icon icon'
+                    ng-class='{"ion-alert-circled": vm.spotChanged, "ion-checkmark-circled": !vm.spotChanged }'>
+              <span ng-show='vm.spotChanged' class="positive"> Unsaved Changes</span>
+              <span ng-show='!vm.spotChanged'> Spot Saved</span></button>
           </div>
           <div class="subheader-right">
             <button ng-click='vm.deleteSpot()' class='button button-icon icon ion-trash-b'></button>
             <button ng-click='vm.popover.show($event)' class='button button-icon icon ion-more rotate-90'></button>
           </div>
-          <div class="text-center strabo-subheader-text">{{ vm.spotTitle }}</div>
         </div>
 
         <a class='button button-clear spot-tab-inactive'

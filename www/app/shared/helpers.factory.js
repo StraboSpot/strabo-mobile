@@ -13,6 +13,7 @@
 
     return {
       'b64toBlob': b64toBlob,
+      'cleanObj': cleanObj,
       'getBackView': getBackView,
       'getNewId': getNewId,
       'mod': mod,
@@ -86,6 +87,18 @@
 
     function getBackView() {
       return backView;
+    }
+
+    // Remove nulls, undefined, empty strings and empty objects
+    function cleanObj(obj) {
+      _.each(obj, function (ele, i) {
+        if (_.isObject(ele) && _.isEmpty(ele)) delete obj[i];
+        else if (_.isObject(ele) && !_.isEmpty(ele)) obj[i] = cleanObj(ele);
+        else if (_.isString(ele) && ele.trim() === '') delete obj[i];
+        else if (_.isUndefined(ele)) delete obj[i];
+        else if (_.isNull(ele)) delete obj[i];
+      });
+      return obj;
     }
 
     // Correct a quirk in JS that doesn't mod negative number correctly
