@@ -16,8 +16,6 @@
     var vmParent = $scope.vm;
     var vm = this;
 
-    var initializing = true;
-
     // Tags Variables
     vm.addTagModal = {};
     vm.addTagModalTitle = undefined;
@@ -46,6 +44,7 @@
     vm.choices = undefined;
     vm.data = {};
     vm.date = undefined;
+    vm.initializing = true;
     vm.newNestModal = {};
     vm.newNestProperties = {};
     vm.popover = {};
@@ -105,10 +104,10 @@
 
       $scope.$watch('vm.spot', function (newValue, oldValue, scope) {
         if (!_.isEmpty(newValue)) {
-          if (initializing || oldValue.properties.id !== newValue.properties.id) {
+          if (vm.initializing || oldValue.properties.id !== newValue.properties.id) {
             vm.spotChanged = false;
             $timeout(function () {
-              initializing = false;
+              vm.initializing = false;
             });
           }
           else {
@@ -240,7 +239,7 @@
           if (res) {
             SpotFactory.destroy(vm.spot.properties.id).then(function () {
               vm.spot = undefined;
-              initializing = true;
+              vm.initializing = true;
               if (!IS_WEB) goBack();
               else {
                 if ($state.current.name === 'app.spotTab.spot') {   // Update Spots list

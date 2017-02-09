@@ -58,6 +58,7 @@
 
       $scope.$on('update-spot-geometry', function (event, args) {
         vmParent.spot.geometry = args.movedSpotGeometry;
+        vmParent.initializing = true;
         setDisplayedCoords();
       });
     }
