@@ -6,23 +6,25 @@
     .controller('ImageBasemapController', ImageBasemapController);
 
   ImageBasemapController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup',
-    '$ionicSideMenuDelegate', '$location', '$log', '$q', '$scope', '$state', '$timeout', 'DataModelsFactory',
+    '$ionicSideMenuDelegate', '$location', '$log', '$q', '$rootScope', '$scope', '$state', '$timeout', 'DataModelsFactory',
     'FormFactory', 'HelpersFactory', 'ImageFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapSetupFactory',
     'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
 
   function ImageBasemapController($ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup,
-                                  $ionicSideMenuDelegate, $location, $log, $q, $scope, $state, $timeout,
+                                  $ionicSideMenuDelegate, $location, $log, $q, $rootScope, $scope, $state, $timeout,
                                   DataModelsFactory, FormFactory, HelpersFactory, ImageFactory, MapDrawFactory,
                                   MapFeaturesFactory, MapSetupFactory, MapViewFactory, ProjectFactory, SpotFactory,
                                   IS_WEB) {
     var vm = this;
 
-    var currentSpot = SpotFactory.getCurrentSpot();
+    var currentSpot = {};
+    var datasetsLayerStates;
     var map;
     var tagsToAdd = [];
 
     vm.allTags = [];
     vm.choices = {};
+    vm.clickedFeatureId = undefined;
     vm.data = {};
     vm.imageBasemap = {};
     vm.isNesting = SpotFactory.getActiveNesting();
@@ -58,6 +60,8 @@
       // Disable dragging back to ionic side menu because this affects drawing tools
       $ionicSideMenuDelegate.canDragContent(false);
 
+      vm.currentSpot = SpotFactory.getCurrentSpot();
+      if (vm.currentSpot) vm.clickedFeatureId = vm.currentSpot.properties.id;
       if (!currentSpot && !IS_WEB) HelpersFactory.setBackView($ionicHistory.currentView().url);
 
       createModals();
@@ -76,10 +80,10 @@
           MapSetupFactory.setPopupOverlay();
 
           map = MapSetupFactory.getMap();
-          var datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map, vm.imageBasemap);
+          datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map, vm.imageBasemap);
           MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map, vm.imageBasemap);
           MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
-          createSwitcher(switcher, datasetsLayerStates);
+          createSwitcher(switcher);
 
           createMapInteractions();
           createPageEvents();
@@ -107,10 +111,22 @@
       // display popup on click
       map.on('click', function (evt) {
         $log.log('map clicked');
+        MapFeaturesFactory.removeSelectedSymbol(map);
 
         // are we in draw mode?  If so we dont want to display any popovers during draw mode
         if (!MapDrawFactory.isDrawMode()) {
-          MapFeaturesFactory.showPopup(map, evt);
+          var feature = MapFeaturesFactory.getClickedFeature(map, evt);
+          var layer = MapFeaturesFactory.getClickedLayer(map, evt);
+          if (feature && layer && layer.get('name') !== 'geolocationLayer') {
+            vm.clickedFeatureId = feature.get('id');
+            if (IS_WEB) {
+              MapFeaturesFactory.setSelectedSymbol(map, feature.getGeometry());
+              $rootScope.$broadcast('clicked-mapped-spot', {'spotId': vm.clickedFeatureId});
+            }
+            else MapFeaturesFactory.showMapPopup(feature, evt);
+          }
+          else vm.clickedFeatureId = undefined;
+          $scope.$apply();
         }
       });
     }
@@ -135,6 +151,17 @@
     }
 
     function createPageEvents() {
+      $rootScope.$on('updateFeatureLayer', function () {
+        MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
+      });
+
+      // Spot deleted from map side panel
+      $rootScope.$on('deletedSpot', function () {
+        vm.clickedFeatureId = undefined;
+        MapFeaturesFactory.removeSelectedSymbol(map);
+        MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
+      });
+
       $scope.$on('$destroy', function () {
         MapDrawFactory.cancelEdits();    // Cancel any edits
         vm.popover.remove();            // Remove the popover
@@ -173,7 +200,7 @@
       });
     }
 
-    function createSwitcher(switcher, datasetsLayerStates) {
+    function createSwitcher(switcher) {
       // Add a `change:visible` listener to all layers currently within the map
       ol.control.LayerSwitcher.forEachRecursive(map, function (l, idx, a) {
         l.on('change:visible', function (e) {
@@ -265,7 +292,7 @@
 
     function saveEdits() {
       vm.saveEditsText = 'Saved Edits';
-      MapDrawFactory.saveEdits();
+      MapDrawFactory.saveEdits(vm.clickedFeatureId);
     }
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair

@@ -240,9 +240,10 @@
           if (res) {
             SpotFactory.destroy(vm.spot.properties.id).then(function () {
               vm.spot = undefined;
+              initializing = true;
               if (!IS_WEB) goBack();
               else {
-                if ($state.current.name !== 'app.map') {   // Update Spots list
+                if ($state.current.name === 'app.spotTab.spot') {   // Update Spots list
                   vmParent.updateSpots();
                   vmParent.spotIdSelected = undefined;
                   $location.path('app/spotTab');
@@ -428,7 +429,7 @@
         $log.log('Saved spot: ', vm.spot);
         $log.log('All spots: ', spots);
         vm.spotChanged = false;
-        if (IS_WEB && $state.current.name !== 'app.map') vmParent.updateSpots();
+        if (IS_WEB && $state.current.name === 'app.spotTab.spot') vmParent.updateSpots();
         $location.path(toPath);
       })
     }

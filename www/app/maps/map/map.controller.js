@@ -167,6 +167,7 @@
       // Spot deleted from map side panel
       $rootScope.$on('deletedSpot', function () {
         vm.clickedFeatureId = undefined;
+        MapFeaturesFactory.removeSelectedSymbol(map);
         MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
       });
 

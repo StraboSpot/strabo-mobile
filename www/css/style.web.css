@@ -87,7 +87,7 @@ html, body, .container-fluid, .strabo-page-content {
 /* Map Side Panel*/
 .sidebar{
   top: 50px;
-  z-index: 5;             /* Added so modals would be on top of the side panel */
+  z-index: 5;             /* Added so modals would be on top of the side panel (Ionic modals have z index 10)*/
 }
 
 /*--------------------
