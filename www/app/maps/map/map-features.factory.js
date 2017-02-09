@@ -188,7 +188,6 @@
           'font': '12px Calibri,sans-serif',
           'text': '          ' + text,  // we pad with spaces due to rotational offset
           'textAlign': 'center',
-          'rotation': HelpersFactory.toRadians(rotation),
           'fill': new ol.style.Fill({
             'color': '#000'
           }),
