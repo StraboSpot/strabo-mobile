@@ -16,10 +16,10 @@ Basic Style
 Project Info
 --------------------*/
 .project-info {
-  background-color: #444444;
+  background-color: #f8f8f8;
   width: 100%;
   overflow: hidden;
-  color: white;
+  color: black;
 }
 
 .project-info .user {

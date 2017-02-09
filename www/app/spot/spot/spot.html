@@ -4,7 +4,7 @@ Each tab's child <ion-nav-view> directive will have its own
 navigation history that also transitions its views in and out.
 -->
 
-<ion-nav-bar class='bar-dark'>
+<ion-nav-bar class='bar-stable'>
   <!-- <ion-nav-back-button>
   </ion-nav-back-button> -->
   <ion-nav-title>{{ vm.spotTitle }}</ion-nav-title>
@@ -18,7 +18,7 @@ navigation history that also transitions its views in and out.
   </ion-nav-buttons>
 </ion-nav-bar>
 
-<ion-header-bar class='bar-subheader bar-dark'>
+<ion-header-bar class='bar-subheader bar-stable'>
   <ion-scroll direction='x' class='wide-as-needed'>
     <strabo-spot-tabs-directive></strabo-spot-tabs-directive>
   </ion-scroll>
