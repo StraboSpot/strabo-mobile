@@ -269,7 +269,7 @@
         'url': '/:spotId/spot',
         'views': {
           'spottab-childview': {
-            'templateUrl': 'app/spot/spot-home/spot-tab.web.html',
+            'templateUrl': 'app/spot/spot-tab/spot-tab.web.html',
             'controller': 'SpotTabController as vmChild'
           }
         }

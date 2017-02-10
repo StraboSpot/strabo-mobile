@@ -9,7 +9,7 @@
     return {
       'restrict': 'AE',
       'replace': true,
-      'templateUrl': 'app/spot/spot-home/spot-tab.directive.html'
+      'templateUrl': 'app/spot/spot-tab/spot-tab.directive.html'
     };
   }
 }());
