@@ -5,15 +5,17 @@
     .module('app')
     .controller('UserController', UserController);
 
-  UserController.$inject = ['$cordovaCamera', '$document', '$ionicLoading', '$ionicPopup', '$log', '$scope', '$window',
-    'ImageFactory', 'ProjectFactory', 'OtherMapsFactory', 'SpotFactory', 'UserFactory', 'IS_WEB'];
+  UserController.$inject = ['$cordovaCamera', '$document', '$ionicLoading', '$ionicPopup', '$log', '$rootScope',
+    '$scope', '$timeout', '$window', 'ImageFactory', 'ProjectFactory', 'OtherMapsFactory', 'SpotFactory',
+    'UserFactory', 'IS_WEB'];
 
-  function UserController($cordovaCamera, $document, $ionicLoading, $ionicPopup, $log, $scope, $window, ImageFactory,
-                          ProjectFactory, OtherMapsFactory, SpotFactory, UserFactory, IS_WEB) {
+  function UserController($cordovaCamera, $document, $ionicLoading, $ionicPopup, $log, $rootScope, $scope, $timeout,
+                          $window, ImageFactory, ProjectFactory, OtherMapsFactory, SpotFactory, UserFactory, IS_WEB) {
     var vm = this;
-    var dataOrig;
 
-    vm.addImage = addImage;
+    var dataOrig;
+    var initializing = true;
+
     vm.cameraSource = [{
       'text': 'Photo Library',
       'value': 'PHOTOLIBRARY'
@@ -25,15 +27,18 @@
       'value': 'SAVEDPHOTOALBUM'
     }];
     vm.data = null;
+    vm.dataChanged = false;
     vm.login = null;
-    vm.doLogin = doLogin;
-    vm.doLogout = doLogout;
-    vm.doRefresh = doRefresh;
     vm.selectedCameraSource = {
       // default is always camera
       'source': 'CAMERA'
     };
     vm.showOfflineWarning = false;
+
+    vm.addImage = addImage;
+    vm.doLogin = doLogin;
+    vm.doLogout = doLogout;
+    vm.doRefresh = doRefresh;
     vm.submit = submit;
 
     activate();
@@ -47,6 +52,28 @@
       dataOrig = angular.fromJson(angular.toJson(vm.data));
       $log.log('User data:', vm.data);
       if (!IS_WEB) ionic.on('change', getFile, $document[0].getElementById('file'));
+
+      if (IS_WEB) {
+        $scope.$watch('vm.data', function (newValue, oldValue, scope) {
+          if (!_.isEmpty(newValue)) {
+            if (initializing) {
+              vm.dataChanged = false;
+              $timeout(function () {
+                initializing = false;
+              });
+            }
+            else {
+              //$log.log('CHANGED vm.data', 'new value', newValue, 'oldValue', oldValue);
+              vm.dataChanged = true;
+            }
+          }
+        }, true);
+
+        $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){
+          if (vm.dataChanged && fromState.name === 'app.user') submit();
+        });
+      }
+
     }
 
     function cameraModal() {
@@ -258,6 +285,7 @@
         if (!angular.equals(_.omit(vm.data, 'image'), _.omit(dataOrig, 'image'))) UserFactory.uploadUserProfile();
         if (!angular.equals(vm.data.image, dataOrig.image)) UserFactory.uploadUserImage();
         dataOrig = angular.fromJson(angular.toJson(vm.data));
+        vm.dataChanged = false;
       }
     }
 

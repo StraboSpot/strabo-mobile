@@ -5,21 +5,27 @@
     .module('app')
     .controller('MiscController', MiscController);
 
-  MiscController.$inject = ['$ionicLoading', '$ionicModal', '$ionicPopup', '$log', '$q', '$scope', '$state', '$window',
-    'DataModelsFactory', 'HelpersFactory', 'ProjectFactory', 'RemoteServerFactory', 'SpotFactory',
-    'IS_WEB'];
+  MiscController.$inject = ['$ionicLoading', '$ionicModal', '$ionicPopup', '$log', '$q', '$rootScope', '$scope',
+    '$state', '$timeout', '$window', 'DataModelsFactory', 'HelpersFactory', 'ProjectFactory', 'RemoteServerFactory',
+    'SpotFactory', 'IS_WEB'];
 
-  function MiscController($ionicLoading, $ionicModal, $ionicPopup, $log, $q, $scope, $state, $window, DataModelsFactory,
-                          HelpersFactory, ProjectFactory, RemoteServerFactory, SpotFactory, IS_WEB) {
+  function MiscController($ionicLoading, $ionicModal, $ionicPopup, $log, $q, $rootScope, $scope, $state, $timeout,
+                          $window, DataModelsFactory, HelpersFactory, ProjectFactory, RemoteServerFactory, SpotFactory,
+                          IS_WEB) {
     var vm = this;
+
+    var initializing = true;
+
+    vm.dataChanged = false;
+    vm.dbUrl = undefined;
+    vm.msg = undefined;
+    vm.pointsToGenerate = undefined;
+    vm.spotDataModel = {};
+    vm.spotModelModal = {};
 
     vm.closeModal = closeModal;
     vm.getSpotDataModel = getSpotDataModel;
-    vm.msg = undefined;
-    vm.pointsToGenerate = undefined;
     vm.resetDbUrl = resetDbUrl;
-    vm.spotDataModel = {};
-    vm.spotModelModal = {};
     vm.save = save;
     vm.submit = submit;
 
@@ -38,6 +44,27 @@
       }).then(function (modal) {
         vm.spotModelModal = modal;
       });
+
+      if (IS_WEB) {
+        $scope.$watch('vm.dbUrl', function (newValue, oldValue, scope) {
+          if (!_.isEmpty(newValue)) {
+            if (initializing) {
+              vm.dataChanged = false;
+              $timeout(function () {
+                initializing = false;
+              });
+            }
+            else {
+              //$log.log('CHANGED vm.data', 'new value', newValue, 'oldValue', oldValue);
+              vm.dataChanged = true;
+            }
+          }
+        }, true);
+
+        $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){
+          if (vm.dataChanged && fromState.name === 'app.misc') save();
+        });
+      }
     }
 
     // Return a random number between min and max
@@ -161,6 +188,7 @@
 
     function save() {
       RemoteServerFactory.setDbUrl(vm.dbUrl);
+      vm.dataChanged = false;
     }
 
     function submit(pointsToGenerate) {

@@ -5,23 +5,34 @@
     .module('app')
     .controller('RelationshipController', RelationshipController);
 
-  RelationshipController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopup', '$location', '$log', '$scope',
-    '$state', 'HelpersFactory', 'ProjectFactory', 'SpotFactory', 'TagFactory', 'IS_WEB'];
+  RelationshipController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopup', '$location', '$log', '$rootScope',
+    '$scope', '$state', '$timeout', 'HelpersFactory', 'ProjectFactory', 'SpotFactory', 'TagFactory', 'IS_WEB'];
 
-  function RelationshipController($ionicHistory, $ionicModal, $ionicPopup, $location, $log, $scope, $state,
-                                  HelpersFactory, ProjectFactory, SpotFactory, TagFactory, IS_WEB) {
+  function RelationshipController($ionicHistory, $ionicModal, $ionicPopup, $location, $log, $rootScope, $scope, $state,
+                                  $timeout, HelpersFactory, ProjectFactory, SpotFactory, TagFactory, IS_WEB) {
     var vmParent = $scope.vm;
     var vm = this;
 
+    var initializing = true;
     var order = 'a';
     var visibleDatasets = [];
+
+    vm.data = {};
+    vm.dataChanged = false;
+    vm.features = [];
+    vm.featuresDisplayed = [];
+    vm.otherRelationshipType = undefined;
+    vm.relationshipTypes = [];
+    vm.selectItemModal = {};
+    vm.showItem = 'spots';
+    vm.spots = [];
+    vm.spotsDisplayed = [];
+    vm.tags = [];
+    vm.tagsDisplayed = [];
 
     vm.addRelationshipType = addRelationshipType;
     vm.checkedDataset = checkedDataset;
     vm.closeModal = closeModal;
-    vm.data = {};
-    vm.features = [];
-    vm.featuresDisplayed = [];
     vm.filter = filter;
     vm.getNumTaggedFeatures = getNumTaggedFeatures;
     vm.getFeatureName = getFeatureName;
@@ -37,17 +48,9 @@
     vm.keyToId = keyToId;
     vm.loadMoreSpots = loadMoreSpots;
     vm.moreSpotsCanBeLoaded = moreSpotsCanBeLoaded;
-    vm.otherRelationshipType = undefined;
-    vm.relationshipTypes = [];
     vm.resetFilters = resetFilters;
     vm.selectItem = selectItem;
-    vm.selectItemModal = {};
     vm.selectTypes = selectTypes;
-    vm.showItem = 'spots';
-    vm.spots = [];
-    vm.spotsDisplayed = [];
-    vm.tags = [];
-    vm.tagsDisplayed = [];
     vm.toggleChecked = toggleChecked;
     vm.toggleItem = toggleItem;
     vm.toggleTypeChecked = toggleTypeChecked;
@@ -70,6 +73,31 @@
 
       vm.currentSpot = SpotFactory.getCurrentSpot();
       if (!vm.currentSpot && !IS_WEB) HelpersFactory.setBackView($ionicHistory.currentView().url);
+
+      if (IS_WEB) {
+        $scope.$watch('vm.data', function (newValue, oldValue, scope) {
+          if (!_.isEmpty(newValue)) {
+            if (initializing || oldValue.id !== newValue.id) {
+              vm.dataChanged = false;
+              $timeout(function () {
+                initializing = false;
+              });
+            }
+            else {
+              //$log.log('CHANGED vm.data', 'new value', newValue, 'oldValue', oldValue);
+              vm.dataChanged = true;
+            }
+          }
+        }, true);
+
+        $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){
+          if (vm.dataChanged && fromState.name === 'app.relationships.relationship') {
+            event.preventDefault();
+            if (toParams.relationship_id) go('/app/relationships/' + toParams.relationship_id);
+            else go('/app' + toState.url);
+          }
+        });
+      }
     }
 
     function createModals() {
@@ -224,6 +252,7 @@
     }
 
     function go(path) {
+      vm.data = HelpersFactory.cleanObj(vm.data);
       if (Object.keys(vm.data).length > 1) {
         if (!vm.data.name) {
           $ionicPopup.alert({
@@ -240,12 +269,22 @@
         }
         else {
           ProjectFactory.saveRelationship(vm.data).then(function () {
+            $log.log('Relationship saved');
+            vm.dataChanged = false;
             if (IS_WEB) vmParent.updateRelationships();
             $location.path(path);
           });
         }
       }
-      else $location.path(path);
+      else {
+        if (IS_WEB) {
+          $ionicPopup.alert({
+            'title': 'Incomplete Data!',
+            'template': 'Please enter more fields to save this relationship.'
+          });
+        }
+        $location.path(path);
+      }
     }
 
     function goToSpot(spotId) {

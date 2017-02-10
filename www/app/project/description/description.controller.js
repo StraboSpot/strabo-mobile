@@ -5,25 +5,30 @@
     .module('app')
     .controller('DescriptionController', DescriptionController);
 
-  DescriptionController.$inject = ['$ionicModal', '$ionicPopup', '$location', '$log', '$scope', 'DataModelsFactory',
-    'FormFactory', 'LiveDBFactory', 'ProjectFactory'];
+  DescriptionController.$inject = ['$ionicModal', '$ionicPopup', '$location', '$log', '$rootScope', '$scope',
+    '$timeout', 'DataModelsFactory', 'FormFactory', 'LiveDBFactory', 'ProjectFactory', 'IS_WEB'];
 
-  function DescriptionController($ionicModal, $ionicPopup, $location, $log, $scope, DataModelsFactory, FormFactory, LiveDBFactory, ProjectFactory) {
+  function DescriptionController($ionicModal, $ionicPopup, $location, $log, $rootScope, $scope, $timeout,
+                                 DataModelsFactory, FormFactory, LiveDBFactory, ProjectFactory, IS_WEB) {
     var vm = this;
+
+    var initializing = true;
     var isDelete = false;
 
-    vm.closeModal = closeModal;
     vm.dailySetup = {'date': new Date(), 'notes': ''};
     vm.data = {};
-    vm.deleteDailySetup = deleteDailySetup;
+    vm.dataChanged = false;
     vm.descriptionModal = {};
     vm.isNewProject = null;
+    vm.survey = {};
+    vm.valid = true;
+
+    vm.closeModal = closeModal;
+    vm.deleteDailySetup = deleteDailySetup;
     vm.showDailySetupModal = showDailySetupModal;
     vm.showDescriptionModal = showDescriptionModal;
     vm.showField = showField;
-    vm.survey = {};
     vm.submit = submit;
-    vm.valid = true;
 
     activate();
 
@@ -38,6 +43,27 @@
         vm.data = ProjectFactory.getCurrentProject().description;
         fixDates();
         createModals();
+      }
+
+      if (IS_WEB) {
+        $scope.$watch('vm.data', function (newValue, oldValue, scope) {
+          if (!_.isEmpty(newValue)) {
+            if (initializing) {
+              vm.dataChanged = false;
+              $timeout(function () {
+                initializing = false;
+              });
+            }
+            else {
+              //$log.log('CHANGED vm.data', 'new value', newValue, 'oldValue', oldValue);
+              vm.dataChanged = true;
+            }
+          }
+        }, true);
+
+        $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){
+          if (vm.dataChanged && fromState.name === 'app.description') submit();
+        });
       }
     }
 
@@ -79,13 +105,7 @@
       }
       else {
         var valid = FormFactory.validate(vm.survey, vm.data);
-        if (valid){
-          vm[modal].hide();
-          //Project modified_timestamp isn't getting set here... need to fix
-          ProjectFactory.setModifiedTimestamp();
-          $log.log('Save project changes to liveDB:', ProjectFactory.getCurrentProject());
-          LiveDBFactory.save(null, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
-        }
+        if (valid) vm[modal].hide();
       }
     }
 
@@ -130,7 +150,13 @@
     }
 
     function submit() {
-      ProjectFactory.saveProjectItem('description', vm.data);
+      ProjectFactory.saveProjectItem('description', vm.data).then(function () {
+        //Project modified_timestamp isn't getting set here... need to fix
+        ProjectFactory.setModifiedTimestamp();
+        $log.log('Save project changes to liveDB:', ProjectFactory.getCurrentProject());
+        LiveDBFactory.save(null, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
+        vm.dataChanged = false;
+      });
     }
   }
 }());

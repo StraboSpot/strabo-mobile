@@ -1,6 +1,11 @@
 <div class="center-block">
   <div class="strabo-subheader">
-    <div class="subheader-left"><button ng-click='vm.save();' class='button icon ion-checkmark-circled'> Save</button></div>
+    <div class="subheader-left">
+      <button ng-click='vm.save()' class='button button-icon icon'
+              ng-class='{"ion-alert-circled": vm.dataChanged, "ion-checkmark-circled": !vm.dataChanged }'>
+        <span ng-show='vm.dataChanged' class="positive"> Unsaved Changes</span>
+        <span ng-show='!vm.dataChanged'> Data Saved</span></button>
+    </div>
     <div class="text-center strabo-subheader-text">Miscellaneous</div>
   </div>
   <strabo-misc-directive></strabo-misc-directive>

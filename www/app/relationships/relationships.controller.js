@@ -6,10 +6,10 @@
     .controller('RelationshipsController', RelationshipsController);
 
   RelationshipsController.$inject = ['$ionicPopover', '$ionicPopup', '$location', '$log', '$scope', '$state',
-    'HelpersFactory', 'LiveDBFactory', 'ProjectFactory'];
+    'HelpersFactory', 'LiveDBFactory', 'ProjectFactory', 'IS_WEB'];
 
   function RelationshipsController($ionicPopover, $ionicPopup, $location, $log, $scope, $state, HelpersFactory,
-                                   LiveDBFactory, ProjectFactory) {
+                                   LiveDBFactory, ProjectFactory, IS_WEB) {
     var vm = this;
 
     var isDelete = false;
@@ -68,6 +68,10 @@
         function (res) {
           if (res) {
             ProjectFactory.destroyRelationships().then(function () {
+              if (IS_WEB) {
+                vm.relationshipIdSelected = undefined;
+                $location.path('app/relationships');
+              }
               activate();
             });
           }
@@ -84,6 +88,10 @@
       confirmPopup.then(function (res) {
         if (res) {
           ProjectFactory.destroyRelationship(relationship.id).then(function () {
+            if (IS_WEB) {
+              vm.relationshipIdSelected = undefined;
+              $location.path('app/relationships');
+            }
             activate();
           });
         }

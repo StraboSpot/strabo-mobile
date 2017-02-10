@@ -102,20 +102,35 @@
         vm.popover.remove();
       });
 
-      $scope.$watch('vm.spot', function (newValue, oldValue, scope) {
-        if (!_.isEmpty(newValue)) {
-          if (vm.initializing || oldValue.properties.id !== newValue.properties.id) {
+      if (IS_WEB) {
+        $scope.$watch('vm.spot', function (newValue, oldValue, scope) {
+          if (!_.isEmpty(newValue)) {
+            if (vm.initializing || oldValue.properties.id !== newValue.properties.id) {
+              vm.spotChanged = false;
+              $timeout(function () {
+                vm.initializing = false;
+              });
+            }
+            else {
+              //$log.log('CHANGED vm.spot', 'new value', newValue, 'oldValue', oldValue);
+              vm.spotChanged = true;
+            }
+          }
+        }, true);
+      }
+
+      $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){
+        if (vm.spotChanged && fromState.name === 'app.spotTab.spot') {
+          saveSpot().then(function (spots) {
+            $log.log('Saved spot: ', vm.spot);
+            $log.log('All spots: ', spots);
             vm.spotChanged = false;
-            $timeout(function () {
-              vm.initializing = false;
-            });
-          }
-          else {
-            //$log.log('CHANGED vm.spot', 'new value', newValue, 'oldValue', oldValue);
-            vm.spotChanged = true;
-          }
+            if (IS_WEB && $state.current.name === 'app.spotTab.spot') vmParent.updateSpots();
+          }, function () {
+            $state.go(fromState);     // If saving failed don't change state
+          });
         }
-      }, true);
+      });
     }
 
     function copyTags(id) {
@@ -346,6 +361,7 @@
     }
 
     function loadTab(state) {
+      vm.data = {};
       SpotFactory.moveSpot = false;
       vm.stateName = state.current.name;
       setSpot(state.params.spotId);

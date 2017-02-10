@@ -6,10 +6,10 @@
     .controller('TagsController', TagsController);
 
   TagsController.$inject = ['$ionicModal', '$ionicPopover', '$ionicPopup', '$location', '$log', '$scope', '$state',
-    'HelpersFactory', 'LiveDBFactory', 'ProjectFactory', 'TagFactory'];
+    'HelpersFactory', 'LiveDBFactory', 'ProjectFactory', 'TagFactory', 'IS_WEB'];
 
   function TagsController($ionicModal, $ionicPopover, $ionicPopup, $location, $log, $scope, $state, HelpersFactory,
-                          LiveDBFactory, ProjectFactory, TagFactory) {
+                          LiveDBFactory, ProjectFactory, TagFactory, IS_WEB) {
     var vm = this;
 
     var isDelete = false;
@@ -124,6 +124,10 @@
           if (res) {
             TagFactory.removeActiveTagging();
             ProjectFactory.destroyTags().then(function () {
+              if (IS_WEB) {
+                vm.tagIdSelected = undefined;
+                $location.path('app/tags');
+              }
               activate();
             });
           }
@@ -141,6 +145,10 @@
         if (res) {
           TagFactory.removeActiveTag(tag.id);
           ProjectFactory.destroyTag(tag.id).then(function () {
+            if (IS_WEB) {
+              vm.tagIdSelected = undefined;
+              $location.path('app/tags');
+            }
             activate();
           });
         }

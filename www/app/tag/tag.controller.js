@@ -5,23 +5,37 @@
     .module('app')
     .controller('TagController', TagController);
 
-  TagController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopup', '$location', '$log', '$scope', '$state',
-    'DataModelsFactory', 'HelpersFactory', 'FormFactory', 'ProjectFactory', 'SpotFactory', 'TagFactory', 'IS_WEB'];
+  TagController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopup', '$location', '$log', '$rootScope', '$scope',
+    '$state', '$timeout', 'DataModelsFactory', 'HelpersFactory', 'FormFactory', 'ProjectFactory', 'SpotFactory',
+    'TagFactory', 'IS_WEB'];
 
-  function TagController($ionicHistory, $ionicModal, $ionicPopup, $location, $log, $scope, $state, DataModelsFactory,
-                         HelpersFactory, FormFactory, ProjectFactory, SpotFactory, TagFactory, IS_WEB) {
+  function TagController($ionicHistory, $ionicModal, $ionicPopup, $location, $log, $rootScope, $scope, $state, $timeout,
+                         DataModelsFactory, HelpersFactory, FormFactory, ProjectFactory, SpotFactory, TagFactory,
+                         IS_WEB) {
     var vmParent = $scope.vm;
     var vm = this;
 
+    var initializing = true;
     var isDelete = false;
     var visibleDatasets = [];
 
-    vm.checkedDataset = checkedDataset;
     vm.choices = [];
-    vm.closeModal = closeModal;
     vm.data = {};
+    vm.dataChanged = false;
     vm.features = [];
     vm.featuresDisplayed = [];
+    vm.isShowMore = false;
+    vm.selectItemModal = {};
+    vm.selectTypesModal = {};
+    vm.showItem = 'spots';
+    vm.spots = [];
+    vm.spotsDisplayed = [];
+    vm.survey = [];
+    vm.tags = [];
+    vm.tagsDisplayed = [];
+
+    vm.checkedDataset = checkedDataset;
+    vm.closeModal = closeModal;
     vm.filter = filter;
     vm.getNumTaggedFeatures = getNumTaggedFeatures;
     vm.getFeatureName = getFeatureName;
@@ -33,7 +47,6 @@
     vm.isDatasetChecked = isDatasetChecked;
     vm.isOptionChecked = isOptionChecked;
     vm.isShowItem = isShowItem;
-    vm.isShowMore = false;
     vm.isTypeChecked = isTypeChecked;
     vm.loadMoreSpots = loadMoreSpots;
     vm.moreSpotsCanBeLoaded = moreSpotsCanBeLoaded;
@@ -42,16 +55,8 @@
     vm.removeSpot = removeSpot;
     vm.resetFilters = resetFilters;
     vm.selectItem = selectItem;
-    vm.selectItemModal = {};
     vm.selectTypes = selectTypes;
-    vm.selectTypesModal = {};
     vm.showField = showField;
-    vm.showItem = 'spots';
-    vm.spots = [];
-    vm.spotsDisplayed = [];
-    vm.survey = [];
-    vm.tags = [];
-    vm.tagsDisplayed = [];
     vm.toggleChecked = toggleChecked;
     vm.toggleItem = toggleItem;
     vm.toggleShowMore = toggleShowMore;
@@ -87,6 +92,31 @@
           vm.data.spots.push(selectedSpot.properties.id);
         });
         SpotFactory.clearSelectedSpots();
+      }
+
+      if (IS_WEB) {
+        $scope.$watch('vm.data', function (newValue, oldValue, scope) {
+          if (!_.isEmpty(newValue)) {
+            if (initializing || oldValue.id !== newValue.id) {
+              vm.dataChanged = false;
+              $timeout(function () {
+                initializing = false;
+              });
+            }
+            else {
+              //$log.log('CHANGED vm.data', 'new value', newValue, 'oldValue', oldValue);
+              vm.dataChanged = true;
+            }
+          }
+        }, true);
+
+        $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){
+          if (vm.dataChanged && fromState.name === 'app.tags.tag') {
+            event.preventDefault();
+            if (toParams.tag_id) go('/app/tags/' + toParams.tag_id);
+            else go('/app' + toState.url);
+          }
+        });
       }
     }
 
@@ -233,12 +263,8 @@
     }
 
     function go(path) {
-      // Remove null or empty values but not 0
-      _.each(vm.data, function (val, i) {
-        if (val == null || val === '') delete vm.data[i];
-      });
-
       // If there is something filled out besides two of id, name or type
+      vm.data = HelpersFactory.cleanObj(vm.data);
       if (Object.keys(vm.data).length > 2) {
         if (vm.data.type === 'geologic_unit' && vm.data.name && !vm.data.unit_label_abbreviation) {
           vm.data.unit_label_abbreviation = vm.data.name;
@@ -261,12 +287,22 @@
             TagFactory.setAddNewActiveTag(false);
           }
           ProjectFactory.saveTag(vm.data).then(function () {
+            $log.log('Tag saved');
+            vm.dataChanged = false;
             if (IS_WEB) vmParent.updateTags();
             $location.path(path);
           });
         }
       }
-      else $location.path(path);
+      else {
+        if (IS_WEB) {
+          $ionicPopup.alert({
+            'title': 'Incomplete Data!',
+            'template': 'Please enter more fields to save this tag.'
+          });
+        }
+        $location.path(path);
+      }
     }
 
     function goToSpot(spotId) {
