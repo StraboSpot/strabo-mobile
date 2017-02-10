@@ -78,11 +78,6 @@
 
       vm.survey = DataModelsFactory.getDataModel('project').survey;
 
-      if (IS_WEB && _.isEmpty(vm.project)) {
-        vm.data.project_name = 'Sample';
-        doCreateNewProject();
-      }
-
       $ionicModal.fromTemplateUrl('app/project/manage/open-project-modal.html', {
         'scope': $scope,
         'animation': 'slide-in-up',
