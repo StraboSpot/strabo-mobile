@@ -6,10 +6,10 @@
     .controller('RelationshipController', RelationshipController);
 
   RelationshipController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopup', '$location', '$log', '$rootScope',
-    '$scope', '$state', '$timeout', 'HelpersFactory', 'ProjectFactory', 'SpotFactory', 'TagFactory', 'IS_WEB'];
+    '$scope', '$state', '$timeout', 'HelpersFactory', 'LiveDBFactory', 'ProjectFactory', 'SpotFactory', 'TagFactory', 'IS_WEB'];
 
   function RelationshipController($ionicHistory, $ionicModal, $ionicPopup, $location, $log, $rootScope, $scope, $state,
-                                  $timeout, HelpersFactory, ProjectFactory, SpotFactory, TagFactory, IS_WEB) {
+                                  $timeout, HelpersFactory, LiveDBFactory, ProjectFactory, SpotFactory, TagFactory, IS_WEB) {
     var vmParent = $scope.vm;
     var vm = this;
 
@@ -271,7 +271,11 @@
           ProjectFactory.saveRelationship(vm.data).then(function () {
             $log.log('Relationship saved');
             vm.dataChanged = false;
-            if (IS_WEB) vmParent.updateRelationships();
+            if (IS_WEB) {
+              $log.log('Save relationship to LiveDB.', ProjectFactory.getCurrentProject());
+              LiveDBFactory.save(null, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
+              vmParent.updateRelationships();
+            }
             $location.path(path);
           });
         }

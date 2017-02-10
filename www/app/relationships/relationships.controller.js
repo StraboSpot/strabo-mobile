@@ -34,8 +34,6 @@
 
       if (_.isEmpty(ProjectFactory.getCurrentProject())) $location.path('app/manage-project');
       else {
-        $log.log('Save project to LiveDB.', ProjectFactory.getCurrentProject());
-        LiveDBFactory.save(null, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
         vm.relationships = ProjectFactory.getRelationships();
         createPopover();
       }
@@ -70,6 +68,8 @@
             ProjectFactory.destroyRelationships().then(function () {
               if (IS_WEB) {
                 vm.relationshipIdSelected = undefined;
+                $log.log('Delete relationships from LiveDB.', ProjectFactory.getCurrentProject());
+                LiveDBFactory.save(null, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
                 $location.path('app/relationships');
               }
               activate();
@@ -90,6 +90,8 @@
           ProjectFactory.destroyRelationship(relationship.id).then(function () {
             if (IS_WEB) {
               vm.relationshipIdSelected = undefined;
+              $log.log('Save relationships to LiveDB.', ProjectFactory.getCurrentProject());
+              LiveDBFactory.save(null, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
               $location.path('app/relationships');
             }
             activate();

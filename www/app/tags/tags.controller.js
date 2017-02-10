@@ -46,8 +46,6 @@
       if (_.isEmpty(ProjectFactory.getCurrentProject())) $location.path('app/manage-project');
       else {
         loadActiveTagging();
-        $log.log('Save project to LiveDB.', ProjectFactory.getCurrentProject());
-        LiveDBFactory.save(null, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
         vm.allTags = ProjectFactory.getTags();
         vm.allTagsToDisplay = vm.allTags;
         createPopover();
@@ -126,6 +124,8 @@
             ProjectFactory.destroyTags().then(function () {
               if (IS_WEB) {
                 vm.tagIdSelected = undefined;
+                $log.log('Delete tags from LiveDB.', ProjectFactory.getCurrentProject());
+                LiveDBFactory.save(null, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
                 $location.path('app/tags');
               }
               activate();
@@ -147,6 +147,8 @@
           ProjectFactory.destroyTag(tag.id).then(function () {
             if (IS_WEB) {
               vm.tagIdSelected = undefined;
+              $log.log('Delete tag from LiveDB.', ProjectFactory.getCurrentProject());
+              LiveDBFactory.save(null, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
               $location.path('app/tags');
             }
             activate();
