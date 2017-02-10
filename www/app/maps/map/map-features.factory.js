@@ -12,6 +12,7 @@
                        SymbologyFactory) {
     var mappableSpots = {};
     var selectedHighlightLayer = {};
+    var typeVisibility = {};
 
     return {
       'createDatasetsLayer': createDatasetsLayer,
@@ -65,6 +66,18 @@
       return visibleSpotsByDataset;
     }
 
+    // Save the current visibility for each feature type in the Spots Feature Layer
+    function setCurrentTypeVisibility(map) {
+      map.getLayers().forEach(function (layer) {
+        if (layer.get('name') === 'featureLayer') {
+          layer.getLayers().forEach(function (typeLayer) {
+            var type = typeLayer.get('title').split(' (')[0];
+            typeVisibility[type] = typeLayer.get('visible');
+          });
+        }
+      });
+    }
+
     /**
      * Public Functions
      */
@@ -90,6 +103,8 @@
     }
 
     function createFeatureLayer(states, map, imageBasemap) {
+      setCurrentTypeVisibility(map);
+
       // Loop through all spots and create ol vector layers
       setMappableSpots(map, imageBasemap);
       var visibleSpotsDatasets = getVisibleSpots(states);
@@ -354,7 +369,8 @@
           'features': features
         }),
         'title': geojson.properties.name,
-        'style': styleFunction
+        'style': styleFunction,
+        'visible': typeVisibility[geojson.properties.name.split(' (')[0]]
       });
     }
 
