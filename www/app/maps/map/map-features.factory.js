@@ -199,7 +199,7 @@
       }
 
       function getStrokeStyle(feature) {
-        var color = '#FFFF00';
+        var color = '#663300';
         var width = 2;
         var lineDash = [1, 0];
 
