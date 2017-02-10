@@ -1,5 +1,7 @@
 name,type,label,required,hint,relevant,appearance,default
 trace_feature,acknowledge,Trace Feature,false,,,,
+trace_quality,select_one wb5nf41,Trace Quality,false,"Quality of trace? Known, approximate, inferred, concealed, questioned",${trace_feature} != '',horizontal,
+other_trace_quality,text,Other Trace Quality,false,,${trace_quality} = 'other',,
 trace_type,select_one pl5yo85,Trace Type,true,"contact, structure, geomorphic, anthropogenic, other",${trace_feature} != '',,
 contact_type,select_one lx9ax28,Contact Type,false,"depositional, metamorphic, igneous, marker, other",${trace_type} = 'contact',horizontal,
 other_contact_type,text,Other Contact Type,true,,${contact_type} = 'other',,
@@ -25,8 +27,6 @@ antropogenic_feature,select_one gw8je20,Antropogenic Feature,true,"fence, proper
 other_anthropogenic_feature,text,Other Anthropogenic Feature,true,,${antropogenic_feature} = 'other',,
 other_feature,select_one lh87q41,Other Feature,true,extent of mapping or biological marker,${trace_type} = 'other_feature',,
 other_other_feature,text,Other Other Features,true,,${other_feature} = 'other',,
-trace_quality,select_one wb5nf41,Trace Quality,true,"Quality of trace? Known, approximate, inferred, concealed, questioned",${trace_feature} != '',horizontal,
-other_trace_quality,text,Other Trace Quality,true,,${trace_quality} = 'other',,
 trace_character,select_one rd1pp06,Trace Character,false,"sharp, gradational, chilled, brecciated, other",${contact_type} = 'depositional' or ${contact_type} = 'intrusive' or ${contact_type} = 'metamorphic',horizontal,
 other_trace_character,text,Other Trace Character,true,,${trace_character} = 'other',,
 tace_notes,text,Trace Notes,false,,${trace_feature} != '',multiline,

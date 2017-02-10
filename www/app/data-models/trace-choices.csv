@@ -1,4 +1,11 @@
 label,order,name,list name
+known,0,known,wb5nf41
+approximate,1,approximate,wb5nf41
+questionable approximate,2,approximate(?),wb5nf41
+inferred,3,inferred,wb5nf41
+questionable inferred,4,inferred(?),wb5nf41
+concealed,5,concealed,wb5nf41
+other,,other,wb5nf41
 contact,0,contact,pl5yo85
 geologic structure,1,geologic_struc,pl5yo85
 geomorphic feature,2,geomorphic_fea,pl5yo85
@@ -87,13 +94,6 @@ other,4,other,gw8je20
 extent of mapping,,extent_of_mapp,lh87q41
 extent of biological marker,,extent_of_biol,lh87q41
 other,,other,lh87q41
-known,0,known,wb5nf41
-approximate,1,approximate,wb5nf41
-questionable approximate,2,approximate(?),wb5nf41
-inferred,3,inferred,wb5nf41
-questionable inferred,4,inferred(?),wb5nf41
-concealed,5,concealed,wb5nf41
-other,,other,wb5nf41
 sharp,,sharp,rd1pp06
 gradational,,gradational,rd1pp06
 chilled,,chilled,rd1pp06

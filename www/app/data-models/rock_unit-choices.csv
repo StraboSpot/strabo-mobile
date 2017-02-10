@@ -61,22 +61,66 @@ diorite,diorite,7,pu9hj08
 gabbro,gabbro,9,pu9hj08
 anorthosite,anorthosite,10,pu9hj08
 other,other,15,pu9hj08
-low-grade,low_grade,,yg0ew35
-medium-grade,medium_grade,,yg0ew35
-high-grade,high_grade,,yg0ew35
-slate,slate,,yg0ew35
-phyllite,phyllite,,yg0ew35
-schist,schist,,yg0ew35
-gneiss,gneiss,,yg0ew35
-marble,marble,,yg0ew35
-quartzite,quartzite,,yg0ew35
-amphibolite,amphibolite,,yg0ew35
-serpentinite,serpentinite,,yg0ew35
-hornfels,hornfels,,yg0ew35
-metavolcanic,metavolcanic,,yg0ew35
-calc-silicate,calc_silicate,,yg0ew35
-mylonite,mylonite,,yg0ew35
-other,other,,yg0ew35
+slate,slate,0,yg0ew35
+phyllite,phyllite,1,yg0ew35
+schist,schist,2,yg0ew35
+gneiss,gneiss,3,yg0ew35
+migmatite,migmatite,4,yg0ew35
+marble,marble,5,yg0ew35
+calc-silicate,calc_silicate,6,yg0ew35
+calc schist,calc_schist,7,yg0ew35
+greenschist,greenschist,8,yg0ew35
+amphibolite,amphibolite,9,yg0ew35
+blueschist,blueschist,10,yg0ew35
+eclogite,eclogite,11,yg0ew35
+hornfels,hornfels,12,yg0ew35
+granofels,granofels,13,yg0ew35
+skarn,skarn,14,yg0ew35
+quartzite,quartzite,15,yg0ew35
+serpentinite,serpentinite,16,yg0ew35
+jadeite,jadeite,17,yg0ew35
+glaucophanite,glaucophanite,18,yg0ew35
+garnetite,garnetite,19,yg0ew35
+pyroxenite,pyroxenite,20,yg0ew35
+cordierite-anthophyllite,cordierite-ant,21,yg0ew35
+cataclasite,cataclasite,22,yg0ew35
+mylonite,mylonite,23,yg0ew35
+metapelite,metapelite,24,yg0ew35
+metaarkose,metaarkose,25,yg0ew35
+metagreywacke,metagreywacke,26,yg0ew35
+metabasite,metabasite,27,yg0ew35
+metacarbonate,metacarbonate,28,yg0ew35
+metagranite,metagranite,29,yg0ew35
+metaigneous,metaigneous,30,yg0ew35
+metavolcanic,metavolcanic,31,yg0ew35
+blackwall,blackwall,32,yg0ew35
+metasomatite,metasomatite,33,yg0ew35
+meta-ultramafic,meta_ultramafi,34,yg0ew35
+meta-iron formation,meta-iron_form,35,yg0ew35
+other,other,36,yg0ew35
+zeolite facies,zeolite_facies,,ak6ci54
+prehnite-pumpellyite facies,prehnite-pumpe,,ak6ci54
+greenschist facies,greenschist_fa,,ak6ci54
+amphibolite facies,amphibolite_fa,,ak6ci54
+epidote amphibolite facies,epidote_amphib,,ak6ci54
+granulite facies,granulite_faci,,ak6ci54
+blueschist facies,blueschist_fac,,ak6ci54
+eclogite facies,eclogite_facie,,ak6ci54
+hornfels facies,hornfels_facie,,ak6ci54
+chlorite zone,chlorite_zone,,ak6ci54
+biotite zone,biotite_zone,,ak6ci54
+garnet zone,garnet_zone,,ak6ci54
+staurolite zone,staurolite_zon,,ak6ci54
+staurolite-kyanite zone,staurolite-kya,,ak6ci54
+kyanite zone,kyanite_zone,,ak6ci54
+sillimanite zone,sillimanite_zo,,ak6ci54
+andalusite zone,andalusite_zon,,ak6ci54
+sillimanite-K feldspar zone,sillimanite-K_,,ak6ci54
+garnet-cordierite zone,garnet-cordier,,ak6ci54
+migmatite zone,migmatite_zone,,ak6ci54
+ultra high pressure facies,ultra_high_pre,,ak6ci54
+ultra high temperature facies,ultra_high_tem,,ak6ci54
+other,other,,ak6ci54
 Holocene,holocene,,kf0mi66
 Pleistocene,pleistocene,,kf0mi66
 Pliocene,pliocene,,kf0mi66
@@ -86,29 +130,30 @@ Eocene,eocene,,kf0mi66
 Paleocene,paleocene,,kf0mi66
 Other,other,,kf0mi66
 Quaternary,quaternary,0,xw5wu04
-Neogene,neogene,1,xw5wu04
-Paleogene,paleogene,2,xw5wu04
-Cretaceous,cretaceous,3,xw5wu04
-Jurassic,jurassic,4,xw5wu04
-Triassic,triassic,5,xw5wu04
-Permian,permian,6,xw5wu04
-Carboniferous,carboniferous,7,xw5wu04
-Pennsylvanian,pennsylvanian,8,xw5wu04
-Mississippian,mississippian,9,xw5wu04
-Devonian,devonian,10,xw5wu04
-Silurian,silurian,11,xw5wu04
-Ordovician,ordovician,12,xw5wu04
-Cambrian,cambrian,13,xw5wu04
-Ediacaran,ediacaran,,xw5wu04
-Cryogenian,cryogenian,,xw5wu04
-Tonian,tonian,,xw5wu04
-Stenian,stenian,,xw5wu04
-Ectasian,ectasian,,xw5wu04
-Calymmian,calymmian,,xw5wu04
-Statherian,statherian,,xw5wu04
-Orosirian,orosirian,,xw5wu04
-Rhyacian,rhyacian,,xw5wu04
-Siderian,siderian,,xw5wu04
+Tertiary,tertiary,1,xw5wu04
+Neogene,neogene,2,xw5wu04
+Paleogene,paleogene,3,xw5wu04
+Cretaceous,cretaceous,4,xw5wu04
+Jurassic,jurassic,5,xw5wu04
+Triassic,triassic,6,xw5wu04
+Permian,permian,7,xw5wu04
+Carboniferous,carboniferous,8,xw5wu04
+Pennsylvanian,pennsylvanian,9,xw5wu04
+Mississippian,mississippian,10,xw5wu04
+Devonian,devonian,11,xw5wu04
+Silurian,silurian,12,xw5wu04
+Ordovician,ordovician,13,xw5wu04
+Cambrian,cambrian,14,xw5wu04
+Ediacaran,ediacaran,15,xw5wu04
+Cryogenian,cryogenian,16,xw5wu04
+Tonian,tonian,17,xw5wu04
+Stenian,stenian,18,xw5wu04
+Ectasian,ectasian,19,xw5wu04
+Calymmian,calymmian,20,xw5wu04
+Statherian,statherian,21,xw5wu04
+Orosirian,orosirian,22,xw5wu04
+Rhyacian,rhyacian,23,xw5wu04
+Siderian,siderian,24,xw5wu04
 Cenozoic,cenozoic,,kb2cc45
 Mesozoic,mesozoic,,kb2cc45
 Paleozoic,paleozoic,,kb2cc45

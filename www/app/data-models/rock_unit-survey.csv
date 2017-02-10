@@ -18,7 +18,9 @@ plutonic_rock_types,select_one pu9hj08,Plutonic Rock Types,false,Specific pluton
 other_plutonic_rock_type,text,Other Plutonic Rock Type,true,,,${plutonic_rock_types} = 'other'
 metamorphic_rock_types,select_one yg0ew35,Metamorphic Rock Types,false,Specific metamorphic rock type,,${rock_type} = 'metamorphic'
 other_metamorphic_rock_type,text,Other Metamorphic Rock Type,true,,,${metamorphic_rock_types} = 'other'
+metamorphic_grade,select_one ak6ci54,Metamorphic Grade,false,Specific metamorphic grade,,${rock_type} = 'metamorphic'
 ,end group,,,,,
+other_metamorphic_grade,text,Other Metamorphic Grade,false,metamorphic grade not given in list,,${metamorphic_grade} = 'other'
 group_geologic_age,begin group,Geologic Age,,,,
 epoch,select_one kf0mi66,Epoch,false,Specific geologic time epoch,horizontal,
 other_epoch,text,Other Epoch,true,,,${epoch} = 'other'
