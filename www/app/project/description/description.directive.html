@@ -17,7 +17,7 @@
   </button>
   <ion-list>
     <ion-item class='item-text-wrap item-button-right'
-              ng-repeat='dailySetup in vm.data.daily_setup | orderBy: -date: true'
+              ng-repeat='dailySetup in vm.data.daily_setup | orderBy: -date: true track by $index'
               ng-click='vm.showDailySetupModal(dailySetup)'>
       Log {{vm.data.daily_setup.length - $index}}: {{ dailySetup.date | date:'medium' }}
       <button class='button button-clear button-assertive'

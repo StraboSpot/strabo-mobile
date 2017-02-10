@@ -127,6 +127,7 @@
     function showDailySetupModal(setup) {
       if (!isDelete) {
         if (setup) {
+          if (setup.date) setup.date = new Date(setup.date);
           vm.dailySetup = setup;
         }
         else {
