@@ -6,10 +6,10 @@
     .controller('NestingTabController', NestingTabController);
 
   NestingTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$rootScope', '$scope', '$state',
-    'DataModelsFactory', 'SpotFactory'];
+    'DataModelsFactory', 'SpotFactory', 'IS_WEB'];
 
   function NestingTabController($ionicModal, $ionicPopup, $log, $rootScope, $scope, $state, DataModelsFactory,
-                                SpotFactory) {
+                                SpotFactory, IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.nestTab = vm;
@@ -213,7 +213,10 @@
     function updateNest() {
       vm.parentSpots = getParents(vmParent.spot);
       vm.childrenSpots = getChildren(vmParent.spot);
-      if ($state.current.name === 'app.map') $rootScope.$broadcast('updateFeatureLayer');
+      if (IS_WEB && $state.current.name === 'app.map') $rootScope.$broadcast('updateFeatureLayer');
+      else if (IS_WEB && $state.current.name === 'app.image-basemaps.image-basemap') {
+        $rootScope.$broadcast('updateFeatureLayer');
+      }
     }
   }
 }());

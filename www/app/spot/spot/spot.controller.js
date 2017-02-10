@@ -446,6 +446,9 @@
         vm.spotChanged = false;
         if (IS_WEB && $state.current.name === 'app.spotTab.spot') vmParent.updateSpots();
         else if (IS_WEB && $state.current.name === 'app.map') $rootScope.$broadcast('updateFeatureLayer');
+        else if (IS_WEB && $state.current.name === 'app.image-basemaps.image-basemap') {
+          $rootScope.$broadcast('updateFeatureLayer');
+        }
         $location.path(toPath);
       })
     }
