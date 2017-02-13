@@ -8,7 +8,7 @@
   <description>
     Strabo Mobile is a cross-platform app for geologic field data acquisition.
   </description>
-  <author email="jessicagood@email.arizona.edu" href="https://github.com/StraboSpot/strabo-mobile">
+  <author email="strabospot@gmail.com" href="https://github.com/StraboSpot/strabo-mobile">
     Jessica Good
   </author>
 
@@ -17,7 +17,7 @@
   <content src="index.html"/>
   <access origin="*"/>
 
-  <preference name="phonegap-version" value="cli-6.3.0"/>
+  <preference name="phonegap-version" value="cli-6.5.0"/>
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>
@@ -100,7 +100,7 @@
     <icon src="res/icons/windows8/logo.png" width="150" height="150"/>
     <icon src="res/icons/windows8/smalllogo.png" width="30" height="30"/>
     <icon src="res/icons/windows8/storelogo.png" width="50" height="50"/>
-  </platform>
+  </platform>-->
   <!-- End part for PhoneGap Build -->
 
   <!-- This part for Ionic native build --><!--
