@@ -40,6 +40,8 @@
         ImageFactory.deleteAllImages();
         OtherMapsFactory.destroyOtherMaps();
         $log.log('Credentials set, check for validity.');
+
+        if (GETcredentials) {
         GETcredentials = atob(GETcredentials);
         $log.log('Credentials decoded: ',GETcredentials);
         GETlogin.email = GETcredentials.split("*****")[0];
@@ -56,7 +58,17 @@
               });
             });
           }
+          else {
+            deferred.resolve();
+          }
         });
+        }
+        else {
+          deferred.resolve();
+        }
+
+
+
       }
       else{
         deferred.resolve();
