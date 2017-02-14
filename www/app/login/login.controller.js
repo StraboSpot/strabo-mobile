@@ -39,31 +39,7 @@
       GETproject.id = $location.search()['projectid'];
 
       if(IS_WEB && GETcredentials && GETproject.id){
-        $log.log('First, force logout and destroy project');
-        UserFactory.clearUser();
-        ProjectFactory.destroyProject();
-        SpotFactory.clearAllSpots();
-        ImageFactory.deleteAllImages();
-        OtherMapsFactory.destroyOtherMaps();
-        $log.log('Credentials set, check for validity.');
-        GETcredentials = atob(GETcredentials);
-        $log.log('Credentials decoded: ',GETcredentials);
-        GETlogin.email = GETcredentials.split("*****")[0];
-        GETlogin.password = GETcredentials.split("*****")[1];
-        GETlogin.encoded_login = btoa(GETlogin.email+':'+GETlogin.password);
-
-        UserFactory.doLogin(GETlogin).then(function () {
-          $log.log('Made it past doLogin.');
-          if (UserFactory.getUser()){
-            $log.log('GetUser: ', UserFactory.getUser());
-            ProjectFactory.setUser(UserFactory.getUser());
-            ProjectFactory.loadProjectRemote(GETproject).then(function () {
-              $state.go('app.manage-project');
-            });
-          }
-        }).finally(function () {
-          $ionicLoading.hide();
-        });
+        $state.go('app.manage-project');
       }else if (vm.login) {
         vm.login.password = '**********';
         $log.log('Skipping login page. Already logged in as: ', vm.login);
