@@ -135,7 +135,7 @@ Run `indexWeb.html` with a local server.
 
 For example with [local-web-server](https://www.npmjs.com/package/local-web-server):
 
-    npm i local-web-server
+    npm install -g local-web-server
     ws --spa indexWeb.html
 
 
