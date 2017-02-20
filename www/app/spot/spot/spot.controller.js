@@ -546,7 +546,7 @@
           'template': '<ion-spinner></ion-spinner><br>Loading Map...'
         });
         MapViewFactory.setMapViewToSpot(vm.spot);
-        vm.submit('/app/maps');
+        vm.submit('/app/map');
       }
     }
   }
