@@ -463,6 +463,8 @@
             loadDatasetsRemote().then(function () {
               deferred.resolve();
             });
+          }, function (err) {
+            deferred.reject(err);
           });
         }, function (response) {
           $log.log('Error downloading project', project, '. Response:', response);
@@ -617,6 +619,9 @@
             deferred.resolve();
           });
         }
+      }).catch(function (err) {
+        $log.log('Error saving data.', err);
+        deferred.reject(err);
       });
       return deferred.promise;
     }

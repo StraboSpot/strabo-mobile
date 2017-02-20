@@ -5,13 +5,13 @@
     .module('app')
     .controller('ManageProjectController', ManageProjectController);
 
-  ManageProjectController.$inject = ['$ionicModal', '$ionicLoading', '$ionicPopup', '$log', '$scope', '$q',
-    'DataModelsFactory', 'FormFactory', 'ImageFactory', 'LiveDBFactory', 'OtherMapsFactory', 'ProjectFactory',
+  ManageProjectController.$inject = ['$ionicModal', '$ionicLoading', '$ionicPopover', '$ionicPopup', '$log', '$scope',
+    '$q', 'DataModelsFactory', 'FormFactory', 'ImageFactory', 'LiveDBFactory', 'OtherMapsFactory', 'ProjectFactory',
     'RemoteServerFactory', 'SpotFactory', 'UserFactory', 'IS_WEB'];
 
-  function ManageProjectController($ionicModal, $ionicLoading, $ionicPopup, $log, $scope, $q, DataModelsFactory,
-                                   FormFactory, ImageFactory, LiveDBFactory, OtherMapsFactory, ProjectFactory,
-                                   RemoteServerFactory, SpotFactory, UserFactory, IS_WEB) {
+  function ManageProjectController($ionicModal, $ionicLoading, $ionicPopover, $ionicPopup, $log, $scope, $q,
+                                   DataModelsFactory, FormFactory, ImageFactory, LiveDBFactory, OtherMapsFactory,
+                                   ProjectFactory, RemoteServerFactory, SpotFactory, UserFactory, IS_WEB) {
     var vm = this;
 
     var deleteSelected;
@@ -20,13 +20,14 @@
     var uploadErrors = false;
     var user = UserFactory.getUser();
 
+    vm.activeDatasets = [];
     vm.data = {};
     vm.datasets = [];
-    vm.activeDatasets = [];
-    vm.isWeb = IS_WEB;
     vm.newDatasetName = '';
     vm.otherFeatureTypes = [];
+    vm.popover = {};
     vm.project = {};
+    vm.projectModal = {};
     vm.projects = [];
     vm.showNewProject = false;
     vm.showNewProjectDetail = false;
@@ -88,9 +89,16 @@
         openModal();
       });
 
-      // Cleanup the modal when we're done with it!
+      $ionicPopover.fromTemplateUrl('app/project/manage/manage-project-popover.html', {
+        'scope': $scope
+      }).then(function (popover) {
+        vm.popover = popover;
+      });
+
+      // Cleanup the modal and popover when we're done with them
       $scope.$on('$destroy', function () {
         vm.projectModal.remove();
+        vm.popover.remove();
       });
     }
 
@@ -136,17 +144,19 @@
         .then(gatherNeededImages)
         .then(downloadImages)
         .finally(function () {
-          deferred.resolve();
+          if (!downloadErrors) deferred.resolve();
+          else deferred.reject('ERROR');
         })
         .catch(function (err) {
           downloadErrors = true;
-          $log.log('Error downloading dataset', err);
+          $log.log('Error downloading dataset.', err);
+          deferred.reject(err);
         });
       return deferred.promise;
     }
 
     function downloadImages(neededImagesIds) {
-      if(!IS_WEB){
+      if (!IS_WEB) {
         var promises = [];
         var imagesDownloadedCount = 0;
         var imagesFailedCount = 0;
@@ -163,7 +173,8 @@
                   return ImageFactory.saveImage(neededImageId, base64Image).then(function () {
                     savedImagesCount++;
                     notifyMessages.pop();
-                    outputMessage('NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
+                    outputMessage(
+                      'NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
                       '<br>NEW Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
                   });
                 });
@@ -204,6 +215,8 @@
             }
             if (currentRequest < vm.activeDatasets.length) makeNextRequest();
             else deferred.resolve();
+          }, function (err) {
+            deferred.reject(err);
           });
         }
 
@@ -233,7 +246,7 @@
     }
 
     function gatherNeededImages(spots) {
-      if(!IS_WEB){
+      if (!IS_WEB) {
         var neededImagesIds = [];
         var promises = [];
         outputMessage('Determining needed images...');
@@ -758,20 +771,23 @@
     }
 
     function initializeDownload() {
+      vm.popover.hide();
       downloadErrors = false;
       var downloadConfirmText = '';
       if (_.isEmpty(vm.activeDatasets)) {
-        downloadConfirmText = 'No active datasets! Project properties will be downloaded and will REPLACE' +
-          ' local project properties. Continue?'
+        downloadConfirmText = 'No active datasets to download! Only the project properties will be downloaded and will ' +
+          '<span style="color:red">OVERWRITE</span> the properties for the current open project. Continue?'
       }
       else {
         var names = _.pluck(vm.activeDatasets, 'name');
         downloadConfirmText = 'Project properties and datasets <b>' + names.join(', ') + '</b> will be downloaded' +
-          ' and will REPLACE local copies. Continue?';
+          ' and will <span style="color:red">OVERWRITE</span> the current open project properties and selected' +
+          ' datasets. Continue?';
       }
       var confirmPopup = $ionicPopup.confirm({
-        'title': 'Download Project!',
-        'template': downloadConfirmText
+        'title': 'Download Warning!',
+        'template': downloadConfirmText,
+        'cssClass': 'warning-popup'
       });
       confirmPopup.then(function (res) {
         if (res) {
@@ -794,21 +810,24 @@
     }
 
     function initializeUpload() {
+      vm.popover.hide();
       var deferred = $q.defer(); // init promise
       uploadErrors = false;
       var uploadConfirmText = '';
       if (_.isEmpty(vm.activeDatasets)) {
-        uploadConfirmText = 'No active datasets! Project properties will be uploaded and will REPLACE' +
-          ' project properties on the server. Continue?';
+        uploadConfirmText = 'No active datasets to upload! Only the project properties will be uploaded and will ' +
+          '<span style="color:red">OVERWRITE</span> the properties for this project on the server. Continue?';
       }
       else {
         var names = _.pluck(vm.activeDatasets, 'name');
-        uploadConfirmText = 'Project properties and datasets <b>' + names.join(', ') + '</b> will be uploaded' +
-          ' and will REPLACE copies on the server. Continue?'
+        uploadConfirmText = 'Project properties and the active datasets <b>' + names.join(', ') + '</b> will be' +
+          ' uploaded and will <span style="color:red">OVERWRITE</span> the project properties and selected' +
+          ' datasets on the server. Continue?'
       }
       var confirmPopup = $ionicPopup.confirm({
-        'title': 'Upload Project!',
-        'template': uploadConfirmText
+        'title': 'Upload Warning!',
+        'template': uploadConfirmText,
+        'cssClass': 'warning-popup'
       });
       confirmPopup.then(function (res) {
         if (res) {
@@ -976,6 +995,7 @@
     }
 
     function switchProject() {
+      vm.popover.hide();
       ProjectFactory.switchProject = true;
       openModal();
     }

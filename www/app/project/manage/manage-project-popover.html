@@ -1,0 +1,15 @@
+<ion-popover-view class='fit'>
+  <ion-content scroll='false'>
+    <ion-list>
+      <ion-item ng-show='vm.isSyncReady()' ng-click='vm.switchProject()'>
+        <i class='icon ion-arrow-swap'></i> Switch Projects
+      </ion-item>
+      <ion-item ng-show='vm.isSyncReady()' ng-click='vm.initializeUpload()'>
+        <i class='icon ion-android-upload'></i> Upload Project
+      </ion-item>
+      <ion-item ng-show='vm.isSyncReady()' ng-click='vm.initializeDownload()'>
+        <i class='icon ion-android-download'></i> Download Project
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-popover-view>

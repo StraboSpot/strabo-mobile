@@ -12,6 +12,10 @@ Basic Style
   text-transform: capitalize;
 }
 
+.warning-popup .popup-head{
+  background: red  !important;
+}
+
 /*--------------------
 Project Info
 --------------------*/
