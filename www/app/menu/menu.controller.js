@@ -21,7 +21,6 @@
     vm.isActive = isActive;
     vm.projectDetail = projectDetail;
     vm.showLoadingSpinner = showLoadingSpinner;
-    vm.switchProject = switchProject;
 
     activate();
 
@@ -76,7 +75,7 @@
     }
 
     function projectDetail() {
-      $state.go('app.project');
+      $state.go('app.manage-project');
     }
 
     function showLoadingSpinner() {
@@ -85,12 +84,6 @@
           'template': '<ion-spinner></ion-spinner><br>Loading Map...'
         });
       }
-    }
-
-    function switchProject() {
-      ProjectFactory.switchProject = true;
-      if ($state.current.name === 'app.manage-project') $state.reload();
-      else $state.go('app.manage-project');
     }
   }
 }());

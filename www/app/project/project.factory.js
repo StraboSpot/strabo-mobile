@@ -18,7 +18,6 @@
       'is lower metamorphic grade than', 'is higher metamorphic grade than', 'is included within', 'includes'];
     var spotsDataset = {};
     var spotIds = {};
-    var switchProject = false;
     var user = {};
 
     return {
@@ -75,7 +74,6 @@
       'saveSpotsDataset': saveSpotsDataset,
       'setModifiedTimestamp': setModifiedTimestamp,
       'setUser': setUser,
-      'switchProject': switchProject,
       'uploadProject': uploadProject
     };
 

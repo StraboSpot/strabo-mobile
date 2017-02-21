@@ -5,10 +5,11 @@
     .module('app')
     .factory('SpotFactory', SpotFactory);
 
-  SpotFactory.$inject = ['$ionicPopup', '$location', '$log', '$state', '$q', 'HelpersFactory', 'LiveDBFactory', 'LocalStorageFactory',
-    'ProjectFactory'];
+  SpotFactory.$inject = ['$ionicPopup', '$location', '$log', '$state', '$q', 'HelpersFactory', 'LiveDBFactory',
+    'LocalStorageFactory', 'ProjectFactory'];
 
-  function SpotFactory($ionicPopup, $location, $log, $state, $q, HelpersFactory, LiveDBFactory, LocalStorageFactory, ProjectFactory) {
+  function SpotFactory($ionicPopup, $location, $log, $state, $q, HelpersFactory, LiveDBFactory, LocalStorageFactory,
+                       ProjectFactory) {
     var activeNest = [];
     var activeSpots;  // Only Spots in the active datasets
     var currentSpot;
@@ -309,7 +310,8 @@
       else {
         $ionicPopup.alert({
           'title': 'Spot Not Found!',
-          'template': 'This Spot was not found in the local database. It may need to be downloaded from the server or an unknown error has occurred.'
+          'template': 'This Spot was not found in the local database. It may need to be downloaded from the server' +
+          ' or an unknown error has occurred.'
         });
       }
     }
@@ -393,10 +395,14 @@
     function setNewSpot(jsonObj) {
       var deferred = $q.defer(); // init promise
 
-      if (_.isEmpty(ProjectFactory.getSpotsDataset())) {
+      if (_.isEmpty(ProjectFactory.getCurrentProject())) {
+        $state.go('app.manage-project');
+        deferred.reject();
+      }
+      else if (_.isEmpty(ProjectFactory.getSpotsDataset())) {
         $ionicPopup.alert({
-          'title': 'No Default Dataset',
-          'template': 'A default dataset for new Spots has not been specified. Set this from the Manage Project page.'
+          'title': 'Set Your Default Dataset',
+          'template': 'Please toggle ON a default dataset for new Spots first.'
         });
         $state.go('app.manage-project');
         deferred.reject();

@@ -6,10 +6,10 @@
     .controller('ManageProjectController', ManageProjectController);
 
   ManageProjectController.$inject = ['$ionicModal', '$ionicLoading', '$ionicPopover', '$ionicPopup', '$log', '$scope',
-    '$q', 'DataModelsFactory', 'FormFactory', 'ImageFactory', 'LiveDBFactory', 'OtherMapsFactory', 'ProjectFactory',
-    'RemoteServerFactory', 'SpotFactory', 'UserFactory', 'IS_WEB'];
+    '$state', '$q', 'DataModelsFactory', 'FormFactory', 'ImageFactory', 'LiveDBFactory', 'OtherMapsFactory',
+    'ProjectFactory', 'RemoteServerFactory', 'SpotFactory', 'UserFactory', 'IS_WEB'];
 
-  function ManageProjectController($ionicModal, $ionicLoading, $ionicPopover, $ionicPopup, $log, $scope, $q,
+  function ManageProjectController($ionicModal, $ionicLoading, $ionicPopover, $ionicPopup, $log, $scope, $state, $q,
                                    DataModelsFactory, FormFactory, ImageFactory, LiveDBFactory, OtherMapsFactory,
                                    ProjectFactory, RemoteServerFactory, SpotFactory, UserFactory, IS_WEB) {
     var vm = this;
@@ -24,28 +24,28 @@
     vm.data = {};
     vm.datasets = [];
     vm.newDatasetName = '';
+    vm.newProjectModal = {};
     vm.otherFeatureTypes = [];
     vm.popover = {};
     vm.project = {};
-    vm.projectModal = {};
     vm.projects = [];
     vm.showNewProject = false;
     vm.showNewProjectDetail = false;
-    vm.showExistingProjectsList = false;
-    vm.showExitProjectModal = !_.isEmpty(ProjectFactory.getCurrentProject());
+    vm.showExitProjectModal = true;
     vm.showProject = false;
     vm.showProjectButtons = false;
     vm.survey = {};
+    vm.switchProjectModal = {};
     vm.titleText = 'Manage Projects';
 
     vm.areDatasetsOn = areDatasetsOn;
-    vm.closeModal = closeModal;
     vm.deleteDataset = deleteDataset;
     vm.deleteProject = deleteProject;
     vm.deleteType = deleteType;
     //vm.doSync = doSync;
     vm.filterDefaultTypes = filterDefaultTypes;
     vm.getNumberOfSpots = getNumberOfSpots;
+    vm.goToProjectDescription = goToProjectDescription;
     vm.hideLoading = hideLoading;
     vm.initializeUpload = initializeUpload;
     vm.initializeDownload = initializeDownload;
@@ -56,10 +56,10 @@
     vm.selectProject = selectProject;
     vm.setSpotsDataset = setSpotsDataset;
     vm.showField = showField;
+    vm.startNewProject = startNewProject;
     vm.switchProject = switchProject;
     vm.syncDataset = syncDataset;
     vm.toggleDataset = toggleDataset;
-    vm.toggleProject = toggleProject;
 
     activate();
 
@@ -69,37 +69,38 @@
 
     function activate() {
       initializeProject();
-
-      /*  ProjectFactory.loadProjects().then(function (loadedProjects) {
-       vm.projects = loadedProjects;
-       initializeModal();
-       });*/
+      createPageInteractions();
 
       ProjectFactory.setUser(user);
-
       vm.survey = DataModelsFactory.getDataModel('project').survey;
 
-      $ionicModal.fromTemplateUrl('app/project/manage/open-project-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up',
-        'backdropClickToClose': false,
-        'hardwareBackButtonClose': false
-      }).then(function (modal) {
-        vm.projectModal = modal;
-        openModal();
-      });
+      if (_.isEmpty(vm.project)) {
+        vm.showExitProjectModal = false;
+        var startPopupText = 'Please create a new project to continue.';
+        if (vm.isSyncReady()) {
+          var confirmPopup = $ionicPopup.confirm({
+            title: 'Set Your Project',
+            template: 'Please create a new project or open an existing project to continue.',
+            okText: 'Select Existing Project',
 
-      $ionicPopover.fromTemplateUrl('app/project/manage/manage-project-popover.html', {
-        'scope': $scope
-      }).then(function (popover) {
-        vm.popover = popover;
-      });
-
-      // Cleanup the modal and popover when we're done with them
-      $scope.$on('$destroy', function () {
-        vm.projectModal.remove();
-        vm.popover.remove();
-      });
+            cancelText: 'Create New Project',
+            cancelType: 'button-positive'
+          });
+          confirmPopup.then(function (res) {
+            if (res) switchProject();
+            else startNewProject()
+          });
+        }
+        else {
+          var alertPopup = $ionicPopup.alert({
+            title: 'Welcome to StraboSpot',
+            template: 'Please press OK below and create a new project to continue.'
+          });
+          alertPopup.then(function (res) {
+            startNewProject()
+          });
+        }
+      }
     }
 
     function allValidSpots(spots) {
@@ -126,6 +127,39 @@
         SpotFactory.save(spot);
       }
       return spot;
+    }
+
+    function createPageInteractions() {
+      $ionicModal.fromTemplateUrl('app/project/manage/new-project-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false,
+        'hardwareBackButtonClose': false
+      }).then(function (modal) {
+        vm.newProjectModal = modal;
+      });
+
+      $ionicModal.fromTemplateUrl('app/project/manage/switch-project-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false,
+        'hardwareBackButtonClose': false
+      }).then(function (modal) {
+        vm.switchProjectModal = modal;
+      });
+
+      $ionicPopover.fromTemplateUrl('app/project/manage/manage-project-popover.html', {
+        'scope': $scope
+      }).then(function (popover) {
+        vm.popover = popover;
+      });
+
+      // Cleanup the modal and popover when we're done with them
+      $scope.$on('$destroy', function () {
+        vm.switchProjectModal.remove();
+        vm.newProjectModal.remove();
+        vm.popover.remove();
+      });
     }
 
     function destroyProject() {
@@ -294,22 +328,6 @@
       });
     }
 
-    function initializeModal() {
-      vm.data = {};
-      vm.showExistingProjectsList = false;
-      vm.showExitProjectModal = !_.isEmpty(vm.project);
-      if (!isSyncReady()) {
-        vm.showProjectButtons = false;
-        vm.showNewProjectDetail = true;
-        vm.titleText = 'Create a New Project';
-      }
-      else {
-        vm.showProjectButtons = true;
-        vm.showNewProjectDetail = false;
-        vm.titleText = 'Select a Project';
-      }
-    }
-
     function initializeProject() {
       $ionicLoading.show();
       vm.project = ProjectFactory.getCurrentProject();
@@ -330,7 +348,7 @@
       $ionicLoading.show();
       destroyProject().then(function () {
         ProjectFactory.loadProjectRemote(project).then(function () {
-          vm.closeModal();
+          vm.switchProjectModal.hide();
           initializeProject();
         }, function (err) {
           $ionicPopup.alert({
@@ -347,24 +365,6 @@
     function outputMessage(msg) {
       notifyMessages.push(msg);
       $ionicLoading.show({'template': notifyMessages.join('<br>')});
-    }
-
-    function openModal() {
-      initializeModal();
-      if (_.isEmpty(vm.project)) vm.projectModal.show();
-      else if (ProjectFactory.switchProject === true) {
-        ProjectFactory.switchProject = false;
-        if (isSyncReady()) vm.projectModal.show();
-        else {
-          var confirmPopup = $ionicPopup.confirm({
-            'title': 'Warning!',
-            'template': 'Unable to upload the current project to the server. Switching projects will overwrite the current project. Are you sure you want to continue?'
-          });
-          confirmPopup.then(function (res) {
-            if (res) vm.projectModal.show();
-          });
-        }
-      }
     }
 
     function readDataUrl(file) {
@@ -609,11 +609,6 @@
      * Public Functions
      */
 
-    function closeModal() {
-      initializeModal();
-      vm.projectModal.hide();
-    }
-
     function deleteDataset(dataset) {
       var remainingActiveDatasets = _.reject(vm.activeDatasets, function (activeDataset) {
         return activeDataset.id === dataset.id;
@@ -626,8 +621,10 @@
       }
       else {
         var confirmPopup = $ionicPopup.confirm({
-          'title': 'Delete Dataset',
-          'template': 'Are you sure you want to delete Dataset ' + dataset.name + '? This will also delete the Spots in this dataset.'
+          'title': 'Delete Dataset Warning!',
+          'template': 'Are you sure you want to <span style="color:red">DELETE</span> the Dataset' +
+          ' <b>' + dataset.name + '</b>? This will also delete the Spots in this dataset.',
+          'cssClass': 'warning-popup'
         });
         confirmPopup.then(function (res) {
           if (res) {
@@ -645,8 +642,10 @@
     function deleteProject(project) {
       deleteSelected = true;
       var confirmPopup = $ionicPopup.confirm({
-        'title': 'Delete Project',
-        'template': 'Are you sure you want to delete the project ' + project.name + '? This will also delete all datasets and Spots contained within the project.'
+        'title': 'Delete Project Warning!',
+        'template': 'Are you sure you want to <span style="color:red">DELETE</span> the project' +
+        ' <b>' + project.name + '</b>. This will also delete all datasets and Spots contained within the project.',
+        'cssClass': 'warning-popup'
       });
       confirmPopup.then(function (res) {
         deleteSelected = false;
@@ -712,7 +711,7 @@
           $log.log('Save Project to LiveDB:', ProjectFactory.getCurrentProject());
           LiveDBFactory.save(null, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
           $ionicLoading.hide();
-          vm.closeModal();
+          vm.newProjectModal.hide();
           initializeProject();
         });
       });
@@ -764,6 +763,10 @@
         else if (spots.length === 1) return '(1 Spot)';
         return '(' + spots.length + ' Spots)';
       }
+    }
+
+    function goToProjectDescription() {
+      $state.go('app.description');
     }
 
     function hideLoading() {
@@ -896,50 +899,7 @@
 
     function newProject() {
       var valid = FormFactory.validate(vm.survey, vm.data);
-      if (valid) {
-        if (_.isEmpty(vm.project)) doCreateNewProject();
-        else if (ProjectFactory.isSyncReady()) {
-          var confirmPopup = $ionicPopup.confirm({
-            'title': 'Upload Current Project?',
-            'template': 'Upload current project, ' + vm.project.description.project_name + ', before creating your' +
-            ' new project?',
-            'cancelText': 'No',
-            'okText': 'Yes'
-          });
-          confirmPopup.then(function (res) {
-            if (res) {
-              initializeUpload().then(function () {
-                doCreateNewProject();
-              }, function () {
-                var confirmPopup2 = $ionicPopup.confirm({
-                  'title': 'Upload Error',
-                  'template': 'Your current project, ' + vm.project.description.project_name + ', cannot be' +
-                  ' uploaded to the server at this time so it will be overwritten by the new project, ' +
-                  vm.data.project_name + '. Are you sure you want to delete the project ' +
-                  vm.project.description.project_name + ' including all datasets and Spots contained within the' +
-                  ' project?'
-                });
-                confirmPopup2.then(function (res2) {
-                  if (res2) doCreateNewProject();
-                });
-              });
-            }
-            else doCreateNewProject();
-          });
-        }
-        else {
-          var confirmPopup3 = $ionicPopup.confirm({
-            'title': 'Final Chance!',
-            'template': 'Since your current project, ' + vm.project.description.project_name + ', cannot be' +
-            ' uploaded to the server at this time it will be overwritten by the new project, ' +
-            vm.data.project_name + '. Are you sure you want to delete the project ' +
-            vm.project.description.project_name + ' including all datasets and Spots contained within the project?'
-          });
-          confirmPopup3.then(function (res) {
-            if (res) doCreateNewProject();
-          });
-        }
-      }
+      if (valid) doCreateNewProject();
     }
 
     function selectProject(project) {
@@ -948,30 +908,15 @@
         if (_.isEmpty(vm.project)) loadProjectRemote(project);
         else {
           var confirmPopup = $ionicPopup.confirm({
-            'title': 'Upload Current Project?',
-            'template': 'Upload current project, ' + vm.project.description.project_name + ', before loading another' +
-            ' project?',
-            'cancelText': 'No',
-            'okText': 'Yes'
+            'title': 'Delete Local Project Warning!',
+            'template': 'Switching projects will <span style="color:red">DELETE</span> the local copy of the' +
+            ' current project <b>' + vm.project.description.project_name + '</b> including all datasets and Spots' +
+            ' contained within this project. Make sure you have already uploaded the project to the server if you' +
+            ' wish to preserve the data. Continue?',
+            'cssClass': 'warning-popup'
           });
           confirmPopup.then(function (res) {
-            if (res) {
-              initializeUpload().then(function () {
-                loadProjectRemote(project);
-              }, function () {
-                var confirmPopup2 = $ionicPopup.confirm({
-                  'title': 'Upload Error',
-                  'template': 'Your current project, ' + vm.project.description.project_name + ', cannot be' +
-                  ' uploaded to the server at this time so it will be overwritten by the project, ' + project.name +
-                  '. Are you sure you want to delete the project ' + vm.project.description.project_name + ' including' +
-                  ' all datasets and Spots contained within the project?'
-                });
-                confirmPopup2.then(function (res2) {
-                  if (res2) loadProjectRemote(project);
-                });
-              });
-            }
-            else loadProjectRemote(project);
+            if (res) loadProjectRemote(project);
           });
         }
       }
@@ -994,10 +939,46 @@
       return show;
     }
 
+    function startNewProject() {
+      vm.popover.hide();
+      if (_.isEmpty(vm.project)) vm.newProjectModal.show();
+      else {
+        var confirmText = 'Creating a new project will <span style="color:red">DELETE</span> the local copy of the' +
+          ' current project <b>' + vm.project.description.project_name + '</b> including all datasets and Spots' +
+          ' contained within this project.';
+        if (ProjectFactory.isSyncReady()) {
+          confirmText += ' Make sure you have already uploaded the project to the server if you wish to preserve the' +
+            ' data. Continue?';
+        }
+        else {
+          confirmText += ' Create an account and log in to upload the project to the server if you wish preserve' +
+            ' the data. Continue';
+        }
+        var confirmPopup = $ionicPopup.confirm({
+          'title': 'Delete Local Project Warning!',
+          'template': confirmText,
+          'cssClass': 'warning-popup'
+        });
+        confirmPopup.then(function (res) {
+          if (res) vm.newProjectModal.show();
+        });
+      }
+    }
+
     function switchProject() {
       vm.popover.hide();
-      ProjectFactory.switchProject = true;
-      openModal();
+      $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Getting Projects from Server ...'});
+      ProjectFactory.loadProjectsRemote().then(function (projects) {
+        vm.projects = projects;
+        vm.switchProjectModal.show();
+      }, function (err) {
+        $ionicPopup.alert({
+          'title': 'Error communicating with server!',
+          'template': err
+        });
+      }).finally(function () {
+        $ionicLoading.hide();
+      });
     }
 
     function syncDataset(i) {
@@ -1036,28 +1017,6 @@
         }
       }
       ProjectFactory.saveActiveDatasets(vm.activeDatasets);
-    }
-
-    function toggleProject(loadType) {
-      if (loadType === 'new') {
-        vm.showExistingProjectsList = false;
-        vm.showNewProjectDetail = true;
-      }
-      else {
-        vm.showExistingProjectsList = true;
-        vm.showNewProjectDetail = false;
-        $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Getting Projects from Server ...'});
-        ProjectFactory.loadProjectsRemote().then(function (projects) {
-          vm.projects = projects;
-        }, function (err) {
-          $ionicPopup.alert({
-            'title': 'Error communicating with server!',
-            'template': err
-          });
-        }).finally(function () {
-          $ionicLoading.hide();
-        });
-      }
     }
   }
 }());

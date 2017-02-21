@@ -1,6 +1,9 @@
 <ion-popover-view class='fit'>
   <ion-content scroll='false'>
     <ion-list>
+      <ion-item ng-click='vm.startNewProject()'>
+        <i class='icon ion-compose'></i> New Project
+      </ion-item>
       <ion-item ng-show='vm.isSyncReady()' ng-click='vm.switchProject()'>
         <i class='icon ion-arrow-swap'></i> Switch Projects
       </ion-item>

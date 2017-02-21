@@ -260,7 +260,9 @@
     function doLogout() {
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Log Out Warning!',
-        'template': 'Logging out will <b>erase</b> all local data. Are you sure you want to continue?'
+        'template': 'Logging out will <span style="color:red">ERASE</span> all local data. Are you sure you want' +
+        ' to continue?',
+        'cssClass': 'warning-popup'
       });
       confirmPopup.then(function (res) {
         if (res) {

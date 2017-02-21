@@ -13,7 +13,7 @@
     <div class='padding' ng-hide='vm.showProject'>
       No Project Set Yet
     </div>
-    <div ng-show='vm.showProject'>
+    <div ng-show='vm.showProject' ng-click='vm.goToProjectDescription()'>
       {{ vm.project.description.project_name }}
     </div>
   </ion-item>
