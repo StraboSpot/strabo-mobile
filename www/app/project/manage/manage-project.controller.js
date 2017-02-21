@@ -941,8 +941,11 @@
 
     function startNewProject() {
       vm.popover.hide();
+      vm.data = {};
+      vm.showExitProjectModal = false;
       if (_.isEmpty(vm.project)) vm.newProjectModal.show();
       else {
+        vm.showExitProjectModal = true;
         var confirmText = 'Creating a new project will <span style="color:red">DELETE</span> the local copy of the' +
           ' current project <b>' + vm.project.description.project_name + '</b> including all datasets and Spots' +
           ' contained within this project.';
