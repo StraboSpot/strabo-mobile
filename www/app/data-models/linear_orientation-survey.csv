@@ -1,19 +1,19 @@
-name,type,label,hint,required,constraint,constraint_message,relevant,default,appearance
+name,type,label,hint,required,appearance,constraint,constraint_message,relevant,default
 label,text,Label,If a label is not specified a default label will be given.,false,,,,,
-trend,integer,Trend,Azimuth in degrees,false,. >= 0 and . <= 360,Values must be between 0-360.,,,
-plunge,integer,Plunge,,false,. >= 0 and . <= 90,Plunge must be between 0-90.,,,
+feature_type,select_one wa7uq58,Linear Feature Type,"Specific lineation type: e.g., striation, groove mark, intersection, fold hinge, alignment, many others",false,horizontal,,,,
+trend,integer,Trend,Azimuth in degrees,false,,. >= 0 and . <= 360,Values must be between 0-360.,,
+plunge,integer,Plunge,,false,,. >= 0 and . <= 90,Plunge must be between 0-90.,,
 rake,integer,Rake,down dip angle from strike on plane (0-180)?,false,,,,,
-rake_calculated,select_one hq7tk98,Rake Calculated?,,false,,,${rake} != '',no,
-quality,select_one ex15z66,Linear Measurement Quality,Quality of linear feature or of measurement,false,,,,,likert
-feature_type,select_one wa7uq58,Linear Feature Type,"Specific lineation type: e.g., striation, groove mark, intersection, fold hinge, alignment, many others",false,,,,,horizontal
-vorticity,select_one ip7ah36,Vorticity Type,Clockwise or counterclockwise looking down plunge,true,,,${feature_type} = 'vorticity_axis',,
-other_feature,text,Other Linear Feature,,true,,,${feature_type} = 'other',,
+rake_calculated,select_one hq7tk98,Rake Calculated?,,false,,,,${rake} != '',no
+quality,select_one ex15z66,Linear Measurement Quality,Quality of linear feature or of measurement,false,likert,,,,
+vorticity,select_one ip7ah36,Vorticity Type,Clockwise or counterclockwise looking down plunge,true,,,,${feature_type} = 'vorticity_axis',
+other_feature,text,Other Linear Feature,,true,,,,${feature_type} = 'other',
 defined_by,text,Lineation Defined by,,false,,,,,
 min_age,decimal,Minimum Age of Structure (Ma),,false,,,,,
-min_age_just,text,Justification of Minimum Age,,false,,,${min_age} != '',,
+min_age_just,text,Justification of Minimum Age,,false,,,,${min_age} != '',
 max_age,decimal,Maximum Age of Structure (Ma),,false,,,,,
-max_age_just,text,Justification of Maximum Age,,false,,,${max_age} != '',,
+max_age_just,text,Justification of Maximum Age,,false,,,,${max_age} != '',
 geo_age,text,Geologic Age of Structure,,false,,,,,
-notes,text,Line Notes,,false,,,,,multiline
+notes,text,Line Notes,,false,multiline,,,,
 start,start,,,,,,,,
 end,end,,,,,,,,

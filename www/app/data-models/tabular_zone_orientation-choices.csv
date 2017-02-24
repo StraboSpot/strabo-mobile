@@ -1,4 +1,17 @@
 label,name,order,list name
+stratigraphic,stratigraphic,0,pr4xf92
+intrusive body,intrusive,1,pr4xf92
+injection structure,injection,2,pr4xf92
+vein,vein,3,pr4xf92
+vein array,vein_array,4,pr4xf92
+zone of fracturing,zone_fracturin,5,pr4xf92
+zone of faulting,zone_faulting,6,pr4xf92
+shear zone,shear_zone,7,pr4xf92
+damage zone,damage_zone,8,pr4xf92
+alteration zone,alteration_zone,9,pr4xf92
+enveloping surface,enveloping_surface,10,pr4xf92
+unknown,unknown,11,pr4xf92
+other,other,12,pr4xf92
 upright,upright,0,to1en66
 overturned,overturned,1,to1en66
 vertical,vertical,2,to1en66
@@ -13,19 +26,6 @@ other,other,,bl4bp16
 3 - approximate,3,2,xn9nf56
 2,2,3,xn9nf56
 1 - poor - irregular - uncertain,1,4,xn9nf56
-stratigraphic,stratigraphic,0,pr4xf92
-intrusive body,intrusive,1,pr4xf92
-injection structure,injection,2,pr4xf92
-vein,vein,3,pr4xf92
-vein array,vein_array,4,pr4xf92
-zone of fracturing,zone_fracturin,5,pr4xf92
-zone of faulting,zone_faulting,6,pr4xf92
-shear zone,shear_zone,7,pr4xf92
-damage zone,damage_zone,8,pr4xf92
-alteration zone,alteration_zone,9,pr4xf92
-enveloping surface,enveloping_surface,10,pr4xf92
-unknown,unknown,11,pr4xf92
-other,other,12,pr4xf92
 bedded rock,bedded_rock,,kk7zi98
 volcanic flows or deposits,volcanic_flows,,kk7zi98
 dike,dike,,ts5su86

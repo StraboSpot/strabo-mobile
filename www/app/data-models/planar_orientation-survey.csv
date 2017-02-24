@@ -1,46 +1,46 @@
-name,type,label,hint,required,constraint,constraint_message,appearance,relevant
+name,type,label,hint,required,appearance,constraint,constraint_message,relevant
 label,text,Label,If a label is not specified a default label will be given.,false,,,,
-strike,integer,Strike,Azimuth in degrees,false,. >= 0 and . <= 360,Strike must be between 0-360.,,
-dip_direction,integer,Dip Direction,,false,. >= 0 and . <= 360,values must be between 0-360,,
-dip,integer,Dip,,false,. >= 0 and . <= 90,values must be between 0-90,,
-facing,select_one fr08c16,Plane Facing,"Orientation of plane relative to original position e.g., upright, overturned, vertical",false,,,horizontal-compact,
-facing_defined_by,select_one rf3od15,Plane Facing Defined By,"Criteria for facing direction: e.g., stratigraphy, facing iindicators, other",false,,,horizontal,${facing} != ''
+feature_type,select_one yy6na02,Planar Feature Type,"Type of planar geologic feature: e.g., bedding, contact, foliation, fracture, vein, shear zone",false,horizontal,,,
+strike,integer,Strike,Azimuth in degrees,false,,. >= 0 and . <= 360,Strike must be between 0-360.,
+dip_direction,integer,Dip Direction,,false,,. >= 0 and . <= 360,values must be between 0-360,
+dip,integer,Dip,,false,,. >= 0 and . <= 90,values must be between 0-90,
+facing,select_one fr08c16,Plane Facing,"Orientation of plane relative to original position e.g., upright, overturned, vertical",false,horizontal-compact,,,
+facing_defined_by,select_one rf3od15,Plane Facing Defined By,"Criteria for facing direction: e.g., stratigraphy, facing iindicators, other",false,horizontal,,,${facing} != ''
 other_facing_defined_by,text,Other Plane Facing Defined By,,true,,,,${facing_defined_by} = 'other'
-quality,select_one qt5nd15,Planar Measurement Quality,How well was this plane exposed or measured?,false,,,likert,
-feature_type,select_one yy6na02,Planar Feature Type,"Type of planar geologic feature: e.g., bedding, contact, foliation, fracture, vein, shear zone",false,,,horizontal,
+quality,select_one qt5nd15,Planar Measurement Quality,How well was this plane exposed or measured?,false,likert,,,
 bedding_type,select_one ry4pa50,Bedding Type,Bedding defined by? change in lithology or sedimentary feature,false,,,,${feature_type} = 'bedding'
-contact_type,select_one lx9ax28,Contact Type,"Specific contacts types under depositional, igneous and metamorphic",false,,,horizontal,${feature_type} = 'contact'
+contact_type,select_one lx9ax28,Contact Type,"Specific contacts types under depositional, igneous and metamorphic",false,horizontal,,,${feature_type} = 'contact'
 other_contact_type,text,Other Contact Type,,true,,,,${contact_type} = 'other'
 other_dep_contact_type,text,Other Depositional Contact Type,,true,,,,${contact_type} = 'other_depositional_contact'
 other_ig_contact_type,text,Other Igneous Contact Type,,true,,,,${contact_type} = 'other_igneous'
 other_met_contact_type,text,Other Metamorphic Contact Type,,true,,,,${contact_type} = 'other_metamorp'
-foliation_type,select_one vn7df87,Foliation Type,Specific type of foliation defined by planar and/or linear elements,false,,,horizontal,${feature_type} = 'foliation'
+foliation_type,select_one vn7df87,Foliation Type,Specific type of foliation defined by planar and/or linear elements,false,horizontal,,,${feature_type} = 'foliation'
 other_foliation_type,text,Other Foliation Type,,true,,,,${foliation_type} = 'other'
 foliation_defined_by,text,Foliation Defined by,,false,,,,${feature_type} = 'foliation'
 fracture_type,select_one gz3mh75,Fracture Type,"Specific type of fracture: e.g., joint, shear or others",false,,,,${feature_type} = 'fracture'
 other_fracture_type,text,Other Fracture Type,,true,,,,${fracture_type} = 'other'
 fracture_defined_by,text,Fracture Defined by,,false,,,,${feature_type} = 'fracture'
 vein_type,select_one vi28v96,Vein Type,"Specific type: e.g., antitaxial, syntaxial, normal, oblique",false,,,,${feature_type} = 'vein'
-vein_fill,select_one sg8qo24,Vein Mineral Fill,"Mineral filling veins: calcite, quartz or other",false,,,likert,${feature_type} = 'vein'
+vein_fill,select_one sg8qo24,Vein Mineral Fill,"Mineral filling veins: calcite, quartz or other",false,likert,,,${feature_type} = 'vein'
 other_vein_fill,text,Other Vein Mineral,,true,,,,${vein_fill} = 'other'
-fault_or_sz_type,select_one kk9ik41,Type of Fault or Shear Zone Boundary,"Specific type: e.g., dextral, sinistral, normal, reverse, oblique",false,,,horizontal,${feature_type} = 'fault' or ${feature_type} = 'shear_zone_bou' or ${feature_type} = 'shear_zone'
+fault_or_sz_type,select_one kk9ik41,Type of Fault or Shear Zone Boundary,"Specific type: e.g., dextral, sinistral, normal, reverse, oblique",false,horizontal,,,${feature_type} = 'fault' or ${feature_type} = 'shear_zone_bou' or ${feature_type} = 'shear_zone'
 other_fault_or_sz_type,text,Other Fault or Shear Zone Boundary Type,,true,,,,${fault_or_sz_type} = 'other'
 movement,select_one ia36i83,Movement,Relative movement across structure,false,,,,${feature_type} = 'fault' or ${feature_type} = 'shear_zone_bou' or ${feature_type} = 'shear_zone' or ${feature_type} = 'fracture' or ${feature_type} = 'foliation'
 other_movement,text,Other Movement,,true,,,,${movement} = 'other'
 movement_justification,select_multiple gq4wq38,Movement Justification,Offset feature types used to determine relative movement,false,,,,${movement} != ''
 other_movement_justification,text,Other Movement Justification,,true,,,,"selected(${movement_justification}, 'other')"
-directional_indicators,select_multiple tj67x48,Directional Indicators,"Specific sense of shear indicator, such as Riedel shears, S-C fabrics, drag folds, etc.",false,,,,${feature_type} = 'fault' or ${feature_type} = 'shear_zone_bou'
+directional_indicators,select_multiple tj67x48,Directional Indicators,"Specific sense of shear indicator, such as Riedel shears, S-C fabrics, drag folds, etc.",false,,,,${feature_type} = 'fault' or ${feature_type} = 'shear_zone_bou' or ${feature_type} = 'shear_zone' or ${feature_type} = 'foliation' or ${feature_type} = 'fracture'
 other_directional_indic,text,Other Directional Indicator,,true,,,,"selected(${directional_indicators}, 'other')"
 other_feature,text,Other Planar Feature,,false,,,,${feature_type} = 'other'
-movement_amount_m,decimal,Movement Amount (m),How much movement?,false,,,,
+movement_amount_m,decimal,Movement Amount (m),How much movement?,false,,,,${feature_type} = 'fault'
 movement_amount_qualifier,select_one kh6kx98,Movement Amount Qualifier,,false,,,,${movement_amount_m} != ''
 thickness,decimal,Planar Feature Thickness (m),,false,,,,
 length,decimal,Planar Feature Length (m),,false,,,,
-notes,text,Planar Feature Notes,,false,,,multiline,
-min_age,decimal,Minimum Age of Structure (Ma),,false,,,,
+notes,text,Planar Feature Notes,,false,multiline,,,
+min_age,decimal,Minimum Age of Structure (Ma),,false,,,,${feature_type} = 'foliation' and ${feature_type} = 'fault'
 min_age_just,text,Justification of Minimum Age,,false,,,,${min_age} != ''
-max_age,decimal,Maximum Age of Structure (Ma),,false,,,,
+max_age,decimal,Maximum Age of Structure (Ma),,false,,,,${feature_type} = 'foliation' and ${feature_type} = 'fault'
 max_age_just,text,Justification of Maximum Age,,false,,,,${max_age} != ''
-geo_age,text,Geologic Age of Structure,,false,,,,
+geo_age,text,Geologic Age of Structure,,false,,,,${feature_type} = 'foliation' and ${feature_type} = 'fault'
 start,start,,,,,,,
 end,end,,,,,,,

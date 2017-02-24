@@ -1,156 +1,156 @@
-label,name,list name,order
-upright,upright,fr08c16,
-overturned,overturned,fr08c16,
-vertical,vertical,fr08c16,
-not applicable,not_applicable,fr08c16,
-stratigraphy,stratigraphy,rf3od15,
-facing indicator,facing_indicat,rf3od15,
-assumed,assumed,rf3od15,
-other,other,rf3od15,
-5 - best - accurate,5,qt5nd15,0
-4,4,qt5nd15,1
-3 - approximate,3,qt5nd15,2
-2,2,qt5nd15,3
-1 - poor - irregular - uncertain,1,qt5nd15,4
-bedding,bedding,yy6na02,0
-contact,contact,yy6na02,1
-foliation,foliation,yy6na02,2
-fracture,fracture,yy6na02,3
-vein,vein,yy6na02,4
-fault,fault,yy6na02,5
-shear zone,shear_zone,yy6na02,6
-shear zone boundary,shear_zone_bou,yy6na02,7
-fold axial surface,fold_axial_surface,yy6na02,8
-plane of boudinage,plane_of_boudinage,yy6na02,9
-plane of mullions,plane_of_mullions,yy6na02,10
-other,other,yy6na02,11
-lithologic change,lithologic_cha,ry4pa50,
-sedimentary feature,sedimentary_fe,ry4pa50,
-stratigraphic,stratigraphic,lx9ax28,0
-alluvial,alluvial,lx9ax28,1
-unconformity,unconformity,lx9ax28,2
-angular unconformity,angular_unconf,lx9ax28,3
-nonconformity,nonconformity,lx9ax28,5
-disconformity,disconformity,lx9ax28,6
-volcanic,volcanic,lx9ax28,
-other depositional,other_depositional_contact,lx9ax28,
-dike,dike,lx9ax28,
-sill,sill,lx9ax28,
-pluton,pluton,lx9ax28,
-migmatite,migmatite,lx9ax28,
-injectite,injectite,lx9ax28,
-other igneous,other_igneous,lx9ax28,
-boundary of metamorphic rock,boundary_of_metamorphic_rocks,lx9ax28,
-isograd,isograd,lx9ax28,
-other metamorphic,other_metamorp,lx9ax28,
-other,other,lx9ax28,
-unknown,unknown,lx9ax28,
-cleavage,cleavage,vn7df87,0
-slatey cleavage,slatey_cleavage,vn7df87,1
-phyllitic cleavage,phyllitic_cleavage,vn7df87,2
-crenulation cleavage,crenulation_cl,vn7df87,3
-phacoidal (lenticular),phacoidal,vn7df87,4
-schistosity,schistosity,vn7df87,5
-planar schistosity,planar_schistosity,vn7df87,6
-anastomosing schistosity,anast_schistos,vn7df87,7
-gneissic foliation,gneissic_folia,vn7df87,8
-mineral alignment,mineral_alignm,vn7df87,9
-compositional banding,comp_banding,vn7df87,10
-deformed marker,deformed_marker,vn7df87,11
-mylonitic foliation,mylonitic_foliation,vn7df87,12
-S plane,s_plane,vn7df87,13
-C plane,c_plane,vn7df87,14
-C' or extensional plane,c__or_extensional_plane,vn7df87,15
-protomylonite,protomylonite,vn7df87,16
-mylonite,mylonite,vn7df87,17
-ultramylonite,ultramylonite,vn7df87,18
-gouge,gouge,vn7df87,19
-cataclasite,cataclasite,vn7df87,20
-solid-state mineral alignment,solid_state_mineral_alignment,vn7df87,21
-magmatic mineral alignment,magmatic_mineral_alignment,vn7df87,22
-migmatite foliation,migmatitic,vn7df87,23
-migmatitic mineral alignment,migmatitic_mineral_alignment,vn7df87,24
-mineral elongation,mineral_elongation,vn7df87,25
-compaction,compaction,vn7df87,26
-soft sediment,soft_sediment,vn7df87,27
-stylolites,stylolites,vn7df87,28
-slickolites,slickolites,vn7df87,29
-other,other,vn7df87,30
-joint,joint,gz3mh75,
-opening mode,opening_mode,gz3mh75,
-shear fracture,shear_fracture,gz3mh75,
-filled fracture,filled_fractur,gz3mh75,
-other,other,gz3mh75,
-normal opening,normal_opening,vi28v96,
-oblique opening,oblique_openin,vi28v96,
-antitaxial,antitaxial,vi28v96,
-syntaxial,syntaxial,vi28v96,
-unknown,unknown,vi28v96,
-quartz,quartz,sg8qo24,
-calcite,calcite,sg8qo24,
-other,other,sg8qo24,
-dextral strike-slip,dextral,kk9ik41,1
-sinistral strike-slip,sinistral,kk9ik41,2
-normal,oblique,kk9ik41,3
-reverse,reverse,kk9ik41,4
-thrust,thrust,kk9ik41,5
-low-angle normal,low_angle_normal,kk9ik41,6
-dextral reverse,dextral_reverse,kk9ik41,7
-dextral normal,dextral_normal,kk9ik41,8
-sinistral reverse,sinistral_reverse,kk9ik41,9
-sinistral normal,sinistral_normal,kk9ik41,10
-high-angle,high_angle,kk9ik41,
-low-angle,low_angle,kk9ik41,
-scissor,scissor,kk9ik41,
-other,other,kk9ik41,
-N side up,n_side_up,ia36i83,0
-NE side up,ne_side_up,ia36i83,1
-E side up,e_side_up,ia36i83,2
-SE side up,se_side_up,ia36i83,3
-S side up,s_side_up,ia36i83,4
-SW side up,sw_side_up,ia36i83,5
-W side up,w_side_up,ia36i83,6
-NW side up,nw_side_up,ia36i83,7
-top to N,top_to_n,ia36i83,8
-top to NE,top_to_ne,ia36i83,9
-top to E,top_to_e,ia36i83,10
-top to SE,top_to_se,ia36i83,11
-top to S,top_to_s,ia36i83,12
-top to SW,top_to_sw,ia36i83,13
-top to W,top_to_w,ia36i83,14
-top to NW,top_to_nw,ia36i83,15
-right-lateral,right_lateral,ia36i83,16
-left-lateral,left_lateral,ia36i83,17
-other,other,ia36i83,
-not specified,not_specified,gq4wq38,0
-offset bedding,offset_bedding,gq4wq38,1
-offset intrusion,offset_intrusion,gq4wq38,2
-offset foliation,offset_foliation,gq4wq38,3
-offset compostional banding,offset_compostional_banding,gq4wq38,4
-igneous feature,igneous_feature,gq4wq38,5
-sedimentary feature,sedimentary_fe,gq4wq38,6
-fossil,fossil,gq4wq38,7
-geomorphic feature,geomorphic_fea,gq4wq38,8
-other,other,gq4wq38,9
-riedel shear,riedel_shear,tj67x48,
-gouge fill,gouge_fill,tj67x48,
-crescentic fractures,crescentic_fra,tj67x48,
-slickenfibers,slickenfibers,tj67x48,
-oblique gouge foliation,oblique_gouge,tj67x48,
-drag folds,drag_folds,tj67x48,
-rotated clasts,rotated_clasts,tj67x48,
-domino texture,domino_texture,tj67x48,
-vein arrays,vein_arrays,tj67x48,
-P shear array,p_shear_array,tj67x48,
-asymmetric folds,asymm_folds,tj67x48,
-microstructures,microstructure,tj67x48,
-S-C-C' fabrics,s_c_c__fabrics,tj67x48,
-foliation deflection,fol_deflect,tj67x48,
-porphyroclast system,porphyroclast_,tj67x48,
-porphyroblast system,porphyroblast_,tj67x48,
-strain assymetry,strain_assym,tj67x48,
-flanking structures,flanking_struc,tj67x48,
-other,other,tj67x48,
-maximum amount,maximum_amount,kh6kx98,
-minimum amount,minimum_amount,kh6kx98,
-estimate of amount,estimate_of_am,kh6kx98,
+label,name,order,list name
+bedding,bedding,0,yy6na02
+contact,contact,1,yy6na02
+foliation,foliation,2,yy6na02
+fracture,fracture,3,yy6na02
+vein,vein,4,yy6na02
+fault,fault,5,yy6na02
+shear zone,shear_zone,6,yy6na02
+shear zone boundary,shear_zone_bou,7,yy6na02
+fold axial surface,fold_axial_surface,8,yy6na02
+plane of boudinage,plane_of_boudinage,9,yy6na02
+plane of mullions,plane_of_mullions,10,yy6na02
+other,other,11,yy6na02
+upright,upright,,fr08c16
+overturned,overturned,,fr08c16
+vertical,vertical,,fr08c16
+not applicable,not_applicable,,fr08c16
+stratigraphy,stratigraphy,,rf3od15
+facing indicator,facing_indicat,,rf3od15
+assumed,assumed,,rf3od15
+other,other,,rf3od15
+5 - best - accurate,5,0,qt5nd15
+4,4,1,qt5nd15
+3 - approximate,3,2,qt5nd15
+2,2,3,qt5nd15
+1 - poor - irregular - uncertain,1,4,qt5nd15
+lithologic change,lithologic_cha,,ry4pa50
+sedimentary feature,sedimentary_fe,,ry4pa50
+stratigraphic,stratigraphic,0,lx9ax28
+alluvial,alluvial,1,lx9ax28
+unconformity,unconformity,2,lx9ax28
+angular unconformity,angular_unconf,3,lx9ax28
+nonconformity,nonconformity,5,lx9ax28
+disconformity,disconformity,6,lx9ax28
+volcanic,volcanic,,lx9ax28
+other depositional,other_depositional_contact,,lx9ax28
+dike,dike,,lx9ax28
+sill,sill,,lx9ax28
+pluton,pluton,,lx9ax28
+migmatite,migmatite,,lx9ax28
+injectite,injectite,,lx9ax28
+other igneous,other_igneous,,lx9ax28
+boundary of metamorphic rock,boundary_of_metamorphic_rocks,,lx9ax28
+isograd,isograd,,lx9ax28
+other metamorphic,other_metamorp,,lx9ax28
+other,other,,lx9ax28
+unknown,unknown,,lx9ax28
+cleavage,cleavage,0,vn7df87
+slatey cleavage,slatey_cleavage,1,vn7df87
+phyllitic cleavage,phyllitic_cleavage,2,vn7df87
+crenulation cleavage,crenulation_cl,3,vn7df87
+phacoidal (lenticular),phacoidal,4,vn7df87
+schistosity,schistosity,5,vn7df87
+planar schistosity,planar_schistosity,6,vn7df87
+anastomosing schistosity,anast_schistos,7,vn7df87
+gneissic foliation,gneissic_folia,8,vn7df87
+mineral alignment,mineral_alignm,9,vn7df87
+compositional banding,comp_banding,10,vn7df87
+deformed marker,deformed_marker,11,vn7df87
+mylonitic foliation,mylonitic_foliation,12,vn7df87
+S plane,s_plane,13,vn7df87
+C plane,c_plane,14,vn7df87
+C' or extensional plane,c__or_extensional_plane,15,vn7df87
+protomylonite,protomylonite,16,vn7df87
+mylonite,mylonite,17,vn7df87
+ultramylonite,ultramylonite,18,vn7df87
+gouge,gouge,19,vn7df87
+cataclasite,cataclasite,20,vn7df87
+solid-state mineral alignment,solid_state_mineral_alignment,21,vn7df87
+magmatic mineral alignment,magmatic_mineral_alignment,22,vn7df87
+migmatite foliation,migmatitic,23,vn7df87
+migmatitic mineral alignment,migmatitic_mineral_alignment,24,vn7df87
+mineral elongation,mineral_elongation,25,vn7df87
+compaction,compaction,26,vn7df87
+soft sediment,soft_sediment,27,vn7df87
+stylolites,stylolites,28,vn7df87
+slickolites,slickolites,29,vn7df87
+other,other,30,vn7df87
+joint,joint,,gz3mh75
+opening mode,opening_mode,,gz3mh75
+shear fracture,shear_fracture,,gz3mh75
+filled fracture,filled_fractur,,gz3mh75
+other,other,,gz3mh75
+normal opening,normal_opening,,vi28v96
+oblique opening,oblique_openin,,vi28v96
+antitaxial,antitaxial,,vi28v96
+syntaxial,syntaxial,,vi28v96
+unknown,unknown,,vi28v96
+quartz,quartz,,sg8qo24
+calcite,calcite,,sg8qo24
+other,other,,sg8qo24
+dextral strike-slip,dextral,1,kk9ik41
+sinistral strike-slip,sinistral,2,kk9ik41
+normal,oblique,3,kk9ik41
+reverse,reverse,4,kk9ik41
+thrust,thrust,5,kk9ik41
+low-angle normal,low_angle_normal,6,kk9ik41
+dextral reverse,dextral_reverse,7,kk9ik41
+dextral normal,dextral_normal,8,kk9ik41
+sinistral reverse,sinistral_reverse,9,kk9ik41
+sinistral normal,sinistral_normal,10,kk9ik41
+high-angle,high_angle,,kk9ik41
+low-angle,low_angle,,kk9ik41
+scissor,scissor,,kk9ik41
+other,other,,kk9ik41
+N side up,n_side_up,0,ia36i83
+NE side up,ne_side_up,1,ia36i83
+E side up,e_side_up,2,ia36i83
+SE side up,se_side_up,3,ia36i83
+S side up,s_side_up,4,ia36i83
+SW side up,sw_side_up,5,ia36i83
+W side up,w_side_up,6,ia36i83
+NW side up,nw_side_up,7,ia36i83
+top to N,top_to_n,8,ia36i83
+top to NE,top_to_ne,9,ia36i83
+top to E,top_to_e,10,ia36i83
+top to SE,top_to_se,11,ia36i83
+top to S,top_to_s,12,ia36i83
+top to SW,top_to_sw,13,ia36i83
+top to W,top_to_w,14,ia36i83
+top to NW,top_to_nw,15,ia36i83
+right-lateral,right_lateral,16,ia36i83
+left-lateral,left_lateral,17,ia36i83
+other,other,,ia36i83
+not specified,not_specified,0,gq4wq38
+offset bedding,offset_bedding,1,gq4wq38
+offset intrusion,offset_intrusion,2,gq4wq38
+offset foliation,offset_foliation,3,gq4wq38
+offset compostional banding,offset_compostional_banding,4,gq4wq38
+igneous feature,igneous_feature,5,gq4wq38
+sedimentary feature,sedimentary_fe,6,gq4wq38
+fossil,fossil,7,gq4wq38
+geomorphic feature,geomorphic_fea,8,gq4wq38
+other,other,9,gq4wq38
+riedel shear,riedel_shear,,tj67x48
+gouge fill,gouge_fill,,tj67x48
+crescentic fractures,crescentic_fra,,tj67x48
+slickenfibers,slickenfibers,,tj67x48
+oblique gouge foliation,oblique_gouge,,tj67x48
+drag folds,drag_folds,,tj67x48
+rotated clasts,rotated_clasts,,tj67x48
+domino texture,domino_texture,,tj67x48
+vein arrays,vein_arrays,,tj67x48
+P shear array,p_shear_array,,tj67x48
+asymmetric folds,asymm_folds,,tj67x48
+microstructures,microstructure,,tj67x48
+S-C-C' fabrics,s_c_c__fabrics,,tj67x48
+foliation deflection,fol_deflect,,tj67x48
+porphyroclast system,porphyroclast_,,tj67x48
+porphyroblast system,porphyroblast_,,tj67x48
+strain assymetry,strain_assym,,tj67x48
+flanking structures,flanking_struc,,tj67x48
+other,other,,tj67x48
+maximum amount,maximum_amount,,kh6kx98
+minimum amount,minimum_amount,,kh6kx98
+estimate of amount,estimate_of_am,,kh6kx98
