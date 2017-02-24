@@ -262,7 +262,7 @@
           rotation = orientation.strike || orientation.trend || rotation;
           symbol_orientation = orientation.dip || orientation.plunge || symbol_orientation;
           feature_type = orientation.feature_type || feature_type;
-          orientation_type = orientation.orientation_type || orientation_type;
+          orientation_type = orientation.type || orientation_type;
         }
 
         return new ol.style.Icon({
