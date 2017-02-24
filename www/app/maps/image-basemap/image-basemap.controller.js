@@ -277,7 +277,7 @@
         var scaleWidthValueLabel = getScaleLabelValue(x);
         var divisor = width.value / vm.currentZoom / scaleWidthValueLabel;
         var scaleWidthUnitLabel = width.unit;
-        if (scaleWidthUnitLabel === '_m') scaleWidthUnitLabel = 'µm';
+        if (scaleWidthUnitLabel === '_m') scaleWidthUnitLabel = 'um';
         var scaleWidthPixels = vm.imageBasemap.width / res / vm.currentZoom / divisor;
         imageBasemapScaleLine.style.width = scaleWidthPixels.toString() + 'px';
         vm.imageBasemapScaleLabel = scaleWidthValueLabel + ' ' + scaleWidthUnitLabel;
