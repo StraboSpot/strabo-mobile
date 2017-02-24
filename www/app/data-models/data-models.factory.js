@@ -37,7 +37,9 @@
       },
       'image': {
         'survey': {},
-        'survey_file': 'app/data-models/image_properties-survey.csv'
+        'survey_file': 'app/data-models/image_properties-survey.csv',
+        'choices': {},
+        'choices_file': 'app/data-models/image_properties-choices.csv'
       },
       'orientation_data': {
         'linear_orientation': {

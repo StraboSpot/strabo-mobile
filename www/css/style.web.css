@@ -84,6 +84,15 @@ html, body, .container-fluid, .strabo-page-content {
   background-color: transparent;
 }
 
+#image-basemap-scale-line {
+  bottom: 60px;
+  left: 25px;
+}
+#image-basemap-zoom-info {
+  bottom: 90px;
+  left: 25px;
+}
+
 /* Map Side Panel*/
 .sidebar{
   top: 50px;

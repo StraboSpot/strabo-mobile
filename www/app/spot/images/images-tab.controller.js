@@ -6,12 +6,12 @@
     .controller('ImagesTabController', ImagesTabController);
 
   ImagesTabController.$inject = ['$cordovaCamera', '$cordovaGeolocation', '$document', '$ionicModal', '$ionicPopup',
-    '$log', '$q', '$scope', '$state', '$window', 'DataModelsFactory', 'HelpersFactory', 'ImageFactory', 'LiveDBFactory',
-    'ProjectFactory', 'IS_WEB'];
+    '$log', '$q', '$scope', '$state', '$window', 'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'ImageFactory',
+    'LiveDBFactory', 'ProjectFactory', 'IS_WEB'];
 
   function ImagesTabController($cordovaCamera, $cordovaGeolocation, $document, $ionicModal, $ionicPopup, $log, $q,
-                               $scope, $state, $window, DataModelsFactory, HelpersFactory, ImageFactory, LiveDBFactory,
-                               ProjectFactory, IS_WEB) {
+                               $scope, $state, $window, DataModelsFactory, FormFactory, HelpersFactory, ImageFactory,
+                               LiveDBFactory, ProjectFactory, IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -71,7 +71,7 @@
     function loadTab(state) {
       vmParent.loadTab(state);  // Need to load current state into parent
       vmParent.survey = DataModelsFactory.getDataModel('image').survey;
-      vmParent.choices = undefined;
+      vmParent.choices = DataModelsFactory.getDataModel('image').choices;
       createModals();
       getImageSources();
       ionic.on('change', getFile, $document[0].getElementById('file'));
@@ -335,7 +335,10 @@
     }
 
     function closeModal(modal) {
-      vm[modal].hide();
+      if (modal === 'imagePropertiesModal') {
+        if (FormFactory.validate(vmParent.survey, vmParent.data)) vm[modal].hide();
+      }
+      else vm[modal].hide();
     }
 
     function deleteImage() {

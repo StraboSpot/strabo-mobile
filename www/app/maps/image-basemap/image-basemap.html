@@ -10,5 +10,9 @@
   <ion-pane data-tap-disabled='true'>
     <div id='mapdiv' style='height:100%'></div>
     <div class='saveEdits' ng-show='vm.showSaveEditsBtn' ng-click='vm.saveEdits()'>{{ vm.saveEditsText }}</div>
+    <div id='image-basemap-zoom-info'>Zoom: {{ vm.currentZoom }}</div>
+    <div class="ol-scale-line ol-unselectable" id="image-basemap-scale-line">
+      <div class="ol-scale-line-inner" id="image-basemap-scale-line-inner">{{ vm.imageBasemapScaleLabel }}</div>
+    </div>
   </ion-pane>
 </ion-view>

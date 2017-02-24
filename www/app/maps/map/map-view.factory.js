@@ -158,11 +158,13 @@
       var extent;
       var projection;
       var zoom;
+      var minZoom;
 
       if (!imageBasemap) {
         projection = 'EPSG:3857';
         center = [-11000000, 4600000];
         zoom = 4;
+        minZoom = 4;
       }
       else {
         extent = [0, 0, imageBasemap.width, imageBasemap.height];
@@ -173,13 +175,14 @@
         });
         center = ol.extent.getCenter(extent);
         zoom = 2;
+        minZoom = 1;
       }
 
       initialMapView = new ol.View({
         'projection': projection,
         'center': center,
         'zoom': zoom,
-        'minZoom': zoom
+        'minZoom': minZoom
       });
     }
 

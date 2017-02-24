@@ -14,6 +14,8 @@
     return {
       'b64toBlob': b64toBlob,
       'cleanObj': cleanObj,
+      'convertToLargerUnit': convertToLargerUnit,
+      'convertToSmallerUnit': convertToSmallerUnit,
       'getBackView': getBackView,
       'getNewId': getNewId,
       'mod': mod,
@@ -100,6 +102,24 @@
       });
       return obj;
     }
+
+    function convertToLargerUnit(width, unit) {
+      if (unit === 'm') return {'value': width / 1000, 'unit': 'km'};
+      if (unit === 'cm') return {'value': width / 100, 'unit': 'm'};
+      if (unit === 'mm') return {'value': width / 10, 'unit': 'cm'};
+      if (unit === '_m') return {'value': width / 1000, 'unit': 'mm'};
+      return {'value': width, 'unit': unit};
+    }
+
+    function convertToSmallerUnit(width, unit) {
+      if (unit === 'km') return {'value': width * 1000, 'unit': 'm'};
+      if (unit === 'm') return {'value': width * 100, 'unit': 'cm'};
+      if (unit === 'cm') return {'value': width * 10, 'unit': 'mm'};
+      if (unit === 'mm') return {'value': width * 1000, 'unit': '_m'};
+      if (unit === '_m') return {'value': width * 1000, 'unit': 'nm'};
+      return {'value': width, 'unit': unit};
+    }
+
 
     // Correct a quirk in JS that doesn't mod negative number correctly
     function mod(a, n) {

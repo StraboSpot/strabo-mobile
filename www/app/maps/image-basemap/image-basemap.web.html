@@ -6,6 +6,10 @@
     <button ng-click='vm.popover.show($event)'
             class='button button-icon icon button-small ion-more rotate-90'></button>
   </div>
+  <div id='image-basemap-zoom-info'>Zoom: {{ vm.currentZoom }}</div>
+  <div class="ol-scale-line ol-unselectable" id="image-basemap-scale-line">
+    <div class="ol-scale-line-inner" id="image-basemap-scale-line-inner">{{ vm.imageBasemapScaleLabel }}</div>
+  </div>
 
   <!-- Side Slide Content -->
   <div>

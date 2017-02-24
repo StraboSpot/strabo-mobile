@@ -170,6 +170,17 @@ Map Controls Style
   border-right: 1px solid black;
   border-bottom: 1px solid black;
 }
+#image-basemap-zoom-info {
+  position: absolute;
+  font-size: 0.7em;
+  bottom: 4em;
+  left: 0.5em;
+  background-color: white;
+  padding: 0.5em;
+  border-radius: 8px;
+  border: 1px solid lightgray;
+  opacity: 0.75;
+}
 
 .nesting-notification {
   text-align: center;

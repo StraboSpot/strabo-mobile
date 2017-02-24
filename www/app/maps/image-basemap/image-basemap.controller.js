@@ -6,9 +6,9 @@
     .controller('ImageBasemapController', ImageBasemapController);
 
   ImageBasemapController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup',
-    '$ionicSideMenuDelegate', '$location', '$log', '$q', '$rootScope', '$scope', '$state', '$timeout', 'DataModelsFactory',
-    'FormFactory', 'HelpersFactory', 'ImageFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapSetupFactory',
-    'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
+    '$ionicSideMenuDelegate', '$location', '$log', '$q', '$rootScope', '$scope', '$state', '$timeout',
+    'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'ImageFactory', 'MapDrawFactory', 'MapFeaturesFactory',
+    'MapSetupFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
 
   function ImageBasemapController($ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup,
                                   $ionicSideMenuDelegate, $location, $log, $q, $rootScope, $scope, $state, $timeout,
@@ -27,6 +27,7 @@
     vm.clickedFeatureId = undefined;
     vm.data = {};
     vm.imageBasemap = {};
+    vm.imageBasemapScaleLabel = undefined;
     vm.isNesting = SpotFactory.getActiveNesting();
     vm.newNestModal = {};
     vm.newNestProperties = {};
@@ -60,8 +61,8 @@
       // Disable dragging back to ionic side menu because this affects drawing tools
       $ionicSideMenuDelegate.canDragContent(false);
 
-      vm.currentSpot = SpotFactory.getCurrentSpot();
-      if (vm.currentSpot) vm.clickedFeatureId = vm.currentSpot.properties.id;
+      currentSpot = SpotFactory.getCurrentSpot();
+      if (currentSpot) vm.clickedFeatureId = currentSpot.properties.id;
       if (!currentSpot && !IS_WEB) HelpersFactory.setBackView($ionicHistory.currentView().url);
 
       createModals();
@@ -85,6 +86,8 @@
           MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
           createSwitcher(switcher);
 
+          vm.currentZoom = map.getView().getZoom();
+          updateScaleBar(map.getView().getResolution());
           createMapInteractions();
           createPageEvents();
 
@@ -100,7 +103,11 @@
     function createMapInteractions() {
       // When the map is moved update the zoom control
       map.on('moveend', function (evt) {
-        vm.currentZoom = evt.map.getView().getZoom();
+        if (vm.currentZoom !== evt.map.getView().getZoom()) {
+          vm.currentZoom = evt.map.getView().getZoom();
+          updateScaleBar(evt.map.getView().getResolution());
+          $scope.$apply();
+        }
       });
 
       map.on('touchstart', function (event) {
@@ -218,6 +225,21 @@
       });
     }
 
+    // Use predefined values as scale values
+    function getScaleLabelValue(x) {
+      if (x < 2) return 1;
+      if (x < 5) return 2;
+      if (x < 10) return 5;
+      if (x < 20) return 10;
+      if (x < 50) return 20;
+      if (x < 100) return 50;
+      if (x < 200) return 100;
+      if (x < 500) return 200;
+      if (x < 1000) return 500;
+      if (x < 5000) return 1000;
+      return 5000;
+    }
+
     function setImageBasemap() {
       _.each(SpotFactory.getActiveSpots(), function (spot) {
         _.each(spot.properties.images, function (image) {
@@ -227,16 +249,44 @@
       if (vm.imageBasemap.height && vm.imageBasemap.width) return $q.when(null);
       else {
         return ImageFactory.getImageById(vm.imageBasemap.id).then(function (src) {
-          if(IS_WEB){
-            src = 'https://strabospot.org/pi/' + vm.imageBasemap.id;
-          }else if (!src) {
-            src = 'img/image-not-found.png';
-          }
+          if (IS_WEB) src = 'https://strabospot.org/pi/' + vm.imageBasemap.id;
+          else if (!src) src = 'img/image-not-found.png';
           var im = new Image();
           im.src = src;
           vm.imageBasemap.height = im.height;
           vm.imageBasemap.width = im.width;
         });
+      }
+    }
+
+    function updateScaleBar(res) {
+      var imageBasemapScaleLine = document.getElementById('image-basemap-scale-line');
+      var imageBasemapScaleLineInner = document.getElementById('image-basemap-scale-line-inner');
+      if (vm.imageBasemap.width_of_image_view && vm.imageBasemap.units_of_image_view && vm.currentZoom) {
+        var width = {'value': vm.imageBasemap.width_of_image_view, 'unit': vm.imageBasemap.units_of_image_view};
+
+        // Convert value to larger or smaller unit if necessary
+        var x = width.value / vm.currentZoom / 4;
+        if (x < 1) width = HelpersFactory.convertToSmallerUnit(width.value, width.unit);
+        else if (width.unit === 'm' && x >= 1000) width = HelpersFactory.convertToLargerUnit(width.value, width.unit);
+        else if (width.unit === 'cm' && x >= 100) width = HelpersFactory.convertToLargerUnit(width.value, width.unit);
+        else if (width.unit === 'mm' && x >= 100) width = HelpersFactory.convertToLargerUnit(width.value, width.unit);
+        else if (width.unit === '_m' && x >= 1000) width = HelpersFactory.convertToLargerUnit(width.value, width.unit);
+
+        x = width.value / vm.currentZoom / 4;
+        var scaleWidthValueLabel = getScaleLabelValue(x);
+        var divisor = width.value / vm.currentZoom / scaleWidthValueLabel;
+        var scaleWidthUnitLabel = width.unit;
+        if (scaleWidthUnitLabel === '_m') scaleWidthUnitLabel = 'µm';
+        var scaleWidthPixels = vm.imageBasemap.width / res / vm.currentZoom / divisor;
+        imageBasemapScaleLine.style.width = scaleWidthPixels.toString() + 'px';
+        vm.imageBasemapScaleLabel = scaleWidthValueLabel + ' ' + scaleWidthUnitLabel;
+        imageBasemapScaleLine.style.visibility = 'visible';
+        imageBasemapScaleLineInner.style.visibility = 'visible';
+      }
+      else {
+        imageBasemapScaleLine.style.visibility = 'hidden';
+        imageBasemapScaleLineInner.style.visibility = 'hidden';
       }
     }
 
