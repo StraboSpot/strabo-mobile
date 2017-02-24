@@ -130,8 +130,12 @@
           _.each(spot.properties.orientation_data, function (orientation) {
             var feature = angular.fromJson(angular.toJson(spot));
             delete feature.properties.orientation_data;
+            _.each(orientation.associated_orientation, function (associatedOrientation) {
+              feature.properties.orientation = associatedOrientation;
+              mappedFeatures.push(angular.fromJson(angular.toJson(feature)));
+            });
             feature.properties.orientation = orientation;
-            mappedFeatures.push(feature);
+            mappedFeatures.push(angular.fromJson(angular.toJson(feature)));
           });
         }
         else mappedFeatures.push(angular.fromJson(angular.toJson(spot)));
