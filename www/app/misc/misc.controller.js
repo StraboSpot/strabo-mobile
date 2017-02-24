@@ -127,7 +127,7 @@
           'bottomLeft': {'lat': 32.214196, 'lng': -110.985042}
         };
 
-        var feature_types = ['bedding', 'contact', 'foliation', 'fracture', 'fault', 'shear_zone_boundary', 'other',
+        var feature_types = ['bedding', 'contact', 'foliation', 'fracture', 'fault', 'shear_zone_bou', 'other',
           'vein'];
 
         var promises = [];
