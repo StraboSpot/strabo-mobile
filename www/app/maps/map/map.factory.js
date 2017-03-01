@@ -32,11 +32,13 @@
       }, {
         'title': 'Mapbox Satellite',
         'id': 'mapbox.satellite',
-        'source': 'mapbox_classic'
+        'source': 'mapbox_classic',
+        'maxZoom': 19                   // https://www.mapbox.com/help/define-mapbox-satellite/
       }, {
         'title': 'OSM Streets',
         'id': 'osm',
-        'source': 'osm'
+        'source': 'osm',
+        'maxZoom': 19                   // http://wiki.openstreetmap.org/wiki/Zoom_levels
       }];
     }
 
@@ -56,7 +58,6 @@
           'basePath': 'http://api.tiles.mapbox.com/v4/',
           'imageType': 'jpg',
           'mime': 'image/jpeg',
-          'maxZoom': 19,
           'url': [
             'http://a.tiles.mapbox.com/v4/',
             'http://b.tiles.mapbox.com/v4/',
@@ -73,13 +74,11 @@
           'apiUrl': 'https://api.mapbox.com/styles/v1/',
           'basePath': 'https://api.mapbox.com/styles/v1/',
           'mime': 'image/jpeg',
-          'maxZoom': 19,
           'url': ['https://api.mapbox.com/styles/v1/']
         },
         'osm': {
           'imageType': 'png',
           'mime': 'image/png',
-          'maxZoom': 17,
           'url': [
             'http://a.tile.openstreetmap.org/',
             'http://b.tile.openstreetmap.org/',
@@ -96,7 +95,6 @@
           'basePath': 'http://mapwarper.net/maps/tile/',
           'imageType': 'png',
           'mime': 'image/png',
-          'maxZoom': 19,
           'url': ['https://www.strabospot.org/mwproxy/']
         }
       };

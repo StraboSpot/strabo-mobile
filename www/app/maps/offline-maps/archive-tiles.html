@@ -17,25 +17,30 @@
       <input type='text' ng-model='vm.map.name' autofocus>
     </ion-input>
 
-    <ion-checkbox ng-model='vm.map.downloadZooms' ng-show='vm.map.showDownloadInnerZooms'
-                  ng-change='vm.estimateArchiveTile()'>
-      Download inner zooms to zoom {{ vm.map.maxZoom }}?
-    </ion-checkbox>
-
-    <br>
-    Current zoom level: {{ vm.map.currentZoom }}<br>
-    Max zoom level available: {{ vm.map.maxZoom }}<br>
-    Total number of tiles requested: {{ vm.map.tiles.saved.length + vm.map.tiles.need.length }} <br>
-    Number of requested tiles already saved: {{ vm.map.tiles.saved.length }} <br>
+    <h5>Select zoom levels to download:</h5>
+    <div ng-repeat='zoomOption in vm.zoomOptions track by $index'>
+      <ion-checkbox ng-model='vm.checkedZooms[$index]' ng-change='vm.countTiles($index)'>
+        Zoom {{ zoomOption.zoom }}:
+        <span ng-show='zoomOption.tilesNeed.length === 0 && zoomOption.tilesHave.length === 0'>
+          Check box to calculate tiles needed
+        </span>
+        <span ng-hide='zoomOption.tilesNeed.length === 0 && zoomOption.tilesHave.length === 0'>
+          {{ zoomOption.tilesNeed.length }} tiles needed, {{ zoomOption.tilesHave.length }} already saved
+        </span>
+      </ion-checkbox>
+    </div>
+    * Zoom in or out on the map to show more zoom levels.<br>
+    * Zoom level 19 is often the highest zoom level available.<br>
+    * Double check your map before downloading higher zoom levels.<br>
     <br>
     <b>Number of tiles to download: {{ vm.map.tiles.need.length }} <br></b>
 
     <button class='button button-block button-positive' ng-click='vm.submit()'
-            ng-disabled='vm.downloading'>
-      {{ vm.submitBtnText }}
+            ng-disabled='vm.downloading || vm.map.tiles.need.length === 0'>
+     {{ vm.submitBtnText }}
     </button>
-    *Offline Maps are loaded automatically when offline. Edit and delete options for Saved Maps will be available under
-    the Offline Maps menu item.
+    * Offline Maps are loaded automatically when offline.<br>
+    * Edit and delete options for Saved Maps will be available under the Offline Maps menu item.
 
     <div ng-show='vm.map.percentDownload >= 0 || vm.map.saveStatus'>
       <br>
@@ -46,15 +51,9 @@
       <br>
       Attempting to download and save basemap tiles:
       <progress ng-value='vm.map.percentDownload' max='100'></progress>
-      Number of tiles sucessful: {{ vm.map.progress.success }} / {{ vm.map.progress.total }}
+      Number of tiles successful: {{ vm.map.progress.success }} / {{ vm.map.progress.total }}
       <br>
       Number of tiles failed: {{ vm.map.progress.failed }} / {{ vm.map.progress.total }}
     </div>
-
-    <div ng-show='vm.map.saveStatus'>
-      <br>
-      <b>{{ vm.map.saveStatus }}</b>
-    </div>
-
   </ion-content>
 </ion-view>

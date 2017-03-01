@@ -5,26 +5,28 @@
     .module('app')
     .controller('ArchiveTilesController', ArchiveTilesController);
 
-  ArchiveTilesController.$inject = ['$ionicPopup', '$log', '$q', '$state', 'LocalStorageFactory', 'MapFactory',
-    'MapLayerFactory', 'MapViewFactory', 'OfflineTilesFactory', 'SlippyTileNamesFactory'];
+  ArchiveTilesController.$inject = ['$ionicLoading', '$ionicPopup', '$log', '$q', '$state', 'LocalStorageFactory',
+    'MapFactory', 'MapLayerFactory', 'MapViewFactory', 'OfflineTilesFactory', 'SlippyTileNamesFactory'];
 
-  function ArchiveTilesController($ionicPopup, $log, $q, $state, LocalStorageFactory, MapFactory, MapLayerFactory,
-                                  MapViewFactory, OfflineTilesFactory, SlippyTileNamesFactory) {
+  function ArchiveTilesController($ionicLoading, $ionicPopup, $log, $q, $state, LocalStorageFactory, MapFactory,
+                                  MapLayerFactory, MapViewFactory, OfflineTilesFactory, SlippyTileNamesFactory) {
     var vm = this;
     var mapExtent;
     var mapLayer;
 
+    vm.checkedZooms = [];
     vm.downloading = false;
-    vm.estimateArchiveTile = estimateArchiveTile;
-    vm.goToMap = goToMap;
     vm.maps = [];
-    vm.nameSelectChanged = nameSelectChanged;
-    vm.numOfflineTiles = 0;  // number of tiles we have in offline storage
     vm.selectedName = {};
     vm.showNameField = false;
     vm.showSelectName = false;
+    vm.submitBtnText = '0 Tiles Selected To Download';
+    vm.zoomOptions = [];
+
+    vm.countTiles = countTiles;
+    vm.goToMap = goToMap;
+    vm.nameSelectChanged = nameSelectChanged;
     vm.submit = submit;
-    vm.submitBtnText = '';
 
     activate();
 
@@ -33,40 +35,58 @@
      */
 
     function activate() {
-      vm.downloading = false;
-
       mapExtent = MapViewFactory.getMapViewExtent();
-      mapLayer = MapLayerFactory.getVisibleLayer();
+      if (!mapExtent) goToMap();
+      else {
+        mapLayer = MapLayerFactory.getVisibleLayer();
 
-      vm.map = angular.fromJson(angular.toJson(_.find(MapFactory.getMaps(), function (gotMap) {
-        return gotMap.id === mapLayer.get('id');
-      })));
-      _.extend(vm.map, {
-        'currentZoom': mapExtent.zoom,
-        'showDownloadInnerZooms': mapExtent.zoom >= 14 && mapExtent.zoom < vm.map.maxZoom,
-        'downloadZooms': false,
-        'percentDownload': -1,
-        'progress': {},
-        'status': '',
-        'tiles': {
-          'need': [],
-          'saved': []
-        }
-      });
-      if (!vm.map.maxZoom) vm.map.maxZoom = 19;
+        vm.map = angular.fromJson(angular.toJson(_.find(MapFactory.getMaps(), function (gotMap) {
+          return gotMap.id === mapLayer.get('id');
+        })));
+        _.extend(vm.map, {
+          'currentZoom': mapExtent.zoom,
+          'percentDownload': -1,
+          'progress': {},
+          'status': '',
+          'tiles': {
+            'need': [],
+            'saved': []
+          }
+        });
 
-      loadSavedMaps();
-      estimateArchiveTile();
-      updateOfflineTileCount();
+        var zoomLevels = vm.map.maxZoom ? Math.min(vm.map.maxZoom - vm.map.currentZoom + 1, 5) : 5;
+        _.times(zoomLevels, function (n) {
+          var zoom = vm.map.currentZoom + n;
+          vm.zoomOptions.push({
+            'zoom': zoom,
+            'tilesNeed': [],
+            'tilesHave': []
+          });
+        });
+        loadSavedMaps();
+      }
     }
 
-    function isSavedTile(namedTile) {
-      var deferred = $q.defer(); // init promise
-      LocalStorageFactory.getDb().mapTilesDb.getItem(namedTile).then(function (savedTile) {
-        if (savedTile) deferred.resolve(savedTile.size);
-        else deferred.resolve(undefined);
+    function continueDownload() {
+      OfflineTilesFactory.checkValidMapName(vm.map).then(function () {
+        vm.submitBtnText = 'Saving map . . . please wait.';
+        vm.downloading = true;
+        saveMap(vm.map).then(function (statusMsg) {
+          $ionicPopup.alert({
+            'title': 'Download Finished!',
+            'template': statusMsg
+          }).then(function () {
+            $state.reload();
+          });
+        }, function (statusMsg) {
+          $ionicPopup.alert({
+            'title': 'Download Failed!',
+            'template': statusMsg
+          }).then(function () {
+            $state.reload();
+          });
+        });
       });
-      return deferred.promise;
     }
 
     function loadSavedMaps() {
@@ -111,59 +131,32 @@
       return deferred.promise;
     }
 
-    function updateOfflineTileCount() {
-      // get the image count
-      OfflineTilesFactory.getOfflineTileCount(function (count) {
-        // update the number of offline tiles to scope
-        vm.numOfflineTiles = count;
-      });
-    }
-
     /**
      * Public Functions
      */
 
-    // Determine tiles to be downloaded
-    function estimateArchiveTile() {
-      var promises = [];
-      var tileArray = [];
-      var zoom = mapExtent.zoom;
-      vm.map.tiles.need = [];
-      vm.map.tiles.saved = [];
-
-      // are we downloading inner zooms?
-      if (vm.map.downloadZooms) {
-        // yes, then loop through all the zoom levels and build our tile array
-        while (zoom <= vm.map.maxZoom) {
-          var currentZoomTileArray = SlippyTileNamesFactory.getTileIds(mapExtent.topRight, mapExtent.bottomLeft, zoom);
-          tileArray.push(currentZoomTileArray);
-          zoom++;
-        }
-      }
-      else {
-        // no, get just this zoom level
-        tileArray = SlippyTileNamesFactory.getTileIds(mapExtent.topRight, mapExtent.bottomLeft, zoom);
-      }
-
-      _.each(_.flatten(tileArray), function (tile) {
-        var deferred = $q.defer(); // init promise
-        isSavedTile(mapLayer.get('id') + '/' + tile).then(function (savedTileSize) {
-          if (savedTileSize) vm.map.tiles.saved.push({'tile': tile, 'size': savedTileSize});
-          else vm.map.tiles.need.push(tile);
-          deferred.resolve();
+    function countTiles(i) {
+      if (vm.zoomOptions[i].tilesNeed.length === 0 && vm.zoomOptions[i].tilesHave.length === 0) {
+        $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Calculating Tiles...'});
+        var promises = [];
+        var currentZoomTileArray = SlippyTileNamesFactory.getTileIds(mapExtent.topRight, mapExtent.bottomLeft,
+          vm.zoomOptions[i].zoom);
+        var tilesSaved = {};
+        _.each(_.flatten(currentZoomTileArray), function (tile) {
+          var promise = LocalStorageFactory.getDb().mapTilesDb.getItem(mapLayer.get('id') + '/' + tile).then(
+            function (savedTile) {
+              if (savedTile) vm.zoomOptions[i].tilesHave.push(savedTile);
+              else vm.zoomOptions[i].tilesNeed.push(tile);
+            });
+          promises.push(promise);
         });
-        promises.push(deferred.promise);
-      });
 
-      $q.all(promises).then(function () {
-        if (!_.isEmpty(vm.map.tiles.saved)) {
-          $log.log('Have', vm.map.tiles.saved.length, 'of these tiles already:', vm.map.tiles.saved);
-        }
-        if (!_.isEmpty(vm.map.tiles.need)) {
-          $log.log('Need', vm.map.tiles.need.length, 'of these tiles:', vm.map.tiles.need);
-        }
-        vm.submitBtnText = 'Save this Map';
-      });
+        $q.all(promises).then(function () {
+            updateSelectedDownloads();
+          }
+        );
+      }
+      else updateSelectedDownloads();
     }
 
     function goToMap() {
@@ -190,32 +183,35 @@
         return;
       }
 
-      _.extend(vm.map, {
-        'tiles': {
-          'need': vm.map.tiles.need,
-          'saved': vm.map.tiles.saved
+      if (vm.map.tiles.need.length > 3000) {
+        var confirmPopup = $ionicPopup.confirm({
+          title: 'Download Warning!',
+          template: 'Attempting to download such a large number of tiles at once may cause the app to become <span style="color:red">UNSTABLE</span>. Continue anyway?',
+          'cssClass': 'warning-popup'
+        });
+
+        confirmPopup.then(function (res) {
+          if (res) continueDownload();
+        });
+      }
+      else continueDownload();
+    }
+
+    function updateSelectedDownloads() {
+      $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Calculating Total Tiles...'});
+      vm.map.tiles.need = [];
+      vm.map.tiles.saved = [];
+      _.each(vm.checkedZooms, function (checkedZoom, i) {
+        if (checkedZoom) {
+          vm.map.tiles.need.push(vm.zoomOptions[i].tilesNeed);
+          vm.map.tiles.saved.push(vm.zoomOptions[i].tilesHave);
         }
       });
-
-      OfflineTilesFactory.checkValidMapName(vm.map).then(function () {
-        vm.submitBtnText = 'Saving map . . . please wait.';
-        vm.downloading = true;
-        saveMap(vm.map).then(function (statusMsg) {
-          $ionicPopup.alert({
-            'title': 'Download Finished!',
-            'template': statusMsg
-          }).then(function () {
-            activate();
-          });
-        }, function (statusMsg) {
-          $ionicPopup.alert({
-            'title': 'Download Failed!',
-            'template': statusMsg
-          }).then(function () {
-            activate();
-          });
-        });
-      });
+      vm.map.tiles.need = _.flatten(vm.map.tiles.need);
+      vm.map.tiles.saved = _.flatten(vm.map.tiles.saved);
+      if (vm.map.tiles.need.length === 0) vm.submitBtnText = '0 Tiles Selected To Download';
+      else vm.submitBtnText = 'Download ' + vm.map.tiles.need.length + ' Tiles';
+      $ionicLoading.hide();
     }
   }
 }());

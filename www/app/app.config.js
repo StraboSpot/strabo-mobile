@@ -281,6 +281,7 @@
         }
       })
       .state('app.archiveTiles', {
+        'cache': false,
         'url': '/map/archiveTiles',
         'views': {
           'menuContent': {
