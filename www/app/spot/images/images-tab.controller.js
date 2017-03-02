@@ -7,16 +7,17 @@
 
   ImagesTabController.$inject = ['$cordovaCamera', '$cordovaGeolocation', '$document', '$ionicModal', '$ionicPopup',
     '$log', '$q', '$scope', '$state', '$window', 'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'ImageFactory',
-    'LiveDBFactory', 'ProjectFactory', 'IS_WEB'];
+    'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'IS_WEB'];
 
   function ImagesTabController($cordovaCamera, $cordovaGeolocation, $document, $ionicModal, $ionicPopup, $log, $q,
                                $scope, $state, $window, DataModelsFactory, FormFactory, HelpersFactory, ImageFactory,
-                               LiveDBFactory, ProjectFactory, IS_WEB) {
+                               LiveDBFactory, LocalStorageFactory, ProjectFactory, IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
 
     var getGeoInfo = false;
     var imageSources = {};
+    var isReattachImage = false;
     var thisTabName = 'images';
 
     vm.cameraSource = [{
@@ -29,9 +30,7 @@
       'text': 'Saved Photo Album',
       'value': 'SAVEDPHOTOALBUM'
     }];
-    vm.selectedCameraSource = {
-      'source': 'CAMERA'  // default is always camera
-    };
+    vm.selectedCameraSource = {};
 
     vm.addImage = addImage;
     vm.closeModal = closeModal;
@@ -39,7 +38,9 @@
     vm.exportImage = exportImage;
     vm.getImageSrc = getImageSrc;
     vm.goToImageBasemap = goToImageBasemap;
+    vm.isWeb = isWeb;
     vm.moreDetail = moreDetail;
+    vm.reattachImage = reattachImage;
     vm.showImages = showImages;
     vm.toggleImageBasemap = toggleImageBasemap;
 
@@ -285,27 +286,49 @@
         // $log.log(evt.target.result);
         image.src = evt.target.result;
         image.onload = function () {
-          var imageData = {
-            'height': image.height,
-            'width': image.width,
-            'id': HelpersFactory.getNewId()
-          };
-          ImageFactory.saveImage(imageData.id, image.src);
-          $log.log('Also save image to live db here');
-          LiveDBFactory.saveImageFile(imageData.id, image.src);
-
-          imageSources[imageData.id] = image.src;
-          if (getGeoInfo) addGeoInfo(imageData);
+          if (isReattachImage) {
+            if (image.height === vmParent.data.height && image.width === vmParent.data.width) {
+              ImageFactory.saveImage(vmParent.data.id, image.src).then(function () {
+                $log.log('Also save image to live db here');
+                LiveDBFactory.saveImageFile(vmParent.data.id, image.src);
+                isReattachImage = false;
+                getImageSources();
+                $ionicPopup.alert({
+                  'title': 'Finished Reattaching Image',
+                  'template': 'The selected image source was reattached to the selected image properties.'
+                });
+              });
+            }
+            else {
+              $ionicPopup.alert({
+                'title': 'Mismatched Image',
+                'template': 'The selected image does not have the same height and width as the original. Unable to reattach image.'
+              });
+            }
+          }
           else {
-            var confirmPopup = $ionicPopup.confirm({
-              'title': 'Get Geolocation?',
-              'template': 'Use current latitude and longitude for this image?',
-              'cancelText': 'No'
-            });
-            confirmPopup.then(function (res) {
-              if (res) addGeoInfo(imageData);
-              else saveSpot(imageData);
-            });
+            var imageData = {
+              'height': image.height,
+              'width': image.width,
+              'id': HelpersFactory.getNewId()
+            };
+            ImageFactory.saveImage(imageData.id, image.src);
+            $log.log('Also save image to live db here');
+            LiveDBFactory.saveImageFile(imageData.id, image.src);
+
+            imageSources[imageData.id] = image.src;
+            if (getGeoInfo) addGeoInfo(imageData);
+            else {
+              var confirmPopup = $ionicPopup.confirm({
+                'title': 'Get Geolocation?',
+                'template': 'Use current latitude and longitude for this image?',
+                'cancelText': 'No'
+              });
+              confirmPopup.then(function (res) {
+                if (res) addGeoInfo(imageData);
+                else saveSpot(imageData);
+              });
+            }
           }
         };
         image.onerror = function () {
@@ -330,6 +353,10 @@
      */
 
     function addImage() {
+      isReattachImage = false;
+      vm.selectedCameraSource = {
+        'source': 'CAMERA'  // default is always camera
+      };
       if (IS_WEB) ionic.trigger('click', {'target': $document[0].getElementById('file')});
       else cameraModal();
     }
@@ -373,7 +400,17 @@
           var base64Data = block[1].split(',')[1];  // In this case 'iVBORw0KGg....'
           var dataBlob = HelpersFactory.b64toBlob(base64Data, dataType);
           var filename = (vmParent.data.title || vmParent.data.id) + '.jpg';
-          HelpersFactory.saveFileToDevice(filename, dataBlob);
+          LocalStorageFactory.exportImage(dataBlob, filename).then(function(filePath) {
+            $ionicPopup.alert({
+              'title': 'Success!',
+              'template': 'Image saved to ' + filePath
+            });
+          }, function (error) {
+            $ionicPopup.alert({
+              'title': 'Error!',
+              'template': 'Unable to save image.' + error
+            });
+          });
         }
       });
     }
@@ -386,9 +423,29 @@
       vmParent.submit('/app/image-basemaps/' + image.id);
     }
 
+    function isWeb() {
+      return IS_WEB;
+    }
+
     function moreDetail(image) {
       vmParent.data = image;
       vm.imagePropertiesModal.show();
+    }
+
+    function reattachImage() {
+      var confirmPopup = $ionicPopup.confirm({
+        'title': 'Reattach Image',
+        'template': 'Select an image from your device to reattach the source to the selected image properties. Continue?'
+      });
+      confirmPopup.then(function (res) {
+        if (res) {
+          isReattachImage = true;
+          vm.selectedCameraSource = {
+            'source': 'PHOTOLIBRARY'
+          };
+          cameraModal();
+        }
+      });
     }
 
     function showImages(index) {

@@ -20,48 +20,10 @@
       'getNewId': getNewId,
       'mod': mod,
       'roundToDecimalPlaces': roundToDecimalPlaces,
-      'saveFileToDevice': saveFileToDevice,
       'setBackView': setBackView,
       'toDegrees': toDegrees,
       'toRadians': toRadians
     };
-
-    /**
-     * Private Functions
-     */
-
-    function getDevicePath() {
-      switch ($cordovaDevice.getPlatform()) {
-        case 'Android':
-          return cordova.file.externalRootDirectory;    // 'file:///storage/emulated/0/'
-          break;
-        case 'iOS':
-          return cordova.file.documentsDirectory;
-          break;
-        default:
-          // TODO: what about windows and blackberry?
-          return cordova.file.externalRootDirectory;
-          break;
-      }
-    }
-
-    function writeFile(folderpath, filename, content) {
-      $cordovaFile.writeFile(folderpath, filename, content, true).then(
-        function (success) {
-          $log.log('File successfully written!', success);
-          $ionicPopup.alert({
-            'title': 'Success!',
-            'template': 'Image saved to ' + folderpath + filename
-          });
-        },
-        function (err) {
-          $log.error('Error writing file!', err);
-          $ionicPopup.alert({
-            'title': 'Error!',
-            'template': 'Unable to save image to ' + folderpath
-          });
-        });
-    }
 
     /**
      * Public Functions
@@ -142,24 +104,6 @@
     function roundToDecimalPlaces(value, places) {
       var multiplier = Math.pow(10, places);
       return (Math.round(value * multiplier) / multiplier);
-    }
-
-    function saveFileToDevice(filename, content) {
-      var devicePath = getDevicePath();
-      var directory = 'strabo';
-      $cordovaFile.checkDir(devicePath, directory).then(function (success) {
-          $log.log('Directory', directory, 'exists.', success);
-          writeFile(devicePath + success.fullPath, filename, content);
-        }, function () {
-          $cordovaFile.createDir(devicePath, directory, false).then(function (success) {
-              $log.log('Directory', directory, 'created.', success);
-              writeFile(devicePath + success.fullPath, filename, content);
-            }, function (error) {
-              $log.error('Unable to create directory', directory, error);
-            }
-          );
-        }
-      );
     }
 
     function setBackView(url) {

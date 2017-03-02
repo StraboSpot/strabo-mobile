@@ -6,12 +6,13 @@
     .controller('ManageProjectController', ManageProjectController);
 
   ManageProjectController.$inject = ['$ionicModal', '$ionicLoading', '$ionicPopover', '$ionicPopup', '$log', '$scope',
-    '$state', '$q', 'DataModelsFactory', 'FormFactory', 'ImageFactory', 'LiveDBFactory', 'OtherMapsFactory',
-    'ProjectFactory', 'RemoteServerFactory', 'SpotFactory', 'UserFactory', 'IS_WEB'];
+    '$state', '$q', 'DataModelsFactory', 'FormFactory', 'ImageFactory', 'LiveDBFactory', 'LocalStorageFactory',
+    'OtherMapsFactory', 'ProjectFactory', 'RemoteServerFactory', 'SpotFactory', 'UserFactory', 'IS_WEB'];
 
   function ManageProjectController($ionicModal, $ionicLoading, $ionicPopover, $ionicPopup, $log, $scope, $state, $q,
-                                   DataModelsFactory, FormFactory, ImageFactory, LiveDBFactory, OtherMapsFactory,
-                                   ProjectFactory, RemoteServerFactory, SpotFactory, UserFactory, IS_WEB) {
+                                   DataModelsFactory, FormFactory, ImageFactory, LiveDBFactory, LocalStorageFactory,
+                                   OtherMapsFactory, ProjectFactory, RemoteServerFactory, SpotFactory, UserFactory,
+                                   IS_WEB) {
     var vm = this;
 
     var deleteSelected;
@@ -23,6 +24,8 @@
     vm.activeDatasets = [];
     vm.data = {};
     vm.datasets = [];
+    vm.exportFileName = undefined;
+    vm.fileBrowserModal = {};
     vm.newDatasetName = '';
     vm.newProjectModal = {};
     vm.otherFeatureTypes = [];
@@ -43,10 +46,13 @@
     vm.deleteProject = deleteProject;
     vm.deleteType = deleteType;
     //vm.doSync = doSync;
+    vm.exportProject = exportProject;
     vm.filterDefaultTypes = filterDefaultTypes;
     vm.getNumberOfSpots = getNumberOfSpots;
     vm.goToProjectDescription = goToProjectDescription;
     vm.hideLoading = hideLoading;
+    vm.importProject = importProject;
+    vm.importSelectedFile = importSelectedFile;
     vm.initializeUpload = initializeUpload;
     vm.initializeDownload = initializeDownload;
     vm.isDatasetOn = isDatasetOn;
@@ -103,7 +109,7 @@
       }
     }
 
-    function allValidSpots(spots) {
+   /* function allValidSpots(spots) {
       var validSpots = true;
       _.each(spots, function (spotId) {
         if (!SpotFactory.getSpotById(spotId)) {
@@ -112,7 +118,7 @@
         }
       });
       return validSpots;
-    }
+    }*/
 
     // Make sure the date and time aren't null
     // ToDo: This can be cleaned up when we no longer need date and time, just datetime
@@ -152,6 +158,15 @@
         'scope': $scope
       }).then(function (popover) {
         vm.popover = popover;
+      });
+
+      $ionicModal.fromTemplateUrl('app/project/manage/file-browser-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false,
+        'hardwareBackButtonClose': false
+      }).then(function (modal) {
+        vm.fileBrowserModal = modal;
       });
 
       // Cleanup the modal and popover when we're done with them
@@ -375,6 +390,22 @@
         deferred.resolve(evt.target.result);
       };
       return deferred.promise;
+    }
+
+    function reloadProject() {
+      $log.log('Reloading project ...');
+      $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Reloading Project..'});
+      ProjectFactory.prepProject().then(function () {
+        $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Reloaded Project<br>Loading Spots...'});
+        SpotFactory.loadSpots().then(function () {
+          $ionicLoading.hide();
+          $ionicPopup.alert({
+            'title': 'Success!',
+            'template': 'Finished importing project.'
+          });
+          $state.reload();
+        });
+      });
     }
 
     function saveSpot(spot, datasetId) {
@@ -609,6 +640,10 @@
      * Public Functions
      */
 
+    function areDatasetsOn() {
+      return !_.isEmpty(vm.activeDatasets);
+    }
+
     function deleteDataset(dataset) {
       var remainingActiveDatasets = _.reject(vm.activeDatasets, function (activeDataset) {
         return activeDataset.id === dataset.id;
@@ -747,8 +782,48 @@
      }
      }*/
 
-    function areDatasetsOn() {
-      return !_.isEmpty(vm.activeDatasets);
+    function exportProject() {
+      vm.popover.hide();
+      var date = new Date();
+      var dateString = date.getFullYear().toString() + (date.getMonth() + 1).toString() + date.getDate().toString() +
+        date.getHours().toString() + date.getMinutes().toString() + date.getSeconds().toString();
+      vm.exportFileName = dateString + vm.project.description.project_name.replace(/\s/g, "");
+      var myPopup = $ionicPopup.show({
+        template: '<input type="text" ng-model="vm.exportFileName">',
+        title: 'Confirm or Change File Name',
+        subTitle: 'If you change the file name please do not use spaces, special characters (except a dash or underscore) or add a file extension.',
+        scope: $scope,
+        buttons: [
+          {text: 'Cancel'},
+          {
+            text: '<b>Save</b>',
+            type: 'button-positive',
+            onTap: function (e) {
+              if (!vm.exportFileName) e.preventDefault();
+              else return vm.exportFileName = vm.exportFileName.replace(/[^\w- ]/g, "");
+            }
+          }
+        ]
+      });
+
+      myPopup.then(function (res) {
+        if (res) {
+          $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Exporting Project..'});
+          LocalStorageFactory.exportProject(vm.exportFileName).then(function (filePath) {
+            $ionicPopup.alert({
+              'title': 'Success!',
+              'template': 'File written to ' + filePath
+            });
+          }, function (err) {
+            $ionicPopup.alert({
+              'title': 'Error!',
+              'template': 'Error exporting project. ' + err
+            });
+          }).finally(function () {
+            $ionicLoading.hide();
+          });
+        }
+      });
     }
 
     function filterDefaultTypes(type) {
@@ -757,12 +832,12 @@
 
     function getNumberOfSpots(dataset) {
       var spots = ProjectFactory.getSpotIds()[dataset.id];
-      if (!allValidSpots(spots)) getNumberOfSpots(dataset);
-      else {
+     // if (!allValidSpots(spots)) getNumberOfSpots(dataset);
+      //else {
         if (_.isEmpty(spots)) return '(0 Spots)';
         else if (spots.length === 1) return '(1 Spot)';
         return '(' + spots.length + ' Spots)';
-      }
+      //}
     }
 
     function goToProjectDescription() {
@@ -771,6 +846,70 @@
 
     function hideLoading() {
       $ionicLoading.hide();
+    }
+
+    function importProject() {
+      vm.popover.hide();
+      vm.fileNames = [];
+
+      LocalStorageFactory.gatherLocalFiles().then(function (entries) {
+        //$log.log(entries);
+        _.each(_.pluck(entries, 'name'), function (file) {
+          if (file.endsWith('.json')) vm.fileNames.push(file.split('.')[0]);
+        });
+        if (!_.isEmpty(vm.fileNames)) vm.fileBrowserModal.show();
+        else {
+          $ionicPopup.alert({
+            'title': 'Files Not Found!',
+            'template': 'No valid files to import found. Export a file first.'
+          });
+        }
+      }, function (err) {
+        if (err === 1) {
+          $ionicPopup.alert({
+            'title': 'Import Folder Not Found!',
+            'template': 'The StraboSpot folder was not found. Export a file first or create this folder and add a valid project file.'
+          });
+        }
+        else {
+          $ionicPopup.alert({
+            'title': 'Error!',
+            'template': 'Error finding local files. Error code: ' + err
+          });
+        }
+      });
+    }
+
+    function importSelectedFile(name) {
+      vm.fileBrowserModal.hide();
+      var confirmPopup = $ionicPopup.confirm({
+        'title': 'Warning!!!',
+        'template': 'This will <span style="color:red">OVERWRITE</span> the current open project. Do you want to continue?',
+        'cssClass': 'warning-popup'
+      });
+      confirmPopup.then(function (res) {
+        if (res) {
+          $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Destroying Current Project..'});
+          $log.log('Destroying current project ...');
+          var promises = [];
+          promises.push(ProjectFactory.destroyProject());
+          promises.push(SpotFactory.clearAllSpots());
+          promises.push(ImageFactory.deleteAllImages());
+
+          $q.all(promises).then(function () {
+            $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Importing Project..'});
+            LocalStorageFactory.importProject(name + '.json').then(function () {
+              reloadProject();
+            }, function (err) {
+              $ionicLoading.hide();
+              $ionicPopup.alert({
+                'title': 'Error!',
+                'template': 'Error importing project. ' + err
+              });
+            });
+          });
+        }
+      });
     }
 
     function initializeDownload() {

@@ -16,6 +16,12 @@ Basic Style
   background: red  !important;
 }
 
+.strabo-icon {
+  height: 16px;
+  width: 16px;
+  vertical-align: bottom;
+}
+
 /*--------------------
 Project Info
 --------------------*/
