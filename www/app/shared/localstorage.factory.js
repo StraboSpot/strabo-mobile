@@ -18,6 +18,7 @@
     var appDirectory = 'StraboSpot';
     var dataBackupsDirectory = appDirectory + '/DataBackups';
     var imagesBackupsDirectory = appDirectory + '/ImageBackups';
+    var importImagesCount = {'need': 0, 'have': 0, 'success': 0, 'failed': 0};
 
     return {
       'exportImage': exportImage,
@@ -25,6 +26,7 @@
       'exportProject': exportProject,
       'gatherLocalFiles': gatherLocalFiles,
       'getDb': getDb,
+      'importImages': importImages,
       'importProject': importProject,
       'setupLocalforage': setupLocalforage
     };
@@ -143,6 +145,32 @@
       return deferred.promise;
     }
 
+    function importImage(id) {
+      var deferred = $q.defer(); // init promise
+
+      var devicePath = getDevicePath();
+      if (devicePath) {
+        $cordovaFile.readAsDataURL(devicePath + imagesBackupsDirectory, id + '.jpg').then(function (file) {
+          dbs.imagesDb.setItem(id.toString(), file).then(function () {
+            importImagesCount.success++;
+            deferred.resolve();
+          }, function (setItemErr) {
+            importImagesCount.failed++;
+            $log.log('Error setting item in db with localforage:', setItemErr);
+            deferred.resolve();
+          }).catch(function (err) {
+            $log.log('Catch localforage error:', err);
+          });
+        }, function (readErr) {
+          importImagesCount.failed++;
+          $log.log('Error reading file:', readErr);
+          deferred.resolve();
+        });
+      }
+      else deferred.reject('Device not found');
+      return deferred.promise;
+    }
+
     function replaceDbs(data) {
       var promisesInner = [];
       var promisesOuter = [];
@@ -206,13 +234,13 @@
         var base64Data = block[1].split(',')[1];  // In this case 'iVBORw0KGg....'
         var dataBlob = HelpersFactory.b64toBlob(base64Data, dataType);
         var filename = key + '.jpg';
-        var promise = exportImage(dataBlob, filename).then(function(filePath) {
+        var promise = exportImage(dataBlob, filename).then(function (filePath) {
           $log.log('Image saved to ' + filePath);
         }, function (error) {
           $log.log('Unable to save image.' + error);
         });
         promises.push(promise);
-      }).then (function () {
+      }).then(function () {
         $q.all(promises).then(function () {
           deferred.resolve();
         }, function () {
@@ -260,6 +288,39 @@
 
     function getDb() {
       return dbs;
+    }
+
+    function importImages() {
+      var deferred = $q.defer(); // init promise
+      var promisesOuter = [];
+      var promises = [];
+      importImagesCount = {'need': 0, 'have': 0, 'success': 0, 'failed': 0};
+      dbs.spotsDb.iterate(function (value, key, iterationNumber) {
+        if (value.properties.images) {
+          _.each(value.properties.images, function (image) {
+            if (image.id) {
+              var promiseOuter = dbs.imagesDb.getItem(image.id.toString()).then(function (foundImage) {
+                if (foundImage) importImagesCount.have++;
+                else {
+                  importImagesCount.need++;
+                  var promise = importImage(image.id);
+                  promises.push(promise);
+                }
+              });
+              promisesOuter.push(promiseOuter);
+            }
+          });
+        }
+      }).then(function () {
+        $q.all(promisesOuter).then(function () {
+          $q.all(promises).then(function () {
+            deferred.resolve(importImagesCount);
+          }, function () {
+            deferred.reject();
+          });
+        })
+      });
+      return deferred.promise;
     }
 
     function importProject(name) {

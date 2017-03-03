@@ -27,6 +27,7 @@
     vm.exportFileName = undefined;
     vm.exportItems = {};
     vm.fileBrowserModal = {};
+    vm.importItem = undefined;
     vm.newDatasetName = '';
     vm.newProjectModal = {};
     vm.otherFeatureTypes = [];
@@ -382,6 +383,63 @@
           return neededImagesIds;
         });
       }
+    }
+
+    function importData() {
+      vm.fileNames = [];
+
+      LocalStorageFactory.gatherLocalFiles().then(function (entries) {
+        //$log.log(entries);
+        _.each(_.pluck(entries, 'name'), function (file) {
+          if (file.endsWith('.json')) vm.fileNames.push(file.split('.')[0]);
+        });
+        if (!_.isEmpty(vm.fileNames)) vm.fileBrowserModal.show();
+        else {
+          $ionicPopup.alert({
+            'title': 'Files Not Found!',
+            'template': 'No valid files to import found. Export a file first.'
+          });
+        }
+      }, function (err) {
+        if (err === 1) {
+          $ionicPopup.alert({
+            'title': 'Import Folder Not Found!',
+            'template': 'The StraboSpot folder was not found. Export a file first or create this folder and add a valid project file.'
+          });
+        }
+        else {
+          $ionicPopup.alert({
+            'title': 'Error!',
+            'template': 'Error finding local files. Error code: ' + err
+          });
+        }
+      });
+    }
+
+    function importImages() {
+      $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Importing Project Images...'});
+      LocalStorageFactory.importImages().then(function (count) {
+        var msg = 'Images Had: ' + count.have + '<br>' +
+          'Images Needed: ' + count.need + '<br><br>' +
+          'Images Imported: ' + count.success + '<br>' +
+          'Images Failed: ' + count.failed;
+        if (count.failed > 0) { msg = msg + '<br><br> Failed images may be a result of images missing from the' +
+          ' StraboSpot/ImagesBackup folder or incorrect file names. Attempting to read too many images at once' +
+          ' into the local database can also cause failed images. If the later is the case continue running the' +
+          ' image import until there are no failed images.'
+        }
+        $ionicPopup.alert({
+          'title': 'Finished Importing Images!',
+          'template': msg
+        });
+      }, function (err) {
+        $ionicPopup.alert({
+          'title': 'Error!',
+          'template': 'Error importing images.' + err
+        });
+      }).finally(function () {
+        $ionicLoading.hide();
+      });
     }
 
     function initializeDownloadDataset(dataset) {
@@ -914,32 +972,33 @@
 
     function importProject() {
       vm.popover.hide();
-      vm.fileNames = [];
 
-      LocalStorageFactory.gatherLocalFiles().then(function (entries) {
-        //$log.log(entries);
-        _.each(_.pluck(entries, 'name'), function (file) {
-          if (file.endsWith('.json')) vm.fileNames.push(file.split('.')[0]);
-        });
-        if (!_.isEmpty(vm.fileNames)) vm.fileBrowserModal.show();
-        else {
-          $ionicPopup.alert({
-            'title': 'Files Not Found!',
-            'template': 'No valid files to import found. Export a file first.'
-          });
-        }
-      }, function (err) {
-        if (err === 1) {
-          $ionicPopup.alert({
-            'title': 'Import Folder Not Found!',
-            'template': 'The StraboSpot folder was not found. Export a file first or create this folder and add a valid project file.'
-          });
-        }
-        else {
-          $ionicPopup.alert({
-            'title': 'Error!',
-            'template': 'Error finding local files. Error code: ' + err
-          });
+      vm.importItem = undefined;
+      vm.text = 'text';
+      vm.images = 'images';
+      var template = '<ion-radio ng-model="vm.importItem" ng-value="vm.text">Text Data</ion-radio>' +
+        '<ion-radio ng-model="vm.importItem" ng-value="vm.images">Images</ion-radio>';
+
+      var myPopup = $ionicPopup.show({
+        'title': 'Select Item to Import',
+        'template': template,
+        'scope': $scope,
+        'buttons': [{
+          'text': 'Cancel'
+        }, {
+          'text': '<b>OK</b>',
+          'type': 'button-positive',
+          'onTap': function (e) {
+            if (vm.importItem === undefined) e.preventDefault(); // don't allow the user to close unless a value is set
+            else return vm.importItem;
+          }
+        }]
+      });
+
+      myPopup.then(function (res) {
+        if (res) {
+          if (vm.importItem === 'text') importData();
+          else if (vm.importItem === 'images') importImages();
         }
       });
     }
