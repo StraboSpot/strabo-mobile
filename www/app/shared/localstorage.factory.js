@@ -5,9 +5,9 @@
     .module('app')
     .factory('LocalStorageFactory', LocalStorageFactory);
 
-  LocalStorageFactory.$inject = ['$cordovaDevice', '$cordovaFile', '$log', '$q', '$window'];
+  LocalStorageFactory.$inject = ['$cordovaDevice', '$cordovaFile', '$log', '$q', '$window', 'HelpersFactory'];
 
-  function LocalStorageFactory($cordovaDevice, $cordovaFile, $log, $q, $window) {
+  function LocalStorageFactory($cordovaDevice, $cordovaFile, $log, $q, $window, HelpersFactory) {
     var dbs = {};
     dbs.configDb = {};        // global LocalForage for configuration and user data
     dbs.imagesDb = {};        // global LocalForage for images
@@ -21,6 +21,7 @@
 
     return {
       'exportImage': exportImage,
+      'exportImages': exportImages,
       'exportProject': exportProject,
       'gatherLocalFiles': gatherLocalFiles,
       'getDb': getDb,
@@ -193,6 +194,32 @@
 
     function exportImage(data, fileName) {
       return exportData(imagesBackupsDirectory, data, fileName)
+    }
+
+    function exportImages() {
+      var deferred = $q.defer(); // init promise
+      var promises = [];
+      dbs.imagesDb.iterate(function (base64Image, key, i) {
+        // Process the base64 string - split the base64 string into the data and data type
+        var block = base64Image.split(';');
+        var dataType = block[0].split(':')[1];    // In this case 'image/jpg'
+        var base64Data = block[1].split(',')[1];  // In this case 'iVBORw0KGg....'
+        var dataBlob = HelpersFactory.b64toBlob(base64Data, dataType);
+        var filename = key + '.jpg';
+        var promise = exportImage(dataBlob, filename).then(function(filePath) {
+          $log.log('Image saved to ' + filePath);
+        }, function (error) {
+          $log.log('Unable to save image.' + error);
+        });
+        promises.push(promise);
+      }).then (function () {
+        $q.all(promises).then(function () {
+          deferred.resolve();
+        }, function () {
+          deferred.reject();
+        });
+      });
+      return deferred.promise;
     }
 
     function exportProject(name) {

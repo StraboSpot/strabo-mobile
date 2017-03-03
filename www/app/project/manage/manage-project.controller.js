@@ -25,6 +25,7 @@
     vm.data = {};
     vm.datasets = [];
     vm.exportFileName = undefined;
+    vm.exportItems = {};
     vm.fileBrowserModal = {};
     vm.newDatasetName = '';
     vm.newProjectModal = {};
@@ -109,16 +110,16 @@
       }
     }
 
-   /* function allValidSpots(spots) {
-      var validSpots = true;
-      _.each(spots, function (spotId) {
-        if (!SpotFactory.getSpotById(spotId)) {
-          validSpots = false;
-          ProjectFactory.removeSpotFromDataset(spotId);
-        }
-      });
-      return validSpots;
-    }*/
+    /* function allValidSpots(spots) {
+     var validSpots = true;
+     _.each(spots, function (spotId) {
+     if (!SpotFactory.getSpotById(spotId)) {
+     validSpots = false;
+     ProjectFactory.removeSpotFromDataset(spotId);
+     }
+     });
+     return validSpots;
+     }*/
 
     // Make sure the date and time aren't null
     // ToDo: This can be cleaned up when we no longer need date and time, just datetime
@@ -174,6 +175,72 @@
         vm.switchProjectModal.remove();
         vm.newProjectModal.remove();
         vm.popover.remove();
+      });
+    }
+
+    function exportData() {
+      var deferred = $q.defer(); // init promise
+      var date = new Date();
+      var dateString = date.getFullYear().toString() + (date.getMonth() + 1).toString() + date.getDate().toString() +
+        date.getHours().toString() + date.getMinutes().toString() + date.getSeconds().toString();
+      vm.exportFileName = dateString + vm.project.description.project_name.replace(/\s/g, "");
+      var myPopup = $ionicPopup.show({
+        template: '<input type="text" ng-model="vm.exportFileName">',
+        title: 'Confirm or Change File Name',
+        subTitle: 'If you change the file name please do not use spaces, special characters (except a dash or underscore) or add a file extension.',
+        scope: $scope,
+        buttons: [
+          {text: 'Cancel'},
+          {
+            text: '<b>Save</b>',
+            type: 'button-positive',
+            onTap: function (e) {
+              if (!vm.exportFileName) e.preventDefault();
+              else return vm.exportFileName = vm.exportFileName.replace(/[^\w- ]/g, "");
+            }
+          }
+        ]
+      });
+
+      myPopup.then(function (res) {
+        if (res) {
+          $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Exporting Project Text Data...'});
+          LocalStorageFactory.exportProject(vm.exportFileName).then(function (filePath) {
+            $ionicPopup.alert({
+              'title': 'Success!',
+              'template': 'Project text data written to ' + filePath
+            }).then(function () {
+              deferred.resolve();
+            });
+          }, function (err) {
+            $ionicLoading.hide();
+            $ionicPopup.alert({
+              'title': 'Error!',
+              'template': 'Error exporting project text data. ' + err + ' Ending export.'
+            });
+            deferred.reject();
+          }).finally(function () {
+            $ionicLoading.hide();
+          });
+        }
+      });
+      return deferred.promise;
+    }
+
+    function exportImages() {
+      $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Exporting Project Images...'});
+      LocalStorageFactory.exportImages().then(function () {
+        $ionicPopup.alert({
+          'title': 'Success!',
+          'template': 'Finished exporting images.'
+        });
+      }, function (err) {
+        $ionicPopup.alert({
+          'title': 'Error!',
+          'template': 'Error exporting images.' + err
+        });
+      }).finally(function () {
+        $ionicLoading.hide();
       });
     }
 
@@ -784,44 +851,41 @@
 
     function exportProject() {
       vm.popover.hide();
-      var date = new Date();
-      var dateString = date.getFullYear().toString() + (date.getMonth() + 1).toString() + date.getDate().toString() +
-        date.getHours().toString() + date.getMinutes().toString() + date.getSeconds().toString();
-      vm.exportFileName = dateString + vm.project.description.project_name.replace(/\s/g, "");
+
+      vm.exportItems = {};
+      var template = '<ion-checkbox ng-model="vm.exportItems.text">Text Data</ion-checkbox>' +
+        '<ion-checkbox ng-model="vm.exportItems.images">Images</ion-checkbox>';
+
       var myPopup = $ionicPopup.show({
-        template: '<input type="text" ng-model="vm.exportFileName">',
-        title: 'Confirm or Change File Name',
-        subTitle: 'If you change the file name please do not use spaces, special characters (except a dash or underscore) or add a file extension.',
-        scope: $scope,
-        buttons: [
-          {text: 'Cancel'},
-          {
-            text: '<b>Save</b>',
-            type: 'button-positive',
-            onTap: function (e) {
-              if (!vm.exportFileName) e.preventDefault();
-              else return vm.exportFileName = vm.exportFileName.replace(/[^\w- ]/g, "");
-            }
+        'title': 'Select Items to Export',
+        'template': template,
+        'scope': $scope,
+        'buttons': [{
+          'text': 'Cancel'
+        }, {
+          'text': '<b>OK</b>',
+          'type': 'button-positive',
+          'onTap': function (e) {
+            if (_.isEmpty(vm.exportItems)) e.preventDefault(); // don't allow the user to close unless a value is set
+            else return vm.exportItems;
           }
-        ]
+        }]
       });
 
       myPopup.then(function (res) {
         if (res) {
-          $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Exporting Project..'});
-          LocalStorageFactory.exportProject(vm.exportFileName).then(function (filePath) {
-            $ionicPopup.alert({
-              'title': 'Success!',
-              'template': 'File written to ' + filePath
+          if (vm.exportItems.text && vm.exportItems.images) {
+            exportData().then(function () {
+              $ionicPopup.alert({
+                'title': 'Export Project Images',
+                'template': 'Now exporting all project images ...'
+              }).then(function () {
+                exportImages();
+              });
             });
-          }, function (err) {
-            $ionicPopup.alert({
-              'title': 'Error!',
-              'template': 'Error exporting project. ' + err
-            });
-          }).finally(function () {
-            $ionicLoading.hide();
-          });
+          }
+          else if (vm.exportItems.text && !vm.exportItems.images) exportData();
+          else if (!vm.exportItems.text && vm.exportItems.images) exportImages();
         }
       });
     }
@@ -832,11 +896,11 @@
 
     function getNumberOfSpots(dataset) {
       var spots = ProjectFactory.getSpotIds()[dataset.id];
-     // if (!allValidSpots(spots)) getNumberOfSpots(dataset);
+      // if (!allValidSpots(spots)) getNumberOfSpots(dataset);
       //else {
-        if (_.isEmpty(spots)) return '(0 Spots)';
-        else if (spots.length === 1) return '(1 Spot)';
-        return '(' + spots.length + ' Spots)';
+      if (_.isEmpty(spots)) return '(0 Spots)';
+      else if (spots.length === 1) return '(1 Spot)';
+      return '(' + spots.length + ' Spots)';
       //}
     }
 
