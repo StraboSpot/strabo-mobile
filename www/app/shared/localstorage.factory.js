@@ -203,7 +203,7 @@
 
     function writeFile(fullPath, data, fileName) {
       var deferred = $q.defer(); // init promise
-      $cordovaFile.writeFile(fullPath, fileName, angular.toJson(data), true).then(
+      $cordovaFile.writeFile(fullPath, fileName, data, true).then(
         function (success) {
           $log.log('File successfully written!', success);
           deferred.resolve(fullPath + fileName);
@@ -252,7 +252,7 @@
 
     function exportProject(name) {
       return gatherData().then(function (dataToExport) {
-        return exportData(dataBackupsDirectory, dataToExport, name + '.json', 'DataBackups');
+        return exportData(dataBackupsDirectory, angular.toJson(dataToExport), name + '.json', 'DataBackups');
       });
     }
 
