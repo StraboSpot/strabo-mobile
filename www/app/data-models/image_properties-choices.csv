@@ -1,6 +1,13 @@
-label,name,list name
-km,km,vt86z05
-m,m,vt86z05
-cm,cm,vt86z05
-mm,mm,vt86z05
-um,_m,vt86z05
+label,order,name,list name
+photo,0,photo,cs3xd00
+sketch,1,sketch,cs3xd00
+thin section,2,thin_section,cs3xd00
+geological cross section,3,geological_cs,cs3xd00
+geophysical cross section,4,geophysical_cs,cs3xd00
+stratigraphic section,5,strat_section,cs3xd00
+other,6,other_image_ty,cs3xd00
+km,,km,vt86z05
+m,,m,vt86z05
+cm,,cm,vt86z05
+mm,,mm,vt86z05
+um,,_m,vt86z05

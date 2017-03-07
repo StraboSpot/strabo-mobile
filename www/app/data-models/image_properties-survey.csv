@@ -1,17 +1,19 @@
-name,type,label,required,appearance,hint,constraint,relevant
+name,type,label,required,relevant,constraint,appearance,hint
 group_image_data,begin group,Image Data,,,,,
 title,text,Image Name,false,,,,
-caption,text,Image Description,false,multiline,,,
+image_type,select_one cs3xd00,Image Type,true,,,,
+other_image_type,text,Other Image Type,true,${image_type} = 'other_image_ty',. = '',,
+caption,text,Image Description,false,,,multiline,
 scale_of_image,text,Scale of Overall Image,false,,,,
 scale_of_object,text,Scale and type of object in image (m),false,,,,
-width_of_image_view,decimal,Width of Image View,false,,Enables Scalebar,. > 0,
-units_of_image_view,select_one vt86z05,Units of Image View,true,,,,${width_of_image_view} != ''
+width_of_image_view,decimal,Width of Image View,false,,. > 0,,Enables Scalebar
+units_of_image_view,select_one vt86z05,Units of Image View,true,${width_of_image_view} != '',,,
 group_camera_orientation,begin group,Camera Orientation,,,,,
 lat,integer,Latitude,false,,,,
 lng,integer,Longitude,false,,,,
 view_azimuth_trend,integer,View azimuth (trend),false,,,,
 view_angle_plunge,integer,View angle (plunge),false,,,,
-orientation_of_view_subject,text,Orientation of View Subject,false,,"e.g., facing direction of cliff face",,
+orientation_of_view_subject,text,Orientation of View Subject,false,,,,"e.g., facing direction of cliff face"
 ,end group,,,,,,
 ,end group,,,,,,
 start,start,,,,,,

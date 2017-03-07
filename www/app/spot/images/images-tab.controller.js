@@ -30,6 +30,9 @@
       'text': 'Saved Photo Album',
       'value': 'SAVEDPHOTOALBUM'
     }];
+    vm.imageType = 'photo';
+    vm.imageTypeChoices = {};
+    vm.otherImageType = undefined;
     vm.selectedCameraSource = {};
 
     vm.addImage = addImage;
@@ -75,6 +78,7 @@
       vmParent.choices = DataModelsFactory.getDataModel('image').choices;
       createModals();
       getImageSources();
+      checkImageType();     // Set default image type to 'photo' if no image type has been set
       ionic.on('change', getFile, $document[0].getElementById('file'));
     }
 
@@ -121,6 +125,14 @@
       });
     }
 
+    // Set default image type to 'photo' if no image type has been set
+    function checkImageType() {
+      _.each(vmParent.spot.properties.images, function (image, i) {
+        if (!image.image_type ||
+          _.isEmpty(image.image_type)) vmParent.spot.properties.images[i]['image_type'] = 'photo';
+      });
+    }
+
     function createModals() {
       $ionicModal.fromTemplateUrl('app/spot/images/image-properties-modal.html', {
         'scope': $scope,
@@ -151,6 +163,58 @@
       });
       return $q.all(promises).then(function () {
         $log.log('Image Sources:', imageSources);
+      });
+    }
+
+    function getImageType(imageData, image) {
+      var imageTypeField = _.findWhere(vmParent.survey, {'name': 'image_type'});
+      vm.imageTypeChoices = _.filter(vmParent.choices, function (choice) {
+        return choice['list name'] === imageTypeField.type.split(" ")[1]
+      });
+      var template = '<ion-radio ng-repeat="choice in vmChild.imageTypeChoices" ng-value="choice.name" ng-model="vmChild.imageType">{{ choice.label }}</ion-radio> ' +
+        '<div ng-show="vmChild.imageType === \'other_image_ty\'">' +
+        '<ion-input class="item item-input"> ' +
+        '<input type="text" placeholder="Enter Other Image Type" ng-model="vmChild.otherImageType"> ' +
+        '</ion-input></div>';
+
+      var imageTypePopup = $ionicPopup.show({
+        'title': 'Select a Type for this Image:',
+        'template': template,
+        'scope': $scope,
+        'buttons': [{
+          'text': 'Cancel'
+        }, {
+          'text': '<b>OK</b>',
+          'type': 'button-positive',
+          'onTap': function (e) {
+            if (vm.imageType === 'other_image_ty' && vm.otherImageType === undefined) e.preventDefault();
+            else return e;
+          }
+        }]
+      });
+
+      imageTypePopup.then(function (res) {
+        if (res) {
+          imageData.image_type = vm.imageType;
+          if (vm.imageType === 'other_image_ty') imageData.other_image_type = vm.otherImageType;
+          ImageFactory.saveImage(imageData.id, image.src);
+          $log.log('Also save image to live db here');
+          LiveDBFactory.saveImageFile(imageData.id, image.src);
+
+          imageSources[imageData.id] = image.src;
+          if (getGeoInfo) addGeoInfo(imageData);
+          else {
+            var confirmPopup = $ionicPopup.confirm({
+              'title': 'Get Geolocation?',
+              'template': 'Use current latitude and longitude for this image?',
+              'cancelText': 'No'
+            });
+            confirmPopup.then(function (res) {
+              if (res) addGeoInfo(imageData);
+              else saveSpot(imageData);
+            });
+          }
+        }
       });
     }
 
@@ -312,23 +376,7 @@
               'width': image.width,
               'id': HelpersFactory.getNewId()
             };
-            ImageFactory.saveImage(imageData.id, image.src);
-            $log.log('Also save image to live db here');
-            LiveDBFactory.saveImageFile(imageData.id, image.src);
-
-            imageSources[imageData.id] = image.src;
-            if (getGeoInfo) addGeoInfo(imageData);
-            else {
-              var confirmPopup = $ionicPopup.confirm({
-                'title': 'Get Geolocation?',
-                'template': 'Use current latitude and longitude for this image?',
-                'cancelText': 'No'
-              });
-              confirmPopup.then(function (res) {
-                if (res) addGeoInfo(imageData);
-                else saveSpot(imageData);
-              });
-            }
+            getImageType(imageData, image);
           }
         };
         image.onerror = function () {
@@ -353,6 +401,8 @@
      */
 
     function addImage() {
+      vm.imageType = 'photo';
+      vm.otherImageType = undefined;
       isReattachImage = false;
       vm.selectedCameraSource = {
         'source': 'CAMERA'  // default is always camera
@@ -400,7 +450,7 @@
           var base64Data = block[1].split(',')[1];  // In this case 'iVBORw0KGg....'
           var dataBlob = HelpersFactory.b64toBlob(base64Data, dataType);
           var filename = (vmParent.data.title || vmParent.data.id) + '.jpg';
-          LocalStorageFactory.exportImage(dataBlob, filename).then(function(filePath) {
+          LocalStorageFactory.exportImage(dataBlob, filename).then(function (filePath) {
             $ionicPopup.alert({
               'title': 'Success!',
               'template': 'Image saved to ' + filePath
