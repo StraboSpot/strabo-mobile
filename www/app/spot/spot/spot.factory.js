@@ -21,6 +21,16 @@
     var newNestProperties = {};
     var selectedSpots = {};
     var spots = {};        // All Spots
+    var tabs = [
+      {'value': 'spot', 'label': 'Spot', 'path': 'spot'},
+      {'value': 'orientations', 'label': 'Orientations', 'path': 'orientations'},
+      {'value': '_3dstructures', 'label': '3D Structures', 'path': '_3dstructures'},
+      {'value': 'images', 'label': 'Images', 'path': 'images'},
+      {'value': 'nesting', 'label': 'Nesting', 'path': 'nesting'},
+      {'value': 'samples', 'label': 'Samples', 'path': 'samples'},
+      {'value': 'other_features', 'label': 'Other Features', 'path': 'other-features'},
+      {'value': 'relationships', 'label': 'Relationships', 'path': 'relationships'},
+      {'value': 'tags', 'label': 'Tags', 'path': 'tags'}];
     var visibleDatasets = [];
 
     return {
@@ -46,6 +56,7 @@
       'getSpotsByDatasetId': getSpotsByDatasetId,
       'getSpotById': getSpotById,
       'getSpots': getSpots,
+      'getTabs': getTabs,
       'getVisibleDatasets': getVisibleDatasets,
       'goToSpot': goToSpot,
       'isSafeDelete': isSafeDelete,
@@ -300,6 +311,10 @@
       return spotsTemp;
     }
 
+    function getTabs(){
+      return tabs;
+    }
+
     function getVisibleDatasets() {
       return visibleDatasets;
     }
@@ -346,10 +361,11 @@
       $log.log('Existing Spot: ', spots[saveSpot.properties.id]);
       var deferred = $q.defer(); // init promise
       var isEqual = _.isEqual(saveSpot, spots[saveSpot.properties.id]);
-      if (isEqual){
+      if (isEqual) {
         $log.log('Spot has not changed.');
         deferred.resolve(spots);
-      }else {
+      }
+      else {
         $log.log('Spot has changed.');
         saveSpot.properties.modified_timestamp = Date.now();
         $log.log('Call LiveDBFactory here:');

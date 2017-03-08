@@ -27,7 +27,7 @@
     vm.selectedType = 'all';
     vm.spotLevelTags = [];
     vm.spotLevelTagsToDisplay = [];
-    vm.tags = [];
+    vm.tabs = [];
 
     // Tags Functions
     vm.addTag = addTag;
@@ -87,6 +87,7 @@
     function activate() {
       $log.log('In SpotController');
       createPopover();
+      vm.tabs = SpotFactory.getTabs();
 
       $ionicModal.fromTemplateUrl('app/spot/tags/add-tag-modal.html', {
         'scope': $scope,
@@ -119,7 +120,7 @@
         }, true);
       }
 
-      $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){
+      $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
         if (vm.spotChanged && fromState.name === 'app.spotTab.spot') {
           saveSpot().then(function (spots) {
             $log.log('Saved spot: ', vm.spot);
@@ -411,6 +412,7 @@
     }
 
     function showTab(tab) {
+      if (tab === 'spot') return true;
       var preferences = ProjectFactory.getPreferences();
       return preferences[tab];
     }

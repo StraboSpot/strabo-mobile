@@ -19,58 +19,11 @@
           </div>
         </div>
 
-        <a class='button button-clear spot-tab-inactive'
-           ng-class='{ "spot-tab-active": sidePanel.isActiveTab("spot") }'
-           ng-click='sidePanel.setActiveTab("spot")'>
-          Spot</a>
-        <span ng-show='vm.showTab("orientations")'>
+        <span ng-show='vm.showTab(tab.value)' ng-repeat='tab in vm.tabs track by $index'>
           <a class='button button-clear spot-tab-inactive'
-             ng-class='{ "spot-tab-active": sidePanel.isActiveTab("orientations") }'
-             ng-click='sidePanel.setActiveTab("orientations")'>
-            Orientations</a>
-        </span>
-        <span ng-show='vm.showTab("_3dstructures")'>
-          <a class='button button-clear spot-tab-inactive'
-             ng-class='{ "spot-tab-active": sidePanel.isActiveTab("3dstructures") }'
-             ng-click='sidePanel.setActiveTab("_3dstructures")'>
-            3D Structures</a>
-        </span>
-        <span ng-show='vm.showTab("images")'>
-          <a class='button button-clear spot-tab-inactive'
-             ng-class='{ "spot-tab-active": sidePanel.isActiveTab("images") }'
-             ng-click='sidePanel.setActiveTab("images")'>
-            Images</a>
-        </span>
-        <span ng-show='vm.showTab("nesting")'>
-          <a class='button button-clear spot-tab-inactive'
-             ng-class='{ "spot-tab-active": sidePanel.isActiveTab("nesting") }'
-             ng-click='sidePanel.setActiveTab("nesting")'>
-            Nesting</a>
-        </span>
-        <span ng-show='vm.showTab("samples")'>
-          <a class='button button-clear spot-tab-inactive'
-             ng-class='{ "spot-tab-active": sidePanel.isActiveTab("samples") }'
-             ng-click='sidePanel.setActiveTab("samples")'>
-            Samples</a>
-        </span>
-        <span ng-show='vm.showTab("other_features")'>
-          <a class='button button-clear spot-tab-inactive'
-             ng-class='{ "spot-tab-active": sidePanel.isActiveTab("other-features") }'
-             ng-click='sidePanel.setActiveTab("other-features")'>
-            Other Features</a>
-        </span>
-        <span ng-show='vm.showTab("relationships")'>
-          <a class='button button-clear spot-tab-inactive'
-             ng-class='{ "spot-tab-active": sidePanel.isActiveTab("relationships") }'
-             ng-click='sidePanel.setActiveTab("relationships")'>
-            Relationships</a>
-        </span>
-        <span ng-show='vm.showTab("tags")'>
-          <a class='button button-clear spot-tab-inactive'
-             ng-class='{ "spot-tab-active": sidePanel.isActiveTab("tags") }'
-             ng-click='sidePanel.setActiveTab("tags")'>
-            Tags
-          </a>
+             ng-class='{ "spot-tab-active": sidePanel.isActiveTab(tab.path) }'
+             ng-click='sidePanel.setActiveTab(tab.path)'>
+            {{ tab.label }}</a>
         </span>
         <span>
           <a class='button button-clear spot-tab-inactive'
@@ -82,7 +35,7 @@
         <div ng-show='sidePanel.isActiveTab("spot")' ng-controller='SpotTabController as vmChild'
              ng-init='sidePanel.onload("spot")'>
           <form name='straboForm' novalidate='' class='strabo-form'>
-              <strabo-spot-tab-directive></strabo-spot-tab-directive>
+            <strabo-spot-tab-directive></strabo-spot-tab-directive>
           </form>
         </div>
         <div ng-show='sidePanel.isActiveTab("orientations")' ng-controller='OrientationsTabController as vmChild'>
