@@ -3,20 +3,17 @@
 
   angular
     .module('app')
-    .controller('InferencesTabController', InferencesTabController);
+    .controller('RelationshipsTabController', RelationshipsTabController);
 
-  InferencesTabController.$inject = ['$log', '$scope', '$state', 'ProjectFactory'];
+  RelationshipsTabController.$inject = ['$log', '$scope', '$state', 'ProjectFactory'];
 
-  function InferencesTabController($log, $scope, $state, ProjectFactory) {
+  function RelationshipsTabController($log, $scope, $state, ProjectFactory) {
     var vm = this;
     var vmParent = $scope.vm;
 
-    var thisTabName = 'inferences';
+    var thisTabName = 'relationships';
 
     vm.featureLevelRelationships = [];
-    vm.outcropInPlaceChoices = ['5 - definitely in place', '4', '3',
-      '2', '1 - float'];
-    vm.relatedRosettaChoices = {};
     vm.spotLevelRelationships = [];
 
     vm.goToRelationship = goToRelationship;
@@ -29,7 +26,7 @@
      */
 
     function activate() {
-      $log.log('In InferencesTabController');
+      $log.log('In RelationshipsTabController');
 
       // Loading tab from Spots list
       if ($state.current.name === 'app.spotTab.' + thisTabName) loadTab($state);
@@ -52,19 +49,7 @@
       vmParent.survey = undefined;
       vmParent.choices = undefined;
 
-      gatherRosettaChoices();
       loadRelationships();
-    }
-
-    function gatherRosettaChoices() {
-      vm.relatedRosettaChoices = _.filter(vmParent.spots, function (spot) {
-        if (spot.properties.inferences && spot.properties.inferences.rosetta_outcrop) {
-          return spot.properties.inferences.rosetta_outcrop;
-        }
-      });
-      vm.relatedRosettaChoices = _.reject(vm.relatedRosettaChoices, function (spot) {
-        return spot.properties.id === vmParent.spot.properties.id;
-      });
     }
 
     function loadRelationships() {

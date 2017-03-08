@@ -207,7 +207,7 @@
       vm.popover.hide();
       var newSpot = {'type': 'Feature'};
       newSpot.properties = _.omit(vm.spot.properties,
-        ['name', 'id', 'date', 'time', 'modified_timestamp', 'images', 'samples', 'inferences']);
+        ['name', 'id', 'date', 'time', 'modified_timestamp', 'images', 'samples']);
       _.each(newSpot.properties.orientation_data, function (orientation, i) {
         newSpot.properties.orientation_data[i] = _.omit(orientation,
           ['strike', 'dip_direction', 'dip', 'trend', 'plunge', 'rake', 'rake_calculated']);
@@ -429,6 +429,7 @@
               vm.spot.properties.surface_feature = vm.data;
             }
           }
+          if (vm.spot.properties.inferences) delete vm.spot.properties.inferences;  // Remove leftover inferences
           vm.spot = HelpersFactory.cleanObj(vm.spot);
           $log.log('Spot to save: ', vm.spot);
           return SpotFactory.save(vm.spot);

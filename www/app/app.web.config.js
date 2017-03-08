@@ -234,13 +234,13 @@
           }
         }
       })
-      .state('app.spotTab.inferences', {
+      .state('app.spotTab.relationships', {
         'cache': false,
-        'url': '/:spotId/inferences',
+        'url': '/:spotId/relationships',
         'views': {
           'spottab-childview': {
-            'templateUrl': 'app/spot/inferences/inferences-tab.web.html',
-            'controller': 'InferencesTabController as vmChild'
+            'templateUrl': 'app/spot/relationships/relationships-tab.web.html',
+            'controller': 'RelationshipsTabController as vmChild'
           }
         }
       })
@@ -304,7 +304,7 @@
           }
         }
       })
-      .state('app.archiveTiles', {
+      /*.state('app.archiveTiles', {
         'url': '/maps/archiveTiles',
         'views': {
           'menuContent': {
@@ -312,7 +312,7 @@
             'controller': 'ArchiveTilesController as vm'
           }
         }
-      })
+      })*/
       .state('app.misc', {
         'cache': false,
         'url': '/misc',

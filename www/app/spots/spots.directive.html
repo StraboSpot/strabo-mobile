@@ -33,7 +33,7 @@
         <span ng-if='vm.hasTags(spot.properties.id)' class='spot-tabs-on tags-on'>Tags</span>
         <span ng-if='spot.properties.samples' class='spot-tabs-on samples-on'>Samples</span>
         <span ng-if='spot.properties.other_features' class='spot-tabs-on other-features-on'>Other Features</span>
-        <span ng-if='spot.properties.inferences' class='spot-tabs-on inferences-on'>Inferences</span>
+        <span ng-if='vm.hasRelationships(spot.properties.id)' class='spot-tabs-on relationships-on'>Relationships</span>
         </span>
       <div ng-show='vm.showDetail.tags'>
           <span ng-show='vm.hasTags(spot.properties.id)' class='list-sub'>

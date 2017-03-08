@@ -1,0 +1,33 @@
+<div class="strabo-form">
+  <button ng-click='vmChild.goToRelationships();' class='button button-clear button-positive'>
+    <i class='icon ion-plus-circled'></i>
+    <span class='button-text-big'>Add/Edit a Relationship</span>
+  </button>
+  <div class='padding'
+       ng-show='vmChild.spotLevelRelationships.length === 0 && vmChild.featureLevelRelationships.length === 0'>
+    No relationships added to this Spot yet.
+  </div>
+
+  <div class='item item-divider' ng-show='vmChild.spotLevelRelationships.length > 0'>
+    Spot Level Relationships
+  </div>
+  <ion-list>
+    <ion-item class='item-text-wrap item-button-right'
+              ng-repeat='relationship in vmChild.spotLevelRelationships | orderBy:"name" track by relationship.id'
+              ng-click='vmChild.goToRelationship(relationship.id)'>
+      {{ relationship.name }}
+    </ion-item>
+  </ion-list>
+  <div class='item item-divider' ng-show='vmChild.featureLevelRelationships.length > 0'>
+    Feature Level Relationships
+  </div>
+  <ion-list>
+    <ion-item class='item-text-wrap item-button-right'
+              ng-repeat='relationship in vmChild.featureLevelRelationships | orderBy:"name" track by relationship.id'
+              ng-click='vmChild.goToRelationship(relationship.id)'>
+      {{ relationship.name }}
+    </ion-item>
+  </ion-list>
+
+  </ion-input>
+</div>

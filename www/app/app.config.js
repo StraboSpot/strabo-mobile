@@ -210,13 +210,13 @@
           }
         }
       })
-      .state('app.spotTab.inferences', {
+      .state('app.spotTab.relationships', {
         'cache': false,
-        'url': '/:spotId/inferences',
+        'url': '/:spotId/relationships',
         'views': {
           'spottab-childview': {
-            'templateUrl': 'app/spot/inferences/inferences-tab.html',
-            'controller': 'InferencesTabController as vmChild'
+            'templateUrl': 'app/spot/relationships/relationships-tab.html',
+            'controller': 'RelationshipsTabController as vmChild'
           }
         }
       })

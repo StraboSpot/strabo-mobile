@@ -59,11 +59,11 @@
              ng-click='sidePanel.setActiveTab("other-features")'>
             Other Features</a>
         </span>
-        <span ng-show='vm.showTab("inferences")'>
+        <span ng-show='vm.showTab("relationships")'>
           <a class='button button-clear spot-tab-inactive'
-             ng-class='{ "spot-tab-active": sidePanel.isActiveTab("inferences") }'
-             ng-click='sidePanel.setActiveTab("inferences")'>
-            Inferences</a>
+             ng-class='{ "spot-tab-active": sidePanel.isActiveTab("relationships") }'
+             ng-click='sidePanel.setActiveTab("relationships")'>
+            Relationships</a>
         </span>
         <span ng-show='vm.showTab("tags")'>
           <a class='button button-clear spot-tab-inactive'
@@ -109,8 +109,8 @@
         <div ng-show='sidePanel.isActiveTab("other-features")' ng-controller='OtherFeaturesTabController as vmChild'>
           <strabo-other-features-tab-directive></strabo-other-features-tab-directive>
         </div>
-        <div ng-show='sidePanel.isActiveTab("inferences")' ng-controller='InferencesTabController as vmChild'>
-          <strabo-inferences-tab-directive></strabo-inferences-tab-directive>
+        <div ng-show='sidePanel.isActiveTab("relationships")' ng-controller='RelationshipsTabController as vmChild'>
+          <strabo-relationships-tab-directive></strabo-relationships-tab-directive>
         </div>
         <div ng-show='sidePanel.isActiveTab("tags")' ng-controller='TagsTabController as vmChild'>
           <strabo-tags-tab-directive></strabo-tags-tab-directive>

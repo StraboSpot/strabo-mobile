@@ -33,6 +33,7 @@
     vm.getTagNames = getTagNames;
     vm.filter = filter;
     vm.goToSpot = goToSpot;
+    vm.hasRelationships = hasRelationships;
     vm.hasTags = hasTags;
     vm.isDatasetChecked = isDatasetChecked;
     vm.isOnlineLoggedIn = isOnlineLoggedIn;
@@ -375,6 +376,10 @@
       if (!vm.deleteSelected) {
         $location.path('/app/spotTab/' + id + '/spot');
       }
+    }
+
+    function hasRelationships(spotId) {
+      return !_.isEmpty(ProjectFactory.getRelationshipsBySpotId(spotId));
     }
 
     function hasTags(spotId) {
