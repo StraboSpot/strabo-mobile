@@ -17,14 +17,18 @@
       <ul class="nav navbar-nav">
         <li ng-class='{ "active": vm.isActive("app.spotTab") }'>
           <a ui-sref="app.spotTab">Spots</a></li>
-        <li ng-class='{ "active": vm.isActive("app.relationships") }'>
-          <a ui-sref="app.relationships">Relationships</a></li>
-        <li ng-class='{ "active": vm.isActive("app.tags") }'>
-          <a ui-sref="app.tags">Tags</a></li>
+        <li class="dropdown" ng-class='{ "active": vm.isActive("app.relationships") || vm.isActive("app.tags") }'>
+          <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            Attributes<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a ui-sref="app.relationships">Relationships</a></li>
+            <li><a ui-sref="app.tags">Tags</a></li>
+          </ul>
+        </li>
         <li class="dropdown" ng-class='{ "active": vm.isActive("app.map") || vm.isActive("app.image-basemaps")
          || vm.isActive("app.image-basemap") || vm.isActive("app.other-maps") }'>
           <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-            Map<span class="caret"></span></a>
+            Maps<span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a ui-sref="app.map">Main Map</a></li>
             <li><a ui-sref="app.image-basemaps">Image Basemaps</a></li>
