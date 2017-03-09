@@ -69,6 +69,16 @@
           }
         }
       })
+      .state('app.samples', {
+        'cache': false,
+        'url': '/samples',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/attributes/samples/samples.html',
+            'controller': 'SamplesController as vm'
+          }
+        }
+      })
       .state('app.tags', {
         'cache': false,
         'url': '/tags',

@@ -86,6 +86,16 @@
           }
         }
       })
+      .state('app.samples', {
+        'cache': false,
+        'url': '/samples',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/attributes/samples/samples.web.html',
+            'controller': 'SamplesController as vm'
+          }
+        }
+      })
       .state('app.tags', {
         'cache': false,
         'url': '/tags',
@@ -305,14 +315,14 @@
         }
       })
       /*.state('app.archiveTiles', {
-        'url': '/maps/archiveTiles',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/maps/offline-maps/archive-tiles.html',
-            'controller': 'ArchiveTilesController as vm'
-          }
-        }
-      })*/
+       'url': '/maps/archiveTiles',
+       'views': {
+       'menuContent': {
+       'templateUrl': 'app/maps/offline-maps/archive-tiles.html',
+       'controller': 'ArchiveTilesController as vm'
+       }
+       }
+       })*/
       .state('app.misc', {
         'cache': false,
         'url': '/misc',

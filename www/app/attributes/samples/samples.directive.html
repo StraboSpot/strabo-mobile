@@ -1,0 +1,17 @@
+<div>
+  <div class='padding' ng-show='vm.samples.length === 0'>
+    No Samples found in any of the active Spots. Add a new Sample from the Samples tab within a Spot.
+  </div>
+  <ul class='strabo-flex-container strabo-wrap' ng-show='vm.samples.length > 0'>
+    <li class="strabo-flex-item" ng-repeat='sample in vm.samples | orderBy:"name" track by sample.id'
+        ng-click='vm.goToSample(sample)'>
+      <span class='sample-box-header-text'>{{ sample.label }}</span><br>
+      <b>Spot:</b> {{ vm.getSpotName(sample.spotId) }} <br>
+      <span ng-show='sample.sample_id_name'><b>Sample Specific ID/Name:</b> {{ sample.sample_id_name }}<br></span>
+      <span ng-show='sample.oriented_sample'><b>Oriented Sample:</b> {{ sample.oriented_sample }}<br></span>
+      <span ng-show='sample.description'><b>Sample Description:</b> {{ sample.description }}<br></span>
+      <span ng-show='sample.material_type'><b>Material Type:</b>  {{  vm.getLabel(sample.material_type) }}<br></span>
+      <span ng-show='sample.main_sampling_purpose'><b>Main Sampling Purpose:</b> {{ vm.getLabel(sample.main_sampling_purpose) }}</span>
+    </li>
+  </ul>
+</div>

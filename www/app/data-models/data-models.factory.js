@@ -99,6 +99,7 @@
       }
     };
     var featureTypeLabels = {};
+    var labelsDictionary = {};
     var spotDataModel = {};
     var surfaceFeatureTypeLabels = {};
     var traceTypeLabels = {};
@@ -106,6 +107,7 @@
     return {
       'getDataModel': getDataModel,
       'getFeatureTypeLabel': getFeatureTypeLabel,
+      'getLabel': getLabel,
       'getSpotDataModel': getSpotDataModel,
       'getSurfaceFeatureTypeLabel': getSurfaceFeatureTypeLabel,
       'getTraceTypeLabel': getTraceTypeLabel,
@@ -139,6 +141,21 @@
       $log.log('Trace Feature Types:', traceTypeLabels);
       surfaceFeatureTypeLabels = gatherTypeLabels([dataModels.surface_feature], 'surface_feature_type');
       $log.log('Surface Feature Types:', surfaceFeatureTypeLabels);
+    }
+
+    function createOtherLabelsDictionary() {
+      var models = {
+        'samples': dataModels.sample
+      };
+      _.each(models, function (model) {
+        _.each(model.choices, function (field) {
+          if (labelsDictionary[field.name] && labelsDictionary[field.name] !== field.label) {
+            $log.error('Dup label!', field.name, labelsDictionary[field.name], field.label);
+          }
+          labelsDictionary[field.name] = field.label;
+        });
+      });
+      $log.log('Labels Dictionary:', labelsDictionary);
     }
 
     function createSpotDataModel() {
@@ -286,6 +303,10 @@
       return featureTypeLabels[type];
     }
 
+    function getLabel(label) {
+      return labelsDictionary[label] || undefined;
+    }
+
     function getSpotDataModel() {
       return spotDataModel;
     }
@@ -319,6 +340,7 @@
         $log.log('Finished loading all data models', dataModels);
         createSpotDataModel();
         createFeatureTypesDictionary();
+        createOtherLabelsDictionary();
         deferred.resolve();
       });
       return deferred.promise;
