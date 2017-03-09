@@ -14,6 +14,7 @@
 
     var initializing = true;
 
+    vm.choices = {};
     vm.currentSpot = SpotFactory.getCurrentSpot();
     vm.data = {};
     vm.dataChanged = false;
@@ -34,6 +35,7 @@
       if (_.isEmpty(ProjectFactory.getCurrentProject())) $location.path('app/manage-project');
       else {
         vm.survey = DataModelsFactory.getDataModel('preferences').survey;
+        vm.choices = DataModelsFactory.getDataModel('preferences').choices;
         vm.data = ProjectFactory.getPreferences();
       }
 
