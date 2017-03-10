@@ -39,6 +39,16 @@
           }
         }
       })
+      .state('app.images', {
+        'cache': false,
+        'url': '/images',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/attributes/images/images.html',
+            'controller': 'ImagesController as vm'
+          }
+        }
+      })
       .state('app.manage-project', {
         'cache': false,
         'url': '/manage-project',

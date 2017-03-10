@@ -147,6 +147,7 @@
 
     function createOtherLabelsDictionary() {
       var models = {
+        'images': dataModels.image,
         'samples': dataModels.sample
       };
       _.each(models, function (model) {

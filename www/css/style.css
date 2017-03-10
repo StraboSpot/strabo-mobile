@@ -766,7 +766,6 @@ Samples and Images Pages
   padding: 0;
   margin: 0;
   list-style: none;
-  border: 1px solid silver;
   -ms-box-orient: horizontal;
   display: -webkit-box;
   display: -moz-box;
@@ -781,11 +780,16 @@ Samples and Images Pages
   flex-wrap: wrap;
 }
 
-.strabo-wrap li {
+.strabo-flex-item {
   background:  #F6F6F6;
+  padding: 5px;
+  width: 200px;
+  height: 260px;
+  margin: 10px;
+  overflow: hidden;
 }
 
-.strabo-flex-item {
+.strabo-images-flex-item {
   padding: 5px;
   width: 200px;
   height: 260px;

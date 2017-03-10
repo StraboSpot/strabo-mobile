@@ -46,6 +46,16 @@
           }
         }
       })
+      .state('app.images', {
+        'cache': false,
+        'url': '/images',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/attributes/images/images.web.html',
+            'controller': 'ImagesController as vm'
+          }
+        }
+      })
       .state('app.login', {
         'cache': false,
         'url': '/login',

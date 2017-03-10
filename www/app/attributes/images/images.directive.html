@@ -1,0 +1,15 @@
+<div>
+  <div class='padding' ng-show='vm.images.length === 0'>
+    No Images found in any of the active Spots. Add a new Image from the Image tab within a Spot.
+  </div>
+  <ul class='strabo-flex-container strabo-wrap' ng-show='vm.images.length > 0'>
+    <li class="strabo-images-flex-item" ng-repeat='image in vm.images | orderBy:"name" track by image.id'
+        ng-click='vm.goToImage(image)'>
+      <a><img ng-src='{{ vm.getImageSrc(image.id) }}' width='200' height='200'></a>
+      <div style='text-align: center;'>
+        <span ng-show='image.title'><b>{{ image.title }}</b></span>
+        <span ng-show='image.title && image.image_type'><br></span>
+        <span ng-show='image.image_type'><small>{{ vm.getLabel(image.image_type) }}</small></span></div>
+    </li>
+  </ul>
+</div>
