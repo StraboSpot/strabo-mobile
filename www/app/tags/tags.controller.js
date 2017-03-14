@@ -15,6 +15,7 @@
     var isDelete = false;
 
     vm.allTags = [];
+    vm.allTagsToDisplay = [];
     vm.isTagging = TagFactory.getActiveTagging();
     vm.selectedType = 'all';
     vm.setActiveTagsModal = {};

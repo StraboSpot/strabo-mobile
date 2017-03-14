@@ -15,9 +15,12 @@
 
     var imageSources = {};
 
+     vm.imageIdSelected = undefined;
     vm.images = [];
-    vm.imageIdSelected = undefined;
+    vm.imagesToDisplay = [];
+    vm.selectedType = 'all';
 
+    vm.filterImagesType = filterImagesType;
     vm.getImageSrc = getImageSrc;
     vm.getLabel = getLabel;
     vm.goToImage = goToImage;
@@ -51,6 +54,7 @@
         }
       });
       $log.log(vm.images);
+      vm.imagesToDisplay = vm.images;
       return $q.all(promises).then(function () {
         //$log.log('Image Sources:', imageSources);
       });
@@ -59,6 +63,15 @@
     /**
      * Public Functions
      */
+
+    function filterImagesType() {
+      if (vm.selectedType === 'all') vm.imagesToDisplay = vm.images;
+      else {
+        vm.imagesToDisplay = _.filter(vm.images, function (image) {
+          return image.image_type === vm.selectedType;
+        });
+      }
+    }
 
     function getImageSrc(imageId) {
       return imageSources[imageId] || 'img/loading-image.png';
