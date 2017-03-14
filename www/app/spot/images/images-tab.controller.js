@@ -434,7 +434,7 @@
             LiveDBFactory.deleteImageFile(vmParent.data.id);
             delete imageSources[vmParent.data.id];
             vmParent.data = {};
-            closeModal('imagePropertiesModal');
+            vm.imagePropertiesModal.hide();
           }
         });
       }
