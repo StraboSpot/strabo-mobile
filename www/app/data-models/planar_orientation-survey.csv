@@ -3,7 +3,7 @@ label,text,Label,If a label is not specified a default label will be given.,fals
 feature_type,select_one yy6na02,Planar Feature Type,"Type of planar geologic feature: e.g., bedding, contact, foliation, fracture, vein, shear zone",false,horizontal,,,
 other_feature,text,Other Planar Feature,,false,,${feature_type} = 'other',,
 strike,integer,Strike,Azimuth in degrees,false,,,. >= 0 and . <= 360,Value must be a whole number between 0-360.
-dip_direction,integer,Dip Direction,,false,,,. >= 0 and . <= 360,Value must be a whole number between 0-360
+dip_direction,integer,Azimuth Dip Direction,,false,,,. >= 0 and . <= 360,Value must be a whole number between 0-360.
 dip,integer,Dip,,false,,,. >= 0 and . <= 90,Value must be a whole number between 0-90.
 facing,select_one fr08c16,Plane Facing,"Orientation of plane relative to original position e.g., upright, overturned, vertical",false,horizontal-compact,,,
 facing_defined_by,select_one rf3od15,Plane Facing Defined By,"Criteria for facing direction: e.g., stratigraphy, facing iindicators, other",false,horizontal,${facing} != '',,
