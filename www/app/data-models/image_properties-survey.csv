@@ -9,8 +9,8 @@ scale_of_object,text,Scale and type of object in image (m),false,,,,
 width_of_image_view,decimal,Width of Image View,false,,. > 0,,Enables Scalebar
 units_of_image_view,select_one vt86z05,Units of Image View,true,${width_of_image_view} != '',,,
 group_camera_orientation,begin group,Camera Orientation,,,,,
-lat,integer,Latitude,false,,,,
-lng,integer,Longitude,false,,,,
+lat,decimal,Latitude,false,,,,
+lng,decimal,Longitude,false,,,,
 view_azimuth_trend,integer,View azimuth (trend),false,,,,
 view_angle_plunge,integer,View angle (plunge),false,,,,
 orientation_of_view_subject,text,Orientation of View Subject,false,,,,"e.g., facing direction of cliff face"
