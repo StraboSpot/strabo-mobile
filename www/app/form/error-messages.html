@@ -6,6 +6,10 @@
   <i class='ion-information-circled'></i>
   This field must be a number!
 </div>
+<div class='error' ng-message='pattern'>
+  <i class='ion-information-circled'></i>
+  This field must be an integer!
+</div>
 <div class='error' ng-message='min'><i class='ion-information-circled'></i>
   <span ng-if='field.constraint_message'>{{field.constraint_message}}</span>
   <span ng-if='!field.constraint_message'>Outside lower bound of valid range</span>

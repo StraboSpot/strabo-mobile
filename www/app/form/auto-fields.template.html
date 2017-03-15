@@ -10,6 +10,7 @@
                    ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
           <ion-label>{{field.label}}</ion-label>
           <input type='number'
+                 ng-pattern='/^[-+]?\d+$/'
                  name='{{ field.name }}'
                  placeholder='{{ field.hint }}'
                  ng-model='vm.data[field.name]'

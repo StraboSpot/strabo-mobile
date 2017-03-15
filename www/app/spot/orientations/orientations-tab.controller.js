@@ -122,15 +122,15 @@
       rake = HelpersFactory.toDegrees(R);
 
       if (vmParent.data.type === 'linear_orientation') {
-        vm.compassData.trend = HelpersFactory.roundToDecimalPlaces(trend, 2);
-        vm.compassData.plunge = HelpersFactory.roundToDecimalPlaces(plunge, 2);
-        vm.compassData.rake = HelpersFactory.roundToDecimalPlaces(rake, 2);
+        vm.compassData.trend = HelpersFactory.roundToDecimalPlaces(trend, 0);
+        vm.compassData.plunge = HelpersFactory.roundToDecimalPlaces(plunge, 0);
+        vm.compassData.rake = HelpersFactory.roundToDecimalPlaces(rake, 0);
         vm.compassData.rake_calculated = 'yes';
       }
       else {
-        vm.compassData.strike = HelpersFactory.roundToDecimalPlaces(strike, 2);
-        vm.compassData.dipdir = HelpersFactory.roundToDecimalPlaces(dipdir, 2);
-        vm.compassData.dip = HelpersFactory.roundToDecimalPlaces(dip, 2);
+        vm.compassData.strike = HelpersFactory.roundToDecimalPlaces(strike, 0);
+        vm.compassData.dipdir = HelpersFactory.roundToDecimalPlaces(dipdir, 0);
+        vm.compassData.dip = HelpersFactory.roundToDecimalPlaces(dip, 0);
       }
     }
 

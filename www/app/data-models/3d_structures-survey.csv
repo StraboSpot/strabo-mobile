@@ -44,12 +44,12 @@ boudinage_dip,integer,Dip,false,${boudinage} != '',,,,,
 ,end group,,,,,,,,
 group_primary_neckline,begin group,Primary Neckline Orientation,,${boudinage} != '',,,,,
 boudinage_trend,integer,Trend,false,${boudinage} != '',,,,,
-boudinage_plunge,integer,Plunge,false,${boudinage} != '',,,,. >= 0 and . <= 90,Plunge must be between 0-90.
+boudinage_plunge,integer,Plunge,false,${boudinage} != '',,,,. >= 0 and . <= 90,Value must be a whole number between 0-90.
 boudinage_trend_uncertainty,integer,Measured Uncertainty,false,${boudinage} != '',,,,,
 ,end group,,,,,,,,
 group_secondary_neckline,begin group,Secondary Neckline Orientation,,${boudinage} != '',,,,,
 boudinage_2nd_trend,integer,Trend,false,${boudinage} != '',,,,,
-boudinage_2nd_plunge,integer,Plunge,false,${boudinage} != '',,,,. >= 0 and . <= 90,Plunge must be between 0-90.
+boudinage_2nd_plunge,integer,Plunge,false,${boudinage} != '',,,,. >= 0 and . <= 90,Value must be a whole number between 0-90.
 boudinage_2nd_trend_uncertaint,integer,Uncertainty,false,${boudinage} != '',,,,,
 ,end group,,,,,,,,
 boudin_linear_measure_quality,select_one ex15z66,Linear Measurement Quality,false,${boudinage} != '',for boudin necklines,likert,,,
@@ -75,7 +75,7 @@ mullion_dip,integer,Dip,false,${mullions} != '',,,,,
 ,end group,,,,,,,,
 group_db5vg51,begin group,Mullion Neckline,,${mullions} != '',,,,,
 mullion_trend,integer,Trend,false,${mullions} != '',,,,,
-mullion_plunge,integer,Plunge,false,${mullions} != '',,,,. >= 0 and . <= 90,Plunge must be between 0-90.
+mullion_plunge,integer,Plunge,false,${mullions} != '',,,,. >= 0 and . <= 90,Value must be a whole number between 0-90.
 mullion_uncertainty,integer,Uncertainty,false,${mullions} != '',,,,,
 mullion_linear_measure_quality,select_one ex15z66,Linear Measurement Quality,false,${mullions} != '',,likert,,,
 ,end group,,,,,,,,
