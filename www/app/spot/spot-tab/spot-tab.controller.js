@@ -5,16 +5,18 @@
     .module('app')
     .controller('SpotTabController', SpotTabController);
 
-  SpotTabController.$inject = ['$cordovaGeolocation', '$ionicPopup', '$log', '$scope', '$state', 'DataModelsFactory',
-    'ProjectFactory', 'SpotFactory', 'TagFactory'];
+  SpotTabController.$inject = ['$cordovaGeolocation', '$ionicModal', '$ionicPopup', '$log', '$scope', '$state',
+    'DataModelsFactory', 'HelpersFactory', 'LiveDBFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
 
-  function SpotTabController($cordovaGeolocation, $ionicPopup, $log, $scope, $state, DataModelsFactory, ProjectFactory,
-                             SpotFactory, TagFactory) {
+  function SpotTabController($cordovaGeolocation, $ionicModal, $ionicPopup, $log, $scope, $state, DataModelsFactory,
+                             HelpersFactory, LiveDBFactory, ProjectFactory, SpotFactory, IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
 
     var thisTabName = 'spot';
 
+    vm.isCreateGeologicUnitTag = false;
+    vm.isSelectGeologicUnitTag = false;
     vm.lat = undefined;
     vm.lng = undefined;
     vm.mapped = false;
@@ -24,6 +26,8 @@
     vm.y = undefined;
 
     vm.addGeologicUnitTag = addGeologicUnitTag;
+    vm.closeGeologicUnitTagModal = closeGeologicUnitTagModal;
+    vm.createGeologicUnitTag = createGeologicUnitTag;
     vm.getCurrentLocation = getCurrentLocation;
     vm.setFromMap = setFromMap;
     vm.updateDatetime = updateDatetime;
@@ -54,6 +58,14 @@
             });
           });
         }
+      });
+
+      $ionicModal.fromTemplateUrl('app/spot/spot-tab/add-geologic-unit-tag-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false
+      }).then(function (modal) {
+        vmParent.addGeologicUnitTagModal = modal;
       });
 
       $scope.$on('update-spot-geometry', function (event, args) {
@@ -97,9 +109,12 @@
       }
     }
 
-    function addSpotLevelTag() {
-      vmParent.filterAllTagsType();
-      vmParent.addTagModal.show();
+    function reloadTab() {
+      vmParent.addGeologicUnitTagModal.hide();
+      loadTab({
+        'current': {'name': 'app.spotTab.' + thisTabName},
+        'params': {'spotId': vmParent.spot.properties.id}
+      });
     }
 
     function setDisplayedCoords() {
@@ -123,8 +138,63 @@
      */
 
     function addGeologicUnitTag() {
-      vmParent.selectedType = 'geologic_unit';
-      addSpotLevelTag();
+      if (!IS_WEB) {
+        vmParent.saveSpot().then(function () {
+          vmParent.data = {};
+          vm.isCreateGeologicUnitTag = false;
+          vm.isSelectGeologicUnitTag = true;
+          vmParent.addGeologicUnitTagModal.show();
+        });
+      }
+      else {
+        if (vmParent.spotChanged) {
+          $ionicPopup.alert({
+            'title': 'Save Spot First!',
+            'template': 'Save your Spot before editing geologic units.'
+          });
+        }
+        else {
+          vmParent.data = {};
+          vm.isCreateGeologicUnitTag = false;
+          vm.isSelectGeologicUnitTag = true;
+          vmParent.addGeologicUnitTagModal.show();
+        }
+      }
+    }
+
+    function closeGeologicUnitTagModal() {
+      vmParent.data = HelpersFactory.cleanObj(vmParent.data);
+      if (_.isEmpty(vmParent.data)) reloadTab();
+      else {
+        if (!vmParent.data.unit_label_abbreviation) {
+          $ionicPopup.alert({
+            'title': 'No Unit Label!',
+            'template': 'Please give a unit label to this tag.'
+          });
+        }
+        else {
+          vmParent.data.id = HelpersFactory.getNewId().toString();
+          vmParent.data.type = 'geologic_unit';
+          vmParent.data.name = vmParent.data.unit_label_abbreviation;
+          vmParent.data.spots = [];
+          vmParent.data.spots.push(vmParent.spot.properties.id);
+          ProjectFactory.saveTag(vmParent.data).then(function () {
+            reloadTab();
+            $log.log('Tag saved');
+            if (IS_WEB) {
+              $log.log('Save tags to LiveDB.', ProjectFactory.getCurrentProject());
+              LiveDBFactory.save(null, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
+            }
+          });
+        }
+      }
+    }
+
+    function createGeologicUnitTag() {
+      vm.isCreateGeologicUnitTag = true;
+      vm.isSelectGeologicUnitTag = false;
+      vmParent.survey = DataModelsFactory.getDataModel('rock_unit').survey;
+      vmParent.choices = DataModelsFactory.getDataModel('rock_unit').choices;
     }
 
     // Get current location of the user

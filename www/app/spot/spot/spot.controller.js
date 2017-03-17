@@ -17,6 +17,7 @@
     var vm = this;
 
     // Tags Variables
+    vm.addGeologicUnitTagModal = {};
     vm.addTagModal = {};
     vm.addTagModalTitle = undefined;
     vm.allTags = [];
@@ -31,6 +32,7 @@
 
     // Tags Functions
     vm.addTag = addTag;
+    vm.createTag = createTag;
     vm.filterTagType = filterTagType;
     vm.filterAllTagsType = filterAllTagsType;
     vm.getNumTaggedFeatures = getNumTaggedFeatures;
@@ -60,7 +62,6 @@
     // Other Functions
     vm.closeModal = closeModal;
     vm.copyThisSpot = copyThisSpot;
-    vm.createTag = createTag;
     vm.deleteSpot = deleteSpot;
     vm.getMax = getMax;
     vm.getMin = getMin;
@@ -100,6 +101,7 @@
       // Cleanup the modal when we're done with it!
       $scope.$on('$destroy', function () {
         vm.addTagModal.remove();
+        if (vm.addGeologicUnitTagModal) vm.addGeologicUnitTagModal.remove();
         vm.popover.remove();
       });
 

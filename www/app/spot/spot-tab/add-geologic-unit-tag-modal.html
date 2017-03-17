@@ -1,0 +1,26 @@
+<ion-modal-view>
+  <ion-header-bar class='bar-stable nav-title-slide-ios7' align-title='center'>
+    <button class='button button-clear' ng-click='vmChild.closeGeologicUnitTagModal()'>
+      <span class='icon ion-arrow-left-c'></span>
+    </button>
+    <h1 class='title'>Add/Remove Geologic Unit Tag</h1>
+    <button class='button button-icon' ng-click='vmChild.createGeologicUnitTag()'>
+      <span class='icon ion-plus'></span>
+    </button>
+  </ion-header-bar>
+  <ion-content class='has-header'>
+    <ion-checkbox class='item-text-wrap item-button-right'
+                  ng-show='vmChild.isSelectGeologicUnitTag'
+                  ng-repeat='tag in vm.allTags | filter: {"type": "geologic_unit"} | orderBy:"name" track by tag.id'
+                  ng-checked='vm.isTagChecked(tag)'
+                  ng-click='vm.toggleTagChecked(tag)'>
+      <b>{{ tag.name }}</b>
+      <strabo-tags-list-properties-directive></strabo-tags-list-properties-directive>
+    </ion-checkbox>
+    <div ng-show='vmChild.isCreateGeologicUnitTag'>
+      <form name='straboForm' novalidate=''>
+        <auto-fields></auto-fields>
+      </form>
+    </div>
+  </ion-content>
+</ion-modal-view>
