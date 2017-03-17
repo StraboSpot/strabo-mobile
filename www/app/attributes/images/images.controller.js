@@ -60,7 +60,7 @@
       $log.log(vm.images);
       vm.filteredImages = vm.images;
       if (IS_WEB) vm.imagesToDisplay = vm.filteredImages;
-      else vm.imagesToDisplay = vm.filteredImages.slice(0,3);
+      else vm.imagesToDisplay = vm.filteredImages.slice(0, 10);
       return $q.all(promises).then(function () {
         //$log.log('Image Sources:', imageSources);
       });
