@@ -21,6 +21,7 @@
       'getClickedFeature': getClickedFeature,
       'getClickedLayer': getClickedLayer,
       'getInitialDatasetLayerStates': getInitialDatasetLayerStates,
+      'getFeatureById': getFeatureById,
       'setSelectedSymbol': setSelectedSymbol,
       'showMapPopup': showMapPopup,
       'showPopup': showPopup,
@@ -396,6 +397,17 @@
         return (lyr instanceof ol.layer.Vector) && lyr.get('name') !== 'drawLayer' &&
           lyr.get('name') !== 'geolocationLayer' && lyr.get('name') !== 'selectedHighlightLayer';
       });
+    }
+
+    function getFeatureById(spotId) {
+      var foundFeature = {};
+      var featureLayer = MapLayerFactory.getFeatureLayer();
+      _.each(featureLayer.getLayers().getArray(), function (layer) {
+        _.each(layer.getSource().getFeatures(), function (feature) {
+          if (_.isEmpty(foundFeature) && feature.get('id') === spotId) foundFeature = feature;
+        });
+      });
+      return foundFeature;
     }
 
     function getInitialDatasetLayerStates(map, imageBasemap) {

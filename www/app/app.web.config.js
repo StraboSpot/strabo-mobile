@@ -230,8 +230,11 @@
           }
         },
         'onExit': function ($log, SpotFactory) {
-          $log.log('Exiting Spots State. Clearing current Spot ...');
-          SpotFactory.clearCurrentSpot();
+          if (!SpotFactory.getKeepSpotSelected()) {
+            $log.log('Exiting Spots State. Clearing current Spot ...');
+            SpotFactory.clearCurrentSpot();
+          }
+          else SpotFactory.setKeepSpotSelected(false);
         }
       })
       .state('app.spotTab.orientations', {

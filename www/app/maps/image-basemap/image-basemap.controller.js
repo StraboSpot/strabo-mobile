@@ -84,6 +84,13 @@
           datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map, vm.imageBasemap);
           MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map, vm.imageBasemap);
           MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
+
+          // If we have a current feature set the selected symbol
+          if (vm.clickedFeatureId) {
+            var feature = MapFeaturesFactory.getFeatureById(vm.clickedFeatureId);
+            if (!_.isEmpty(feature)) MapFeaturesFactory.setSelectedSymbol(map, feature.getGeometry());
+          }
+
           createSwitcher(switcher);
 
           vm.currentZoom = map.getView().getZoom();

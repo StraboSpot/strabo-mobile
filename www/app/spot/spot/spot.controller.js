@@ -543,6 +543,7 @@
 
     // View the spot on the maps
     function viewMap() {
+      SpotFactory.setKeepSpotSelected(true);
       if (_.has(vm.spot.properties, 'image_basemap')) {
         vm.submit('/app/image-basemaps/' + vm.spot.properties.image_basemap);
       }

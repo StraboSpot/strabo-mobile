@@ -16,6 +16,7 @@
     var currentAssociatedOrientationIndex;
     var currentOrientationIndex;
     var isActiveNesting = false;
+    var isKeepSpotSelected = false;
     var moveSpot = false;
     var newNest = {};
     var newNestProperties = {};
@@ -50,6 +51,7 @@
       'getCurrentOrientationIndex': getCurrentOrientationIndex,
       'getCurrentSpot': getCurrentSpot,
       'getFirstSpot': getFirstSpot,
+      'getKeepSpotSelected': getKeepSpotSelected,
       'getNameFromId': getNameFromId,
       'getOrientations': getOrientations,
       'getSelectedSpots': getSelectedSpots,
@@ -67,6 +69,7 @@
       'setActiveNesting': setActiveNesting,
       'setCurrentOrientationIndex': setCurrentOrientationIndex,
       'setCurrentSpotById': setCurrentSpotById,
+      'setKeepSpotSelected': setKeepSpotSelected,
       'setNewSpot': setNewSpot,
       'setNewNestProperties': setNewNestProperties,
       'setSelectedSpots': setSelectedSpots,
@@ -279,6 +282,10 @@
       return deferred.promise;
     }
 
+    function getKeepSpotSelected() {
+      return isKeepSpotSelected;
+    }
+
     function getNameFromId(id) {
       var spotCur = spots[id];
       if (spotCur) return spotCur.properties.name;
@@ -401,6 +408,10 @@
 
     function setCurrentSpotById(id) {
       currentSpot = angular.fromJson(angular.toJson(spots[id]));
+    }
+
+    function setKeepSpotSelected(inVal) {
+      isKeepSpotSelected = inVal;
     }
 
     function setNewNestProperties(properties) {

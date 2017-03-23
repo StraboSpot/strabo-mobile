@@ -93,6 +93,13 @@
       datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map);
       MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map);
       MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
+
+      // If we have a current feature set the selected symbol
+      if (vm.clickedFeatureId) {
+        var feature = MapFeaturesFactory.getFeatureById(vm.clickedFeatureId);
+        if (!_.isEmpty(feature)) MapFeaturesFactory.setSelectedSymbol(map, feature.getGeometry());
+      }
+
       createSwitcher(switcher);
 
       createMapInteractions();
