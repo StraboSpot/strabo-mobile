@@ -5,12 +5,16 @@ questionable approximate,2,approximate(?),wb5nf41
 inferred,3,inferred,wb5nf41
 questionable inferred,4,inferred(?),wb5nf41
 concealed,5,concealed,wb5nf41
-other,,other,wb5nf41
+other,7,other,wb5nf41
 contact,0,contact,pl5yo85
 geologic structure,1,geologic_struc,pl5yo85
 geomorphic feature,2,geomorphic_fea,pl5yo85
 anthropogenic feature,3,anthropenic_fe,pl5yo85
-other feature,4,other_feature,pl5yo85
+scale bar,4,scale_bar,pl5yo85
+geological cross section,5,geological_cross_section,pl5yo85
+geophysical cross section,6,geophysical_cross_section,pl5yo85
+stratigraphic section,7,stratigraphic_section,pl5yo85
+other feature,8,other_feature,pl5yo85
 depositional,0,depositional,lx9ax28
 intrusive,1,intrusive,lx9ax28
 metamorphic,2,metamorphic,lx9ax28
@@ -91,6 +95,11 @@ property line,1,property_line,gw8je20
 road,2,road,gw8je20
 trail,3,trail,gw8je20
 other,4,other,gw8je20
+km,,km,vt86z05
+m,,m,vt86z05
+cm,,cm,vt86z05
+mm,,mm,vt86z05
+um,,_m,vt86z05
 extent of mapping,,extent_of_mapp,lh87q41
 extent of biological marker,,extent_of_biol,lh87q41
 other,,other,lh87q41

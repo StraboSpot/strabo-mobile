@@ -23,8 +23,8 @@
     // Get the max value allowed for a number field
     function getMax(constraint) {
       try {
-        // Look for <= (= is optional) in constraint, followed by a space and then a number
-        var regexMax = /<=?\s(\d*)/i;
+        // Look for <= (= is optional) in constraint, followed by a space and then any number of digits (- preceding the digits is optional)
+        var regexMax = /<=?\s(-?\d*)/i;
         // Return just the number
         return regexMax.exec(constraint)[1];
       }
@@ -36,8 +36,8 @@
     // Get the min value allowed for a number field
     function getMin(constraint) {
       try {
-        // Look for >= (= is optional) in constraint, followed by a space and any number of digits
-        var regexMin = />=?\s(\d*)/i;
+        // Look for >= (= is optional) in constraint, followed by a space and any number of digits (- preceding the digits is optional)
+        var regexMin = />=?\s(-?\d*)/i;
         // Return just the number
         return regexMin.exec(constraint)[1];
       }
@@ -91,7 +91,7 @@
               errorMessages += '<b>' + field.label + '</b>: Required!<br>';
             }
             else if (field.name in data) {
-              var constraint = field.constraint_message ?  field.constraint_message : 'Error in field.';
+              var constraint = field.constraint_message ? field.constraint_message : 'Error in field.';
               errorMessages += '<b>' + field.label + '</b>: ' + constraint + '<br>';
             }
           }

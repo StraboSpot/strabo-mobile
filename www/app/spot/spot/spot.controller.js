@@ -101,7 +101,7 @@
       // Cleanup the modal when we're done with it!
       $scope.$on('$destroy', function () {
         vm.addTagModal.remove();
-        if (vm.addGeologicUnitTagModal) vm.addGeologicUnitTagModal.remove();
+        if (!_.isEmpty(vm.addGeologicUnitTagModal)) vm.addGeologicUnitTagModal.remove();
         vm.popover.remove();
       });
 

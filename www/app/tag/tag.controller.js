@@ -6,12 +6,12 @@
     .controller('TagController', TagController);
 
   TagController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopup', '$location', '$log', '$rootScope', '$scope',
-    '$state', '$timeout', 'DataModelsFactory', 'HelpersFactory', 'FormFactory', 'LiveDBFactory', 'ProjectFactory', 'SpotFactory',
-    'TagFactory', 'IS_WEB'];
+    '$state', '$timeout', 'DataModelsFactory', 'HelpersFactory', 'FormFactory', 'LiveDBFactory', 'ProjectFactory',
+    'SpotFactory', 'TagFactory', 'IS_WEB'];
 
   function TagController($ionicHistory, $ionicModal, $ionicPopup, $location, $log, $rootScope, $scope, $state, $timeout,
-                         DataModelsFactory, HelpersFactory, FormFactory, LiveDBFactory, ProjectFactory, SpotFactory, TagFactory,
-                         IS_WEB) {
+                         DataModelsFactory, HelpersFactory, FormFactory, LiveDBFactory, ProjectFactory, SpotFactory,
+                         TagFactory, IS_WEB) {
     var vmParent = $scope.vm;
     var vm = this;
 
@@ -39,6 +39,8 @@
     vm.filter = filter;
     vm.getNumTaggedFeatures = getNumTaggedFeatures;
     vm.getFeatureName = getFeatureName;
+    vm.getMax = getMax;
+    vm.getMin = getMin;
     vm.getSpotName = getSpotName;
     vm.getTagName = getTagName;
     vm.go = go;
@@ -251,6 +253,14 @@
         }
       });
       return (found && found.label) ? found.label : 'Unknown Name';
+    }
+
+    function getMax(constraint) {
+      return FormFactory.getMax(constraint);
+    }
+
+    function getMin(constraint) {
+      return FormFactory.getMin(constraint);
     }
 
     function getSpotName(spotId) {
