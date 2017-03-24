@@ -9,7 +9,7 @@
   <ion-content class='has-header strabo-form'>
     <ion-input class='item item-input item-select item-text-wrap'>
       <ion-label>Map Type</ion-label>
-      <select ng-model='vm.data.source'
+      <select ng-model='vm.data.source' class='drop-down-box'
               ng-options='mapSource.source as mapSource.name for mapSource in vm.mapSources'
               ng-change='vm.toggleHelpText();vm.toggleTokenInput();'>
         <option value=''></option>

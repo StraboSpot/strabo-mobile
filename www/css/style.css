@@ -22,6 +22,10 @@ Basic Style
   vertical-align: bottom;
 }
 
+.drop-down-box {
+  background: #f8f8f8 !important;
+}
+
 /*--------------------
 Project Info
 --------------------*/

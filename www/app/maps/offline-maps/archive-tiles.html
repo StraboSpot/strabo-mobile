@@ -7,7 +7,7 @@
     <ion-input class='item item-input item-select item-text-wrap'
                ng-show='vm.showSelectName'>
       <ion-label>Select a Map</ion-label>
-      <select ng-model='vm.selectedName'
+      <select ng-model='vm.selectedName' class='drop-down-box'
               ng-options='map.name for map in vm.maps | orderBy: "-date"'
               ng-change='vm.nameSelectChanged()'>
       </select>
