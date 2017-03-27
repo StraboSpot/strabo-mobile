@@ -8,7 +8,7 @@
   SpotsFactory.$inject = [];
 
   function SpotsFactory() {
-    var spotsListDetail = {};  // Only Spots in the active datasets
+    var spotsListDetail = {'tabs': true, 'tags': true};  // Only Spots in the active datasets
 
     return {
       'getSpotsListDetail': getSpotsListDetail,
