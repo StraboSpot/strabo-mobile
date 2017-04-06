@@ -5,7 +5,8 @@ node_modules/
 hooks/
 platforms/
 plugins/
-resources/
+resources/android
+resources/ios
 scss/
 .bowerrc
 bower.json
