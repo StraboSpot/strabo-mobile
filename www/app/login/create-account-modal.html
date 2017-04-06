@@ -1,0 +1,33 @@
+<ion-modal-view>
+  <ion-header-bar class='bar-stable nav-title-slide-ios7' align-title='center'>
+    <h1 class='title'>Create a StraboSpot Account</h1>
+  </ion-header-bar>
+  <ion-content class='has-header'>
+    <div class='strabo-form'>
+      <ion-input class='item item-input item-stacked-label item-text-wrap'>
+        <ion-label>First Name</ion-label>
+        <input type='text' ng-model='vm.newAccountInfo.first_name'>
+      </ion-input>
+      <ion-input class='item item-input item-stacked-label item-text-wrap'>
+        <ion-label>Last Name</ion-label>
+        <input type='text' ng-model='vm.newAccountInfo.last_name'>
+      </ion-input>
+      <ion-input class='item item-input item-stacked-label item-text-wrap'>
+        <ion-label>Email</ion-label>
+        <input type='text' ng-model='vm.newAccountInfo.email'>
+      </ion-input>
+      <ion-input class='item item-input item-stacked-label item-text-wrap'>
+        <ion-label>Password</ion-label>
+        <input type='password' placeholder='Password must be at least 8 characters.' ng-model='vm.newAccountInfo.password'>
+      </ion-input>
+      <ion-input class='item item-input item-stacked-label item-text-wrap'>
+        <ion-label>Confirm Password</ion-label>
+        <input type='password' ng-model='vm.newAccountInfo.confirm_password'>
+      </ion-input>
+    </div>
+      <div class="button-bar padding">
+        <a class='button button-stable' ng-click='vm.createAccountModal.hide()'>Cancel</a>
+        <a class='button button-positive' ng-click='vm.createAccount()'>Submit</a>
+      </div>
+  </ion-content>
+</ion-modal-view>

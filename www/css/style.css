@@ -560,10 +560,10 @@ button.skip {
 
 .create-account-text{
   font-weight: bold;
-  color: black;
+  color: white;
   font-size: 120%;
   text-transform: uppercase;
-  text-shadow: 0 0 6px #FFF;
+  text-shadow: 0 0 10px black;
   text-decoration: none;
 }
 

@@ -36,6 +36,7 @@
       'getProject': getProject,
       'getProjectDatasets': getProjectDatasets,
       'loadDbUrl': loadDbUrl,
+      'registerUser': registerUser,
       'setDbUrl': setDbUrl,
       'setProfile': setProfile,
       'setProfileImage': setProfileImage,
@@ -149,7 +150,7 @@
       return (request.then(handleSuccess, handleError));
     }
 
-// Create a new feature
+    // Create a new feature
     function createFeature(spot, encodedLogin) {
       var request = $http({
         'method': 'post',
@@ -163,7 +164,7 @@
       return (request.then(handleSuccess, handleError));
     }
 
-// Delete all spots in a dataset
+    // Delete all spots in a dataset
     function deleteAllDatasetSpots(dataset_id, encodedLogin) {
       var request = $http({
         'method': 'delete',
@@ -176,7 +177,7 @@
       return (request.then(handleSuccess, handleError));
     }
 
-// Delete a dataset
+    // Delete a dataset
     function deleteDataset(self_url, encodedLogin) {
       var request = $http({
         'method': 'delete',
@@ -189,33 +190,33 @@
       return (request.then(handleSuccess, handleError));
     }
 
-// Delete Image
-	function deleteImage(image_id,encodedLogin) {
-	  var request = $http({
-		'method': 'delete',
-		'url': baseUrl + '/Image/' + image_id,
-		'headers': {
-		  'Authorization': 'Basic ' + encodedLogin,
-		  'Content-Type': 'application/json'
-		}
-	  });
-	  return (request.then(handleSuccess, handleError));
-	}
+    // Delete Image
+    function deleteImage(image_id, encodedLogin) {
+      var request = $http({
+        'method': 'delete',
+        'url': baseUrl + '/Image/' + image_id,
+        'headers': {
+          'Authorization': 'Basic ' + encodedLogin,
+          'Content-Type': 'application/json'
+        }
+      });
+      return (request.then(handleSuccess, handleError));
+    }
 
     // Delete single Spot
-        function deleteSpot(spotid,encodedLogin) {
-          var request = $http({
-            'method': 'delete',
-            'url': baseUrl + '/Feature/' + spotid,
-            'headers': {
-              'Authorization': 'Basic ' + encodedLogin,
-              'Content-Type': 'application/json'
-            }
-          });
-          return (request.then(handleSuccess, handleError));
+    function deleteSpot(spotid, encodedLogin) {
+      var request = $http({
+        'method': 'delete',
+        'url': baseUrl + '/Feature/' + spotid,
+        'headers': {
+          'Authorization': 'Basic ' + encodedLogin,
+          'Content-Type': 'application/json'
         }
+      });
+      return (request.then(handleSuccess, handleError));
+    }
 
-// Delete ALL spots for a user
+    // Delete ALL spots for a user
     function deleteSpots(encodedLogin) {
       var request = $http({
         'method': 'delete',
@@ -228,7 +229,7 @@
       return (request.then(handleSuccess, handleError));
     }
 
-// Download image for a feature
+    // Download image for a feature
     function downloadImage(image_url, encodedLogin) {
       var request = $http({
         'method': 'get',
@@ -241,13 +242,13 @@
       return (request.then(handleSuccess, handleError));
     }
 
-// Get dataset
+    // Get dataset
     function getDataset(datasetId, encodedLogin) {
       var request = buildGetRequest('/dataset/' + datasetId, encodedLogin);
       return (request.then(handleSuccess, handleError));
     }
 
-// Get all datasets for a user
+    // Get all datasets for a user
     function getDatasets(encodedLogin) {
       var request = $http({
         'method': 'get',
@@ -259,7 +260,7 @@
       return (request.then(handleSuccess, handleError));
     }
 
-// Get all spots for a dataset
+    // Get all spots for a dataset
     function getDatasetSpots(datasetId, encodedLogin) {
       var request = buildGetRequest('/datasetSpots/' + datasetId, encodedLogin);
       return (request.then(handleSuccess, handleError));
@@ -281,7 +282,7 @@
       return (request.then(handleSuccess, handleError));
     }
 
-// Get all images for a feature
+    // Get all images for a feature
     function getImages(datasetId, encodedLogin) {
       var request = $http({
         'method': 'get',
@@ -293,7 +294,7 @@
       return (request.then(handleSuccess, handleError));
     }
 
-// Get all images for a feature
+    // Get all images for a feature
     function getMyProjects(encodedLogin) {
       var request = $http({
         'method': 'get',
@@ -305,13 +306,13 @@
       return (request.then(handleSuccess, handleError));
     }
 
-// Get user profile
+    // Get user profile
     function getProfile(encodedLogin) {
       var request = buildGetRequest('/profile', encodedLogin);
       return (request.then(handleSuccess, handleError));
     }
 
-// Get user profile image
+    // Get user profile image
     function getProfileImage(encodedLogin) {
       var request = $http({
         'method': 'get',
@@ -353,6 +354,23 @@
       return deferred.promise;
     }
 
+    // Register user
+    function registerUser(newAccountInfo) {
+      var modifiedBaseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/'));
+      var request = $http({
+        'method': 'post',
+        'url': modifiedBaseUrl + '/userRegister',
+        'data': {
+          'first_name': newAccountInfo.first_name,
+          'last_name': newAccountInfo.last_name,
+          'email': newAccountInfo.email,
+          'password': newAccountInfo.password,
+          'confirm_password': newAccountInfo.confirm_password
+        }
+      });
+      return (request.then(handleSuccess, handleError));
+    }
+
     function setDbUrl(url) {
       if (baseUrl !== url) {
         baseUrl = url;
@@ -362,13 +380,13 @@
       }
     }
 
-// Create/Update user profile
+    // Create/Update user profile
     function setProfile(user, encodedLogin) {
       var request = buildPostRequest('/profile', user, encodedLogin);
       return (request.then(handleSuccess, handleError));
     }
 
-// Create/Update user profile image
+    // Create/Update user profile image
     function setProfileImage(image, encodedLogin) {
       // base64 encoded string needs to be a blob type in formdata
       var blob = dataURItoBlob(image);
@@ -394,7 +412,7 @@
       return (request.then(handleSuccess, handleError));
     }
 
-// Add a spot to a dataset
+    // Add a spot to a dataset
     function addSpotToDataset(spotId, datasetId, encodedLogin) {
       var request = buildPostRequest('/datasetSpots/' + datasetId, {'id': spotId}, encodedLogin);
       return (request.then(handleSuccess, handleError));
@@ -415,7 +433,7 @@
       return (request.then(handleSuccess, handleError));
     }
 
-// Update a feature
+    // Update a feature
     function updateFeature(spot, encodedLogin) {
       var request = buildPostRequest('/feature', removeImages(spot), encodedLogin);
       return (request.then(handleSuccess, handleError));
@@ -426,7 +444,7 @@
       return (request.then(handleSuccess, handleError));
     }
 
-// Upload load an image
+    // Upload load an image
     function uploadImage(imageId, src, encodedLogin) {
       // base64 encoded string needs to be a blob type in formdata
       var blob = dataURItoBlob(src);
@@ -453,7 +471,7 @@
       return (request.then(handleSuccess, handleError));
     }
 
-// Upload Project/Dataset/Spot for live DB connection
+    // Upload Project/Dataset/Spot for live DB connection
     function uploadProjectDatasetSpot(projectdatasetspot, encodedLogin) {
       var request = buildPostRequest('/projectdatasetspot', projectdatasetspot, encodedLogin);
       return (request.then(handleSuccess, handleError));

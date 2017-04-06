@@ -20,12 +20,12 @@
                   ng-disabled='!(vm.login.email && vm.login.password)'>Login
           </button>
         </div>
-        <a class='create-account-text' href='#'
-           onclick='window.open("http://strabospot.org/register", "_system", "location=yes"); return false;'>
+        <i class='ion-person-add create-account-text'></i>
+        <a class='create-account-text' ng-click='vm.showCreateAccountModal()'>
           Create an account
         </a>
-        <p class='create-account-text' >
-          <small>version 0.18.8</small>
+        <p class='create-account-text'>
+          <small>version 0.18.9</small>
         </p>
       </div>
       <button class='button icon-left button-positive button-small ion-forward pull-right skip' ng-click='vm.skip()'>
