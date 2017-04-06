@@ -96,6 +96,24 @@ Generate Resources (icons and splash screens):
 
     ionic serve browser
 
+### For iTunes Store, App Built with Ionic
+- Packages were built in the step above with `ionic state restore`.
+- Set up an [Ionic Security Profile](http://docs.ionic.io/docs/security-profiles), named straboproduction. 
+- Use [Ionic Package](http://docs.ionic.io/docs/package-overview) to build new packages for changes that require binary modifications.
+
+```
+    ionic package build ios --profile straboproduction
+    ionic package list
+    ionic package download <id>
+```
+
+The resulting .ipa file needs to be uploaded to iTunes Connect using Xcode
+
+    Xcode -> Open Developer Tool -> Application Loader
+
+Once the .ipa file has been accepted, it can be submitted via iTunes Connect.
+
+
 ### As a Native App, Built App with Ionic
 - Packages were built in the step above with `ionic state restore`.
 - Set up an [Ionic Security Profile](http://docs.ionic.io/docs/security-profiles), named strabodev. 
