@@ -98,6 +98,7 @@ Generate Resources (icons and splash screens):
 
 ### For iTunes Store, App Built with Ionic
 - Packages were built in the step above with `ionic state restore`.
+- Resources built in the step above with `ionic resources`.
 - Set up an [Ionic Security Profile](http://docs.ionic.io/docs/security-profiles), named straboproduction. 
 - Use [Ionic Package](http://docs.ionic.io/docs/package-overview) to build new packages for changes that require binary modifications.
 
