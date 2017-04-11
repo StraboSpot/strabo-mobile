@@ -63,9 +63,7 @@
       },
       'preferences': {
         'survey': {},
-        'survey_file': 'app/data-models/project_preferences-survey.csv',
-        'choices': {},
-        'choices_file': 'app/data-models/project_preferences-choices.csv'
+        'survey_file': 'app/data-models/project_preferences-survey.csv'
       },
       'project': {
         'survey': {},

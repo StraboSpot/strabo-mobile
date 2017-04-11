@@ -6,15 +6,14 @@
     .controller('PreferencesController', PreferencesController);
 
   PreferencesController.$inject = ['$location', '$log', '$rootScope', '$scope', '$timeout', 'DataModelsFactory',
-    'FormFactory', 'LiveDBFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
+    'FormFactory', 'HelpersFactory', 'LiveDBFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
 
   function PreferencesController($location, $log, $rootScope, $scope, $timeout, DataModelsFactory, FormFactory,
-                                 LiveDBFactory, ProjectFactory, SpotFactory, IS_WEB) {
+                                 HelpersFactory, LiveDBFactory, ProjectFactory, SpotFactory, IS_WEB) {
     var vm = this;
 
     var initializing = true;
 
-    vm.choices = {};
     vm.currentSpot = SpotFactory.getCurrentSpot();
     vm.data = {};
     vm.dataChanged = false;
@@ -35,7 +34,6 @@
       if (_.isEmpty(ProjectFactory.getCurrentProject())) $location.path('app/manage-project');
       else {
         vm.survey = DataModelsFactory.getDataModel('preferences').survey;
-        vm.choices = DataModelsFactory.getDataModel('preferences').choices;
         vm.data = ProjectFactory.getPreferences();
       }
 
@@ -55,7 +53,7 @@
           }
         }, true);
 
-        $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){
+        $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
           if (vm.dataChanged && fromState.name === 'app.preferences') submit();
         });
       }
@@ -73,6 +71,7 @@
     }
 
     function submit(toPath) {
+      vm.data = HelpersFactory.cleanObj(vm.data);
       var valid = FormFactory.validate(vm.survey, vm.data);
       if (valid) {
         ProjectFactory.saveProjectItem('preferences', vm.data).then(function () {
