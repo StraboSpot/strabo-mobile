@@ -3,7 +3,7 @@
 <!-- Config for Ionic Platform Build -->
 
 <widget id="org.strabospot.strabo"
-        version="0.19.0"
+        version="0.19.1"
         xmlns="http://www.w3.org/ns/widgets"
         xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>StraboSpot</name>
