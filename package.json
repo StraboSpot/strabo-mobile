@@ -1,6 +1,6 @@
 {
   "name": "StraboSpot",
-  "version": "0.18.9",
+  "version": "0.19.0",
   "description": "StraboSpot: An app for Structural Geology and Tectonics (SG&T)",
   "dependencies": {
     "gulp": "^3.5.6",
