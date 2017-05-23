@@ -72,7 +72,7 @@ html, body, .container-fluid, .strabo-page-content {
   font-weight: bold;
   font-size: 22px;
   min-height: inherit;
-  padding-top: 5px;
+  padding-top: 10px;
 }
 
 .strabo-tabs-web .button-clear {  /* Overwrite Ionic css so we don't have to change the HTML for the Spot Tabs */
