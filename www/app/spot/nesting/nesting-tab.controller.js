@@ -97,19 +97,23 @@
             return spot.properties.id === thisSpot.properties.id || !spot.geometry;
           });
           _.each(otherSpots, function (spot) {
-            // If Spot is a point and is inside thisSpot then Spot is a child
-            if (_.propertyOf(spot.geometry)('type') === 'Point') {
-              if (turf.inside(spot, thisSpot)) childrenSpots.push(spot);
-            }
-            // If Spot is not a point and all of its points are inside thisSpot then Spot is a child
-            else {
-              var points = turf.explode(spot);
-              if (points.features) {
-                var pointsInside = [];
-                _.each(points.features, function (point) {
-                  if (turf.inside(point, thisSpot)) pointsInside.push(point);
-                });
-                if (points.features.length === pointsInside.length) childrenSpots.push(spot);
+            if ((!thisSpot.properties.image_basemap && !spot.properties.image_basemap) ||
+              (thisSpot.properties.image_basemap && spot.properties.image_basemap &&
+              thisSpot.properties.image_basemap === spot.properties.image_basemap)) {
+              // If Spot is a point and is inside thisSpot then Spot is a child
+              if (_.propertyOf(spot.geometry)('type') === 'Point') {
+                if (turf.inside(spot, thisSpot)) childrenSpots.push(spot);
+              }
+              // If Spot is not a point and all of its points are inside thisSpot then Spot is a child
+              else {
+                var points = turf.explode(spot);
+                if (points.features) {
+                  var pointsInside = [];
+                  _.each(points.features, function (point) {
+                    if (turf.inside(point, thisSpot)) pointsInside.push(point);
+                  });
+                  if (points.features.length === pointsInside.length) childrenSpots.push(spot);
+                }
               }
             }
           });
@@ -128,26 +132,26 @@
         });
         parentSpots.push(parentImageBasemapSpot);
       }
-      else {
-        var otherSpots = _.reject(vmParent.spots, function (spot) {
-          return spot.properties.id === thisSpot.properties.id || !spot.geometry;
-        });
-        if (_.propertyOf(thisSpot.geometry)('type')) {
-          if (_.propertyOf(thisSpot.geometry)('type') === 'Point') {
-            // If thisSpot is a point and the point is inside a polygon Spot then that polygon Spot is a parent
-            _.each(otherSpots, function (spot) {
+      var otherSpots = _.reject(vmParent.spots, function (spot) {
+        return spot.properties.id === thisSpot.properties.id || !spot.geometry;
+      });
+      _.each(otherSpots, function (spot) {
+        if ((!thisSpot.properties.image_basemap && !spot.properties.image_basemap) ||
+          (thisSpot.properties.image_basemap && spot.properties.image_basemap &&
+          thisSpot.properties.image_basemap === spot.properties.image_basemap)) {
+          if (_.propertyOf(thisSpot.geometry)('type')) {
+            if (_.propertyOf(thisSpot.geometry)('type') === 'Point') {
+              // If thisSpot is a point and the point is inside a polygon Spot then that polygon Spot is a parent
               if (_.propertyOf(spot.geometry)('type') === 'Polygon' || _.propertyOf(spot.geometry)(
                   'type') === 'MutiPolygon') {
                 if (turf.inside(thisSpot, spot)) parentSpots.push(spot);
               }
-            });
-          }
-          else {
-            // If thisSpot is a line or polygon and all of its points are inside a feature then
-            // that feature is a parent of this Spot
-            var points = turf.explode(thisSpot);
-            if (points.features) {
-              _.each(otherSpots, function (spot) {
+            }
+            else {
+              // If thisSpot is a line or polygon and all of its points are inside a feature then
+              // that feature is a parent of this Spot
+              var points = turf.explode(thisSpot);
+              if (points.features) {
                 if (_.propertyOf(spot.geometry)('type') !== 'Point') {
                   var pointsInside = [];
                   _.each(points.features, function (point) {
@@ -155,11 +159,11 @@
                   });
                   if (points.features.length === pointsInside.length) parentSpots.push(spot);
                 }
-              });
+              }
             }
           }
         }
-      }
+      });
       return parentSpots;
     }
 
@@ -201,7 +205,7 @@
         setNestToggleText();
         var activeNest = SpotFactory.getActiveNest();
         SpotFactory.clearActiveNest();
-        if(_.isEmpty(activeNest)) {
+        if (_.isEmpty(activeNest)) {
           $ionicPopup.alert({
             'title': 'Empty Nest!',
             'template': 'No Spots were added to the Nest.'
