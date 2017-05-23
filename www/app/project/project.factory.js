@@ -25,6 +25,7 @@
       'createNewDataset': createNewDataset,
       'createNewProject': createNewProject,
       'destroyDataset': destroyDataset,
+      'destroyImage': destroyImage,
       'destroyProject': destroyProject,
       'destroyOtherFeature': destroyOtherFeature,
       'destroyRelationshipType': destroyRelationshipType,
@@ -219,6 +220,21 @@
         deferred.resolve(spotsToDestroy);
       });
       return deferred.promise;
+    }
+
+    // Remove image from linked images
+    function destroyImage(imageId) {
+      if (currentProject.linked_images) {
+        _.each(currentProject.linked_images, function (linkedImagesIds, i) {
+          if (_.contains(linkedImagesIds, imageId)) {
+            currentProject.linked_images[i] = _.reject(linkedImagesIds, function (linkedImageId) {
+              return linkedImageId === imageId;
+            });
+            if (currentProject.linked_images[i].length < 2) currentProject.linked_images.splice(i, 1);
+            saveProjectItem('linked_images', currentProject.linked_images);
+          }
+        });
+      }
     }
 
     function destroyProject() {

@@ -429,10 +429,11 @@
             vmParent.spot.properties.images = _.reject(vmParent.spot.properties.images, function (image) {
               return vmParent.data.id === image.id;
             });
-            ImageFactory.deleteImage(vmParent.data.id);
+            ProjectFactory.destroyImage(vmParent.data.id);              // Delete from project (eg linked images)
+            ImageFactory.deleteImage(vmParent.data.id);                 // Delete from local storage
             $log.log('delete remote image: ' + vmParent.data.id);
-            LiveDBFactory.deleteImageFile(vmParent.data.id);
-            delete imageSources[vmParent.data.id];
+            LiveDBFactory.deleteImageFile(vmParent.data.id);            // Delete from server
+            delete imageSources[vmParent.data.id];                      // Delete from global images object
             vmParent.data = {};
             vm.imagePropertiesModal.hide();
           }
