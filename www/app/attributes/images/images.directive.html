@@ -1,40 +1,61 @@
 <div>
-  <div ng-hide='vm.images.length === 0'>
-    <label class="item item-input item-select">
-      <div class="input-label">
-        <i class='button-icon ion-funnel'></i>Filter by Type
+  <div ng-hide='vm.showLinkedImagesSets === true'>
+    <div ng-hide='vm.images.length === 0'>
+      <label class="item item-input item-select">
+        <div class="input-label">
+          <i class='button-icon ion-funnel'></i>Filter by Type
+        </div>
+        <select ng-model='vm.selectedType' ng-change='vm.filterImagesType()' class='drop-down-box'>
+          <option value='all'>All</option>
+          <option value='photo'>Photo</option>
+          <option value='sketch'>Sketch</option>
+          <option value='thin_section'>Thin Section</option>
+          <option value='geological_cs'>Geological Cross Section</option>
+          <option value='geophysical_cs'>Geophysical Cross Section</option>
+          <option value='strat_section'>Stratigraphic Section</option>
+          <option value='other_image_ty'>Other</option>
+        </select>
+      </label>
+    </div>
+    <div class='padding' ng-show='vm.images.length === 0'>
+      No Images found in any of the active Spots. Add a new Image from the Image tab within a Spot.
+    </div>
+    <div class='padding' ng-show='vm.images.length !== 0 && vm.filteredImages.length === 0'>
+      No images with the this type yet.
+    </div>
+    <ul class='strabo-flex-container strabo-wrap' ng-show='vm.imagesToDisplay.length > 0'>
+      <li class="strabo-images-flex-item" ng-repeat='image in vm.imagesToDisplay | orderBy:"name" track by image.id'
+          ng-click='vm.imageClicked(image)'>
+        <a><img ng-src='{{ vm.getImageSrc(image.id) }}' id='{{ image.id }}' width='200' height='200'></a>
+        <div style='text-align: center;'>
+          <span ng-show='image.title'><b>{{ image.title }}</b></span>
+          <span ng-show='image.title && image.image_type'><br></span>
+          <span ng-show='image.image_type'><small>{{ vm.getLabel(image.image_type) }}</small></span></div>
+      </li>
+      <ion-infinite-scroll
+        ng-if='!vm.isWeb() && vm.moreImagesCanBeLoaded()'
+        icon='ion-loading-c'
+        on-infinite='vm.loadMoreImages()'>
+      </ion-infinite-scroll>
+    </ul>
+  </div>
+  <div ng-show='vm.showLinkedImagesSets === true'>
+    <div class='padding' ng-show='vm.linkedImagesSets.length === 0'>There are no sets of linked images.</div>
+    <div ng-repeat='linkedImagesSet in vm.linkedImagesSets | orderBy:"$index" track by $index' class="divider-buttons-right">
+      <div class='item item-divider'>
+        Linked Images Set {{ $index+1 }}
+        <img class='strabo-icon' align='right' src='img/link-break.png' ng-click='vm.unlinkImages($index)'>
       </div>
-      <select ng-model='vm.selectedType' ng-change='vm.filterImagesType()' class='drop-down-box'>
-        <option value='all'>All</option>
-        <option value='photo'>Photo</option>
-        <option value='sketch'>Sketch</option>
-        <option value='thin_section'>Thin Section</option>
-        <option value='geological_cs'>Geological Cross Section</option>
-        <option value='geophysical_cs'>Geophysical Cross Section</option>
-        <option value='strat_section'>Stratigraphic Section</option>
-        <option value='other_image_ty'>Other</option>
-      </select>
-    </label>
+      <ul class='strabo-flex-container strabo-wrap'>
+        <li class="strabo-images-flex-item" ng-repeat='linkedImage in linkedImagesSet | orderBy:"$index" track by $index'
+            ng-click='vm.imageClicked(linkedImage)'>
+          <a><img ng-src='{{ vm.getImageSrc(linkedImage.id) }}' id='{{ linkedImage.id }}' width='200' height='200'></a>
+          <div style='text-align: center;'>
+            <span ng-show='linkedImage.title'><b>{{ linkedImage.title }}</b></span>
+            <span ng-show='linkedImage.title && linkedImage.image_type'><br></span>
+            <span ng-show='linkedImage.image_type'><small>{{ vm.getLabel(linkedImage.image_type) }}</small></span></div>
+        </li>
+      </ul>
+    </div>
   </div>
-  <div class='padding' ng-show='vm.images.length === 0'>
-    No Images found in any of the active Spots. Add a new Image from the Image tab within a Spot.
-  </div>
-  <div class='padding' ng-show='vm.images.length !== 0 && vm.filteredImages.length === 0'>
-    No images with the this type yet.
-  </div>
-  <ul class='strabo-flex-container strabo-wrap' ng-show='vm.imagesToDisplay.length > 0'>
-    <li class="strabo-images-flex-item" ng-repeat='image in vm.imagesToDisplay | orderBy:"name" track by image.id'
-        ng-click='vm.goToImage(image)'>
-      <a><img ng-src='{{ vm.getImageSrc(image.id) }}' width='200' height='200'></a>
-      <div style='text-align: center;'>
-        <span ng-show='image.title'><b>{{ image.title }}</b></span>
-        <span ng-show='image.title && image.image_type'><br></span>
-        <span ng-show='image.image_type'><small>{{ vm.getLabel(image.image_type) }}</small></span></div>
-    </li>
-    <ion-infinite-scroll
-      ng-if='!vm.isWeb() && vm.moreImagesCanBeLoaded()'
-      icon='ion-loading-c'
-      on-infinite='vm.loadMoreImages()'>
-    </ion-infinite-scroll>
-  </ul>
 </div>

@@ -37,6 +37,8 @@
       'getCurrentProject': getCurrentProject,
       'getDefaultOtherFeatureTypes': getDefaultOtherFeatureTypes,
       'getDefaultRelationshipTypes': getDefaultRelationshipTypes,
+      'getLinkedImages': getLinkedImages,
+      'getLinkedImagesAll': getLinkedImagesAll,
       'getPreferences': getPreferences,
       'getProjectName': getProjectName,
       'getProjectDescription': getProjectDescription,
@@ -74,6 +76,7 @@
       'saveSpotsDataset': saveSpotsDataset,
       'setModifiedTimestamp': setModifiedTimestamp,
       'setUser': setUser,
+      'unlinkImages': unlinkImages,
       'uploadProject': uploadProject
     };
 
@@ -309,6 +312,18 @@
 
     function getDefaultRelationshipTypes() {
       return defaultRelationshipTypes;
+    }
+
+    function getLinkedImagesAll() {
+      if (!currentProject) return undefined;
+      return currentProject.linked_images;
+    }
+
+    function getLinkedImages(imageId) {
+      if (!currentProject) return undefined;
+      return _.find(currentProject.linked_images, function (linkedImages) {
+        return _.contains(linkedImages, imageId);
+      });
     }
 
     function getOtherFeatures() {
@@ -665,6 +680,16 @@
 
     function setUser(inUser) {
       user = inUser;
+    }
+
+    function unlinkImages(imageId) {
+      if (currentProject.linked_images) {
+        currentProject.linked_images = _.reject(currentProject.linked_images, function (linkedImages) {
+          return _.contains(linkedImages, imageId) || linkedImages.length === 0;
+        });
+        if (_.isEmpty(currentProject.linked_images)) delete currentProject.linked_images;
+        saveProjectItem('linked_images', currentProject.linked_images);
+      }
     }
 
     function uploadProject() {

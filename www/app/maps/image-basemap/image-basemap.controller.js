@@ -6,15 +6,14 @@
     .controller('ImageBasemapController', ImageBasemapController);
 
   ImageBasemapController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup',
-    '$ionicSideMenuDelegate', '$location', '$log', '$q', '$rootScope', '$scope', '$state', '$timeout',
-    'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'ImageFactory', 'MapDrawFactory', 'MapFeaturesFactory',
-    'MapSetupFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
+    '$ionicSideMenuDelegate', '$location', '$log', '$rootScope', '$scope', '$state', '$timeout', 'DataModelsFactory',
+    'FormFactory', 'HelpersFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory',
+    'ProjectFactory', 'SpotFactory', 'IS_WEB'];
 
   function ImageBasemapController($ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup,
-                                  $ionicSideMenuDelegate, $location, $log, $q, $rootScope, $scope, $state, $timeout,
-                                  DataModelsFactory, FormFactory, HelpersFactory, ImageFactory, MapDrawFactory,
-                                  MapFeaturesFactory, MapSetupFactory, MapViewFactory, ProjectFactory, SpotFactory,
-                                  IS_WEB) {
+                                  $ionicSideMenuDelegate, $location, $log, $rootScope, $scope, $state, $timeout,
+                                  DataModelsFactory, FormFactory, HelpersFactory, MapDrawFactory, MapFeaturesFactory,
+                                  MapSetupFactory, MapViewFactory, ProjectFactory, SpotFactory, IS_WEB) {
     var vm = this;
 
     var currentSpot = {};
@@ -40,10 +39,12 @@
     vm.createTag = createTag;
     vm.goBack = goBack;
     vm.groupSpots = groupSpots;
+    vm.hasLinkedImages = hasLinkedImages;
     vm.saveEdits = saveEdits;
     vm.showField = showField;
     vm.toggleNesting = toggleNesting;
     vm.toggleTagChecked = toggleTagChecked;
+    vm.unlinkImages = unlinkImages;
     vm.zoomToSpotsExtent = zoomToSpotsExtent;
 
     activate();
@@ -73,36 +74,36 @@
     function createMap() {
       var switcher = new ol.control.LayerSwitcher();
 
-      setImageBasemap().then(function () {
-        MapViewFactory.setInitialMapView(vm.imageBasemap);
-        MapSetupFactory.setMap();
-        MapSetupFactory.setImageBasemapLayers(vm.imageBasemap).then(function () {
-          MapSetupFactory.setMapControls(switcher);
-          MapSetupFactory.setPopupOverlay();
+      setImageBasemap();
+      MapViewFactory.setInitialMapView(vm.imageBasemap);
+      MapSetupFactory.setMap();
+      MapSetupFactory.setImageBasemapLayers(vm.imageBasemap).then(function () {
+        MapSetupFactory.setOtherLayers();
+        MapSetupFactory.setMapControls(switcher);
+        MapSetupFactory.setPopupOverlay();
 
-          map = MapSetupFactory.getMap();
-          datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map, vm.imageBasemap);
-          MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map, vm.imageBasemap);
-          MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
+        map = MapSetupFactory.getMap();
+        datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map, vm.imageBasemap);
+        MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map, vm.imageBasemap);
+        MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
 
-          // If we have a current feature set the selected symbol
-          if (vm.clickedFeatureId) {
-            var feature = MapFeaturesFactory.getFeatureById(vm.clickedFeatureId);
-            if (!_.isEmpty(feature)) MapFeaturesFactory.setSelectedSymbol(map, feature.getGeometry());
-          }
+        // If we have a current feature set the selected symbol
+        if (vm.clickedFeatureId) {
+          var feature = MapFeaturesFactory.getFeatureById(vm.clickedFeatureId);
+          if (!_.isEmpty(feature)) MapFeaturesFactory.setSelectedSymbol(map, feature.getGeometry());
+        }
 
-          createSwitcher(switcher);
+        createSwitcher(switcher);
 
-          vm.currentZoom = map.getView().getZoom();
-          updateScaleBar(map.getView().getResolution());
-          createMapInteractions();
-          createPageEvents();
+        vm.currentZoom = map.getView().getZoom();
+        updateScaleBar(map.getView().getResolution());
+        createMapInteractions();
+        createPageEvents();
 
-          $ionicLoading.hide();
-          $log.log('Done Loading Image Basemap');
-          $timeout(function () {
-            map.updateSize();         // use OpenLayers API to force map to update
-          });
+        $ionicLoading.hide();
+        $log.log('Done Loading Image Basemap');
+        $timeout(function () {
+          map.updateSize();         // use OpenLayers API to force map to update
         });
       });
     }
@@ -253,17 +254,6 @@
           if (image.id.toString() === $state.params.imagebasemapId) vm.imageBasemap = image;
         });
       });
-      if (vm.imageBasemap.height && vm.imageBasemap.width) return $q.when(null);
-      else {
-        return ImageFactory.getImageById(vm.imageBasemap.id).then(function (src) {
-          if (IS_WEB) src = 'https://strabospot.org/pi/' + vm.imageBasemap.id;
-          else if (!src) src = 'img/image-not-found.png';
-          var im = new Image();
-          im.src = src;
-          vm.imageBasemap.height = im.height;
-          vm.imageBasemap.width = im.width;
-        });
-      }
     }
 
     function updateScaleBar(res) {
@@ -347,6 +337,12 @@
       MapDrawFactory.groupSpots();
     }
 
+    function hasLinkedImages() {
+      var linkedImages = ProjectFactory.getLinkedImages(vm.imageBasemap.id);
+      if (!linkedImages) return false;
+      else return ProjectFactory.getLinkedImages(vm.imageBasemap.id).length > 1;
+    }
+
     function saveEdits() {
       vm.saveEditsText = 'Saved Edits';
       MapDrawFactory.saveEdits(vm.clickedFeatureId);
@@ -399,6 +395,29 @@
         });
       }
       else tagsToAdd.push(tag);
+    }
+
+    function unlinkImages() {
+      vm.popover.hide();
+      var confirmPopup = $ionicPopup.confirm({
+        'title': 'Unlink Images',
+        'template': 'Are you sure you want to unlink <b>ALL</b> images in this set?'
+      });
+      confirmPopup.then(function (res) {
+        if (res) {
+          ProjectFactory.unlinkImages(vm.imageBasemap.id);
+          map.getLayers().forEach(function (layer) {
+            if (layer.get('name') === 'imageBasemapLayer') {
+              map.removeLayer(layer);
+            }
+          });
+          MapSetupFactory.setImageBasemapLayers(vm.imageBasemap).then(function () {
+            datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map, vm.imageBasemap);
+            MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map, vm.imageBasemap);
+            MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
+          });
+        }
+      });
     }
 
     function zoomToSpotsExtent() {

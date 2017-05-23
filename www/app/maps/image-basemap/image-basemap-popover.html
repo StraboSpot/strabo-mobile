@@ -13,6 +13,9 @@
       <ion-item ng-show='!vm.isNesting' ng-click='vm.toggleNesting()'>
         <i class="icon ion-disc"></i> Begin Continuous Nesting
       </ion-item>
+      <ion-item ng-show='vm.hasLinkedImages()' ng-click='vm.unlinkImages()'>
+        <i class="icon ion-link"></i> Unlink Images
+      </ion-item>
     </ion-list>
   </ion-content>
 </ion-popover-view>

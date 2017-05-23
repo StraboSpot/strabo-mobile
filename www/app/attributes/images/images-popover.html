@@ -1,0 +1,21 @@
+<ion-popover-view class='fit'>
+  <ion-content scroll='false'>
+    <ion-list>
+      <ion-item ng-click='vm.selectImages()' ng-hide='vm.isSelecting || vm.showLinkedImagesSets === true'>
+        <i class="icon ion-images"></i> Select Images
+      </ion-item>
+      <ion-item ng-click='vm.deselectImages()' ng-show='vm.isSelecting'>
+        <i class="icon ion-images"></i> Turn Off Image Select
+      </ion-item>
+      <ion-item ng-click='vm.linkImages()' ng-show='vm.isSelecting && vm.selectedImages.length > 1'>
+        <i class="icon ion-link"></i> Link Selected Images
+      </ion-item>
+      <ion-item ng-click='vm.viewLinkedImages()' ng-hide='vm.isSelecting || vm.showLinkedImagesSets === true'>
+        <i class="icon ion-link"></i> View Sets of Linked Images
+      </ion-item>
+      <ion-item ng-click='vm.viewAllImages()' ng-show='vm.showLinkedImagesSets === true'>
+        <i class="icon ion-images"></i> View All Images
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-popover-view>

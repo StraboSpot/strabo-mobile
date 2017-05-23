@@ -51,6 +51,7 @@
       'getCurrentOrientationIndex': getCurrentOrientationIndex,
       'getCurrentSpot': getCurrentSpot,
       'getFirstSpot': getFirstSpot,
+      'getImagePropertiesById': getImagePropertiesById,
       'getKeepSpotSelected': getKeepSpotSelected,
       'getNameFromId': getNameFromId,
       'getOrientations': getOrientations,
@@ -280,6 +281,16 @@
         else deferred.resolve(LocalStorageFactory.getDb().spotsDb.getItem(keys[0]));
       });
       return deferred.promise;
+    }
+
+    function getImagePropertiesById(imageId) {
+      var foundImage = undefined;
+     _.each(spots, function (spot) {
+        _.each(spot.properties.images, function (image) {
+          if (imageId === image.id) foundImage = image;
+        });
+      });
+     return foundImage;
     }
 
     function getKeepSpotSelected() {

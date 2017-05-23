@@ -35,8 +35,9 @@
     function setMappableSpots(map, imageBasemap) {
       var activeSpots = SpotFactory.getActiveSpots();
       if (map.getView().getProjection().getUnits() === 'pixels') {
+        var linkedImagesIds = _.union([imageBasemap.id], ProjectFactory.getLinkedImages(imageBasemap.id));
         mappableSpots = _.filter(activeSpots, function (spot) {
-          return spot.properties.image_basemap === imageBasemap.id;
+          return _.contains(linkedImagesIds, spot.properties.image_basemap);
         });
       }
       // Remove spots that don't have a geometry defined or are mapped on an image
