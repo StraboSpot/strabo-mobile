@@ -55,17 +55,14 @@
     function setImageBasemapLayers(im) {
       imageBasemap = im;
       return ImageFactory.getImageById(imageBasemap.id).then(function (src) {
-        if(IS_WEB){
-          src = 'https://strabospot.org/pi/' + imageBasemap.id;
-        }else if(!src) {
-          src = 'img/image-not-found.png';
-        }
+        if (IS_WEB) src = 'https://strabospot.org/pi/' + imageBasemap.id;
+        else if (!src) src = 'img/image-not-found.png';
         var extent = [0, 0, imageBasemap.width, imageBasemap.height];
         var imageBasemapLayer = new ol.layer.Image({
           'source': new ol.source.ImageStatic({
             'attributions': [
               new ol.Attribution({
-                'html': '&copy; <a href="">Need image source here.</a>'
+                'html': imageBasemap.image_source || 'Unknown Source'
               })
             ],
             'url': src,

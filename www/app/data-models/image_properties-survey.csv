@@ -4,6 +4,7 @@ title,text,Image Name,false,,,,,
 image_type,select_one cs3xd00,Image Type,true,,,,,
 other_image_type,text,Other Image Type,true,${image_type} = 'other_image_ty',. = '',,,
 caption,text,Image Description,false,,,multiline,,
+image_source,text,Image Source,false,,,,,
 scale_of_image,text,Scale of Overall Image,false,,,,,
 scale_of_object,text,Scale and type of object in image (m),false,,,,,
 width_of_image_view,decimal,Width of Image View,false,,. > 0,,Enables Scalebar,Value must be greater than 0.
