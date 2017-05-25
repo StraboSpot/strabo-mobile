@@ -5,10 +5,10 @@
     .module('app')
     .factory('ProjectFactory', ProjectFactory);
 
-  ProjectFactory.$inject = ['$log', '$q', 'LocalStorageFactory', 'OtherMapsFactory', 'RemoteServerFactory',
+  ProjectFactory.$inject = ['$log', '$q', 'LiveDBFactory', 'LocalStorageFactory', 'OtherMapsFactory', 'RemoteServerFactory',
     'UserFactory', 'IS_WEB'];
 
-  function ProjectFactory($log, $q, LocalStorageFactory, OtherMapsFactory, RemoteServerFactory, UserFactory, IS_WEB) {
+  function ProjectFactory($log, $q, LiveDBFactory, LocalStorageFactory, OtherMapsFactory, RemoteServerFactory, UserFactory, IS_WEB) {
     var currentDatasets = [];
     var currentProject = {};
     var activeDatasets = [];
@@ -662,6 +662,7 @@
       });
       currentProject.relationships.push(relationshipToSave);
       saveProjectItem('relationships', currentProject.relationships).then(function () {
+        LiveDBFactory.save(null, currentProject, null);
         deferred.resolve();
       });
       return deferred.promise;
@@ -675,6 +676,7 @@
       });
       currentProject.tags.push(tagToSave);
       saveProjectItem('tags', currentProject.tags).then(function () {
+        LiveDBFactory.save(null, currentProject, null);
         deferred.resolve();
       });
       return deferred.promise;

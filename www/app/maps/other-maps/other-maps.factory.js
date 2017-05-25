@@ -5,10 +5,11 @@
     .module('app')
     .factory('OtherMapsFactory', OtherMapsFactory);
 
-  OtherMapsFactory.$inject = ['$log', '$q', 'LocalStorageFactory'];
+  OtherMapsFactory.$inject = ['$log', '$q', 'LiveDBFactory', 'LocalStorageFactory'];
 
-  function OtherMapsFactory($log, $q, LocalStorageFactory) {
+  function OtherMapsFactory($log, $q, LiveDBFactory, LocalStorageFactory) {
     var otherMaps = [];
+    var thisProject = [];
 
     return {
       'addRemoteOtherMaps': addRemoteOtherMaps,
@@ -58,14 +59,35 @@
       otherMaps = inOtherMaps;
       if (_.isEmpty(otherMaps)) {
         LocalStorageFactory.getDb().configDb.removeItem('other_maps').then(function () {
-          $log.log('Deleted Other Maps from storage.');
+          LocalStorageFactory.getDb().projectDb.removeItem('other_maps').then(function () {
+            getThisProject().then(function() {
+              LiveDBFactory.save(null, thisProject, null);
+              $log.log('Deleted Other Maps from storage.');
+            });
+          });
         });
       }
       else {
         LocalStorageFactory.getDb().configDb.setItem('other_maps', inOtherMaps).then(function () {
-          $log.log('Saved Other Maps: ', inOtherMaps);
+          LocalStorageFactory.getDb().projectDb.setItem('other_maps', inOtherMaps).then(function () {
+            getThisProject().then(function() {
+              LiveDBFactory.save(null, thisProject, null);
+              $log.log('Saved Other Maps: ', inOtherMaps);
+            });
+          });
         });
       }
+    }
+
+    function getThisProject(){ //the is a kludge since ProjectFactory isn't available here
+      var deferred = $q.defer(); // init promise
+      thisProject = {};
+      LocalStorageFactory.getDb().projectDb.iterate(function (value, key) {
+        if (key != 'active_datasets' && key != 'spots_dataset' && !key.startsWith('dataset_') && !key.startsWith('spots_') ) thisProject[key] = value;
+      }).then(function () {
+        deferred.resolve();
+      });
+      return deferred.promise;
     }
   }
 }());
