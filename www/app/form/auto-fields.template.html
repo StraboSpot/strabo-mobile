@@ -77,17 +77,16 @@
         </ion-input>
       </div>
       <div ng-switch-when='select_one'>
-        <ion-input class='item item-input item-select item-text-wrap'
+        <ion-input class='item item-input item-select item-stacked-label item-text-wrap'
                    ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
           <ion-label>{{ field.label }}</ion-label>
           <span class='item-placeholder' ng-show='field.hint'><small>{{ field.hint }}</small><br></span>
           <select name='{{ field.name }}'
-                  class='drop-down-box'
                   ng-model='vm.data[field.name]'
                   ng-options='choice.name as choice.label for choice in vm.choices
                                 | filter: { "list name": field.type.split(" ")[1] }'
                   ng-required='{{ field.required }}'>
-            <option value=''></option>
+            <option value=''>-- Select {{ field.label }} --</option>
           </select>
         </ion-input>
       </div>

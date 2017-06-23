@@ -7,12 +7,12 @@
     <div class='button button-clear' ng-click='vm.closeModal("addMapModal")'><span class='icon ion-close'></span></div>
   </ion-header-bar>
   <ion-content class='has-header strabo-form'>
-    <ion-input class='item item-input item-select item-text-wrap'>
+    <ion-input class='item item-input item-select  item-stacked-label item-text-wrap'>
       <ion-label>Map Type</ion-label>
-      <select ng-model='vm.data.source' class='drop-down-box'
+      <select ng-model='vm.data.source'
               ng-options='mapSource.source as mapSource.name for mapSource in vm.mapSources'
               ng-change='vm.toggleHelpText();vm.toggleTokenInput();'>
-        <option value=''></option>
+        <option value=''>-- Select Map Type --</option>
       </select>
     </ion-input>
     <label class='item item-input item-stacked-label item-text-wrap'>

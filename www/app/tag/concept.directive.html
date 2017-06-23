@@ -1,9 +1,7 @@
 <div>
-  <label class="item item-input item-select">
-    <div class="input-label">
-      Concept Type
-    </div>
-    <select ng-model='vm.data.concept_type' ng-change='vm.typeSelected()' class='drop-down-box'>
+  <ion-input class="item item-input item-select item-stacked-label item-text-wrap">
+    <ion-label>Concept Type</ion-label>
+    <select ng-model='vm.data.concept_type' ng-change='vm.typeSelected()'>
       <option value='geological_structure'>Geological Structure</option>
       <option value='marker_layer'>Marker Layer</option>
       <option value='deformation_event'>Deformation Event</option>
@@ -11,8 +9,9 @@
       <option value='mineral'>Mineral</option>
       <option value='metamorphic_facies'>Metamorphic Facies</option>
       <option value='other_concept'>Other Concept</option>
+      <option value=''>-- Select Concept Type --</option>
     </select>
-  </label>
+  </ion-input>
   <div ng-show='vm.data.concept_type === "other_concept"'>
     <ion-input class='item item-input'>
       <ion-label>Other Concept Type</ion-label>

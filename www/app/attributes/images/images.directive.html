@@ -1,11 +1,9 @@
 <div>
   <div ng-hide='vm.showLinkedImagesSets === true'>
     <div ng-hide='vm.images.length === 0'>
-      <label class="item item-input item-select">
-        <div class="input-label">
-          <i class='button-icon ion-funnel'></i>Filter by Type
-        </div>
-        <select ng-model='vm.selectedType' ng-change='vm.filterImagesType()' class='drop-down-box'>
+      <ion-input class="item item-input item-select">
+        <ion-label><i class='button-icon ion-funnel'></i>Filter by Type</ion-label>
+        <select ng-model='vm.selectedType' ng-change='vm.filterImagesType()'>
           <option value='all'>All</option>
           <option value='photo'>Photo</option>
           <option value='sketch'>Sketch</option>
@@ -15,7 +13,7 @@
           <option value='strat_section'>Stratigraphic Section</option>
           <option value='other_image_ty'>Other</option>
         </select>
-      </label>
+      </ion-input>
     </div>
     <div class='padding' ng-show='vm.images.length === 0'>
       No Images found in any of the active Spots. Add a new Image from the Image tab within a Spot.

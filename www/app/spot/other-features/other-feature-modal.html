@@ -10,10 +10,11 @@
       <ion-label>Label</ion-label>
       <input type='text' placeholder='If a label is not specified a default label will be given.' ng-model='vmChild.otherFeature.label'>
     </ion-input>
-    <ion-input class='item item-input item-select item-text-wrap'>
+    <ion-input class='item item-input item-select item-stacked-label item-text-wrap'>
       <ion-label>Feature Type</ion-label>
-      <select ng-model='vmChild.otherFeature.type' class='drop-down-box'
+      <select ng-model='vmChild.otherFeature.type'
               ng-options='type as type for type in vmChild.otherFeatureTypes'>
+        <option value=''>-- Select Feature Type --</option>
       </select>
     </ion-input>
     <div ng-show='vmChild.otherFeature.type === "other"'>

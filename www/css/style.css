@@ -22,10 +22,6 @@ Basic Style
   vertical-align: bottom;
 }
 
-.drop-down-box {
-  background: #f8f8f8 !important;
-}
-
 /*--------------------
 Project Info
 --------------------*/
@@ -409,19 +405,17 @@ textarea {
   padding: 6px;
 }
 
-.item-select select {
-  position: relative !important;
-  max-width: 100% !important;
-  width: 100% !important;
-  direction: ltr;
-  padding-top: 1px;
-  padding-bottom: 1px;
-  padding-left: 0px;
+.item-select.item-stacked-label select {
+  max-width: 100%;
+  width: 100%;
+  margin: 0;
+  height: 20px;
 }
 
 /* Select box dropdown arrow positioning */
-.item-select:after {
-  top: 75% !important;
+.item-select.item-stacked-label:after {
+  top: initial;
+  bottom: 12%;
 }
 
 .item-checkbox {

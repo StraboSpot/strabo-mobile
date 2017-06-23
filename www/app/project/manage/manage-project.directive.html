@@ -51,7 +51,7 @@
   </ion-input>
   <ion-input class='item item-input item-select item-text-wrap' ng-show='vm.areDatasetsOn()'>
     <ion-label>Dataset for New Spots:</ion-label>
-    <select ng-model='vm.spotsDataset' class='drop-down-box'
+    <select ng-model='vm.spotsDataset'
             ng-options='activeDataset as activeDataset.name for activeDataset in vm.activeDatasets track by activeDataset.id'
             ng-change='vm.setSpotsDataset()'>
     </select>

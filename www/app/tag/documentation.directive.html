@@ -1,14 +1,13 @@
 <div>
-  <label class="item item-input item-select">
-    <div class="input-label">
-      Documentation Type
-    </div>
-    <select ng-model='vm.data.documentation_type' ng-change='vm.typeSelected()' class='drop-down-box'>
+  <ion-input class="item item-input item-select item-stacked-label item-text-wrap">
+    <ion-label>Documentation Type</ion-label>
+    <select ng-model='vm.data.documentation_type' ng-change='vm.typeSelected()'>
       <option value='observation_timing'>Observation Timing</option>
       <option value='type_of_data'>Type of Data</option>
       <option value='other_documentation'>Other Documentation</option>
+      <option value=''>-- Select Documentation Type --</option>
     </select>
-  </label>
+  </ion-input>
   <div ng-show='vm.data.documentation_type === "other_documentation"'>
     <ion-input class='item item-input'>
       <ion-label>Other Documentation Type</ion-label>

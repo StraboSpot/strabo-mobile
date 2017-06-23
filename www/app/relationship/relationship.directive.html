@@ -4,23 +4,22 @@
       <ion-label>Relationship Name</ion-label>
       <input type='text' placeholder='Name this Relationship' ng-model='vm.data.name'>
     </ion-input>
-    <ion-input class='item item-input'>
+    <ion-input class='item item-input item-stacked-label item-text-wrap'>
       <ion-label>Deformation Event</ion-label>
       <input type='text' ng-model='vm.data.deformation_event'
              placeholder='What deformational event(s) are these associated with?'>
     </ion-input>
-    <label class="item item-input item-select">
-      <div class="input-label">
-        Relationship Confidence
-      </div>
-      <select ng-model='vm.data.confidence' class='drop-down-box'>
+    <ion-input class='item item-input item-select item-stacked-label item-text-wrap'>
+      <ion-label>Relationship Confidence</ion-label>
+      <select ng-model='vm.data.confidence'>
         <option value='completely'>Completely Confident</option>
         <option value='very'>Very Confident</option>
         <option value='fairly'>Fairly Confident</option>
         <option value='little'>Only a Little Confident</option>
         <option value='not'>Not At All Confident</option>
+        <option value=''>-- Select Relationship Confidence --</option>
       </select>
-    </label>
+    </ion-input>
   </div>
   <div>
     <button ng-click='vm.selectItem("a")'
