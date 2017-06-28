@@ -30,6 +30,7 @@
     vm.createGeologicUnitTag = createGeologicUnitTag;
     vm.getCurrentLocation = getCurrentLocation;
     vm.setFromMap = setFromMap;
+    vm.showSetToMyLocation = showSetToMyLocation;
     vm.updateDatetime = updateDatetime;
     vm.updateLatitude = updateLatitude;
     vm.updateLongitude = updateLongitude;
@@ -224,6 +225,10 @@
         vmParent.submit('/app/image-basemaps/' + vmParent.spot.properties.image_basemap);
       }
       else vmParent.submit('/app/map');
+    }
+
+    function showSetToMyLocation() {
+      return (!vmParent.spot.geometry || (vmParent.spot.geometry && vmParent.spot.geometry.type === 'Point')) && !vm.showXY
     }
 
     function updateDatetime(datetime) {
