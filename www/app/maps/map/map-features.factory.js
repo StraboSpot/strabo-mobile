@@ -261,7 +261,7 @@
         var orientation_type = 'none';
         var orientation = feature.get('orientation');
         if (orientation) {
-          rotation = orientation.strike || orientation.trend || rotation;
+          rotation = orientation.strike || (orientation.dip_direction - 90) % 360 || orientation.trend || rotation;
           symbol_orientation = orientation.dip || orientation.plunge || symbol_orientation;
           feature_type = orientation.feature_type || feature_type;
           orientation_type = orientation.type || orientation_type;
@@ -496,9 +496,14 @@
         content += '<br>';
         content += '<small>' + orientation.type + '</small>';
 
-        if (orientation.strike && orientation.dip) {
+        if ((orientation.strike || orientation.dip_direction) && orientation.dip) {
           content += '<br>';
-          content += '<small>' + orientation.strike + '&deg; strike / ' + orientation.dip + '&deg; dip</small>';
+          if (orientation.strike) {
+            content += '<small>' + orientation.strike + '&deg; strike / ' + orientation.dip + '&deg; dip</small>';
+          }
+          else {
+            content += '<small>' + orientation.dip_direction + '&deg; dip direction / ' + orientation.dip + '&deg; dip</small>';
+          }
         }
 
         if (orientation.trend && orientation.plunge) {
