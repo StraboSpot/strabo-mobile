@@ -108,6 +108,7 @@
           setDisplayedCoords();
         }
       }
+      else if (vmParent.spot.properties.image_basemap) vm.showXY = true;
     }
 
     function reloadTab() {

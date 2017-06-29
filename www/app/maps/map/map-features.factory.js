@@ -39,6 +39,9 @@
         mappableSpots = _.filter(activeSpots, function (spot) {
           return _.contains(linkedImagesIds, spot.properties.image_basemap);
         });
+        mappableSpots = _.reject(mappableSpots, function (spot) {
+          return !_.has(spot, 'geometry');
+        });
       }
       // Remove spots that don't have a geometry defined or are mapped on an image
       else {
