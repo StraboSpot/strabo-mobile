@@ -231,8 +231,20 @@
           var trace = feature.get('trace');
 
           // Set line color and weight
-          if (trace.trace_type && trace.trace_type === 'geologic_struc') color = '#FF0000';
-          else if (trace.trace_type && trace.trace_type === 'contact') color = '#000000';
+          if (trace.trace_type && trace.trace_type === 'geologic_struc') {
+            color = '#FF0000';
+            if (trace.geologic_structure_type
+              && (trace.geologic_structure_type === 'fault' || trace.geologic_structure_type === 'shear_zone')) {
+              width = 4;
+            }
+          }
+          else if (trace.trace_type && trace.trace_type === 'contact') {
+            color = '#000000';
+            if (trace.contact_type && trace.contact_type === 'intrusive'
+              && trace.intrusive_contact_type && trace.intrusive_contact_type === 'dike') {
+              width = 4;
+            }
+          }
           else if (trace.trace_type && trace.trace_type === 'geomorphic_fea') {
             width = 4;
             color = '#0000FF';
