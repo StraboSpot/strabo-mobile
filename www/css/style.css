@@ -243,7 +243,8 @@ Buttons
 }
 
 .divider-buttons-right .item-divider i {
-  position:absolute; right:10px;
+  position: absolute;
+  right: 10px;
 }
 
 .rotate-90 {
@@ -268,7 +269,6 @@ Orientation Tab Style
   font-size: small;
   text-transform: initial;
 }
-
 
 .orientation-reference {
   background: lightgray;

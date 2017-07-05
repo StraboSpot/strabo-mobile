@@ -80,6 +80,10 @@ html, body, .container-fluid, .strabo-page-content {
   background-color: #F6F6F6;
 }
 
+.divider-buttons-right .item-divider i {
+  margin-top: -12px;
+}
+
 .modal-backdrop {
   background-color: transparent;
 }

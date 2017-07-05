@@ -39,7 +39,7 @@
   </div>
   <div ng-show='vm.showLinkedImagesSets === true'>
     <div class='padding' ng-show='vm.linkedImagesSets.length === 0'>There are no sets of linked images.</div>
-    <div ng-repeat='linkedImagesSet in vm.linkedImagesSets | orderBy:"$index" track by $index' class="divider-buttons-right">
+    <div ng-repeat='linkedImagesSet in vm.linkedImagesSets | orderBy:"$index" track by $index'>
       <div class='item item-divider'>
         Linked Images Set {{ $index+1 }}
         <img class='strabo-icon' align='right' src='img/link-break.png' ng-click='vm.unlinkImages($index)'>
