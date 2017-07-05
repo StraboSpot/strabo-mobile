@@ -229,7 +229,9 @@
     }
 
     function showSetToMyLocation() {
-      return (!vmParent.spot.geometry || (vmParent.spot.geometry && vmParent.spot.geometry.type === 'Point')) && !vm.showXY
+      return vmParent.spot &&
+        (!vmParent.spot.geometry || (vmParent.spot.geometry && vmParent.spot.geometry.type === 'Point')) &&
+        !vm.showXY
     }
 
     function updateDatetime(datetime) {
