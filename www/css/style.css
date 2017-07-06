@@ -255,6 +255,33 @@ Buttons
   transform: rotate(90deg);
 }
 
+.strabo-color-box-button-right {
+  position: absolute;
+  right: 10px;
+  top: 11px;
+  width: 20px;
+  height: 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 4px;
+  border-color: lightgrey;
+}
+
+.strabo-color-box-button-left {
+  float: left;
+  margin-right: 10px;
+  width: 20px;
+  height: 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 4px;
+  border-color: lightgrey;
+}
+
+.crossed {
+  background-image: linear-gradient(to bottom right,  transparent calc(50% - 1px), lightgray, transparent calc(50% + 1px));
+}
+
 /*--------------------
 Orientation Tab Style
 --------------------*/

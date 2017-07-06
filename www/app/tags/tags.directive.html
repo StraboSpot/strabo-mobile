@@ -13,6 +13,8 @@
     <ion-item class='item-text-wrap item-button-right'
               ng-repeat='tag in vm.allTagsToDisplay | orderBy:"name" track by tag.id'
               ng-click='vm.goToTag(tag.id)'>
+      <span class='strabo-color-box-button-left'
+            ng-style={"background":tag.color} ng-class='{"crossed":!tag.color}'></span>
       <b>{{tag.name}}</b>
       <strabo-tags-list-properties-directive></strabo-tags-list-properties-directive>
       <button class='button button-clear button-assertive'

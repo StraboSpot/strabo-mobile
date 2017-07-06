@@ -20,6 +20,8 @@
     var visibleDatasets = [];
 
     vm.choices = [];
+    vm.color = undefined;
+    vm.colorPickerModal = {};
     vm.data = {};
     vm.dataChanged = false;
     vm.features = [];
@@ -35,6 +37,7 @@
     vm.tagsDisplayed = [];
 
     vm.checkedDataset = checkedDataset;
+    vm.clearColor = clearColor;
     vm.closeModal = closeModal;
     vm.filter = filter;
     vm.getNumTaggedFeatures = getNumTaggedFeatures;
@@ -50,14 +53,16 @@
     vm.isOptionChecked = isOptionChecked;
     vm.isShowItem = isShowItem;
     vm.isTypeChecked = isTypeChecked;
+    vm.keyToId = keyToId;
     vm.loadMoreSpots = loadMoreSpots;
     vm.moreSpotsCanBeLoaded = moreSpotsCanBeLoaded;
-    vm.keyToId = keyToId;
+    vm.openColorPicker = openColorPicker;
     vm.removeFeature = removeFeature;
     vm.removeSpot = removeSpot;
     vm.resetFilters = resetFilters;
     vm.selectItem = selectItem;
     vm.selectTypes = selectTypes;
+    vm.setColor = setColor;
     vm.showField = showField;
     vm.toggleChecked = toggleChecked;
     vm.toggleItem = toggleItem;
@@ -139,6 +144,15 @@
         vm.filterModal = modal;
       });
 
+      $ionicModal.fromTemplateUrl('app/shared/color-picker-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false,
+        'hardwareBackButtonClose': false
+      }).then(function (modal) {
+        vm.colorPickerModal = modal;
+      });
+
       // Cleanup the modal when we're done with it!
       $scope.$on('$destroy', function () {
         vm.selectItemModal.remove();
@@ -150,6 +164,9 @@
       var id = $state.params.tag_id;
       vm.data = ProjectFactory.getTag(id);
       vm.data.id = id;  // Just in case vm.tag is undefined
+
+      if (vm.data.color) vm.color = vm.data.color;
+
       if (vm.data.type === 'geologic_unit') {
         vm.survey = DataModelsFactory.getDataModel('rock_unit').survey;
         vm.choices = DataModelsFactory.getDataModel('rock_unit').choices;
@@ -222,6 +239,12 @@
       else visibleDatasets.splice(i, 1);
       SpotFactory.setVisibleDatasets(visibleDatasets);
       $log.log('visibleDatasets after:', visibleDatasets);
+    }
+
+    function clearColor() {
+      if (vm.data.color) delete vm.data.color;
+      vm.color = undefined;
+      vm.colorPickerModal.hide();
     }
 
     function closeModal(modal) {
@@ -368,6 +391,10 @@
       return vm.spotsDisplayed.length !== vm.spots.length;
     }
 
+    function openColorPicker() {
+      vm.colorPickerModal.show();
+    }
+
     function removeFeature(spotId, featureId) {
       isDelete = true;
       var confirmPopup = $ionicPopup.confirm({
@@ -415,6 +442,12 @@
 
     function selectTypes() {
       vm.selectTypesModal.show();
+    }
+
+    function setColor(color) {
+      vm.colorPickerModal.hide();
+      vm.data.color = color;
+      vm.color = color;
     }
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair

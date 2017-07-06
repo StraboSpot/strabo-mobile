@@ -293,37 +293,48 @@
       }
 
       function getPolyFill(feature) {
-        var color = 'rgba(0, 0, 255, 0.4)';       // blue
-        if (feature.get('surface_feature')) {
-          var surfaceFeature = feature.get('surface_feature');
-          switch (surfaceFeature.surface_feature_type) {
-            case 'rock_unit':
-              color = 'rgba(0, 255, 255, 0.4)';   // light blue
-              break;
-            case 'contiguous_outcrop':
-              color = 'rgba(240, 128, 128, 0.4)'; // pink
-              break;
-            case 'geologic_structure':
-              color = 'rgba(0, 255, 255, 0.4)';   // light blue
-              break;
-            case 'geomorphic_feature':
-              color = 'rgba(0, 128, 0, 0.4)';     // green
-              break;
-            case 'anthropogenic_feature':
-              color = 'rgba(128, 0, 128, 0.4)';   // purple
-              break;
-            case 'extent_of_mapping':
-              color = 'rgba(128, 0, 128, 0)';     // no fill
-              break;
-            case 'extent_of_biological_marker':   // green
-              color = 'rgba(0, 128, 0, 0.4)';
-              break;
-            case 'subjected_to_similar_process':
-              color = 'rgba(255, 165, 0,0.4)';    // orange
-              break;
-            case 'gradients':
-              color = 'rgba(255, 165, 0,0.4)';    // orange
-              break;
+        var tags = ProjectFactory.getTagsBySpotId(feature.get('id'));
+        if (tags.length > 0) {
+          _.each(tags, function (tag) {
+            if (tag.type === 'geologic_unit' && tag.color && !_.isEmpty(tag.color)) {
+              var rgbColor = HelpersFactory.hexToRgb(tag.color);
+              color = 'rgba(' + rgbColor.r + ', ' + rgbColor.g + ', ' + rgbColor.b + ', 0.4)';
+            }
+          });
+        }
+        else {
+          var color = 'rgba(0, 0, 255, 0.4)';       // blue
+          if (feature.get('surface_feature')) {
+            var surfaceFeature = feature.get('surface_feature');
+            switch (surfaceFeature.surface_feature_type) {
+              case 'rock_unit':
+                color = 'rgba(0, 255, 255, 0.4)';   // light blue
+                break;
+              case 'contiguous_outcrop':
+                color = 'rgba(240, 128, 128, 0.4)'; // pink
+                break;
+              case 'geologic_structure':
+                color = 'rgba(0, 255, 255, 0.4)';   // light blue
+                break;
+              case 'geomorphic_feature':
+                color = 'rgba(0, 128, 0, 0.4)';     // green
+                break;
+              case 'anthropogenic_feature':
+                color = 'rgba(128, 0, 128, 0.4)';   // purple
+                break;
+              case 'extent_of_mapping':
+                color = 'rgba(128, 0, 128, 0)';     // no fill
+                break;
+              case 'extent_of_biological_marker':   // green
+                color = 'rgba(0, 128, 0, 0.4)';
+                break;
+              case 'subjected_to_similar_process':
+                color = 'rgba(255, 165, 0,0.4)';    // orange
+                break;
+              case 'gradients':
+                color = 'rgba(255, 165, 0,0.4)';    // orange
+                break;
+            }
           }
         }
         return new ol.style.Fill({

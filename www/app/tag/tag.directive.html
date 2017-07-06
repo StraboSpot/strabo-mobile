@@ -3,6 +3,8 @@
     <ion-input class='item item-input item-stacked-label item-text-wrap'>
       <ion-label>Name</ion-label>
       <input type='text' placeholder='Name this Tag' ng-model='vm.data.name'>
+      <span class='strabo-color-box-button-right' ng-style={"background":vm.color} ng-class='{"crossed":!vm.color}'
+            ng-click='vm.openColorPicker()'></span>
     </ion-input>
     <ion-item class="item item-input item-select item-stacked-label item-text-wrap">
       <ion-label>Type</ion-label>
