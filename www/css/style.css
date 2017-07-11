@@ -481,7 +481,8 @@ textarea {
 }
 
 .strabo-field-info-button {
-  top: -5px;
+  min-height: 20px;
+  line-height: 20px;
   color: #387ef5;
 }
 
