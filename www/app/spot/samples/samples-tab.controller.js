@@ -5,11 +5,11 @@
     .module('app')
     .controller('SamplesTabController', SamplesTabController);
 
-  SamplesTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'DataModelsFactory',
-    'FormFactory', 'HelpersFactory', 'ProjectFactory'];
+  SamplesTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'FormFactory',
+    'HelpersFactory', 'ProjectFactory'];
 
-  function SamplesTabController($ionicModal, $ionicPopup, $log, $scope, $state, DataModelsFactory, FormFactory,
-                                HelpersFactory, ProjectFactory) {
+  function SamplesTabController($ionicModal, $ionicPopup, $log, $scope, $state, FormFactory, HelpersFactory,
+                                ProjectFactory) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -50,8 +50,7 @@
 
     function loadTab(state) {
       vmParent.loadTab(state);     // Need to load current state into parent
-      vmParent.survey = DataModelsFactory.getDataModel('sample').survey;
-      vmParent.choices = DataModelsFactory.getDataModel('sample').choices;
+      FormFactory.setForm('sample');
       $log.log('Samples:', vmParent.spot.properties.samples);
       checkProperties();
       createModal();
@@ -96,8 +95,7 @@
      */
 
     function addSample() {
-      vmParent.survey = DataModelsFactory.getDataModel('sample').survey;
-      vmParent.choices = DataModelsFactory.getDataModel('sample').choices;
+      FormFactory.setForm('sample');
       vmParent.data = {};
       vmParent.data.id = HelpersFactory.getNewId();
       var number = ProjectFactory.getSampleNumber() || '';
@@ -127,8 +125,7 @@
     function editSample(sampleToEdit) {
       if (!isDelete) {
         vmParent.data = angular.fromJson(angular.toJson(sampleToEdit));  // Copy value, not reference
-        vmParent.survey = DataModelsFactory.getDataModel('sample').survey;
-        vmParent.choices = DataModelsFactory.getDataModel('sample').choices;
+        FormFactory.setForm('sample');
         vm.modalTitle = 'Edit Sample';
         vm.basicFormModal.show();
       }
@@ -139,12 +136,11 @@
         // If not more than id field no data has been entered so don't continue, just close modal
         vmParent.data = {};
         vm.basicFormModal.hide();
-        vmParent.survey = undefined;
-        vmParent.choices = undefined;
+        FormFactory.clearForm();
         return;
       }
       if (!vmParent.data.label) vmParent.data.label = createDefaultLabel(vmParent.data);
-      if (FormFactory.validate(vmParent.survey, vmParent.data)) {
+      if (FormFactory.validate(vmParent.data)) {
         if (!vmParent.spot.properties.samples) vmParent.spot.properties.samples = [];
         handleSampleNumber();
         vmParent.spot.properties.samples = _.reject(vmParent.spot.properties.samples, function (sample) {
@@ -153,8 +149,7 @@
         vmParent.spot.properties.samples.push(vmParent.data);
         vmParent.data = {};
         vm.basicFormModal.hide();
-        vmParent.survey = undefined;
-        vmParent.choices = undefined;
+        FormFactory.clearForm()
       }
     }
   }

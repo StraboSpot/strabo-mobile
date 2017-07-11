@@ -6,9 +6,9 @@
     .controller('SpotTabController', SpotTabController);
 
   SpotTabController.$inject = ['$cordovaGeolocation', '$ionicModal', '$ionicPopup', '$log', '$scope', '$state',
-    'DataModelsFactory', 'HelpersFactory', 'LiveDBFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
+    'FormFactory', 'HelpersFactory', 'LiveDBFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
 
-  function SpotTabController($cordovaGeolocation, $ionicModal, $ionicPopup, $log, $scope, $state, DataModelsFactory,
+  function SpotTabController($cordovaGeolocation, $ionicModal, $ionicPopup, $log, $scope, $state, FormFactory,
                              HelpersFactory, LiveDBFactory, ProjectFactory, SpotFactory, IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
@@ -78,25 +78,22 @@
 
     function loadTab(state) {
       vmParent.loadTab(state);  // Need to load current state into parent
-      vmParent.survey = undefined;
-      vmParent.choices = undefined;
 
       vmParent.showTrace = false;
       vmParent.showGeologicUnit = true;
       vmParent.showSurfaceFeature = false;
+
       if (vmParent.spot.geometry && vmParent.spot.geometry.type === 'LineString') {
         vmParent.showTrace = true;
         vmParent.showGeologicUnit = false;
         if (vmParent.spot.properties.trace) vmParent.data = vmParent.spot.properties.trace;
-        vmParent.survey = DataModelsFactory.getDataModel('trace').survey;
-        vmParent.choices = DataModelsFactory.getDataModel('trace').choices;
+        FormFactory.setForm('trace');
       }
       if (vmParent.spot.geometry && vmParent.spot.geometry.type === 'Polygon') {
         vmParent.showRadius = false;
         vmParent.showSurfaceFeature = true;
         if (vmParent.spot.properties.surface_feature) vmParent.data = vmParent.spot.properties.surface_feature;
-        vmParent.survey = DataModelsFactory.getDataModel('surface_feature').survey;
-        vmParent.choices = DataModelsFactory.getDataModel('surface_feature').choices;
+        FormFactory.setForm('surface_feature');
       }
 
       // Has the spot been mapped yet?
@@ -195,8 +192,7 @@
     function createGeologicUnitTag() {
       vm.isCreateGeologicUnitTag = true;
       vm.isSelectGeologicUnitTag = false;
-      vmParent.survey = DataModelsFactory.getDataModel('rock_unit').survey;
-      vmParent.choices = DataModelsFactory.getDataModel('rock_unit').choices;
+      FormFactory.setForm('rock_unit');
     }
 
     // Get current location of the user

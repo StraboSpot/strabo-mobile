@@ -6,14 +6,14 @@
     .controller('MapController', MapController);
 
   MapController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup',
-    '$ionicSideMenuDelegate', '$location', '$log', '$rootScope', '$scope', '$timeout', 'DataModelsFactory',
-    'FormFactory', 'HelpersFactory', 'MapFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory',
-    'MapSetupFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
+    '$ionicSideMenuDelegate', '$location', '$log', '$rootScope', '$scope', '$timeout', 'FormFactory', 'HelpersFactory',
+    'MapFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory', 'MapSetupFactory', 'MapViewFactory',
+    'ProjectFactory', 'SpotFactory', 'IS_WEB'];
 
   function MapController($ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup, $ionicSideMenuDelegate,
-                         $location, $log, $rootScope, $scope, $timeout, DataModelsFactory, FormFactory, HelpersFactory,
-                         MapFactory, MapDrawFactory, MapFeaturesFactory, MapLayerFactory, MapSetupFactory,
-                         MapViewFactory, ProjectFactory, SpotFactory, IS_WEB) {
+                         $location, $log, $rootScope, $scope, $timeout, FormFactory, HelpersFactory, MapFactory,
+                         MapDrawFactory, MapFeaturesFactory, MapLayerFactory, MapSetupFactory, MapViewFactory,
+                         ProjectFactory, SpotFactory, IS_WEB) {
     var vm = this;
 
     var datasetsLayerStates;
@@ -22,7 +22,6 @@
     var tagsToAdd = [];
 
     vm.allTags = [];
-    vm.choices = {};
     vm.clickedFeatureId = undefined;
     vm.currentSpot = {};
     vm.currentZoom = '';
@@ -33,7 +32,6 @@
     vm.newNestProperties = {};
     vm.saveEditsText = 'Save Edits';
     vm.showSaveEditsBtn = false;
-    vm.survey = {};
 
     vm.cacheOfflineTiles = cacheOfflineTiles;
     vm.closeModal = closeModal;
@@ -42,7 +40,6 @@
     vm.isOnline = isOnline;
     vm.returnToSpot = returnToSpot;
     vm.saveEdits = saveEdits;
-    vm.showField = showField;
     vm.toggleNesting = toggleNesting;
     vm.toggleTagChecked = toggleTagChecked;
     vm.toggleLocation = toggleLocation;
@@ -325,18 +322,6 @@
       MapDrawFactory.saveEdits(vm.clickedFeatureId);
     }
 
-    // Determine if the field should be shown or not by looking at the relevant key-value pair
-    function showField(field) {
-      var show = FormFactory.isRelevant(field.relevant, vm.data);
-      if (show && field.default) {
-        if (!vm.data[field.name]) vm.data[field.name] = field.default;
-      }
-      if (!show) {
-        if (vm.data[field.name]) delete vm.data[field.name];
-      }
-      return show;
-    }
-
     function toggleNesting() {
       vm.popover.hide();
       vm.isNesting = !vm.isNesting;
@@ -344,8 +329,7 @@
       if (vm.isNesting) {
         $log.log('Starting Nesting');
         SpotFactory.clearActiveNest();
-        vm.survey = DataModelsFactory.getDataModel('surface_feature').survey;
-        vm.choices = DataModelsFactory.getDataModel('surface_feature').choices;
+        FormFactory.setForm('surface_feature');
         vm.data = {};
         vm.newNestModal.show();
       }

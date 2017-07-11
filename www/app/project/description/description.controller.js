@@ -6,10 +6,10 @@
     .controller('DescriptionController', DescriptionController);
 
   DescriptionController.$inject = ['$ionicModal', '$ionicPopup', '$location', '$log', '$rootScope', '$scope',
-    '$timeout', 'DataModelsFactory', 'FormFactory', 'LiveDBFactory', 'ProjectFactory', 'IS_WEB'];
+    '$timeout', 'FormFactory', 'LiveDBFactory', 'ProjectFactory', 'IS_WEB'];
 
-  function DescriptionController($ionicModal, $ionicPopup, $location, $log, $rootScope, $scope, $timeout,
-                                 DataModelsFactory, FormFactory, LiveDBFactory, ProjectFactory, IS_WEB) {
+  function DescriptionController($ionicModal, $ionicPopup, $location, $log, $rootScope, $scope, $timeout, FormFactory,
+                                 LiveDBFactory, ProjectFactory, IS_WEB) {
     var vm = this;
 
     var initializing = true;
@@ -20,14 +20,12 @@
     vm.dataChanged = false;
     vm.descriptionModal = {};
     vm.isNewProject = null;
-    vm.survey = {};
     vm.valid = true;
 
     vm.closeModal = closeModal;
     vm.deleteDailySetup = deleteDailySetup;
     vm.showDailySetupModal = showDailySetupModal;
     vm.showDescriptionModal = showDescriptionModal;
-    vm.showField = showField;
     vm.submit = submit;
 
     activate();
@@ -39,7 +37,7 @@
     function activate() {
       if (_.isEmpty(ProjectFactory.getCurrentProject())) $location.path('app/manage-project');
       else {
-        vm.survey = DataModelsFactory.getDataModel('project').survey;
+        FormFactory.setForm('project');
         vm.data = ProjectFactory.getCurrentProject().description;
         fixDates();
         createModals();
@@ -104,7 +102,7 @@
         }
       }
       else {
-        var valid = FormFactory.validate(vm.survey, vm.data);
+        var valid = FormFactory.validate(vm.data);
         if (valid) vm[modal].hide();
       }
     }
@@ -141,13 +139,6 @@
 
     function showDescriptionModal() {
       vm.descriptionModal.show();
-    }
-
-    // Determine if the field should be shown or not by looking at the relevant key-value pair
-    function showField(field) {
-      var show = FormFactory.isRelevant(field.relevant, vm.data);
-      if (!show) delete vm.data[field.name];
-      return show;
     }
 
     function submit() {

@@ -6,12 +6,12 @@
     .controller('ImagesTabController', ImagesTabController);
 
   ImagesTabController.$inject = ['$cordovaCamera', '$cordovaGeolocation', '$document', '$ionicModal', '$ionicPopup',
-    '$log', '$q', '$scope', '$state', '$window', 'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'ImageFactory',
-    'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'IS_WEB'];
+    '$log', '$q', '$scope', '$state', '$window', 'FormFactory', 'HelpersFactory', 'ImageFactory', 'LiveDBFactory',
+    'LocalStorageFactory', 'ProjectFactory', 'IS_WEB'];
 
   function ImagesTabController($cordovaCamera, $cordovaGeolocation, $document, $ionicModal, $ionicPopup, $log, $q,
-                               $scope, $state, $window, DataModelsFactory, FormFactory, HelpersFactory, ImageFactory,
-                               LiveDBFactory, LocalStorageFactory, ProjectFactory, IS_WEB) {
+                               $scope, $state, $window, FormFactory, HelpersFactory, ImageFactory, LiveDBFactory,
+                               LocalStorageFactory, ProjectFactory, IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -74,8 +74,7 @@
 
     function loadTab(state) {
       vmParent.loadTab(state);  // Need to load current state into parent
-      vmParent.survey = DataModelsFactory.getDataModel('image').survey;
-      vmParent.choices = DataModelsFactory.getDataModel('image').choices;
+      FormFactory.setForm('image');
       createModals();
       getImageSources();
       checkImageType();     // Set default image type to 'photo' if no image type has been set
@@ -167,8 +166,8 @@
     }
 
     function getImageType(imageData, image) {
-      var imageTypeField = _.findWhere(vmParent.survey, {'name': 'image_type'});
-      vm.imageTypeChoices = _.filter(vmParent.choices, function (choice) {
+      var imageTypeField = _.findWhere(FormFactory.getForm().survey, {'name': 'image_type'});
+      vm.imageTypeChoices = _.filter(FormFactory.getForm().choices, function (choice) {
         return choice['list name'] === imageTypeField.type.split(" ")[1]
       });
       var template = '<ion-radio ng-repeat="choice in vmChild.imageTypeChoices" ng-value="choice.name" ng-model="vmChild.imageType">{{ choice.label }}</ion-radio> ' +
@@ -413,7 +412,7 @@
 
     function closeModal(modal) {
       if (modal === 'imagePropertiesModal') {
-        if (FormFactory.validate(vmParent.survey, vmParent.data)) vm[modal].hide();
+        if (FormFactory.validate(vmParent.data)) vm[modal].hide();
       }
       else vm[modal].hide();
     }

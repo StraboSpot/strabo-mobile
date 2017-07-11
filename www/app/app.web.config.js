@@ -376,7 +376,7 @@
       return LocalStorageFactory.setupLocalforage().then(function () {
         $ionicLoading.show(
           {'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loaded Database<br>Loading User...'});
-        return AutoLoginFactory.autoLogin().then(function () {
+        //return AutoLoginFactory.autoLogin().then(function () {
           $ionicLoading.show(
             {'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loaded Database<br>Loaded User<br>Loading Project...'});
           return UserFactory.loadUser().then(function () {
@@ -392,7 +392,7 @@
                 });
               });
             });
-          });
+          //});
         });
       });
     });

@@ -5,20 +5,35 @@
     .module('app')
     .factory('FormFactory', FormFactory);
 
-  FormFactory.$inject = ['$document', '$ionicPopup', '$log'];
+  FormFactory.$inject = ['$document', '$ionicPopup', '$log', '$rootScope', 'DataModelsFactory'];
 
-  function FormFactory($document, $ionicPopup, $log) {
+  function FormFactory($document, $ionicPopup, $log, $rootScope, DataModelsFactory) {
+
+    var form = {};   // form = {'choices': {}, 'survey': {}};
+
     return {
+      'clearForm': clearForm,
+      'getForm': getForm,
       'getMax': getMax,
       'getMin': getMin,
       'isRelevant': isRelevant,
+      'setForm': setForm,
       'toggleAcknowledgeChecked': toggleAcknowledgeChecked,
-      'validate': validate
+      'validate': validate,
+      'validateForm': validateForm
     };
 
     /**
      * Public Functions
      */
+
+    function clearForm() {
+      form = {};
+    }
+
+    function getForm() {
+      return form;
+    }
 
     // Get the max value allowed for a number field
     function getMax(constraint) {
@@ -68,6 +83,18 @@
       }
     }
 
+    function setForm(formName, type) {
+      if (type) {
+        form.survey = DataModelsFactory.getDataModel(formName)[type].survey;
+        form.choices = DataModelsFactory.getDataModel(formName)[type].choices;
+      }
+      else {
+        form.survey = DataModelsFactory.getDataModel(formName).survey;
+        form.choices = DataModelsFactory.getDataModel(formName).choices;
+      }
+      $rootScope.$broadcast('formUpdated', form);
+    }
+
     function toggleAcknowledgeChecked(data, field) {
       if (data[field]) {
         delete data[field];
@@ -78,12 +105,12 @@
       return data;
     }
 
-    function validate(survey, data) {
+    function validate(data) {
       $log.log('Validating form with data:', data);
       var errorMessages = '';
 
       // If a field is visible and required but empty give the user an error message and return to the form
-      _.each(survey, function (field) {
+      _.each(form.survey, function (field) {
         if (field.name) {
           var ele = $document[0].getElementById(field.name);
           if (getComputedStyle(ele).display !== 'none' && angular.isUndefined(data[field.name])) {
@@ -110,6 +137,39 @@
         return false;
       }
       $log.log('Valid!');
+      return true;
+    }
+
+    // Validate Spot Tab
+    function validateForm(stateName, spot, data) {
+      if (stateName === 'app.spotTab.spot') {
+        if (!spot.properties.name) {
+          $ionicPopup.alert({
+            'title': 'Validation Error!',
+            'template': '<b>Spot Name</b> is required.'
+          });
+          return false;
+        }
+        if (spot.geometry) {
+          if (spot.geometry.type === 'Point') {
+            var geoError;
+            if (!spot.geometry.coordinates[0] && !spot.geometry.coordinates[1]) {
+              geoError = '<b>Latitude</b> and <b>longitude</b> are required.';
+            }
+            else if (!spot.geometry.coordinates[0]) geoError = '<b>Longitude</b> is required.';
+            else if (!spot.geometry.coordinates[1]) geoError = '<b>Latitude</b> is required.';
+            if (geoError) {
+              $ionicPopup.alert({
+                'title': 'Validation Error!',
+                'template': geoError
+              });
+              return false;
+            }
+          }
+        }
+        if (!_.isEmpty(form.survey)) return validate(data);
+        return true;
+      }
       return true;
     }
   }

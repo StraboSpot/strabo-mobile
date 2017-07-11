@@ -9,8 +9,7 @@
     '$ionicPopup', '$log', '$scope', '$state', 'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'ProjectFactory'];
 
   function OrientationsTabController($cordovaDeviceMotion, $cordovaDeviceOrientation, $ionicModal, $ionicPopup, $log,
-                                        $scope, $state, DataModelsFactory, FormFactory, HelpersFactory,
-                                        ProjectFactory) {
+                                     $scope, $state, DataModelsFactory, FormFactory, HelpersFactory, ProjectFactory) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -217,8 +216,7 @@
 
     function addAssociatedOrientation(parentThisOrientation, type) {
       vm.parentOrientation = parentThisOrientation;
-      vmParent.survey = DataModelsFactory.getDataModel('orientation_data')[type].survey;
-      vmParent.choices = DataModelsFactory.getDataModel('orientation_data')[type].choices;
+      FormFactory.setForm('orientation_data', type);
       vmParent.data = {};
       vmParent.data.type = type;
       vmParent.data.id = HelpersFactory.getNewId();
@@ -228,8 +226,7 @@
 
     function addOrientation(type) {
       vm.parentOrientation = undefined;
-      vmParent.survey = DataModelsFactory.getDataModel('orientation_data')[type].survey;
-      vmParent.choices = DataModelsFactory.getDataModel('orientation_data')[type].choices;
+      FormFactory.setForm('orientation_data', type);
       vmParent.data = {};
       vmParent.data.type = type;
       vmParent.data.id = HelpersFactory.getNewId();
@@ -305,8 +302,7 @@
     function editAssociatedOrientation(parentThisOrientation, orientationToEdit) {
       vm.parentOrientation = parentThisOrientation;
       vmParent.data = angular.fromJson(angular.toJson(orientationToEdit));  // Copy value, not reference
-      vmParent.survey = DataModelsFactory.getDataModel('orientation_data')[vmParent.data.type].survey;
-      vmParent.choices = DataModelsFactory.getDataModel('orientation_data')[vmParent.data.type].choices;
+      FormFactory.setForm('orientation_data', vmParent.data.type);
       vm.modalTitle = 'Edit ' + getModalTitlePart();
       vm.basicFormModal.show();
     }
@@ -314,8 +310,7 @@
     function editOrientation(orientationToEdit) {
       vm.parentOrientation = undefined;
       vmParent.data = angular.fromJson(angular.toJson(orientationToEdit));  // Copy value, not reference
-      vmParent.survey = DataModelsFactory.getDataModel('orientation_data')[vmParent.data.type].survey;
-      vmParent.choices = DataModelsFactory.getDataModel('orientation_data')[vmParent.data.type].choices;
+      FormFactory.setForm('orientation_data', vmParent.data.type);
       vm.modalTitle = 'Edit ' + getModalTitlePart();
       vm.basicFormModal.show();
     }
@@ -364,17 +359,17 @@
     }
 
     function submit() {
+      vmParent.data = HelpersFactory.cleanObj(vmParent.data);
       if (_.size(vmParent.data) <= 2) {
         // If not more than type and id fields no data has been entered so don't continue, just close modal
         vmParent.data = {};
         vm.parentOrientation = undefined;
         vm.basicFormModal.hide();
-        vmParent.survey = undefined;
-        vmParent.choices = undefined;
+        FormFactory.clearForm();
         return;
       }
       if (!vmParent.data.label) vmParent.data.label = createDefaultLabel(vmParent.data);
-      if (FormFactory.validate(vmParent.survey, vmParent.data)) {
+      if (FormFactory.validate(vmParent.data)) {
         if (!vm.parentOrientation) {
           if (!vmParent.spot.properties.orientation_data) vmParent.spot.properties.orientation_data = [];
           vmParent.spot.properties.orientation_data = _.reject(vmParent.spot.properties.orientation_data,
@@ -398,8 +393,7 @@
         }
         vmParent.data = {};
         vm.basicFormModal.hide();
-        vmParent.survey = undefined;
-        vmParent.choices = undefined;
+        FormFactory.clearForm();
       }
     }
   }

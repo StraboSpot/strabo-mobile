@@ -6,14 +6,14 @@
     .controller('ImageBasemapController', ImageBasemapController);
 
   ImageBasemapController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup',
-    '$ionicSideMenuDelegate', '$location', '$log', '$rootScope', '$scope', '$state', '$timeout', 'DataModelsFactory',
-    'FormFactory', 'HelpersFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory',
+    '$ionicSideMenuDelegate', '$location', '$log', '$rootScope', '$scope', '$state', '$timeout', 'FormFactory',
+    'HelpersFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory',
     'ProjectFactory', 'SpotFactory', 'IS_WEB'];
 
   function ImageBasemapController($ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup,
                                   $ionicSideMenuDelegate, $location, $log, $rootScope, $scope, $state, $timeout,
-                                  DataModelsFactory, FormFactory, HelpersFactory, MapDrawFactory, MapFeaturesFactory,
-                                  MapSetupFactory, MapViewFactory, ProjectFactory, SpotFactory, IS_WEB) {
+                                  FormFactory, HelpersFactory, MapDrawFactory, MapFeaturesFactory, MapSetupFactory,
+                                  MapViewFactory, ProjectFactory, SpotFactory, IS_WEB) {
     var vm = this;
 
     var currentSpot = {};
@@ -22,7 +22,6 @@
     var tagsToAdd = [];
 
     vm.allTags = [];
-    vm.choices = {};
     vm.clickedFeatureId = undefined;
     vm.data = {};
     vm.imageBasemap = {};
@@ -33,7 +32,6 @@
     vm.popover = {};
     vm.saveEditsText = 'Save Edits';
     vm.showSaveEditsBtn = false;
-    vm.survey = {};
 
     vm.closeModal = closeModal;
     vm.createTag = createTag;
@@ -41,7 +39,6 @@
     vm.groupSpots = groupSpots;
     vm.hasLinkedImages = hasLinkedImages;
     vm.saveEdits = saveEdits;
-    vm.showField = showField;
     vm.toggleNesting = toggleNesting;
     vm.toggleTagChecked = toggleTagChecked;
     vm.unlinkImages = unlinkImages;
@@ -348,18 +345,6 @@
       MapDrawFactory.saveEdits(vm.clickedFeatureId);
     }
 
-    // Determine if the field should be shown or not by looking at the relevant key-value pair
-    function showField(field) {
-      var show = FormFactory.isRelevant(field.relevant, vm.data);
-      if (show && field.default) {
-        if (!vm.data[field.name]) vm.data[field.name] = field.default;
-      }
-      if (!show) {
-        if (vm.data[field.name]) delete vm.data[field.name];
-      }
-      return show;
-    }
-
     function toggleNesting() {
       vm.popover.hide();
       vm.isNesting = !vm.isNesting;
@@ -367,8 +352,7 @@
       if (vm.isNesting) {
         $log.log('Starting Nesting');
         SpotFactory.clearActiveNest();
-        vm.survey = DataModelsFactory.getDataModel('surface_feature').survey;
-        vm.choices = DataModelsFactory.getDataModel('surface_feature').choices;
+        FormFactory.setForm('surface_feature');
         vm.data = {};
         vm.newNestModal.show();
       }

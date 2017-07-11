@@ -1,122 +1,124 @@
-<div ng-repeat='field in vm.survey'
-     class='strabo-form'>
-  <div id='{{ field.name }}' ng-show='vm.showField(field)'>
-    <div data-ng-switch on='field.type.split(" ")[0]'>
-      <div class='field-group item item-divider' ng-switch-when='begin'>
-        {{ field.label }}
-      </div>
-      <div ng-switch-when='integer'>
-        <ion-input class='item item-input item-stacked-label item-text-wrap'
-                   ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
-          <ion-label>{{field.label}}</ion-label>
-          <input type='number'
-                 ng-pattern='/^[-+]?\d+$/'
-                 name='{{ field.name }}'
-                 placeholder='{{ field.hint }}'
-                 ng-model='vm.data[field.name]'
-                 ng-required='{{ field.required }}'
-                 ng-min='vm.getMin(field.constraint)'
-                 ng-max='vm.getMax(field.constraint)'>
-        </ion-input>
-      </div>
-      <div ng-switch-when='decimal'>
-        <ion-input class='item item-input item-stacked-label item-text-wrap'
-                   ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
-          <ion-label>{{field.label}}</ion-label>
-          <input type='number'
-                 name='{{ field.name }}'
-                 placeholder='{{ field.hint }}'
-                 ng-model='vm.data[field.name]'
-                 ng-required='{{ field.required }}'
-                 ng-min='vm.getMin(field.constraint)'
-                 ng-max='vm.getMax(field.constraint)'>
-        </ion-input>
-      </div>
-      <div ng-switch-when='text'>
-        <ion-input class='item item-input item-stacked-label item-text-wrap'
-                   ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
-          <ion-label>{{ field.label }}</ion-label>
-          <div ng-if='field.appearance === "multiline"'>
-            <textarea name='{{ field.name }}'
-                      rows='4'
-                      placeholder='{{field.hint}}'
-                      ng-model='vm.data[field.name]'
-                      ng-required='{{ field.required }}'>
-            </textarea>
-          </div>
-          <div ng-if='field.appearance !== "multiline"'>
-            <input type='text'
+<div ng-controller='FormController as form'>
+  <div ng-repeat='field in form.survey'
+       class='strabo-form'>
+    <div id='{{ field.name }}' ng-show='form.showField(field, vm.data)'>
+      <div data-ng-switch on='field.type.split(" ")[0]'>
+        <div class='field-group item item-divider' ng-switch-when='begin'>
+          {{ field.label }}
+        </div>
+        <div ng-switch-when='integer'>
+          <ion-input class='item item-input item-stacked-label item-text-wrap'
+                     ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
+            <ion-label>{{field.label}}</ion-label>
+            <input type='number'
+                   ng-pattern='/^[-+]?\d+$/'
+                   name='{{ field.name }}'
+                   placeholder='{{ field.hint }}'
+                   ng-model='vm.data[field.name]'
+                   ng-required='{{ field.required }}'
+                   ng-min='form.getMin(field.constraint)'
+                   ng-max='form.getMax(field.constraint)'>
+          </ion-input>
+        </div>
+        <div ng-switch-when='decimal'>
+          <ion-input class='item item-input item-stacked-label item-text-wrap'
+                     ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
+            <ion-label>{{field.label}}</ion-label>
+            <input type='number'
+                   name='{{ field.name }}'
+                   placeholder='{{ field.hint }}'
+                   ng-model='vm.data[field.name]'
+                   ng-required='{{ field.required }}'
+                   ng-min='form.getMin(field.constraint)'
+                   ng-max='form.getMax(field.constraint)'>
+          </ion-input>
+        </div>
+        <div ng-switch-when='text'>
+          <ion-input class='item item-input item-stacked-label item-text-wrap'
+                     ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
+            <ion-label>{{ field.label }}</ion-label>
+            <div ng-if='field.appearance === "multiline"'>
+              <textarea name='{{ field.name }}'
+                        rows='4'
+                        placeholder='{{field.hint}}'
+                        ng-model='vm.data[field.name]'
+                        ng-required='{{ field.required }}'>
+              </textarea>
+            </div>
+            <div ng-if='field.appearance !== "multiline"'>
+              <input type='text'
+                     name='{{ field.name }}'
+                     placeholder='{{ field.hint }}'
+                     ng-model='vm.data[field.name]'
+                     ng-required='{{ field.required }}'>
+            </div>
+          </ion-input>
+        </div>
+        <div ng-switch-when='date'>
+          <ion-input class='item item-input item-stacked-label item-text-wrap'
+                     ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
+            <ion-label>{{field.label}}</ion-label>
+            <input type='date'
                    name='{{ field.name }}'
                    placeholder='{{ field.hint }}'
                    ng-model='vm.data[field.name]'
                    ng-required='{{ field.required }}'>
-          </div>
-        </ion-input>
-      </div>
-      <div ng-switch-when='date'>
-        <ion-input class='item item-input item-stacked-label item-text-wrap'
-                   ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
-          <ion-label>{{field.label}}</ion-label>
-          <input type='date'
-                 name='{{ field.name }}'
-                 placeholder='{{ field.hint }}'
-                 ng-model='vm.data[field.name]'
-                 ng-required='{{ field.required }}'>
-        </ion-input>
-      </div>
-      <div ng-switch-when='note'>
-        <ion-input class='item item-input item-stacked-label item-text-wrap'
-                   ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
-          <ion-label>{{ field.label }}</ion-label>
-          <textarea name='{{ field.name }}'
-                    rows='4'
-                    placeholder='{{field.hint}}'
-                    ng-model='vm.data[field.name]'
-                    ng-required='{{ field.required }}'>
-          </textarea>
-        </ion-input>
-      </div>
-      <div ng-switch-when='select_one'>
-        <ion-input class='item item-input item-select item-stacked-label item-text-wrap'
-                   ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
-          <ion-label>{{ field.label }}</ion-label>
-          <span class='item-placeholder' ng-show='field.hint'><small>{{ field.hint }}</small><br></span>
-          <select name='{{ field.name }}'
-                  ng-model='vm.data[field.name]'
-                  ng-options='choice.name as choice.label for choice in vm.choices
-                                | filter: { "list name": field.type.split(" ")[1] }'
-                  ng-required='{{ field.required }}'>
-            <option value=''>-- Select {{ field.label }} --</option>
-          </select>
-        </ion-input>
-      </div>
-      <div ng-switch-when='select_multiple'>
-        <ion-input class='item item-input item-text-wrap' ng-class='vm.setSelMultClass(field)'>
-          <ion-label>{{field.label}}</ion-label>
-          <span class='item-placeholder' ng-show='field.hint'><small>{{ field.hint }}</small><br></span>
-          <ion-checkbox name='{{ field.name }}'
-                        ng-repeat='choice in vm.choices | filter: { "list name": field.type.split(" ")[1] }'
-                        ng-checked='vm.isOptionChecked(field.name, choice.name)'
-                        ng-click='vm.toggleChecked(field.name, choice.name)'
+          </ion-input>
+        </div>
+        <div ng-switch-when='note'>
+          <ion-input class='item item-input item-stacked-label item-text-wrap'
+                     ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
+            <ion-label>{{ field.label }}</ion-label>
+              <textarea name='{{ field.name }}'
+                        rows='4'
+                        placeholder='{{field.hint}}'
+                        ng-model='vm.data[field.name]'
                         ng-required='{{ field.required }}'>
-            {{ choice.label }}
-          </ion-checkbox>
-        </ion-input>
-      </div>
-      <div ng-switch-when='acknowledge'>
-        <ion-toggle
-          name='{{ field.name }}'
-          ng-checked='vm.data[field.name]'
-          ng-click='vm.toggleAcknowledgeChecked(field.name)'
-          id='{{ field.name }}Toggle'
-          ng-required='{{ field.required }}'
-          toggle-class='toggle-positive'>
-          <span class='toggle-left-label'>{{field.label}}</span>
-        </ion-toggle>
-      </div>
-      <div ng-if='straboForm[field.name].$touched'>
-        <div ng-messages='straboForm[field.name].$error'>
-          <div ng-messages-include='app/form/error-messages.html'></div>
+              </textarea>
+          </ion-input>
+        </div>
+        <div ng-switch-when='select_one'>
+          <ion-input class='item item-input item-select item-stacked-label item-text-wrap'
+                     ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
+            <ion-label>{{ field.label }}</ion-label>
+            <span class='item-placeholder' ng-show='field.hint'><small>{{ field.hint }}</small><br></span>
+            <select name='{{ field.name }}'
+                    ng-model='vm.data[field.name]'
+                    ng-options='choice.name as choice.label for choice in form.choices
+                                | filter: { "list name": field.type.split(" ")[1] }'
+                    ng-required='{{ field.required }}'>
+              <option value=''>-- Select {{ field.label }} --</option>
+            </select>
+          </ion-input>
+        </div>
+        <div ng-switch-when='select_multiple'>
+          <ion-input class='item item-input item-text-wrap' ng-class='form.setSelMultClass(field, vm.data)'>
+            <ion-label>{{field.label}}</ion-label>
+            <span class='item-placeholder' ng-show='field.hint'><small>{{ field.hint }}</small><br></span>
+            <ion-checkbox name='{{ field.name }}'
+                          ng-repeat='choice in form.choices | filter: { "list name": field.type.split(" ")[1] }'
+                          ng-checked='form.isOptionChecked(vm.spot, field.name, choice.name, vm.data)'
+                          ng-click='form.toggleChecked(field.name, choice.name, vm.data)'
+                          ng-required='{{ field.required }}'>
+              {{ choice.label }}
+            </ion-checkbox>
+          </ion-input>
+        </div>
+        <div ng-switch-when='acknowledge'>
+          <ion-toggle
+            name='{{ field.name }}'
+            ng-checked='vm.data[field.name]'
+            ng-click='form.toggleAcknowledgeChecked(field.name, vm.data)'
+            id='{{ field.name }}Toggle'
+            ng-required='{{ field.required }}'
+            toggle-class='toggle-positive'>
+            <span class='toggle-left-label'>{{field.label}}</span>
+          </ion-toggle>
+        </div>
+        <div ng-if='straboForm[field.name].$touched'>
+          <div ng-messages='straboForm[field.name].$error'>
+            <div ng-messages-include='app/form/error-messages.html'></div>
+          </div>
         </div>
       </div>
     </div>

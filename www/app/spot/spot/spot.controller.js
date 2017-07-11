@@ -43,7 +43,6 @@
     vm.toggleTagChecked = toggleTagChecked;
 
     // Other Variables
-    vm.choices = undefined;
     vm.data = {};
     vm.date = undefined;
     vm.initializing = true;
@@ -57,26 +56,17 @@
     vm.spot = {};
     vm.spotChanged = false;
     vm.stateName = $state.current.name;
-    vm.survey = undefined;
 
     // Other Functions
     vm.closeModal = closeModal;
     vm.copyThisSpot = copyThisSpot;
     vm.deleteSpot = deleteSpot;
-    vm.getMax = getMax;
-    vm.getMin = getMin;
     vm.goBack = goBack;
     vm.goToTag = goToTag;
-    vm.isOptionChecked = isOptionChecked;
     vm.loadTab = loadTab;
     vm.saveSpot = saveSpot;
-    vm.setSelMultClass = setSelMultClass;
-    vm.showField = showField;
     vm.showTab = showTab;
     vm.submit = submit;
-    vm.toggleAcknowledgeChecked = toggleAcknowledgeChecked;
-    vm.toggleChecked = toggleChecked;
-    vm.validateForm = validateForm;
     vm.viewMap = viewMap;
 
     activate();
@@ -300,14 +290,6 @@
       filterTagType();
     }
 
-    function getMax(constraint) {
-      return FormFactory.getMax(constraint);
-    }
-
-    function getMin(constraint) {
-      return FormFactory.getMin(constraint);
-    }
-
     function getNumTaggedFeatures(tag) {
       return TagFactory.getNumTaggedFeatures(tag);
     }
@@ -342,13 +324,6 @@
       submit('/app/tags/' + id);
     }
 
-    function isOptionChecked(field, choice) {
-      if (vm.spot) {
-        if (vm.data[field]) return vm.data[field].indexOf(choice) !== -1;
-      }
-      else return false;
-    }
-
     function isTagChecked(tag) {
       if (vm.spot) {
         if (vm.stateName === 'app.spotTab.tags' || vm.stateName === 'app.spotTab.spot') {
@@ -365,6 +340,7 @@
 
     function loadTab(state) {
       vm.data = {};
+      FormFactory.clearForm();
       SpotFactory.moveSpot = false;
       vm.stateName = state.current.name;
       setSpot(state.params.spotId);
@@ -385,34 +361,6 @@
       filterTagType();
     }
 
-    // Set the class for the select_multiple fields here because it is not working
-    // to set the class in the html the same way as for the other fields
-    function setSelMultClass(field) {
-      if (field.required === 'true') {
-        if (vm.data[field.name]) {
-          if (vm.data[field.name].length > 0) {
-            return 'no-errors';
-          }
-        }
-        else {
-          return 'has-errors';
-        }
-      }
-      return 'no-errors';
-    }
-
-    // Determine if the field should be shown or not by looking at the relevant key-value pair
-    function showField(field) {
-      var show = FormFactory.isRelevant(field.relevant, vm.data);
-      if (show && field.default) {
-        if (!vm.data[field.name]) vm.data[field.name] = field.default;
-      }
-      if (!show) {
-        if (vm.data[field.name]) delete vm.data[field.name];
-      }
-      return show;
-    }
-
     function showTab(tab) {
       if (tab === 'spot') return true;
       var preferences = ProjectFactory.getPreferences();
@@ -422,7 +370,7 @@
     function saveSpot() {
       if (vm.spot && vm.spot.properties) {
         // Validate the form first
-        if (vm.validateForm()) {
+        if (FormFactory.validateForm(vm.stateName, vm.spot, vm.data)) {
           if (vm.stateName === 'app.spotTab.spot' && !_.isEmpty(vm.data)) {
             if (vm.showTrace === true) {
               if (!vm.spot.properties.trace) vm.spot.properties.trace = {};
@@ -458,34 +406,6 @@
       })
     }
 
-    function toggleAcknowledgeChecked(field) {
-      if (vm.data[field]) {
-        var confirmPopup = $ionicPopup.confirm({
-          'title': 'Close Group?',
-          'template': 'By closing this group you will be clearing any data in this group. Continue?'
-        });
-        confirmPopup.then(function (res) {
-          if (res) vm.data = FormFactory.toggleAcknowledgeChecked(vm.data, field);
-          else $document[0].getElementById(field + 'Toggle').checked = true;
-        });
-      }
-      else vm.data = FormFactory.toggleAcknowledgeChecked(vm.data, field);
-    }
-
-    function toggleChecked(field, choice) {
-      var i = -1;
-      if (vm.data[field]) i = vm.data[field].indexOf(choice);
-      else vm.data[field] = [];
-
-      // If choice not already selected
-      if (i === -1) vm.data[field].push(choice);
-      // Choice has been unselected so remove it and delete if empty
-      else {
-        vm.data[field].splice(i, 1);
-        if (vm.data[field].length === 0) delete vm.data[field];
-      }
-    }
-
     function toggleTagChecked(tag) {
       // Tags and Spot tabs use the Spot level tags, all other tabs have feature level tags
       if (vm.stateName === 'app.spotTab.tags' || vm.stateName === 'app.spotTab.spot') {
@@ -506,39 +426,6 @@
       ProjectFactory.saveTag(tag).then(function () {
         loadTags();
       });
-    }
-
-    // Validate Spot Tab
-    function validateForm() {
-      if (vm.stateName === 'app.spotTab.spot') {
-        if (!vm.spot.properties.name) {
-          $ionicPopup.alert({
-            'title': 'Validation Error!',
-            'template': '<b>Spot Name</b> is required.'
-          });
-          return false;
-        }
-        if (vm.spot.geometry) {
-          if (vm.spot.geometry.type === 'Point') {
-            var geoError;
-            if (!vm.spot.geometry.coordinates[0] && !vm.spot.geometry.coordinates[1]) {
-              geoError = '<b>Latitude</b> and <b>longitude</b> are required.';
-            }
-            else if (!vm.spot.geometry.coordinates[0]) geoError = '<b>Longitude</b> is required.';
-            else if (!vm.spot.geometry.coordinates[1]) geoError = '<b>Latitude</b> is required.';
-            if (geoError) {
-              $ionicPopup.alert({
-                'title': 'Validation Error!',
-                'template': geoError
-              });
-              return false;
-            }
-          }
-        }
-        if (vm.survey) return FormFactory.validate(vm.survey, vm.data);
-        return true;
-      }
-      return true;
     }
 
     // View the spot on the maps

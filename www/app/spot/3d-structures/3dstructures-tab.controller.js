@@ -87,8 +87,7 @@
      */
 
     function add3dStructure(type) {
-      vmParent.survey = DataModelsFactory.getDataModel('_3d_structures')[type].survey;
-      vmParent.choices = DataModelsFactory.getDataModel('_3d_structures')[type].choices;
+      FormFactory.setForm('_3d_structures', type);
       vmParent.data = {};
       vmParent.data.type = type;
       vmParent.data.id = HelpersFactory.getNewId();
@@ -117,8 +116,7 @@
     function edit3dStructure(_3dStructureToEdit) {
       if (!isDelete) {
         vmParent.data = angular.fromJson(angular.toJson(_3dStructureToEdit));  // Copy value, not reference
-        vmParent.survey = DataModelsFactory.getDataModel('_3d_structures')[vmParent.data.type].survey;
-        vmParent.choices = DataModelsFactory.getDataModel('_3d_structures')[vmParent.data.type].choices;
+        FormFactory.setForm('_3d_structures', vmParent.data.type);
         vm.modalTitle = 'Edit ' + vmParent.data.type;
         vm.basicFormModal.show();
       }
@@ -129,12 +127,11 @@
         // If not more than type and id fields no data has been entered so don't continue, just close modal
         vmParent.data = {};
         vm.basicFormModal.hide();
-        vmParent.survey = undefined;
-        vmParent.choices = undefined;
+        FormFactory.clearForm();
         return;
       }
       if (!vmParent.data.label) vmParent.data.label = createDefaultLabel(vmParent.data);
-      if (FormFactory.validate(vmParent.survey, vmParent.data)) {
+      if (FormFactory.validate(vmParent.data)) {
         if (!vmParent.spot.properties._3d_structures) vmParent.spot.properties._3d_structures = [];
         vmParent.spot.properties._3d_structures = _.reject(vmParent.spot.properties._3d_structures,
           function (_3dStructure) {
@@ -143,8 +140,7 @@
         vmParent.spot.properties._3d_structures.push(vmParent.data);
         vmParent.data = {};
         vm.basicFormModal.hide();
-        vmParent.survey = undefined;
-        vmParent.choices = undefined;
+        FormFactory.clearForm();
       }
     }
   }

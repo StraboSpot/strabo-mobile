@@ -5,11 +5,11 @@
     .module('app')
     .controller('PreferencesController', PreferencesController);
 
-  PreferencesController.$inject = ['$location', '$log', '$rootScope', '$scope', '$timeout', 'DataModelsFactory',
-    'FormFactory', 'HelpersFactory', 'LiveDBFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
+  PreferencesController.$inject = ['$location', '$log', '$rootScope', '$scope', '$timeout', 'FormFactory',
+    'HelpersFactory', 'LiveDBFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
 
-  function PreferencesController($location, $log, $rootScope, $scope, $timeout, DataModelsFactory, FormFactory,
-                                 HelpersFactory, LiveDBFactory, ProjectFactory, SpotFactory, IS_WEB) {
+  function PreferencesController($location, $log, $rootScope, $scope, $timeout, FormFactory, HelpersFactory,
+                                 LiveDBFactory, ProjectFactory, SpotFactory, IS_WEB) {
     var vm = this;
 
     var initializing = true;
@@ -18,11 +18,8 @@
     vm.data = {};
     vm.dataChanged = false;
     vm.pristine = true;
-    vm.survey = [];
 
-    vm.showField = showField;
     vm.submit = submit;
-    vm.toggleAcknowledgeChecked = toggleAcknowledgeChecked;
 
     activate();
 
@@ -33,7 +30,7 @@
     function activate() {
       if (_.isEmpty(ProjectFactory.getCurrentProject())) $location.path('app/manage-project');
       else {
-        vm.survey = DataModelsFactory.getDataModel('preferences').survey;
+        FormFactory.setForm('preferences');
         vm.data = ProjectFactory.getPreferences();
       }
 
@@ -63,16 +60,9 @@
      * Public Functions
      */
 
-    // Determine if the field should be shown or not by looking at the relevant key-value pair
-    function showField(field) {
-      var show = FormFactory.isRelevant(field.relevant, vm.data);
-      if (!show) delete vm.data[field.name];
-      return show;
-    }
-
     function submit(toPath) {
       vm.data = HelpersFactory.cleanObj(vm.data);
-      var valid = FormFactory.validate(vm.survey, vm.data);
+      var valid = FormFactory.validate(vm.data);
       if (valid) {
         ProjectFactory.saveProjectItem('preferences', vm.data).then(function () {
           $log.log('Save Project to LiveDB Here.', ProjectFactory.getCurrentProject());
@@ -81,10 +71,6 @@
           if (toPath) $location.path(toPath);
         });
       }
-    }
-
-    function toggleAcknowledgeChecked(field) {
-      vm.data = FormFactory.toggleAcknowledgeChecked(vm.data, field);
     }
   }
 }());

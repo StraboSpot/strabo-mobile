@@ -5,11 +5,11 @@
     .module('app')
     .controller('NestingTabController', NestingTabController);
 
-  NestingTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$rootScope', '$scope', '$state',
-    'DataModelsFactory', 'SpotFactory', 'IS_WEB'];
+  NestingTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$rootScope', '$scope', '$state', 'FormFactory',
+    'SpotFactory', 'IS_WEB'];
 
-  function NestingTabController($ionicModal, $ionicPopup, $log, $rootScope, $scope, $state, DataModelsFactory,
-                                SpotFactory, IS_WEB) {
+  function NestingTabController($ionicModal, $ionicPopup, $log, $rootScope, $scope, $state, FormFactory, SpotFactory,
+                                IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.nestTab = vm;
@@ -24,7 +24,6 @@
     vm.spot = {};
 
     vm.goToSpot = goToSpot;
-    vm.showField = showField;
     vm.toggleNesting = toggleNesting;
     vm.updateNest = updateNest;
 
@@ -56,8 +55,7 @@
     function loadTab(state) {
       vmParent.loadTab(state);   // Need to load current state into parent
 
-      vmParent.survey = DataModelsFactory.getDataModel('surface_feature').survey;
-      vmParent.choices = DataModelsFactory.getDataModel('surface_feature').choices;
+      FormFactory.setForm('surface_feature');
 
       vm.hideContNesting = !vmParent.spot.geometry;
       vm.isNesting = SpotFactory.getActiveNesting();
@@ -177,18 +175,6 @@
 
     function goToSpot(id) {
       vmParent.submit('/app/spotTab/' + id + '/nesting');
-    }
-
-    // Determine if the field should be shown or not by looking at the relevant key-value pair
-    function showField(field) {
-      var show = FormFactory.isRelevant(field.relevant, vm.data);
-      if (show && field.default) {
-        if (!vm.data[field.name]) vm.data[field.name] = field.default;
-      }
-      if (!show) {
-        if (vm.data[field.name]) delete vm.data[field.name];
-      }
-      return show;
     }
 
     function toggleNesting() {

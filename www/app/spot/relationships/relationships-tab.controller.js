@@ -46,9 +46,6 @@
 
     function loadTab (state) {
       vmParent.loadTab(state);  // Need to load current state into parent
-      vmParent.survey = undefined;
-      vmParent.choices = undefined;
-
       loadRelationships();
     }
 

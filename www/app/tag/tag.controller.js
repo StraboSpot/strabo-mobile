@@ -6,12 +6,11 @@
     .controller('TagController', TagController);
 
   TagController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopup', '$location', '$log', '$rootScope', '$scope',
-    '$state', '$timeout', 'DataModelsFactory', 'HelpersFactory', 'FormFactory', 'LiveDBFactory', 'ProjectFactory',
-    'SpotFactory', 'TagFactory', 'IS_WEB'];
+    '$state', '$timeout', 'HelpersFactory', 'FormFactory', 'LiveDBFactory', 'ProjectFactory', 'SpotFactory',
+    'TagFactory', 'IS_WEB'];
 
   function TagController($ionicHistory, $ionicModal, $ionicPopup, $location, $log, $rootScope, $scope, $state, $timeout,
-                         DataModelsFactory, HelpersFactory, FormFactory, LiveDBFactory, ProjectFactory, SpotFactory,
-                         TagFactory, IS_WEB) {
+                         HelpersFactory, FormFactory, LiveDBFactory, ProjectFactory, SpotFactory, TagFactory, IS_WEB) {
     var vmParent = $scope.vm;
     var vm = this;
 
@@ -19,7 +18,6 @@
     var isDelete = false;
     var visibleDatasets = [];
 
-    vm.choices = [];
     vm.color = undefined;
     vm.colorPickerModal = {};
     vm.data = {};
@@ -32,7 +30,6 @@
     vm.showItem = 'spots';
     vm.spots = [];
     vm.spotsDisplayed = [];
-    vm.survey = [];
     vm.tags = [];
     vm.tagsDisplayed = [];
 
@@ -63,7 +60,6 @@
     vm.selectItem = selectItem;
     vm.selectTypes = selectTypes;
     vm.setColor = setColor;
-    vm.showField = showField;
     vm.toggleChecked = toggleChecked;
     vm.toggleItem = toggleItem;
     vm.toggleShowMore = toggleShowMore;
@@ -167,10 +163,7 @@
 
       if (vm.data.color) vm.color = vm.data.color;
 
-      if (vm.data.type === 'geologic_unit') {
-        vm.survey = DataModelsFactory.getDataModel('rock_unit').survey;
-        vm.choices = DataModelsFactory.getDataModel('rock_unit').choices;
-      }
+      if (vm.data.type === 'geologic_unit') FormFactory.setForm('rock_unit');
 
       // Fix all old tags which have a categorization element
       if (vm.data.categorization) {
@@ -450,13 +443,6 @@
       vm.color = color;
     }
 
-    // Determine if the field should be shown or not by looking at the relevant key-value pair
-    function showField(field) {
-      var show = FormFactory.isRelevant(field.relevant, vm.data);
-      if (!show) delete vm.data[field.name];
-      return show;
-    }
-
     function toggleChecked(item, id, parentSpotId) {
       if (item === 'features') {
         if (!vm.data[item]) vm.data[item] = {};
@@ -491,13 +477,9 @@
     }
 
     function typeSelected() {
-      vm.survey = undefined;
-      vm.choices = undefined;
+      FormFactory.clearForm();
 
-      if (vm.data.type === 'geologic_unit') {
-        vm.survey = DataModelsFactory.getDataModel('rock_unit').survey;
-        vm.choices = DataModelsFactory.getDataModel('rock_unit').choices;
-      }
+      if (vm.data.type === 'geologic_unit') FormFactory.setForm('rock_unit');
     }
   }
 }());

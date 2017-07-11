@@ -6,13 +6,12 @@
     .controller('ManageProjectController', ManageProjectController);
 
   ManageProjectController.$inject = ['$ionicModal', '$ionicLoading', '$ionicPopover', '$ionicPopup', '$log', '$scope',
-    '$state', '$q', 'DataModelsFactory', 'FormFactory', 'ImageFactory', 'LiveDBFactory', 'LocalStorageFactory',
-    'OtherMapsFactory', 'ProjectFactory', 'RemoteServerFactory', 'SpotFactory', 'UserFactory', 'IS_WEB'];
+    '$state', '$q', 'FormFactory', 'ImageFactory', 'LiveDBFactory', 'LocalStorageFactory', 'OtherMapsFactory',
+    'ProjectFactory', 'RemoteServerFactory', 'SpotFactory', 'UserFactory', 'IS_WEB'];
 
   function ManageProjectController($ionicModal, $ionicLoading, $ionicPopover, $ionicPopup, $log, $scope, $state, $q,
-                                   DataModelsFactory, FormFactory, ImageFactory, LiveDBFactory, LocalStorageFactory,
-                                   OtherMapsFactory, ProjectFactory, RemoteServerFactory, SpotFactory, UserFactory,
-                                   IS_WEB) {
+                                   FormFactory, ImageFactory, LiveDBFactory, LocalStorageFactory, OtherMapsFactory,
+                                   ProjectFactory, RemoteServerFactory, SpotFactory, UserFactory, IS_WEB) {
     var vm = this;
 
     var deleteSelected;
@@ -39,7 +38,6 @@
     vm.showExitProjectModal = true;
     vm.showProject = false;
     vm.showProjectButtons = false;
-    vm.survey = {};
     vm.switchProjectModal = {};
     vm.titleText = 'Manage Projects';
 
@@ -63,7 +61,6 @@
     vm.newProject = newProject;
     vm.selectProject = selectProject;
     vm.setSpotsDataset = setSpotsDataset;
-    vm.showField = showField;
     vm.startNewProject = startNewProject;
     vm.switchProject = switchProject;
     vm.syncDataset = syncDataset;
@@ -80,7 +77,7 @@
       createPageInteractions();
 
       ProjectFactory.setUser(user);
-      vm.survey = DataModelsFactory.getDataModel('project').survey;
+      FormFactory.setForm('project');
 
       if (_.isEmpty(vm.project)) {
         vm.showExitProjectModal = false;
@@ -1160,7 +1157,7 @@
     }
 
     function newProject() {
-      var valid = FormFactory.validate(vm.survey, vm.data);
+      var valid = FormFactory.validate(vm.data);
       if (valid) doCreateNewProject();
     }
 
@@ -1192,13 +1189,6 @@
       // If not set the dataset for spots as the Default Dataset
       if (!found) vm.spotsDataset = vm.activeDatasets[0];
       ProjectFactory.saveSpotsDataset(vm.spotsDataset);
-    }
-
-    // Determine if the field should be shown or not by looking at the relevant key-value pair
-    function showField(field) {
-      var show = FormFactory.isRelevant(field.relevant, vm.data);
-      if (!show) delete vm.data[field.name];
-      return show;
     }
 
     function startNewProject() {
