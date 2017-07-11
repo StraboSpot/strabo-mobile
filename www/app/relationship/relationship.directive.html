@@ -1,11 +1,14 @@
-<div>
+<div ng-controller='FormController as form'>
   <div class='strabo-form'>
     <ion-input class='item item-input item-stacked-label item-text-wrap'>
       <ion-label>Relationship Name</ion-label>
       <input type='text' placeholder='Name this Relationship' ng-model='vm.data.name'>
     </ion-input>
     <ion-input class='item item-input item-stacked-label item-text-wrap'>
-      <ion-label>Deformation Event</ion-label>
+      <ion-label>Deformation Event
+        <button class='button button-small button-icon ion-information-circled strabo-field-info-button'
+                ng-click='form.showFieldInfo({"label": "Deformation Event", "hint": "What deformational event(s) are these associated with?"})'></button>
+      </ion-label>
       <input type='text' ng-model='vm.data.deformation_event'
              placeholder='What deformational event(s) are these associated with?'>
     </ion-input>

@@ -1,4 +1,4 @@
-<div class='strabo-form'>
+<div class='strabo-form' ng-controller='FormController as form'>
   <ion-input class='item item-input item-stacked-label item-text-wrap'>
     <ion-label>Spot Name</ion-label>
     <input type='text' placeholder='Name this Spot' ng-model='vm.spot.properties.name'>
@@ -57,7 +57,10 @@
         </div>
 
         <ion-input class='item item-input item-stacked-label item-text-wrap'>
-          <ion-label>Altitude (m)</ion-label>
+          <ion-label>Altitude (m)
+            <button class='button button-small button-icon ion-information-circled strabo-field-info-button'
+                    ng-click='form.showFieldInfo({"label": "Altitude (m)", "hint": "Height of the position in meters above the ellipsoid of the earth.."})'></button>
+          </ion-label>
           <input type='number' placeholder='Height of the position in meters above the ellipsoid of the earth.'
                  ng-model='vm.spot.properties.altitude'>
         </ion-input>

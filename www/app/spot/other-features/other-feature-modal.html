@@ -5,10 +5,14 @@
     </button>
     <h1 class='title'>Other Feature</h1>
   </ion-header-bar>
-  <ion-content class='has-header strabo-form'>
-    <ion-input class='item item-input'>
-      <ion-label>Label</ion-label>
-      <input type='text' placeholder='If a label is not specified a default label will be given.' ng-model='vmChild.otherFeature.label'>
+  <ion-content class='has-header strabo-form' ng-controller='FormController as form'>
+    <ion-input class='item item-input item-stacked-label item-text-wrap'>
+      <ion-label>Label
+        <button class='button button-small button-icon ion-information-circled strabo-field-info-button'
+                ng-click='form.showFieldInfo({"label": "Label", "hint": "If a label is not specified a default label will be given."})'></button>
+      </ion-label>
+      <input type='text' placeholder='If a label is not specified a default label will be given.'
+             ng-model='vmChild.otherFeature.label'>
     </ion-input>
     <ion-input class='item item-input item-select item-stacked-label item-text-wrap'>
       <ion-label>Feature Type</ion-label>
@@ -18,19 +22,30 @@
       </select>
     </ion-input>
     <div ng-show='vmChild.otherFeature.type === "other"'>
-      <ion-input class='item item-input'>
-        <ion-label>Other Feature Type</ion-label>
+      <ion-input class='item item-input item-stacked-label item-text-wrap'>
+        <ion-label>
+          Other Feature Type
+          <button class='button button-small button-icon ion-information-circled strabo-field-info-button'
+                  ng-click='form.showFieldInfoModal({"label": "Other Feature Type", "hint": "Type of feature ..."})'></button>
+        </ion-label>
         <input type='text' placeholder='Type of feature ...' ng-model='vmChild.newFeatureType'>
       </ion-input>
     </div>
-    <ion-input class='item item-input'>
-      <ion-label>Feature Name</ion-label>
+    <ion-input class='item item-input item-stacked-label item-text-wrap'>
+      <ion-label>
+        Feature Name
+        <button class='button button-small button-icon ion-information-circled strabo-field-info-button'
+                ng-click='form.showFieldInfo({"label": "Feature Name", "hint": "Name of this feature ..."})'></button>
+      </ion-label>
       <input type='text' placeholder='Name of this feature ...' ng-model='vmChild.otherFeature.name'>
     </ion-input>
-    <ion-input class='item item-input'>
-      <ion-label>Feature Description</ion-label>
-        <textarea placeholder='Description of this feature ....' rows='14'
-                  ng-model='vmChild.otherFeature.description'></textarea>
+    <ion-input class='item item-input item-stacked-label item-text-wrap'>
+      <ion-label>Feature Description
+        <button class='button button-small button-icon ion-information-circled strabo-field-info-button'
+                ng-click='form.showFieldInfo({"label": "Feature Description", "hint": "Description of this feature ...."})'></button>
+      </ion-label>
+      <textarea placeholder='Description of this feature ....' rows='14'
+                ng-model='vmChild.otherFeature.description'></textarea>
     </ion-input>
   </ion-content>
 </ion-modal-view>

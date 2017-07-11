@@ -1,4 +1,4 @@
-<div>
+<div ng-controller='FormController as form'>
   <div ng-show='vm.showOfflineWarning' class='text-center'>
     <i class='icon button-large ion-alert-circled'></i>Unable to connect
   </div>
@@ -38,10 +38,13 @@
       <ion-label>Name</ion-label>
       <input type='text' placeholder='John Doe' ng-model='vm.data.name'>
     </ion-input>
-    <label class='item item-input item-stacked-label item-text-wrap'>
-      <span class='input-label'>Mapbox Access Token</span>
+    <ion-input class='item item-input item-stacked-label item-text-wrap'>
+      <ion-label>Mapbox Access Token
+        <button class='button button-small button-icon ion-information-circled strabo-field-info-button'
+                ng-click='form.showFieldInfo({"label": "Mapbox Access Token", "hint": "Find the token under API access tokens in your Mapbox account."})'></button>
+      </ion-label>
       <input type='text' placeholder='Find the token under API access tokens in your Mapbox account.'
              ng-model='vm.data.mapboxToken'>
-    </label>
+    </ion-input>
   </div>
 </div>

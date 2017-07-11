@@ -5,43 +5,53 @@
     .module('app')
     .controller('FormController', FormController);
 
-  FormController.$inject = ['$document', '$ionicPopup', '$log', '$scope', 'FormFactory'];
+  FormController.$inject = ['$document', '$ionicModal', '$ionicPopup', '$log', '$scope', 'FormFactory'];
 
-  function FormController($document, $ionicPopup, $log, $scope, FormFactory) {
+  function FormController($document, $ionicModal, $ionicPopup, $log, $scope, FormFactory) {
     var vm = this;
 
-  //  data = {};
-    vm.survey = {};
     vm.choices = {};
+    vm.field = undefined;
+    vm.showFieldInfoModal = {};
+    vm.survey = {};
 
+    vm.closeModal = closeModal;
     vm.getMax = getMax;
     vm.getMin = getMin;
     vm.getSurvey = getSurvey;
     vm.isOptionChecked = isOptionChecked;
     vm.setSelMultClass = setSelMultClass;
     vm.showField = showField;
+    vm.showFieldInfo = showFieldInfo;
     vm.toggleAcknowledgeChecked = toggleAcknowledgeChecked;
     vm.toggleChecked = toggleChecked;
 
     activate();
 
     function activate() {
-    //  data = FormFactory.getData();
       vm.survey = FormFactory.getForm().survey;
       vm.choices = FormFactory.getForm().choices;
       $scope.$on('formUpdated', function (e, form) {
         vm.survey = form.survey;
         vm.choices = form.choices;
-      //  data = FormFactory.getData();
-       /* _.defer(function () {
-          $scope.$apply();
-        });*/
+      });
+
+      $ionicModal.fromTemplateUrl('app/form/field-info-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false
+      }).then(function (modal) {
+        vm.fieldInfoModal = modal;
       });
     }
 
     /**
      * Public Functions
      */
+
+    function closeModal(modal) {
+      vm[modal].hide();
+    }
 
     function getMax(constraint) {
       return FormFactory.getMax(constraint);
@@ -88,6 +98,11 @@
         if (data[field.name]) delete data[field.name];
       }
       return show;
+    }
+
+    function showFieldInfo(field) {
+      vm.field = field;
+      vm.fieldInfoModal.show();
     }
 
     function toggleAcknowledgeChecked(field, data) {

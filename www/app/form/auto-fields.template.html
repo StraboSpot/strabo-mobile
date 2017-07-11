@@ -9,7 +9,11 @@
         <div ng-switch-when='integer'>
           <ion-input class='item item-input item-stacked-label item-text-wrap'
                      ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
-            <ion-label>{{field.label}}</ion-label>
+            <ion-label>
+              {{ field.label }}
+              <button class='button button-small button-icon ion-information-circled strabo-field-info-button'
+                      ng-show='field.hint' ng-click='form.showFieldInfo(field)'></button>
+            </ion-label>
             <input type='number'
                    ng-pattern='/^[-+]?\d+$/'
                    name='{{ field.name }}'
@@ -23,7 +27,11 @@
         <div ng-switch-when='decimal'>
           <ion-input class='item item-input item-stacked-label item-text-wrap'
                      ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
-            <ion-label>{{field.label}}</ion-label>
+            <ion-label>
+              {{ field.label }}
+              <button class='button button-small button-icon ion-information-circled strabo-field-info-button'
+                      ng-show='field.hint' ng-click='form.showFieldInfo(field)'></button>
+            </ion-label>
             <input type='number'
                    name='{{ field.name }}'
                    placeholder='{{ field.hint }}'
@@ -36,7 +44,11 @@
         <div ng-switch-when='text'>
           <ion-input class='item item-input item-stacked-label item-text-wrap'
                      ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
-            <ion-label>{{ field.label }}</ion-label>
+            <ion-label>
+              {{ field.label }}
+              <button class='button button-small button-icon ion-information-circled strabo-field-info-button'
+                      ng-show='field.hint' ng-click='form.showFieldInfo(field)'></button>
+            </ion-label>
             <div ng-if='field.appearance === "multiline"'>
               <textarea name='{{ field.name }}'
                         rows='4'
@@ -57,7 +69,11 @@
         <div ng-switch-when='date'>
           <ion-input class='item item-input item-stacked-label item-text-wrap'
                      ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
-            <ion-label>{{field.label}}</ion-label>
+            <ion-label>
+              {{ field.label }}
+              <button class='button button-small button-icon ion-information-circled strabo-field-info-button'
+                      ng-show='field.hint' ng-click='form.showFieldInfo(field)'></button>
+            </ion-label>
             <input type='date'
                    name='{{ field.name }}'
                    placeholder='{{ field.hint }}'
@@ -68,20 +84,27 @@
         <div ng-switch-when='note'>
           <ion-input class='item item-input item-stacked-label item-text-wrap'
                      ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
-            <ion-label>{{ field.label }}</ion-label>
-              <textarea name='{{ field.name }}'
-                        rows='4'
-                        placeholder='{{field.hint}}'
-                        ng-model='vm.data[field.name]'
-                        ng-required='{{ field.required }}'>
+            <ion-label>
+              {{ field.label }}
+              <button class='button button-small button-icon ion-information-circled strabo-field-info-button'
+                      ng-show='field.hint' ng-click='form.showFieldInfo(field)'></button>
+            </ion-label>
+            <textarea name='{{ field.name }}'
+                      rows='4'
+                      placeholder='{{field.hint}}'
+                      ng-model='vm.data[field.name]'
+                      ng-required='{{ field.required }}'>
               </textarea>
           </ion-input>
         </div>
         <div ng-switch-when='select_one'>
           <ion-input class='item item-input item-select item-stacked-label item-text-wrap'
                      ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
-            <ion-label>{{ field.label }}</ion-label>
-            <span class='item-placeholder' ng-show='field.hint'><small>{{ field.hint }}</small><br></span>
+            <ion-label>
+              {{ field.label }}
+              <button class='button button-small button-icon ion-information-circled strabo-field-info-button'
+                      ng-show='field.hint' ng-click='form.showFieldInfo(field)'></button>
+            </ion-label>
             <select name='{{ field.name }}'
                     ng-model='vm.data[field.name]'
                     ng-options='choice.name as choice.label for choice in form.choices
@@ -93,8 +116,11 @@
         </div>
         <div ng-switch-when='select_multiple'>
           <ion-input class='item item-input item-text-wrap' ng-class='form.setSelMultClass(field, vm.data)'>
-            <ion-label>{{field.label}}</ion-label>
-            <span class='item-placeholder' ng-show='field.hint'><small>{{ field.hint }}</small><br></span>
+            <ion-label>
+              {{ field.label }}
+              <button class='button button-small button-icon ion-information-circled strabo-field-info-button'
+                      ng-show='field.hint' ng-click='form.showFieldInfo(field)'></button>
+            </ion-label>
             <ion-checkbox name='{{ field.name }}'
                           ng-repeat='choice in form.choices | filter: { "list name": field.type.split(" ")[1] }'
                           ng-checked='form.isOptionChecked(vm.spot, field.name, choice.name, vm.data)'
