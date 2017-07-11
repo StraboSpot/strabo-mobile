@@ -483,6 +483,7 @@ textarea {
 .strabo-field-info-button {
   min-height: 20px;
   line-height: 20px;
+  top: -3px;                  /* Overwritten in web css */
   color: #387ef5;
 }
 
