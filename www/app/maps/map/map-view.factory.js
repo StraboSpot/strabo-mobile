@@ -265,7 +265,8 @@
             'center': ol.proj.transform([newExtentCenter[0], newExtentCenter[1]], 'EPSG:4326', 'EPSG:3857')
           });
           map.setView(newView);
-          map.getView().fit(ol.proj.transformExtent(newExtent, 'EPSG:4326', 'EPSG:3857'), map.getSize());
+          // Next line should have {duration: 2000} for the fly-by animation for ol4 but this doesn't work
+          map.getView().fit(ol.proj.transformExtent(newExtent, 'EPSG:4326', 'EPSG:3857'));
         }
       }
 
@@ -274,40 +275,18 @@
         $log.log('Fitting the map view to the extent of the spots.');
         CoordinateRangeFactory.setAllCoordinates(spots);
         var newExtent = ol.extent.boundingExtent(_.compact(CoordinateRangeFactory.getAllCoordinates()));
-        map.getView().fit(newExtent, map.getSize());
-      }
-
-      function doFlyByAnimation() {
-        var duration = 2000;
-        var start = +new Date();
-        var pan = ol.animation.pan({
-          'duration': duration,
-          'source': map.getView().getCenter(),
-          'start': start
-        });
-        var bounce = ol.animation.bounce({
-          'duration': duration,
-          'resolution': map.getView().getResolution(),
-          'start': start
-        });
-        map.beforeRender(pan, bounce);
+        map.getView().fit(newExtent);
       }
 
       // Loop through all spots and create ol vector layers
       var spots = SpotFactory.getActiveSpots();
       if (isImageBasemap) {
         spots = getImageBasemapSpots(spots);
-        if (spots.length > 0) {
-          doFlyByAnimation();
-          setNewImageBasemapView(spots);
-        }
+        if (spots.length > 0) setNewImageBasemapView(spots);
       }
       else {
         spots = getMapSpots(spots);
-        if (spots.length > 0) {
-          doFlyByAnimation();
-          setNewMapView(spots);
-        }
+        if (spots.length > 0) setNewMapView(spots);
         else {
           $log.log('No spots found, attempting to geolocate and center on the that.');
           // attempt to geolocate instead

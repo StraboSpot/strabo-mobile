@@ -19,9 +19,9 @@
         'www/lib/ionic/js/ionic.bundle.js',
         'www/lib/ng-cordova.js',
         'www/lib/localforage.js',
-        'www/lib/ol3/ol-debug.js',
-        'www/lib/ol3/ol3-popup.js',
-        'www/lib/ol3/ol3-layerswitcher.js',
+        'www/lib/ol/ol-debug.js',
+        'www/lib/ol/ol3-popup.js',
+        'www/lib/ol/ol3-layerswitcher.js',
 
         // mocks is required for jasmine testing
         'www/lib/angular-mocks.js',
