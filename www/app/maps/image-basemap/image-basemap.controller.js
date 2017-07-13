@@ -85,7 +85,7 @@
         MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
 
         // If we have a current feature set the selected symbol
-        if (vm.clickedFeatureId) {
+        if (vm.clickedFeatureId && IS_WEB) {
           var feature = MapFeaturesFactory.getFeatureById(vm.clickedFeatureId);
           if (!_.isEmpty(feature)) MapFeaturesFactory.setSelectedSymbol(map, feature.getGeometry());
         }
