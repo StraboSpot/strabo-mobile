@@ -29,6 +29,7 @@
         // Planar Feature Symbols
         'bedding_horizontal': 'img/geology/bedding_horizontal.png',
         'bedding_inclined': 'img/geology/bedding_inclined.png',
+        'bedding_overturned': 'img/geology/bedding_overturned.png',
         'bedding_vertical': 'img/geology/bedding_vertical.png',
         'contact_inclined': 'img/geology/contact_inclined.png',
         'contact_vertical': 'img/geology/contact_vertical.png',
@@ -63,10 +64,14 @@
      * Public Functions
      */
 
-    function getSymbolPath(feature_type, orientation, orientation_type) {
+    function getSymbolPath(feature_type, orientation, orientation_type, facing) {
       // Set a default symbol by whether feature is planar or linear
       var default_symbol = symbols.default_point;
       if (orientation_type === 'linear_orientation') default_symbol = symbols.lineation_general;
+
+      if (facing && facing === 'overturned' && symbols[feature_type + '_overturned']) {
+        return symbols[feature_type + '_overturned'];
+      }
 
       switch (true) {
         case (orientation === 0):

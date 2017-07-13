@@ -273,6 +273,7 @@
         var feature_type = 'none';
         var rotation = 0;
         var symbol_orientation = 0;
+        var facing = undefined;
         var orientation_type = 'none';
         var orientation = feature.get('orientation');
         if (orientation) {
@@ -280,6 +281,7 @@
           symbol_orientation = orientation.dip || orientation.plunge || symbol_orientation;
           feature_type = orientation.feature_type || feature_type;
           orientation_type = orientation.type || orientation_type;
+          facing = orientation.facing;
         }
 
         return new ol.style.Icon({
@@ -287,7 +289,7 @@
           'anchorYUnits': 'fraction',
           'opacity': 1,
           'rotation': HelpersFactory.toRadians(rotation),
-          'src': SymbologyFactory.getSymbolPath(feature_type, symbol_orientation, orientation_type),
+          'src': SymbologyFactory.getSymbolPath(feature_type, symbol_orientation, orientation_type, facing),
           'scale': 0.05
         });
       }
