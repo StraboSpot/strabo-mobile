@@ -6,21 +6,25 @@
     .controller('RelationshipController', RelationshipController);
 
   RelationshipController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopup', '$location', '$log', '$rootScope',
-    '$scope', '$state', '$timeout', 'HelpersFactory', 'LiveDBFactory', 'ProjectFactory', 'SpotFactory', 'TagFactory', 'IS_WEB'];
+    '$scope', '$state', '$timeout', 'HelpersFactory', 'LiveDBFactory', 'ProjectFactory', 'SpotFactory', 'SpotsFactory',
+    'TagFactory', 'IS_WEB'];
 
   function RelationshipController($ionicHistory, $ionicModal, $ionicPopup, $location, $log, $rootScope, $scope, $state,
-                                  $timeout, HelpersFactory, LiveDBFactory, ProjectFactory, SpotFactory, TagFactory, IS_WEB) {
+                                  $timeout, HelpersFactory, LiveDBFactory, ProjectFactory, SpotFactory, SpotsFactory,
+                                  TagFactory, IS_WEB) {
     var vmParent = $scope.vm;
     var vm = this;
 
+    var checkedDatasets = [];
+    var filterModal = {};
     var initializing = true;
     var order = 'a';
-    var visibleDatasets = [];
 
     vm.data = {};
     vm.dataChanged = false;
     vm.features = [];
     vm.featuresDisplayed = [];
+    vm.isFilterOn = false;
     vm.otherRelationshipType = undefined;
     vm.relationshipTypes = [];
     vm.selectItemModal = {};
@@ -31,7 +35,9 @@
     vm.tagsDisplayed = [];
 
     vm.addRelationshipType = addRelationshipType;
+    vm.applyFilters = applyFilters;
     vm.checkedDataset = checkedDataset;
+    vm.closeFilterModal = closeFilterModal;
     vm.closeModal = closeModal;
     vm.filter = filter;
     vm.getNumTaggedFeatures = getNumTaggedFeatures;
@@ -62,13 +68,13 @@
      */
 
     function activate() {
-      visibleDatasets = SpotFactory.getVisibleDatasets();
       loadRelationship();
-      setVisibleSpots();
+      setDisplayedSpots();
       setFeatures();
       setTags();
 
-      createModals();
+      createPageComponents();
+      createPageEvents()
       setRelationshipTypes();
 
       vm.currentSpot = SpotFactory.getCurrentSpot();
@@ -90,7 +96,7 @@
           }
         }, true);
 
-        $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){
+        $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
           if (vm.dataChanged && fromState.name === 'app.relationships.relationship') {
             event.preventDefault();
             if (toParams.relationship_id) go('/app/relationships/' + toParams.relationship_id);
@@ -100,7 +106,7 @@
       }
     }
 
-    function createModals() {
+    function createPageComponents() {
       $ionicModal.fromTemplateUrl('app/shared/select-item-modal.html', {
         'scope': $scope,
         'animation': 'slide-in-up'
@@ -115,20 +121,17 @@
         vm.selectTypesModal = modal;
       });
 
-      $ionicModal.fromTemplateUrl('app/spots/spots-filter-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up',
-        'backdropClickToClose': false,
-        'hardwareBackButtonClose': false
-      }).then(function (modal) {
-        vm.filterModal = modal;
+      SpotsFactory.createSpotsFilterModal($scope).then(function (modal) {
+        filterModal = modal
       });
+    }
 
-      // Cleanup the modal when we're done with it!
+    function createPageEvents() {
+      // Cleanup the modals when we're done with it!
       $scope.$on('$destroy', function () {
         vm.selectItemModal.remove();
         vm.selectTypesModal.remove();
-        vm.filterModal.remove();
+        filterModal.remove();
       });
     }
 
@@ -147,28 +150,18 @@
       ProjectFactory.saveProjectItem('relationship_types', vm.relationshipTypes);
     }
 
-    function setVisibleSpots() {
-      var activeSpots = SpotFactory.getActiveSpots();
-      if (_.isEmpty(visibleDatasets)) {
-        vm.spots = activeSpots;
-        vm.filterOn = false;
+    function setDisplayedSpots() {
+      if (_.isEmpty(SpotsFactory.getFilterConditions())) {
+        vm.spots = _.values(SpotsFactory.getActiveSpots());
+        vm.isFilterOn = false;
       }
       else {
-        var datasetIdsToSpotIds = ProjectFactory.getSpotIds();
-        var visibleSpotsIds = [];
-        _.each(visibleDatasets, function (visibleDataset) {
-          visibleSpotsIds.push(datasetIdsToSpotIds[visibleDataset]);
-        });
-        visibleSpotsIds = _.flatten(visibleSpotsIds);
-        vm.spots = _.filter(activeSpots, function (activeSpot) {
-          return _.contains(visibleSpotsIds, activeSpot.properties.id);
-        });
-        vm.filterOn = true;
+        vm.spots = _.values(SpotsFactory.getFilteredSpots());
+        vm.isFilterOn = true;
       }
-      vm.spots = _.sortBy(vm.spots, function (spot) {
-        return spot.properties.modified_timestamp;
-      }).reverse();
-      vm.spotsDisplayed = angular.fromJson(angular.toJson(vm.spots)).slice(0, 25);
+      vm.spots = SpotsFactory.sortSpots(vm.spots);
+      if (!IS_WEB) vm.spotsDisplayed = vm.spots.slice(0, 25);
+      else vm.spotsDisplayed = vm.spots;
     }
 
     /**
@@ -202,26 +195,37 @@
       });
     }
 
+    function applyFilters() {
+      if (_.isEmpty(checkedDatasets)) delete vm.filterConditions.datasets;
+      else vm.filterConditions.datasets = checkedDatasets;
+      if (_.isEmpty(vm.filterConditions)) resetFilters();
+      else {
+        SpotsFactory.setFilterConditions(vm.filterConditions);
+        setDisplayedSpots();
+      }
+      filterModal.hide();
+    }
+
     function checkedDataset(dataset) {
-      $log.log('visibleDatasets:', visibleDatasets);
-      var i = _.indexOf(visibleDatasets, dataset);
-      if (i === -1) visibleDatasets.push(dataset);
-      else visibleDatasets.splice(i, 1);
-      SpotFactory.setVisibleDatasets(visibleDatasets);
-      $log.log('visibleDatasets after:', visibleDatasets);
+      if (_.contains(checkedDatasets, dataset)) checkedDatasets = _.without(checkedDatasets, dataset);
+      else checkedDatasets.push(dataset);
+    }
+
+    function closeFilterModal() {
+      checkedDatasets = [];
+      setFeatures();
+      filterModal.hide();
     }
 
     function closeModal(modal) {
-      if (modal === 'filterModal') {
-        setVisibleSpots();
-        setFeatures();
-      }
       vm[modal].hide();
     }
 
     function filter() {
       vm.activeDatasets = ProjectFactory.getActiveDatasets();
-      vm.filterModal.show();
+      vm.filterConditions = SpotsFactory.getFilterConditions();
+      checkedDatasets = vm.filterConditions.datasets || [];
+      filterModal.show();
     }
 
     function getNumTaggedFeatures(tag) {
@@ -304,9 +308,7 @@
     }
 
     function isDatasetChecked(id) {
-      return _.find(visibleDatasets, function (visibleDataset) {
-        return visibleDataset === id;
-      });
+      return _.contains(checkedDatasets, id) || false;
     }
 
     function isOptionChecked(item, id, parentSpotId) {
@@ -342,11 +344,10 @@
     }
 
     function resetFilters() {
-      visibleDatasets = [];
-      SpotFactory.setVisibleDatasets(visibleDatasets);
-      setVisibleSpots();
+      checkedDatasets = [];
+      SpotsFactory.clearFilterConditions();
+      setDisplayedSpots();
     }
-
     function selectItem(inOrder) {
       order = inOrder;
       vm.showItem = 'spots';
@@ -406,9 +407,8 @@
     function toggleTypeChecked(type) {
       if (!vm.data.types) vm.data.types = [];
       if (_.contains(vm.data.types, type)) vm.data.types = _.without(vm.data.types, type);
-      else  vm.data.types.push(type);
+      else vm.data.types.push(type);
       if (_.isEmpty(vm.data.types)) delete vm.data.types;
     }
-
   }
 }());

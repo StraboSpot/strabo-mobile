@@ -7,16 +7,18 @@
 
   TagController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopup', '$location', '$log', '$rootScope', '$scope',
     '$state', '$timeout', 'HelpersFactory', 'FormFactory', 'LiveDBFactory', 'ProjectFactory', 'SpotFactory',
-    'TagFactory', 'IS_WEB'];
+    'SpotsFactory', 'TagFactory', 'IS_WEB'];
 
   function TagController($ionicHistory, $ionicModal, $ionicPopup, $location, $log, $rootScope, $scope, $state, $timeout,
-                         HelpersFactory, FormFactory, LiveDBFactory, ProjectFactory, SpotFactory, TagFactory, IS_WEB) {
+                         HelpersFactory, FormFactory, LiveDBFactory, ProjectFactory, SpotFactory, SpotsFactory,
+                         TagFactory, IS_WEB) {
     var vmParent = $scope.vm;
     var vm = this;
 
+    var checkedDatasets = [];
+    var filterModal = {};
     var initializing = true;
     var isDelete = false;
-    var visibleDatasets = [];
 
     vm.color = undefined;
     vm.colorPickerModal = {};
@@ -24,6 +26,7 @@
     vm.dataChanged = false;
     vm.features = [];
     vm.featuresDisplayed = [];
+    vm.isFilterOn = false;
     vm.isShowMore = false;
     vm.selectItemModal = {};
     vm.selectTypesModal = {};
@@ -33,14 +36,14 @@
     vm.tags = [];
     vm.tagsDisplayed = [];
 
+    vm.applyFilters = applyFilters;
     vm.checkedDataset = checkedDataset;
     vm.clearColor = clearColor;
+    vm.closeFilterModal = closeFilterModal;
     vm.closeModal = closeModal;
     vm.filter = filter;
     vm.getNumTaggedFeatures = getNumTaggedFeatures;
     vm.getFeatureName = getFeatureName;
-    vm.getMax = getMax;
-    vm.getMin = getMin;
     vm.getSpotName = getSpotName;
     vm.getTagName = getTagName;
     vm.go = go;
@@ -74,12 +77,12 @@
 
     function activate() {
       loadTag();
-      visibleDatasets = SpotFactory.getVisibleDatasets();
-      setVisibleSpots();
+      setDisplayedSpots();
       setFeatures();
       setTags();
 
-      createModals();
+      createPageComponents();
+      createPageEvents()
 
       vm.currentSpot = SpotFactory.getCurrentSpot();
       if (!vm.currentSpot && !IS_WEB) HelpersFactory.setBackView($ionicHistory.currentView().url);
@@ -123,7 +126,7 @@
       }
     }
 
-    function createModals() {
+    function createPageComponents() {
       $ionicModal.fromTemplateUrl('app/shared/select-item-modal.html', {
         'scope': $scope,
         'animation': 'slide-in-up'
@@ -131,13 +134,8 @@
         vm.selectItemModal = modal;
       });
 
-      $ionicModal.fromTemplateUrl('app/spots/spots-filter-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up',
-        'backdropClickToClose': false,
-        'hardwareBackButtonClose': false
-      }).then(function (modal) {
-        vm.filterModal = modal;
+      SpotsFactory.createSpotsFilterModal($scope).then(function (modal) {
+        filterModal = modal
       });
 
       $ionicModal.fromTemplateUrl('app/shared/color-picker-modal.html', {
@@ -148,11 +146,13 @@
       }).then(function (modal) {
         vm.colorPickerModal = modal;
       });
+    }
 
-      // Cleanup the modal when we're done with it!
+    function createPageEvents() {
+      // Cleanup the modals when we're done with it!
       $scope.$on('$destroy', function () {
         vm.selectItemModal.remove();
-        vm.filterModal.remove();
+        filterModal.remove();
       });
     }
 
@@ -197,41 +197,38 @@
       vm.tagsDisplayed = angular.fromJson(angular.toJson(vm.tags)).slice(0, 25);
     }
 
-    function setVisibleSpots() {
-      var activeSpots = SpotFactory.getActiveSpots();
-      if (_.isEmpty(visibleDatasets)) {
-        vm.spots = activeSpots;
-        vm.filterOn = false;
+    function setDisplayedSpots() {
+      if (_.isEmpty(SpotsFactory.getFilterConditions())) {
+        vm.spots = _.values(SpotsFactory.getActiveSpots());
+        vm.isFilterOn = false;
       }
       else {
-        var datasetIdsToSpotIds = ProjectFactory.getSpotIds();
-        var visibleSpotsIds = [];
-        _.each(visibleDatasets, function (visibleDataset) {
-          visibleSpotsIds.push(datasetIdsToSpotIds[visibleDataset]);
-        });
-        visibleSpotsIds = _.flatten(visibleSpotsIds);
-        vm.spots = _.filter(activeSpots, function (activeSpot) {
-          return _.contains(visibleSpotsIds, activeSpot.properties.id);
-        });
-        vm.filterOn = true;
+        vm.spots = _.values(SpotsFactory.getFilteredSpots());
+        vm.isFilterOn = true;
       }
-      vm.spots = _.sortBy(vm.spots, function (spot) {
-        return spot.properties.modified_timestamp;
-      }).reverse();
-      vm.spotsDisplayed = angular.fromJson(angular.toJson(vm.spots)).slice(0, 25);
+      vm.spots = SpotsFactory.sortSpots(vm.spots);
+      if (!IS_WEB) vm.spotsDisplayed = vm.spots.slice(0, 25);
+      else vm.spotsDisplayed = vm.spots;
     }
 
     /**
      * Public Functions
      */
 
+    function applyFilters() {
+      if (_.isEmpty(checkedDatasets)) delete vm.filterConditions.datasets;
+      else vm.filterConditions.datasets = checkedDatasets;
+      if (_.isEmpty(vm.filterConditions)) resetFilters();
+      else {
+        SpotsFactory.setFilterConditions(vm.filterConditions);
+        setDisplayedSpots();
+      }
+      filterModal.hide();
+    }
+
     function checkedDataset(dataset) {
-      $log.log('visibleDatasets:', visibleDatasets);
-      var i = _.indexOf(visibleDatasets, dataset);
-      if (i === -1) visibleDatasets.push(dataset);
-      else visibleDatasets.splice(i, 1);
-      SpotFactory.setVisibleDatasets(visibleDatasets);
-      $log.log('visibleDatasets after:', visibleDatasets);
+      if (_.contains(checkedDatasets, dataset)) checkedDatasets = _.without(checkedDatasets, dataset);
+      else checkedDatasets.push(dataset);
     }
 
     function clearColor() {
@@ -240,17 +237,21 @@
       vm.colorPickerModal.hide();
     }
 
+    function closeFilterModal() {
+      checkedDatasets = [];
+      setFeatures();
+      filterModal.hide();
+    }
+
     function closeModal(modal) {
-      if (modal === 'filterModal') {
-        setVisibleSpots();
-        setFeatures();
-      }
       vm[modal].hide();
     }
 
     function filter() {
       vm.activeDatasets = ProjectFactory.getActiveDatasets();
-      vm.filterModal.show();
+      vm.filterConditions = SpotsFactory.getFilterConditions();
+      checkedDatasets = vm.filterConditions.datasets || [];
+      filterModal.show();
     }
 
     function getNumTaggedFeatures(tag) {
@@ -269,14 +270,6 @@
         }
       });
       return (found && found.label) ? found.label : 'Unknown Name';
-    }
-
-    function getMax(constraint) {
-      return FormFactory.getMax(constraint);
-    }
-
-    function getMin(constraint) {
-      return FormFactory.getMin(constraint);
     }
 
     function getSpotName(spotId) {
@@ -348,9 +341,7 @@
     }
 
     function isDatasetChecked(id) {
-      return _.find(visibleDatasets, function (visibleDataset) {
-        return visibleDataset === id;
-      });
+      return _.contains(checkedDatasets, id) || false;
     }
 
     function isOptionChecked(item, id, parentSpotId) {
@@ -423,9 +414,9 @@
     }
 
     function resetFilters() {
-      visibleDatasets = [];
-      SpotFactory.setVisibleDatasets(visibleDatasets);
-      setVisibleSpots();
+      checkedDatasets = [];
+      SpotsFactory.clearFilterConditions();
+      setDisplayedSpots();
     }
 
     function selectItem() {

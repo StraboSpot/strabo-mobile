@@ -13,25 +13,28 @@
                  $ionicPopup, $location, $log, $scope, $state, $window, HelpersFactory, ProjectFactory, SpotFactory,
                  SpotsFactory, UserFactory, IS_WEB) {
     var vm = this;
-    var visibleDatasets = [];
+
+    var checkedDatasets = [];
+    var detailModal = {};
+    var filterModal = {};
 
     vm.activeDatasets = [];
     vm.deleteSelected = false;
-    vm.filterModal = {};
-    vm.filterOn = false;
+    vm.filterConditions = {};
+    vm.isFilterOn = false;
     vm.showDetail = SpotsFactory.getSpotsListDetail();
     vm.spots = [];
     vm.spotsDisplayed = [];
     vm.spotIdSelected = undefined;
 
+    vm.applyFilters = applyFilters;
     vm.checkedDataset = checkedDataset;
     vm.closeDetailModal = closeDetailModal;
-    vm.closeModal = closeModal;
-    vm.deleteAllActiveSpots = deleteAllActiveSpots;
+    vm.closeFilterModal = closeFilterModal;
     vm.deleteSpot = deleteSpot;
     vm.exportToCSV = exportToCSV;
-    vm.getTagNames = getTagNames;
     vm.filter = filter;
+    vm.getTagNames = getTagNames;
     vm.goToSpot = goToSpot;
     vm.hasRelationships = hasRelationships;
     vm.hasTags = hasTags;
@@ -56,67 +59,46 @@
       if ($state.params && $state.params.spotId) vm.spotIdSelected = $state.params.spotId;
 
       SpotFactory.clearCurrentSpot();           // Make sure the current spot is empty
-      visibleDatasets = SpotFactory.getVisibleDatasets();
-      setVisibleSpots();
-      createPopover();
+      setDisplayedSpots();
 
-      $ionicModal.fromTemplateUrl('app/spots/spots-filter-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up',
-        'backdropClickToClose': false
-      }).then(function (modal) {
-        vm.filterModal = modal;
-      });
-
-      $ionicModal.fromTemplateUrl('app/spots/spots-list-detail-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up',
-        'backdropClickToClose': false
-      }).then(function (modal) {
-        vm.detailModal = modal;
-      });
-
-      // Cleanup the modal when we're done with it!
-      $scope.$on('$destroy', function () {
-        vm.filterModal.remove();
-        vm.detailModal.remove();
-      });
+      createPageComponents();
+      createPageEvents()
     }
 
-    function createPopover() {
+    function createPageComponents() {
+      SpotsFactory.createSpotsFilterModal($scope).then(function (modal) {
+        filterModal = modal
+      });
+
+      SpotsFactory.createSpotsListDetailModal($scope).then(function (modal) {
+        detailModal = modal
+      });
+
       $ionicPopover.fromTemplateUrl('app/spots/spots-popover.html', {
         'scope': $scope
       }).then(function (popover) {
         vm.popover = popover;
       });
+    }
 
-      // Cleanup the popover when we're done with it!
+    function createPageEvents() {
       $scope.$on('$destroy', function () {
+        filterModal.remove();
+        detailModal.remove();
         vm.popover.remove();
       });
     }
 
-    function setVisibleSpots() {
-      var activeSpots = SpotFactory.getActiveSpots();
-      if (_.isEmpty(visibleDatasets)) {
-        vm.spots = activeSpots;
-        vm.filterOn = false;
+    function setDisplayedSpots() {
+      if (_.isEmpty(SpotsFactory.getFilterConditions())) {
+        vm.spots = _.values(SpotsFactory.getActiveSpots());
+        vm.isFilterOn = false;
       }
       else {
-        var datasetIdsToSpotIds = ProjectFactory.getSpotIds();
-        var visibleSpotsIds = [];
-        _.each(visibleDatasets, function (visibleDataset) {
-          visibleSpotsIds.push(datasetIdsToSpotIds[visibleDataset]);
-        });
-        visibleSpotsIds = _.flatten(visibleSpotsIds);
-        vm.spots = _.filter(activeSpots, function (activeSpot) {
-          return _.contains(visibleSpotsIds, activeSpot.properties.id);
-        });
-        vm.filterOn = true;
+        vm.spots = _.values(SpotsFactory.getFilteredSpots());
+        vm.isFilterOn = true;
       }
-      vm.spots = _.sortBy(vm.spots, function (spot) {
-        return spot.properties.modified_timestamp;
-      }).reverse();
+      vm.spots = SpotsFactory.sortSpots(vm.spots);
       if (!IS_WEB) vm.spotsDisplayed = vm.spots.slice(0, 25);
       else vm.spotsDisplayed = vm.spots;
     }
@@ -125,47 +107,30 @@
      * Public Functions
      */
 
-    function checkedDataset(dataset) {
-      $log.log('visibleDatasets:', visibleDatasets);
-      var i = _.indexOf(visibleDatasets, dataset);
-      if (i === -1) visibleDatasets.push(dataset);
-      else visibleDatasets.splice(i, 1);
-      SpotFactory.setVisibleDatasets(visibleDatasets);
-      $log.log('visibleDatasets after:', visibleDatasets);
+    function applyFilters() {
+      if (_.isEmpty(checkedDatasets)) delete vm.filterConditions.datasets;
+      else vm.filterConditions.datasets = checkedDatasets;
+      if (_.isEmpty(vm.filterConditions)) resetFilters();
+      else {
+        SpotsFactory.setFilterConditions(vm.filterConditions);
+        setDisplayedSpots();
+      }
+      filterModal.hide();
     }
 
-    function closeModal(modal) {
-      setVisibleSpots();
-      vm[modal].hide();
+    function checkedDataset(dataset) {
+      if (_.contains(checkedDatasets, dataset)) checkedDatasets = _.without(checkedDatasets, dataset);
+      else checkedDatasets.push(dataset);
     }
 
     function closeDetailModal() {
       SpotsFactory.setSpotsListDetail(vm.showDetail);
-      vm.detailModal.hide();
+      detailModal.hide();
     }
 
-    // clears all spots
-    function deleteAllActiveSpots() {
-      vm.popover.hide();
-      var confirmPopup = $ionicPopup.confirm({
-        'title': 'Delete Spots',
-        'template': 'Are you sure you want to delete <b>ALL</b> active spots? This will also delete any associated image basemaps.'
-      });
-      confirmPopup.then(
-        function (res) {
-          if (res) {
-            $ionicLoading.show({
-              'template': '<ion-spinner></ion-spinner>'
-            });
-            SpotFactory.clearActiveSpots().then(function () {
-              // update the spots list
-              vm.spots = [];
-              vm.spotsDisplayed = [];
-              $ionicLoading.hide();
-            });
-          }
-        }
-      );
+    function closeFilterModal() {
+      checkedDatasets = [];
+      filterModal.hide();
     }
 
     function deleteSpot(spot) {
@@ -179,13 +144,8 @@
         confirmPopup.then(function (res) {
           if (res) {
             SpotFactory.destroy(spot.properties.id).then(function () {
-              vm.spots = SpotFactory.getActiveSpots();
-              vm.spots = _.sortBy(vm.spots, function (spot) {
-                return spot.properties.modified_timestamp;
-              }).reverse();
-              if (!IS_WEB) vm.spotsDisplayed = vm.spots.slice(0, 25);
-              else {
-                vm.spotsDisplayed = vm.spots;
+              setDisplayedSpots();
+              if (IS_WEB) {
                 vm.spotIdSelected = undefined;
                 $location.path('app/spotTab');
               }
@@ -209,6 +169,7 @@
     // Export data to CSV
     function exportToCSV() {
       vm.popover.hide();
+
       // Convert the spot objects to a csv format
       function convertToCSV() {
         // Get all the fields for the csv header row
@@ -363,7 +324,9 @@
 
     function filter() {
       vm.activeDatasets = ProjectFactory.getActiveDatasets();
-      vm.filterModal.show();
+      vm.filterConditions = SpotsFactory.getFilterConditions();
+      checkedDatasets = vm.filterConditions.datasets || [];
+      filterModal.show();
     }
 
     function getTagNames(spotId) {
@@ -387,9 +350,7 @@
     }
 
     function isDatasetChecked(id) {
-      return _.find(visibleDatasets, function (visibleDataset) {
-        return visibleDataset === id;
-      });
+      return _.contains(checkedDatasets, id) || false;
     }
 
     // Is the user online and logged in
@@ -420,18 +381,18 @@
     }
 
     function resetFilters() {
-      visibleDatasets = [];
-      SpotFactory.setVisibleDatasets(visibleDatasets);
-      setVisibleSpots();
+      checkedDatasets = [];
+      SpotsFactory.clearFilterConditions();
+      setDisplayedSpots();
     }
 
     function setListDetail() {
       vm.popover.hide();
-      vm.detailModal.show();
+      detailModal.show();
     }
 
     function updateSpots() {
-      setVisibleSpots();
+      setDisplayedSpots();
     }
   }
 }());

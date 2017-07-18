@@ -60,7 +60,6 @@
       'getSpotById': getSpotById,
       'getSpots': getSpots,
       'getTabs': getTabs,
-      'getVisibleDatasets': getVisibleDatasets,
       'goToSpot': goToSpot,
       'isSafeDelete': isSafeDelete,
       'loadSpots': loadSpots,
@@ -73,8 +72,7 @@
       'setKeepSpotSelected': setKeepSpotSelected,
       'setNewSpot': setNewSpot,
       'setNewNestProperties': setNewNestProperties,
-      'setSelectedSpots': setSelectedSpots,
-      'setVisibleDatasets': setVisibleDatasets
+      'setSelectedSpots': setSelectedSpots
     };
 
     /**
@@ -198,7 +196,7 @@
       ProjectFactory.removeSpotFromTags(key);
       ProjectFactory.removeSpotFromDataset(key);
       delete spots[key];
-      LocalStorageFactory.getDb().spotsDb.removeItem(key).then(function () {
+      LocalStorageFactory.getDb().spotsDb.removeItem(key.toString()).then(function () {
         deferred.resolve();
       });
       return deferred.promise;
@@ -331,10 +329,6 @@
 
     function getTabs(){
       return tabs;
-    }
-
-    function getVisibleDatasets() {
-      return visibleDatasets;
     }
 
     function goToSpot(id) {
@@ -477,10 +471,6 @@
 
     function setSelectedSpots(spots) {
       selectedSpots = spots;
-    }
-
-    function setVisibleDatasets(datasets) {
-      visibleDatasets = datasets;
     }
   }
 }());

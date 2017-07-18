@@ -1,7 +1,7 @@
 <ion-modal-view>
   <ion-header-bar class='bar-stable nav-title-slide-ios7' align-title='center'>
-    <button ng-click='vm.closeModal("filterModal")' class='button button-icon icon ion-arrow-left-c'></button>
-    <h1 class='title'>Filter</h1>
+    <button ng-click='vm.closeFilterModal()' class='button button-icon icon ion-arrow-left-c'></button>
+    <h1 class='title'>Filter Spots</h1>
   </ion-header-bar>
   <ion-content class='has-header'>
     <div class='field-group item item-divider'>
@@ -13,6 +13,11 @@
       {{ dataset.name }}
     </ion-checkbox>
     <br>
+    <button ng-click='vm.applyFilters()'
+    class='button button-clear button-positive'>
+    <i class='icon ion-checkmark-round'></i>
+    <span class='button-text-big'>Apply Filters</span>
+    </button>
     <button ng-click='vm.resetFilters()'
             class='button button-clear button-positive'>
       <i class='icon ion-refresh'></i>
