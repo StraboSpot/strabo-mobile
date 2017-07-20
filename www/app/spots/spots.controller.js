@@ -119,6 +119,7 @@
         else setDisplayedSpots();
         filterModal.hide();
       }
+      else setDisplayedSpots();
     }
 
     function checkedDataset(datasetId) {

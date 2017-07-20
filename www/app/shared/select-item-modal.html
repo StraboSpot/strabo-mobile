@@ -19,8 +19,11 @@
       <div class='padding-left filter-on' ng-show='vm.isFilterOn'>
         Results are being filtered.
       </div>
-      <div class='padding' ng-show='vm.spotsDisplayed.length === 0'>
+      <div class='padding' ng-show='!vm.isFilterOn && vm.spotsDisplayed.length === 0'>
         No Spots in your active datasets.
+      </div>
+      <div class='padding' ng-show='vm.isFilterOn && vm.spotsDisplayed.length === 0'>
+        No results. Try modifying or removing your filter.
       </div>
       <ion-checkbox class='item-text-wrap item-button-right'
                     ng-repeat='spot in vm.spotsDisplayed track by spot.properties.id'

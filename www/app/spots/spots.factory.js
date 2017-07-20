@@ -126,6 +126,11 @@
           return _.contains(filteredSpotsIds, activeSpot.properties.id);
         });
       }
+      if (filterConditions.name) {
+        filteredSpots = _.filter(filteredSpots, function (spot) {
+          return spot.properties.name.includes(filterConditions.name);
+        });
+      }
       if (filterConditions.date) {
         filteredSpots = _.filter(filteredSpots, function (spot) {
           if (spot.properties.date) {

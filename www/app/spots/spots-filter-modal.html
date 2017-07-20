@@ -5,6 +5,18 @@
   </ion-header-bar>
   <ion-content class='has-header'>
     <ion-toggle
+      ng-checked='vm.filterConditions.name'
+      ng-click='vm.toggleFilter("name", [])'
+      toggle-class='toggle-positive'>
+      <span class='toggle-left-label'>Name</span>
+    </ion-toggle>
+    <div ng-show='vm.filterConditions.name'>
+    <ion-input class='item item-input item-text-wrap text-center'>
+      <input type='text' class='text-center' placeholder='Enter Name String or Substring Here'
+             ng-model='vm.filterConditions.name'>
+    </ion-input>
+    </div>
+    <ion-toggle
       ng-checked='vm.filterConditions.date'
       ng-click='vm.toggleFilter("date", {})'
       toggle-class='toggle-positive'>
