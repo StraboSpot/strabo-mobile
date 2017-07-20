@@ -1,22 +1,50 @@
 <ion-modal-view>
   <ion-header-bar class='bar-stable nav-title-slide-ios7' align-title='center'>
     <button ng-click='vm.closeFilterModal()' class='button button-icon icon ion-arrow-left-c'></button>
-    <h1 class='title'>Filter Spots</h1>
+    <h1 class='title'>Filters</h1>
   </ion-header-bar>
   <ion-content class='has-header'>
-    <div class='field-group item item-divider'>
-      Datasets
+    <ion-toggle
+      ng-checked='vm.filterConditions.date'
+      ng-click='vm.toggleFilter("date", {})'
+      toggle-class='toggle-positive'>
+      <span class='toggle-left-label'>Date</span>
+    </ion-toggle>
+    <div ng-show='vm.filterConditions.date'>
+      <div class="row">
+        <div class="col">
+          <ion-input class='date-filter-right'>
+            <input type='date' ng-model='vm.filterConditions.date.start'>
+            <ion-label class='date-filter-label'>Start Date</ion-label>
+          </ion-input>
+        </div>
+        <div class="col col-10 col-center">-</div>
+        <div class="col">
+          <ion-input class='date-filter-left'>
+            <input type='date' ng-model='vm.filterConditions.date.end'>
+            <ion-label class='date-filter-label'>End Date</ion-label>
+          </ion-input>
+        </div>
+      </div>
     </div>
-    <ion-checkbox ng-repeat='dataset in vm.activeDatasets'
-                  ng-checked='vm.isDatasetChecked(dataset.id)'
-                  ng-click='vm.checkedDataset(dataset.id)'>
-      {{ dataset.name }}
-    </ion-checkbox>
+    <ion-toggle
+      ng-checked='vm.filterConditions.datasets'
+      ng-click='vm.toggleFilter("datasets", [])'
+      toggle-class='toggle-positive'>
+      <span class='toggle-left-label'>Dataset</span>
+    </ion-toggle>
+    <div ng-show='vm.filterConditions.datasets'>
+      <ion-checkbox ng-repeat='dataset in vm.activeDatasets'
+                    ng-checked='vm.isDatasetChecked(dataset.id)'
+                    ng-click='vm.checkedDataset(dataset.id)'>
+        {{ dataset.name }}
+      </ion-checkbox>
+    </div>
     <br>
     <button ng-click='vm.applyFilters()'
-    class='button button-clear button-positive'>
-    <i class='icon ion-checkmark-round'></i>
-    <span class='button-text-big'>Apply Filters</span>
+            class='button button-clear button-positive'>
+      <i class='icon ion-checkmark-round'></i>
+      <span class='button-text-big'>Apply Filters</span>
     </button>
     <button ng-click='vm.resetFilters()'
             class='button button-clear button-positive'>

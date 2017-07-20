@@ -15,7 +15,6 @@
     var vmParent = $scope.vm;
     var vm = this;
 
-    var checkedDatasets = [];
     var filterModal = {};
     var initializing = true;
     var order = 'a';
@@ -24,6 +23,7 @@
     vm.dataChanged = false;
     vm.features = [];
     vm.featuresDisplayed = [];
+    vm.filterConditions = {};
     vm.isFilterOn = false;
     vm.otherRelationshipType = undefined;
     vm.relationshipTypes = [];
@@ -34,12 +34,12 @@
     vm.tags = [];
     vm.tagsDisplayed = [];
 
+    vm.addFilters = addFilters;
     vm.addRelationshipType = addRelationshipType;
     vm.applyFilters = applyFilters;
     vm.checkedDataset = checkedDataset;
     vm.closeFilterModal = closeFilterModal;
     vm.closeModal = closeModal;
-    vm.filter = filter;
     vm.getNumTaggedFeatures = getNumTaggedFeatures;
     vm.getFeatureName = getFeatureName;
     vm.getSpotName = getSpotName;
@@ -58,6 +58,7 @@
     vm.selectItem = selectItem;
     vm.selectTypes = selectTypes;
     vm.toggleChecked = toggleChecked;
+    vm.toggleFilter = toggleFilter;
     vm.toggleItem = toggleItem;
     vm.toggleTypeChecked = toggleTypeChecked;
 
@@ -168,6 +169,12 @@
      * Public Functions
      */
 
+    function addFilters() {
+      vm.activeDatasets = ProjectFactory.getActiveDatasets();
+      vm.filterConditions = SpotsFactory.getFilterConditions();
+      filterModal.show();
+    }
+
     function addRelationshipType() {
       vm.otherRelationshipType = undefined;
       var myPopup = $ionicPopup.show({
@@ -196,36 +203,29 @@
     }
 
     function applyFilters() {
-      if (_.isEmpty(checkedDatasets)) delete vm.filterConditions.datasets;
-      else vm.filterConditions.datasets = checkedDatasets;
-      if (_.isEmpty(vm.filterConditions)) resetFilters();
-      else {
-        SpotsFactory.setFilterConditions(vm.filterConditions);
-        setDisplayedSpots();
+      if (SpotsFactory.areValidFilters()) {
+        if (_.isEmpty(vm.filterConditions)) resetFilters();
+        else setDisplayedSpots();
+        filterModal.hide();
       }
-      filterModal.hide();
     }
 
-    function checkedDataset(dataset) {
-      if (_.contains(checkedDatasets, dataset)) checkedDatasets = _.without(checkedDatasets, dataset);
-      else checkedDatasets.push(dataset);
+    function checkedDataset(datasetId) {
+      if (_.contains(vm.filterConditions.datasets, datasetId)) {
+        vm.filterConditions.datasets = _.without(vm.filterConditions.datasets, datasetId);
+      }
+      else {
+        if (!vm.filterConditions.datasets) vm.filterConditions.datasets = [];
+        vm.filterConditions.datasets.push(datasetId);
+      }
     }
 
     function closeFilterModal() {
-      checkedDatasets = [];
-      setFeatures();
       filterModal.hide();
     }
 
     function closeModal(modal) {
       vm[modal].hide();
-    }
-
-    function filter() {
-      vm.activeDatasets = ProjectFactory.getActiveDatasets();
-      vm.filterConditions = SpotsFactory.getFilterConditions();
-      checkedDatasets = vm.filterConditions.datasets || [];
-      filterModal.show();
     }
 
     function getNumTaggedFeatures(tag) {
@@ -307,8 +307,8 @@
       return parseInt(key);
     }
 
-    function isDatasetChecked(id) {
-      return _.contains(checkedDatasets, id) || false;
+    function isDatasetChecked(datasetId) {
+      return _.contains(vm.filterConditions.datasets, datasetId) || false;
     }
 
     function isOptionChecked(item, id, parentSpotId) {
@@ -344,10 +344,11 @@
     }
 
     function resetFilters() {
-      checkedDatasets = [];
-      SpotsFactory.clearFilterConditions();
+      vm.filterConditions = {};
+      SpotsFactory.setFilterConditions(vm.filterConditions);
       setDisplayedSpots();
     }
+
     function selectItem(inOrder) {
       order = inOrder;
       vm.showItem = 'spots';
@@ -398,6 +399,11 @@
       }
       if (_.isEmpty(vm.data[order][item])) delete vm.data[order][item];
       if (_.isEmpty(vm.data[order])) delete vm.data[order];
+    }
+
+    function toggleFilter(filter, emptyType) {
+      if (vm.filterConditions[filter]) delete vm.filterConditions[filter]
+      else vm.filterConditions[filter] = emptyType || undefined;
     }
 
     function toggleItem(item) {

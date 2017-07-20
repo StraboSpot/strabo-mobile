@@ -14,7 +14,6 @@
                  SpotsFactory, UserFactory, IS_WEB) {
     var vm = this;
 
-    var checkedDatasets = [];
     var detailModal = {};
     var filterModal = {};
 
@@ -27,13 +26,13 @@
     vm.spotsDisplayed = [];
     vm.spotIdSelected = undefined;
 
+    vm.addFilters = addFilters;
     vm.applyFilters = applyFilters;
     vm.checkedDataset = checkedDataset;
     vm.closeDetailModal = closeDetailModal;
     vm.closeFilterModal = closeFilterModal;
     vm.deleteSpot = deleteSpot;
     vm.exportToCSV = exportToCSV;
-    vm.filter = filter;
     vm.getTagNames = getTagNames;
     vm.goToSpot = goToSpot;
     vm.hasRelationships = hasRelationships;
@@ -46,6 +45,7 @@
     vm.newSpot = newSpot;
     vm.resetFilters = resetFilters;
     vm.setListDetail = setListDetail;
+    vm.toggleFilter = toggleFilter;
     vm.updateSpots = updateSpots;
 
     if (!IS_WEB) HelpersFactory.setBackView($ionicHistory.currentView().url);
@@ -107,20 +107,28 @@
      * Public Functions
      */
 
-    function applyFilters() {
-      if (_.isEmpty(checkedDatasets)) delete vm.filterConditions.datasets;
-      else vm.filterConditions.datasets = checkedDatasets;
-      if (_.isEmpty(vm.filterConditions)) resetFilters();
-      else {
-        SpotsFactory.setFilterConditions(vm.filterConditions);
-        setDisplayedSpots();
-      }
-      filterModal.hide();
+    function addFilters() {
+      vm.activeDatasets = ProjectFactory.getActiveDatasets();
+      vm.filterConditions = SpotsFactory.getFilterConditions();
+      filterModal.show();
     }
 
-    function checkedDataset(dataset) {
-      if (_.contains(checkedDatasets, dataset)) checkedDatasets = _.without(checkedDatasets, dataset);
-      else checkedDatasets.push(dataset);
+    function applyFilters() {
+      if (SpotsFactory.areValidFilters()) {
+        if (_.isEmpty(vm.filterConditions)) resetFilters();
+        else setDisplayedSpots();
+        filterModal.hide();
+      }
+    }
+
+    function checkedDataset(datasetId) {
+      if (_.contains(vm.filterConditions.datasets, datasetId)) {
+        vm.filterConditions.datasets = _.without(vm.filterConditions.datasets, datasetId);
+      }
+      else {
+        if (!vm.filterConditions.datasets) vm.filterConditions.datasets = [];
+        vm.filterConditions.datasets.push(datasetId);
+      }
     }
 
     function closeDetailModal() {
@@ -129,8 +137,11 @@
     }
 
     function closeFilterModal() {
-      checkedDatasets = [];
       filterModal.hide();
+    }
+
+    function closeModal(modal) {
+      vm[modal].hide();
     }
 
     function deleteSpot(spot) {
@@ -322,13 +333,6 @@
       );
     }
 
-    function filter() {
-      vm.activeDatasets = ProjectFactory.getActiveDatasets();
-      vm.filterConditions = SpotsFactory.getFilterConditions();
-      checkedDatasets = vm.filterConditions.datasets || [];
-      filterModal.show();
-    }
-
     function getTagNames(spotId) {
       var tags = ProjectFactory.getTagsBySpotId(spotId);
       return _.pluck(tags, 'name').join(', ');
@@ -349,8 +353,8 @@
       return !_.isEmpty(ProjectFactory.getTagsBySpotId(spotId));
     }
 
-    function isDatasetChecked(id) {
-      return _.contains(checkedDatasets, id) || false;
+    function isDatasetChecked(datasetId) {
+      return _.contains(vm.filterConditions.datasets, datasetId) || false;
     }
 
     // Is the user online and logged in
@@ -381,14 +385,19 @@
     }
 
     function resetFilters() {
-      checkedDatasets = [];
-      SpotsFactory.clearFilterConditions();
+      vm.filterConditions = {};
+      SpotsFactory.setFilterConditions(vm.filterConditions);
       setDisplayedSpots();
     }
 
     function setListDetail() {
       vm.popover.hide();
       detailModal.show();
+    }
+
+    function toggleFilter(filter, emptyType) {
+      if (vm.filterConditions[filter]) delete vm.filterConditions[filter]
+      else vm.filterConditions[filter] = emptyType || undefined;
     }
 
     function updateSpots() {

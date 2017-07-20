@@ -8,9 +8,9 @@
     <button menu-toggle='left' class='button button-icon icon ion-navicon'></button>
   </ion-nav-buttons>
   <ion-nav-buttons side='right'>
-    <button class='button button-icon ion-funnel' ng-click='vm.filter()'></button>
+    <button class='button button-icon ion-levels rotate-90' ng-click='vm.addFilters()'></button>
     <button class='button button-icon ion-plus' ng-click='vm.newSpot()'></button>
-    <button ng-click='vm.popover.show($event)' class='button button-icon icon ion-more rotate-90'></button>
+    <button class='button button-icon icon ion-more rotate-90' ng-click='vm.popover.show($event)'></button>
   </ion-nav-buttons>
   <ion-content class='has-header'>
     <strabo-spots-directive></strabo-spots-directive>

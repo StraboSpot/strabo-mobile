@@ -5,9 +5,9 @@
     .module('app')
     .factory('SpotsFactory', SpotsFactory);
 
-  SpotsFactory.$inject = ['$ionicModal', 'ProjectFactory', 'SpotFactory'];
+  SpotsFactory.$inject = ['$ionicModal', '$ionicPopup', 'ProjectFactory', 'SpotFactory'];
 
-  function SpotsFactory($ionicModal, ProjectFactory, SpotFactory) {
+  function SpotsFactory($ionicModal, $ionicPopup, ProjectFactory, SpotFactory) {
     var activeSpots = {};
     var filteredSpots = {};
     var displayedSpots = {};
@@ -16,9 +16,9 @@
     var spotsListDetail = {'tabs': true, 'tags': true};  // Only Spots in the active datasets
 
     return {
-      'clearFilterConditions': clearFilterConditions,
+      'areValidFilters': areValidFilters,
       'createSpotsFilterModal': createSpotsFilterModal,
-      'createSpotsListDetailModal' :createSpotsListDetailModal,
+      'createSpotsListDetailModal': createSpotsListDetailModal,
       'getActiveSpots': getActiveSpots,
       'getFilterConditions': getFilterConditions,
       'getSpotsListDetail': getSpotsListDetail,
@@ -33,8 +33,30 @@
      * Public Functions
      */
 
-    function clearFilterConditions() {
-      filterConditions = {};
+    function areValidFilters() {
+      // First make sure anything that was toggled on was not left empty
+      _.each(filterConditions, function (value, key) {
+        if (_.isEmpty(value)) delete filterConditions[key];
+      });
+      if (_.isEmpty(filterConditions)) {
+        $ionicPopup.alert({
+          'title': 'No Filters',
+          'template': 'There are no filters to apply.'
+        });
+        return false;
+      }
+      else if (filterConditions.date) {
+        if (!filterConditions.date.start) filterConditions.date.start = new Date("1000-02-01T05:00:00.000Z"); // Jan 31, 1000
+        if (!filterConditions.date.end) filterConditions.date.end = new Date(); // today
+        if (filterConditions.date.start > filterConditions.date.end) {
+          $ionicPopup.alert({
+            'title': 'Invalid Dates',
+            'template': 'There is a problem with the entered dates. Please fix your dates or turn off the date filter.'
+          });
+          return false;
+        }
+      }
+      return true;
     }
 
     function createSpotsFilterModal(scope) {
@@ -92,17 +114,26 @@
     }
 
     function setFilteredSpots() {
-      var datasetIdsToSpotIds = ProjectFactory.getSpotIds();
-      var filteredSpotsIds = [];
-      if (!_.isEmpty(filterConditions.datasets)) {
+      filteredSpots = activeSpots;
+      if (filterConditions.datasets) {
+        var datasetIdsToSpotIds = ProjectFactory.getSpotIds();
+        var filteredSpotsIds = [];
         _.each(filterConditions.datasets, function (dataset) {
           filteredSpotsIds.push(datasetIdsToSpotIds[dataset]);
         });
         filteredSpotsIds = _.flatten(filteredSpotsIds);
+        filteredSpots = _.filter(activeSpots, function (activeSpot) {
+          return _.contains(filteredSpotsIds, activeSpot.properties.id);
+        });
       }
-      filteredSpots = _.filter(activeSpots, function (activeSpot) {
-        return _.contains(filteredSpotsIds, activeSpot.properties.id);
-      });
+      if (filterConditions.date) {
+        filteredSpots = _.filter(filteredSpots, function (spot) {
+          if (spot.properties.date) {
+            return new Date(spot.properties.date) >= filterConditions.date.start &&
+              new Date(spot.properties.date) <= filterConditions.date.end;
+          }
+        });
+      }
     }
 
     function sortSpots(spots) {

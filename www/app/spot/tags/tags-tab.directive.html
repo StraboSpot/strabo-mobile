@@ -10,7 +10,7 @@
   </ion-toggle>
   <div ng-hide='vm.spotLevelTags.length === 0 && vm.featureLevelTags.length === 0'>
     <ion-input class="item item-input item-select">
-      <ion-label><i class='button-icon ion-funnel'></i>Filter by Type</ion-label>
+      <ion-label><i class='button-icon ion-levels rotate-90'></i>Filter by Type</ion-label>
       <select ng-model='vm.selectedType' ng-change='vm.filterTagType()'>
         <option value='all'>All</option>
         <option value='geologic_unit'>Geologic Unit</option>

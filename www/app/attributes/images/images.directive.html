@@ -2,7 +2,7 @@
   <div ng-hide='vm.showLinkedImagesSets === true'>
     <div ng-hide='vm.images.length === 0'>
       <ion-input class="item item-input item-select">
-        <ion-label><i class='button-icon ion-funnel'></i>Filter by Type</ion-label>
+        <ion-label><button class='button-icon ion-levels rotate-90'></button>Filter by Type</ion-label>
         <select ng-model='vm.selectedType' ng-change='vm.filterImagesType()'>
           <option value='all'>All</option>
           <option value='photo'>Photo</option>

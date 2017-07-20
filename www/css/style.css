@@ -777,6 +777,24 @@ Spots Page
 }
 
 /*--------------------
+Filters Modal
+---------------------*/
+
+.date-filter-right{
+  float: right;
+  display: initial;
+}
+
+.date-filter-left{
+  float: left;
+}
+
+.date-filter-label{
+  display: initial;
+  font-size: small;
+}
+
+/*--------------------
 Relationships Page
 ---------------------*/
 
