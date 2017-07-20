@@ -45,13 +45,31 @@
         });
         return false;
       }
-      else if (filterConditions.date) {
-        if (!filterConditions.date.start) filterConditions.date.start = new Date("1000-02-01T05:00:00.000Z"); // Jan 31, 1000
+      // Check Date Filter
+      if (filterConditions.date) {
+        if (!filterConditions.date.start) {
+          filterConditions.date.start = new Date("1000-02-01T05:00:00.000Z");    // Jan 31, 1000
+        }
         if (!filterConditions.date.end) filterConditions.date.end = new Date(); // today
         if (filterConditions.date.start > filterConditions.date.end) {
           $ionicPopup.alert({
             'title': 'Invalid Dates',
             'template': 'There is a problem with the entered dates. Please fix your dates or turn off the date filter.'
+          });
+          return false;
+        }
+      }
+      // Check Date Modified Filter
+      if (filterConditions.dateModified) {
+        if (!filterConditions.dateModified.start) {
+          filterConditions.dateModified.start = new Date("1000-02-01T05:00:00.000Z");     // Jan 31, 1000
+        }
+        if (!filterConditions.dateModified.end) filterConditions.dateModified.end = new Date(); // today
+        if (filterConditions.dateModified.start > filterConditions.dateModified.end) {
+          $ionicPopup.alert({
+            'title': 'Invalid Modified Dates',
+            'template': 'There is a problem with the entered dates. Please fix your modified dates or turn' +
+            ' off the date modified filter.'
           });
           return false;
         }
@@ -115,6 +133,7 @@
 
     function setFilteredSpots() {
       filteredSpots = activeSpots;
+      // Filter by dataset
       if (filterConditions.datasets) {
         var datasetIdsToSpotIds = ProjectFactory.getSpotIds();
         var filteredSpotsIds = [];
@@ -126,16 +145,27 @@
           return _.contains(filteredSpotsIds, activeSpot.properties.id);
         });
       }
+      // Filter by name
       if (filterConditions.name) {
         filteredSpots = _.filter(filteredSpots, function (spot) {
           return spot.properties.name.includes(filterConditions.name);
         });
       }
+      // Filter by date
       if (filterConditions.date) {
         filteredSpots = _.filter(filteredSpots, function (spot) {
           if (spot.properties.date) {
             return new Date(spot.properties.date) >= filterConditions.date.start &&
               new Date(spot.properties.date) <= filterConditions.date.end;
+          }
+        });
+      }
+      // Filter by date modified
+      if (filterConditions.dateModified) {
+        filteredSpots = _.filter(filteredSpots, function (spot) {
+          if (spot.properties.modified_timestamp) {
+            return new Date(spot.properties.modified_timestamp) >= filterConditions.dateModified.start &&
+              new Date(spot.properties.modified_timestamp) <= filterConditions.dateModified.end;
           }
         });
       }

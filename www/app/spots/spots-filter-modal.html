@@ -40,6 +40,29 @@
       </div>
     </div>
     <ion-toggle
+      ng-checked='vm.filterConditions.dateModified'
+      ng-click='vm.toggleFilter("dateModified", {})'
+      toggle-class='toggle-positive'>
+      <span class='toggle-left-label'>Date Modified</span>
+    </ion-toggle>
+    <div ng-show='vm.filterConditions.dateModified'>
+      <div class="row">
+        <div class="col">
+          <ion-input class='date-filter-right'>
+            <input type='date' ng-model='vm.filterConditions.dateModified.start'>
+            <ion-label class='date-filter-label'>Start Date</ion-label>
+          </ion-input>
+        </div>
+        <div class="col col-10 col-center">-</div>
+        <div class="col">
+          <ion-input class='date-filter-left'>
+            <input type='date' ng-model='vm.filterConditions.dateModified.end'>
+            <ion-label class='date-filter-label'>End Date</ion-label>
+          </ion-input>
+        </div>
+      </div>
+    </div>
+    <ion-toggle
       ng-checked='vm.filterConditions.datasets'
       ng-click='vm.toggleFilter("datasets", [])'
       toggle-class='toggle-positive'>
