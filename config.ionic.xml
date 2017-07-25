@@ -107,6 +107,9 @@
     <icon src="resources\wp8\icon\Background.png" width="159" height="159"/>
     <splash src="resources\wp8\splash\SplashScreenImage.png" width="768" height="1280"/>
   </platform>
+  <gap:config-file platform="ios" parent="UIFileSharingEnabled" mode="replace">
+    <true/>
+  </gap:config-file>
   <plugin name="cordova-plugin-camera" spec="^2.3.1">
 	<variable name="CAMERA_USAGE_DESCRIPTION" value="The strabospot app uses the camera to add images to field-collected sample data." />
 	<variable name="NSPHOTOLIBRARYUSAGEDESCRIPTIONENTRY" value="Access my photo library." />
