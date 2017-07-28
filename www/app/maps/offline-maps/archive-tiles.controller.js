@@ -61,9 +61,9 @@
           }
         });
 
-        var zoomLevels = vm.map.maxZoom ? Math.min(vm.map.maxZoom - vm.map.currentZoom + 1, 5) : 5;
+        var zoomLevels = vm.map.maxZoom ? Math.min(vm.map.maxZoom - Math.round(vm.map.currentZoom) + 1, 5) : 5;
         _.times(zoomLevels, function (n) {
-          var zoom = vm.map.currentZoom + n;
+          var zoom = Math.round(vm.map.currentZoom) + n;
           vm.zoomOptions.push({
             'zoom': zoom,
             'tilesNeed': [],
