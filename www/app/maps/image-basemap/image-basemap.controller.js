@@ -92,7 +92,7 @@
 
         createSwitcher(switcher);
 
-        vm.currentZoom = map.getView().getZoom();
+        vm.currentZoom = HelpersFactory.roundToDecimalPlaces(map.getView().getZoom(), 2);
         updateScaleBar(map.getView().getResolution());
         createMapInteractions();
         createPageEvents();
@@ -108,8 +108,9 @@
     function createMapInteractions() {
       // When the map is moved update the zoom control
       map.on('moveend', function (evt) {
-        if (vm.currentZoom !== evt.map.getView().getZoom()) {
-          vm.currentZoom = evt.map.getView().getZoom();
+        var mapZoom = HelpersFactory.roundToDecimalPlaces(evt.map.getView().getZoom(), 2);
+        if (vm.currentZoom !== mapZoom) {
+          vm.currentZoom = mapZoom;
           updateScaleBar(evt.map.getView().getResolution());
           $scope.$apply();
         }

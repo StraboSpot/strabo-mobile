@@ -5,11 +5,11 @@
     .module('app')
     .factory('MapViewFactory', MapViewFactory);
 
-  MapViewFactory.$inject = ['$cordovaGeolocation', '$ionicPopup', '$log', 'CoordinateRangeFactory', 'MapLayerFactory',
-    'SpotFactory'];
+  MapViewFactory.$inject = ['$cordovaGeolocation', '$ionicPopup', '$log', 'CoordinateRangeFactory', 'HelpersFactory',
+    'MapLayerFactory', 'SpotFactory'];
 
-  function MapViewFactory($cordovaGeolocation, $ionicPopup, $log, CoordinateRangeFactory, MapLayerFactory,
-                          SpotFactory) {
+  function MapViewFactory($cordovaGeolocation, $ionicPopup, $log, CoordinateRangeFactory, HelpersFactory,
+                          MapLayerFactory, SpotFactory) {
     var mapView;
     var viewExtent;
     var initialMapView;
@@ -204,7 +204,7 @@
       }
 
       var extent = mapView.calculateExtent(size);
-      var zoom = mapView.getZoom();
+      var zoom = HelpersFactory.roundToDecimalPlaces(mapView.getZoom(), 2);
       var bottomLeft = ol.proj.transform(ol.extent.getBottomLeft(extent),
         'EPSG:3857', 'EPSG:4326');
       var topRight = ol.proj.transform(ol.extent.getTopRight(extent),

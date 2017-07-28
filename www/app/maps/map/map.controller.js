@@ -112,7 +112,7 @@
     function createMapInteractions() {
       // When the map is moved save the new view and update the zoom control
       map.on('moveend', function (evt) {
-        vm.currentZoom = evt.map.getView().getZoom();
+        vm.currentZoom = HelpersFactory.roundToDecimalPlaces(evt.map.getView().getZoom(), 2);
         $scope.$apply();
       });
 
@@ -258,7 +258,7 @@
         var maxZoom = _.find(MapFactory.getMaps(), function (gotMap) {
           return gotMap.id === MapLayerFactory.getVisibleLayers()['baselayer'].get('id');
         }).maxZoom;
-        if (map.getView().getZoom() > maxZoom) {
+        if (HelpersFactory.roundToDecimalPlaces(map.getView().getZoom(), 2) > maxZoom) {
           $ionicPopup.alert({
             'title': 'Map Zoom Max Exceeded!',
             'template': 'Max zoom level for this map is ' + maxZoom + '. Zoom out to save map.'
