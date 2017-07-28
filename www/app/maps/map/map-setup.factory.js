@@ -31,18 +31,6 @@
      * Private Functions
      */
 
-    function setVisibleLayer(layers) {
-      var visibleLayer = MapLayerFactory.getVisibleLayer();
-      var visibleMapId;
-      if (!visibleLayer) visibleMapId = 'osm';
-      else visibleMapId = visibleLayer.get('id');
-
-      layers.getLayers().forEach(function (layer) {
-        if (layer.get('id') === visibleMapId) layer.set('visible', true);
-        else layer.set('visible', false);
-      });
-    }
-
     /**
      * Public Functions
      */
@@ -58,7 +46,6 @@
     function getPopupOverlay() {
       return popup;
     }
-
 
     function setImageBasemapLayers(im) {
       imageBasemap = im;
@@ -124,11 +111,8 @@
     function setLayers() {
       imageBasemap = undefined;
       MapFactory.setMaps();
-      MapLayerFactory.setOnlineLayers();
-      MapLayerFactory.setOfflineLayers();
-      setVisibleLayer(MapLayerFactory.getOnlineLayers());
-      setVisibleLayer(MapLayerFactory.getOfflineLayers());
-
+      map.addLayer(MapLayerFactory.getBaselayers());
+      map.addLayer(MapLayerFactory.getOverlays());
       map.addLayer(MapLayerFactory.getGeolocationLayer());
       map.addLayer(MapLayerFactory.getDatasetsLayer());
       map.addLayer(MapLayerFactory.getFeatureLayer());

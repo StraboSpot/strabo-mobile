@@ -27,7 +27,7 @@
     vm.mapSources = [
       {'name': 'Mapbox Classic', 'source': 'mapbox_classic', 'idLabel': 'Map Id'},
       {'name': 'Mapbox Styles', 'source': 'mapbox_styles', 'idLabel': 'Style URL'},
-      {'name': 'Map Warper ', 'source': 'map_warper', 'idLabel': '5 Digit Map ID'}
+      {'name': 'Map Warper', 'source': 'map_warper', 'idLabel': '5 Digit Map ID'}
     ];
     vm.modalTitle = '';
     vm.openModal = openModal;
@@ -129,7 +129,7 @@
     function addMap() {
       isEdit = false;
       vm.modalTitle = 'Add a Map';
-      vm.data = {};
+      vm.data = {'opacity': 1};
       getMapboxId();
       vm.openModal('addMapModal');
     }
@@ -246,8 +246,5 @@
     function toggleTokenInput() {
       vm.showTokenInput = vm.data.source === 'mapbox_classic' || vm.data.source === 'mapbox_styles';
     }
-
-
-
   }
 }());

@@ -177,7 +177,7 @@
 
       $scope.$on('$destroy', function () {
         MapViewFactory.setMapView(map);
-        MapLayerFactory.setVisibleLayer(map);
+        MapLayerFactory.saveVisibleLayers(map);
         MapDrawFactory.cancelEdits();    // Cancel any edits
         vm.addTagModal.remove();
         vm.popover.remove();            // Remove the popover
@@ -209,8 +209,8 @@
       $scope.$watch('vm.isOnline()', function (online) {
         if (onlineState !== online) {
           onlineState = online;
-          if (online) MapLayerFactory.setOnlineLayersVisible(map);
-          else MapLayerFactory.setOfflineLayersVisible(map);
+          MapLayerFactory.switchTileLayers(map, onlineState);
+          MapLayerFactory.setVisibleLayers(map);
         }
       });
     }
@@ -252,11 +252,11 @@
 
       if (onlineState) {
         MapViewFactory.setMapView(map);
-        MapLayerFactory.setVisibleLayer(map);
+        MapLayerFactory.saveVisibleLayers(map);
 
         // Check valid zoom level
         var maxZoom = _.find(MapFactory.getMaps(), function (gotMap) {
-          return gotMap.id === MapLayerFactory.getVisibleLayer().get('id');
+          return gotMap.id === MapLayerFactory.getVisibleLayers()['baselayer'].get('id');
         }).maxZoom;
         if (map.getView().getZoom() > maxZoom) {
           $ionicPopup.alert({

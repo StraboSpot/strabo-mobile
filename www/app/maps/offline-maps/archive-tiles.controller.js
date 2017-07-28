@@ -38,7 +38,14 @@
       mapExtent = MapViewFactory.getMapViewExtent();
       if (!mapExtent) goToMap();
       else {
-        mapLayer = MapLayerFactory.getVisibleLayer();
+        var mapLayers = MapLayerFactory.getVisibleLayers();
+        mapLayer = mapLayers.baselayer;
+        if (!_.isEmpty(mapLayers.overlays)) {
+          $ionicPopup.alert({
+            'title': 'Overlay Warning!',
+            'template': 'Only the map baselayer will be saved for offline use. Change an overlay to baselayer to save.'
+          });
+        }
 
         vm.map = angular.fromJson(angular.toJson(_.find(MapFactory.getMaps(), function (gotMap) {
           return gotMap.id === mapLayer.get('id');

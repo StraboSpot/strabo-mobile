@@ -5,16 +5,16 @@
     .module('app')
     .factory('MapLayerFactory', MapLayerFactory);
 
-  MapLayerFactory.$inject = ['$window', 'HelpersFactory', 'OfflineTilesFactory', 'MapFactory'];
+  MapLayerFactory.$inject = ['$log', '$window', 'HelpersFactory', 'OfflineTilesFactory', 'MapFactory'];
 
-  function MapLayerFactory($window, HelpersFactory, OfflineTilesFactory, MapFactory) {
-    var drawLayer;
-    var featureLayer;
-    var datasetsLayer;
-    var geolocationLayer;
-    var offlineLayers;
-    var onlineLayers;
-    var visibleLayer;
+  function MapLayerFactory($log, $window, HelpersFactory, OfflineTilesFactory, MapFactory) {
+    var baselayers = {};
+    var drawLayer = {};
+    var featureLayer = {};
+    var datasetsLayer = {};
+    var geolocationLayer = {};
+    var overlays = {};
+    var visibleLayers = {};
 
     // Geolocation Layer Styles
     var geolocationCenterIconStyle;
@@ -25,19 +25,16 @@
     activate();
 
     return {
-      'getCurrentVisibleLayer': getCurrentVisibleLayer,
+      'getBaselayers': getBaselayers,
       'getDatasetsLayer': getDatasetsLayer,
       'getDrawLayer': getDrawLayer,
       'getFeatureLayer': getFeatureLayer,
       'getGeolocationLayer': getGeolocationLayer,
-      'getOfflineLayers': getOfflineLayers,
-      'getOnlineLayers': getOnlineLayers,
-      'getVisibleLayer': getVisibleLayer,
-      'setOfflineLayers': setOfflineLayers,
-      'setOfflineLayersVisible': setOfflineLayersVisible,
-      'setOnlineLayers': setOnlineLayers,
-      'setOnlineLayersVisible': setOnlineLayersVisible,
-      'setVisibleLayer': setVisibleLayer
+      'getOverlays': getOverlays,
+      'getVisibleLayers': getVisibleLayers,
+      'saveVisibleLayers': saveVisibleLayers,
+      'setVisibleLayers': setVisibleLayers,
+      'switchTileLayers': switchTileLayers
     };
 
     /**
@@ -46,6 +43,8 @@
 
     function activate() {
       // Initialize Layers
+      setBaselayers();
+      setOverlays();
       setDrawLayer();
       setFeatureLayer();
       setDatasetsLayer();
@@ -56,6 +55,13 @@
       setGeolocationHeadingIconStyle();
       setGeolocationAccuracyTextStyle();
       setGeolocationSpeedTextStyle();
+    }
+
+    function setBaselayers() {
+      baselayers = new ol.layer.Group({
+        'name': 'baselayers',
+        'title': 'Baselayers'
+      });
     }
 
     function setDatasetsLayer() {
@@ -179,66 +185,52 @@
       };
     }
 
-    // Create map basemap layers
-    function setLayers(layers, isOnline) {
+    function setOfflineSource(layer) {
+      if (!layer.source) return new ol.source.XYZ({'url': ''});  // No basemap layer
+      return new ol.source.OSM({'tileLoadFunction': tileLoadFunction(layer.id)});
+    }
+
+    function setOnlineSource(layer) {
+      switch (layer.source) {
+        case 'osm':
+          return new ol.source.OSM({'layer': 'osm'});
+          break;
+        case 'mapbox_classic':
+        case 'mapbox_styles':
+          return new ol.source.XYZ({'url': layer.basePath + layer.id + layer.tilePath + '?access_token=' + layer.key});
+          break;
+        case 'map_warper':
+          return new ol.source.XYZ({'url': layer.basePath + layer.id + layer.tilePath});
+          break;
+        default:
+          return new ol.source.XYZ({'url': ''});  // No basemap layer
+      }
+    }
+
+    function setOverlays() {
+      overlays = new ol.layer.Group({
+        'name': 'overlays',
+        'title': 'Overlays'
+      });
+    }
+
+    function setTileLayers(layers, isOnline) {
       _.each(layers, function (layer) {
         var newMapLayer = new ol.layer.Tile();
         newMapLayer.setProperties({
           'title': layer.title,
           'id': layer.id,
-          'type': 'base'
+          'type': layer.overlay ? 'overlay' : 'base',
+          'source': isOnline ? setOnlineSource(layer) : setOfflineSource(layer),
+          'opacity': layer.opacity ? layer.opacity : 1
         });
 
-        // Set Source
-        var sourceUrl = '';
-        if (!isOnline && layer.source) {
-          newMapLayer.setSource(
-            new ol.source.OSM({
-              'tileLoadFunction': tileLoadFunction(layer.id)
-            }));
-        }
-        else if (layer.source === 'osm') newMapLayer.setSource(new ol.source.OSM({'layer': 'osm'}));
-        else if (layer.source === 'mapbox_classic') {
-          sourceUrl = layer.basePath + layer.id + '/{z}/{x}/{y}.png?access_token=' + layer.key;
-        }
-        else if (layer.source === 'mapbox_styles') {
-          sourceUrl = layer.basePath + layer.id + '/tiles/256/{z}/{x}/{y}?access_token=' + layer.key;
-        }
-        else if (layer.source === 'map_warper') {
-          sourceUrl = layer.basePath + layer.id + '/{z}/{x}/{y}.png';
-        }
-        if (!newMapLayer.getSource()) {
-          newMapLayer.setSource(
-            new ol.source.XYZ({
-              'url': sourceUrl
-            }));
-        }
-
         // Set Attribution
-        if (layer.attributions) {
-          newMapLayer.getSource().setAttributions(
-            layer.attributions);
-        }
-        else {
-          newMapLayer.getSource().setAttributions([
-            new ol.Attribution({'html': ''})
-          ]);
-        }
-        if (isOnline) onlineLayers.getLayers().push(newMapLayer);
-        else offlineLayers.getLayers().push(newMapLayer);
-      });
-    }
+        if (layer.attributions) newMapLayer.getSource().setAttributions(layer.attributions);
+        else newMapLayer.getSource().setAttributions([new ol.Attribution({'html': ''})]);
 
-    function setVisibleLayerDefault(map) {
-      map.getLayers().forEach(function (layer) {
-        if (layer.get('name') === 'onlineLayer' || layer.get('name') === 'offlineLayer') {
-          layer.getLayers().forEach(function (mapLayer) {
-            if (mapLayer.get('id') === 'osm') {
-              visibleLayer = mapLayer;
-              visibleLayer.setVisible(true);
-            }
-          });
-        }
+        if (layer.overlay) overlays.getLayers().push(newMapLayer);
+        else baselayers.getLayers().push(newMapLayer);
       });
     }
 
@@ -290,16 +282,8 @@
      * Public Functions
      */
 
-    function getCurrentVisibleLayer(map) {
-      var visibleMap;
-      map.getLayers().forEach(function (layer) {
-        if (layer.get('name') === 'onlineLayer' || layer.get('name') === 'offlineLayer') {
-          layer.getLayers().forEach(function (mapLayer) {
-            if (mapLayer.getVisible()) visibleMap = mapLayer.get('id');
-          });
-        }
-      });
-      return visibleMap;
+    function getBaselayers() {
+      return baselayers;
     }
 
     function getDatasetsLayer() {
@@ -318,53 +302,70 @@
       return geolocationLayer;
     }
 
-    function getOfflineLayers() {
-      return offlineLayers;
+    function getOverlays() {
+      return overlays;
     }
 
-    function getOnlineLayers() {
-      return onlineLayers;
+    function getVisibleLayers() {
+      return visibleLayers;
     }
 
-    function getVisibleLayer() {
-      return visibleLayer;
-    }
-
-    function setOfflineLayers() {
-      offlineLayers = new ol.layer.Group({
-        'name': 'offlineLayer',
-        'title': 'Offline Maps'
-      });
-      setLayers(MapFactory.getMaps(), false);
-    }
-
-    function setOfflineLayersVisible(map) {
-      map.removeLayer(onlineLayers);
-      map.getLayers().insertAt(0, offlineLayers);
-    }
-
-    function setOnlineLayers() {
-      onlineLayers = new ol.layer.Group({
-        'name': 'onlineLayer',
-        'title': 'Online Maps'
-      });
-      setLayers(MapFactory.getMaps(), true);
-    }
-
-    function setOnlineLayersVisible(map) {
-      map.removeLayer(offlineLayers);
-      map.getLayers().insertAt(0, onlineLayers);
-    }
-
-    function setVisibleLayer(map) {
+    function saveVisibleLayers(map) {
+      visibleLayers = {};
       map.getLayers().forEach(function (layer) {
-        if (layer.get('name') === 'onlineLayer' || layer.get('name') === 'offlineLayer') {
-          layer.getLayers().forEach(function (mapLayer) {
-            if (mapLayer.getVisible()) visibleLayer = mapLayer;
+        if (layer.get('name') === 'baselayers') {
+          layer.getLayers().forEach(function (sublayer) {
+            if (sublayer.getVisible()) visibleLayers['baselayer'] = sublayer;
+          });
+        }
+        else if (layer.get('name') === 'overlays') {
+          layer.getLayers().forEach(function (sublayer) {
+            if (sublayer.getVisible()) {
+              if (!visibleLayers['overlays']) visibleLayers['overlays'] = [];
+              visibleLayers['overlays'].push(sublayer);
+            }
           });
         }
       });
-      if (!visibleLayer) setVisibleLayerDefault(map);
+    }
+
+    function setVisibleLayers(map) {
+      var defaultBaselayerId = 'osm';
+      var isVisibleBaselayerSet = false;
+      var visibleBaselayerId = visibleLayers['baselayer'] ? visibleLayers['baselayer'].get('id') : defaultBaselayerId;
+      var visibleOverlaysIds = _.map(visibleLayers['overlays'], function (visibleLayer) {
+        return visibleLayer.get('id');
+      });
+
+      map.getLayers().forEach(function (layer) {
+        if (layer.get('name') === 'baselayers') {
+          layer.getLayers().forEach(function (sublayer) {
+            if (sublayer.get('id') === defaultBaselayerId && !isVisibleBaselayerSet) sublayer.set('visible', true);
+            else if (sublayer.get('id') === visibleBaselayerId) {
+              sublayer.set('visible', true);
+              isVisibleBaselayerSet = true;
+            }
+            else sublayer.set('visible', false);
+          });
+        }
+        else if (layer.get('name') === 'overlays') {
+          layer.getLayers().forEach(function (sublayer) {
+            if (_.contains(visibleOverlaysIds, sublayer.get('id'))) sublayer.set('visible', true);
+            else sublayer.set('visible', false);
+          });
+        }
+      });
+    }
+
+    function switchTileLayers(map, isOnline) {
+      map.removeLayer(baselayers);
+      map.removeLayer(overlays);
+      setBaselayers(); // reset
+      setOverlays(); // reset
+
+      setTileLayers(MapFactory.getMaps(), isOnline);
+      if (overlays.getLayers().getLength() > 0) map.getLayers().insertAt(0, overlays);
+      map.getLayers().insertAt(0, baselayers);
     }
   }
 }());

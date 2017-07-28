@@ -7,7 +7,7 @@
     <div class='button button-clear' ng-click='vm.closeModal("addMapModal")'><span class='icon ion-close'></span></div>
   </ion-header-bar>
   <ion-content class='has-header strabo-form'>
-    <ion-input class='item item-input item-select  item-stacked-label item-text-wrap'>
+    <ion-input class='item item-input item-select item-stacked-label item-text-wrap'>
       <ion-label>Map Type</ion-label>
       <select ng-model='vm.data.source'
               ng-options='mapSource.source as mapSource.name for mapSource in vm.mapSources'
@@ -15,23 +15,37 @@
         <option value=''>-- Select Map Type --</option>
       </select>
     </ion-input>
-    <label class='item item-input item-stacked-label item-text-wrap'>
-      <span class='input-label'>My Map Title</span>
-      <input type='text' ng-model='vm.data.title'>
-    </label>
-    <label class='item item-input item-stacked-label item-text-wrap'>
-      <span class='input-label'>{{ vm.getIdLabel() }}</span>
-      <input type='text' ng-model='vm.data.id'>
-    </label>
-    <div ng-show='vm.showTokenInput'>
-    <label class='item item-input item-stacked-label item-text-wrap'>
-      <span class='input-label'>Access Token</span>
-      <input type='text' ng-model='vm.data.key'>
-    </label>
-    </div>
-    <div ng-show='vm.showHelpText'>
-      <div class='padding'><b>Connection Properties Help</b><br>
-        {{ vm.getHelpText() }}
+    <div ng-show='vm.data.source'>
+      <label class='item item-input item-stacked-label item-text-wrap'>
+        <span class='input-label'>My Map Title</span>
+        <input type='text' ng-model='vm.data.title'>
+      </label>
+      <label class='item item-input item-stacked-label item-text-wrap'>
+        <span class='input-label'>{{ vm.getIdLabel() }}</span>
+        <input type='text' ng-model='vm.data.id'>
+      </label>
+      <div ng-show='vm.showTokenInput'>
+        <label class='item item-input item-stacked-label item-text-wrap'>
+          <span class='input-label'>Access Token</span>
+          <input type='text' ng-model='vm.data.key'>
+        </label>
+      </div>
+      <ion-toggle
+        ng-checked='vm.data.overlay'
+        toggle-class='toggle-positive'
+        ng-model='vm.data.overlay'>
+        <span class='toggle-left-label'>Set Map as Overlay</span>
+      </ion-toggle>
+      <div class='range'>
+        <i class='circle hollow'></i>
+          <input type='range' class='strabo-range' name='opacity' ng-model='vm.data.opacity' min='0' max='1' step='.1'>
+        <i class='circle filled'></i>
+      </div>
+      <p class='padding-left'>Opacity: {{ vm.data.opacity }}</p>
+      <div ng-show='vm.showHelpText'>
+        <div class='padding'><b>Connection Properties Help</b><br>
+          {{ vm.getHelpText() }}
+        </div>
       </div>
     </div>
   </ion-content>

@@ -58,6 +58,7 @@
           'basePath': 'http://api.tiles.mapbox.com/v4/',
           'imageType': 'jpg',
           'mime': 'image/jpeg',
+          'tilePath': '/{z}/{x}/{y}.png',
           'url': [
             'http://a.tiles.mapbox.com/v4/',
             'http://b.tiles.mapbox.com/v4/',
@@ -74,6 +75,7 @@
           'apiUrl': 'https://api.mapbox.com/styles/v1/',
           'basePath': 'https://api.mapbox.com/styles/v1/',
           'mime': 'image/jpeg',
+          'tilePath': '/tiles/256/{z}/{x}/{y}',
           'url': ['https://api.mapbox.com/styles/v1/']
         },
         'osm': {
@@ -95,6 +97,7 @@
           'basePath': 'http://mapwarper.net/maps/tile/',
           'imageType': 'png',
           'mime': 'image/png',
+          'tilePath': '/{z}/{x}/{y}.png',
           'url': ['https://www.strabospot.org/mwproxy/']
         }
       };

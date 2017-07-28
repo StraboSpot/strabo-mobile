@@ -487,6 +487,10 @@ textarea {
   color: #387ef5;
 }
 
+.range input {
+  height: 43px;               /* Set back to original for range */
+}
+
 /*--------------------
 Style fields for input errors and no-errors
 --------------------*/
@@ -850,4 +854,26 @@ Samples and Images Pages
 .sample-box-header-text{
   font-weight: bold;
   text-decoration: underline;
+}
+
+/*--------------------
+Misc
+---------------------*/
+
+.circle {                         /* Used for opacity range slider */
+  width: 26px;
+  height: 26px;
+  -moz-border-radius: 13px;
+  -webkit-border-radius: 13px;
+  border-radius: 13px;
+  border-color: black;
+  border: solid;
+}
+
+.circle.filled {
+  background: black;
+}
+
+.circle.hollow {
+  background: white;
 }
