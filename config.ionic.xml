@@ -3,7 +3,7 @@
 <!-- Config for Ionic Platform Build -->
 
 <widget id="org.strabospot.strabo"
-        version="0.24.0"
+        version="0.24.1"
         xmlns="http://www.w3.org/ns/widgets"
         xmlns:cdv="http://cordova.apache.org/ns/1.0"
         xmlns:gap="http://phonegap.com/ns/1.0">
@@ -34,6 +34,7 @@
   <preference name="AutoHideSplashScreen" value="false"/>
   <preference name="SplashScreenDelay" value="2000"/>
   <preference name="SplashScreen" value="screen"/>
+  <preference name="UIFileSharingEnabled" value="true" />
   <plugin name="cordova-plugin-camera" spec="^2.3.1">
 	<variable name="CAMERA_USAGE_DESCRIPTION" value="The strabospot app uses the camera to add images to field-collected sample data." />
 	<variable name="NSPHOTOLIBRARYUSAGEDESCRIPTIONENTRY" value="Access my photo library." />
@@ -110,7 +111,4 @@
     <icon src="resources\wp8\icon\Background.png" width="159" height="159"/>
     <splash src="resources\wp8\splash\SplashScreenImage.png" width="768" height="1280"/>
   </platform>
-  <gap:config-file platform="ios" parent="UIFileSharingEnabled" mode="replace">
-    <true/>
-  </gap:config-file>
 </widget>
