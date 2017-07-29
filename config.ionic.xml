@@ -14,6 +14,7 @@
   <author email="strabospot@gmail.com" href="http://strabospot.org/">
     StraboSpot Team
   </author>
+  <engine name="android" spec="~6.2.3"/>
   <content src="index.html"/>
   <access origin="*"/>
   <allow-intent href="http://*/*"/>
