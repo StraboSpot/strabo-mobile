@@ -4,7 +4,7 @@
 
 <widget
     id="gov.az.azgs.strabomobile"
-    version="0.24.1"
+    version="0.24.2"
     xmlns="http://www.w3.org/ns/widgets"
     xmlns:gap="http://phonegap.com/ns/1.0">
   <name>Strabo Mobile</name>
