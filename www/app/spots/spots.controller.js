@@ -379,7 +379,7 @@
     function newSpot() {
       SpotFactory.setNewSpot({}).then(function (id) {
         vm.spotIdSelected = id;
-        //SpotsFactory.setVisibleSpots(); //not needed? commenting this fixed https://github.com/StraboSpot/strabo-mobile/issues/380
+        //setVisibleSpots(); //not needed? commenting this fixed https://github.com/StraboSpot/strabo-mobile/issues/380
         $location.path('/app/spotTab/' + id + '/spot');
       });
     }
