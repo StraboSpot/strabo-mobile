@@ -1,6 +1,6 @@
 {
     "name": "StraboSpot",
-    "version": "0.24.2",
+    "version": "0.24.3",
     "description": "StraboSpot: An app for Structural Geology and Tectonics (SG&T)",
     "dependencies": {
         "cordova-android": "~6.2.3",
