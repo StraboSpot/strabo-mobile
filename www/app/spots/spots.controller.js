@@ -379,7 +379,7 @@
     function newSpot() {
       SpotFactory.setNewSpot({}).then(function (id) {
         vm.spotIdSelected = id;
-        //setVisibleSpots(); //not needed? commenting this fixed https://github.com/StraboSpot/strabo-mobile/issues/380
+        if (IS_WEB) setDisplayedSpots(); // needed for WEB to keep Spots list synchronized when new spot created
         $location.path('/app/spotTab/' + id + '/spot');
       });
     }
