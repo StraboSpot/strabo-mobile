@@ -9,7 +9,7 @@ StraboSpot is an application for Structural Geology and Tectonics (SG&T) data ac
 - Core Technology: [Cordova](http://cordova.apache.org/)
 - UI Framework (CSS & JS): [Ionic](http://ionicframework.com/)
 - MVC: [Angular JS](https://angularjs.org/)
-- Map Library: [OpenLayers 3](http://openlayers.org/)
+- Map Library: [OpenLayers 4](http://openlayers.org/)
 - Geospatial Analysis: [Turf](http://turfjs.org/) and [JSTS](http://bjornharrtell.github.io/jsts/)
 - Helpers: [Underscore](http://underscorejs.org/)
 - AngularJS Extensions for Cordova API: [ngCordova](http://ngcordova.com/)
@@ -53,6 +53,7 @@ Generate Resources (icons and splash screens):
     
 ### Tested Environment - Plugins    
     cordova-plugin-camera 2.1.1 "Camera"
+    cordova-plugin-compat 1.1.0 "Compat"
     cordova-plugin-console 1.0.2 "Console"
     cordova-plugin-device 1.1.1 "Device"
     cordova-plugin-device-motion 1.2.1 "Device Motion"
@@ -63,24 +64,29 @@ Generate Resources (icons and splash screens):
     cordova-plugin-inappbrowser 1.5.0 "InAppBrowser"
     cordova-plugin-network-information 1.2.0 "Network Information"
     cordova-plugin-splashscreen 3.2.1 "Splashscreen"
-    cordova-plugin-statusbar 2.1.2 "StatusBar"
+    cordova-plugin-statusbar 2.1.3 "StatusBar"
     cordova-plugin-whitelist 1.2.1 "Whitelist"
     cordova-sqlite-storage 0.7.14 "Cordova sqlite storage plugin"
-    ionic-plugin-deploy 0.5.0 "IonicDeploy"
+    io.phasr.cordova.plugin.itunesfilesharing 0.0.1 "cordova-plugin-itunesfilesharing"
+    ionic-plugin-deploy 0.6.5 "IonicDeploy"
     ionic-plugin-keyboard 2.0.1 "Keyboard"
 
 *Notes:*
 - This list can be generated with `ionic plugin list`.
 - `cordova-plugin-filepath`: Added due to Cordova bug with Android and content schema
 - `cordova-sqlite-storage@0.7.14`: Added for the localForage dependencies
+- `cordova-plugin-itunesfilesharing`: Added to `config.ionic.xml` for Ionic build. PhoneGap build uses
+  `<gap:config-file platform="ios" parent="UIFileSharingEnabled" mode="replace">
+    <true/>
+  </gap:config-file>`
 
 ### Tested Environment - Other Packages/Libraries
 
     ionic library: 1.3.1
-    ionic cli : 1.7.16
-    cordova: 6.6.1
-    nodejs: 5.0.0
-    npm: 2.12.1
+    ionic cli : 2.2.1
+    cordova: 6.5.0
+    nodejs: 6.9.5
+    npm: 3.10.10
     bower: 1.8.0
     ng-cordova: 0.1.23-alpha
     openlayers: 4.2.0
