@@ -159,7 +159,7 @@
     // Set the current spot
     function setSpot(id) {
       SpotFactory.setCurrentSpotById(id);
-      vm.spot = angular.fromJson(angular.toJson(SpotFactory.getCurrentSpot()));
+      vm.spot = SpotFactory.getCurrentSpot();
       if (vm.spot) {
         if (TagFactory.getActiveTagging()) TagFactory.addToActiveTags(vm.spot.properties.id);
         if (SpotFactory.getActiveNesting() && vm.spot.geometry) {

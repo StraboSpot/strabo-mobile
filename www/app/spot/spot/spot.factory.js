@@ -12,9 +12,7 @@
                        ProjectFactory) {
     var activeNest = [];
     var activeSpots;  // Only Spots in the active datasets
-    var currentSpot;
-    var currentAssociatedOrientationIndex;
-    var currentOrientationIndex;
+    var currentSpotId = undefined;
     var isActiveNesting = false;
     var isKeepSpotSelected = false;
     var moveSpot = false;
@@ -42,19 +40,15 @@
       'clearCurrentSpot': clearCurrentSpot,
       'clearSelectedSpots': clearSelectedSpots,
       'destroy': destroy,
-      'destroyOrientation': destroyOrientation,
       'getActiveSpots': getActiveSpots,
       'getActiveNest': getActiveNest,
       'getActiveNesting': getActiveNesting,
       'getCenter': getCenter,
-      'getCurrentAssociatedOrientationIndex': getCurrentAssociatedOrientationIndex,
-      'getCurrentOrientationIndex': getCurrentOrientationIndex,
       'getCurrentSpot': getCurrentSpot,
       'getFirstSpot': getFirstSpot,
       'getImagePropertiesById': getImagePropertiesById,
       'getKeepSpotSelected': getKeepSpotSelected,
       'getNameFromId': getNameFromId,
-      'getOrientations': getOrientations,
       'getSelectedSpots': getSelectedSpots,
       'getSpotsByDatasetId': getSpotsByDatasetId,
       'getSpotById': getSpotById,
@@ -67,7 +61,6 @@
       'save': save,
       'saveDownloadedSpot': saveDownloadedSpot,
       'setActiveNesting': setActiveNesting,
-      'setCurrentOrientationIndex': setCurrentOrientationIndex,
       'setCurrentSpotById': setCurrentSpotById,
       'setKeepSpotSelected': setKeepSpotSelected,
       'setNewSpot': setNewSpot,
@@ -183,7 +176,7 @@
     }
 
     function clearCurrentSpot() {
-      currentSpot = undefined;
+      currentSpotId = undefined;
     }
 
     function clearSelectedSpots() {
@@ -200,19 +193,6 @@
         deferred.resolve();
       });
       return deferred.promise;
-    }
-
-    function destroyOrientation(i, j) {
-      if (angular.isNumber(j)) {
-        currentSpot.properties.orientation_data[i].associated_orientation.splice(j, 1);
-        if (currentSpot.properties.orientation_data[i].associated_orientation.length === 0) {
-          delete currentSpot.properties.orientation_data[i].associated_orientation;
-        }
-      }
-      else {
-        currentSpot.properties.orientation_data.splice(i, 1);
-        if (currentSpot.properties.orientation_data.length === 0) delete currentSpot.properties.orientation_data;
-      }
     }
 
     function getActiveSpots() {
@@ -258,16 +238,8 @@
       };
     }
 
-    function getCurrentAssociatedOrientationIndex() {
-      return currentAssociatedOrientationIndex;
-    }
-
-    function getCurrentOrientationIndex() {
-      return currentOrientationIndex;
-    }
-
     function getCurrentSpot() {
-      return currentSpot;
+      return angular.fromJson(angular.toJson(spots[currentSpotId]));
     }
 
     // gets the first spot in the db (if exists) -- used to set the map view
@@ -299,10 +271,6 @@
       var spotCur = spots[id];
       if (spotCur) return spotCur.properties.name;
       return 'Spot Not Found (Id: ' + id + ')';
-    }
-
-    function getOrientations() {
-      return currentSpot.properties.orientation || [];
     }
 
     function getSelectedSpots() {
@@ -406,13 +374,8 @@
       isActiveNesting = inNesting;
     }
 
-    function setCurrentOrientationIndex(index, assoicatedIndex) {
-      currentOrientationIndex = index;
-      currentAssociatedOrientationIndex = assoicatedIndex;
-    }
-
     function setCurrentSpotById(id) {
-      currentSpot = angular.fromJson(angular.toJson(spots[id]));
+      currentSpotId = id;
     }
 
     function setKeepSpotSelected(inVal) {
@@ -424,7 +387,7 @@
     }
 
     // Initialize a new Spot
-    function setNewSpot(jsonObj) {
+    function setNewSpot(newSpot) {
       var deferred = $q.defer(); // init promise
 
       if (_.isEmpty(ProjectFactory.getCurrentProject())) {
@@ -440,30 +403,32 @@
         deferred.reject();
       }
       else {
-        currentSpot = jsonObj;
-        currentSpot.type = 'Feature';
-        if (!currentSpot.properties) currentSpot.properties = {};
+        newSpot.type = 'Feature';
+        if (!newSpot.properties) newSpot.properties = {};
 
         // Set the date and time to now
         var d = new Date(Date.now());
         d.setMilliseconds(0);
-        currentSpot.properties.date = d.toISOString();
-        currentSpot.properties.time = d.toISOString();  // ToDo: Can remove time when switch to only using date
-        currentSpot.properties.id = HelpersFactory.getNewId();
+        newSpot.properties.date = d.toISOString();
+        newSpot.properties.time = d.toISOString();  // ToDo: Can remove time when switch to only using date
+
+        // Set the ID
+        newSpot.properties.id = HelpersFactory.getNewId();
+        currentSpotId = newSpot.properties.id;
 
         // Set default name
-        if (!currentSpot.properties.name) {
+        if (!newSpot.properties.name) {
           var prefix = ProjectFactory.getSpotPrefix();
-          if (!prefix) prefix = currentSpot.properties.id.toString();
+          if (!prefix) prefix = newSpot.properties.id.toString();
           var number = ProjectFactory.getSpotNumber();
           if (!number) number = '';
-          currentSpot.properties.name = prefix + number;
+          newSpot.properties.name = prefix + number;
         }
 
         ProjectFactory.incrementSpotNumber();
-        ProjectFactory.addSpotToDataset(currentSpot.properties.id, ProjectFactory.getSpotsDataset().id);
-        save(currentSpot).then(function () {
-          deferred.resolve(currentSpot.properties.id);
+        ProjectFactory.addSpotToDataset(newSpot.properties.id, ProjectFactory.getSpotsDataset().id);
+        save(newSpot).then(function () {
+          deferred.resolve(newSpot.properties.id);
         });
       }
       return deferred.promise;
