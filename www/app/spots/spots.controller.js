@@ -137,6 +137,7 @@
     }
 
     function closeFilterModal() {
+      if (_.isEmpty(vm.filterConditions)) resetFilters();
       filterModal.hide();
     }
 

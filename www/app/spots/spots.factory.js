@@ -51,6 +51,7 @@
           filterConditions.date.start = new Date("1000-02-01T05:00:00.000Z");    // Jan 31, 1000
         }
         if (!filterConditions.date.end) filterConditions.date.end = new Date(); // today
+        filterConditions.date.end.setHours(23,59,59,999);
         if (filterConditions.date.start > filterConditions.date.end) {
           $ionicPopup.alert({
             'title': 'Invalid Dates',
@@ -65,6 +66,7 @@
           filterConditions.dateModified.start = new Date("1000-02-01T05:00:00.000Z");     // Jan 31, 1000
         }
         if (!filterConditions.dateModified.end) filterConditions.dateModified.end = new Date(); // today
+        filterConditions.dateModified.end.setHours(23,59,59,999);
         if (filterConditions.dateModified.start > filterConditions.dateModified.end) {
           $ionicPopup.alert({
             'title': 'Invalid Modified Dates',
