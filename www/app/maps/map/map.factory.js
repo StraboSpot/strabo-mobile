@@ -23,9 +23,6 @@
 
     function getDefaultMaps() {
       return [{
-        'title': 'No Basemap',
-        'id': 'nobasemap'
-      }, {
         'title': 'Mapbox Topo',
         'id': 'mapbox.outdoors',
         'source': 'mapbox_classic'

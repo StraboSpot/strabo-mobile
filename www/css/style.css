@@ -188,6 +188,10 @@ Map Controls Style
   opacity: 0.75;
 }
 
+.ol-attribution.ol-logo-only {
+  bottom: 20px;
+}
+
 .nesting-notification {
   text-align: center;
   line-height: 90%;
