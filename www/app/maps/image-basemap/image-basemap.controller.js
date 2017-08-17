@@ -213,16 +213,20 @@
       });
     }
 
+    // Layer switcher
     function createSwitcher(switcher) {
       // Add a `change:visible` listener to all layers currently within the map
       ol.control.LayerSwitcher.forEachRecursive(map, function (l, idx, a) {
         l.on('change:visible', function (e) {
           var lyr = e.target;
-          if (lyr.get('layergroup') === 'Datasets') {
-            _.each(lyr.getLayerStatesArray(), function (layerState) {
-              if (datasetsLayerStates[layerState.layer.get('id')] !== layerState.visible) {
-                datasetsLayerStates[layerState.layer.get('id')] = layerState.visible;
-              }
+          if (lyr.get('layergroup') === 'Datasets') {     // Individual Datasets
+            datasetsLayerStates[lyr.get('datasetId')] = lyr.getVisible();
+            MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
+            switcher.renderPanel();
+          }
+          else if (lyr.get('name') === 'datasetsLayer') {  // Datasets as a Group
+            lyr.getLayers().forEach(function (layer) {     // Individual Datasets
+              datasetsLayerStates[layer.get('datasetId')] = lyr.getVisible();
             });
             MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
             switcher.renderPanel();

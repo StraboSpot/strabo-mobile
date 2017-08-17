@@ -99,7 +99,7 @@
         });
         var titlePart = visibleSpotsDataset.length === 1 ? '(1 Spot)' : '(' + visibleSpotsDataset.length + ' Spots)';
         var datasetLayer = new ol.layer.Tile({
-          'id': d.id,
+          'datasetId': d.id,
           'title': d.name + ' ' + titlePart,
           'layergroup': 'Datasets'
         });
