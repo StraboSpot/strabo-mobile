@@ -190,6 +190,18 @@
 
     if (lyr.getLayers && !lyr.get('combine')) {
 
+      // This section addded by Jessica to expand and collapse groups
+      var toggleBtn = document.createElement('i');
+      toggleBtn.className = 'icon ion-minus-round';
+      toggleBtn.id = 'toggleButton';
+      li.appendChild(toggleBtn);
+      toggleBtn.addEventListener ('click', function() {
+        toggleGroup(lyr);
+        if (toggleBtn.className === 'icon ion-minus-round') toggleBtn.className = 'icon ion-plus-round';
+        else toggleBtn.className = 'icon ion-minus-round';
+      });
+      // End this section added by Jessica
+
       var input = document.createElement('input');
       input.type = 'checkbox';
       input.id = lyrId;
@@ -211,6 +223,7 @@
     } else {
 
       li.className = 'layer';
+      li.id = 'layer' + lyrId;    // This addded by Jessica to expand and collapse groups
       var input = document.createElement('input');
       if (lyr.get('type') === 'base') {
         input.type = 'radio';
@@ -316,6 +329,17 @@
       return false;
     }
   };
+
+  // This section addded by Jessica to expand and collapse groups
+  function toggleGroup(lyr, toggleBtn) {
+    lyr.getLayersArray().forEach(function (layer) {
+      var layerEle = document.getElementById('layer' + layer.get('id'));
+      if (layerEle.style.display === '' || layerEle.style.display === 'table') layerEle.style.display = 'none';
+      else layerEle.style.display = 'table';
+    });
+  }
+  // End this section addded by Jessica
+
   var LayerSwitcher = ol.control.LayerSwitcher;
   return LayerSwitcher;
 }));
