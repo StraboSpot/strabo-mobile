@@ -224,6 +224,9 @@ Map Layer Switcher Style
 .ol-touch .layer-switcher button{
   padding: 15px;
 }
+#toggleButton{
+  font-size: 18px;
+}
 
 /*--------------------
 Map Popups Style
