@@ -7,6 +7,11 @@
     root.LayerSwitcher = factory(root.ol);
   }
 }(this, function(ol) {
+  // This section addded by Jessica to save the expand/collapse state
+  var savedPanel = undefined;
+  var savedClass = undefined;
+  // End this section added by Jessica
+
   /**
    * OpenLayers v3/v4 Layer Switcher Control.
    * See [the examples](./examples) for usage.
@@ -86,6 +91,9 @@
   ol.control.LayerSwitcher.prototype.hidePanel = function() {
     if (this.element.classList.contains(this.shownClassName)) {
       this.element.classList.remove(this.shownClassName);
+      // This section addded by Jessica to save the expand/collapse state
+      savedPanel = angular.copy(this.panel);
+      // End this part added by Jessica
     }
   };
 
@@ -192,7 +200,18 @@
 
       // This section addded by Jessica to expand and collapse groups
       var toggleBtn = document.createElement('i');
-      toggleBtn.className = 'icon ion-minus-round';
+
+      // Load the expand/collapse state
+      if (savedPanel !== undefined) {
+       var matchingEle = _.find(savedPanel.getElementsByClassName('group'), function (groupEle) {
+          return groupEle.querySelector('label').innerText === lyrTitle;
+        });
+        if (matchingEle !== undefined) savedClass = matchingEle.querySelector('i').className;
+        else savedClass = undefined;
+      }
+      else savedClass = undefined;
+
+      toggleBtn.className = savedClass || 'icon ion-minus-round';
       toggleBtn.id = 'toggleButton';
       li.appendChild(toggleBtn);
       toggleBtn.addEventListener ('click', function() {
@@ -246,6 +265,9 @@
         label.className += ' disabled';
       }
 
+      // This section addded by Jessica to apply the expand/collapse state
+      if (savedClass === 'icon ion-plus-round') li.style.display = 'none';
+      // End this section added by Jessica
       li.appendChild(label);
 
     }
