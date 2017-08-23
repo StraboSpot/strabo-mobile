@@ -167,6 +167,8 @@
         }
       });
     }
+    // Added by Jessica to add checkmarks to parent grouped layers
+    // From pull request by OlaKov in ol3-layerswitcher github
     if (lyr.getLayers && !lyr.get('combine')){
       var lyrs = lyr.getLayers().getArray().slice().reverse();
       for (var i = 0; i < lyrs.length; i++) {
@@ -176,6 +178,7 @@
         subLyr.disabled = !visible;
       }
     }
+    // End added by Jessica
   };
 
   /**
@@ -192,7 +195,7 @@
 
     var lyrTitle = lyr.get('title');
     var lyrId = ol.control.LayerSwitcher.uuid();
-    lyr.set('id', lyrId);
+    lyr.set('id', lyrId);    // Added by Jessica to add checkmarks to parent grouped layers
 
     var label = document.createElement('label');
 
