@@ -132,20 +132,29 @@
     }
 
     function goToMap(map) {
+      $ionicLoading.show({
+        'template': '<ion-spinner></ion-spinner>'
+      });
       var latLngPoints = [];
       var z;
       var pattern = /(\d+)\/(\d+)\/(\d+)/; // Format "15/6285/13283"
-      _.each(map.tileArray, function (tile, i) {
-        var thisTileZoom = parseInt(pattern.exec(tile.tile)[1]);
-        if (i === 0) z = thisTileZoom;  // Zoom level in first tile is zoom that we'll use
-        if (z === thisTileZoom) {       // Only gather tiles with same zoom level as first tile
-          var x = parseInt(pattern.exec(tile.tile)[2]);
-          var lng = SlippyTileNamesFactory.tile2long(x, z);
-          var y = parseInt(pattern.exec(tile.tile)[3]);
-          var lat = SlippyTileNamesFactory.tile2lat(y, z);
-          latLngPoints.push([lng, lat]);
+      var i = 0;
+      while (latLngPoints.length <= 15 && i < map.tileArray.length) {
+        var tile = map.tileArray[i];
+        var tileNameParts = pattern.exec(tile.tile);
+        if (tileNameParts && tileNameParts.length === 4) {
+          var thisTileZoom = parseInt(tileNameParts[1]);
+          if (z === undefined) z = thisTileZoom;  // Zoom level in first tile is zoom that we'll use
+          if (z === thisTileZoom) {       // Only gather tiles with same zoom level as first tile
+            var x = parseInt(tileNameParts[2]);
+            var lng = SlippyTileNamesFactory.tile2long(x, z);
+            var y = parseInt(tileNameParts[3]);
+            var lat = SlippyTileNamesFactory.tile2lat(y, z);
+            latLngPoints.push([lng, lat]);
+          }
         }
-      });
+        i++;
+      }
       MapLayerFactory.setVisibleBaselayer(map.id);
       MapViewFactory.zoomToLatLngPoints(latLngPoints, z);
       $location.path('/app/map');
