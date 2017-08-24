@@ -62,7 +62,9 @@
     function createModals() {
       $ionicModal.fromTemplateUrl('app/maps/other-maps/add-map-modal.html', {
         'scope': $scope,
-        'animation': 'slide-in-up'
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false,
+        'hardwareBackButtonClose': false
       }).then(function (modal) {
         vm.addMapModal = modal;
       });
