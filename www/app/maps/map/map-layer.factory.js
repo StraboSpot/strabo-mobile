@@ -32,6 +32,7 @@
       'getGeolocationLayer': getGeolocationLayer,
       'getOverlays': getOverlays,
       'getVisibleLayers': getVisibleLayers,
+      'setVisibleBaselayer': setVisibleBaselayer,
       'saveVisibleLayers': saveVisibleLayers,
       'setVisibleLayers': setVisibleLayers,
       'switchTileLayers': switchTileLayers
@@ -326,6 +327,12 @@
             }
           });
         }
+      });
+    }
+
+    function setVisibleBaselayer(mapId) {
+      baselayers.getLayersArray().forEach(function (baselayer) {
+        if (baselayer.get('id') === mapId) visibleLayers['baselayer'] = baselayer;
       });
     }
 

@@ -26,6 +26,7 @@
       'setMapView': setMapView,
       'setMapViewExtent': setMapViewExtent,
       'setMapViewToSpot': setMapViewToSpot,
+      'zoomToLatLngPoints': zoomToLatLngPoints,
       'zoomToSpotsExtent': zoomToSpotsExtent
     };
 
@@ -226,6 +227,19 @@
           'zoom': 16
         });
       }
+    }
+
+    function zoomToLatLngPoints(latLngPoints, zoom) {
+      var features = turf.featureCollection([]);
+      _.each(latLngPoints, function (latLngPoint) {
+        features.features.push(turf.point(latLngPoint));
+      });
+      var center = turf.center(features);
+      var mapCenter = ol.proj.transform(turf.getCoord(center), 'EPSG:4326', 'EPSG:3857');
+      mapView = new ol.View({
+        'center': mapCenter,
+        'zoom': zoom
+      });
     }
 
     function zoomToSpotsExtent(map, imageBasemap) {

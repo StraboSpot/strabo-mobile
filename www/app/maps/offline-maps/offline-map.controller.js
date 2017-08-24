@@ -5,18 +5,22 @@
     .module('app')
     .controller('OfflineMapController', OfflineMapController);
 
-  OfflineMapController.$inject = ['$ionicLoading', '$ionicPopup', '$log', '$scope', 'OfflineTilesFactory'];
+  OfflineMapController.$inject = ['$ionicLoading', '$ionicPopup', '$location', '$log', '$scope', 'MapLayerFactory',
+    'MapViewFactory', 'OfflineTilesFactory', 'SlippyTileNamesFactory'];
 
-  function OfflineMapController($ionicLoading, $ionicPopup, $log, $scope, OfflineTilesFactory) {
+  function OfflineMapController($ionicLoading, $ionicPopup, $location, $log, $scope, MapLayerFactory,
+                                MapViewFactory, OfflineTilesFactory, SlippyTileNamesFactory) {
     var vm = this;
     var deleteMap;
+
+    vm.maps = [];
+    vm.numOfflineTiles = 0;       // number of tiles we have in offline storage
+    //vm.offlineTilesSize = 0;
 
     vm.clearOfflineTile = clearOfflineTile;
     vm.deleteTiles = deleteTiles;
     vm.edit = edit;
-    vm.maps = [];
-    vm.numOfflineTiles = 0;       // number of tiles we have in offline storage
-    //vm.offlineTilesSize = 0;
+    vm.goToMap = goToMap;
     //vm.updateOfflineTileSize = updateOfflineTileSize;
 
     activate();
@@ -125,6 +129,26 @@
           }
         });
       }
+    }
+
+    function goToMap(map) {
+      var latLngPoints = [];
+      var z;
+      var pattern = /(\d+)\/(\d+)\/(\d+)/; // Format "15/6285/13283"
+      _.each(map.tileArray, function (tile, i) {
+        var thisTileZoom = parseInt(pattern.exec(tile.tile)[1]);
+        if (i === 0) z = thisTileZoom;  // Zoom level in first tile is zoom that we'll use
+        if (z === thisTileZoom) {       // Only gather tiles with same zoom level as first tile
+          var x = parseInt(pattern.exec(tile.tile)[2]);
+          var lng = SlippyTileNamesFactory.tile2long(x, z);
+          var y = parseInt(pattern.exec(tile.tile)[3]);
+          var lat = SlippyTileNamesFactory.tile2lat(y, z);
+          latLngPoints.push([lng, lat]);
+        }
+      });
+      MapLayerFactory.setVisibleBaselayer(map.id);
+      MapViewFactory.zoomToLatLngPoints(latLngPoints, z);
+      $location.path('/app/map');
     }
   }
 }());
