@@ -9,7 +9,6 @@
 
   function UserFactory($ionicPopup, $log, $q, LocalStorageFactory, RemoteServerFactory) {
     var user;
-    var foundMatch="no";
 
     return {
       'clearUser': clearUser,
@@ -48,66 +47,25 @@
     function doLogin(login) {
       var deferred = $q.defer(); // init promise
       login.email = login.email.toLowerCase();
-
-      //hash password for storage or comparison
-      //salt can stay in cleartext. We're just trying to defeat rainbow tables here.
-      var salt = "strabostrabostrabo";
-      var hash = CryptoJS.PBKDF2(login.password, salt, { keySize: 128/32, iterations: 99 }).toString();
-
-      if (navigator.onLine) {
-        RemoteServerFactory.authenticateUser(login).then(function (response) {
-          if (response.data.valid === 'true') {
-            user = {
-              'email': login.email,
-              'encoded_login': Base64.encode(login.email + ':' + login.password)
-            };
-            $log.log('Logged in successfully as', login.email, 'Server Response:', response);
-            //save credentials to local storage for offline login
-            LocalStorageFactory.getDb().credentialsDb.setItem(login.email, hash).then(function () {
-              updateUser().then(function () {
-                deferred.resolve();
-              });
-            });
-          }
-          else {
-            $ionicPopup.alert({
-              'title': 'Login Failure!',
-              'template': 'Incorrect username and/or password'
-            });
+      RemoteServerFactory.authenticateUser(login).then(function (response) {
+        if (response.data.valid === 'true') {
+          user = {
+            'email': login.email,
+            'encoded_login': Base64.encode(login.email + ':' + login.password)
+          };
+          $log.log('Logged in successfully as', login.email, 'Server Response:', response);
+          updateUser().then(function () {
             deferred.resolve();
-          }
-        });
-      }
-      else {
-        //do offline login here
-        LocalStorageFactory.getDb().credentialsDb.iterate(function (value, key) {
-          if(key==login.email && value==hash){
-            //found a good pair, login good.
-            foundMatch="yes";
-            console.log("found match!")
-          }
-        }, function () {
-          if(foundMatch=="yes"){
-            console.log("found a good login in credentialsDb.")
-            user = {
-              'email': login.email,
-              'encoded_login': Base64.encode(login.email + ':' + login.password)
-            };
-            $log.log('Logged in offline successfully as', login.email);
-            updateUser().then(function () {
-              deferred.resolve();
-            });
-          }
-          else {
-            $ionicPopup.alert({
-              'title': 'Login Failure!',
-              'template': 'Incorrect username and/or password'
-            });
-            deferred.resolve();
-          }
-        });
-      }
-
+          });
+        }
+        else {
+          $ionicPopup.alert({
+            'title': 'Login Failure!',
+            'template': 'Incorrect username and/or password'
+          });
+          deferred.resolve();
+        }
+      });
       return deferred.promise;
     }
 
@@ -157,38 +115,31 @@
 
     function updateUser() {
       var deferred = $q.defer(); // init promise
-      if (navigator.onLine) {
-        RemoteServerFactory.getProfile(user.encoded_login).then(function (profileResponse) {
-          _.extend(user, profileResponse.data);
-          RemoteServerFactory.getProfileImage(user.encoded_login).then(function (profileImageResponse) {
-            if (profileImageResponse.data) {
-              readDataUrl(profileImageResponse.data, function (base64Image) {
-                user.image = base64Image;
-                saveUser(user).then(function () {
-                  deferred.resolve();
-                });
-              });
-            }
-            else {
+      RemoteServerFactory.getProfile(user.encoded_login).then(function (profileResponse) {
+        _.extend(user, profileResponse.data);
+        RemoteServerFactory.getProfileImage(user.encoded_login).then(function (profileImageResponse) {
+          if (profileImageResponse.data) {
+            readDataUrl(profileImageResponse.data, function (base64Image) {
+              user.image = base64Image;
               saveUser(user).then(function () {
                 deferred.resolve();
               });
-            }
-          }, function () {
+            });
+          }
+          else {
             saveUser(user).then(function () {
               deferred.resolve();
             });
+          }
+        }, function () {
+          saveUser(user).then(function () {
+            deferred.resolve();
           });
-        }, function (profileResponse) {
-          var err = profileResponse.data && profileResponse.data.Error ? profileResponse.data.Error : 'Unknown Error';
-          deferred.reject(err);
         });
-      }
-      else{
-        saveUser(user).then(function () {
-          deferred.resolve();
-        });
-      }
+      }, function (profileResponse) {
+        var err = profileResponse.data && profileResponse.data.Error ? profileResponse.data.Error : 'Unknown Error';
+        deferred.reject(err);
+      });
       return deferred.promise;
     }
 

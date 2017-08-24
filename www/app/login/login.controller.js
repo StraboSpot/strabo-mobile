@@ -113,14 +113,22 @@
 
     // Perform the login action
     function doLogin() {
-      $ionicLoading.show({
-        'template': '<ion-spinner></ion-spinner>'
-      });
-      UserFactory.doLogin(vm.login).then(function () {
-        if (UserFactory.getUser()) vm.skip();
-      }).finally(function () {
-        $ionicLoading.hide();
-      });
+      if (navigator.onLine) {
+        $ionicLoading.show({
+          'template': '<ion-spinner></ion-spinner>'
+        });
+        UserFactory.doLogin(vm.login).then(function () {
+          if (UserFactory.getUser()) vm.skip();
+        }).finally(function () {
+          $ionicLoading.hide();
+        });
+      }
+      else {
+        $ionicPopup.alert({
+          'title': 'Offline!',
+          'template': 'Can\'t login while offline.'
+        });
+      }
     }
 
     function showCreateAccountModal() {
