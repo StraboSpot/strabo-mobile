@@ -15,6 +15,7 @@
     dbs.mapTilesDb = {};      // global LocalForage for offline map tiles
     dbs.projectDb = {};       // global LocalForage for project data
     dbs.spotsDb = {};         // global LocalForage for spot data
+    dbs.credentialsDb = {};   // global LocalForage for credentials data
     var appDirectory = 'StraboSpot';
     var dataBackupsDirectory = appDirectory + '/DataBackups';
     var imagesBackupsDirectory = appDirectory + '/ImageBackups';
@@ -73,7 +74,7 @@
       _.each(dbs, function (db) {
         //$log.log(db);
         var dbName = db.config().name;
-        if (dbName !== 'configDb' && dbName !== 'mapNamesDb' && dbName !== 'mapTilesDb' && dbName !== 'imagesDb') {
+        if (dbName !== 'configDb' && dbName !== 'mapNamesDb' && dbName !== 'mapTilesDb' && dbName !== 'imagesDb' && dbName !== 'credentialsDb') {
           save[dbName] = {};
           var promise = db.iterate(function (value, key, i) {
             save[dbName][key] = value;
@@ -176,7 +177,7 @@
       var promisesOuter = [];
       _.each(dbs, function (db) {
         var dbName = db.config().name;
-        if (dbName !== 'configDb' && dbName !== 'mapNamesDb' && dbName !== 'mapTilesDb') {
+        if (dbName !== 'configDb' && dbName !== 'mapNamesDb' && dbName !== 'mapTilesDb' && dbName !== 'credentialsDb') {
           var promiseOuter = db.clear().then(function () {
             if (data[dbName]) {
               _.each(data[dbName], function (value, key) {

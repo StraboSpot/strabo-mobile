@@ -237,23 +237,15 @@
 
     // Perform the login action when the user presses the login icon
     function doLogin() {
-      if (navigator.onLine) {
-        $ionicLoading.show({
-          'template': '<ion-spinner></ion-spinner>'
-        });
-        UserFactory.doLogin(vm.login).then(function () {
-          vm.data = UserFactory.getUser();
-          dataOrig = angular.fromJson(angular.toJson(vm.data));
-        }).finally(function () {
-          $ionicLoading.hide();
-        });
-      }
-      else {
-        $ionicPopup.alert({
-          'title': 'Offline!',
-          'template': 'Can\'t login while offline.'
-        });
-      }
+      $ionicLoading.show({
+        'template': '<ion-spinner></ion-spinner>'
+      });
+      UserFactory.doLogin(vm.login).then(function () {
+        vm.data = UserFactory.getUser();
+        dataOrig = angular.fromJson(angular.toJson(vm.data));
+      }).finally(function () {
+        $ionicLoading.hide();
+      });
     }
 
     // Destroy the user data on when the logout button pressed
