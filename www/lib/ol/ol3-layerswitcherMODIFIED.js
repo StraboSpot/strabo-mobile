@@ -194,7 +194,7 @@
     var li = document.createElement('li');
 
     var lyrTitle = lyr.get('title');
-    var lyrId = ol.control.LayerSwitcher.uuid();
+    var lyrId = lyr.get('id') ? lyr.get('id') : ol.control.LayerSwitcher.uuid(); // Modified by Jessica
     lyr.set('id', lyrId);    // Added by Jessica to add checkmarks to parent grouped layers
 
     var label = document.createElement('label');
