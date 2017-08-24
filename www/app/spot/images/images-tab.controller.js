@@ -262,7 +262,7 @@
           'quality': 75,
           'destinationType': Camera.DestinationType.FILE_URI,
           'sourceType': source,
-          'allowEdit': true,
+          'allowEdit': false,
           'encodingType': Camera.EncodingType.JPEG,
           // 'popoverOptions': CameraPopoverOptions,
           'saveToPhotoAlbum': source === Camera.PictureSourceType.CAMERA
