@@ -26,7 +26,7 @@
       'setMapView': setMapView,
       'setMapViewExtent': setMapViewExtent,
       'setMapViewToSpot': setMapViewToSpot,
-      'zoomToLatLngPoints': zoomToLatLngPoints,
+      'zoomToPoint': zoomToPoint,
       'zoomToSpotsExtent': zoomToSpotsExtent
     };
 
@@ -229,13 +229,8 @@
       }
     }
 
-    function zoomToLatLngPoints(latLngPoints, zoom) {
-      var features = turf.featureCollection([]);
-      _.each(latLngPoints, function (latLngPoint) {
-        features.features.push(turf.point(latLngPoint));
-      });
-      var center = turf.center(features);
-      var mapCenter = ol.proj.transform(turf.getCoord(center), 'EPSG:4326', 'EPSG:3857');
+    function zoomToPoint(point, zoom) {
+      var mapCenter = ol.proj.transform(point, 'EPSG:4326', 'EPSG:3857');
       mapView = new ol.View({
         'center': mapCenter,
         'zoom': zoom

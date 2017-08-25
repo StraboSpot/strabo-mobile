@@ -135,29 +135,21 @@
       $ionicLoading.show({
         'template': '<ion-spinner></ion-spinner>'
       });
-      var latLngPoints = [];
-      var z;
       var pattern = /(\d+)\/(\d+)\/(\d+)/; // Format "15/6285/13283"
-      var i = 0;
-      while (latLngPoints.length <= 15 && i < map.tileArray.length) {
-        var tile = map.tileArray[i];
-        var tileNameParts = pattern.exec(tile.tile);
+      for (var i = 0; i < map.tileArray.length; i++) {
+        var tileNameParts = pattern.exec(map.tileArray[i].tile);
         if (tileNameParts && tileNameParts.length === 4) {
-          var thisTileZoom = parseInt(tileNameParts[1]);
-          if (z === undefined) z = thisTileZoom;  // Zoom level in first tile is zoom that we'll use
-          if (z === thisTileZoom) {       // Only gather tiles with same zoom level as first tile
-            var x = parseInt(tileNameParts[2]);
-            var lng = SlippyTileNamesFactory.tile2long(x, z);
-            var y = parseInt(tileNameParts[3]);
-            var lat = SlippyTileNamesFactory.tile2lat(y, z);
-            latLngPoints.push([lng, lat]);
-          }
+          var z = parseInt(tileNameParts[1]);
+          var x = parseInt(tileNameParts[2]);
+          var lng = SlippyTileNamesFactory.tile2long(x, z);
+          var y = parseInt(tileNameParts[3]);
+          var lat = SlippyTileNamesFactory.tile2lat(y, z);
+          MapLayerFactory.setVisibleBaselayer(map.id);
+          MapViewFactory.zoomToPoint([lng, lat], z);
+          $location.path('/app/map');
+          break;
         }
-        i++;
       }
-      MapLayerFactory.setVisibleBaselayer(map.id);
-      MapViewFactory.zoomToLatLngPoints(latLngPoints, z);
-      $location.path('/app/map');
     }
   }
 }());
