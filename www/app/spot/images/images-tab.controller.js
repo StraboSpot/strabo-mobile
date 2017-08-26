@@ -259,7 +259,7 @@
         }
 
         var cameraOptions = {
-          'quality': 75,
+          'quality': 100,
           'destinationType': Camera.DestinationType.FILE_URI,
           'sourceType': source,
           'allowEdit': false,
