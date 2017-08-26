@@ -97,13 +97,16 @@
           _.each(otherSpots, function (spot) {
             if ((!thisSpot.properties.image_basemap && !spot.properties.image_basemap) ||
               (thisSpot.properties.image_basemap && spot.properties.image_basemap &&
-              thisSpot.properties.image_basemap === spot.properties.image_basemap)) {
+                thisSpot.properties.image_basemap === spot.properties.image_basemap)) {
               // If Spot is a point and is inside thisSpot then Spot is a child
-              if (_.propertyOf(spot.geometry)('type') === 'Point') {
+              if (_.propertyOf(spot.geometry)('type') === 'Point' &&
+                (_.propertyOf(thisSpot.geometry)('type') === 'Polygon' ||
+                  _.propertyOf(thisSpot.geometry)('type') === 'MutiPolygon')) {
                 if (turf.inside(spot, thisSpot)) childrenSpots.push(spot);
               }
               // If Spot is not a point and all of its points are inside thisSpot then Spot is a child
-              else {
+              else if (_.propertyOf(thisSpot.geometry)('type') === 'Polygon' || _.propertyOf(thisSpot.geometry)(
+                  'type') === 'MutiPolygon') {
                 var points = turf.explode(spot);
                 if (points.features) {
                   var pointsInside = [];
@@ -136,7 +139,7 @@
       _.each(otherSpots, function (spot) {
         if ((!thisSpot.properties.image_basemap && !spot.properties.image_basemap) ||
           (thisSpot.properties.image_basemap && spot.properties.image_basemap &&
-          thisSpot.properties.image_basemap === spot.properties.image_basemap)) {
+            thisSpot.properties.image_basemap === spot.properties.image_basemap)) {
           if (_.propertyOf(thisSpot.geometry)('type')) {
             if (_.propertyOf(thisSpot.geometry)('type') === 'Point') {
               // If thisSpot is a point and the point is inside a polygon Spot then that polygon Spot is a parent
@@ -150,7 +153,8 @@
               // that feature is a parent of this Spot
               var points = turf.explode(thisSpot);
               if (points.features) {
-                if (_.propertyOf(spot.geometry)('type') !== 'Point') {
+                if (_.propertyOf(spot.geometry)('type') === 'Polygon' || _.propertyOf(spot.geometry)(
+                    'type') === 'MutiPolygon') {
                   var pointsInside = [];
                   _.each(points.features, function (point) {
                     if (turf.inside(point, spot)) pointsInside.push(point);
