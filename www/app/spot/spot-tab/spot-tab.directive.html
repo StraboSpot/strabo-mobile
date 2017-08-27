@@ -96,18 +96,8 @@
 
     <div ng-show='vm.showRadius'>
       <ion-input class='item item-input item-stacked-label item-text-wrap'>
-        <ion-label>Radius of Spot</ion-label>
+        <ion-label>Radius of Spot (m)</ion-label>
         <input type='number' ng-model='vm.spot.properties.spot_radius'>
-      </ion-input>
-      <ion-input class='item item-input item-select item-stacked-label item-text-wrap'>
-        <ion-label>Spot Radius Units</ion-label>
-        <select ng-model='vm.spot.properties.spot_radius_units'>
-          <option>kilometer</option>
-          <option>meter</option>
-          <option>millimeter</option>
-          <option>micrometer</option>
-          <option value=''>-- Select Spot Radius Units --</option>
-        </select>
       </ion-input>
     </div>
 
