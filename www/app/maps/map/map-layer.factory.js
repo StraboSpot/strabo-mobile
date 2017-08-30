@@ -5,9 +5,9 @@
     .module('app')
     .factory('MapLayerFactory', MapLayerFactory);
 
-  MapLayerFactory.$inject = ['$log', '$window', 'HelpersFactory', 'OfflineTilesFactory', 'MapFactory'];
+  MapLayerFactory.$inject = ['$log', '$q', '$window', 'HelpersFactory', 'OfflineTilesFactory', 'MapFactory'];
 
-  function MapLayerFactory($log, $window, HelpersFactory, OfflineTilesFactory, MapFactory) {
+  function MapLayerFactory($log, $q, $window, HelpersFactory, OfflineTilesFactory, MapFactory) {
     var baselayers = {};
     var drawLayer = {};
     var featureLayer = {};
@@ -56,6 +56,80 @@
       setGeolocationHeadingIconStyle();
       setGeolocationAccuracyTextStyle();
       setGeolocationSpeedTextStyle();
+    }
+
+    // Check for parent tile to use to make overzoomed child tile
+    function checkNextTile(mapProvider, imgElement, x, y, z, d, row, col) {
+      var newX = (x - row) / d;
+      var newY = (y - col) / d;
+      var tileId = z + '/' + newX + '/' + newY;
+      if (Number.isInteger(newX) && Number.isInteger(newY)) {
+        getTile(mapProvider, tileId).then(function (blob) {
+          //$log.log('Found tile:', tileId, 'to overzoom at', row, col, ' Loading ...');
+          loadTile(blob, imgElement).then(function () {
+            modifyTileImg(imgElement, d, row, col);
+          });
+        }, function () {
+          handleTileNotFound(mapProvider, imgElement, x, y, z, d, row, col)
+        });
+      }
+      else handleTileNotFound(mapProvider, imgElement, x, y, z, d, row, col);
+    }
+
+    // Check if there's a parent tile to use to make overzoomed child tile
+    function getSubstituteTile(mapProvider, imgElement, x, y, z, d) {
+      var row = 0;
+      var col = 0;
+      checkNextTile(mapProvider, imgElement, x, y, z, d, row, col);
+    }
+
+    // Get the tile from local storage
+    function getTile(mapProvider, tileId) {
+      var deferred = $q.defer(); // init promise
+      //$log.log('Looking for tile:', tileId);
+      OfflineTilesFactory.read(mapProvider, tileId, function (blob) {
+        if (blob !== null) deferred.resolve(blob);  // Tile found in local storage
+        else deferred.reject();                     // Tile not found in local storage
+      });
+      return deferred.promise;
+    }
+
+    // Tile to overzoom not found so either check the next tile in the matrix, go out a zoom level or stop
+    function handleTileNotFound(mapProvider, imgElement, x, y, z, d, row, col) {
+      // If checked all parent tiles for a tile to overzoom and no match go out another zoom level
+      if (row === col && row === d - 1) {
+        if (d < 32) getSubstituteTile(mapProvider, imgElement, x, y, z - 1, d * 2);
+        // Image to overzoom not found within 5 zoom levels (d = 32 = 5 zoom levels)
+        //else imgElement.src = 'img/offlineTiles/zoom' + (z + Math.log2(d)) + '.png';
+      }
+      else {
+        if (col < d - 1) col++; // Next column
+        else {
+          row++;                // Next row
+          col = 0;              // Start columns over
+        }
+        checkNextTile(mapProvider, imgElement, x, y, z, d, row, col);
+      }
+    }
+
+    // Convert tile from blob to base 64 and set as image source
+    function loadTile(blob, imgElement) {
+      return HelpersFactory.blobToBase64(blob).then(function (base64data) {
+        imgElement.src = base64data;
+      });
+    }
+
+    // Overzoom the tile at row, column
+    function modifyTileImg(imgElement, d, row, col) {
+      var canvas = document.createElement("canvas");
+      var context = canvas.getContext('2d');
+      canvas.width = canvas.height = 256;
+      var image = new Image();
+      image.src = imgElement.src;
+      //DrawImage params: img, clip x, clip y, clip width, clip height, canvas x, canvas y, canvas width, canvas height;
+      context.drawImage(image, (256 / d) * row, (256 / d) * col, 256 / d, 256 / d, 0, 0, 256, 256);
+      var dataUrl = canvas.toDataURL('image/jpeg');
+      imgElement.src = dataUrl;
     }
 
     function setBaselayers() {
@@ -238,43 +312,18 @@
     // tileLoadFunction is used for offline access mode, required by OL3 for specifying how tiles are retrieved
     function tileLoadFunction(mapProvider) {
       return function (imageTile) {
-        // the tile we will be loading
-        var imgElement = imageTile.getImage();
-
-        // the tile coordinates (x,y,z)
-        var imageCoords = imageTile.getTileCoord();
-
-        // y needs to be corrected using (-y - 1)
-        var y = (imageCoords[2] * -1) - 1;
-
+        var imgElement = imageTile.getImage();        // the tile we will be loading
+        var imageCoords = imageTile.getTileCoord();   // the tile coordinates (x,y,z)
+        var y = (imageCoords[2] * -1) - 1;            // y needs to be corrected using (-y - 1)
         var z = imageCoords[0];
         var x = imageCoords[1];
-
         var tileId = z + '/' + x + '/' + y;
-
-        // check to see if we have the tile in our offline storage
-        OfflineTilesFactory.read(mapProvider, tileId, function (blob) {
-          // do we have the image already?
-          if (blob !== null) {
-            // converts blobs to base64
-            var blobToBase64 = function (blob, callback) {
-              var reader = new $window.FileReader();
-              reader.readAsDataURL(blob);
-              reader.onloadend = function () {
-                var base64data = reader.result;
-                callback(base64data);
-              };
-            };
-
-            // yes, lets load the tile into the map
-            blobToBase64(blob, function (base64data) {
-              imgElement.src = base64data;
-            });
-          }
-          else {
-            // no, there is no such image in cache
-            imgElement.src = 'img/offlineTiles/zoom' + z + '.png';
-          }
+        imgElement.id = tileId;
+        getTile(mapProvider, tileId).then(function (blob) {
+          //$log.log('Found original tile:', tileId, 'Loading ...');
+          loadTile(blob, imgElement);
+        }, function () {
+          getSubstituteTile(mapProvider, imgElement, x, y, z - 1, 2);
         });
       };
     }

@@ -5,14 +5,15 @@
     .module('app')
     .factory('HelpersFactory', HelpersFactory);
 
-  HelpersFactory.$inject = ['$cordovaDevice', '$cordovaFile', '$ionicPopup', '$log'];
+  HelpersFactory.$inject = ['$cordovaDevice', '$cordovaFile', '$ionicPopup', '$log', '$q', '$window'];
 
-  function HelpersFactory($cordovaDevice, $cordovaFile, $ionicPopup, $log) {
+  function HelpersFactory($cordovaDevice, $cordovaFile, $ionicPopup, $log, $q, $window) {
     var backView = 'app/spots';
     var ids = [];
 
     return {
       'b64toBlob': b64toBlob,
+      'blobToBase64': blobToBase64,
       'cleanObj': cleanObj,
       'convertToLargerUnit': convertToLargerUnit,
       'convertToSmallerUnit': convertToSmallerUnit,
@@ -48,6 +49,17 @@
         byteArrays.push(byteArray);
       }
       return new Blob(byteArrays, {type: contentType});
+    }
+
+    // Converts blobs to base64
+    function blobToBase64(blob) {
+      var deferred = $q.defer(); // init promise
+      var reader = new $window.FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = function () {
+        deferred.resolve(reader.result);
+      }
+      return deferred.promise;
     }
 
     function getBackView() {
