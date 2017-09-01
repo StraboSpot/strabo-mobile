@@ -17,6 +17,8 @@
     vm.checkedZooms = [];
     vm.downloading = false;
     vm.maps = [];
+    vm.outerZoomMax = 0;
+    vm.outerZoomsAll = {'tilesNeed': [], 'tilesHave': []};
     vm.selectedName = {};
     vm.showNameField = false;
     vm.showSelectName = false;
@@ -61,6 +63,7 @@
           }
         });
 
+        vm.outerZoomMax = mapExtent.zoom - 1;
         var zoomLevels = vm.map.maxZoom ? Math.min(vm.map.maxZoom - Math.round(vm.map.currentZoom) + 1, 5) : 5;
         _.times(zoomLevels, function (n) {
           var zoom = Math.round(vm.map.currentZoom) + n;
@@ -71,7 +74,19 @@
           });
         });
         loadSavedMaps();
+        countOuterZooms();
       }
+    }
+
+    function checkForSavedTile(tileId) {
+      var deferred = $q.defer(); // init promise
+      LocalStorageFactory.getDb().mapTilesDb.getItem(mapLayer.get('id') + '/' + tileId)
+        .then(function (savedTile) {
+          if (savedTile) vm.outerZoomsAll.tilesHave.push(tileId);
+          else vm.outerZoomsAll.tilesNeed.push(tileId);
+          deferred.resolve();
+        });
+      return deferred.promise;
     }
 
     function continueDownload() {
@@ -93,6 +108,50 @@
             $state.reload();
           });
         });
+      });
+    }
+
+    function countOuterZooms() {
+      var promises = [];
+      $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Calculating Outer Zoom Tiles...'});
+
+      var currentZoom = vm.zoomOptions[0].zoom;
+      var currentZoomTileArray = SlippyTileNamesFactory.getTileIds(mapExtent.topRight, mapExtent.bottomLeft,
+        currentZoom);
+
+      var tilesToCheck = ['0/0/0'];
+      var x = 0;
+      var y = 0;
+      var z = 0;
+      promises.push(checkForSavedTile('0/0/0'));
+      _.each(currentZoomTileArray, function (currentTile) {
+        x = 0;
+        y = 0;
+        z = 0;
+        while (z < vm.outerZoomMax) {
+          var regex = /(\d*)\/(\d*)\/(\d*)/g;
+          var match = regex.exec(currentTile);
+          var endX = match[2];
+          var endY = match[3];
+
+          var zDiff = currentZoom - z;      // Difference btwn current zoom of map and zoom of tiles being checked
+          var d = Math.pow(2, zDiff);       // Dimension of the tile grid
+          var col = endX - d * x;           // Column number
+          var row = endY - d * y;           // Row number
+          x = col < (d / 2) ? 2 * x : 2 * x + 1;
+          y = row < (d / 2) ? 2 * y : 2 * y + 1;
+          z++;
+          var tileId = z + '/' + x + '/' + y;
+          if (!_.contains(tilesToCheck, tileId)) {
+            tilesToCheck.push(tileId);
+            promises.push(checkForSavedTile(tileId));
+          }
+        }
+      });
+
+      $q.all(promises).then(function () {
+        //$log.log(vm.outerZoomsAll);
+        updateSelectedDownloads();
       });
     }
 
@@ -128,7 +187,7 @@
       }, function (notify) {
         // Update the progress bar once we receive notifications
         vm.map.percentDownload = Math.ceil(
-            ((notify.success.length + notify.failed.length) / vm.map.tiles.need.length) * 100) || 0;
+          ((notify.success.length + notify.failed.length) / vm.map.tiles.need.length) * 100) || 0;
         vm.map.progress = {
           'success': notify.success.length,
           'failed': notify.failed.length,
@@ -148,7 +207,6 @@
         var promises = [];
         var currentZoomTileArray = SlippyTileNamesFactory.getTileIds(mapExtent.topRight, mapExtent.bottomLeft,
           vm.zoomOptions[i].zoom);
-        var tilesSaved = {};
         _.each(_.flatten(currentZoomTileArray), function (tile) {
           var promise = LocalStorageFactory.getDb().mapTilesDb.getItem(mapLayer.get('id') + '/' + tile).then(
             function (savedTile) {
@@ -159,6 +217,7 @@
         });
 
         $q.all(promises).then(function () {
+            //$log.log(vm.zoomOptions);
             updateSelectedDownloads();
           }
         );
@@ -206,16 +265,14 @@
 
     function updateSelectedDownloads() {
       $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Calculating Total Tiles...'});
-      vm.map.tiles.need = [];
-      vm.map.tiles.saved = [];
+      vm.map.tiles.need = vm.outerZoomsAll.tilesNeed;
+      vm.map.tiles.saved = vm.outerZoomsAll.tilesHave;
       _.each(vm.checkedZooms, function (checkedZoom, i) {
         if (checkedZoom) {
-          vm.map.tiles.need.push(vm.zoomOptions[i].tilesNeed);
-          vm.map.tiles.saved.push(vm.zoomOptions[i].tilesHave);
+          vm.map.tiles.need = _.union(vm.map.tiles.need, vm.zoomOptions[i].tilesNeed);
+          vm.map.tiles.saved = _.union(vm.map.tiles.saved, vm.zoomOptions[i].tilesHave);
         }
       });
-      vm.map.tiles.need = _.flatten(vm.map.tiles.need);
-      vm.map.tiles.saved = _.flatten(vm.map.tiles.saved);
       if (vm.map.tiles.need.length === 0) vm.submitBtnText = '0 Tiles Selected To Download';
       else vm.submitBtnText = 'Download ' + vm.map.tiles.need.length + ' Tiles';
       $ionicLoading.hide();

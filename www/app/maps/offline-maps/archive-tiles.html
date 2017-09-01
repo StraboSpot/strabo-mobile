@@ -18,6 +18,9 @@
     </ion-input>
 
     <h5>Select zoom levels to download:</h5>
+    <ion-checkbox ng-checked="true" ng-disabled="true" ng-hide='vm.outerZoomMax < 1'>
+      Zooms 0-{{ vm.outerZoomMax }}: {{ vm.outerZoomsAll.tilesNeed.length }} tiles needed, {{ vm.outerZoomsAll.tilesHave.length }} already saved
+    </ion-checkbox>
     <div ng-repeat='zoomOption in vm.zoomOptions track by $index'>
       <ion-checkbox ng-model='vm.checkedZooms[$index]' ng-change='vm.countTiles($index)'>
         Zoom {{ zoomOption.zoom }}:
