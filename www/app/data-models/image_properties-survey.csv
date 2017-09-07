@@ -1,5 +1,5 @@
 name,type,label,required,relevant,constraint,appearance,hint,constraint_message
-group_image_data,begin group,Image Data,,,,,,
+group_image_data,begin_group,Image Data,,,,,,
 title,text,Image Name,false,,,,,
 image_type,select_one cs3xd00,Image Type,true,,,,,
 other_image_type,text,Other Image Type,true,${image_type} = 'other_image_ty',. = '',,,
@@ -9,13 +9,13 @@ scale_of_image,text,Scale of Overall Image,false,,,,,
 scale_of_object,text,Scale and type of object in image (m),false,,,,,
 width_of_image_view,decimal,Width of Image View,false,,. > 0,,Enables Scalebar,Value must be greater than 0.
 units_of_image_view,select_one vt86z05,Units of Image View,true,${width_of_image_view} != '',,,,
-group_camera_orientation,begin group,Camera Orientation,,,,,,
+group_camera_orientation,begin_group,Camera Orientation,,,,,,
 lat,decimal,Latitude,false,,. >= -90 and . <= 90,,,Value must be between -90 and 90.
 lng,decimal,Longitude,false,,. >= -180 and . <= 180,,,Value must be between -180 and 180.
 view_azimuth_trend,integer,View azimuth (trend),false,,. >= 0 and . <= 360,,,Value must be a whole number between 0-360.
 view_angle_plunge,integer,View angle (plunge),false,,. >= -90 and . <= 90,,,Value must be a whole number between -90 (down) and +90 (up).
 orientation_of_view_subject,text,Orientation of View Subject,false,,,,"e.g., facing direction of cliff face",
-,end group,,,,,,,
-,end group,,,,,,,
+,end_group,,,,,,,
+,end_group,,,,,,,
 start,start,,,,,,,
 end,end,,,,,,,

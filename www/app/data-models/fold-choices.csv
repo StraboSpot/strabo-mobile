@@ -1,45 +1,78 @@
-name,label,list name
-anticline,anticline,fold_geometry_YZp6QecM4sc_
-syncline,syncline,fold_geometry_YZp6QecM4sc_
-monocline,monocline,fold_geometry_YZp6QecM4sc_
-antiform,antiform,fold_geometry_YZp6QecM4sc_
-synform,synform,fold_geometry_YZp6QecM4sc_
-s_fold,s-fold,fold_geometry_YZp6QecM4sc_
-z_fold,z-fold,fold_geometry_YZp6QecM4sc_
-m_fold,m-fold,fold_geometry_YZp6QecM4sc_
-sheath,sheath,fold_geometry_YZp6QecM4sc_
-single_layer_b,single-layer buckle,fold_geometry_YZp6QecM4sc_
-ptygmatic,ptygmatic,fold_geometry_YZp6QecM4sc_
-crenulation,crenulation,fold_geometry_YZp6QecM4sc_
-interfolial,interfolial,fold_geometry_YZp6QecM4sc_
-other,other,fold_geometry_YZp6QecM4sc_
-chevron,chevron,fold_shape_zAkwyn9tNVk_
-cuspate,cuspate,fold_shape_zAkwyn9tNVk_
-circular,circular,fold_shape_zAkwyn9tNVk_
-elliptical,elliptical,fold_shape_zAkwyn9tNVk_
-upright,upright,fold_attitude_JRxvawYUuD4_
-overturned,overturned,fold_attitude_JRxvawYUuD4_
-vertical,vertical,fold_attitude_JRxvawYUuD4_
-horizontal,horizontal,fold_attitude_JRxvawYUuD4_
-recumbent,recumbent,fold_attitude_JRxvawYUuD4_
-inclined,inclined,fold_attitude_JRxvawYUuD4_
-gentle,gentle (180°-120°),tightness_1u_TZ7ZL3Tg_
-open,open (120°-70°),tightness_1u_TZ7ZL3Tg_
-close,close (70°-30°),tightness_1u_TZ7ZL3Tg_
-tight,tight (30°-10°),tightness_1u_TZ7ZL3Tg_
-isoclinal,isoclinal (10°-0°),tightness_1u_TZ7ZL3Tg_
-north,North,vergence_n4QvBpOQFvw_
-ne,NE,vergence_n4QvBpOQFvw_
-east,East,vergence_n4QvBpOQFvw_
-se,SE,vergence_n4QvBpOQFvw_
-south,South,vergence_n4QvBpOQFvw_
-sw,SW,vergence_n4QvBpOQFvw_
-west,West,vergence_n4QvBpOQFvw_
-nw,NW,vergence_n4QvBpOQFvw_
-accurate,accurate,fold_fol_quality_5Cye72eaqyA_
-approximate,approximate,fold_fol_quality_5Cye72eaqyA_
-irregular,irregular,fold_fol_quality_5Cye72eaqyA_
-axial_planar,axial planar,fold_foliation_Type_VKGfG3jCKt8_
-fanning_conver,fanning-convergent,fold_foliation_Type_VKGfG3jCKt8_
-fanning_diverg,fanning-divergent,fold_foliation_Type_VKGfG3jCKt8_
-transected,transected,fold_foliation_Type_VKGfG3jCKt8_
+list_name,name,label,order
+fold_geometry_YZp6QecM4sc_,anticline,anticline,
+fold_geometry_YZp6QecM4sc_,syncline,syncline,1
+fold_geometry_YZp6QecM4sc_,monocline,monocline,2
+fold_geometry_YZp6QecM4sc_,antiform,antiform,3
+fold_geometry_YZp6QecM4sc_,synform,synform,4
+fold_geometry_YZp6QecM4sc_,s_fold,s-fold,5
+fold_geometry_YZp6QecM4sc_,z_fold,z-fold,6
+fold_geometry_YZp6QecM4sc_,m_fold,m-fold,7
+fold_geometry_YZp6QecM4sc_,sheath,sheath,8
+fold_geometry_YZp6QecM4sc_,single_layer_b,single-layer buckle,9
+fold_geometry_YZp6QecM4sc_,ptygmatic,ptygmatic,10
+fold_geometry_YZp6QecM4sc_,crenulation,crenulation,11
+fold_geometry_YZp6QecM4sc_,interfolial,interfolial,12
+fold_geometry_YZp6QecM4sc_,unspecified,unspecified,13
+fold_geometry_YZp6QecM4sc_,other,other,14
+rg23y65,5___straight,5 - straight,
+rg23y65,4,4,
+rg23y65,3,3,
+rg23y65,2,2,
+rg23y65,1___strongly_c,1 - strongly curved,
+xe6xm89,5___excellent,5 - excellent,
+xe6xm89,4,4,
+xe6xm89,3,3,
+xe6xm89,2,2,
+xe6xm89,1___poor,1 - poor,
+ne4bk50,5___planar,5 - planar,
+ne4bk50,4,4,
+ne4bk50,3,3,
+ne4bk50,2,2,
+ne4bk50,1___strongly_c,1 - strongly curved,
+ih6gv30,5___excellent,5 - excellent,
+ih6gv30,4,4,
+ih6gv30,3,3,
+ih6gv30,2,2,
+ih6gv30,1___poor,1 - poor,
+fold_attitude_JRxvawYUuD4_,upright_horizo,upright horizontal,
+fold_attitude_JRxvawYUuD4_,upright_plungi,upright plunging,
+fold_attitude_JRxvawYUuD4_,vertical,vertical,
+fold_attitude_JRxvawYUuD4_,inclined_horiz,inclined horizontal,
+fold_attitude_JRxvawYUuD4_,inclined_plung,inclined plunging,
+fold_attitude_JRxvawYUuD4_,reclined,reclined,
+fold_attitude_JRxvawYUuD4_,recumbent,recumbent,
+fold_attitude_JRxvawYUuD4_,unknown,unknown,
+fold_shape_zAkwyn9tNVk_,class_1a,class 1A,
+fold_shape_zAkwyn9tNVk_,class_1b__para,class 1B (parallel),
+fold_shape_zAkwyn9tNVk_,class_1c,class 1C,
+fold_shape_zAkwyn9tNVk_,class_2__simil,class 2 (similar),
+fold_shape_zAkwyn9tNVk_,class_3,class 3,
+tightness_1u_TZ7ZL3Tg_,gentle,gentle (180-120),
+tightness_1u_TZ7ZL3Tg_,open,open (120-70),
+tightness_1u_TZ7ZL3Tg_,close,close (70-30),
+tightness_1u_TZ7ZL3Tg_,tight,tight (30-10),
+tightness_1u_TZ7ZL3Tg_,isoclinal,isoclinal (10-0),
+tightness_1u_TZ7ZL3Tg_,obtuse,obtuse,
+ud9hu83,chevron,chevron,
+ud9hu83,sharp,sharp,
+ud9hu83,angular,angular,
+ud9hu83,subangular,subangular,
+ud9hu83,subrounded,subrounded,
+ud9hu83,rounded,rounded,
+ud9hu83,circular,circular,
+ud9hu83,blunt,blunt,
+vergence_n4QvBpOQFvw_,north,North,
+vergence_n4QvBpOQFvw_,ne,NE,
+vergence_n4QvBpOQFvw_,east,East,
+vergence_n4QvBpOQFvw_,se,SE,
+vergence_n4QvBpOQFvw_,south,South,
+vergence_n4QvBpOQFvw_,sw,SW,
+vergence_n4QvBpOQFvw_,west,West,
+vergence_n4QvBpOQFvw_,nw,NW,
+fold_fol_quality_5Cye72eaqyA_,accurate,accurate,
+fold_fol_quality_5Cye72eaqyA_,approximate,approximate,
+fold_fol_quality_5Cye72eaqyA_,irregular,irregular,
+fold_foliation_Type_VKGfG3jCKt8_,axial_planar,axial planar,
+fold_foliation_Type_VKGfG3jCKt8_,fanning_conver,fanning-convergent,
+fold_foliation_Type_VKGfG3jCKt8_,fanning_diverg,fanning-divergent,
+fold_foliation_Type_VKGfG3jCKt8_,transected,transected,

@@ -3,7 +3,7 @@
        class='strabo-form'>
     <div id='{{ field.name }}' ng-show='form.showField(field, vm.data)'>
       <div data-ng-switch on='field.type.split(" ")[0]'>
-        <div class='field-group item item-divider' ng-switch-when='begin'>
+        <div class='field-group item item-divider' ng-switch-when='begin_group'>
           {{ field.label }}
         </div>
         <div ng-switch-when='integer'>
@@ -108,7 +108,7 @@
             <select name='{{ field.name }}'
                     ng-model='vm.data[field.name]'
                     ng-options='choice.name as choice.label for choice in form.choices
-                                | filter: { "list name": field.type.split(" ")[1] }'
+                                | filter: { "list_name": field.type.split(" ")[1] }'
                     ng-required='{{ field.required }}'>
               <option value=''>-- Select {{ field.label }} --</option>
             </select>
@@ -122,7 +122,7 @@
                       ng-show='field.hint' ng-click='form.showFieldInfo(field)'></button>
             </ion-label>
             <ion-checkbox name='{{ field.name }}'
-                          ng-repeat='choice in form.choices | filter: { "list name": field.type.split(" ")[1] }'
+                          ng-repeat='choice in form.choices | filter: { "list_name": field.type.split(" ")[1] }'
                           ng-checked='form.isOptionChecked(vm.spot, field.name, choice.name, vm.data)'
                           ng-click='form.toggleChecked(field.name, choice.name, vm.data)'
                           ng-required='{{ field.required }}'>

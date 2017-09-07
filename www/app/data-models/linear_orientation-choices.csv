@@ -1,31 +1,35 @@
-label,name,order,list name
-groove marks,groove_marks,0,wa7uq58
-parting lineations,parting_lineat,1,wa7uq58
-magmatic mineral alignment,magmatic_miner_1,2,wa7uq58
-xenolith/enclave alignment,xenolith_encla,3,wa7uq58
-intersection,intersection,4,wa7uq58
-pencil cleavage,pencil_cleav,5,wa7uq58
-mineral alignment,mineral_align,6,wa7uq58
-deformed marker,deformed_marke,7,wa7uq58
-rodding,rodding,8,wa7uq58
-boudin,boudin,9,wa7uq58
-mullions,mullions,10,wa7uq58
-fold hinge,fold_hinge,11,wa7uq58
-striations,striations,12,wa7uq58
-slickenlines,slickenlines,13,wa7uq58
-slickenfibers,slickenfibers,14,wa7uq58
-mineral streaks,mineral_streak,15,wa7uq58
-vorticity axis,vorticity_axis,16,wa7uq58
-flow/transport direction,flow_transport,17,wa7uq58
-vergence,vergence,18,wa7uq58
-vector,vector,19,wa7uq58
-other,other,20,wa7uq58
-yes,yes,,hq7tk98
-no,no,,hq7tk98
-5 - best - accurate,5,0,ex15z66
-4,4,1,ex15z66
-3 - approximate,3,2,ex15z66
-2,2,3,ex15z66
-1 - poor - irregular - uncertain,1,4,ex15z66
-clockwise,clockwise,,ip7ah36
-counterclockwise,counterclockwi,,ip7ah36
+list_name,name,label,order
+hq7tk98,yes,yes,
+hq7tk98,no,no,
+ex15z66,5,5 - excellent,0
+ex15z66,4,4,1
+ex15z66,3,3,2
+ex15z66,2,2,3
+ex15z66,1,1 - poor,4
+wa7uq58,stretching,stretching,
+wa7uq58,intersection,intersection,1
+wa7uq58,pencil_cleav,pencil cleavage,2
+wa7uq58,striations,striations,3
+wa7uq58,slickenlines,slickenlines,4
+wa7uq58,fold_hinge,fold hinge,5
+wa7uq58,s_fold,s-fold,6
+wa7uq58,z_fold,z-fold,7
+wa7uq58,m_fold,m-fold,8
+wa7uq58,slickenfibers,slickenfibers,9
+wa7uq58,groove_marks,groove marks,10
+wa7uq58,parting_lineat,parting lineations,11
+wa7uq58,magmatic_miner_1,magmatic mineral alignment,12
+wa7uq58,xenolith_encla,xenolith/enclave alignment,13
+wa7uq58,mineral_align,mineral alignment,14
+wa7uq58,deformed_marke,deformed marker,15
+wa7uq58,rodding,rodding,16
+wa7uq58,boudin,boudin,17
+wa7uq58,mullions,mullions,18
+wa7uq58,mineral_streak,mineral streaks,19
+wa7uq58,vorticity_axis,vorticity axis,20
+wa7uq58,flow_transport,flow/transport direction,21
+wa7uq58,vergence,vergence,22
+wa7uq58,vector,vector,23
+wa7uq58,other,other,24
+ip7ah36,clockwise,clockwise,
+ip7ah36,counterclockwi,counterclockwise,

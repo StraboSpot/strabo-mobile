@@ -7,7 +7,7 @@ absolute_age_of_geologic_unit,decimal,Absolute Age of Geologic Unit (Ma),false,.
 age_uncertainty,decimal,Age Uncertainty (Ma),false,. > 0,Value must be greater than 0.,,,
 max_absolute_age_of_geol_unit,decimal,Maximum Absolute Age of Geologic Unit (Ma),false,. > 0,Value must be greater than 0.,${absolute_age_of_geologic_unit} = '',,
 min_absolute_age_of_geol_unit,decimal,Minimum Absolute Age of Geologic Unit (Ma),false,. > 0,Value must be greater than 0.,${absolute_age_of_geologic_unit} = '',,
-group_unit_type,begin group,Unit Type,,,,,,
+group_unit_type,begin_group,Unit Type,,,,,,
 rock_type,select_one rm0pv08,Rock Type,false,,,,"Type: sedimentary, igneous, metamorphic, or sediment",horizontal
 sediment_type,select_one ej6zw88,Sediment Type,false,,,${rock_type} = 'sediment',Specific type of sediment,horizontal
 other_sediment_type,text,Other Sediment Type,true,,,${sediment_type} = 'other',,
@@ -21,16 +21,16 @@ other_plutonic_rock_type,text,Other Plutonic Rock Type,true,,,${plutonic_rock_ty
 metamorphic_rock_types,select_one yg0ew35,Metamorphic Rock Types,false,,,${rock_type} = 'metamorphic',Specific metamorphic rock type,
 other_metamorphic_rock_type,text,Other Metamorphic Rock Type,true,,,${metamorphic_rock_types} = 'other',,
 metamorphic_grade,select_one ak6ci54,Metamorphic Grade,false,,,${rock_type} = 'metamorphic',Specific metamorphic grade,
-,end group,,,,,,,
+,end_group,,,,,,,
 other_metamorphic_grade,text,Other Metamorphic Grade,false,,,${metamorphic_grade} = 'other',metamorphic grade not given in list,
-group_geologic_age,begin group,Geologic Age,,,,,,
+group_geologic_age,begin_group,Geologic Age,,,,,,
 epoch,select_one kf0mi66,Epoch,false,,,,Specific geologic time epoch,horizontal
 other_epoch,text,Other Epoch,true,,,${epoch} = 'other',,
 period,select_one xw5wu04,Period,false,,,,Specific geologic time period,horizontal
 era,select_one kb2cc45,Era,false,,,,Specific geologic time era,horizontal
 eon,select_one fy5ep25,Eon,false,,,,Specific geologic time eon,horizontal
 age_modifier,select_one ns6qv42,Age Modifier,false,,,,"Age modifier to era, period or epoch",horizontal-compact
-,end group,,,,,,,
+,end_group,,,,,,,
 description,text,Description,false,,,,,
 notes,text,Notes,false,,,,,multiline
 start,start,,,,,,,

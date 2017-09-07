@@ -241,7 +241,7 @@
         if (type) {
           var list = type.type.split(' ')[1];
           var choices = _.filter(model.choices, function (choice) {
-            return choice['list name'] === list;
+            return choice['list_name'] === list;
           });
           _.each(choices, function (choice) {
             if (tempTypeLabels[choice.name] && tempTypeLabels[choice.name] !== choice.label) {
@@ -257,7 +257,7 @@
     function getType(type, model) {
       if (type.split(' ')[0] === 'select_one') {
         var choices = _.filter(model.choices, function (choice) {
-          return choice['list name'] === type.split(' ')[1];
+          return choice['list_name'] === type.split(' ')[1];
         });
         type = 'select one [' + _.pluck(choices, 'name').join(', ') + ']';
       }
