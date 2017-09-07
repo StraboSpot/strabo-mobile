@@ -12,6 +12,7 @@
         <option value='geologic_unit'>Geologic Unit</option>
         <option value='concept'>Concept</option>
         <option value='documentation'>Documentation</option>
+        <option value='rosetta'>Rosetta</option>
         <option value='other'>Other</option>
         <option value=''>-- Select Type --</option>
       </select>
@@ -31,5 +32,12 @@
     <div ng-show='vm.data.type === "other"'>
       <strabo-other-tag-directive></strabo-other-tag-directive>
     </div>
+    <div ng-hide='!vm.data.type || vm.data.type === "" || vm.data.type === "geologic_unit"'>
+      <ion-input class='item item-input'>
+        <textarea placeholder='Notes about this Tag' rows='4' ng-model='vm.data.notes'></textarea>
+      </ion-input>
+    </div>
+    <br>
+    <strabo-tagged-list-directive></strabo-tagged-list-directive>
   </div>
 </div>

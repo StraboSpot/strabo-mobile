@@ -44,7 +44,8 @@
         'geological_structure': 'Geological Structure',
         'marker_layer': 'Marker Layer',
         'other': 'Other',
-        'concept': 'Concept'
+        'concept': 'Concept',
+        'rosetta': 'Rosetta'
       };
     }
 
