@@ -37,9 +37,11 @@
     vm.closeModal = closeModal;
     vm.createTag = createTag;
     vm.groupSpots = groupSpots;
+    vm.isiOS = isiOS;
     vm.isOnline = isOnline;
     vm.returnToSpot = returnToSpot;
     vm.saveEdits = saveEdits;
+    vm.stereonetSpots = stereonetSpots;
     vm.toggleNesting = toggleNesting;
     vm.toggleTagChecked = toggleTagChecked;
     vm.toggleLocation = toggleLocation;
@@ -193,14 +195,31 @@
 
       $scope.$on('changedDrawMode', function () {
         var draw = MapDrawFactory.getDrawMode();
+        var lmode = MapDrawFactory.getLassoMode();
+        $log.log('LassoMode:',lmode);
         draw.on('drawend', function (e) {
           MapDrawFactory.doOnDrawEnd(e);
           var selectedSpots = SpotFactory.getSelectedSpots();
           if (!_.isEmpty(selectedSpots)) {
             $log.log('Selected Spots:', selectedSpots);
-            vm.allTags = ProjectFactory.getTags();
-            tagsToAdd = [];
-            vm.addTagModal.show();
+            _.each(selectedSpots, function (thisspot) {
+              $log.log(thisspot.properties.name);
+            });
+
+            if(lmode=="tags"){
+              $log.log("tag mode enabled");
+              vm.allTags = ProjectFactory.getTags();
+              tagsToAdd = [];
+              vm.addTagModal.show();
+            }else if(lmode=="stereonet"){
+              $log.log("stereonet mode enabled");
+              HelpersFactory.getStereonet(selectedSpots);
+            }
+          }else{
+            $ionicPopup.alert({
+              'title': 'Error!',
+              'template': 'No spots selected. Please try again.'
+            });
           }
         });
       });
@@ -316,6 +335,10 @@
       return navigator.onLine;
     }
 
+    function isiOS() {
+      return ionic.Platform.device().platform=="iOS";
+    }
+
     function returnToSpot() {
       $location.path('/app/spotTab/' + vm.currentSpot.properties.id + '/spot');
     }
@@ -323,6 +346,11 @@
     function saveEdits() {
       vm.saveEditsText = 'Saved Edits';
       MapDrawFactory.saveEdits(vm.clickedFeatureId);
+    }
+
+    function stereonetSpots() {
+      vm.popover.hide();
+      MapDrawFactory.stereonetSpots();
     }
 
     function toggleNesting() {

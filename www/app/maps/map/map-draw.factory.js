@@ -15,6 +15,7 @@
     var featuresOrig = [];
     var imageBasemap;       // id of an image basemap if an image basemap is being used
     var isFreeHand;
+    var lassoMode;          // mode of current lasso (tag or stereonet)
     var map;
     var modify;
     var spotsEdited = [];    // array of spots edited with the edit button
@@ -29,9 +30,11 @@
       'doOnDrawEnd': doOnDrawEnd,
       'DrawControls': DrawControls,
       'getDrawMode': getDrawMode,
+      'getLassoMode': getLassoMode,
       'groupSpots': groupSpots,
       'isDrawMode': isDrawMode,
-      'saveEdits': saveEdits
+      'saveEdits': saveEdits,
+      'stereonetSpots': stereonetSpots
     };
 
     /**
@@ -261,54 +264,43 @@
         // add the dragging back in
         map.addInteraction(new ol.interaction.DragPan());
 
-        // does the drawing contain a kink, aka self-intersecting polygon?
-        if (turf.kinks(geojsonObj).features.length === 0) {
-          // no, good
+        // contains all the lassoed objects
+        var lassoedSpots = [];
 
-          // contains all the lassoed objects
-          var lassoedSpots = [];
-
-          var spots = SpotFactory.getActiveSpots();
-          var mappedSpots = _.filter(spots, function (spot) {
-            return spot.geometry;
+        var spots = SpotFactory.getActiveSpots();
+        var mappedSpots = _.filter(spots, function (spot) {
+          return spot.geometry;
+        });
+        if (imageBasemap) {
+          var spotsOnImageBasemap = _.filter(mappedSpots, function (mappedSpot) {
+            return mappedSpot.properties.image_basemap;
           });
-          if (imageBasemap) {
-            var spotsOnImageBasemap = _.filter(mappedSpots, function (mappedSpot) {
-              return mappedSpot.properties.image_basemap;
-            });
-            mappedSpots = _.filter(spotsOnImageBasemap, function (spotOnImageBasemap) {
-              return spotOnImageBasemap.properties.image_basemap === imageBasemap.id;
-            });
+          mappedSpots = _.filter(spotsOnImageBasemap, function (spotOnImageBasemap) {
+            return spotOnImageBasemap.properties.image_basemap === imageBasemap.id;
+          });
+        }
+        _.each(mappedSpots, function (spot) {
+          // if the spot is a point, we test using turf.inside
+          // if the spot is a polygon or line, we test using turf.intersect
+
+          var spotType = spot.geometry.type;
+
+          if (spotType === 'Point') {
+            // is the point inside the drawn polygon?
+            if (turf.inside(spot, geojsonObj)) {
+              lassoedSpots.push(spot);
+            }
           }
-          _.each(mappedSpots, function (spot) {
-            // if the spot is a point, we test using turf.inside
-            // if the spot is a polygon or line, we test using turf.intersect
 
-            var spotType = spot.geometry.type;
-
-            if (spotType === 'Point') {
-              // is the point inside the drawn polygon?
-              if (turf.inside(spot, geojsonObj)) {
-                lassoedSpots.push(spot);
-              }
+          if (spotType === 'LineString' || spotType === 'Polygon') {
+            // is the line or polygon within/intersected in the drawn polygon?
+            if (turf.intersect(spot, geojsonObj)) {
+              lassoedSpots.push(spot);
             }
+          }
+        });
+        SpotFactory.setSelectedSpots(lassoedSpots);
 
-            if (spotType === 'LineString' || spotType === 'Polygon') {
-              // is the line or polygon within/intersected in the drawn polygon?
-              if (turf.intersect(spot, geojsonObj)) {
-                lassoedSpots.push(spot);
-              }
-            }
-          });
-          SpotFactory.setSelectedSpots(lassoedSpots);
-        }
-        else {
-          // contains a kink, aka self-intersecting polygon
-          $ionicPopup.alert({
-            'title': 'Self-Intersecting Polygon!',
-            'template': 'Polygon must not intersect itself. Draw again.'
-          });
-        }
       }
       else {
         $log.log('Drawend: Normal (not freehand)');
@@ -437,6 +429,10 @@
       return draw;
     }
 
+    function getLassoMode() {
+      return lassoMode;
+    }
+
     // Create a group of spots by drawing a polygon on the map
     function groupSpots() {
       // Remove layer switcher and drawing tools to to avoid confusion
@@ -454,6 +450,7 @@
       });
 
       // start the draw with freehand enabled
+      lassoMode = "tags";
       startDraw('Polygon', true);
     }
 
@@ -476,6 +473,26 @@
         spotsEdited = [];
         cancelEdits();
       });
+    }
+    // Lasso spots and copy to clipboard for Stereonet Output
+    function stereonetSpots() {
+      // Remove layer switcher and drawing tools to to avoid confusion
+      // with lasso and regular drawing
+      map.getControls().forEach(function (control) {
+        if (control instanceof ol.control.LayerSwitcher ||
+          control instanceof DrawControls) {
+          map.removeControl(control);
+        }
+      });
+
+      $ionicPopup.alert({
+        'title': 'Choose Spots',
+        'template': 'Draw a polygon around the Spots you would like to transfer to Rick Allmendinger\'s Stereonet app.'
+      });
+
+      // start the draw with freehand enabled
+      lassoMode = "stereonet";
+      startDraw('Polygon', true);
     }
   }
 }());

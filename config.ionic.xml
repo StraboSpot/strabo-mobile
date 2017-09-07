@@ -91,6 +91,7 @@
         <variable name="NSPHOTOLIBRARYUSAGEDESCRIPTIONENTRY" value="Access my photo library." />
         <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value="The strabospot app uses the photo library to add images to field-collected sample data." />
     </plugin>
+    <plugin name="com.verso.cordova.clipboard" spec="https://github.com/VersoSolutions/CordovaClipboard" />
     <plugin name="cordova-plugin-console" spec="^1.0.2" />
     <plugin name="cordova-plugin-device" spec="^1.1.1" />
     <plugin name="cordova-plugin-device-motion" spec="^1.2.1" />

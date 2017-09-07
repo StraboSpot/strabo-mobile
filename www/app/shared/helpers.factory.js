@@ -5,9 +5,9 @@
     .module('app')
     .factory('HelpersFactory', HelpersFactory);
 
-  HelpersFactory.$inject = ['$cordovaDevice', '$cordovaFile', '$ionicPopup', '$log', '$q', '$window'];
+  HelpersFactory.$inject = ['$cordovaClipboard', '$cordovaDevice', '$cordovaFile', '$ionicPopup', '$log', '$q', '$window'];
 
-  function HelpersFactory($cordovaDevice, $cordovaFile, $ionicPopup, $log, $q, $window) {
+  function HelpersFactory($cordovaClipboard, $cordovaDevice, $cordovaFile, $ionicPopup, $log, $q, $window) {
     var backView = 'app/spots';
     var ids = [];
 
@@ -17,6 +17,7 @@
       'cleanObj': cleanObj,
       'convertToLargerUnit': convertToLargerUnit,
       'convertToSmallerUnit': convertToSmallerUnit,
+      'getStereonet': getStereonet,
       'getBackView': getBackView,
       'getNewId': getNewId,
       'hexToRgb': hexToRgb,
@@ -125,6 +126,145 @@
       }
       ids.push(newId);
       return newId;
+    }
+
+    //Accepts object of spots and creates CSV string suitable for pasting into
+    //Rick Allmendinger's Steronet App for iOS
+    function getStereonet(spots) {
+
+      var hasdata = false;
+
+      //build data here
+      var headers = [ "No.",
+                      "Type",
+                      "Structure",
+                      "Color",
+                      "Trd/Strk",
+                      "Plg/Dip",
+                      "Longitude",
+                      "Latitude",
+                      "Horiz ± m",
+                      "Elevation",
+                      "Elev ± m",
+                      "Time",
+                      "Day",
+                      "Month",
+                      "Year",
+                      "Notes"
+                      ];
+
+      var planes = [];
+      var lines = [];
+      var row = [];
+      var out = [];
+
+      _.each(spots, function(spot){
+
+        var longitude = 999;
+    		var latitude = 99;
+    		var trendstrike = "";
+    		var plungedip = "";
+        var notes = "";
+
+        if(spot.geometry.type=="Point"){
+          longitude = spot.geometry.coordinates[0];
+          latitude = spot.geometry.coordinates[1];
+        }
+
+        if(spot.properties.orientation_data){
+          _.each(spot.properties.orientation_data, function(od){
+            if(od.type=="planar_orientation"){
+              if(od.strike && od.dip){
+                trendstrike = od.strike;
+                plungedip = od.dip;
+                if(od.notes) notes = od.notes;
+                row = [
+                  "",
+									"P",
+									"Strabo Planes",
+									"000000000",
+									trendstrike,
+									plungedip,
+									longitude,
+									latitude,
+									"",
+									"0",
+									"",
+									"",
+									"0",
+									"0",
+									"0",
+									notes
+                ];
+                planes.push(row);
+              }
+            }else if(od.type=="linear_orientation"){
+              if(od.trend && od.plunge){
+                trendstrike = od.trend;
+                plungedip = od.plunge;
+                if(od.notes) notes = od.notes;
+                row = [
+                  "",
+									"L",
+									"Strabo Planes",
+									"000000000",
+									trendstrike,
+									plungedip,
+									longitude,
+									latitude,
+									"",
+									"0",
+									"",
+									"",
+									"0",
+									"0",
+									"0",
+									notes
+                ];
+                lines.push(row);
+              }
+            }
+          })
+        }
+
+      })
+
+      if(lines.length>0 || planes.length>0){
+        var recordnum = 1;
+        out.push(headers.join("\t"));
+        if(planes.length>0){
+          _.each(planes, function(plane){
+            plane[0] = recordnum;
+            out.push(plane.join("\t"));
+            recordnum++;
+          })
+        }
+        if(lines.length>0){
+          _.each(lines, function(line){
+            line[0] = recordnum;
+            out.push(line.join("\t"));
+            recordnum++;
+          })
+        }
+        out = out.join("\n");
+        hasdata = true;
+      }
+
+      $log.log("out: ",out);
+
+      if(hasdata){
+        $cordovaClipboard.copy(out).then(function () {
+          $ionicPopup.alert({
+            'title': 'Success!',
+            'template': 'Data has been copied to clipboard.'
+          });
+        });
+      }else{
+        $ionicPopup.alert({
+          'title': 'Error!',
+          'template': 'Your selected spots contained no valid stereonet data.'
+        });
+      }
     }
 
     // Round value to the number of decimal places in the variable places

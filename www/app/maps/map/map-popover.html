@@ -10,6 +10,9 @@
       <ion-item ng-click='vm.groupSpots()'>
         <i class="icon ion-pricetags"></i> Add Tag(s) to Spot(s)
       </ion-item>
+      <ion-item ng-show='vm.isiOS()' ng-click='vm.stereonetSpots()'>
+        <i class="icon ion-disc"></i> Lasso Spots for Stereonet
+      </ion-item>
       <ion-item ng-show='vm.isNesting' ng-click='vm.toggleNesting()'>
         <i class="icon ion-disc"></i> End Continous Nesting
       </ion-item>
