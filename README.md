@@ -82,7 +82,7 @@ Generate Resources (icons and splash screens):
 
 ### Tested Environment - Other Packages/Libraries
 
-    ionic library: 1.3.1
+    ionic library: 1.3.3
     ionic cli : 2.2.1
     cordova: 6.5.0
     nodejs: 6.9.5
