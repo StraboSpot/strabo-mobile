@@ -201,19 +201,29 @@
           MapDrawFactory.doOnDrawEnd(e);
           var selectedSpots = SpotFactory.getSelectedSpots();
           if (!_.isEmpty(selectedSpots)) {
-            $log.log('Selected Spots:', selectedSpots);
-            _.each(selectedSpots, function (thisspot) {
-              $log.log(thisspot.properties.name);
-            });
 
             if(lmode=="tags"){
               $log.log("tag mode enabled");
+
+              //cull spots to only those shown on map
+              var visibleSpots = MapFeaturesFactory.getVisibleLassoedSpots(datasetsLayerStates, selectedSpots, map);
+              SpotFactory.setSelectedSpots(visibleSpots);
+
               vm.allTags = ProjectFactory.getTags();
               tagsToAdd = [];
               vm.addTagModal.show();
             }else if(lmode=="stereonet"){
               $log.log("stereonet mode enabled");
-              HelpersFactory.getStereonet(selectedSpots);
+
+
+              var foospots = MapFeaturesFactory.getVisibleLassoedSpots(datasetsLayerStates, selectedSpots, map);
+              $log.log('foospots: ', foospots);
+
+              //use MapFeaturesFactory to get only mapped orientations
+              var stereonetSpots = MapFeaturesFactory.getVisibleLassoedOrientations(datasetsLayerStates, selectedSpots, map);
+              $log.log('stereonetSpots: ', stereonetSpots);
+
+              HelpersFactory.getStereonet(stereonetSpots);
             }
           }else{
             $ionicPopup.alert({

@@ -171,60 +171,59 @@
           latitude = spot.geometry.coordinates[1];
         }
 
-        if(spot.properties.orientation_data){
-          _.each(spot.properties.orientation_data, function(od){
-            if(od.type=="planar_orientation"){
-              if(od.strike && od.dip){
-                trendstrike = od.strike;
-                plungedip = od.dip;
-                if(od.notes) notes = od.notes;
-                row = [
-                  "",
-									"P",
-									"Strabo Planes",
-									"000000000",
-									trendstrike,
-									plungedip,
-									longitude,
-									latitude,
-									"",
-									"0",
-									"",
-									"",
-									"0",
-									"0",
-									"0",
-									notes
-                ];
-                planes.push(row);
-              }
-            }else if(od.type=="linear_orientation"){
-              if(od.trend && od.plunge){
-                trendstrike = od.trend;
-                plungedip = od.plunge;
-                if(od.notes) notes = od.notes;
-                row = [
-                  "",
-									"L",
-									"Strabo Planes",
-									"000000000",
-									trendstrike,
-									plungedip,
-									longitude,
-									latitude,
-									"",
-									"0",
-									"",
-									"",
-									"0",
-									"0",
-									"0",
-									notes
-                ];
-                lines.push(row);
-              }
+        if(spot.properties.orientation){
+          var od = spot.properties.orientation;
+          if(od.type=="planar_orientation"){
+            if(od.strike && od.dip){
+              trendstrike = od.strike;
+              plungedip = od.dip;
+              if(od.notes) notes = od.notes;
+              row = [
+                "",
+								"P",
+								"Strabo Planes",
+								"000000000",
+								trendstrike,
+								plungedip,
+								longitude,
+								latitude,
+								"",
+								"0",
+								"",
+								"",
+								"0",
+								"0",
+								"0",
+								notes
+              ];
+              planes.push(row);
             }
-          })
+          }else if(od.type=="linear_orientation"){
+            if(od.trend && od.plunge){
+              trendstrike = od.trend;
+              plungedip = od.plunge;
+              if(od.notes) notes = od.notes;
+              row = [
+                "",
+								"L",
+								"Strabo Lines",
+								"000000000",
+								trendstrike,
+								plungedip,
+								longitude,
+								latitude,
+								"",
+								"0",
+								"",
+								"",
+								"0",
+								"0",
+								"0",
+								notes
+              ];
+              lines.push(row);
+            }
+          }
         }
 
       })

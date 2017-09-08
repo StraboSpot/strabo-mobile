@@ -268,6 +268,7 @@
         var lassoedSpots = [];
 
         var spots = SpotFactory.getActiveSpots();
+
         var mappedSpots = _.filter(spots, function (spot) {
           return spot.geometry;
         });
@@ -288,6 +289,7 @@
           if (spotType === 'Point') {
             // is the point inside the drawn polygon?
             if (turf.inside(spot, geojsonObj)) {
+              //check here whether it is on map
               lassoedSpots.push(spot);
             }
           }
@@ -295,6 +297,7 @@
           if (spotType === 'LineString' || spotType === 'Polygon') {
             // is the line or polygon within/intersected in the drawn polygon?
             if (turf.intersect(spot, geojsonObj)) {
+              //check here whether it is on map
               lassoedSpots.push(spot);
             }
           }
