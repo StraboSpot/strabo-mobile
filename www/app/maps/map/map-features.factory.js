@@ -109,41 +109,6 @@
       });
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     //returns orientation-divided spots that are lassoed and appear on the map
     function getVisibleLassoedOrientations(states, lassoedSpots, map, imageBasemap) {
 
@@ -214,61 +179,6 @@
 
       return returnSpots;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     function createFeatureLayer(states, map, imageBasemap) {
 
