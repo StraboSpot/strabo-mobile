@@ -246,6 +246,7 @@
           })
         }
         out = out.join("\n");
+        out = out + "\n";
         hasdata = true;
       }
 
