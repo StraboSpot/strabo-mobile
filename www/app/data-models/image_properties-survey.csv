@@ -1,21 +1,22 @@
-name,type,label,required,relevant,constraint,appearance,hint,constraint_message
-group_image_data,begin_group,Image Data,,,,,,
-title,text,Image Name,false,,,,,
-image_type,select_one cs3xd00,Image Type,true,,,,,
-other_image_type,text,Other Image Type,true,${image_type} = 'other_image_ty',. = '',,,
-caption,text,Image Description,false,,,multiline,,
-image_source,text,Image Source,false,,,,,
-scale_of_image,text,Scale of Overall Image,false,,,,,
-scale_of_object,text,Scale and type of object in image (m),false,,,,,
-width_of_image_view,decimal,Width of Image View,false,,. > 0,,Enables Scalebar,Value must be greater than 0.
-units_of_image_view,select_one vt86z05,Units of Image View,true,${width_of_image_view} != '',,,,
-group_camera_orientation,begin_group,Camera Orientation,,,,,,
-lat,decimal,Latitude,false,,. >= -90 and . <= 90,,,Value must be between -90 and 90.
-lng,decimal,Longitude,false,,. >= -180 and . <= 180,,,Value must be between -180 and 180.
-view_azimuth_trend,integer,View azimuth (trend),false,,. >= 0 and . <= 360,,,Value must be a whole number between 0-360.
-view_angle_plunge,integer,View angle (plunge),false,,. >= -90 and . <= 90,,,Value must be a whole number between -90 (down) and +90 (up).
-orientation_of_view_subject,text,Orientation of View Subject,false,,,,"e.g., facing direction of cliff face",
-,end_group,,,,,,,
-,end_group,,,,,,,
-start,start,,,,,,,
-end,end,,,,,,,
+type,name,label,hint,required,relevant,constraint,appearance,constraint_message,calculation
+start,start,,,,,,,,
+end,end,,,,,,,,
+begin_group,group_image_data,Image Data,,,,,,,
+text,title,Image Name,,false,,,,,
+select_one cs3xd00,image_type,Image Type,,true,,,,,
+text,other_image_type,Other Image Type,,true,${image_type} = 'other_image_ty',. != '',,,
+text,caption,Image Description,,false,,,multiline,,
+text,image_source,Image Source,,false,,,,,
+text,scale_of_image,Scale of Overall Image,,false,,,,,
+text,scale_of_object,Scale and type of object in image (m),,false,,,,,
+decimal,width_of_image_view,Width of Image View,Enables Scalebar,false,,. > 0,,Value must be greater than 0.,
+select_one vt86z05,units_of_image_view,Units of Image View,,true,${width_of_image_view} != '',,,,
+begin_group,group_camera_orientation,Camera Orientation,,,,,,,
+decimal,lat,Latitude,,false,,. >= -90 and . <= 90,,Value must be between -90 and 90.,
+decimal,lng,Longitude,,false,,. >= -180 and . <= 180,,Value must be between -180 and 180.,
+integer,view_azimuth_trend,View azimuth (trend),,false,,. >= 0 and . <= 360,,Value must be a whole number between 0-360.,
+integer,view_angle_plunge,View angle (plunge),,false,,. >= -90 and . <= 90,,Value must be a whole number between -90 (down) and +90 (up).,
+text,orientation_of_view_subject,Orientation of View Subject,"e.g., facing direction of cliff face",false,,,,,
+end_group,,,,,,,,,
+end_group,,,,,,,,,
+calculate,__version__,,,,,,,,'v8FGxz9jb9rMpYoXsBZ6Bk'

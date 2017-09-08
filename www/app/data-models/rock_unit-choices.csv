@@ -1,173 +1,173 @@
-label,name,order,list_name
-igneous,igneous,0,rm0pv08
-metamorphic,metamorphic,1,rm0pv08
-sedimentary,sedimentary,2,rm0pv08
-sediment,sediment,3,rm0pv08
-alluvium,alluvium,0,ej6zw88
-older alluvium,older_alluvium,1,ej6zw88
-colluvium,colluvium,2,ej6zw88
-lake deposit,lake_deposit,3,ej6zw88
-eolian,eolian,4,ej6zw88
-talus,talus,5,ej6zw88
-breccia,breccia,6,ej6zw88
-gravel,gravel,7,ej6zw88
-sand,sand,8,ej6zw88
-silt,silt,9,ej6zw88
-clay,clay,10,ej6zw88
-moraine,moraine,11,ej6zw88
-till,till,12,ej6zw88
-loess,loess,13,ej6zw88
-other,other,14,ej6zw88
-limestone,limestone,,bt4yo56
-dolostone,dolostone,,bt4yo56
-travertine,travertine,,bt4yo56
-evaporite,evaporite,,bt4yo56
-chert,chert,,bt4yo56
-conglomerate,conglomerate,,bt4yo56
-breccia,breccia,,bt4yo56
-sandstone,sandstone,,bt4yo56
-siltstone,siltstone,,bt4yo56
-mudstone,mudstone,,bt4yo56
-shale,shale,,bt4yo56
-claystone,claystone,,bt4yo56
-coal,coal,,bt4yo56
-other,other,,bt4yo56
-volcanic,volcanic,,nm4yc64
-plutonic,plutonic,,nm4yc64
-hypabyssal,hypabyssal,,nm4yc64
-basalt,basalt,0,gw1hp47
-basaltic-andesite,basaltic_andes,1,gw1hp47
-andesite,andesite,2,gw1hp47
-latite,latite,3,gw1hp47
-dacite,dacite,4,gw1hp47
-rhyolite,rhyolite,5,gw1hp47
-tuff,tuff,6,gw1hp47
-ash-fall tuff,ash_fall_tuff,7,gw1hp47
-ash-flow tuff,ash_flow_tuff,8,gw1hp47
-vitrophyre,vitrophyre,10,gw1hp47
-trachyte,trachyte,11,gw1hp47
-trachyandesite,trachyandesite,12,gw1hp47
-tuff breccia,tuff_breccia,13,gw1hp47
-lapilli tuff,lapilli_tuff,14,gw1hp47
-other,other,15,gw1hp47
-granite,granite,0,pu9hj08
-alkali feldspar granite,alkali_granite,1,pu9hj08
-quartz monzonite,quartz_monz,2,pu9hj08
-syenite,syenite,3,pu9hj08
-granodiorite,granodiorite,4,pu9hj08
-monzonite,monzonite,5,pu9hj08
-tonalite,tonalite,6,pu9hj08
-diorite,diorite,7,pu9hj08
-gabbro,gabbro,9,pu9hj08
-anorthosite,anorthosite,10,pu9hj08
-other,other,15,pu9hj08
-slate,slate,0,yg0ew35
-phyllite,phyllite,1,yg0ew35
-schist,schist,2,yg0ew35
-gneiss,gneiss,3,yg0ew35
-migmatite,migmatite,4,yg0ew35
-marble,marble,5,yg0ew35
-calc-silicate,calc_silicate,6,yg0ew35
-calc schist,calc_schist,7,yg0ew35
-greenschist,greenschist,8,yg0ew35
-amphibolite,amphibolite,9,yg0ew35
-blueschist,blueschist,10,yg0ew35
-eclogite,eclogite,11,yg0ew35
-hornfels,hornfels,12,yg0ew35
-granofels,granofels,13,yg0ew35
-skarn,skarn,14,yg0ew35
-quartzite,quartzite,15,yg0ew35
-serpentinite,serpentinite,16,yg0ew35
-jadeite,jadeite,17,yg0ew35
-glaucophanite,glaucophanite,18,yg0ew35
-garnetite,garnetite,19,yg0ew35
-pyroxenite,pyroxenite,20,yg0ew35
-cordierite-anthophyllite,cordierite-ant,21,yg0ew35
-cataclasite,cataclasite,22,yg0ew35
-mylonite,mylonite,23,yg0ew35
-metapelite,metapelite,24,yg0ew35
-metaarkose,metaarkose,25,yg0ew35
-metagreywacke,metagreywacke,26,yg0ew35
-metabasite,metabasite,27,yg0ew35
-metacarbonate,metacarbonate,28,yg0ew35
-metagranite,metagranite,29,yg0ew35
-metaigneous,metaigneous,30,yg0ew35
-metavolcanic,metavolcanic,31,yg0ew35
-blackwall,blackwall,32,yg0ew35
-metasomatite,metasomatite,33,yg0ew35
-meta-ultramafic,meta_ultramafi,34,yg0ew35
-meta-iron formation,meta-iron_form,35,yg0ew35
-other,other,36,yg0ew35
-zeolite facies,zeolite_facies,,ak6ci54
-prehnite-pumpellyite facies,prehnite-pumpe,,ak6ci54
-greenschist facies,greenschist_fa,,ak6ci54
-amphibolite facies,amphibolite_fa,,ak6ci54
-epidote amphibolite facies,epidote_amphib,,ak6ci54
-granulite facies,granulite_faci,,ak6ci54
-blueschist facies,blueschist_fac,,ak6ci54
-eclogite facies,eclogite_facie,,ak6ci54
-hornfels facies,hornfels_facie,,ak6ci54
-chlorite zone,chlorite_zone,,ak6ci54
-biotite zone,biotite_zone,,ak6ci54
-garnet zone,garnet_zone,,ak6ci54
-staurolite zone,staurolite_zon,,ak6ci54
-staurolite-kyanite zone,staurolite-kya,,ak6ci54
-kyanite zone,kyanite_zone,,ak6ci54
-sillimanite zone,sillimanite_zo,,ak6ci54
-andalusite zone,andalusite_zon,,ak6ci54
-sillimanite-K feldspar zone,sillimanite-K_,,ak6ci54
-garnet-cordierite zone,garnet-cordier,,ak6ci54
-migmatite zone,migmatite_zone,,ak6ci54
-ultra high pressure facies,ultra_high_pre,,ak6ci54
-ultra high temperature facies,ultra_high_tem,,ak6ci54
-other,other,,ak6ci54
-Holocene,holocene,,kf0mi66
-Pleistocene,pleistocene,,kf0mi66
-Pliocene,pliocene,,kf0mi66
-Miocene,miocene,,kf0mi66
-Oligocene,oligocene,,kf0mi66
-Eocene,eocene,,kf0mi66
-Paleocene,paleocene,,kf0mi66
-Other,other,,kf0mi66
-Quaternary,quaternary,0,xw5wu04
-Tertiary,tertiary,1,xw5wu04
-Neogene,neogene,2,xw5wu04
-Paleogene,paleogene,3,xw5wu04
-Cretaceous,cretaceous,4,xw5wu04
-Jurassic,jurassic,5,xw5wu04
-Triassic,triassic,6,xw5wu04
-Permian,permian,7,xw5wu04
-Carboniferous,carboniferous,8,xw5wu04
-Pennsylvanian,pennsylvanian,9,xw5wu04
-Mississippian,mississippian,10,xw5wu04
-Devonian,devonian,11,xw5wu04
-Silurian,silurian,12,xw5wu04
-Ordovician,ordovician,13,xw5wu04
-Cambrian,cambrian,14,xw5wu04
-Ediacaran,ediacaran,15,xw5wu04
-Cryogenian,cryogenian,16,xw5wu04
-Tonian,tonian,17,xw5wu04
-Stenian,stenian,18,xw5wu04
-Ectasian,ectasian,19,xw5wu04
-Calymmian,calymmian,20,xw5wu04
-Statherian,statherian,21,xw5wu04
-Orosirian,orosirian,22,xw5wu04
-Rhyacian,rhyacian,23,xw5wu04
-Siderian,siderian,24,xw5wu04
-Cenozoic,cenozoic,,kb2cc45
-Mesozoic,mesozoic,,kb2cc45
-Paleozoic,paleozoic,,kb2cc45
-Neoproterozoic,neoproterozoic,,kb2cc45
-Mesoproterozoic,mesoproterozoi,,kb2cc45
-Paleoproterozoic,paleoproterozo,,kb2cc45
-Neoarchean,neoarchean,,kb2cc45
-Mesoarchean,mesoarchean,,kb2cc45
-Paleoarchean,paleoarchean,,kb2cc45
-Eoarchean,eoarchean,,kb2cc45
-Phanerozoic,phanerozoic,,fy5ep25
-Proterozoic,proterozoic,,fy5ep25
-Archean,archean,,fy5ep25
-Hadean,hadean,,fy5ep25
-Late,late,,ns6qv42
-Middle,middle,,ns6qv42
-Early,early,,ns6qv42
+list_name,name,label,order
+rm0pv08,igneous,igneous,0
+rm0pv08,metamorphic,metamorphic,1
+rm0pv08,sedimentary,sedimentary,2
+rm0pv08,sediment,sediment,3
+ej6zw88,alluvium,alluvium,0
+ej6zw88,older_alluvium,older alluvium,1
+ej6zw88,colluvium,colluvium,2
+ej6zw88,lake_deposit,lake deposit,3
+ej6zw88,eolian,eolian,4
+ej6zw88,talus,talus,5
+ej6zw88,breccia,breccia,6
+ej6zw88,gravel,gravel,7
+ej6zw88,sand,sand,8
+ej6zw88,silt,silt,9
+ej6zw88,clay,clay,10
+ej6zw88,moraine,moraine,11
+ej6zw88,till,till,12
+ej6zw88,loess,loess,13
+ej6zw88,other,other,14
+bt4yo56,sandstone,sandstone,0
+bt4yo56,shale,shale,1
+bt4yo56,siltstone,siltstone,2
+bt4yo56,mudstone,mudstone,3
+bt4yo56,claystone,claystone,4
+bt4yo56,conglomerate,conglomerate,5
+bt4yo56,breccia,breccia,6
+bt4yo56,limestone,limestone,7
+bt4yo56,dolostone,dolostone,8
+bt4yo56,chert,chert,9
+bt4yo56,travertine,travertine,10
+bt4yo56,evaporite,evaporite,11
+bt4yo56,coal,coal,12
+bt4yo56,other,other,13
+nm4yc64,volcanic,volcanic,
+nm4yc64,plutonic,plutonic,
+nm4yc64,hypabyssal,hypabyssal,
+gw1hp47,basalt,basalt,0
+gw1hp47,basaltic_andes,basaltic-andesite,1
+gw1hp47,andesite,andesite,2
+gw1hp47,latite,latite,3
+gw1hp47,dacite,dacite,4
+gw1hp47,rhyolite,rhyolite,5
+gw1hp47,tuff,tuff,6
+gw1hp47,ash_fall_tuff,ash-fall tuff,7
+gw1hp47,ash_flow_tuff,ash-flow tuff,8
+gw1hp47,vitrophyre,vitrophyre,10
+gw1hp47,trachyte,trachyte,11
+gw1hp47,trachyandesite,trachyandesite,12
+gw1hp47,tuff_breccia,tuff breccia,13
+gw1hp47,lapilli_tuff,lapilli tuff,14
+gw1hp47,other,other,15
+pu9hj08,granite,granite,0
+pu9hj08,alkali_granite,alkali feldspar granite,1
+pu9hj08,quartz_monz,quartz monzonite,2
+pu9hj08,syenite,syenite,3
+pu9hj08,granodiorite,granodiorite,4
+pu9hj08,monzonite,monzonite,5
+pu9hj08,tonalite,tonalite,6
+pu9hj08,diorite,diorite,7
+pu9hj08,gabbro,gabbro,9
+pu9hj08,anorthosite,anorthosite,10
+pu9hj08,other,other,15
+yg0ew35,slate,slate,0
+yg0ew35,phyllite,phyllite,1
+yg0ew35,schist,schist,2
+yg0ew35,gneiss,gneiss,3
+yg0ew35,migmatite,migmatite,4
+yg0ew35,marble,marble,5
+yg0ew35,calc_silicate,calc-silicate,6
+yg0ew35,calc_schist,calc schist,7
+yg0ew35,greenschist,greenschist,8
+yg0ew35,amphibolite,amphibolite,9
+yg0ew35,blueschist,blueschist,10
+yg0ew35,eclogite,eclogite,11
+yg0ew35,hornfels,hornfels,12
+yg0ew35,granofels,granofels,13
+yg0ew35,skarn,skarn,14
+yg0ew35,quartzite,quartzite,15
+yg0ew35,serpentinite,serpentinite,16
+yg0ew35,jadeite,jadeite,17
+yg0ew35,glaucophanite,glaucophanite,18
+yg0ew35,garnetite,garnetite,19
+yg0ew35,pyroxenite,pyroxenite,20
+yg0ew35,cordierite-ant,cordierite-anthophyllite,21
+yg0ew35,cataclasite,cataclasite,22
+yg0ew35,mylonite,mylonite,23
+yg0ew35,metapelite,metapelite,24
+yg0ew35,metaarkose,metaarkose,25
+yg0ew35,metagreywacke,metagreywacke,26
+yg0ew35,metabasite,metabasite,27
+yg0ew35,metacarbonate,metacarbonate,28
+yg0ew35,metagranite,metagranite,29
+yg0ew35,metaigneous,metaigneous,30
+yg0ew35,metavolcanic,metavolcanic,31
+yg0ew35,blackwall,blackwall,32
+yg0ew35,metasomatite,metasomatite,33
+yg0ew35,meta_ultramafi,meta-ultramafic,34
+yg0ew35,meta-iron_form,meta-iron formation,35
+yg0ew35,other,other,36
+ak6ci54,zeolite_facies,zeolite facies,
+ak6ci54,prehnite-pumpe,prehnite-pumpellyite facies,
+ak6ci54,greenschist_fa,greenschist facies,
+ak6ci54,amphibolite_fa,amphibolite facies,
+ak6ci54,epidote_amphib,epidote amphibolite facies,
+ak6ci54,granulite_faci,granulite facies,
+ak6ci54,blueschist_fac,blueschist facies,
+ak6ci54,eclogite_facie,eclogite facies,
+ak6ci54,hornfels_facie,hornfels facies,
+ak6ci54,chlorite_zone,chlorite zone,
+ak6ci54,biotite_zone,biotite zone,
+ak6ci54,garnet_zone,garnet zone,
+ak6ci54,staurolite_zon,staurolite zone,
+ak6ci54,staurolite-kya,staurolite-kyanite zone,
+ak6ci54,kyanite_zone,kyanite zone,
+ak6ci54,sillimanite_zo,sillimanite zone,
+ak6ci54,andalusite_zon,andalusite zone,
+ak6ci54,sillimanite-K_,sillimanite-K feldspar zone,
+ak6ci54,garnet-cordier,garnet-cordierite zone,
+ak6ci54,migmatite_zone,migmatite zone,
+ak6ci54,ultra_high_pre,ultra high pressure facies,
+ak6ci54,ultra_high_tem,ultra high temperature facies,
+ak6ci54,other,other,
+kf0mi66,holocene,Holocene,
+kf0mi66,pleistocene,Pleistocene,
+kf0mi66,pliocene,Pliocene,
+kf0mi66,miocene,Miocene,
+kf0mi66,oligocene,Oligocene,
+kf0mi66,eocene,Eocene,
+kf0mi66,paleocene,Paleocene,
+kf0mi66,other,Other,
+xw5wu04,quaternary,Quaternary,0
+xw5wu04,tertiary,Tertiary,1
+xw5wu04,neogene,Neogene,2
+xw5wu04,paleogene,Paleogene,3
+xw5wu04,cretaceous,Cretaceous,4
+xw5wu04,jurassic,Jurassic,5
+xw5wu04,triassic,Triassic,6
+xw5wu04,permian,Permian,7
+xw5wu04,carboniferous,Carboniferous,8
+xw5wu04,pennsylvanian,Pennsylvanian,9
+xw5wu04,mississippian,Mississippian,10
+xw5wu04,devonian,Devonian,11
+xw5wu04,silurian,Silurian,12
+xw5wu04,ordovician,Ordovician,13
+xw5wu04,cambrian,Cambrian,14
+xw5wu04,ediacaran,Ediacaran,15
+xw5wu04,cryogenian,Cryogenian,16
+xw5wu04,tonian,Tonian,17
+xw5wu04,stenian,Stenian,18
+xw5wu04,ectasian,Ectasian,19
+xw5wu04,calymmian,Calymmian,20
+xw5wu04,statherian,Statherian,21
+xw5wu04,orosirian,Orosirian,22
+xw5wu04,rhyacian,Rhyacian,23
+xw5wu04,siderian,Siderian,24
+kb2cc45,cenozoic,Cenozoic,
+kb2cc45,mesozoic,Mesozoic,
+kb2cc45,paleozoic,Paleozoic,
+kb2cc45,neoproterozoic,Neoproterozoic,
+kb2cc45,mesoproterozoi,Mesoproterozoic,
+kb2cc45,paleoproterozo,Paleoproterozoic,
+kb2cc45,neoarchean,Neoarchean,
+kb2cc45,mesoarchean,Mesoarchean,
+kb2cc45,paleoarchean,Paleoarchean,
+kb2cc45,eoarchean,Eoarchean,
+fy5ep25,phanerozoic,Phanerozoic,
+fy5ep25,proterozoic,Proterozoic,
+fy5ep25,archean,Archean,
+fy5ep25,hadean,Hadean,
+ns6qv42,late,Late,
+ns6qv42,middle,Middle,
+ns6qv42,early,Early,

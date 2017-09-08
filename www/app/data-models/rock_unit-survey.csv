@@ -1,37 +1,38 @@
-name,type,label,required,constraint,constraint_message,relevant,hint,appearance
-unit_label_abbreviation,text,Unit Label (abbreviation),true,,,,,
-map_unit_name,text,Unit or Formation Name,false,,,,,
-member_name,text,Member Name,false,,,,,
-submember_name,text,Submember Name,false,,,,,
-absolute_age_of_geologic_unit,decimal,Absolute Age of Geologic Unit (Ma),false,. > 0,Value must be greater than 0.,,,
-age_uncertainty,decimal,Age Uncertainty (Ma),false,. > 0,Value must be greater than 0.,,,
-max_absolute_age_of_geol_unit,decimal,Maximum Absolute Age of Geologic Unit (Ma),false,. > 0,Value must be greater than 0.,${absolute_age_of_geologic_unit} = '',,
-min_absolute_age_of_geol_unit,decimal,Minimum Absolute Age of Geologic Unit (Ma),false,. > 0,Value must be greater than 0.,${absolute_age_of_geologic_unit} = '',,
-group_unit_type,begin_group,Unit Type,,,,,,
-rock_type,select_one rm0pv08,Rock Type,false,,,,"Type: sedimentary, igneous, metamorphic, or sediment",horizontal
-sediment_type,select_one ej6zw88,Sediment Type,false,,,${rock_type} = 'sediment',Specific type of sediment,horizontal
-other_sediment_type,text,Other Sediment Type,true,,,${sediment_type} = 'other',,
-sedimentary_rock_type,select_one bt4yo56,Sedimentary Rock Type,false,,,${rock_type} = 'sedimentary',Specific type of sedimentary rock,horizontal
-other_sedimentary_rock_type,text,Other Sedimentary Rock Type,true,,,${sedimentary_rock_type} = 'other',,
-igneous_rock_class,select_one nm4yc64,Igneous Rock Class,false,,,${rock_type} = 'igneous',"Volcanic, hypabyssal or plutonic",horizontal
-volcanic_rock_type,select_one gw1hp47,Volcanic Rock Type,false,,,${igneous_rock_class} = 'volcanic' or ${igneous_rock_class} = 'hypabyssal',Specific volcanic rock type,horizontal
-other_volcanic_rock_type,text,Other Volcanic Rock Type,true,,,${volcanic_rock_type} = 'other',,
-plutonic_rock_types,select_one pu9hj08,Plutonic Rock Types,false,,,${igneous_rock_class} = 'plutonic',Specific plutonic rock type,horizontal
-other_plutonic_rock_type,text,Other Plutonic Rock Type,true,,,${plutonic_rock_types} = 'other',,
-metamorphic_rock_types,select_one yg0ew35,Metamorphic Rock Types,false,,,${rock_type} = 'metamorphic',Specific metamorphic rock type,
-other_metamorphic_rock_type,text,Other Metamorphic Rock Type,true,,,${metamorphic_rock_types} = 'other',,
-metamorphic_grade,select_one ak6ci54,Metamorphic Grade,false,,,${rock_type} = 'metamorphic',Specific metamorphic grade,
-,end_group,,,,,,,
-other_metamorphic_grade,text,Other Metamorphic Grade,false,,,${metamorphic_grade} = 'other',metamorphic grade not given in list,
-group_geologic_age,begin_group,Geologic Age,,,,,,
-epoch,select_one kf0mi66,Epoch,false,,,,Specific geologic time epoch,horizontal
-other_epoch,text,Other Epoch,true,,,${epoch} = 'other',,
-period,select_one xw5wu04,Period,false,,,,Specific geologic time period,horizontal
-era,select_one kb2cc45,Era,false,,,,Specific geologic time era,horizontal
-eon,select_one fy5ep25,Eon,false,,,,Specific geologic time eon,horizontal
-age_modifier,select_one ns6qv42,Age Modifier,false,,,,"Age modifier to era, period or epoch",horizontal-compact
-,end_group,,,,,,,
-description,text,Description,false,,,,,
-notes,text,Notes,false,,,,,multiline
-start,start,,,,,,,
-end,end,,,,,,,
+type,name,label,hint,required,relevant,appearance,constraint_message,constraint,calculation
+start,start,,,,,,,,
+end,end,,,,,,,,
+text,unit_label_abbreviation,Unit Label (abbreviation),,true,,,,,
+text,map_unit_name,Unit or Formation Name,,false,,,,,
+text,member_name,Member Name,,false,${map_unit_name} != '',,,,
+text,submember_name,Submember Name,,false,${member_name} != '',,,,
+begin_group,group_unit_type,Unit Type,,,,,,,
+select_one rm0pv08,rock_type,Rock Type,"Type: sedimentary, igneous, metamorphic, or sediment",false,,horizontal,,,
+select_one ej6zw88,sediment_type,Sediment Type,Specific type of sediment,false,${rock_type} = 'sediment',horizontal,,,
+text,other_sediment_type,Other Sediment Type,,true,${sediment_type} = 'other',,,,
+select_one bt4yo56,sedimentary_rock_type,Sedimentary Rock Type,Specific type of sedimentary rock,false,${rock_type} = 'sedimentary',horizontal,,,
+text,other_sedimentary_rock_type,Other Sedimentary Rock Type,,true,${sedimentary_rock_type} = 'other',,,,
+select_one nm4yc64,igneous_rock_class,Igneous Rock Class,"Volcanic, hypabyssal or plutonic",false,${rock_type} = 'igneous',horizontal,,,
+select_one gw1hp47,volcanic_rock_type,Volcanic Rock Type,Specific volcanic rock type,false,${igneous_rock_class} = 'volcanic' or ${igneous_rock_class} = 'hypabyssal',horizontal,,,
+text,other_volcanic_rock_type,Other Volcanic Rock Type,,true,${volcanic_rock_type} = 'other',,,,
+select_one pu9hj08,plutonic_rock_types,Plutonic Rock Types,Specific plutonic rock type,false,${igneous_rock_class} = 'plutonic',horizontal,,,
+text,other_plutonic_rock_type,Other Plutonic Rock Type,,true,${plutonic_rock_types} = 'other',,,,
+select_one yg0ew35,metamorphic_rock_types,Metamorphic Rock Types,Specific metamorphic rock type,false,${rock_type} = 'metamorphic',,,,
+text,other_metamorphic_rock_type,Other Metamorphic Rock Type,,true,${metamorphic_rock_types} = 'other',,,,
+select_one ak6ci54,metamorphic_grade,Metamorphic Grade,Specific metamorphic grade,false,${rock_type} = 'metamorphic',,,,
+end_group,,,,,,,,,
+begin_group,group_geologic_age,Geologic Age,,,,,,,
+select_one kf0mi66,epoch,Epoch,Specific geologic time epoch,false,,horizontal,,,
+text,other_epoch,Other Epoch,,true,${epoch} = 'other',,,,
+select_one xw5wu04,period,Period,Specific geologic time period,false,,horizontal,,,
+select_one kb2cc45,era,Era,Specific geologic time era,false,,horizontal,,,
+select_one fy5ep25,eon,Eon,Specific geologic time eon,false,,horizontal,,,
+select_one ns6qv42,age_modifier,Age Modifier,"Age modifier to era, period or epoch",false,,horizontal-compact,,,
+end_group,,,,,,,,,
+decimal,absolute_age_of_geologic_unit,Absolute Age of Geologic Unit (Ma),,false,,,Value must be greater than 0.,. > 0,
+decimal,age_uncertainty,Age Uncertainty (Ma),,false,,,Value must be greater than 0.,. > 0,
+decimal,max_absolute_age_of_geol_unit,Maximum Absolute Age of Geologic Unit (Ma),,false,${absolute_age_of_geologic_unit} = '',,Value must be greater than 0.,. > 0,
+decimal,min_absolute_age_of_geol_unit,Minimum Absolute Age of Geologic Unit (Ma),,false,${absolute_age_of_geologic_unit} = '',,Value must be greater than 0.,. > 0,
+text,other_metamorphic_grade,Other Metamorphic Grade,metamorphic grade not given in list,false,${metamorphic_grade} = 'other',,,,
+text,description,Description,,false,,,,,
+text,notes,Notes,,false,,multiline,,,
+calculate,__version__,,,,,,,,'vrFimdkpcJQXgiaWX9aEzu'

@@ -1,13 +1,14 @@
-name,type,label,hint,required,relevant,appearance
-label,text,Label,If a label is not specified a default label will be given.,false,,
-feature_type,select_one sv2ru77,Fabric Type,,true,,
-group_tectonite,begin_group,Tectonites,,,${feature_type} = 'tectonite',
-tectonite_type,select_one tectonite_type_ny4wm6D8TYk_,Tectonite Type,,no,${feature_type} = 'tectonite',
-tectonite_character,select_one tectonite_character_gSrbYXndbvA_,Tectonite Character,,no,${feature_type} = 'tectonite',
-,end_group,,,,,
-igneous_migmatite_feat_descrip,text,Igneous/Migmatite Features Description,,false,${feature_type} = 'igneous_migmat',
-soft_sediment_def_description,text,Soft Sediment Deformation Description,,false,${feature_type} = 'soft_sediment_',
-other_fabric_description,text,Other Fabric Description,,false,${feature_type} = 'other_fabric',
-struct_notes,text,Fabric Notes,,no,,multiline
-start,start,,,,,
-end,end,,,,,
+type,name,label,hint,required,relevant,appearance,calculation
+start,start,,,,,,
+end,end,,,,,,
+text,label,Label,If a label is not specified a default label will be given.,false,,,
+select_one sv2ru77,feature_type,Fabric Type,,true,,,
+begin_group,group_tectonite,Tectonites,,,${feature_type} = 'tectonite',,
+select_one tectonite_type_ny4wm6D8TYk_,tectonite_type,Tectonite Type,,false,${feature_type} = 'tectonite',,
+select_one tectonite_character_gSrbYXndbvA_,tectonite_character,Tectonite Character,,false,${feature_type} = 'tectonite',,
+end_group,,,,,,,
+text,igneous_migmatite_feat_descrip,Igneous/Migmatite Features Description,,false,${feature_type} = 'igneous_migmat',,
+text,soft_sediment_def_description,Soft Sediment Deformation Description,,false,${feature_type} = 'soft_sediment_',,
+text,other_fabric_description,Other Fabric Description,,false,${feature_type} = 'other_fabric',,
+text,struct_notes,Fabric Notes,,false,,multiline,
+calculate,__version__,,,,,,'vg3a5ythSfhiTJhZ9rZDCx'

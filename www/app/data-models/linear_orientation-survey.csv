@@ -12,4 +12,4 @@ text,other_feature,Other Linear Feature,,true,,,${feature_type} = 'other',,,
 text,defined_by,Lineation Defined by,,false,,,,,,
 select_one ip7ah36,vorticity,Vorticity Type,Clockwise or counterclockwise looking down plunge,true,,,${feature_type} = 'vorticity_axis',,,
 text,notes,Line Notes,,false,,,,,multiline,
-calculate,__version__,,,,,,,,,'vQTCHardL3oQQjyC2xHfuh'
+calculate,__version__,,,,,,,,,'vmKCTo8owwfCY9nKw4j89Y'

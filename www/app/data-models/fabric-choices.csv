@@ -1,16 +1,16 @@
-label,name,list_name
-tectonite,tectonite,sv2ru77
-igneous/migmatite,igneous_migmat,sv2ru77
-soft sediment deformation,soft_sediment_,sv2ru77
-other fabric,other_fabric,sv2ru77
-S tectonite,s_tectonite,tectonite_type_ny4wm6D8TYk_
-SL tectonite,sl_tectonite,tectonite_type_ny4wm6D8TYk_
-LS tectonite,ls_tectonite,tectonite_type_ny4wm6D8TYk_
-L tectonite,l_tectonite,tectonite_type_ny4wm6D8TYk_
-S only,s_only,tectonite_character_gSrbYXndbvA_
-S >> L,s___l,tectonite_character_gSrbYXndbvA_
-S > L,s___l_1,tectonite_character_gSrbYXndbvA_
-S = L,s___l_2,tectonite_character_gSrbYXndbvA_
-L > S,l___s,tectonite_character_gSrbYXndbvA_
-L >> S,l___s_1,tectonite_character_gSrbYXndbvA_
-L only,l_only,tectonite_character_gSrbYXndbvA_
+list_name,name,label
+sv2ru77,tectonite,tectonite
+sv2ru77,igneous_migmat,igneous/migmatite
+sv2ru77,soft_sediment_,soft sediment deformation
+sv2ru77,other_fabric,other fabric
+tectonite_type_ny4wm6D8TYk_,s_tectonite,S tectonite
+tectonite_type_ny4wm6D8TYk_,sl_tectonite,SL tectonite
+tectonite_type_ny4wm6D8TYk_,ls_tectonite,LS tectonite
+tectonite_type_ny4wm6D8TYk_,l_tectonite,L tectonite
+tectonite_character_gSrbYXndbvA_,s_only,S only
+tectonite_character_gSrbYXndbvA_,s___l,S >> L
+tectonite_character_gSrbYXndbvA_,s___l_1,S > L
+tectonite_character_gSrbYXndbvA_,s___l_2,S = L
+tectonite_character_gSrbYXndbvA_,l___s,L > S
+tectonite_character_gSrbYXndbvA_,l___s_1,L >> S
+tectonite_character_gSrbYXndbvA_,l_only,L only

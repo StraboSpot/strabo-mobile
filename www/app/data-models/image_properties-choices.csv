@@ -1,13 +1,13 @@
-label,order,name,list_name
-photo,0,photo,cs3xd00
-sketch,1,sketch,cs3xd00
-thin section,2,thin_section,cs3xd00
-geological cross section,3,geological_cs,cs3xd00
-geophysical cross section,4,geophysical_cs,cs3xd00
-stratigraphic section,5,strat_section,cs3xd00
-other,6,other_image_ty,cs3xd00
-km,,km,vt86z05
-m,,m,vt86z05
-cm,,cm,vt86z05
-mm,,mm,vt86z05
-um,,_m,vt86z05
+list_name,name,label,order
+cs3xd00,photo,photo,0
+cs3xd00,sketch,sketch,1
+cs3xd00,thin_section,thin section,2
+cs3xd00,geological_cs,geological cross section,3
+cs3xd00,geophysical_cs,geophysical cross section,4
+cs3xd00,strat_section,stratigraphic section,5
+cs3xd00,other_image_ty,other,6
+vt86z05,km,km,
+vt86z05,m,m,
+vt86z05,cm,cm,
+vt86z05,mm,mm,
+vt86z05,_m,um,

@@ -1,137 +1,137 @@
-label,name,order,list_name
-stratigraphic,stratigraphic,0,pr4xf92
-intrusive body,intrusive,1,pr4xf92
-injection structure,injection,2,pr4xf92
-vein,vein,3,pr4xf92
-vein array,vein_array,4,pr4xf92
-zone of fracturing,zone_fracturin,5,pr4xf92
-zone of faulting,zone_faulting,6,pr4xf92
-shear zone,shear_zone,7,pr4xf92
-damage zone,damage_zone,8,pr4xf92
-alteration zone,alteration_zone,9,pr4xf92
-enveloping surface,enveloping_surface,10,pr4xf92
-unknown,unknown,11,pr4xf92
-other,other,12,pr4xf92
-upright,upright,0,to1en66
-overturned,overturned,1,to1en66
-vertical,vertical,2,to1en66
-uncertain,uncertain,3,to1en66
-not applicable,not_applicable,4,to1en66
-stratigraphy,stratigraphy,,bl4bp16
-facing indicator,facing_indicat,,bl4bp16
-assumed,assumed,,bl4bp16
-other,other,,bl4bp16
-5 - best - accurate,5,0,xn9nf56
-4,4,1,xn9nf56
-3 - approximate,3,2,xn9nf56
-2,2,3,xn9nf56
-1 - poor - irregular - uncertain,1,4,xn9nf56
-bedded rock,bedded_rock,,kk7zi98
-volcanic flows or deposits,volcanic_flows,,kk7zi98
-dike,dike,,ts5su86
-sill,sill,,ts5su86
-tabular migmatite,migmatite,,ts5su86
-injectite,injectite,,ts5su86
-schlieren,schlieren,,ts5su86
-other,other,,ts5su86
-clastic dike,clastic_dike,,vc5ce46
-injectite,injectite,,vc5ce46
-pseudotachylite,pseudotachylit,,vc5ce46
-normal opening,normal_opening,,py8ss97
-oblique opening,oblique_openin,,py8ss97
-antitaxial,antitaxial,,py8ss97
-syntaxial,syntaxial,,py8ss97
-unknown,unknown,,py8ss97
-quartz,quartz,,pa42s24
-calcite,calcite,,pa42s24
-other,other,,pa42s24
-en echelon,en_echelon,,kl8yo32
-general,general,,kl8yo32
-other,other,,kl8yo32
-joints,joints,,hy9rz06
-opening mode fractures,opening_mode,,hy9rz06
-shear fractures,shear_fracture,,hy9rz06
-filled fractures,filled_fractur,,hy9rz06
-other,other,,hy9rz06
-dextral strike-slip,dextral,0,kk9ik41
-sinistral strike-slip,sinistral,1,kk9ik41
-normal,oblique,2,kk9ik41
-reverse,reverse,3,kk9ik41
-thrust,thrust,4,kk9ik41
-low-angle normal,low_angle_normal,5,kk9ik41
-dextral reverse,dextral_reverse,6,kk9ik41
-dextral normal,dextral_normal,7,kk9ik41
-sinistral reverse,sinistral_reverse,8,kk9ik41
-sinistral normal,sinistral_normal,9,kk9ik41
-high-angle,high_angle,10,kk9ik41
-low-angle,low_angle,11,kk9ik41
-scissor,scissor,12,kk9ik41
-coaxial,coaxial,13,kk9ik41
-other,other,14,kk9ik41
-N side up,n_side_up,0,ia36i83
-NE side up,ne_side_up,1,ia36i83
-E side up,e_side_up,2,ia36i83
-SE side up,se_side_up,3,ia36i83
-S side up,s_side_up,4,ia36i83
-SW side up,sw_side_up,5,ia36i83
-W side up,w_side_up,6,ia36i83
-NW side up,nw_side_up,7,ia36i83
-top to N,top_to_n,8,ia36i83
-top to NE,top_to_ne,9,ia36i83
-top to E,top_to_e,10,ia36i83
-top to SE,top_to_se,11,ia36i83
-top to S,top_to_s,12,ia36i83
-top to SW,top_to_sw,13,ia36i83
-top to W,top_to_w,14,ia36i83
-top to NW,top_to_nw,15,ia36i83
-left-lateral,left_lateral,16,ia36i83
-right-lateral,right_lateral,17,ia36i83
-other,other,18,ia36i83
-not specified,not_specified,0,gq4wq38
-offset bedding,offset_bedding,1,gq4wq38
-offset intrusion,offset_intrusion,2,gq4wq38
-offset foliation,offset_foliation,3,gq4wq38
-offset compostional banding,offset_compostional_banding,4,gq4wq38
-igneous feature,igneous_feature,5,gq4wq38
-sedimentary feature,sedimentary_fe,6,gq4wq38
-fossil,fossil,7,gq4wq38
-geomorphic feature,geomorphic_fea,8,gq4wq38
-shear sense indicator,shear_sense_indicator,9,gq4wq38
-other,other,10,gq4wq38
-riedel shear,riedel_shear,,tj67x48
-gouge fill,gouge_fill,,tj67x48
-crescentic fractures,crescentic_fra,,tj67x48
-slickenfibers,slickenfibers,,tj67x48
-oblique gouge foliation,oblique_gouge,,tj67x48
-drag folds,drag_folds,,tj67x48
-rotated clasts,rotated_clasts,,tj67x48
-domino texture,domino_texture,,tj67x48
-vein arrays,vein_arrays,,tj67x48
-P shear array,p_shear_array,,tj67x48
-asymmetric folds,asymm_folds,,tj67x48
-microstructures,microstructure,,tj67x48
-S-C-C' fabrics,s_c_c__fabrics,,tj67x48
-foliation deflection,fol_deflect,,tj67x48
-porphyroclast system,porphyroclast_,,tj67x48
-porphyroblast system,porphyroblast_,,tj67x48
-strain assymetry,strain_assym,,tj67x48
-flanking structures,flanking_struc,,tj67x48
-other,other,,tj67x48
-vein formation,vein_formation,,se5kx99
-fractures,fractures,,se5kx99
-faulting,faulting,,se5kx99
-deformation bands,def_bands,,se5kx99
-defined by other,defined_by_other,,se5kx99
-fractures,fractures,,pb5nf39
-veins,veins,,pb5nf39
-faults,faults,,pb5nf39
-shear zones,shear_zones,,pb5nf39
-folds,folds,,pb5nf39
-planar,planar,,ni1sn96
-en echelon,en_echelon,,ni1sn96
-random,random,,ni1sn96
-other,other,,ni1sn96
-constant,constant,,sm74i02
-semi-constant,semi_constant,,sm74i02
-variable,variable,,sm74i02
-highly variable,highly_variabl,,sm74i02
+list_name,name,label,order
+xn9nf56,5,5 - best - accurate,0
+xn9nf56,4,4,1
+xn9nf56,3,3 - approximate,2
+xn9nf56,2,2,3
+xn9nf56,1,1 - poor - irregular - uncertain,4
+pr4xf92,stratigraphic,stratigraphic,0
+pr4xf92,intrusive,intrusive body,1
+pr4xf92,injection,injection structure,2
+pr4xf92,vein,vein,3
+pr4xf92,vein_array,vein array,4
+pr4xf92,zone_fracturin,zone of fracturing,5
+pr4xf92,zone_faulting,zone of faulting,6
+pr4xf92,shear_zone,shear zone,7
+pr4xf92,damage_zone,damage zone,8
+pr4xf92,alteration_zone,alteration zone,9
+pr4xf92,enveloping_surface,enveloping surface,10
+pr4xf92,unknown,unknown,11
+pr4xf92,other,other,12
+to1en66,upright,upright,0
+to1en66,overturned,overturned,1
+to1en66,vertical,vertical,2
+to1en66,uncertain,uncertain,3
+to1en66,not_applicable,not applicable,4
+bl4bp16,stratigraphy,stratigraphy,
+bl4bp16,facing_indicat,facing indicator,
+bl4bp16,assumed,assumed,
+bl4bp16,other,other,
+kk7zi98,bedded_rock,bedded rock,
+kk7zi98,volcanic_flows,volcanic flows or deposits,
+ts5su86,dike,dike,
+ts5su86,sill,sill,
+ts5su86,migmatite,tabular migmatite,
+ts5su86,injectite,injectite,
+ts5su86,schlieren,schlieren,
+ts5su86,other,other,
+vc5ce46,clastic_dike,clastic dike,
+vc5ce46,injectite,injectite,
+vc5ce46,pseudotachylit,pseudotachylite,
+py8ss97,normal_opening,normal opening,
+py8ss97,oblique_openin,oblique opening,
+py8ss97,antitaxial,antitaxial,
+py8ss97,syntaxial,syntaxial,
+py8ss97,unknown,unknown,
+pa42s24,quartz,quartz,
+pa42s24,calcite,calcite,
+pa42s24,other,other,
+kl8yo32,en_echelon,en echelon,
+kl8yo32,general,general,
+kl8yo32,other,other,
+hy9rz06,joints,joints,
+hy9rz06,opening_mode,opening mode fractures,
+hy9rz06,shear_fracture,shear fractures,
+hy9rz06,filled_fractur,filled fractures,
+hy9rz06,other,other,
+kk9ik41,dextral,dextral strike-slip,0
+kk9ik41,sinistral,sinistral strike-slip,1
+kk9ik41,oblique,normal,2
+kk9ik41,reverse,reverse,3
+kk9ik41,thrust,thrust,4
+kk9ik41,low_angle_normal,low-angle normal,5
+kk9ik41,dextral_reverse,dextral reverse,6
+kk9ik41,dextral_normal,dextral normal,7
+kk9ik41,sinistral_reverse,sinistral reverse,8
+kk9ik41,sinistral_normal,sinistral normal,9
+kk9ik41,high_angle,high-angle,10
+kk9ik41,low_angle,low-angle,11
+kk9ik41,scissor,scissor,12
+kk9ik41,coaxial,coaxial,13
+kk9ik41,other,other,14
+ia36i83,n_side_up,N side up,0
+ia36i83,ne_side_up,NE side up,1
+ia36i83,e_side_up,E side up,2
+ia36i83,se_side_up,SE side up,3
+ia36i83,s_side_up,S side up,4
+ia36i83,sw_side_up,SW side up,5
+ia36i83,w_side_up,W side up,6
+ia36i83,nw_side_up,NW side up,7
+ia36i83,top_to_n,top to N,8
+ia36i83,top_to_ne,top to NE,9
+ia36i83,top_to_e,top to E,10
+ia36i83,top_to_se,top to SE,11
+ia36i83,top_to_s,top to S,12
+ia36i83,top_to_sw,top to SW,13
+ia36i83,top_to_w,top to W,14
+ia36i83,top_to_nw,top to NW,15
+ia36i83,left_lateral,left-lateral,16
+ia36i83,right_lateral,right-lateral,17
+ia36i83,other,other,18
+gq4wq38,not_specified,not specified,0
+gq4wq38,offset_bedding,offset bedding,1
+gq4wq38,offset_intrusion,offset intrusion,2
+gq4wq38,offset_foliation,offset foliation,3
+gq4wq38,offset_compostional_banding,offset compostional banding,4
+gq4wq38,igneous_feature,igneous feature,5
+gq4wq38,sedimentary_fe,sedimentary feature,6
+gq4wq38,fossil,fossil,7
+gq4wq38,geomorphic_fea,geomorphic feature,8
+gq4wq38,shear_sense_indicator,shear sense indicator,9
+gq4wq38,other,other,10
+tj67x48,riedel_shear,riedel shear,
+tj67x48,gouge_fill,gouge fill,
+tj67x48,crescentic_fra,crescentic fractures,
+tj67x48,slickenfibers,slickenfibers,
+tj67x48,oblique_gouge,oblique gouge foliation,
+tj67x48,drag_folds,drag folds,
+tj67x48,rotated_clasts,rotated clasts,
+tj67x48,domino_texture,domino texture,
+tj67x48,vein_arrays,vein arrays,
+tj67x48,p_shear_array,P shear array,
+tj67x48,asymm_folds,asymmetric folds,
+tj67x48,microstructure,microstructures,
+tj67x48,s_c_c__fabrics,S-C-C' fabrics,
+tj67x48,fol_deflect,foliation deflection,
+tj67x48,porphyroclast_,porphyroclast system,
+tj67x48,porphyroblast_,porphyroblast system,
+tj67x48,strain_assym,strain assymetry,
+tj67x48,flanking_struc,flanking structures,
+tj67x48,other,other,
+se5kx99,vein_formation,vein formation,
+se5kx99,fractures,fractures,
+se5kx99,faulting,faulting,
+se5kx99,def_bands,deformation bands,
+se5kx99,defined_by_other,defined by other,
+pb5nf39,fractures,fractures,
+pb5nf39,veins,veins,
+pb5nf39,faults,faults,
+pb5nf39,shear_zones,shear zones,
+pb5nf39,folds,folds,
+ni1sn96,planar,planar,
+ni1sn96,en_echelon,en echelon,
+ni1sn96,random,random,
+ni1sn96,other,other,
+sm74i02,constant,constant,
+sm74i02,semi_constant,semi-constant,
+sm74i02,variable,variable,
+sm74i02,highly_variabl,highly variable,

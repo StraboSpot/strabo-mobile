@@ -1,16 +1,17 @@
-name,type,label,hint,required,relevant,appearance
-label,text,Label,If a label is not specified a default label will be given.,false,,
-sample_id_name,text,Sample Specific ID/Name,,false,,
-oriented_sample,select_one hz9zw76,Oriented Sample,,false,,
-sample_orientation_notes,text,Sample Orientation Notes,,false,${oriented_sample} = 'yes',multiline
-sample_description,text,Sample Description,,false,,
-material_type,select_one jq8qd30,Material Type,,false,,
-other_material_type,text,Other Material Type,,true,${material_type} = 'other',
-sample_size,text,Sample Size,,false,,
-main_sampling_purpose,select_one to0mv13,Main Sampling Purpose,,false,,
-other_sampling_purpose,text,Other Sampling Purpose,,true,${main_sampling_purpose} = 'other',
-inplaceness_of_sample,select_one fc6dz57,Inplaceness of Sample,,false,,
-degree_of_weathering,select_one sl0bq45,Degree of Weathering,,false,,
-sample_notes,text,Sample Notes,,false,,multiline
-start,start,,,,,
-end,end,,,,,
+type,name,label,hint,required,relevant,appearance,calculation
+start,start,,,,,,
+end,end,,,,,,
+text,label,Label,If a label is not specified a default label will be given.,false,,,
+text,sample_id_name,Sample Specific ID/Name,,false,,,
+select_one to0mv13,main_sampling_purpose,Main Sampling Purpose,,false,,,
+text,sample_description,Sample Description,,false,,,
+select_one jq8qd30,material_type,Material Type,,false,,,
+text,other_material_type,Other Material Type,,true,${material_type} = 'other',,
+select_one fc6dz57,inplaceness_of_sample,Inplaceness of Sample,,false,,,
+select_one hz9zw76,oriented_sample,Oriented Sample,,false,,,
+text,sample_orientation_notes,Sample Orientation Notes,,false,${oriented_sample} = 'yes',multiline,
+text,sample_size,Sample Size,,false,,,
+text,other_sampling_purpose,Other Sampling Purpose,,true,${main_sampling_purpose} = 'other',,
+select_one sl0bq45,degree_of_weathering,Degree of Weathering,,false,,,
+text,sample_notes,Sample Notes,,false,,multiline,
+calculate,__version__,,,,,,'vtPprmKLbpL2ZT4nf9sgJQ'
