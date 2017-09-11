@@ -225,11 +225,6 @@
 
               HelpersFactory.getStereonet(stereonetSpots);
             }
-          }else{
-            $ionicPopup.alert({
-              'title': 'Error!',
-              'template': 'No spots selected. Please try again.'
-            });
           }
         });
       });
