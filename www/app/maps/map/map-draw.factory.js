@@ -34,6 +34,7 @@
       'groupSpots': groupSpots,
       'isDrawMode': isDrawMode,
       'saveEdits': saveEdits,
+      'setLassoMode': setLassoMode,
       'stereonetSpots': stereonetSpots
     };
 
@@ -477,6 +478,11 @@
         cancelEdits();
       });
     }
+
+    function setLassoMode(lmode) {
+      lassoMode = lmode;
+    }
+
     // Lasso spots and copy to clipboard for Stereonet Output
     function stereonetSpots() {
       // Remove layer switcher and drawing tools to to avoid confusion

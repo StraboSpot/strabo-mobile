@@ -224,6 +224,7 @@
               $log.log('stereonetSpots: ', stereonetSpots);
 
               HelpersFactory.getStereonet(stereonetSpots);
+              MapDrawFactory.setLassoMode("");
             }
           }
         });
