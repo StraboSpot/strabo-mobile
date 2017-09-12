@@ -236,7 +236,16 @@
     }
 
     function calcTrendPlunge() {
-      if (vm.parentOrientation.strike && vm.parentOrientation.dip && vmParent.data.rake) {
+      if (_.isNull(vm.parentOrientation.strike) || _.isUndefined(vm.parentOrientation.strike) || _.isNull(
+          vm.parentOrientation.dip) || _.isUndefined(vm.parentOrientation.dip) || _.isNull(
+          vmParent.data.rake) || _.isUndefined(vmParent.data.rake)) {
+        $ionicPopup.alert({
+          'title': 'Calculate Trend & Plunge Error',
+          'template': 'Make sure you have a strike and dip entered for an associated Planar Orientation and the' +
+          ' rake entered for this Linear Orientation.'
+        });
+      }
+      else {
         var strike = vm.parentOrientation.strike;
         var dip = vm.parentOrientation.dip;
         var rake = vmParent.data.rake;
@@ -252,14 +261,6 @@
           Math.asin(Math.sin(HelpersFactory.toRadians(dip)) * Math.sin(HelpersFactory.toRadians(rake))));
         vmParent.data.trend = HelpersFactory.roundToDecimalPlaces(trend, 0);
         vmParent.data.plunge = HelpersFactory.roundToDecimalPlaces(plunge, 0);
-        if (rake >= 90) vmParent.data.rake_calculated = 'yes';
-      }
-      else {
-        $ionicPopup.alert({
-          'title': 'Calculate Trend & Plunge Error',
-          'template': 'Make sure you have a strike and dip entered for an associated Planar Orientation and the' +
-          ' rake entered for this Linear Orientation.'
-        });
       }
     }
 
