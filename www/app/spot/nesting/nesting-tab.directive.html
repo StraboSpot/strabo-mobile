@@ -32,10 +32,10 @@
     </div>
 
     <span ng-show='vmChild.parentSpots.length > 0'>
-        <br>
-       <i class='ion-arrow-down-c padding-left'></i>
-        <br><br>
-      </span>
+      <br>
+      <i class='ion-arrow-down-c padding-left'></i>
+      <br><br>
+    </span>
 
     <img ng-if="vmChild.spot.geometry.type === 'Point' && !vmChild.spot.properties.image_basemap"
          class='geometry-icon' src='img/point.png'>
@@ -54,10 +54,10 @@
     This Spot ({{ vmChild.spot.properties.name }})
 
     <span ng-show='vmChild.childrenSpots.length > 0'>
-        <br><br>
-       <i class='ion-arrow-down-c padding-left'></i>
-        <br><br>
-      </span>
+      <br><br>
+      <i class='ion-arrow-down-c padding-left'></i>
+      <br><br>
+    </span>
 
     <div ng-repeat='childSpot in vmChild.childrenSpots'>
         <span ng-click='vmChild.goToSpot(childSpot.properties.id)'>
@@ -78,5 +78,11 @@
          <b>{{ childSpot.properties.name }}</b>
         </span>
     </div>
+
+    <button ng-click='vmChild.stereonetSpots(vmChild.childrenSpots)'
+            class='button button-clear button-positive'>
+      <i class='icon ion-disc'></i>
+      <span class='button-text-big'>Add Nested Spots to Stereonet</span>
+    </button>
   </div>
 </div>

@@ -165,14 +165,27 @@
     		var trendstrike = "";
     		var plungedip = "";
         var notes = "";
+        var spotOrientations = [];
 
         if(spot.geometry.type=="Point"){
           longitude = spot.geometry.coordinates[0];
           latitude = spot.geometry.coordinates[1];
         }
 
+        /*
+        Gather orientation data. Sometimes (if spots are from map),
+        orientations are in "orientation". Other times, orientations are
+        in "orientation_data". 
+        */
         if(spot.properties.orientation){
-          var od = spot.properties.orientation;
+          spotOrientations.push(spot.properties.orientation);
+        }else if(spot.properties.orientation_data){
+          _.each(spot.properties.orientation_data, function(od){
+            spotOrientations.push(od);
+          });
+        }
+
+        _.each(spotOrientations, function(od){
           if(od.type=="planar_orientation"){
             if(od.strike && od.dip){
               trendstrike = od.strike;
@@ -224,7 +237,7 @@
               lines.push(row);
             }
           }
-        }
+        });
 
       })
 

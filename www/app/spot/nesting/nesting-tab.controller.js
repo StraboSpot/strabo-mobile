@@ -5,10 +5,10 @@
     .module('app')
     .controller('NestingTabController', NestingTabController);
 
-  NestingTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$rootScope', '$scope', '$state', 'FormFactory',
+  NestingTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$rootScope', '$scope', '$state', 'FormFactory', 'HelpersFactory',
     'SpotFactory', 'IS_WEB'];
 
-  function NestingTabController($ionicModal, $ionicPopup, $log, $rootScope, $scope, $state, FormFactory, SpotFactory,
+  function NestingTabController($ionicModal, $ionicPopup, $log, $rootScope, $scope, $state, FormFactory, HelpersFactory, SpotFactory,
                                 IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
@@ -24,6 +24,7 @@
     vm.spot = {};
 
     vm.goToSpot = goToSpot;
+    vm.stereonetSpots = stereonetSpots;
     vm.toggleNesting = toggleNesting;
     vm.updateNest = updateNest;
 
@@ -179,6 +180,10 @@
 
     function goToSpot(id) {
       vmParent.submit('/app/spotTab/' + id + '/nesting');
+    }
+
+    function stereonetSpots(childrenSpots) {
+      HelpersFactory.getStereonet(childrenSpots);
     }
 
     function toggleNesting() {
