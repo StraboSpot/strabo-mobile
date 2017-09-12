@@ -29,6 +29,7 @@
     vm.acceptCompass = acceptCompass;
     vm.addAssociatedOrientation = addAssociatedOrientation;
     vm.addOrientation = addOrientation;
+    vm.calcTrendPlunge = calcTrendPlunge;
     vm.closeCompass = closeCompass;
     vm.copyAssociatedOrientation = copyAssociatedOrientation;
     vm.copyOrientation = copyOrientation;
@@ -232,6 +233,34 @@
       vmParent.data.id = HelpersFactory.getNewId();
       vm.modalTitle = 'Add a ' + getModalTitlePart();
       vm.basicFormModal.show();
+    }
+
+    function calcTrendPlunge() {
+      if (vm.parentOrientation.strike && vm.parentOrientation.dip && vmParent.data.rake) {
+        var strike = vm.parentOrientation.strike;
+        var dip = vm.parentOrientation.dip;
+        var rake = vmParent.data.rake;
+        var trend = undefined;
+        var beta = HelpersFactory.toDegrees(
+          Math.atan(Math.tan(HelpersFactory.toRadians(rake)) * Math.cos(HelpersFactory.toRadians(dip))));
+        if (rake <= 90) trend = strike + beta;
+        else {
+          trend = 180 + strike + beta;
+          if (trend >= 360) trend = trend - 360;
+        }
+        var plunge = HelpersFactory.toDegrees(
+          Math.asin(Math.sin(HelpersFactory.toRadians(dip)) * Math.sin(HelpersFactory.toRadians(rake))));
+        vmParent.data.trend = HelpersFactory.roundToDecimalPlaces(trend, 0);
+        vmParent.data.plunge = HelpersFactory.roundToDecimalPlaces(plunge, 0);
+        if (rake >= 90) vmParent.data.rake_calculated = 'yes';
+      }
+      else {
+        $ionicPopup.alert({
+          'title': 'Calculate Trend & Plunge Error',
+          'template': 'Make sure you have a strike and dip entered for an associated Planar Orientation and the' +
+          ' rake entered for this Linear Orientation.'
+        });
+      }
     }
 
     function closeCompass() {

@@ -289,6 +289,13 @@ Buttons
   background-image: linear-gradient(to bottom right,  transparent calc(50% - 1px), lightgray, transparent calc(50% + 1px));
 }
 
+.calc-trend-plunge-text {
+  font-size: 10px;
+  word-break: break-word;
+  line-height: 10px;
+  width: 30px;
+}
+
 /*--------------------
 Orientation Tab Style
 --------------------*/
