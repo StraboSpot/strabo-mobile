@@ -24,6 +24,7 @@
     vm.spot = {};
 
     vm.goToSpot = goToSpot;
+    vm.isiOS = isiOS;
     vm.stereonetSpots = stereonetSpots;
     vm.toggleNesting = toggleNesting;
     vm.updateNest = updateNest;
@@ -180,6 +181,10 @@
 
     function goToSpot(id) {
       vmParent.submit('/app/spotTab/' + id + '/nesting');
+    }
+
+    function isiOS() {
+      return ionic.Platform.device().platform=="iOS";
     }
 
     function stereonetSpots(childrenSpots) {

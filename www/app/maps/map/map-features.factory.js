@@ -22,7 +22,6 @@
       'getClickedLayer': getClickedLayer,
       'getInitialDatasetLayerStates': getInitialDatasetLayerStates,
       'getFeatureById': getFeatureById,
-      'getVisibleLassoedOrientations': getVisibleLassoedOrientations,
       'getVisibleLassoedSpots': getVisibleLassoedSpots,
       'setSelectedSymbol': setSelectedSymbol,
       'showMapPopup': showMapPopup,
@@ -109,46 +108,8 @@
       });
     }
 
-    //returns orientation-divided spots that are lassoed and appear on the map
-    function getVisibleLassoedOrientations(states, lassoedSpots, map, imageBasemap) {
-
-      var lassoedSpotIds = [];
-      _.each(lassoedSpots, function (lassoedSpot){
-        lassoedSpotIds.push(lassoedSpot.properties.id);
-      })
-
-      var visibleSpots = [];
-      var writer = new ol.format.GeoJSON();
-      var layers = map.getLayers();
-
-      //gather all visible features from map
-      layers.forEach(function (layer){
-        if(layer.get('name')=='featureLayer'){
-          var sublayers = layer.getLayers();
-          sublayers.forEach(function(sublayer){
-            if(sublayer.getVisible()){
-              var source = sublayer.getSource();
-              var features = source.getFeatures();
-              var geojsonStr = writer.writeFeatures(features, { dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857' });
-              var collection = angular.fromJson(geojsonStr);
-              _.each(collection.features, function(feature){
-                visibleSpots.push(feature);
-              })
-            }
-          })
-        }
-      })
-
-      //return all spots from visibleSpots whose ids are in lassoedSpotIds
-      var returnSpots = _.filter(visibleSpots, function (spot) {
-        return _.contains(lassoedSpotIds, spot.properties.id);
-      });
-
-      return returnSpots;
-    }
-
     //returns spots that are lassoed and appear on the map
-    function getVisibleLassoedSpots(states, lassoedSpots, map, imageBasemap) {
+    function getVisibleLassoedSpots(lassoedSpots, map, imageBasemap) {
 
       var visibleSpotIds = [];
       var writer = new ol.format.GeoJSON();

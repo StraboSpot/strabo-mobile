@@ -206,7 +206,7 @@
               $log.log("tag mode enabled");
 
               //cull spots to only those shown on map
-              var visibleSpots = MapFeaturesFactory.getVisibleLassoedSpots(datasetsLayerStates, selectedSpots, map);
+              var visibleSpots = MapFeaturesFactory.getVisibleLassoedSpots(selectedSpots, map);
               SpotFactory.setSelectedSpots(visibleSpots);
 
               vm.allTags = ProjectFactory.getTags();
@@ -215,12 +215,8 @@
             }else if(lmode=="stereonet"){
               $log.log("stereonet mode enabled");
 
-
-              var foospots = MapFeaturesFactory.getVisibleLassoedSpots(datasetsLayerStates, selectedSpots, map);
-              $log.log('foospots: ', foospots);
-
               //use MapFeaturesFactory to get only mapped orientations
-              var stereonetSpots = MapFeaturesFactory.getVisibleLassoedOrientations(datasetsLayerStates, selectedSpots, map);
+              var stereonetSpots = MapFeaturesFactory.getVisibleLassoedSpots(selectedSpots, map);
               $log.log('stereonetSpots: ', stereonetSpots);
 
               HelpersFactory.getStereonet(stereonetSpots);
