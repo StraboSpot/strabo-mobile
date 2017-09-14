@@ -40,6 +40,7 @@
     <variable name="CAMERA_USAGE_DESCRIPTION" value="Take my own photo." />
     <variable name="NSPHOTOLIBRARYUSAGEDESCRIPTIONENTRY" value="Access my photo library." />
   </plugin>
+  <plugin name="com.verso.cordova.clipboard" spec="https://github.com/VersoSolutions/CordovaClipboard" />
   <plugin name="cordova-plugin-console" spec="1.0.2"/>
   <plugin name="cordova-plugin-device" spec="1.1.1"/>
   <plugin name="cordova-plugin-device-motion" spec="1.2.1"/>
