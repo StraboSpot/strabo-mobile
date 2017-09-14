@@ -86,7 +86,7 @@
       createPageEvents()
 
       vm.currentSpot = SpotFactory.getCurrentSpot();
-      else if (vm.currentSpot) {
+      if (vm.currentSpot) {
         // If we're adding a new tag from within a spot
         if (!vm.data.spots) vm.data.spots = [];
         if (!_.contains(vm.data.spots, vm.currentSpot.properties.id)) vm.data.spots.push(vm.currentSpot.properties.id);
