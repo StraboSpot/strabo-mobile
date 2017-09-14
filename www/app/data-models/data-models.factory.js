@@ -195,7 +195,7 @@
       _.each(models, function (model, key) {
         var description = {};
         _.each(model.survey, function (field) {
-          if (field.type.split(' ')[0] !== 'end' && field.type.split(' ')[0] !== 'begin') {
+          if (field.type.split('_')[0] !== 'end' && field.type.split('_')[0] !== 'begin' && field.type !=='calculate') {
             var type = getType(field.type, model);
             var hint = field.hint ? '; Hint: ' + field.hint : '';
             var required = field.required === 'true' ? '; REQUIRED' : '';
