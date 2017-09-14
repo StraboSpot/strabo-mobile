@@ -1,11 +1,49 @@
 <div class='padding'>
-  This StraboSpot app is a part of a larger Data System for Structural Geology and Tectonics (SG&T).
-  It consists of a database, a website and a mobile app.
-  The entire Strabo Spot project is still in development and as such the mobile app is only available for approved beta
-  testers from the Google Play Store and through TestFlight for iOS.
+  <b>StraboSpot v0.24.5</b>
   <br><br>
-  Current Version 0.24.5
+  Website: <a href='#' onclick='window.open("http://strabospot.org/", "_system", "location=yes"); return false;'>http://strabospot.org/</a>
+  <br>
+  App Download: <a href='#'
+                   onclick='window.open("http://strabospot.org/download", "_system", "location=yes"); return false;'>http://strabospot.org/download</a>
   <br><br>
+  StraboSpot is an application to collect geologic data in a field setting, and is designed to be used by geologists,
+  geology students, and others. The application allows the collection of geologic data using a variety of base maps -
+  including maps, cross-sections, sketches, and images prepared by other users - referenced to their location on the
+  Earth. StraboSpot utilizes a controlled vocabulary ...<br>
+  <button ng-click='vm.toggleShowMore()' ng-hide='vm.showMore()'
+          class='button button-clear button-positive button-small'>
+    <i class='icon ion-chevron-down'></i>
+    <span class='button-text-small'>Show More</span>
+  </button>
+  <button ng-click='vm.toggleShowMore()' ng-show='vm.showMore()'
+          class='button button-clear button-positive button-small'>
+    <i class='icon ion-chevron-up'></i>
+    <span class='button-text-small'>Show Less</span>
+  </button>
+  <div ng-show='vm.showMore()'>
+    ... developed over years of discussion in the professional geologic
+    community. The application uses nested spots (areas of observation) for spatial grouping of data and tags for
+    conceptual grouping of data. The application currently focuses on Structural Geology and Tectonics data, but is
+    expanding to include Petrology and Sedimentary Geology data.
+    <br><br>
+    The development of StraboSpot was sponsored by the United States National Science Foundation. It provides the
+    ability to put field data into a transparent and open framework, allowing effective cyberinfrastructure development within
+    the Earth Sciences. The data imported into StraboSpot is directly stored in a database that is designed to accommodate
+    the digital data reporting requirements of National Science Foundation grants and allows retrieval by researchers. More
+    explanation of StraboSpot and a desktop version with expanded tools are at
+    <a href='#' onclick='window.open("http://strabospot.org/", "_system", "location=yes"); return false;'>https://strabospot.org</a>.
+    <br><br>
+    StraboSpot uses a Neo4j graph database to give persistence to observations, photographs, or any other images
+    imported by the user. The system compiles the complex relationships between observations (including temporal information,
+    such as cross-cutting relations) and provide flexible options for access, editing, and sharing of field data.
+    <br><br>
+    The application will work on mobile devices with or without connection to Wi-Fi or Cellular networks. In offline
+    mode, StraboSpot can store both Mapbox (<a href='#' onclick='window.open("https://www.mapbox.com", "_system", "location=yes"); return false;'>https://www.mapbox.com</a>)
+    and Map Warper (<a href='#' onclick='window.open("http://mapwarper.net", "_system", "location=yes"); return false;'>http://mapwarper.net</a>)
+    to provide base maps for data collection. When an Internet connection is available, users both can upload collected
+    information and backup their data on their iPad or iPhone.
+  </div>
+
   <!--<div ng-hide='vm.isWeb'>
     <button ng-click='vm.checkForUpdates()'
             class='button button-clear button-positive padding-left'>
@@ -22,21 +60,13 @@
     <div class='padding-left' ng-show='vm.hasUpdate'>*After update downloads, app will restart. Please wait. Updating does not working correctly on iOS yet.*</div>
     <br>
   </div>-->
-  <h5>Accessing the StraboSpot Website</h5>
-  <hr>
-  <a href='#' onclick='window.open("http://strabospot.org/", "_system", "location=yes"); return false;'>http://strabospot.org/</a>
   <br><br>
-  <h5>Downloading the Mobile App</h5>
+  <h5>Help</h5>
   <hr>
-  <a href='#'
-     onclick='window.open("http://strabospot.org/download", "_system", "location=yes"); return false;'>http://strabospot.org/download</a>
+  <a href='#' onclick='window.open("https://strabospot.org/help", "_system", "location=yes"); return false;'>https://strabospot.org/help</a>
   <br><br>
   <h5>Bugs, Feature Requests and Other Issues</h5>
   <hr>
-  - The preferred method of reporting is to post an issue at <a href='#'
-                                                                onclick='window.open("https://github.com/StraboSpot/strabo-mobile/issues", "_system", "location=yes"); return false;'>https://github.com/StraboSpot/strabo-mobile/issues</a>.
-  Please post one issue per bug/issue/feature request and include the version number.
-  <br>
-  - Alternatively, you can send an email to <a href='mailto:strabospot@gmail.com?Subject=StraboSpotMobile'
-                                               target='_top'>strabospot@gmail.com</a>.
+  For comments please send an email to
+  <a href='mailto:strabospot@gmail.com?Subject=StraboSpotMobile' target='_top'>strabospot@gmail.com</a>.
 </div>

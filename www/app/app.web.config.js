@@ -351,8 +351,8 @@
         'url': '/about',
         'views': {
           'menuContent': {
-            'templateUrl': 'app/about/about.web.html'/*,
-             'controller': 'AboutController as vm'*/
+            'templateUrl': 'app/about/about.web.html',
+             'controller': 'AboutController as vm'
           }
         }
       });

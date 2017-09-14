@@ -9,20 +9,24 @@
 
   function AboutController($ionicLoading, $ionicPopup, $log, $scope, IS_WEB) {
     var vm = this;
-    var deploy = new Ionic.Deploy();
+    //var deploy = new Ionic.Deploy();
+    var isShowMore = false;
 
-    vm.checkForUpdates = checkForUpdates;
-    vm.doUpdate = doUpdate;
-    vm.hasUpdate = false;
+   /* vm.hasUpdate = false;
     vm.isWeb = IS_WEB;
     vm.msg = undefined;
+
+    vm.checkForUpdates = checkForUpdates;
+    vm.doUpdate = doUpdate;*/
+    vm.showMore = showMore;
+    vm.toggleShowMore = toggleShowMore;
 
     /**
      * Public Functions
      */
 
     // Check Ionic Deploy for new code
-    function checkForUpdates() {
+  /*  function checkForUpdates() {
       $log.log('Ionic Deploy: Checking for updates');
       $ionicLoading.show({
         'template': '<ion-spinner></ion-spinner>'
@@ -60,6 +64,14 @@
       }, function (prog) {
         $log.log('Ionic Deploy: Progress... ', prog);
       });
+    }*/
+
+    function showMore() {
+      return isShowMore;
+    }
+
+    function toggleShowMore() {
+      isShowMore = !isShowMore;
     }
   }
 }());
