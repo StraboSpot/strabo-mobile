@@ -83,13 +83,13 @@
       vmParent.showGeologicUnit = true;
       vmParent.showSurfaceFeature = false;
 
-      if (vmParent.spot.geometry && vmParent.spot.geometry.type === 'LineString') {
+      if (vmParent.spot && vmParent.spot.geometry && vmParent.spot.geometry.type === 'LineString') {
         vmParent.showTrace = true;
         vmParent.showGeologicUnit = false;
         if (vmParent.spot.properties.trace) vmParent.data = vmParent.spot.properties.trace;
         FormFactory.setForm('trace');
       }
-      if (vmParent.spot.geometry && vmParent.spot.geometry.type === 'Polygon') {
+      if (vmParent.spot && vmParent.spot.geometry && vmParent.spot.geometry.type === 'Polygon') {
         vmParent.showRadius = false;
         vmParent.showSurfaceFeature = true;
         if (vmParent.spot.properties.surface_feature) vmParent.data = vmParent.spot.properties.surface_feature;
@@ -105,7 +105,7 @@
           setDisplayedCoords();
         }
       }
-      else if (vmParent.spot.properties.image_basemap) vm.showXY = true;
+      else if (vmParent.spot && vmParent.spot.properties.image_basemap) vm.showXY = true;
     }
 
     function reloadTab() {
