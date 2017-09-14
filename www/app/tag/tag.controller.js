@@ -86,7 +86,6 @@
       createPageEvents()
 
       vm.currentSpot = SpotFactory.getCurrentSpot();
-      if (!vm.currentSpot && !IS_WEB) HelpersFactory.setBackView($ionicHistory.currentView().url);
       else if (vm.currentSpot) {
         // If we're adding a new tag from within a spot
         if (!vm.data.spots) vm.data.spots = [];

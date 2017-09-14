@@ -88,7 +88,6 @@
 
     function goToImage(image) {
       vm.imageIdSelected = image.id;
-      if (!IS_WEB) HelpersFactory.setBackView($ionicHistory.currentView().url);
       $location.path('/app/spotTab/' + image.spotId + '/images');
     }
 

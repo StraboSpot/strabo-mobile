@@ -79,7 +79,6 @@
       setRelationshipTypes();
 
       vm.currentSpot = SpotFactory.getCurrentSpot();
-      if (!vm.currentSpot && !IS_WEB) HelpersFactory.setBackView($ionicHistory.currentView().url);
 
       if (IS_WEB) {
         $scope.$watch('vm.data', function (newValue, oldValue, scope) {

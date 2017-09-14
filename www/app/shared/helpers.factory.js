@@ -18,12 +18,10 @@
       'convertToLargerUnit': convertToLargerUnit,
       'convertToSmallerUnit': convertToSmallerUnit,
       'getStereonet': getStereonet,
-      'getBackView': getBackView,
       'getNewId': getNewId,
       'hexToRgb': hexToRgb,
       'mod': mod,
       'roundToDecimalPlaces': roundToDecimalPlaces,
-      'setBackView': setBackView,
       'toDegrees': toDegrees,
       'toRadians': toRadians
     };
@@ -63,10 +61,6 @@
       return deferred.promise;
     }
 
-    function getBackView() {
-      return backView;
-    }
-
     // Remove nulls, undefined, empty strings and empty objects
     function cleanObj(obj) {
       _.each(obj, function (ele, i) {
@@ -99,7 +93,7 @@
     function hexToRgb(hex) {
       // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
       var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-      hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+      hex = hex.replace(shorthandRegex, function (m, r, g, b) {
         return r + r + g + g + b + b;
       });
 
@@ -135,39 +129,39 @@
       var hasdata = false;
 
       //build data here
-      var headers = [ "No.",
-                      "Type",
-                      "Structure",
-                      "Color",
-                      "Trd/Strk",
-                      "Plg/Dip",
-                      "Longitude",
-                      "Latitude",
-                      "Horiz ± m",
-                      "Elevation",
-                      "Elev ± m",
-                      "Time",
-                      "Day",
-                      "Month",
-                      "Year",
-                      "Notes"
-                      ];
+      var headers = ["No.",
+        "Type",
+        "Structure",
+        "Color",
+        "Trd/Strk",
+        "Plg/Dip",
+        "Longitude",
+        "Latitude",
+        "Horiz ± m",
+        "Elevation",
+        "Elev ± m",
+        "Time",
+        "Day",
+        "Month",
+        "Year",
+        "Notes"
+      ];
 
       var planes = [];
       var lines = [];
       var row = [];
       var out = [];
 
-      _.each(spots, function(spot){
+      _.each(spots, function (spot) {
 
         var longitude = 999;
-    		var latitude = 99;
-    		var trendstrike = "";
-    		var plungedip = "";
+        var latitude = 99;
+        var trendstrike = "";
+        var plungedip = "";
         var notes = "";
         var spotOrientations = [];
 
-        if(spot.geometry.type=="Point"){
+        if (spot.geometry.type == "Point") {
           longitude = spot.geometry.coordinates[0];
           latitude = spot.geometry.coordinates[1];
         }
@@ -177,62 +171,64 @@
         orientations are in "orientation". Other times, orientations are
         in "orientation_data". 
         */
-        if(spot.properties.orientation){
+        if (spot.properties.orientation) {
           spotOrientations.push(spot.properties.orientation);
-        }else if(spot.properties.orientation_data){
-          _.each(spot.properties.orientation_data, function(od){
+        }
+        else if (spot.properties.orientation_data) {
+          _.each(spot.properties.orientation_data, function (od) {
             spotOrientations.push(od);
           });
         }
 
-        _.each(spotOrientations, function(od){
-          if(od.type=="planar_orientation"){
-            if(od.strike && od.dip){
+        _.each(spotOrientations, function (od) {
+          if (od.type == "planar_orientation") {
+            if (od.strike && od.dip) {
               trendstrike = od.strike;
               plungedip = od.dip;
-              if(od.notes) notes = od.notes;
+              if (od.notes) notes = od.notes;
               row = [
                 "",
-								"P",
-								"Strabo Planes",
-								"000000000",
-								trendstrike,
-								plungedip,
-								longitude,
-								latitude,
-								"",
-								"0",
-								"",
-								"",
-								"0",
-								"0",
-								"0",
-								notes
+                "P",
+                "Strabo Planes",
+                "000000000",
+                trendstrike,
+                plungedip,
+                longitude,
+                latitude,
+                "",
+                "0",
+                "",
+                "",
+                "0",
+                "0",
+                "0",
+                notes
               ];
               planes.push(row);
             }
-          }else if(od.type=="linear_orientation"){
-            if(od.trend && od.plunge){
+          }
+          else if (od.type == "linear_orientation") {
+            if (od.trend && od.plunge) {
               trendstrike = od.trend;
               plungedip = od.plunge;
-              if(od.notes) notes = od.notes;
+              if (od.notes) notes = od.notes;
               row = [
                 "",
-								"L",
-								"Strabo Lines",
-								"000000000",
-								trendstrike,
-								plungedip,
-								longitude,
-								latitude,
-								"",
-								"0",
-								"",
-								"",
-								"0",
-								"0",
-								"0",
-								notes
+                "L",
+                "Strabo Lines",
+                "000000000",
+                trendstrike,
+                plungedip,
+                longitude,
+                latitude,
+                "",
+                "0",
+                "",
+                "",
+                "0",
+                "0",
+                "0",
+                notes
               ];
               lines.push(row);
             }
@@ -241,18 +237,18 @@
 
       })
 
-      if(lines.length>0 || planes.length>0){
+      if (lines.length > 0 || planes.length > 0) {
         var recordnum = 1;
         out.push(headers.join("\t"));
-        if(planes.length>0){
-          _.each(planes, function(plane){
+        if (planes.length > 0) {
+          _.each(planes, function (plane) {
             plane[0] = recordnum;
             out.push(plane.join("\t"));
             recordnum++;
           })
         }
-        if(lines.length>0){
-          _.each(lines, function(line){
+        if (lines.length > 0) {
+          _.each(lines, function (line) {
             line[0] = recordnum;
             out.push(line.join("\t"));
             recordnum++;
@@ -263,16 +259,17 @@
         hasdata = true;
       }
 
-      $log.log("out: ",out);
+      $log.log("out: ", out);
 
-      if(hasdata){
+      if (hasdata) {
         $cordovaClipboard.copy(out).then(function () {
           $ionicPopup.alert({
             'title': 'Success!',
             'template': 'Data has been copied to clipboard.'
           });
         });
-      }else{
+      }
+      else {
         $ionicPopup.alert({
           'title': 'Error!',
           'template': 'Your selected spots contained no valid stereonet data.'
@@ -284,10 +281,6 @@
     function roundToDecimalPlaces(value, places) {
       var multiplier = Math.pow(10, places);
       return (Math.round(value * multiplier) / multiplier);
-    }
-
-    function setBackView(url) {
-      backView = url;
     }
 
     function toDegrees(radians) {

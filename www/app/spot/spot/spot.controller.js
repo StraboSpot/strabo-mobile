@@ -5,13 +5,13 @@
     .module('app')
     .controller('SpotController', SpotController);
 
-  SpotController.$inject = ['$document', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup', '$location',
-    '$log', '$q', '$rootScope', '$scope', '$state', '$timeout', 'FormFactory', 'HelpersFactory', 'MapViewFactory',
-    'ProjectFactory', 'SpotFactory', 'TagFactory', 'IS_WEB'];
+  SpotController.$inject = ['$document', '$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover',
+    '$ionicPopup', '$location', '$log', '$q', '$rootScope', '$scope', '$state', '$timeout', 'FormFactory',
+    'HelpersFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'TagFactory', 'IS_WEB'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
-  function SpotController($document, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup, $location, $log, $q,
-                          $rootScope, $scope, $state, $timeout, FormFactory, HelpersFactory, MapViewFactory,
+  function SpotController($document, $ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup, $location,
+                          $log, $q, $rootScope, $scope, $state, $timeout, FormFactory, HelpersFactory, MapViewFactory,
                           ProjectFactory, SpotFactory, TagFactory, IS_WEB) {
     var vmParent = $scope.vm;
     var vm = this;
@@ -115,8 +115,6 @@
       $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
         if (vm.spotChanged && fromState.name === 'app.spotTab.spot') {
           saveSpot().then(function (spots) {
-            $log.log('Saved spot: ', vm.spot);
-            $log.log('All spots: ', spots);
             vm.spotChanged = false;
             if (IS_WEB && $state.current.name === 'app.spotTab.spot') vmParent.updateSpots();
           }, function () {
@@ -309,15 +307,44 @@
 
     function goBack() {
       SpotFactory.clearCurrentSpot();
-      var backLocation = HelpersFactory.getBackView();
-      if (backLocation === '/app/maps') {
-        $ionicLoading.show({
-          'template': '<ion-spinner></ion-spinner><br>Loading Map...'
-        });
-        $log.log('Loading Map ...');
+
+      // If the backView is within the same Spot keep getting backViews until
+      // we get a backView out of the Spot or there are no more backViews
+      var backView = $ionicHistory.backView();
+      if (backView) {
+        var historyId = backView.historyId;
+        var viewHistory = $ionicHistory.viewHistory().histories;
+        var historyStack = viewHistory[historyId].stack;
+        var i = historyStack.length - 2; // Last view in stack is current view so skip that
+        while (i >= 0) {
+          var view = historyStack[i];
+          if (_.has(view.stateParams, 'spotId') && view.stateParams.spotId === vm.spot.properties.id.toString()) {
+            //$log.log('Do not go to state', view);
+            historyStack.splice(i, 1); // Keep last view in stack since it's the current view
+            if (i > 0) historyStack[i - 1].forwardViewId = historyStack[historyStack.length - 1].viewId;
+            historyStack[historyStack.length - 1].backViewId = i > 0 ? historyStack[i - 1].viewId : null;
+            i--;
+          }
+          else {
+            //$log.log('Reverted to state: ', view);
+            $ionicHistory.backView(view);
+            break;
+          }
+        }
       }
-      if (vm.spot) submit(backLocation);
-      else $location.path(backLocation);
+
+      saveSpot().then(function() {
+        if ($ionicHistory.backView()) {
+          if ($ionicHistory.backView().url === '/app/map') {
+            $ionicLoading.show({
+              'template': '<ion-spinner></ion-spinner><br>Loading Map...'
+            });
+            $log.log('Loading Map ...');
+          }
+          $ionicHistory.goBack();
+        }
+        else $location.path('/app/spots');      // default backView if no backView set
+      });
     }
 
     function goToTag(id) {
@@ -383,7 +410,6 @@
           }
           if (vm.spot.properties.inferences) delete vm.spot.properties.inferences;  // Remove leftover inferences
           vm.spot = HelpersFactory.cleanObj(vm.spot);
-          $log.log('Spot to save: ', vm.spot);
           return SpotFactory.save(vm.spot);
         }
         else $ionicLoading.hide();
@@ -394,14 +420,13 @@
     // Save the Spot
     function submit(toPath) {
       saveSpot().then(function (spots) {
-        $log.log('Saved spot: ', vm.spot);
-        $log.log('All spots: ', spots);
         vm.spotChanged = false;
         if (IS_WEB && $state.current.name === 'app.spotTab.spot') vmParent.updateSpots();
         else if (IS_WEB && $state.current.name === 'app.map') $rootScope.$broadcast('updateFeatureLayer');
         else if (IS_WEB && $state.current.name === 'app.image-basemaps.image-basemap') {
           $rootScope.$broadcast('updateFeatureLayer');
         }
+        $ionicHistory.backView();
         $location.path(toPath);
       })
     }

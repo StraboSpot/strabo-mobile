@@ -337,22 +337,24 @@
     // Save the Spot to the local database if it's been changed
     function save(saveSpot) {
       $log.log('In Spot Factory Save();');
-      $log.log('Incoming Spot: ', saveSpot);
+      $log.log('Spot to save: ', saveSpot);
       $log.log('Existing Spot: ', spots[saveSpot.properties.id]);
       var deferred = $q.defer(); // init promise
       var isEqual = _.isEqual(saveSpot, spots[saveSpot.properties.id]);
       if (isEqual) {
-        $log.log('Spot has not changed.');
+        $log.log('Spot not changed. No need to save Spot.');
+        $log.log('All Spots:', spots);
         deferred.resolve(spots);
       }
       else {
-        $log.log('Spot has changed.');
         saveSpot.properties.modified_timestamp = Date.now();
-        $log.log('Call LiveDBFactory here:');
+        $log.log('Spot has changed. Saving Spot:', saveSpot, '...');
+        $log.log('Calling LiveDBFactory ...');
         LiveDBFactory.save(saveSpot, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
         LocalStorageFactory.getDb().spotsDb.setItem(saveSpot.properties.id.toString(), saveSpot).then(function () {
           spots[saveSpot.properties.id] = angular.fromJson(angular.toJson(saveSpot));
           deferred.notify();
+          $log.log('Spot Saved. All Spots:', spots);
           deferred.resolve(spots);
         });
       }

@@ -58,7 +58,6 @@
 
     function goToSample(sample) {
       vm.sampleIdSelected = sample.id;
-      if (!IS_WEB) HelpersFactory.setBackView($ionicHistory.currentView().url);
       $location.path('/app/spotTab/' + sample.spotId + '/samples');
     }
   }

@@ -7,11 +7,11 @@
 
   ImagesTabController.$inject = ['$cordovaCamera', '$cordovaGeolocation', '$document', '$ionicModal', '$ionicPopup',
     '$log', '$q', '$scope', '$state', '$window', 'FormFactory', 'HelpersFactory', 'ImageFactory', 'LiveDBFactory',
-    'LocalStorageFactory', 'ProjectFactory', 'IS_WEB'];
+    'LocalStorageFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
 
   function ImagesTabController($cordovaCamera, $cordovaGeolocation, $document, $ionicModal, $ionicPopup, $log, $q,
                                $scope, $state, $window, FormFactory, HelpersFactory, ImageFactory, LiveDBFactory,
-                               LocalStorageFactory, ProjectFactory, IS_WEB) {
+                               LocalStorageFactory, ProjectFactory, SpotFactory, IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -168,7 +168,7 @@
     function getImageType(imageData, image) {
       var imageTypeField = _.findWhere(FormFactory.getForm().survey, {'name': 'image_type'});
       vm.imageTypeChoices = _.filter(FormFactory.getForm().choices, function (choice) {
-        return choice['list name'] === imageTypeField.type.split(" ")[1]
+        return choice['list_name'] === imageTypeField.type.split(" ")[1]
       });
       var template = '<ion-radio ng-repeat="choice in vmChild.imageTypeChoices" ng-value="choice.name" ng-model="vmChild.imageType">{{ choice.label }}</ion-radio> ' +
         '<div ng-show="vmChild.imageType === \'other_image_ty\'">' +
@@ -470,6 +470,7 @@
     }
 
     function goToImageBasemap(image) {
+      SpotFactory.clearCurrentSpot();
       vmParent.submit('/app/image-basemaps/' + image.id);
     }
 

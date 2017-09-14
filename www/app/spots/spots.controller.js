@@ -48,7 +48,6 @@
     vm.toggleFilter = toggleFilter;
     vm.updateSpots = updateSpots;
 
-    if (!IS_WEB) HelpersFactory.setBackView($ionicHistory.currentView().url);
     activate();
 
     /**

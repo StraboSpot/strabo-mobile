@@ -61,7 +61,6 @@
 
       currentSpot = SpotFactory.getCurrentSpot();
       if (currentSpot) vm.clickedFeatureId = currentSpot.properties.id;
-      if (!currentSpot && !IS_WEB) HelpersFactory.setBackView($ionicHistory.currentView().url);
 
       createModals();
       createPopover();
@@ -324,14 +323,8 @@
     }
 
     function goBack() {
-      if (!currentSpot) $location.path('/app/image-basemaps');
-      // Return to spot tab unless we got to this image from the images tab (that is if the id
-      // of the image basemap we're leaving matches the id of an image of this spot)
-      else if (currentSpot.properties.image_basemap &&
-        currentSpot.properties.image_basemap.toString() === $state.params.imagebasemapId) {
-        $location.path('/app/spotTab/' + currentSpot.properties.id + '/spot');
-      }
-      else $location.path('/app/spotTab/' + currentSpot.properties.id + '/images');
+      if ($ionicHistory.backView()) $ionicHistory.goBack();
+      else $location.path('/app/image-basemaps');
     }
 
     function groupSpots() {

@@ -36,10 +36,11 @@
     vm.cacheOfflineTiles = cacheOfflineTiles;
     vm.closeModal = closeModal;
     vm.createTag = createTag;
+    vm.goBack = goBack;
     vm.groupSpots = groupSpots;
+    vm.hasBackView = hasBackView;
     vm.isiOS = isiOS;
     vm.isOnline = isOnline;
-    vm.returnToSpot = returnToSpot;
     vm.saveEdits = saveEdits;
     vm.stereonetSpots = stereonetSpots;
     vm.toggleNesting = toggleNesting;
@@ -64,7 +65,6 @@
 
       vm.currentSpot = SpotFactory.getCurrentSpot();
       if (vm.currentSpot) vm.clickedFeatureId = vm.currentSpot.properties.id;
-      if (!vm.currentSpot && !IS_WEB) HelpersFactory.setBackView($ionicHistory.currentView().url);
 
       createModals();
       createPopover();
@@ -328,9 +328,17 @@
       $location.path('/app/tags/' + id);
     }
 
+    function goBack() {
+      if ($ionicHistory.backView()) $ionicHistory.goBack();
+    }
+
     function groupSpots() {
       vm.popover.hide();
       MapDrawFactory.groupSpots();
+    }
+
+    function hasBackView() {
+      return $ionicHistory.backView();
     }
 
     function isOnline() {
@@ -339,10 +347,6 @@
 
     function isiOS() {
       return ionic.Platform.device().platform=="iOS";
-    }
-
-    function returnToSpot() {
-      $location.path('/app/spotTab/' + vm.currentSpot.properties.id + '/spot');
     }
 
     function saveEdits() {
