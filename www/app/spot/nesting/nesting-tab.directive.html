@@ -79,10 +79,12 @@
         </span>
     </div>
 
-    <button ng-show='vmChild.isiOS()' ng-click='vmChild.stereonetSpots(vmChild.childrenSpots)'
-            class='button button-clear button-positive'>
-      <i class='icon ion-disc'></i>
-      <span class='button-text-big'>Add Nested Spots to Stereonet</span>
-    </button>
+    <div ng-show='vmChild.isiOS()'>
+      <button ng-click='vmChild.stereonetSpots(vmChild.childrenSpots)'
+              class='button button-clear button-positive'>
+        <i class='icon ion-disc'></i>
+        <span class='button-text-big'>Add Nested Spots to Stereonet</span>
+      </button>
+    </div>
   </div>
 </div>
