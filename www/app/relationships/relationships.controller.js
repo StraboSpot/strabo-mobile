@@ -57,26 +57,27 @@
      */
 
     function deleteAllRelationships() {
-      vm.popover.hide();
-      var confirmPopup = $ionicPopup.confirm({
-        'title': 'Delete Relationships',
-        'template': 'Are you sure you want to delete <b>ALL</b> relationships?'
-      });
-      confirmPopup.then(
-        function (res) {
-          if (res) {
-            ProjectFactory.destroyRelationships().then(function () {
-              if (IS_WEB) {
-                vm.relationshipIdSelected = undefined;
-                $log.log('Delete relationships from LiveDB.', ProjectFactory.getCurrentProject());
-                LiveDBFactory.save(null, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
-                $location.path('app/relationships');
-              }
-              activate();
-            });
+      vm.popover.hide().then(function(){
+        var confirmPopup = $ionicPopup.confirm({
+          'title': 'Delete Relationships',
+          'template': 'Are you sure you want to delete <b>ALL</b> relationships?'
+        });
+        confirmPopup.then(
+          function (res) {
+            if (res) {
+              ProjectFactory.destroyRelationships().then(function () {
+                if (IS_WEB) {
+                  vm.relationshipIdSelected = undefined;
+                  $log.log('Delete relationships from LiveDB.', ProjectFactory.getCurrentProject());
+                  LiveDBFactory.save(null, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
+                  $location.path('app/relationships');
+                }
+                activate();
+              });
+            }
           }
-        }
-      );
+        );
+      });
     }
 
     function deleteRelationship(relationship) {

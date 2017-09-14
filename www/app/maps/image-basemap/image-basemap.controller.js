@@ -328,8 +328,9 @@
     }
 
     function groupSpots() {
-      vm.popover.hide();
-      MapDrawFactory.groupSpots();
+      vm.popover.hide().then(function(){
+        MapDrawFactory.groupSpots();
+      });
     }
 
     function hasLinkedImages() {
@@ -344,27 +345,28 @@
     }
 
     function toggleNesting() {
-      vm.popover.hide();
-      vm.isNesting = !vm.isNesting;
-      SpotFactory.setActiveNesting(vm.isNesting);
-      if (vm.isNesting) {
-        $log.log('Starting Nesting');
-        SpotFactory.clearActiveNest();
-        FormFactory.setForm('surface_feature');
-        vm.data = {};
-        vm.newNestModal.show();
-      }
-      else {
-        var activeNest = SpotFactory.getActiveNest();
-        SpotFactory.clearActiveNest();
-        vm.newNestProperties = {};
-        if (_.isEmpty(activeNest)) {
-          $ionicPopup.alert({
-            'title': 'Empty Nest!',
-            'template': 'No Spots were added to the Nest.'
-          });
+      vm.popover.hide().then(function(){
+        vm.isNesting = !vm.isNesting;
+        SpotFactory.setActiveNesting(vm.isNesting);
+        if (vm.isNesting) {
+          $log.log('Starting Nesting');
+          SpotFactory.clearActiveNest();
+          FormFactory.setForm('surface_feature');
+          vm.data = {};
+          vm.newNestModal.show();
         }
-      }
+        else {
+          var activeNest = SpotFactory.getActiveNest();
+          SpotFactory.clearActiveNest();
+          vm.newNestProperties = {};
+          if (_.isEmpty(activeNest)) {
+            $ionicPopup.alert({
+              'title': 'Empty Nest!',
+              'template': 'No Spots were added to the Nest.'
+            });
+          }
+        }
+      });
     }
 
     function toggleTagChecked(tag) {
@@ -380,31 +382,33 @@
     }
 
     function unlinkImages() {
-      vm.popover.hide();
-      var confirmPopup = $ionicPopup.confirm({
-        'title': 'Unlink Images',
-        'template': 'Are you sure you want to unlink <b>ALL</b> images in this set?'
-      });
-      confirmPopup.then(function (res) {
-        if (res) {
-          ProjectFactory.unlinkImages(vm.imageBasemap.id);
-          map.getLayers().forEach(function (layer) {
-            if (layer.get('name') === 'imageBasemapLayer') {
-              map.removeLayer(layer);
-            }
-          });
-          MapSetupFactory.setImageBasemapLayers(vm.imageBasemap).then(function () {
-            datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map, vm.imageBasemap);
-            MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map, vm.imageBasemap);
-            MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
-          });
-        }
+      vm.popover.hide().then(function(){
+        var confirmPopup = $ionicPopup.confirm({
+          'title': 'Unlink Images',
+          'template': 'Are you sure you want to unlink <b>ALL</b> images in this set?'
+        });
+        confirmPopup.then(function (res) {
+          if (res) {
+            ProjectFactory.unlinkImages(vm.imageBasemap.id);
+            map.getLayers().forEach(function (layer) {
+              if (layer.get('name') === 'imageBasemapLayer') {
+                map.removeLayer(layer);
+              }
+            });
+            MapSetupFactory.setImageBasemapLayers(vm.imageBasemap).then(function () {
+              datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map, vm.imageBasemap);
+              MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map, vm.imageBasemap);
+              MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
+            });
+          }
+        });
       });
     }
 
     function zoomToSpotsExtent() {
-      vm.popover.hide();
-      MapViewFactory.zoomToSpotsExtent(map, vm.imageBasemap);
+      vm.popover.hide().then(function(){
+        MapViewFactory.zoomToSpotsExtent(map, vm.imageBasemap);
+      });
     }
   }
 }());

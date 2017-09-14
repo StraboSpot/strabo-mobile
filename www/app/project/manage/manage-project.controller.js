@@ -905,43 +905,43 @@
      }*/
 
     function exportProject() {
-      vm.popover.hide();
+      vm.popover.hide().then(function(){
+        vm.exportItems = {};
+        var template = '<ion-checkbox ng-model="vm.exportItems.text">Text Data</ion-checkbox>' +
+          '<ion-checkbox ng-model="vm.exportItems.images">Images</ion-checkbox>';
 
-      vm.exportItems = {};
-      var template = '<ion-checkbox ng-model="vm.exportItems.text">Text Data</ion-checkbox>' +
-        '<ion-checkbox ng-model="vm.exportItems.images">Images</ion-checkbox>';
+        var myPopup = $ionicPopup.show({
+          'title': 'Select Items to Export',
+          'template': template,
+          'scope': $scope,
+          'buttons': [{
+            'text': 'Cancel'
+          }, {
+            'text': '<b>OK</b>',
+            'type': 'button-positive',
+            'onTap': function (e) {
+              if (_.isEmpty(vm.exportItems)) e.preventDefault(); // don't allow the user to close unless a value is set
+              else return vm.exportItems;
+            }
+          }]
+        });
 
-      var myPopup = $ionicPopup.show({
-        'title': 'Select Items to Export',
-        'template': template,
-        'scope': $scope,
-        'buttons': [{
-          'text': 'Cancel'
-        }, {
-          'text': '<b>OK</b>',
-          'type': 'button-positive',
-          'onTap': function (e) {
-            if (_.isEmpty(vm.exportItems)) e.preventDefault(); // don't allow the user to close unless a value is set
-            else return vm.exportItems;
-          }
-        }]
-      });
-
-      myPopup.then(function (res) {
-        if (res) {
-          if (vm.exportItems.text && vm.exportItems.images) {
-            exportData().then(function () {
-              $ionicPopup.alert({
-                'title': 'Export Project Images',
-                'template': 'Now exporting all project images ...'
-              }).then(function () {
-                exportImages();
+        myPopup.then(function (res) {
+          if (res) {
+            if (vm.exportItems.text && vm.exportItems.images) {
+              exportData().then(function () {
+                $ionicPopup.alert({
+                  'title': 'Export Project Images',
+                  'template': 'Now exporting all project images ...'
+                }).then(function () {
+                  exportImages();
+                });
               });
-            });
+            }
+            else if (vm.exportItems.text && !vm.exportItems.images) exportData();
+            else if (!vm.exportItems.text && vm.exportItems.images) exportImages();
           }
-          else if (vm.exportItems.text && !vm.exportItems.images) exportData();
-          else if (!vm.exportItems.text && vm.exportItems.images) exportImages();
-        }
+        });
       });
     }
 
@@ -968,35 +968,35 @@
     }
 
     function importProject() {
-      vm.popover.hide();
+      vm.popover.hide().then(function(){
+        vm.importItem = undefined;
+        vm.text = 'text';
+        vm.images = 'images';
+        var template = '<ion-radio ng-model="vm.importItem" ng-value="vm.text">Text Data</ion-radio>' +
+          '<ion-radio ng-model="vm.importItem" ng-value="vm.images">Images</ion-radio>';
 
-      vm.importItem = undefined;
-      vm.text = 'text';
-      vm.images = 'images';
-      var template = '<ion-radio ng-model="vm.importItem" ng-value="vm.text">Text Data</ion-radio>' +
-        '<ion-radio ng-model="vm.importItem" ng-value="vm.images">Images</ion-radio>';
+        var myPopup = $ionicPopup.show({
+          'title': 'Select Item to Import',
+          'template': template,
+          'scope': $scope,
+          'buttons': [{
+            'text': 'Cancel'
+          }, {
+            'text': '<b>OK</b>',
+            'type': 'button-positive',
+            'onTap': function (e) {
+              if (vm.importItem === undefined) e.preventDefault(); // don't allow the user to close unless a value is set
+              else return vm.importItem;
+            }
+          }]
+        });
 
-      var myPopup = $ionicPopup.show({
-        'title': 'Select Item to Import',
-        'template': template,
-        'scope': $scope,
-        'buttons': [{
-          'text': 'Cancel'
-        }, {
-          'text': '<b>OK</b>',
-          'type': 'button-positive',
-          'onTap': function (e) {
-            if (vm.importItem === undefined) e.preventDefault(); // don't allow the user to close unless a value is set
-            else return vm.importItem;
+        myPopup.then(function (res) {
+          if (res) {
+            if (vm.importItem === 'text') importData();
+            else if (vm.importItem === 'images') importImages();
           }
-        }]
-      });
-
-      myPopup.then(function (res) {
-        if (res) {
-          if (vm.importItem === 'text') importData();
-          else if (vm.importItem === 'images') importImages();
-        }
+        });
       });
     }
 
@@ -1033,88 +1033,90 @@
     }
 
     function initializeDownload() {
-      vm.popover.hide();
-      downloadErrors = false;
-      var downloadConfirmText = '';
-      if (_.isEmpty(vm.activeDatasets)) {
-        downloadConfirmText = 'No active datasets to download! Only the project properties will be downloaded and will ' +
-          '<span style="color:red">OVERWRITE</span> the properties for the current open project. Continue?'
-      }
-      else {
-        var names = _.pluck(vm.activeDatasets, 'name');
-        downloadConfirmText = 'Project properties and datasets <b>' + names.join(', ') + '</b> will be downloaded' +
-          ' and will <span style="color:red">OVERWRITE</span> the current open project properties and selected' +
-          ' datasets. Continue?';
-      }
-      var confirmPopup = $ionicPopup.confirm({
-        'title': 'Download Warning!',
-        'template': downloadConfirmText,
-        'cssClass': 'warning-popup'
-      });
-      confirmPopup.then(function (res) {
-        if (res) {
-          downloadProject().then(function () {
-            notifyMessages.splice(0, 1);
-            if (!downloadErrors) outputMessage('<br>Project Updated Successfully!');
-            else outputMessage('<br>Errors Updating Project!');
-            initializeProject();
-          }, function (err) {
-            notifyMessages.splice(0, 1);
-            outputMessage('<br>Error Updating Project! Error:' + err);
-          }).finally(function () {
-            $ionicLoading.show({
-              scope: $scope, template: notifyMessages.join('<br>') + '<br><br>' +
-              '<a class="button button-clear button-outline button-light" ng-click="vm.hideLoading()">OK</a>'
-            });
-          });
+      vm.popover.hide().then(function(){
+        downloadErrors = false;
+        var downloadConfirmText = '';
+        if (_.isEmpty(vm.activeDatasets)) {
+          downloadConfirmText = 'No active datasets to download! Only the project properties will be downloaded and will ' +
+            '<span style="color:red">OVERWRITE</span> the properties for the current open project. Continue?'
         }
+        else {
+          var names = _.pluck(vm.activeDatasets, 'name');
+          downloadConfirmText = 'Project properties and datasets <b>' + names.join(', ') + '</b> will be downloaded' +
+            ' and will <span style="color:red">OVERWRITE</span> the current open project properties and selected' +
+            ' datasets. Continue?';
+        }
+        var confirmPopup = $ionicPopup.confirm({
+          'title': 'Download Warning!',
+          'template': downloadConfirmText,
+          'cssClass': 'warning-popup'
+        });
+        confirmPopup.then(function (res) {
+          if (res) {
+            downloadProject().then(function () {
+              notifyMessages.splice(0, 1);
+              if (!downloadErrors) outputMessage('<br>Project Updated Successfully!');
+              else outputMessage('<br>Errors Updating Project!');
+              initializeProject();
+            }, function (err) {
+              notifyMessages.splice(0, 1);
+              outputMessage('<br>Error Updating Project! Error:' + err);
+            }).finally(function () {
+              $ionicLoading.show({
+                scope: $scope, template: notifyMessages.join('<br>') + '<br><br>' +
+                '<a class="button button-clear button-outline button-light" ng-click="vm.hideLoading()">OK</a>'
+              });
+            });
+          }
+        });
       });
     }
 
     function initializeUpload() {
-      vm.popover.hide();
-      var deferred = $q.defer(); // init promise
-      uploadErrors = false;
-      var uploadConfirmText = '';
-      if (_.isEmpty(vm.activeDatasets)) {
-        uploadConfirmText = 'No active datasets to upload! Only the project properties will be uploaded and will ' +
-          '<span style="color:red">OVERWRITE</span> the properties for this project on the server. Continue?';
-      }
-      else {
-        var names = _.pluck(vm.activeDatasets, 'name');
-        uploadConfirmText = 'Project properties and the active datasets <b>' + names.join(', ') + '</b> will be' +
-          ' uploaded and will <span style="color:red">OVERWRITE</span> the project properties and selected' +
-          ' datasets on the server. Continue?'
-      }
-      var confirmPopup = $ionicPopup.confirm({
-        'title': 'Upload Warning!',
-        'template': uploadConfirmText,
-        'cssClass': 'warning-popup'
-      });
-      confirmPopup.then(function (res) {
-        if (res) {
-          notifyMessages = [];
-          $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Uploading...'});
-          upload().then(function () {
-            notifyMessages.splice(0, 1); // Remove spinner
-            if (uploadErrors) outputMessage('<br>Project Finished Uploading but with Errors!');
-            else outputMessage('<br>Project Uploaded Successfully!');
-            deferred.resolve();
-          }, function (err) {
-            notifyMessages.splice(0, 1); // Remove spinner
-            outputMessage('<br>Error Uploading Project!');
-            if (err) outputMessage('Server Error: ' + err);
-            deferred.reject();
-          }).finally(function () {
-            $ionicLoading.show({
-              scope: $scope, template: notifyMessages.join('<br>') + '<br><br>' +
-              '<a class="button button-clear button-outline button-light" ng-click="vm.hideLoading()">OK</a>'
-            });
-          });
+      vm.popover.hide().then(function(){
+        var deferred = $q.defer(); // init promise
+        uploadErrors = false;
+        var uploadConfirmText = '';
+        if (_.isEmpty(vm.activeDatasets)) {
+          uploadConfirmText = 'No active datasets to upload! Only the project properties will be uploaded and will ' +
+            '<span style="color:red">OVERWRITE</span> the properties for this project on the server. Continue?';
         }
-        else deferred.resolve();
+        else {
+          var names = _.pluck(vm.activeDatasets, 'name');
+          uploadConfirmText = 'Project properties and the active datasets <b>' + names.join(', ') + '</b> will be' +
+            ' uploaded and will <span style="color:red">OVERWRITE</span> the project properties and selected' +
+            ' datasets on the server. Continue?'
+        }
+        var confirmPopup = $ionicPopup.confirm({
+          'title': 'Upload Warning!',
+          'template': uploadConfirmText,
+          'cssClass': 'warning-popup'
+        });
+        confirmPopup.then(function (res) {
+          if (res) {
+            notifyMessages = [];
+            $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Uploading...'});
+            upload().then(function () {
+              notifyMessages.splice(0, 1); // Remove spinner
+              if (uploadErrors) outputMessage('<br>Project Finished Uploading but with Errors!');
+              else outputMessage('<br>Project Uploaded Successfully!');
+              deferred.resolve();
+            }, function (err) {
+              notifyMessages.splice(0, 1); // Remove spinner
+              outputMessage('<br>Error Uploading Project!');
+              if (err) outputMessage('Server Error: ' + err);
+              deferred.reject();
+            }).finally(function () {
+              $ionicLoading.show({
+                scope: $scope, template: notifyMessages.join('<br>') + '<br><br>' +
+                '<a class="button button-clear button-outline button-light" ng-click="vm.hideLoading()">OK</a>'
+              });
+            });
+          }
+          else deferred.resolve();
+        });
+        return deferred.promise;
       });
-      return deferred.promise;
     }
 
     function isDatasetOn(dataset) {
@@ -1192,47 +1194,49 @@
     }
 
     function startNewProject() {
-      vm.popover.hide();
-      vm.data = {};
-      vm.showExitProjectModal = false;
-      if (_.isEmpty(vm.project)) vm.newProjectModal.show();
-      else {
-        vm.showExitProjectModal = true;
-        var confirmText = 'Creating a new project will <span style="color:red">DELETE</span> the local copy of the' +
-          ' current project <b>' + vm.project.description.project_name + '</b> including all datasets and Spots' +
-          ' contained within this project.';
-        if (ProjectFactory.isSyncReady()) {
-          confirmText += ' Make sure you have already uploaded the project to the server if you wish to preserve the' +
-            ' data. Continue?';
-        }
+      vm.popover.hide().then(function(){
+        vm.data = {};
+        vm.showExitProjectModal = false;
+        if (_.isEmpty(vm.project)) vm.newProjectModal.show();
         else {
-          confirmText += ' Create an account and log in to upload the project to the server if you wish preserve' +
-            ' the data. Continue';
+          vm.showExitProjectModal = true;
+          var confirmText = 'Creating a new project will <span style="color:red">DELETE</span> the local copy of the' +
+            ' current project <b>' + vm.project.description.project_name + '</b> including all datasets and Spots' +
+            ' contained within this project.';
+          if (ProjectFactory.isSyncReady()) {
+            confirmText += ' Make sure you have already uploaded the project to the server if you wish to preserve the' +
+              ' data. Continue?';
+          }
+          else {
+            confirmText += ' Create an account and log in to upload the project to the server if you wish preserve' +
+              ' the data. Continue';
+          }
+          var confirmPopup = $ionicPopup.confirm({
+            'title': 'Delete Local Project Warning!',
+            'template': confirmText,
+            'cssClass': 'warning-popup'
+          });
+          confirmPopup.then(function (res) {
+            if (res) vm.newProjectModal.show();
+          });
         }
-        var confirmPopup = $ionicPopup.confirm({
-          'title': 'Delete Local Project Warning!',
-          'template': confirmText,
-          'cssClass': 'warning-popup'
-        });
-        confirmPopup.then(function (res) {
-          if (res) vm.newProjectModal.show();
-        });
-      }
+      });
     }
 
     function switchProject() {
-      vm.popover.hide();
-      $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Getting Projects from Server ...'});
-      ProjectFactory.loadProjectsRemote().then(function (projects) {
-        vm.projects = projects;
-        vm.switchProjectModal.show();
-      }, function (err) {
-        $ionicPopup.alert({
-          'title': 'Error communicating with server!',
-          'template': err
+      vm.popover.hide().then(function(){
+        $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Getting Projects from Server ...'});
+        ProjectFactory.loadProjectsRemote().then(function (projects) {
+          vm.projects = projects;
+          vm.switchProjectModal.show();
+        }, function (err) {
+          $ionicPopup.alert({
+            'title': 'Error communicating with server!',
+            'template': err
+          });
+        }).finally(function () {
+          $ionicLoading.hide();
         });
-      }).finally(function () {
-        $ionicLoading.hide();
       });
     }
 

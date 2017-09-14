@@ -113,27 +113,28 @@
     }
 
     function deleteAllTags() {
-      vm.popover.hide();
-      var confirmPopup = $ionicPopup.confirm({
-        'title': 'Delete Tags',
-        'template': 'Are you sure you want to delete <b>ALL</b> tags?'
-      });
-      confirmPopup.then(
-        function (res) {
-          if (res) {
-            TagFactory.removeActiveTagging();
-            ProjectFactory.destroyTags().then(function () {
-              if (IS_WEB) {
-                vm.tagIdSelected = undefined;
-                $log.log('Delete tags from LiveDB.', ProjectFactory.getCurrentProject());
-                LiveDBFactory.save(null, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
-                $location.path('app/tags');
-              }
-              activate();
-            });
+      vm.popover.hide().then(function(){
+        var confirmPopup = $ionicPopup.confirm({
+          'title': 'Delete Tags',
+          'template': 'Are you sure you want to delete <b>ALL</b> tags?'
+        });
+        confirmPopup.then(
+          function (res) {
+            if (res) {
+              TagFactory.removeActiveTagging();
+              ProjectFactory.destroyTags().then(function () {
+                if (IS_WEB) {
+                  vm.tagIdSelected = undefined;
+                  $log.log('Delete tags from LiveDB.', ProjectFactory.getCurrentProject());
+                  LiveDBFactory.save(null, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
+                  $location.path('app/tags');
+                }
+                activate();
+              });
+            }
           }
-        }
-      );
+        );
+      });
     }
 
     function deleteTag(tag) {

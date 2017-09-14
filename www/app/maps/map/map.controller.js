@@ -272,30 +272,30 @@
 
     // Cache the tiles in the current view but don't switch to the offline layer
     function cacheOfflineTiles() {
-      vm.popover.hide();
+      vm.popover.hide().then(function(){
+        if (onlineState) {
+          MapViewFactory.setMapView(map);
+          MapLayerFactory.saveVisibleLayers(map);
 
-      if (onlineState) {
-        MapViewFactory.setMapView(map);
-        MapLayerFactory.saveVisibleLayers(map);
-
-        // Check valid zoom level
-        var maxZoom = _.find(MapFactory.getMaps(), function (gotMap) {
-          return gotMap.id === MapLayerFactory.getVisibleLayers()['baselayer'].get('id');
-        }).maxZoom;
-        if (HelpersFactory.roundToDecimalPlaces(map.getView().getZoom(), 2) > maxZoom) {
+          // Check valid zoom level
+          var maxZoom = _.find(MapFactory.getMaps(), function (gotMap) {
+            return gotMap.id === MapLayerFactory.getVisibleLayers()['baselayer'].get('id');
+          }).maxZoom;
+          if (HelpersFactory.roundToDecimalPlaces(map.getView().getZoom(), 2) > maxZoom) {
+            $ionicPopup.alert({
+              'title': 'Map Zoom Max Exceeded!',
+              'template': 'Max zoom level for this map is ' + maxZoom + '. Zoom out to save map.'
+            });
+          }
+          else $location.path('/app/map/archiveTiles');
+        }
+        else {
           $ionicPopup.alert({
-            'title': 'Map Zoom Max Exceeded!',
-            'template': 'Max zoom level for this map is ' + maxZoom + '. Zoom out to save map.'
+            'title': 'Offline!',
+            'template': 'You must be online to save a map!'
           });
         }
-        else $location.path('/app/map/archiveTiles');
-      }
-      else {
-        $ionicPopup.alert({
-          'title': 'Offline!',
-          'template': 'You must be online to save a map!'
-        });
-      }
+      });
     }
 
     function closeModal(modal) {
@@ -333,8 +333,9 @@
     }
 
     function groupSpots() {
-      vm.popover.hide();
-      MapDrawFactory.groupSpots();
+      vm.popover.hide().then(function(){
+        MapDrawFactory.groupSpots();
+      });
     }
 
     function hasBackView() {
@@ -355,32 +356,34 @@
     }
 
     function stereonetSpots() {
-      vm.popover.hide();
-      MapDrawFactory.stereonetSpots();
+      vm.popover.hide().then(function(){
+        MapDrawFactory.stereonetSpots();
+      });
     }
 
     function toggleNesting() {
-      vm.popover.hide();
-      vm.isNesting = !vm.isNesting;
-      SpotFactory.setActiveNesting(vm.isNesting);
-      if (vm.isNesting) {
-        $log.log('Starting Nesting');
-        SpotFactory.clearActiveNest();
-        FormFactory.setForm('surface_feature');
-        vm.data = {};
-        vm.newNestModal.show();
-      }
-      else {
-        var activeNest = SpotFactory.getActiveNest();
-        SpotFactory.clearActiveNest();
-        vm.newNestProperties = {};
-        if (_.isEmpty(activeNest)) {
-          $ionicPopup.alert({
-            'title': 'Empty Nest!',
-            'template': 'No Spots were added to the Nest.'
-          });
+      vm.popover.hide().then(function(){
+        vm.isNesting = !vm.isNesting;
+        SpotFactory.setActiveNesting(vm.isNesting);
+        if (vm.isNesting) {
+          $log.log('Starting Nesting');
+          SpotFactory.clearActiveNest();
+          FormFactory.setForm('surface_feature');
+          vm.data = {};
+          vm.newNestModal.show();
         }
-      }
+        else {
+          var activeNest = SpotFactory.getActiveNest();
+          SpotFactory.clearActiveNest();
+          vm.newNestProperties = {};
+          if (_.isEmpty(activeNest)) {
+            $ionicPopup.alert({
+              'title': 'Empty Nest!',
+              'template': 'No Spots were added to the Nest.'
+            });
+          }
+        }
+      });
     }
 
     function toggleTagChecked(tag) {
@@ -403,8 +406,9 @@
     }
 
     function zoomToSpotsExtent() {
-      vm.popover.hide();
-      MapViewFactory.zoomToSpotsExtent(map);
+      vm.popover.hide().then(function(){
+        MapViewFactory.zoomToSpotsExtent(map);
+      });
     }
   }
 }());

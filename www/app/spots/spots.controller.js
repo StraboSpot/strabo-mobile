@@ -242,70 +242,70 @@
 
     // Export data to CSV
     function exportToCSV() {
-      vm.popover.hide();
+      vm.popover.hide().then(function(){
+        var spotData = convertToCSV(vm.spots);
 
-      var spotData = convertToCSV(vm.spots);
-
-      if (IS_WEB) {
-        spotData = spotData.replace(/\r\n/g, '<br>');
-        var win = $window.open();
-        win.document.body.innerHTML = spotData;
-        return;
-      }
-      try {
-        var d = new Date();
-        d = d.toLocaleDateString() + '-' + d.toLocaleTimeString();
-        d = d.replace(/\//g, '-');
-        d = d.replace(/:/g, '');
-        d = d.replace(/ /g, '');
-        var fileName = d + '-' + 'strabo-data.csv';
-
-        var devicePath;
-        switch ($cordovaDevice.getPlatform()) {
-          case 'Android':
-            devicePath = cordova.file.externalRootDirectory;
-            break;
-          case 'iOS':
-            devicePath = cordova.file.documentsDirectory;
-            break;
-          default:
-            // uh oh?  TODO: what about windows and blackberry?
-            devicePath = cordova.file.externalRootDirectory;
-            break;
+        if (IS_WEB) {
+          spotData = spotData.replace(/\r\n/g, '<br>');
+          var win = $window.open();
+          win.document.body.innerHTML = spotData;
+          return;
         }
+        try {
+          var d = new Date();
+          d = d.toLocaleDateString() + '-' + d.toLocaleTimeString();
+          d = d.replace(/\//g, '-');
+          d = d.replace(/:/g, '');
+          d = d.replace(/ /g, '');
+          var fileName = d + '-' + 'strabo-data.csv';
 
-        var directory = 'strabo';
+          var devicePath;
+          switch ($cordovaDevice.getPlatform()) {
+            case 'Android':
+              devicePath = cordova.file.externalRootDirectory;
+              break;
+            case 'iOS':
+              devicePath = cordova.file.documentsDirectory;
+              break;
+            default:
+              // uh oh?  TODO: what about windows and blackberry?
+              devicePath = cordova.file.externalRootDirectory;
+              break;
+          }
 
-        function writeFile(dir) {
-          $cordovaFile.writeFile(devicePath + dir, fileName, spotData, true).then(function (success) {
-            $log.log(success);
-            $ionicPopup.alert({
-              'title': 'Success!',
-              'template': 'CSV written to ' + devicePath + dir + fileName
-            });
-          }, function (error) {
-            $log.error('Error:', error);
-          });
-        }
+          var directory = 'strabo';
 
-        $cordovaFile.checkDir(devicePath, directory).then(function (success) {
-          $log.log(success);
-          writeFile(success.fullPath);
-        }, function (error) {
-          $cordovaFile.createDir(devicePath, directory, false).then(
-            function (success) {
+          function writeFile(dir) {
+            $cordovaFile.writeFile(devicePath + dir, fileName, spotData, true).then(function (success) {
               $log.log(success);
-              writeFile(success.fullPath);
-            },
-            function (error) {
+              $ionicPopup.alert({
+                'title': 'Success!',
+                'template': 'CSV written to ' + devicePath + dir + fileName
+              });
+            }, function (error) {
               $log.error('Error:', error);
             });
-        });
-      }
-      catch (err) {
-        if (err.message) $log.error('Error:', err.message);
-        else $log.error('Error');
-      }
+          }
+
+          $cordovaFile.checkDir(devicePath, directory).then(function (success) {
+            $log.log(success);
+            writeFile(success.fullPath);
+          }, function (error) {
+            $cordovaFile.createDir(devicePath, directory, false).then(
+              function (success) {
+                $log.log(success);
+                writeFile(success.fullPath);
+              },
+              function (error) {
+                $log.error('Error:', error);
+              });
+          });
+        }
+        catch (err) {
+          if (err.message) $log.error('Error:', err.message);
+          else $log.error('Error');
+        }
+      });
     }
 
     function getTagNames(spotId) {
@@ -366,8 +366,9 @@
     }
 
     function setListDetail() {
-      vm.popover.hide();
-      detailModal.show();
+      vm.popover.hide().then(function(){
+        detailModal.show();
+      });
     }
 
     function toggleFilter(filter, emptyType) {

@@ -125,12 +125,13 @@
      */
 
     function deselectImages() {
-      vm.popover.hide();
-      vm.isSelecting = false;
-      _.each(vm.selectedImages, function (selectedImageId) {
-        setUnselectedStyle({'id': selectedImageId});
+      vm.popover.hide().then(function(){
+        vm.isSelecting = false;
+        _.each(vm.selectedImages, function (selectedImageId) {
+          setUnselectedStyle({'id': selectedImageId});
+        });
+        vm.selectedImages = [];
       });
-      vm.selectedImages = [];
     }
 
     function filterImagesType() {
@@ -204,43 +205,47 @@
     }
 
     function selectImages() {
-      vm.popover.hide();
-      vm.isSelecting = true;
+      vm.popover.hide().then(function(){
+              vm.isSelecting = true;
+      });
     }
 
     function unlinkImages(i) {
-      vm.popover.hide();
-      var confirmPopup = $ionicPopup.confirm({
-        'title': 'Unlink Images',
-        'template': 'Are you sure you want to unlink ALL the images in this set?'
-      });
-      confirmPopup.then(function (res) {
-        if (res) {
-          ProjectFactory.unlinkImages(vm.linkedImagesSets[i][0].id);
-          vm.linkedImagesSets.splice(i, 1);
-          $log.log('All Sets of Linked Images:', vm.linkedImagesSets);
-        }
+      vm.popover.hide().then(function(){
+        var confirmPopup = $ionicPopup.confirm({
+          'title': 'Unlink Images',
+          'template': 'Are you sure you want to unlink ALL the images in this set?'
+        });
+        confirmPopup.then(function (res) {
+          if (res) {
+            ProjectFactory.unlinkImages(vm.linkedImagesSets[i][0].id);
+            vm.linkedImagesSets.splice(i, 1);
+            $log.log('All Sets of Linked Images:', vm.linkedImagesSets);
+          }
+        });
       });
     }
 
     function viewAllImages() {
-      vm.popover.hide();
-      vm.showLinkedImagesSets = false;
+      vm.popover.hide().then(function(){
+        vm.showLinkedImagesSets = false;
+      });
     }
 
     function viewLinkedImages() {
-      vm.popover.hide();
-      vm.showLinkedImagesSets = true;
-      vm.linkedImagesSets = [];
-      var linkedImagesIdsSets = ProjectFactory.getLinkedImagesAll();
-      $log.log('All Sets of Linked Images Ids:', linkedImagesIdsSets);
-      _.each(linkedImagesIdsSets, function (linkedImagesIdsSet) {
-       var linkedImages =  _.filter(vm.images, function (image) {
-          return _.contains(linkedImagesIdsSet, image.id);
+      vm.popover.hide().then(function(){
+        vm.showLinkedImagesSets = true;
+        vm.linkedImagesSets = [];
+        var linkedImagesIdsSets = ProjectFactory.getLinkedImagesAll();
+        $log.log('All Sets of Linked Images Ids:', linkedImagesIdsSets);
+        _.each(linkedImagesIdsSets, function (linkedImagesIdsSet) {
+         var linkedImages =  _.filter(vm.images, function (image) {
+            return _.contains(linkedImagesIdsSet, image.id);
+          });
+         vm.linkedImagesSets.push(linkedImages);
         });
-       vm.linkedImagesSets.push(linkedImages);
+        $log.log('All Sets of Linked Images:', vm.linkedImagesSets);
       });
-      $log.log('All Sets of Linked Images:', vm.linkedImagesSets);
     }
   }
 }());
