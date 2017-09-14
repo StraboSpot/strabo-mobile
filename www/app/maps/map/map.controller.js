@@ -38,7 +38,7 @@
     vm.createTag = createTag;
     vm.goBack = goBack;
     vm.groupSpots = groupSpots;
-    vm.hasBackView = hasBackView;
+    vm.hasSpotBackView = hasSpotBackView;
     vm.isiOS = isiOS;
     vm.isOnline = isOnline;
     vm.saveEdits = saveEdits;
@@ -338,8 +338,9 @@
       });
     }
 
-    function hasBackView() {
-      return $ionicHistory.backView();
+    function hasSpotBackView() {
+      var backView = $ionicHistory.backView();
+      return backView && backView.stateName.split('.')[1] === 'spotTab';
     }
 
     function isOnline() {
