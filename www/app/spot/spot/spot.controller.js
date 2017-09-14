@@ -334,7 +334,7 @@
         }
       }
 
-      saveSpot().then(function() {
+      saveSpot().finally(function() {
         if ($ionicHistory.backView()) {
           if ($ionicHistory.backView().url === '/app/map') {
             $ionicLoading.show({
