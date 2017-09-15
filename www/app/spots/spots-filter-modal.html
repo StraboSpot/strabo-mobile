@@ -1,7 +1,10 @@
 <ion-modal-view>
   <ion-header-bar class='bar-stable nav-title-slide-ios7' align-title='center'>
-    <button ng-click='vm.closeFilterModal()' class='button button-icon icon ion-arrow-left-c'></button>
     <h1 class='title'>Filters</h1>
+    <div class='buttons'>
+      <button class='icon ion-close-round close-modal-button'
+              ng-click='vm.filterModal.hide()'></button>
+    </div>
   </ion-header-bar>
   <ion-content class='has-header'>
     <ion-toggle
@@ -11,10 +14,10 @@
       <span class='toggle-left-label'>Name</span>
     </ion-toggle>
     <div ng-show='vm.filterConditions.name'>
-    <ion-input class='item item-input item-text-wrap text-center'>
-      <input type='text' class='text-center' placeholder='Enter Name String or Substring Here'
-             ng-model='vm.filterConditions.name'>
-    </ion-input>
+      <ion-input class='item item-input item-text-wrap text-center'>
+        <input type='text' class='text-center' placeholder='Enter Name String or Substring Here'
+               ng-model='vm.filterConditions.name'>
+      </ion-input>
     </div>
     <ion-toggle
       ng-checked='vm.filterConditions.date'

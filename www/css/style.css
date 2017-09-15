@@ -296,6 +296,14 @@ Buttons
   width: 30px;
 }
 
+.close-modal-button {
+  color: lightgray;
+  position: relative;
+  top: -5px;
+  background: transparent;
+  border: none;
+}
+
 /*--------------------
 Orientation Tab Style
 --------------------*/

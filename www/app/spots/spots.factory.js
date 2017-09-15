@@ -24,7 +24,6 @@
       'getSpotsListDetail': getSpotsListDetail,
       'getFilteredSpots': getFilteredSpots,
       'setFilterConditions': setFilterConditions,
-      'setSpotsListDetail': setSpotsListDetail,
       'setFilteredSpots': setFilteredSpots,
       'sortSpots': sortSpots
     };
@@ -33,12 +32,12 @@
      * Public Functions
      */
 
-    function areValidFilters() {
+    function areValidFilters(inFilterConditions) {
       // First make sure anything that was toggled on was not left empty
-      _.each(filterConditions, function (value, key) {
-        if (_.isEmpty(value)) delete filterConditions[key];
+      _.each(inFilterConditions, function (value, key) {
+        if (_.isEmpty(value)) delete inFilterConditions[key];
       });
-      if (_.isEmpty(filterConditions)) {
+      if (_.isEmpty(inFilterConditions)) {
         $ionicPopup.alert({
           'title': 'No Filters',
           'template': 'There are no filters to apply.'
@@ -46,13 +45,13 @@
         return false;
       }
       // Check Date Filter
-      if (filterConditions.date) {
-        if (!filterConditions.date.start) {
-          filterConditions.date.start = new Date("1000-02-01T05:00:00.000Z");    // Jan 31, 1000
+      if (inFilterConditions.date) {
+        if (!inFilterConditions.date.start) {
+          inFilterConditions.date.start = new Date("1000-02-01T05:00:00.000Z");    // Jan 31, 1000
         }
-        if (!filterConditions.date.end) filterConditions.date.end = new Date(); // today
-        filterConditions.date.end.setHours(23,59,59,999);
-        if (filterConditions.date.start > filterConditions.date.end) {
+        if (!inFilterConditions.date.end) inFilterConditions.date.end = new Date(); // today
+        inFilterConditions.date.end.setHours(23,59,59,999);
+        if (inFilterConditions.date.start > inFilterConditions.date.end) {
           $ionicPopup.alert({
             'title': 'Invalid Dates',
             'template': 'There is a problem with the entered dates. Please fix your dates or turn off the date filter.'
@@ -61,13 +60,13 @@
         }
       }
       // Check Date Modified Filter
-      if (filterConditions.dateModified) {
-        if (!filterConditions.dateModified.start) {
-          filterConditions.dateModified.start = new Date("1000-02-01T05:00:00.000Z");     // Jan 31, 1000
+      if (inFilterConditions.dateModified) {
+        if (!inFilterConditions.dateModified.start) {
+          inFilterConditions.dateModified.start = new Date("1000-02-01T05:00:00.000Z");     // Jan 31, 1000
         }
-        if (!filterConditions.dateModified.end) filterConditions.dateModified.end = new Date(); // today
-        filterConditions.dateModified.end.setHours(23,59,59,999);
-        if (filterConditions.dateModified.start > filterConditions.dateModified.end) {
+        if (!inFilterConditions.dateModified.end) inFilterConditions.dateModified.end = new Date(); // today
+        inFilterConditions.dateModified.end.setHours(23,59,59,999);
+        if (inFilterConditions.dateModified.start > inFilterConditions.dateModified.end) {
           $ionicPopup.alert({
             'title': 'Invalid Modified Dates',
             'template': 'There is a problem with the entered dates. Please fix your modified dates or turn' +
@@ -127,10 +126,6 @@
 
     function setFilterConditions(inFilterConditions) {
       filterConditions = inFilterConditions;
-    }
-
-    function setSpotsListDetail(inSpotsListDetail) {
-      spotsListDetail = inSpotsListDetail;
     }
 
     function setFilteredSpots() {

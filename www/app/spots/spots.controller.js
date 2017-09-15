@@ -14,14 +14,13 @@
                  SpotsFactory, UserFactory, IS_WEB) {
     var vm = this;
 
-    var detailModal = {};
-    var filterModal = {};
-
     vm.activeDatasets = [];
     vm.deleteSelected = false;
+    vm.detailModal = {};
     vm.filterConditions = {};
+    vm.filterModal = {};
     vm.isFilterOn = false;
-    vm.showDetail = SpotsFactory.getSpotsListDetail();
+    vm.showDetail = {};
     vm.spots = [];
     vm.spotsDisplayed = [];
     vm.spotIdSelected = undefined;
@@ -29,8 +28,6 @@
     vm.addFilters = addFilters;
     vm.applyFilters = applyFilters;
     vm.checkedDataset = checkedDataset;
-    vm.closeDetailModal = closeDetailModal;
-    vm.closeFilterModal = closeFilterModal;
     vm.deleteSpot = deleteSpot;
     vm.exportToCSV = exportToCSV;
     vm.getTagNames = getTagNames;
@@ -129,11 +126,11 @@
 
     function createPageComponents() {
       SpotsFactory.createSpotsFilterModal($scope).then(function (modal) {
-        filterModal = modal
+        vm.filterModal = modal
       });
 
       SpotsFactory.createSpotsListDetailModal($scope).then(function (modal) {
-        detailModal = modal
+        vm.detailModal = modal
       });
 
       $ionicPopover.fromTemplateUrl('app/spots/spots-popover.html', {
@@ -145,8 +142,8 @@
 
     function createPageEvents() {
       $scope.$on('$destroy', function () {
-        filterModal.remove();
-        detailModal.remove();
+        vm.filterModal.remove();
+        vm.detailModal.remove();
         vm.popover.remove();
       });
     }
@@ -171,15 +168,16 @@
 
     function addFilters() {
       vm.activeDatasets = ProjectFactory.getActiveDatasets();
-      vm.filterConditions = SpotsFactory.getFilterConditions();
-      filterModal.show();
+      vm.filterConditions = angular.fromJson(angular.toJson(SpotsFactory.getFilterConditions()));
+      vm.filterModal.show();
     }
 
     function applyFilters() {
-      if (SpotsFactory.areValidFilters()) {
-        if (_.isEmpty(vm.filterConditions)) resetFilters();
-        else setDisplayedSpots();
-        filterModal.hide();
+      if (_.isEmpty(vm.filterConditions)) resetFilters();
+      else if (SpotsFactory.areValidFilters(vm.filterConditions)) {
+        SpotsFactory.setFilterConditions(vm.filterConditions);
+        setDisplayedSpots();
+        vm.filterModal.hide();
       }
     }
 
@@ -191,20 +189,6 @@
         if (!vm.filterConditions.datasets) vm.filterConditions.datasets = [];
         vm.filterConditions.datasets.push(datasetId);
       }
-    }
-
-    function closeDetailModal() {
-      SpotsFactory.setSpotsListDetail(vm.showDetail);
-      detailModal.hide();
-    }
-
-    function closeFilterModal() {
-      if (_.isEmpty(vm.filterConditions)) resetFilters();
-      filterModal.hide();
-    }
-
-    function closeModal(modal) {
-      vm[modal].hide();
     }
 
     function deleteSpot(spot) {
@@ -367,7 +351,8 @@
 
     function setListDetail() {
       vm.popover.hide().then(function(){
-        detailModal.show();
+        vm.detailModal.show();
+        vm.showDetail = SpotsFactory.getSpotsListDetail();
       });
     }
 
