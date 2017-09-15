@@ -38,7 +38,9 @@
     vm.goBack = goBack;
     vm.groupSpots = groupSpots;
     vm.hasLinkedImages = hasLinkedImages;
+    vm.isiOS = isiOS;
     vm.saveEdits = saveEdits;
+    vm.stereonetSpots = stereonetSpots;
     vm.toggleNesting = toggleNesting;
     vm.toggleTagChecked = toggleTagChecked;
     vm.unlinkImages = unlinkImages;
@@ -190,18 +192,40 @@
 
       $scope.$on('changedDrawMode', function () {
         var draw = MapDrawFactory.getDrawMode();
+        var lmode = MapDrawFactory.getLassoMode();
+        $log.log('LassoMode:',lmode);
         draw.on('drawend', function (e) {
-          $log.log('e', e);
           MapDrawFactory.doOnDrawEnd(e);
           var selectedSpots = SpotFactory.getSelectedSpots();
           if (!_.isEmpty(selectedSpots)) {
-            $log.log('Selected Spots:', selectedSpots);
-            vm.allTags = ProjectFactory.getTags();
-            tagsToAdd = [];
-            vm.addTagModal.show();
+
+            if(lmode=="tags"){
+              $log.log("tag mode enabled");
+
+              //cull spots to only those shown on map
+              var visibleSpots = MapFeaturesFactory.getVisibleLassoedSpots(selectedSpots, map);
+              SpotFactory.setSelectedSpots(visibleSpots);
+
+              vm.allTags = ProjectFactory.getTags();
+              tagsToAdd = [];
+              vm.addTagModal.show();
+              MapDrawFactory.setLassoMode("");
+            }else if(lmode=="stereonet"){
+              $log.log("stereonet mode enabled");
+
+              //use MapFeaturesFactory to get only mapped orientations
+              var stereonetSpots = MapFeaturesFactory.getVisibleLassoedSpots(selectedSpots, map);
+              $log.log('stereonetSpots: ', stereonetSpots);
+
+              HelpersFactory.getStereonet(stereonetSpots);
+              MapDrawFactory.setLassoMode("");
+            }
           }
         });
       });
+
+
+
     }
 
     function createPopover() {
@@ -339,9 +363,19 @@
       else return ProjectFactory.getLinkedImages(vm.imageBasemap.id).length > 1;
     }
 
+    function isiOS() {
+      return ionic.Platform.device().platform=="iOS";
+    }
+
     function saveEdits() {
       vm.saveEditsText = 'Saved Edits';
       MapDrawFactory.saveEdits(vm.clickedFeatureId);
+    }
+
+    function stereonetSpots() {
+      vm.popover.hide().then(function(){
+        MapDrawFactory.stereonetSpots();
+      });
     }
 
     function toggleNesting() {

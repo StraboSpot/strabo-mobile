@@ -212,6 +212,7 @@
               vm.allTags = ProjectFactory.getTags();
               tagsToAdd = [];
               vm.addTagModal.show();
+              MapDrawFactory.setLassoMode("");
             }else if(lmode=="stereonet"){
               $log.log("stereonet mode enabled");
 
