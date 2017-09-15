@@ -1,10 +1,8 @@
 <ion-modal-view>
   <ion-header-bar class='bar-stable nav-title-slide-ios7' align-title='center'>
+    <button class='button button-clear icon ion-arrow-left-c'
+            ng-click='vm.detailModal.hide()'></button>
     <h1 class='title'>Spots List Detail</h1>
-    <div class='buttons'>
-      <button class='icon ion-close-round close-modal-button'
-              ng-click='vm.detailModal.hide()'></button>
-    </div>
   </ion-header-bar>
   <ion-content class='has-header'>
     <ion-checkbox ng-model="vm.showDetail.tabs">Show Tabs with Data</ion-checkbox>

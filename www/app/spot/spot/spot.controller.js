@@ -33,8 +33,8 @@
     // Tags Functions
     vm.addTag = addTag;
     vm.createTag = createTag;
-    vm.filterTagType = filterTagType;
     vm.filterAllTagsType = filterAllTagsType;
+    vm.filterTagType = filterTagType;
     vm.getNumTaggedFeatures = getNumTaggedFeatures;
     vm.getTagNames = getTagNames;
     vm.getTagTypeLabel = getTagTypeLabel;
@@ -269,6 +269,11 @@
       }
     }
 
+    function filterAllTagsType() {
+      vm.allTagsToDisplay = TagFactory.filterTagsByType(vm.selectedType, vm.allTags);
+      filterTagType();
+    }
+
     function filterTagType() {
       if (vm.selectedType === 'all') {
         vm.spotLevelTagsToDisplay = vm.spotLevelTags;
@@ -282,11 +287,6 @@
           return tag.type === vm.selectedType;
         });
       }
-    }
-
-    function filterAllTagsType() {
-      vm.allTagsToDisplay = TagFactory.filterTagsByType(vm.selectedType, vm.allTags);
-      filterTagType();
     }
 
     function getNumTaggedFeatures(tag) {

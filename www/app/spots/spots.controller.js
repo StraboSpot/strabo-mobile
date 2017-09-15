@@ -58,7 +58,9 @@
       setDisplayedSpots();
 
       createPageComponents();
-      createPageEvents()
+      createPageEvents();
+
+      vm.showDetail = SpotsFactory.getSpotsListDetail();
     }
 
     // Convert the spot objects to a csv format
@@ -226,7 +228,7 @@
 
     // Export data to CSV
     function exportToCSV() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         var spotData = convertToCSV(vm.spots);
 
         if (IS_WEB) {
@@ -350,9 +352,8 @@
     }
 
     function setListDetail() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         vm.detailModal.show();
-        vm.showDetail = SpotsFactory.getSpotsListDetail();
       });
     }
 
