@@ -117,6 +117,7 @@
             return sample.id === sampleToDelete.id;
           });
           if (vmParent.spot.properties.samples.length === 0) delete vmParent.spot.properties.samples;
+          vmParent.saveSpot();
         }
         isDelete = false;
       });
@@ -149,7 +150,8 @@
         vmParent.spot.properties.samples.push(vmParent.data);
         vmParent.data = {};
         vm.basicFormModal.hide();
-        FormFactory.clearForm()
+        FormFactory.clearForm();
+        vmParent.saveSpot();
       }
     }
   }

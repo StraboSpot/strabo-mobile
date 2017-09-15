@@ -279,6 +279,7 @@
       copy.label = copy.label + 'Copy';
       copy.id = HelpersFactory.getNewId();
       parentThisOrientation.associated_orientation.push(copy);
+      vmParent.saveSpot();
     }
 
     function copyOrientation(orientation) {
@@ -294,6 +295,7 @@
       });
       vmParent.spot.properties.orientation_data.push(copy);
       copyFeatureTags(orientation, copy);
+      vmParent.saveSpot();
     }
 
     function deleteAssociatedOrientation(parentThisOrientation, orientationToDelete) {
@@ -308,6 +310,7 @@
               return associatedOrientation.id === orientationToDelete.id;
             });
           if (parentThisOrientation.associated_orientation === 0) delete parentThisOrientation.associated_orientation;
+          vmParent.saveSpot();
         }
       });
     }
@@ -325,6 +328,7 @@
             });
           if (vmParent.spot.properties.orientation_data === 0) delete vmParent.spot.properties.orientation_data;
           ProjectFactory.removeFeatureFromTags(vmParent.spot.properties.id, orientationToDelete.id);
+          vmParent.saveSpot();
         }
       });
     }
@@ -424,6 +428,7 @@
         vmParent.data = {};
         vm.basicFormModal.hide();
         FormFactory.clearForm();
+        vmParent.saveSpot();
       }
     }
   }
