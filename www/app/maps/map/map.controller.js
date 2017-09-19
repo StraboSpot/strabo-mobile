@@ -181,7 +181,7 @@
         MapViewFactory.setMapView(map);
         MapLayerFactory.saveVisibleLayers(map);
         MapDrawFactory.cancelEdits();    // Cancel any edits
-        vm.addTagModal.remove();
+        if (vm.addTagModal) vm.addTagModal.remove();
         vm.popover.remove();            // Remove the popover
       });
 

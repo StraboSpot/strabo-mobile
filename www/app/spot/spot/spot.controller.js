@@ -90,7 +90,7 @@
 
       // Cleanup the modal when we're done with it!
       $scope.$on('$destroy', function () {
-        vm.addTagModal.remove();
+        if (vm.addTagModal) vm.addTagModal.remove();
         if (!_.isEmpty(vm.addGeologicUnitTagModal)) vm.addGeologicUnitTagModal.remove();
         vm.popover.remove();
       });
@@ -163,7 +163,7 @@
         if (SpotFactory.getActiveNesting() && vm.spot.geometry) {
           SpotFactory.addSpotToActiveNest(vm.spot).then(function () {
             vm.spots = SpotFactory.getActiveSpots();
-            vm.nestTab.updateNest();
+            if (vm.nestTab) vm.nestTab.updateNest();
           });
         }
 
@@ -223,7 +223,7 @@
         SpotFactory.setNewNestProperties(vm.newNestProperties);
         SpotFactory.addSpotToActiveNest(vm.spot).then(function () {
           vm.spots = SpotFactory.getActiveSpots();
-          vm.nestTab.updateNest();
+          if (vm.nestTab) vm.nestTab.updateNest();
         });
         vm.data = {};
       }
