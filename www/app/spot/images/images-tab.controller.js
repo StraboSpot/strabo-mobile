@@ -511,22 +511,13 @@
 
     function showImages(index) {
       vm.activeSlide = index;
-      if (IS_WEB) {
-        var imgSrc = getImageSrc(vmParent.spot.properties.images[index].id);
-        var image = new Image();
-        image.src = imgSrc;
-        var win = $window.open();
-        win.document.write(image.outerHTML);
-      }
-      else {
-        $ionicModal.fromTemplateUrl('app/spot/images/images-modal.html', {
-          'scope': $scope,
-          'animation': 'slide-in-up'
-        }).then(function (modal) {
-          vm.imageModal = modal;
-          vm.imageModal.show();
-        });
-      }
+      $ionicModal.fromTemplateUrl('app/spot/images/images-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up'
+      }).then(function (modal) {
+        vm.imageModal = modal;
+        vm.imageModal.show();
+      });
     }
 
     function toggleImageBasemap(image) {

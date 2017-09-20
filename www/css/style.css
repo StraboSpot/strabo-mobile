@@ -389,12 +389,13 @@ Image Modal Style: used for image active-slider when choosing spot images
 .image-modal-textarea {
   width: 80%;
   height:10%;
-  bottom: 30;
+  bottom: 30px;
   left: 0;
   margin: auto;
   overflow: auto;
   position: fixed;
   right: 0;
+  text-align: center;
 }
 
 .slider {
