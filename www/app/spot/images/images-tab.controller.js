@@ -6,12 +6,14 @@
     .controller('ImagesTabController', ImagesTabController);
 
   ImagesTabController.$inject = ['$cordovaCamera', '$cordovaGeolocation', '$document', '$ionicModal', '$ionicPopup',
-    '$log', '$q', '$scope', '$state', '$window', 'FormFactory', 'HelpersFactory', 'ImageFactory', 'LiveDBFactory',
-    'LocalStorageFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
+    '$ionicScrollDelegate', '$ionicSlideBoxDelegate', '$log', '$q', '$scope', '$state', '$window', 'FormFactory',
+    'HelpersFactory', 'ImageFactory', 'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'SpotFactory',
+    'IS_WEB'];
 
-  function ImagesTabController($cordovaCamera, $cordovaGeolocation, $document, $ionicModal, $ionicPopup, $log, $q,
-                               $scope, $state, $window, FormFactory, HelpersFactory, ImageFactory, LiveDBFactory,
-                               LocalStorageFactory, ProjectFactory, SpotFactory, IS_WEB) {
+  function ImagesTabController($cordovaCamera, $cordovaGeolocation, $document, $ionicModal, $ionicPopup,
+                               $ionicScrollDelegate, $ionicSlideBoxDelegate, $log, $q, $scope, $state, $window,
+                               FormFactory, HelpersFactory, ImageFactory, LiveDBFactory, LocalStorageFactory,
+                               ProjectFactory, SpotFactory, IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -20,6 +22,7 @@
     var isReattachImage = false;
     var thisTabName = 'images';
 
+    vm.activeSlide = null;
     vm.cameraSource = [{
       'text': 'Photo Library',
       'value': 'PHOTOLIBRARY'
@@ -34,6 +37,7 @@
     vm.imageTypeChoices = {};
     vm.otherImageType = undefined;
     vm.selectedCameraSource = {};
+    vm.zoomMin = 1;
 
     vm.addImage = addImage;
     vm.closeModal = closeModal;
@@ -46,6 +50,7 @@
     vm.reattachImage = reattachImage;
     vm.showImages = showImages;
     vm.toggleImageBasemap = toggleImageBasemap;
+    vm.updateSlideStatus = updateSlideStatus;
 
     activate();
 
@@ -442,7 +447,12 @@
 
     function exportImage() {
       ImageFactory.getImageById(vmParent.data.id).then(function (base64Image) {
-        if (IS_WEB) $window.open(base64Image, '_blank');
+        if (IS_WEB) {
+          var image = new Image();
+          image.src = base64Image;
+          var win = $window.open();
+          win.document.write(image.outerHTML);
+        }
         else {
           // Process the base64 string - split the base64 string into the data and data type
           var block = base64Image.split(';');
@@ -501,13 +511,22 @@
 
     function showImages(index) {
       vm.activeSlide = index;
-      $ionicModal.fromTemplateUrl('app/spot/images/images-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up'
-      }).then(function (modal) {
-        vm.imageModal = modal;
-        vm.imageModal.show();
-      });
+      if (IS_WEB) {
+        var imgSrc = getImageSrc(vmParent.spot.properties.images[index].id);
+        var image = new Image();
+        image.src = imgSrc;
+        var win = $window.open();
+        win.document.write(image.outerHTML);
+      }
+      else {
+        $ionicModal.fromTemplateUrl('app/spot/images/images-modal.html', {
+          'scope': $scope,
+          'animation': 'slide-in-up'
+        }).then(function (modal) {
+          vm.imageModal = modal;
+          vm.imageModal.show();
+        });
+      }
     }
 
     function toggleImageBasemap(image) {
@@ -526,5 +545,11 @@
         if (imageUsed) image.annotated = true;
       }
     }
+
+    function updateSlideStatus(slide) {
+      var zoomFactor = $ionicScrollDelegate.$getByHandle('scrollHandle' + slide).getScrollPosition().zoom;
+      if (zoomFactor == vm.zoomMin) $ionicSlideBoxDelegate.enableSlide(true);
+      else $ionicSlideBoxDelegate.enableSlide(false);
+    };
   }
 }());
