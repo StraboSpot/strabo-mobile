@@ -1,4 +1,4 @@
-<div class='modal image-modal' on-swipe-down='vmChild.closeModal("imageModal")'>
+<div class='modal image-modal'>
   <ion-slide-box on-slide-changed='slideChanged(index)' show-pager='true' active-slide='vmChild.activeSlide'>
     <ion-slide ng-repeat='image in vm.spot.properties.images'>
       <ion-scroll direction="xy" scrollbar-x="false" scrollbar-y="false" overflow-scroll="false"
@@ -6,6 +6,8 @@
                   delegate-handle="scrollHandle{{ $index }}"
                   on-scroll="vmChild.updateSlideStatus(vmChild.activeSlide)"
                   on-release="vmChild.updateSlideStatus(vmChild.activeSlide)">
+        <button ng-click='vmChild.closeModal("imageModal")'
+                class='button button-icon icon ion-arrow-left-c'></button>
         <img class='fullscreen-image' ng-src='{{ vmChild.getImageSrc(image.id) }}'></img>
         <textarea rows='3' class='image-modal-textarea' ng-model='image.caption'
                   placeholder='Image description ...'></textarea>
