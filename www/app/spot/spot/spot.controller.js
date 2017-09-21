@@ -43,6 +43,7 @@
     vm.toggleTagChecked = toggleTagChecked;
 
     // Other Variables
+    vm.backHistoriesPopover = {};
     vm.data = {};
     vm.date = undefined;
     vm.initializing = true;
@@ -62,6 +63,7 @@
     vm.copyThisSpot = copyThisSpot;
     vm.deleteSpot = deleteSpot;
     vm.goBack = goBack;
+    vm.goToBackHistoryUrl = goToBackHistoryUrl;
     vm.goToTag = goToTag;
     vm.loadTab = loadTab;
     vm.saveSpot = saveSpot;
@@ -93,6 +95,7 @@
         if (vm.addTagModal) vm.addTagModal.remove();
         if (!_.isEmpty(vm.addGeologicUnitTagModal)) vm.addGeologicUnitTagModal.remove();
         vm.popover.remove();
+        if (vm.backHistoriesPopover) vm.backHistoriesPopover.remove();
       });
 
       if (IS_WEB) {
@@ -151,6 +154,12 @@
         'scope': $scope
       }).then(function (popover) {
         vm.popover = popover;
+      });
+
+      $ionicPopover.fromTemplateUrl('app/spot/spot/history-popover.html', {
+        'scope': $scope
+      }).then(function (popover) {
+        vm.backHistoriesPopover = popover;
       });
     }
 
@@ -346,6 +355,11 @@
         }
         else $location.path('/app/spots');      // default backView if no backView set
       });
+    }
+
+    function goToBackHistoryUrl(url) {
+      $location.path('/app/spots');
+      vm.backHistoriesPopover.hide();
     }
 
     function goToTag(id) {

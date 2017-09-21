@@ -9,7 +9,8 @@ navigation history that also transitions its views in and out.
   </ion-nav-back-button> -->
   <ion-nav-title>{{ vm.spotTitle }}</ion-nav-title>
   <ion-nav-buttons side='left'>
-    <button ng-click='vm.goBack()' class='button button-icon icon ion-arrow-left-c'></button>
+    <button class='button button-icon icon ion-arrow-left-c'
+            ng-click='vm.goBack()' on-hold='vm.backHistoriesPopover.show($event)'></button>
   </ion-nav-buttons>
   <ion-nav-buttons side='right'>
     <button ng-click='vm.viewMap()' class='button button-icon icon ion-map'></button>
