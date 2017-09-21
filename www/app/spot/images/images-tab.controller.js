@@ -5,19 +5,19 @@
     .module('app')
     .controller('ImagesTabController', ImagesTabController);
 
-  ImagesTabController.$inject = ['$cordovaCamera', '$cordovaGeolocation', '$document', '$ionicModal', '$ionicPopup',
+  ImagesTabController.$inject = ['$cordovaCamera', /*'$cordovaGeolocation',*/ '$document', '$ionicModal', '$ionicPopup',
     '$ionicScrollDelegate', '$ionicSlideBoxDelegate', '$log', '$q', '$scope', '$state', '$window', 'FormFactory',
     'HelpersFactory', 'ImageFactory', 'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'SpotFactory',
     'IS_WEB'];
 
-  function ImagesTabController($cordovaCamera, $cordovaGeolocation, $document, $ionicModal, $ionicPopup,
+  function ImagesTabController($cordovaCamera, /*$cordovaGeolocation,*/ $document, $ionicModal, $ionicPopup,
                                $ionicScrollDelegate, $ionicSlideBoxDelegate, $log, $q, $scope, $state, $window,
                                FormFactory, HelpersFactory, ImageFactory, LiveDBFactory, LocalStorageFactory,
                                ProjectFactory, SpotFactory, IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
 
-    var getGeoInfo = false;
+    //var getGeoInfo = false;
     var imageSources = {};
     var isReattachImage = false;
     var thisTabName = 'images';
@@ -86,7 +86,7 @@
       ionic.on('change', getFile, $document[0].getElementById('file'));
     }
 
-    function addGeoInfo(imageData) {
+    /*function addGeoInfo(imageData) {
       $cordovaGeolocation.getCurrentPosition().then(function (position) {
         getGeoInfo = false;
         imageData.lat = position.coords.latitude;
@@ -97,7 +97,7 @@
         $log.log('Error getting the current position. Ignoring geolocation.');
         saveSpot(imageData);
       });
-    }
+    }*/
 
     function cameraModal() {
       // camera modal popup
@@ -206,7 +206,8 @@
           LiveDBFactory.saveImageFile(imageData.id, image.src);
 
           imageSources[imageData.id] = image.src;
-          if (getGeoInfo) addGeoInfo(imageData);
+          saveSpot(imageData);
+          /*if (getGeoInfo) addGeoInfo(imageData);
           else {
             var confirmPopup = $ionicPopup.confirm({
               'title': 'Get Geolocation?',
@@ -217,7 +218,7 @@
               if (res) addGeoInfo(imageData);
               else saveSpot(imageData);
             });
-          }
+          }*/
         }
       });
     }
@@ -255,11 +256,11 @@
     function launchCamera(source) {
       // all plugins must be wrapped in a ready function
       document.addEventListener('deviceready', function () {
-        getGeoInfo = false;
+        //getGeoInfo = false;
         if (source === 'PHOTOLIBRARY') source = Camera.PictureSourceType.PHOTOLIBRARY;
         else if (source === 'SAVEDPHOTOALBUM') source = Camera.PictureSourceType.SAVEDPHOTOALBUM;
         else if (source === 'CAMERA') {
-          getGeoInfo = true;
+          //getGeoInfo = true;
           source = Camera.PictureSourceType.CAMERA;
         }
 
@@ -305,7 +306,7 @@
           }
 
           function resolveFail(message) {
-            getGeoInfo = false;
+            //getGeoInfo = false;
             $log.log('failed to resolve URI', message);
           }
 
