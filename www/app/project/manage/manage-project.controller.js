@@ -1197,7 +1197,7 @@
       vm.popover.hide().then(function(){
         vm.data = {};
         vm.showExitProjectModal = false;
-        if (_.isEmpty(vm.project)) vm.newProjectModal.show();
+        if (_.isEmpty(vm.project) || !_.has(vm.project.description, 'project_name')) vm.newProjectModal.show();
         else {
           vm.showExitProjectModal = true;
           var confirmText = 'Creating a new project will <span style="color:red">DELETE</span> the local copy of the' +
