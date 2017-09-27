@@ -448,14 +448,15 @@
         }
       });
 
-      $ionicPopup.alert({
+      var alertPopup = $ionicPopup.alert({
         'title': 'Tag Spots',
         'template': 'Draw a polygon around the Spots you would like to Tag.'
       });
-
-      // start the draw with freehand enabled
-      lassoMode = "tags";
-      startDraw('Polygon', true);
+      alertPopup.then(function () {
+        // start the draw with freehand enabled
+        lassoMode = "tags";
+        startDraw('Polygon', true);
+      });
     }
 
     function isDrawMode() {
@@ -494,14 +495,15 @@
         }
       });
 
-      $ionicPopup.alert({
+     var alertPopup = $ionicPopup.alert({
         'title': 'Choose Spots',
         'template': 'Draw a polygon around the Spots you would like to transfer to Rick Allmendinger\'s Stereonet app.'
       });
-
-      // start the draw with freehand enabled
-      lassoMode = "stereonet";
-      startDraw('Polygon', true);
+     alertPopup.then(function () {
+       // start the draw with freehand enabled
+       lassoMode = "stereonet";
+       startDraw('Polygon', true);
+     });
     }
   }
 }());

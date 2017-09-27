@@ -182,6 +182,7 @@
         MapLayerFactory.saveVisibleLayers(map);
         MapDrawFactory.cancelEdits();    // Cancel any edits
         vm.addTagModal.remove();
+        vm.newNestModal.remove();
         vm.popover.remove();            // Remove the popover
       });
 
@@ -196,13 +197,13 @@
       $scope.$on('changedDrawMode', function () {
         var draw = MapDrawFactory.getDrawMode();
         var lmode = MapDrawFactory.getLassoMode();
-        $log.log('LassoMode:',lmode);
+        $log.log('LassoMode:', lmode);
         draw.on('drawend', function (e) {
           MapDrawFactory.doOnDrawEnd(e);
           var selectedSpots = SpotFactory.getSelectedSpots();
           if (!_.isEmpty(selectedSpots)) {
 
-            if(lmode=="tags"){
+            if (lmode == "tags") {
               $log.log("tag mode enabled");
 
               //cull spots to only those shown on map
@@ -213,7 +214,8 @@
               tagsToAdd = [];
               vm.addTagModal.show();
               MapDrawFactory.setLassoMode("");
-            }else if(lmode=="stereonet"){
+            }
+            else if (lmode == "stereonet") {
               $log.log("stereonet mode enabled");
 
               //use MapFeaturesFactory to get only mapped orientations
@@ -273,7 +275,7 @@
 
     // Cache the tiles in the current view but don't switch to the offline layer
     function cacheOfflineTiles() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         if (onlineState) {
           MapViewFactory.setMapView(map);
           MapLayerFactory.saveVisibleLayers(map);
@@ -334,7 +336,7 @@
     }
 
     function groupSpots() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         MapDrawFactory.groupSpots();
       });
     }
@@ -349,7 +351,7 @@
     }
 
     function isiOS() {
-      return ionic.Platform.device().platform=="iOS";
+      return ionic.Platform.device().platform == "iOS";
     }
 
     function saveEdits() {
@@ -358,13 +360,13 @@
     }
 
     function stereonetSpots() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         MapDrawFactory.stereonetSpots();
       });
     }
 
     function toggleNesting() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         vm.isNesting = !vm.isNesting;
         SpotFactory.setActiveNesting(vm.isNesting);
         if (vm.isNesting) {
@@ -408,7 +410,7 @@
     }
 
     function zoomToSpotsExtent() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         MapViewFactory.zoomToSpotsExtent(map);
       });
     }

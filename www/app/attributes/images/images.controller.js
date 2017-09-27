@@ -49,6 +49,13 @@
     function activate() {
       gatherImages();
       createPopover();
+      createPageEvents();
+    }
+
+    function createPageEvents() {
+      $scope.$on('$destroy', function () {
+        vm.popover.remove();            // Remove the popover
+      });
     }
 
     function createPopover() {
@@ -125,7 +132,7 @@
      */
 
     function deselectImages() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         vm.isSelecting = false;
         _.each(vm.selectedImages, function (selectedImageId) {
           setUnselectedStyle({'id': selectedImageId});
@@ -164,6 +171,7 @@
 
     function linkImages() {
       $log.log('Selected Images Ids:', vm.selectedImages);
+      var msg = {};
       var linkedImages = ProjectFactory.getLinkedImagesAll() || [];
       // Split linkedImages into two sets, first which is the arrays that have no intersection with selectedImages
       // (partition[0]) and second, the arrays which DO have an intersection with selectedImages (partition[1])
@@ -175,24 +183,26 @@
       // If there are no intersections with any of the arrays in linkedImages and the selectedImages array
       if (_.isEmpty(linkIntersections)) {
         linkedImages.push(vm.selectedImages);
-        $ionicPopup.alert({
-          'title': 'New Linked Images Set!',
-          'template': 'A new set of linked images was created. Images in this set which are Image Basemaps will' +
-          ' appear as alternate base layers in the layer switcher when viewing any of the Image Basemaps in this set.'
-        });
+        msg.title = 'New Linked Images Set!';
+        msg.template = 'A new set of linked images was created. Images in this set which are Image Basemaps will' +
+          ' appear as alternate base layers in the layer switcher when viewing any of the Image Basemaps in this set.';
       }
       // If there ARE intersections between any of the arrays in linkedImages and the selectedImages array, join
       // these intersecting arrays and the selectImages array then push onto the linkedImages array
       else {
         linkedImages.push(_.union(_.flatten(linkIntersections), vm.selectedImages));
-        $ionicPopup.alert({
-          'title': 'Images Added to Existing Set!',
-          'template': 'Selected images were added to an existing set of linked Images.'
-        });
+        msg.title = 'Images Added to Existing Set!';
+        msg.template = 'Selected images were added to an existing set of linked Images.';
       }
       $log.log('All Sets of Linked Images Ids:', linkedImages);
       ProjectFactory.saveProjectItem('linked_images', linkedImages);
-      deselectImages();
+      var alertPopup = $ionicPopup.alert({
+        'title': msg.title,
+        'template': msg.template
+      });
+      alertPopup.then(function () {
+        deselectImages();
+      });
     }
 
     function loadMoreImages() {
@@ -205,13 +215,13 @@
     }
 
     function selectImages() {
-      vm.popover.hide().then(function(){
-              vm.isSelecting = true;
+      vm.popover.hide().then(function () {
+        vm.isSelecting = true;
       });
     }
 
     function unlinkImages(i) {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         var confirmPopup = $ionicPopup.confirm({
           'title': 'Unlink Images',
           'template': 'Are you sure you want to unlink ALL the images in this set?'
@@ -227,22 +237,22 @@
     }
 
     function viewAllImages() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         vm.showLinkedImagesSets = false;
       });
     }
 
     function viewLinkedImages() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         vm.showLinkedImagesSets = true;
         vm.linkedImagesSets = [];
         var linkedImagesIdsSets = ProjectFactory.getLinkedImagesAll();
         $log.log('All Sets of Linked Images Ids:', linkedImagesIdsSets);
         _.each(linkedImagesIdsSets, function (linkedImagesIdsSet) {
-         var linkedImages =  _.filter(vm.images, function (image) {
+          var linkedImages = _.filter(vm.images, function (image) {
             return _.contains(linkedImagesIdsSet, image.id);
           });
-         vm.linkedImagesSets.push(linkedImages);
+          vm.linkedImagesSets.push(linkedImages);
         });
         $log.log('All Sets of Linked Images:', vm.linkedImagesSets);
       });
