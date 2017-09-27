@@ -126,10 +126,12 @@
       canvas.width = canvas.height = 256;
       var image = new Image();
       image.src = imgElement.src;
-      //DrawImage params: img, clip x, clip y, clip width, clip height, canvas x, canvas y, canvas width, canvas height;
-      context.drawImage(image, (256 / d) * row, (256 / d) * col, 256 / d, 256 / d, 0, 0, 256, 256);
-      var dataUrl = canvas.toDataURL('image/jpeg');
-      imgElement.src = dataUrl;
+      image.onload = function () {
+        //DrawImage params: img, clip x, clip y, clip width, clip height, canvas x, canvas y, canvas width, canvas height;
+        context.drawImage(image, (256 / d) * row, (256 / d) * col, 256 / d, 256 / d, 0, 0, 256, 256);
+        var dataUrl = canvas.toDataURL(); //'image/png'
+        imgElement.src = dataUrl;
+      }
     }
 
     function setBaselayers() {
