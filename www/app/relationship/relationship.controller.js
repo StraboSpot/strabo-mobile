@@ -15,7 +15,6 @@
     var vmParent = $scope.vm;
     var vm = this;
 
-    var filterModal = {};
     var initializing = true;
     var order = 'a';
 
@@ -24,6 +23,7 @@
     vm.features = [];
     vm.featuresDisplayed = [];
     vm.filterConditions = {};
+    vm.filterModal = {};
     vm.isFilterOn = false;
     vm.otherRelationshipType = undefined;
     vm.relationshipTypes = [];
@@ -122,7 +122,7 @@
       });
 
       SpotsFactory.createSpotsFilterModal($scope).then(function (modal) {
-        filterModal = modal
+        vm.filterModal = modal
       });
     }
 
@@ -131,7 +131,7 @@
       $scope.$on('$destroy', function () {
         vm.selectItemModal.remove();
         vm.selectTypesModal.remove();
-        filterModal.remove();
+        vm.filterModal.remove();
       });
     }
 
@@ -170,8 +170,8 @@
 
     function addFilters() {
       vm.activeDatasets = ProjectFactory.getActiveDatasets();
-      vm.filterConditions = SpotsFactory.getFilterConditions();
-      filterModal.show();
+      vm.filterConditions = angular.fromJson(angular.toJson(SpotsFactory.getFilterConditions()));
+      vm.filterModal.show();
     }
 
     function addRelationshipType() {
@@ -202,10 +202,11 @@
     }
 
     function applyFilters() {
-      if (SpotsFactory.areValidFilters()) {
-        if (_.isEmpty(vm.filterConditions)) resetFilters();
-        else setDisplayedSpots();
-        filterModal.hide();
+      if (_.isEmpty(vm.filterConditions)) resetFilters();
+      else if (SpotsFactory.areValidFilters(vm.filterConditions)) {
+        SpotsFactory.setFilterConditions(vm.filterConditions);
+        setDisplayedSpots();
+        vm.filterModal.hide();
       }
     }
 
@@ -220,7 +221,7 @@
     }
 
     function closeFilterModal() {
-      filterModal.hide();
+      vm.filterModal.hide();
     }
 
     function closeModal(modal) {

@@ -15,7 +15,6 @@
     var vmParent = $scope.vm;
     var vm = this;
 
-    var filterModal = {};
     var initializing = true;
     var isDelete = false;
 
@@ -26,6 +25,7 @@
     vm.features = [];
     vm.featuresDisplayed = [];
     vm.filterConditions = {};
+    vm.filterModal = {};
     vm.isFilterOn = false;
     vm.isShowMore = false;
     vm.selectItemModal = {};
@@ -135,7 +135,7 @@
       });
 
       SpotsFactory.createSpotsFilterModal($scope).then(function (modal) {
-        filterModal = modal
+        vm.filterModal = modal
       });
 
       $ionicModal.fromTemplateUrl('app/shared/color-picker-modal.html', {
@@ -152,7 +152,7 @@
       // Cleanup the modals when we're done with it!
       $scope.$on('$destroy', function () {
         vm.selectItemModal.remove();
-        filterModal.remove();
+        vm.filterModal.remove();
       });
     }
 
@@ -217,15 +217,16 @@
 
     function addFilters() {
       vm.activeDatasets = ProjectFactory.getActiveDatasets();
-      vm.filterConditions = SpotsFactory.getFilterConditions();
-      filterModal.show();
+      vm.filterConditions = angular.fromJson(angular.toJson(SpotsFactory.getFilterConditions()));
+      vm.filterModal.show();
     }
 
     function applyFilters() {
-      if (SpotsFactory.areValidFilters()) {
-        if (_.isEmpty(vm.filterConditions)) resetFilters();
-        else setDisplayedSpots();
-        filterModal.hide();
+      if (_.isEmpty(vm.filterConditions)) resetFilters();
+      else if (SpotsFactory.areValidFilters(vm.filterConditions)) {
+        SpotsFactory.setFilterConditions(vm.filterConditions);
+        setDisplayedSpots();
+        vm.filterModal.hide();
       }
     }
 
@@ -246,7 +247,7 @@
     }
 
     function closeFilterModal() {
-      filterModal.hide();
+      vm.filterModal.hide();
     }
 
     function closeModal(modal) {
