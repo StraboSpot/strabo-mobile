@@ -82,7 +82,7 @@
       var deferred = $q.defer(); // init promise
       LocalStorageFactory.getDb().mapTilesDb.getItem(mapLayer.get('id') + '/' + tileId)
         .then(function (savedTile) {
-          if (savedTile) vm.outerZoomsAll.tilesHave.push(tileId);
+          if (savedTile) vm.outerZoomsAll.tilesHave.push({'tile': tileId, 'size': savedTile.size});
           else vm.outerZoomsAll.tilesNeed.push(tileId);
           deferred.resolve();
         });
