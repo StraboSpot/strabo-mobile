@@ -29,7 +29,7 @@
     vm.applyFilters = applyFilters;
     vm.checkedDataset = checkedDataset;
     vm.deleteSpot = deleteSpot;
-    vm.exportToCSV = exportToCSV;
+    //vm.exportToCSV = exportToCSV;
     vm.getTagNames = getTagNames;
     vm.goToSpot = goToSpot;
     vm.hasRelationships = hasRelationships;
@@ -227,7 +227,7 @@
     }
 
     // Export data to CSV
-    function exportToCSV() {
+    /*function exportToCSV() {
       vm.popover.hide().then(function () {
         var spotData = convertToCSV(vm.spots);
 
@@ -292,7 +292,7 @@
           else $log.error('Error');
         }
       });
-    }
+    }*/
 
     function getTagNames(spotId) {
       var tags = ProjectFactory.getTagsBySpotId(spotId);
