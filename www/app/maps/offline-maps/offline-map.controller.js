@@ -42,6 +42,7 @@
           $scope.$apply();
         });
         //updateOfflineTileSize(vm.maps);
+      }).finally(function () {
         $ionicLoading.hide();
       });
     }
