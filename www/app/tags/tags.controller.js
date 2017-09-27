@@ -5,11 +5,11 @@
     .module('app')
     .controller('TagsController', TagsController);
 
-  TagsController.$inject = ['$ionicModal', '$ionicPopover', '$ionicPopup', '$location', '$log', '$scope', '$state',
-    'HelpersFactory', 'LiveDBFactory', 'ProjectFactory', 'TagFactory', 'IS_WEB'];
+  TagsController.$inject = ['$ionicModal', '$ionicPopup', '$location', '$log', '$scope', '$state', 'HelpersFactory',
+    'LiveDBFactory', 'ProjectFactory', 'TagFactory', 'IS_WEB'];
 
-  function TagsController($ionicModal, $ionicPopover, $ionicPopup, $location, $log, $scope, $state, HelpersFactory,
-                          LiveDBFactory, ProjectFactory, TagFactory, IS_WEB) {
+  function TagsController($ionicModal, $ionicPopup, $location, $log, $scope, $state, HelpersFactory, LiveDBFactory,
+                          ProjectFactory, TagFactory, IS_WEB) {
     var vm = this;
 
     var isDelete = false;
@@ -23,7 +23,6 @@
     vm.tagText = '';
 
     vm.closeModal = closeModal;
-    vm.deleteAllTags = deleteAllTags;
     vm.deleteTag = deleteTag;
     vm.filterAllTagsType = filterAllTagsType;
     vm.getActiveTags = getActiveTags;
@@ -49,7 +48,6 @@
         loadActiveTagging();
         vm.allTags = ProjectFactory.getTags();
         vm.allTagsToDisplay = vm.allTags;
-        createPopover();
       }
 
       _.each(vm.allTags, function (tag) {
@@ -76,19 +74,6 @@
       });
     }
 
-    function createPopover() {
-      $ionicPopover.fromTemplateUrl('app/tags/tags-popover.html', {
-        'scope': $scope
-      }).then(function (popover) {
-        vm.popover = popover;
-      });
-
-      // Cleanup the popover when we're done with it!
-      $scope.$on('$destroy', function () {
-        vm.popover.remove();
-      });
-    }
-
     function loadActiveTagging() {
       if (vm.isTagging && _.isEmpty(TagFactory.getActiveTags())) {
         vm.isTagging = false;
@@ -110,31 +95,6 @@
       if (modal === 'setActiveTagsModal') {
         loadActiveTagging();
       }
-    }
-
-    function deleteAllTags() {
-      vm.popover.hide().then(function(){
-        var confirmPopup = $ionicPopup.confirm({
-          'title': 'Delete Tags',
-          'template': 'Are you sure you want to delete <b>ALL</b> tags?'
-        });
-        confirmPopup.then(
-          function (res) {
-            if (res) {
-              TagFactory.removeActiveTagging();
-              ProjectFactory.destroyTags().then(function () {
-                if (IS_WEB) {
-                  vm.tagIdSelected = undefined;
-                  $log.log('Delete tags from LiveDB.', ProjectFactory.getCurrentProject());
-                  LiveDBFactory.save(null, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
-                  $location.path('app/tags');
-                }
-                activate();
-              });
-            }
-          }
-        );
-      });
     }
 
     function deleteTag(tag) {
