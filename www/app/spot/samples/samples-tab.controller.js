@@ -133,15 +133,9 @@
     }
 
     function submit() {
-      if (_.size(vmParent.data) <= 1) {
-        // If not more than id field no data has been entered so don't continue, just close modal
-        vmParent.data = {};
-        vm.basicFormModal.hide();
-        FormFactory.clearForm();
-        return;
-      }
-      if (!vmParent.data.label) vmParent.data.label = createDefaultLabel(vmParent.data);
+      vmParent.data = HelpersFactory.cleanObj(vmParent.data);
       if (FormFactory.validate(vmParent.data)) {
+        if (!vmParent.data.label) vmParent.data.label = createDefaultLabel(vmParent.data);
         if (!vmParent.spot.properties.samples) vmParent.spot.properties.samples = [];
         handleSampleNumber();
         vmParent.spot.properties.samples = _.reject(vmParent.spot.properties.samples, function (sample) {

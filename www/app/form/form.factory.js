@@ -108,23 +108,20 @@
     function validate(data) {
       $log.log('Validating form with data:', data);
       var errorMessages = '';
-
+      var formCtrl = angular.element(document.getElementById('straboFormCtrlId')).scope();
       // If a field is visible and required but empty give the user an error message and return to the form
       _.each(form.survey, function (field) {
         if (field.name) {
           var ele = $document[0].getElementById(field.name);
-          if (getComputedStyle(ele).display !== 'none' && angular.isUndefined(data[field.name])) {
-            if (field.required === 'true') {
-              errorMessages += '<b>' + field.label + '</b>: Required!<br>';
-            }
-            else if (field.name in data) {
+          var formEle = formCtrl.straboForm[ele.id];
+          if (getComputedStyle(ele).display !== 'none' && formEle && formEle.$valid === false) {
+            if (field.required === 'true') errorMessages += '<b>' + field.label + '</b>: Required!<br>';
+            else {
               var constraint = field.constraint_message ? field.constraint_message : 'Error in field.';
               errorMessages += '<b>' + field.label + '</b>: ' + constraint + '<br>';
             }
           }
-          else if (getComputedStyle(ele).display === 'none') {
-            delete data[field.name];
-          }
+          else if (getComputedStyle(ele).display === 'none') delete data[field.name];
         }
       });
 

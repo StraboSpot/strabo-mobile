@@ -124,15 +124,9 @@
     }
 
     function submit() {
-      if (_.size(vmParent.data) <= 2) {
-        // If not more than type and id fields no data has been entered so don't continue, just close modal
-        vmParent.data = {};
-        vm.basicFormModal.hide();
-        FormFactory.clearForm();
-        return;
-      }
-      if (!vmParent.data.label) vmParent.data.label = createDefaultLabel(vmParent.data);
+      vmParent.data = HelpersFactory.cleanObj(vmParent.data);
       if (FormFactory.validate(vmParent.data)) {
+        if (!vmParent.data.label) vmParent.data.label = createDefaultLabel(vmParent.data);
         if (!vmParent.spot.properties._3d_structures) vmParent.spot.properties._3d_structures = [];
         vmParent.spot.properties._3d_structures = _.reject(vmParent.spot.properties._3d_structures,
           function (_3dStructure) {

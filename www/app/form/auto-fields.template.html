@@ -1,4 +1,4 @@
-<div ng-controller='FormController as form'>
+<div id='straboFormCtrlId' ng-controller='FormController as form'>
   <div ng-repeat='field in form.survey'
        class='strabo-form'>
     <div id='{{ field.name }}' ng-show='form.showField(field, vm.data)'>

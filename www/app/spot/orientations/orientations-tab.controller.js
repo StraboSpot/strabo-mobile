@@ -394,16 +394,8 @@
 
     function submit() {
       vmParent.data = HelpersFactory.cleanObj(vmParent.data);
-      if (_.size(vmParent.data) <= 2) {
-        // If not more than type and id fields no data has been entered so don't continue, just close modal
-        vmParent.data = {};
-        vm.parentOrientation = undefined;
-        vm.basicFormModal.hide();
-        FormFactory.clearForm();
-        return;
-      }
-      if (!vmParent.data.label) vmParent.data.label = createDefaultLabel(vmParent.data);
       if (FormFactory.validate(vmParent.data)) {
+        if (!vmParent.data.label) vmParent.data.label = createDefaultLabel(vmParent.data);
         if (!vm.parentOrientation) {
           if (!vmParent.spot.properties.orientation_data) vmParent.spot.properties.orientation_data = [];
           vmParent.spot.properties.orientation_data = _.reject(vmParent.spot.properties.orientation_data,
