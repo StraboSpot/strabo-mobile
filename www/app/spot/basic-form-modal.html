@@ -13,7 +13,7 @@
               ng-click='vmChild.openCompass()'
               ng-show='vm.stateName === "app.spotTab.orientations"'></button>
       <button class='icon ion-close-round close-modal-button'
-              ng-click='vmChild.basicFormModal.hide()'>
+              ng-click='vmChild.basicFormModal.hide(); vm.clearBasicForm()'>
       </button>
     </div>
   </ion-header-bar>

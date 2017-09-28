@@ -13,6 +13,7 @@
 
     return {
       'clearForm': clearForm,
+      'clearFormElements': clearFormElements,
       'getForm': getForm,
       'getMax': getMax,
       'getMin': getMin,
@@ -29,6 +30,21 @@
 
     function clearForm() {
       form = {};
+    }
+
+    function clearFormElements() {
+      var formCtrl = angular.element(document.getElementById('straboFormCtrlId')).scope();
+      _.each(form.survey, function (field) {
+        if (field.name) {
+          var ele = document.getElementsByName(field.name)[0];
+          var formEle = formCtrl.straboForm[ele.name];
+          if (formEle && formEle.$valid === false) {
+            ele.value = "";
+            // formEle.$valid = true;  // These cause an error "Cannot create property 'min' on boolean 'false'"
+            // formEle.$error = false; // when typing in a number
+          }
+        }
+      });
     }
 
     function getForm() {

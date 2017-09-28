@@ -59,6 +59,7 @@
     vm.stateName = $state.current.name;
 
     // Other Functions
+    vm.clearBasicForm = clearBasicForm;
     vm.closeModal = closeModal;
     vm.copyThisSpot = copyThisSpot;
     vm.deleteSpot = deleteSpot;
@@ -202,6 +203,24 @@
       vm.addTagModal.show();
     }
 
+    function clearBasicForm() {
+      FormFactory.clearFormElements();
+    }
+
+    function closeModal(modal) {
+      vm[modal].hide();
+      if (modal === 'newNestModal') {
+        if (!_.isEmpty(vm.data)) vm.newNestProperties.surface_feature = {};
+        _.extend(vm.newNestProperties.surface_feature, vm.data);
+        SpotFactory.setNewNestProperties(vm.newNestProperties);
+        SpotFactory.addSpotToActiveNest(vm.spot).then(function () {
+          vm.spots = SpotFactory.getActiveSpots();
+          if (vm.nestTab) vm.nestTab.updateNest();
+        });
+        vm.data = {};
+      }
+    }
+
     // Create a new spot with the details from this spot
     function copyThisSpot() {
       vm.popover.hide().then(function(){
@@ -222,20 +241,6 @@
           copyTags(id);
         });
       });
-    }
-
-    function closeModal(modal) {
-      vm[modal].hide();
-      if (modal === 'newNestModal') {
-        if (!_.isEmpty(vm.data)) vm.newNestProperties.surface_feature = {};
-        _.extend(vm.newNestProperties.surface_feature, vm.data);
-        SpotFactory.setNewNestProperties(vm.newNestProperties);
-        SpotFactory.addSpotToActiveNest(vm.spot).then(function () {
-          vm.spots = SpotFactory.getActiveSpots();
-          if (vm.nestTab) vm.nestTab.updateNest();
-        });
-        vm.data = {};
-      }
     }
 
     function createTag() {
