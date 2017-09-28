@@ -176,72 +176,6 @@
       });
     }
 
-    function exportData() {
-      var deferred = $q.defer(); // init promise
-      var date = new Date();
-      var dateString = date.getFullYear().toString() + (date.getMonth() + 1).toString() + date.getDate().toString() +
-        date.getHours().toString() + date.getMinutes().toString() + date.getSeconds().toString();
-      vm.exportFileName = dateString + vm.project.description.project_name.replace(/\s/g, "");
-      var myPopup = $ionicPopup.show({
-        template: '<input type="text" ng-model="vm.exportFileName">',
-        title: 'Confirm or Change File Name',
-        subTitle: 'If you change the file name please do not use spaces, special characters (except a dash or underscore) or add a file extension.',
-        scope: $scope,
-        buttons: [
-          {text: 'Cancel'},
-          {
-            text: '<b>Save</b>',
-            type: 'button-positive',
-            onTap: function (e) {
-              if (!vm.exportFileName) e.preventDefault();
-              else return vm.exportFileName = vm.exportFileName.replace(/[^\w- ]/g, "");
-            }
-          }
-        ]
-      });
-
-      myPopup.then(function (res) {
-        if (res) {
-          $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Exporting Project Text Data...'});
-          LocalStorageFactory.exportProject(vm.exportFileName).then(function (filePath) {
-            $ionicPopup.alert({
-              'title': 'Success!',
-              'template': 'Project text data written to ' + filePath
-            }).then(function () {
-              deferred.resolve();
-            });
-          }, function (err) {
-            $ionicLoading.hide();
-            $ionicPopup.alert({
-              'title': 'Error!',
-              'template': 'Error exporting project text data. ' + err + ' Ending export.'
-            });
-            deferred.reject();
-          }).finally(function () {
-            $ionicLoading.hide();
-          });
-        }
-      });
-      return deferred.promise;
-    }
-
-    function exportImages() {
-      $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Exporting Project Images...'});
-      LocalStorageFactory.exportImages().then(function () {
-        $ionicPopup.alert({
-          'title': 'Success!',
-          'template': 'Finished exporting images.'
-        });
-      }, function (err) {
-        $ionicPopup.alert({
-          'title': 'Error!',
-          'template': 'Error exporting images.' + err
-        });
-      }).finally(function () {
-        $ionicLoading.hide();
-      });
-    }
-
     function destroyProject() {
       return ProjectFactory.destroyProject().then(function () {
         return SpotFactory.clearAllSpots().then(function () {
@@ -359,6 +293,72 @@
         });
     }
 
+    function exportData() {
+      var deferred = $q.defer(); // init promise
+      var date = new Date();
+      var dateString = date.getFullYear().toString() + (date.getMonth() + 1).toString() + date.getDate().toString() +
+        date.getHours().toString() + date.getMinutes().toString() + date.getSeconds().toString();
+      vm.exportFileName = dateString + vm.project.description.project_name.replace(/\s/g, "");
+      var myPopup = $ionicPopup.show({
+        template: '<input type="text" ng-model="vm.exportFileName">',
+        title: 'Confirm or Change File Name',
+        subTitle: 'If you change the file name please do not use spaces, special characters (except a dash or underscore) or add a file extension.',
+        scope: $scope,
+        buttons: [
+          {text: 'Cancel'},
+          {
+            text: '<b>Save</b>',
+            type: 'button-positive',
+            onTap: function (e) {
+              if (!vm.exportFileName) e.preventDefault();
+              else return vm.exportFileName = vm.exportFileName.replace(/[^\w- ]/g, "");
+            }
+          }
+        ]
+      });
+
+      myPopup.then(function (res) {
+        if (res) {
+          $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Exporting Project Text Data...'});
+          LocalStorageFactory.exportProject(vm.exportFileName).then(function (filePath) {
+            $ionicPopup.alert({
+              'title': 'Success!',
+              'template': 'Project text data written to ' + filePath
+            }).then(function () {
+              deferred.resolve();
+            });
+          }, function (err) {
+            $ionicPopup.alert({
+              'title': 'Error!',
+              'template': 'Error exporting project text data. ' + err + ' Ending export.'
+            }).then(function () {
+              deferred.reject();
+            });
+          }).finally(function () {
+            $ionicLoading.hide();
+          });
+        }
+      });
+      return deferred.promise;
+    }
+
+    function exportImages() {
+      $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Exporting Project Images...'});
+      LocalStorageFactory.exportImages().then(function () {
+        $ionicPopup.alert({
+          'title': 'Success!',
+          'template': 'Finished exporting images.'
+        });
+      }, function (err) {
+        $ionicPopup.alert({
+          'title': 'Error!',
+          'template': 'Error exporting images.' + err
+        });
+      }).finally(function () {
+        $ionicLoading.hide();
+      });
+    }
+
     function gatherNeededImages(spots) {
       if (!IS_WEB) {
         var neededImagesIds = [];
@@ -420,10 +420,11 @@
           'Images Needed: ' + count.need + '<br><br>' +
           'Images Imported: ' + count.success + '<br>' +
           'Images Failed: ' + count.failed;
-        if (count.failed > 0) { msg = msg + '<br><br> Failed images may be a result of images missing from the' +
-          ' StraboSpot/ImagesBackup folder or incorrect file names. Attempting to read too many images at once' +
-          ' into the local database can also cause failed images. If the later is the case continue running the' +
-          ' image import until there are no failed images.'
+        if (count.failed > 0) {
+          msg = msg + '<br><br> Failed images may be a result of images missing from the' +
+            ' StraboSpot/ImagesBackup folder or incorrect file names. Attempting to read too many images at once' +
+            ' into the local database can also cause failed images. If the later is the case continue running the' +
+            ' image import until there are no failed images.'
         }
         $ionicPopup.alert({
           'title': 'Finished Importing Images!',
@@ -833,8 +834,8 @@
       var usedType = _.filter(SpotFactory.getSpots(), function (spot) {
         if (spot.properties.other_features) {
           return _.find(spot.properties.other_features, function (otherFeature) {
-              return otherFeature.type === customTypes[i];
-            }) || false;
+            return otherFeature.type === customTypes[i];
+          }) || false;
         }
         return false;
       });
@@ -905,7 +906,7 @@
      }*/
 
     function exportProject() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         vm.exportItems = {};
         var template = '<ion-checkbox ng-model="vm.exportItems.text">Text Data</ion-checkbox>' +
           '<ion-checkbox ng-model="vm.exportItems.images">Images</ion-checkbox>';
@@ -968,7 +969,7 @@
     }
 
     function importProject() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         vm.importItem = undefined;
         vm.text = 'text';
         vm.images = 'images';
@@ -1001,39 +1002,40 @@
     }
 
     function importSelectedFile(name) {
-      vm.fileBrowserModal.hide();
-      var confirmPopup = $ionicPopup.confirm({
-        'title': 'Warning!!!',
-        'template': 'This will <span style="color:red">OVERWRITE</span> the current open project. Do you want to continue?',
-        'cssClass': 'warning-popup'
-      });
-      confirmPopup.then(function (res) {
-        if (res) {
-          $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Destroying Current Project..'});
-          $log.log('Destroying current project ...');
-          var promises = [];
-          promises.push(ProjectFactory.destroyProject());
-          promises.push(SpotFactory.clearAllSpots());
-          promises.push(ImageFactory.deleteAllImages());
+      vm.fileBrowserModal.hide().then(function () {
+        var confirmPopup = $ionicPopup.confirm({
+          'title': 'Warning!!!',
+          'template': 'This will <span style="color:red">OVERWRITE</span> the current open project. Do you want to continue?',
+          'cssClass': 'warning-popup'
+        });
+        confirmPopup.then(function (res) {
+          if (res) {
+            $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Destroying Current Project..'});
+            $log.log('Destroying current project ...');
+            var promises = [];
+            promises.push(ProjectFactory.destroyProject());
+            promises.push(SpotFactory.clearAllSpots());
+            promises.push(ImageFactory.deleteAllImages());
 
-          $q.all(promises).then(function () {
-            $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Importing Project..'});
-            LocalStorageFactory.importProject(name + '.json').then(function () {
-              reloadProject();
-            }, function (err) {
-              $ionicLoading.hide();
-              $ionicPopup.alert({
-                'title': 'Error!',
-                'template': 'Error importing project. ' + err
+            $q.all(promises).then(function () {
+              $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Importing Project..'});
+              LocalStorageFactory.importProject(name + '.json').then(function () {
+                reloadProject();
+              }, function (err) {
+                $ionicLoading.hide();
+                $ionicPopup.alert({
+                  'title': 'Error!',
+                  'template': 'Error importing project. ' + err
+                });
               });
             });
-          });
-        }
+          }
+        });
       });
     }
 
     function initializeDownload() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         downloadErrors = false;
         var downloadConfirmText = '';
         if (_.isEmpty(vm.activeDatasets)) {
@@ -1073,7 +1075,7 @@
     }
 
     function initializeUpload() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         var deferred = $q.defer(); // init promise
         uploadErrors = false;
         var uploadConfirmText = '';
@@ -1194,7 +1196,7 @@
     }
 
     function startNewProject() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         vm.data = {};
         vm.showExitProjectModal = false;
         if (_.isEmpty(vm.project) || !_.has(vm.project.description, 'project_name')) vm.newProjectModal.show();
@@ -1224,7 +1226,7 @@
     }
 
     function switchProject() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Getting Projects from Server ...'});
         ProjectFactory.loadProjectsRemote().then(function (projects) {
           vm.projects = projects;
