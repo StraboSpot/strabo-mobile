@@ -93,10 +93,11 @@
             });
           }
           else {
-            vm.createAccountModal.hide();
-            $ionicPopup.alert({
-              'title': 'Success!',
-              'template': newUserData.message
+            vm.createAccountModal.hide().then(function () {
+              $ionicPopup.alert({
+                'title': 'Success!',
+                'template': newUserData.message
+              });
             });
           }
         }, function (err) {
