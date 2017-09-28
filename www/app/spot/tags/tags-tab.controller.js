@@ -76,7 +76,7 @@
     }
 
     function setTagToggleText() {
-      vm.tagText = vm.isTagging ? 'Continuous Tagging On (Spot Level Only)' : 'Continuous Tagging Off (Spot Level Only)';
+      vm.tagText = vm.isTagging ? 'Continuous Tagging On' : 'Continuous Tagging Off';
     }
 
     /**

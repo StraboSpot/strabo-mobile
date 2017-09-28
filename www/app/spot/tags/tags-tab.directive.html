@@ -6,7 +6,8 @@
               toggle-class='toggle-positive'
               ng-model='vmChild.isTagging'
               ng-click='vmChild.toggleTagging()'>
-    <span class='toggle-left-label'>{{ vmChild.tagText }} </span>
+    <span class='toggle-left-label'>{{ vmChild.tagText }} <br>
+      <small class="toggle-left-label">(Spot Level Only)</small></span>
   </ion-toggle>
   <div ng-hide='vm.spotLevelTags.length === 0 && vm.featureLevelTags.length === 0'>
     <ion-input class="item item-input item-select">

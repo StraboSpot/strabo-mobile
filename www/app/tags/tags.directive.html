@@ -6,7 +6,8 @@
               toggle-class='toggle-positive'
               ng-model='vm.isTagging'
               ng-click='vm.toggleTagging()'>
-    <span class='toggle-left-label item-text-wrap'>{{ vm.tagText }} </span>
+    <span class='toggle-left-label item-text-wrap'>{{ vm.tagText }} <br>
+      <small class="toggle-left-label">(Spot Level Only)</small></span>
   </ion-toggle>
   <strabo-tags-filter-directive></strabo-tags-filter-directive>
   <ion-list>
