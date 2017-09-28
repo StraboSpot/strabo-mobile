@@ -119,10 +119,12 @@
      * Private Functions
      */
 
-    // Remove the default start and end objects
+    // Remove the default start, end and calculate objects
     function cleanJson(json) {
       return _.reject(json.data, function (obj) {
-        return ((obj.name === 'start' && obj.type === 'start') || (obj.name === 'end' && obj.type === 'end'));
+        return ((obj.name === 'start' && obj.type === 'start') ||
+          (obj.name === 'end' && obj.type === 'end') ||
+          (obj.name === '__version__' && obj.type === 'calculate'));
       });
     }
 
