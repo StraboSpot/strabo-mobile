@@ -169,7 +169,7 @@
         /*
         Gather orientation data. Sometimes (if spots are from map),
         orientations are in "orientation". Other times, orientations are
-        in "orientation_data". 
+        in "orientation_data".
         */
         if (spot.properties.orientation) {
           spotOrientations.push(spot.properties.orientation);
@@ -177,10 +177,16 @@
         else if (spot.properties.orientation_data) {
           _.each(spot.properties.orientation_data, function (od) {
             spotOrientations.push(od);
+            if(od.associated_orientation){
+              _.each(od.associated_orientation, function(ao){
+                spotOrientations.push(ao);
+              })
+            }
           });
         }
 
         _.each(spotOrientations, function (od) {
+
           if (od.type == "planar_orientation") {
             if (od.strike && od.dip) {
               trendstrike = od.strike;
@@ -259,7 +265,7 @@
         hasdata = true;
       }
 
-      $log.log("out: ", out);
+      //$log.log("out: ", out);
 
       if (hasdata) {
         $cordovaClipboard.copy(out).then(function () {
