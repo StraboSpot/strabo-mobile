@@ -388,7 +388,8 @@
     function loadTab(state) {
       vm.data = {};
       FormFactory.clearForm();
-      SpotFactory.moveSpot = false;
+      var currentSpot = SpotFactory.getCurrentSpot();
+      if (!currentSpot || currentSpot.properties.id !== state.params.spotId) SpotFactory.moveSpot = false;
       vm.stateName = state.current.name;
       setSpot(state.params.spotId);
       if (vm.spot) loadTags();

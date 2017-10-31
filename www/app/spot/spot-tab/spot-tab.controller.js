@@ -231,6 +231,7 @@
     // Open the map so the user can set the location for the spot
     function setFromMap() {
       SpotFactory.moveSpot = true;
+      SpotFactory.setKeepSpotSelected(true);
       if (_.has(vmParent.spot.properties, 'image_basemap')) {
         vmParent.submit('/app/image-basemaps/' + vmParent.spot.properties.image_basemap);
       }
