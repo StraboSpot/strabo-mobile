@@ -70,4 +70,11 @@
       </ion-infinite-scroll>
     </div>
   </ion-content>
+  <ion-footer-bar class='bar-stable nav-title-slide-ios7' ng-show='vm.showNext'>
+    <h1 class='title'></h1>
+    <button class='button icon-right ion-chevron-right button-clear'
+            ng-click='vm.closeModal("selectItemModal"); vm.selectTypes()'>
+      Next
+    </button>
+  </ion-footer-bar>
 </ion-modal-view>

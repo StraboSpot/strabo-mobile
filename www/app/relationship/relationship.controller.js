@@ -29,6 +29,7 @@
     vm.relationshipTypes = [];
     vm.selectItemModal = {};
     vm.showItem = 'spots';
+    vm.showNext = true;
     vm.spots = [];
     vm.spotsDisplayed = [];
     vm.tags = [];
@@ -351,11 +352,13 @@
 
     function selectItem(inOrder) {
       order = inOrder;
+      vm.showNext = order === 'a' ? true : false;
       vm.showItem = 'spots';
       vm.selectItemModal.show();
     }
 
     function selectTypes() {
+      vm.showNext = true;
       vm.selectTypesModal.show();
     }
 
