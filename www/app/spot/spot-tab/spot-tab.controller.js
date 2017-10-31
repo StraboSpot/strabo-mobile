@@ -28,7 +28,7 @@
     vm.addGeologicUnitTag = addGeologicUnitTag;
     vm.closeGeologicUnitTagModal = closeGeologicUnitTagModal;
     vm.createGeologicUnitTag = createGeologicUnitTag;
-    vm.getCurrentLocation = getCurrentLocation;
+    vm.setCurrentLocation = setCurrentLocation;
     vm.setFromMap = setFromMap;
     vm.showSetToMyLocation = showSetToMyLocation;
     vm.updateDatetime = updateDatetime;
@@ -73,6 +73,26 @@
         vmParent.spot.geometry = args.movedSpotGeometry;
         vmParent.initializing = true;
         setDisplayedCoords();
+      });
+    }
+
+    // Get current location of the user
+    function getCurrentLocation() {
+      $cordovaGeolocation.getCurrentPosition().then(function (position) {
+        vm.lat = position.coords.latitude;
+        vm.lng = position.coords.longitude;
+        vmParent.spot.geometry = {
+          'type': 'Point',
+          'coordinates': [vm.lng, vm.lat]
+        };
+        vm.showLatLng = true;
+        vm.mapped = true;
+        if (position.coords.altitude) vmParent.spot.properties.altitude = position.coords.altitude;
+      }, function (err) {
+        $ionicPopup.alert({
+          'title': 'Alert!',
+          'template': 'Unable to get location: ' + err.message
+        });
       });
     }
 
@@ -195,24 +215,17 @@
       FormFactory.setForm('rock_unit');
     }
 
-    // Get current location of the user
-    function getCurrentLocation() {
-      $cordovaGeolocation.getCurrentPosition().then(function (position) {
-        vm.lat = position.coords.latitude;
-        vm.lng = position.coords.longitude;
-        vmParent.spot.geometry = {
-          'type': 'Point',
-          'coordinates': [vm.lng, vm.lat]
-        };
-        vm.showLatLng = true;
-        vm.mapped = true;
-        if (position.coords.altitude) vmParent.spot.properties.altitude = position.coords.altitude;
-      }, function (err) {
-        $ionicPopup.alert({
-          'title': 'Alert!',
-          'template': 'Unable to get location: ' + err.message
+    function setCurrentLocation() {
+      if (vmParent.spot && vmParent.spot.geometry) {
+        var confirmPopup = $ionicPopup.confirm({
+          'title': 'Modify Lat/Long',
+          'template': 'Are you sure you want to update the lat and long for this spot?'
         });
-      });
+        confirmPopup.then(function (res) {
+          if (res) getCurrentLocation();
+        });
+      }
+      else getCurrentLocation();
     }
 
     // Open the map so the user can set the location for the spot
