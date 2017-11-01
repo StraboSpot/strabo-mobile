@@ -164,6 +164,20 @@
       });
     }
 
+    // If the backView is within the same Spot keep getting backViews until
+    // we get a backView out of the Spot or there are no more backViews
+    function removeSameSpotBackViews() {
+      var backView = $ionicHistory.backView();
+      var currentView = $ionicHistory.currentView();
+      if (backView && _.has(currentView.stateParams, 'spotId') && _.has(backView.stateParams, 'spotId') &&
+        backView.stateParams.spotId === currentView.stateParams.spotId) {
+        $ionicHistory.removeBackView();
+        var currentHistory = $ionicHistory.viewHistory().histories[$ionicHistory.currentHistoryId()];
+        currentHistory.cursor += -1;   // Fix for bug in ionic.bundle.js which updates the cursor incorrectly
+        removeSameSpotBackViews();
+      }
+    }
+
     // Set the current spot
     function setSpot(id) {
       SpotFactory.setCurrentSpotById(id);
@@ -223,7 +237,7 @@
 
     // Create a new spot with the details from this spot
     function copyThisSpot() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         var newSpot = {'type': 'Feature'};
         newSpot.properties = _.omit(vm.spot.properties,
           ['name', 'id', 'date', 'time', 'modified_timestamp', 'images', 'samples']);
@@ -322,33 +336,8 @@
 
     function goBack() {
       SpotFactory.clearCurrentSpot();
-
-      // If the backView is within the same Spot keep getting backViews until
-      // we get a backView out of the Spot or there are no more backViews
-      var backView = $ionicHistory.backView();
-      if (backView) {
-        var historyId = backView.historyId;
-        var viewHistory = $ionicHistory.viewHistory().histories;
-        var historyStack = viewHistory[historyId].stack;
-        var i = historyStack.length - 2; // Last view in stack is current view so skip that
-        while (i >= 0) {
-          var view = historyStack[i];
-          if (_.has(view.stateParams, 'spotId') && view.stateParams.spotId === vm.spot.properties.id.toString()) {
-            //$log.log('Do not go to state', view);
-            historyStack.splice(i, 1); // Keep last view in stack since it's the current view
-            if (i > 0) historyStack[i - 1].forwardViewId = historyStack[historyStack.length - 1].viewId;
-            historyStack[historyStack.length - 1].backViewId = i > 0 ? historyStack[i - 1].viewId : null;
-            i--;
-          }
-          else {
-            //$log.log('Reverted to state: ', view);
-            $ionicHistory.backView(view);
-            break;
-          }
-        }
-      }
-
-      saveSpot().finally(function() {
+      removeSameSpotBackViews();
+      saveSpot().finally(function () {
         if ($ionicHistory.backView()) {
           if ($ionicHistory.backView().url === '/app/map') {
             $ionicLoading.show({
