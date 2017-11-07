@@ -117,13 +117,13 @@ Map Controls Style
   background-repeat: no-repeat;
   border-bottom: 1px solid lightgray;
 }
-.draw-controls .line {
+.draw-controls .lineString {
   background-image: url('../img/line.png');
   background-position: center;
   background-repeat: no-repeat;
   border-bottom: 1px solid lightgray;
 }
-.draw-controls .poly {
+.draw-controls .polygon {
   background-image: url('../img/polygon.png');
   background-position: center;
   background-repeat: no-repeat;

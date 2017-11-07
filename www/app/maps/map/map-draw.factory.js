@@ -332,85 +332,28 @@
       drawButtonActive = null;
       modify = null;
 
-      var drawPoint;
-      var drawLine;
-      var drawPoly;
-      var drawEdit;
-
-      drawPoint = $document[0].createElement('a');
-      drawPoint.id = 'drawPointControl';
-      drawPoint.href = '#drawPointControl';
-      drawPoint.className = 'point';
-
-      drawLine = $document[0].createElement('a');
-      drawLine.id = 'drawLineControl';
-      drawLine.href = '#drawLineControl';
-      drawLine.className = 'line';
-
-      drawPoly = $document[0].createElement('a');
-      drawPoly.id = 'drawPolyControl';
-      drawPoly.href = '#drawPolyControl';
-      drawPoly.className = 'poly';
-
-      drawEdit = $document[0].createElement('a');
-      drawEdit.id = 'drawEditControl';
-      drawEdit.href = '#drawEditControl';
-      drawEdit.className = 'edit';
-
-      function handleDraw(e, drawObj, drawType) {
-        if (drawObj.style.backgroundColor === '') drawObj.style.backgroundColor = '#DDDDDD';
-        else drawObj.style.backgroundColor = '';
-        e.preventDefault();
-        startDraw(drawType);
-      }
-
-      function handleDrawPoint(e) {
-        drawLine.style.backgroundColor = '';
-        drawPoly.style.backgroundColor = '';
-        drawEdit.style.backgroundColor = '';
-        handleDraw(e, drawPoint, 'Point');
-      }
-
-      function handleDrawLine(e) {
-        drawPoint.style.backgroundColor = '';
-        drawPoly.style.backgroundColor = '';
-        drawEdit.style.backgroundColor = '';
-        handleDraw(e, drawLine, 'LineString');
-      }
-
-      function handleDrawPoly(e) {
-        drawPoint.style.backgroundColor = '';
-        drawLine.style.backgroundColor = '';
-        drawEdit.style.backgroundColor = '';
-        handleDraw(e, drawPoly, 'Polygon');
-      }
-
-      function handleDrawEdit(e) {
-        drawPoint.style.backgroundColor = '';
-        drawLine.style.backgroundColor = '';
-        drawPoly.style.backgroundColor = '';
-        handleDraw(e, drawEdit, 'Edit');
-      }
-
-      drawPoint.addEventListener('click', handleDrawPoint, false);
-      drawPoint.addEventListener('touchstart', handleDrawPoint, false);
-
-      drawLine.addEventListener('click', handleDrawLine, false);
-      drawLine.addEventListener('touchstart', handleDrawLine, false);
-
-      drawPoly.addEventListener('click', handleDrawPoly, false);
-      drawPoly.addEventListener('touchstart', handleDrawPoly, false);
-
-      drawEdit.addEventListener('click', handleDrawEdit, false);
-      drawEdit.addEventListener('touchstart', handleDrawEdit, false);
-
       var element = $document[0].createElement('div');
       element.className = 'draw-controls ol-unselectable';
 
-      element.appendChild(drawPoint);
-      element.appendChild(drawLine);
-      element.appendChild(drawPoly);
-      element.appendChild(drawEdit);
+      var drawControls = {'Point': {}, 'LineString': {}, 'Polygon': {}, 'Edit': {}};
+      _.each(drawControls, function (value, key) {
+        drawControls[key] = $document[0].createElement('a');
+        drawControls[key].id = 'draw' + key + 'Control';
+        drawControls[key].className = key;
+        drawControls[key].addEventListener('click', handleDraw, false);
+        drawControls[key].addEventListener('touchstart', handleDraw, false);
+        element.appendChild(drawControls[key]);
+      });
+
+      function handleDraw(e) {
+        _.each(drawControls, function (value, key) {
+          if (value.id !== e.target.id) drawControls[key].style.backgroundColor = '';
+        });
+        if (e.target.style.backgroundColor === '') drawControls[e.target.className].style.backgroundColor = '#DDDDDD';
+        else drawControls[e.target.className].style.backgroundColor = '';
+        e.preventDefault();
+        startDraw(e.target.className);
+      }
 
       ol.control.Control.call(this, {
         'element': element,
