@@ -79,15 +79,17 @@
     // Get current location of the user
     function getCurrentLocation() {
       $cordovaGeolocation.getCurrentPosition().then(function (position) {
-        vm.lat = position.coords.latitude;
-        vm.lng = position.coords.longitude;
+        vm.lat = HelpersFactory.roundToDecimalPlaces(position.coords.latitude, 4);
+        vm.lng = HelpersFactory.roundToDecimalPlaces(position.coords.longitude, 4);
         vmParent.spot.geometry = {
           'type': 'Point',
           'coordinates': [vm.lng, vm.lat]
         };
         vm.showLatLng = true;
         vm.mapped = true;
-        if (position.coords.altitude) vmParent.spot.properties.altitude = position.coords.altitude;
+        if (position.coords.altitude) {
+          vmParent.spot.properties.altitude = HelpersFactory.roundToDecimalPlaces(position.coords.altitude, 2);
+        }
       }, function (err) {
         $ionicPopup.alert({
           'title': 'Alert!',

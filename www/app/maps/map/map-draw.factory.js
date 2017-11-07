@@ -225,7 +225,7 @@
       var geojsonObj;
       if (imageBasemap) {
         // Drawing on an image basemap
-        geojsonObj = geojson.writeFeatureObject(e.feature);
+        geojsonObj = geojson.writeFeatureObject(e.feature, {'decimals': 4});
         geojsonObj.properties = {
           'image_basemap': imageBasemap.id
         };
@@ -245,7 +245,8 @@
       else {
         // Drawing on regular map
         geojsonObj = geojson.writeFeatureObject(e.feature, {
-          'featureProjection': map.getView().getProjection()  // 'EPSG:3857'
+          'featureProjection': map.getView().getProjection(),  // 'EPSG:3857'
+          'decimals': 4
         });
       }
 
