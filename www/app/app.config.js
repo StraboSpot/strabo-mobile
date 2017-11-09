@@ -9,7 +9,7 @@
     // Align title text in nav bar in ion-view directive to left side
     $ionicConfigProvider.navBar.alignTitle('left');
 
-    // Set up states
+    // Declare Login and Main Menu States
     $stateProvider
       .state('login', {
         'cache': false,
@@ -28,310 +28,82 @@
         'resolve': {
           'prepMenu': prepMenu
         }
-      })
-      .state('app.description', {
+      });
+
+    // Declare Main Menu Content States
+    var mainStates = [
+      {'state': 'about', 'url': 'about', 'template': 'about/about', 'controller': 'About'},
+      {'state': 'archiveTiles', 'url': 'map/archiveTiles', 'template': 'maps/offline-maps/archive-tiles', 'controller': 'ArchiveTiles'},
+      {'state': 'description', 'url': 'description', 'template': 'project/description/description', 'controller': 'Description'},
+      {'state': 'image-basemap', 'url': 'image-basemaps/:imagebasemapId', 'template': 'maps/image-basemap/image-basemap', 'controller': 'ImageBasemap'},
+      {'state': 'image-basemaps', 'url': 'image-basemaps', 'template': 'maps/image-basemaps/image-basemaps', 'controller': 'ImageBasemaps'},
+      {'state': 'images', 'url': 'images', 'template': 'attributes/images/images', 'controller': 'Images'},
+      {'state': 'manage-project', 'url': 'manage-project', 'template': 'project/manage/manage-project', 'controller': 'ManageProject'},
+      {'state': 'map', 'url': 'map', 'template': 'maps/map/map', 'controller': 'Map'},
+      {'state': 'misc', 'url': 'misc', 'template': 'misc/misc', 'controller': 'Misc'},
+      {'state': 'offlinemap', 'url': 'offlinemap', 'template': 'maps/offline-maps/offline-map', 'controller': 'OfflineMap'},
+      {'state': 'other-maps', 'url': 'other-maps', 'template': 'maps/other-maps/other-maps', 'controller': 'OtherMaps'},
+      {'state': 'preferences', 'url': 'preferences', 'template': 'project/preferences/preferences', 'controller': 'Preferences'},
+      {'state': 'relationship', 'url': 'relationships/:relationship_id', 'template': 'relationship/relationship', 'controller': 'Relationship'},
+      {'state': 'relationships', 'url': 'relationships', 'template': 'relationships/relationships', 'controller': 'Relationships'},
+      {'state': 'samples', 'url': 'samples', 'template': 'attributes/samples/samples', 'controller': 'Samples'},
+      {'state': 'spots', 'url': 'spots', 'template': 'spots/spots', 'controller': 'Spots'},
+      {'state': 'tag', 'url': 'tags/:tag_id', 'template': 'tag/tag', 'controller': 'Tag'},
+      {'state': 'tags', 'url': 'tags', 'template': 'tags/tags', 'controller': 'Tags'},
+      {'state': 'tools', 'url': 'tools', 'template': 'project/tools/tools', 'controller': 'Tools'},
+      {'state': 'user', 'url': 'user', 'template': 'user/user', 'controller': 'User'}
+      ];
+    _.each(mainStates, function (mainState) {
+      $stateProvider.state('app.' + mainState.state, {
         'cache': false,
-        'url': '/description',
+        'url': '/' + mainState.url,
         'views': {
           'menuContent': {
-            'templateUrl': 'app/project/description/description.html',
-            'controller': 'DescriptionController as vm'
-          }
-        }
-      })
-      .state('app.images', {
-        'cache': false,
-        'url': '/images',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/attributes/images/images.html',
-            'controller': 'ImagesController as vm'
-          }
-        }
-      })
-      .state('app.manage-project', {
-        'cache': false,
-        'url': '/manage-project',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/project/manage/manage-project.html',
-            'controller': 'ManageProjectController as vm'
-          }
-        }
-      })
-      .state('app.relationships', {
-        'cache': false,
-        'url': '/relationships',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/relationships/relationships.html',
-            'controller': 'RelationshipsController as vm'
-          }
-        }
-      })
-      .state('app.relationship', {
-        'cache': false,
-        'url': '/relationships/:relationship_id',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/relationship/relationship.html',
-            'controller': 'RelationshipController as vm'
-          }
-        }
-      })
-      .state('app.samples', {
-        'cache': false,
-        'url': '/samples',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/attributes/samples/samples.html',
-            'controller': 'SamplesController as vm'
-          }
-        }
-      })
-      .state('app.tags', {
-        'cache': false,
-        'url': '/tags',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/tags/tags.html',
-            'controller': 'TagsController as vm'
-          }
-        }
-      })
-      .state('app.tag', {
-        'cache': false,
-        'url': '/tags/:tag_id',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/tag/tag.html',
-            'controller': 'TagController as vm'
-          }
-        }
-      })
-      .state('app.tools', {
-        'cache': false,
-        'url': '/tools',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/project/tools/tools.html',
-            'controller': 'ToolsController as vm'
-          }
-        }
-      })
-      .state('app.user', {
-        'cache': false,
-        'url': '/user',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/user/user.html',
-            'controller': 'UserController as vm'
-          }
-        }
-      })
-      .state('app.map', {
-        'cache': false,
-        'url': '/map',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/maps/map/map.html',
-            'controller': 'MapController as vm'
-          }
-        }
-      })
-      .state('app.offlinemap', {
-        'cache': false,
-        'url': '/offlinemap',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/maps/offline-maps/offline-map.html',
-            'controller': 'OfflineMapController as vm'
-          }
-        }
-      })
-      .state('app.other-maps', {
-        'cache': false,
-        'url': '/other-maps',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/maps/other-maps/other-maps.html',
-            'controller': 'OtherMapsController as vm'
-          }
-        }
-      })
-      .state('app.preferences', {
-        'cache': false,
-        'url': '/preferences',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/project/preferences/preferences.html',
-            'controller': 'PreferencesController as vm'
-          }
-        }
-      })
-      .state('app.image-basemaps', {
-        'cache': false,
-        'url': '/image-basemaps',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/maps/image-basemaps/image-basemaps.html',
-            'controller': 'ImageBasemapsController as vm'
-          }
-        }
-      })
-      .state('app.image-basemap', {
-        'cache': false,
-        'url': '/image-basemaps/:imagebasemapId',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/maps/image-basemap/image-basemap.html',
-            'controller': 'ImageBasemapController as vm'
-          }
-        }
-      })
-      .state('app.spots', {
-        'cache': false,
-        'url': '/spots',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/spots/spots.html',
-            'controller': 'SpotsController as vm'
-          }
-        }
-      })
-      // setup an abstract state for the spot tabs directive
-      .state('app.spotTab', {
-        'url': '/spotTab',
-        'abstract': true,
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/spot/spot/spot.html',
-            'controller': 'SpotController as vm'
-          }
-        }
-      })
-      .state('app.spotTab.orientations', {
-        'cache': false,
-        'url': '/:spotId/orientations',
-        'views': {
-          'spottab-childview': {
-            'templateUrl': 'app/spot/orientations/orientations-tab.html',
-            'controller': 'OrientationsTabController as vmChild'
-          }
-        }
-      })
-      .state('app.spotTab.images', {
-        'cache': false,
-        'url': '/:spotId/images',
-        'views': {
-          'spottab-childview': {
-            'templateUrl': 'app/spot/images/images-tab.html',
-            'controller': 'ImagesTabController as vmChild'
-          }
-        }
-      })
-      .state('app.spotTab.relationships', {
-        'cache': false,
-        'url': '/:spotId/relationships',
-        'views': {
-          'spottab-childview': {
-            'templateUrl': 'app/spot/relationships/relationships-tab.html',
-            'controller': 'RelationshipsTabController as vmChild'
-          }
-        }
-      })
-      .state('app.spotTab.nesting', {
-        'cache': false,
-        'url': '/:spotId/nesting',
-        'views': {
-          'spottab-childview': {
-            'templateUrl': 'app/spot/nesting/nesting-tab.html',
-            'controller': 'NestingTabController as vmChild'
-          }
-        }
-      })
-      .state('app.spotTab.other-features', {
-        'cache': false,
-        'url': '/:spotId/other-features',
-        'views': {
-          'spottab-childview': {
-            'templateUrl': 'app/spot/other-features/other-features-tab.html',
-            'controller': 'OtherFeaturesTabController as vmChild'
-          }
-        }
-      })
-      .state('app.spotTab.spot', {
-        'cache': false,
-        'url': '/:spotId/spot',
-        'views': {
-          'spottab-childview': {
-            'templateUrl': 'app/spot/spot-tab/spot-tab.html',
-            'controller': 'SpotTabController as vmChild'
-          }
-        }
-      })
-      .state('app.spotTab.samples', {
-        'cache': false,
-        'url': '/:spotId/samples',
-        'views': {
-          'spottab-childview': {
-            'templateUrl': 'app/spot/samples/samples-tab.html',
-            'controller': 'SamplesTabController as vmChild'
-          }
-        }
-      })
-      .state('app.spotTab._3dstructures', {
-        'cache': false,
-        'url': '/:spotId/_3dstructures',
-        'views': {
-          'spottab-childview': {
-            'templateUrl': 'app/spot/3d-structures/3dstructures-tab.html',
-            'controller': '_3DStructuresTabController as vmChild'
-          }
-        }
-      })
-      .state('app.spotTab.tags', {
-        'cache': false,
-        'url': '/:spotId/tags',
-        'views': {
-          'spottab-childview': {
-            'templateUrl': 'app/spot/tags/tags-tab.html',
-            'controller': 'TagsTabController as vmChild'
-          }
-        }
-      })
-      .state('app.archiveTiles', {
-        'cache': false,
-        'url': '/map/archiveTiles',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/maps/offline-maps/archive-tiles.html',
-            'controller': 'ArchiveTilesController as vm'
-          }
-        }
-      })
-      .state('app.misc', {
-        'cache': false,
-        'url': '/misc',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/misc/misc.html',
-            'controller': 'MiscController as vm'
-          }
-        }
-      })
-      .state('app.about', {
-        'cache': false,
-        'url': '/about',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/about/about.html',
-            'controller': 'AboutController as vm'
+            'templateUrl': 'app/' + mainState.template + '.html',
+            'controller': mainState.controller + 'Controller as vm'
           }
         }
       });
+    });
 
-    // if none of the above states are matched, use this as the fallback
+    // Declare Spot Tab Abstract State
+    $stateProvider.state('app.spotTab', {
+      'url': '/spotTab',
+      'abstract': true,
+      'views': {
+        'menuContent': {
+          'templateUrl': 'app/spot/spot/spot.html',
+          'controller': 'SpotController as vm'
+        }
+      }
+    });
+
+    // Declare Spot Tab Childview States
+    var spotTabStates = [
+      {'state': '_3dstructures', 'template': '3d-structures/3dstructures-tab', 'controller': '_3DStructures'},
+      {'state': 'images', 'template': 'images/images-tab', 'controller': 'Images'},
+      {'state': 'nesting', 'template': 'nesting/nesting-tab', 'controller': 'Nesting'},
+      {'state': 'orientations', 'template': 'orientations/orientations-tab', 'controller': 'Orientations'},
+      {'state': 'other-features', 'template': 'other-features/other-features-tab', 'controller': 'OtherFeatures'},
+      {'state': 'relationships', 'template': 'relationships/relationships-tab', 'controller': 'Relationships'},
+      {'state': 'samples', 'template': 'samples/samples-tab', 'controller': 'Samples'},
+      {'state': 'spot', 'template': 'spot-tab/spot-tab', 'controller': 'Spot'},
+      {'state': 'tags', 'template': 'tags/tags-tab', 'controller': 'Tags'}
+      ];
+    _.each(spotTabStates, function (spotTabState) {
+      $stateProvider.state('app.spotTab.' + spotTabState.state, {
+        'cache': false,
+        'url': '/:spotId/' + spotTabState.state,
+        'views': {
+          'spottab-childview': {
+            'templateUrl': 'app/spot/' + spotTabState.template + '.html',
+            'controller': spotTabState.controller + 'TabController as vmChild'
+          }
+        }
+      });
+    });
+
+    // If none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/login');
   }
 
