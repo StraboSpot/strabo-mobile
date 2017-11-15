@@ -13,7 +13,6 @@
     var vm = this;
     var vmParent = $scope.vm;
 
-    var isDelete;
     var thisTabName = 'samples';
 
     vm.addSample = addSample;
@@ -106,7 +105,6 @@
     }
 
     function deleteSample(sampleToDelete) {
-      isDelete = true;
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete Sample',
         'template': 'Are you sure you want to delete the Sample <b>' + sampleToDelete.label + '</b>?'
@@ -119,17 +117,14 @@
           if (vmParent.spot.properties.samples.length === 0) delete vmParent.spot.properties.samples;
           vmParent.saveSpot();
         }
-        isDelete = false;
       });
     }
 
     function editSample(sampleToEdit) {
-      if (!isDelete) {
-        vmParent.data = angular.fromJson(angular.toJson(sampleToEdit));  // Copy value, not reference
-        FormFactory.setForm('sample');
-        vm.modalTitle = 'Edit Sample';
-        vm.basicFormModal.show();
-      }
+      vmParent.data = angular.fromJson(angular.toJson(sampleToEdit));  // Copy value, not reference
+      FormFactory.setForm('sample');
+      vm.modalTitle = 'Edit Sample';
+      vm.basicFormModal.show();
     }
 
     function submit() {

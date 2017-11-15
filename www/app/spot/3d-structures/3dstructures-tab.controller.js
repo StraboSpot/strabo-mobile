@@ -13,7 +13,6 @@
     var vm = this;
     var vmParent = $scope.vm;
 
-    var isDelete;
     var thisTabName = '_3dstructures';
 
     vm.add3dStructure = add3dStructure;
@@ -96,7 +95,6 @@
     }
 
     function delete3dStructure(_3dStructureToDelete) {
-      isDelete = true;
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete 3D Structure',
         'template': 'Are you sure you want to delete the 3D Structure <b>' + _3dStructureToDelete.label + '</b>?'
@@ -110,17 +108,14 @@
           if (vmParent.spot.properties._3d_structures === 0) delete vmParent.spot.properties._3d_structures;
           vmParent.saveSpot();
         }
-        isDelete = false;
       });
     }
 
     function edit3dStructure(_3dStructureToEdit) {
-      if (!isDelete) {
-        vmParent.data = angular.fromJson(angular.toJson(_3dStructureToEdit));  // Copy value, not reference
-        FormFactory.setForm('_3d_structures', vmParent.data.type);
-        vm.modalTitle = 'Edit ' + vmParent.data.type;
-        vm.basicFormModal.show();
-      }
+      vmParent.data = angular.fromJson(angular.toJson(_3dStructureToEdit));  // Copy value, not reference
+      FormFactory.setForm('_3d_structures', vmParent.data.type);
+      vm.modalTitle = 'Edit ' + vmParent.data.type;
+      vm.basicFormModal.show();
     }
 
     function submit() {

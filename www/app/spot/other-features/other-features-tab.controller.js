@@ -12,7 +12,6 @@
     var vm = this;
     var vmParent = $scope.vm;
 
-    var isDelete;
     var defaultTypes = ['geomorhic', 'hydrologic', 'paleontological', 'igneous', 'metamorphic', 'sedimentological',
       'other'];
     var thisTabName = 'other-features';
@@ -99,7 +98,6 @@
     }
 
     function deleteFeature(feature) {
-      isDelete = true;
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete Feature',
         'template': 'Are you sure you want to delete this feature?'
@@ -111,15 +109,12 @@
           });
           if (vmParent.spot.properties.other_features.length === 0) delete vmParent.spot.properties.other_features;
         }
-        isDelete = false;
       });
     }
 
     function editFeature(feature) {
-      if (!isDelete) {
-        vm.otherFeature = angular.fromJson(angular.toJson(feature));
-        vm.otherFeatureModal.show();
-      }
+      vm.otherFeature = angular.fromJson(angular.toJson(feature));
+      vm.otherFeatureModal.show();
     }
 
     function submitFeature() {
@@ -153,7 +148,7 @@
             }
             else {
               vm.otherFeatureTypes.splice(-1, 0, vm.newFeatureType);
-              ProjectFactory.saveProjectItem('other_features', vm.otherFeatureTypes).then(function() {
+              ProjectFactory.saveProjectItem('other_features', vm.otherFeatureTypes).then(function () {
                 vm.otherFeatureTypes = ProjectFactory.getOtherFeatures();
               });
               vm.otherFeature.type = vm.newFeatureType;
