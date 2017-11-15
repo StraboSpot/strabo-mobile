@@ -15,7 +15,6 @@
     var vm = this;
 
     vm.activeDatasets = [];
-    vm.deleteSelected = false;
     vm.detailModal = {};
     vm.filterConditions = {};
     vm.filterModal = {};
@@ -194,8 +193,6 @@
     }
 
     function deleteSpot(spot) {
-      vm.deleteSelected = true;
-
       if (SpotFactory.isSafeDelete(spot)) {
         var confirmPopup = $ionicPopup.confirm({
           'title': 'Delete Spot',
@@ -211,17 +208,13 @@
               }
             });
           }
-          vm.deleteSelected = false;
         });
       }
       else {
-        var alertPopup = $ionicPopup.alert({
+        $ionicPopup.alert({
           'title': 'Spot Deletion Prohibited!',
           'template': 'This Spot has at least one image being used as an image basemap. Remove any image basemaps' +
           ' from this Spot before deleting.'
-        });
-        alertPopup.then(function () {
-          vm.deleteSelected = false;
         });
       }
     }
@@ -301,9 +294,7 @@
 
     function goToSpot(id) {
       vm.spotIdSelected = id;
-      if (!vm.deleteSelected) {
-        $location.path('/app/spotTab/' + id + '/spot');
-      }
+      $location.path('/app/spotTab/' + id + '/spot');
     }
 
     function hasRelationships(spotId) {
