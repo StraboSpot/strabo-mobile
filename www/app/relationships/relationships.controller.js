@@ -12,8 +12,6 @@
                                    ProjectFactory, IS_WEB) {
     var vm = this;
 
-    var isDelete = false;
-
     vm.relationships = [];
     vm.relationshipIdSelected = undefined;
 
@@ -40,7 +38,6 @@
      */
 
     function deleteRelationship(relationship) {
-      isDelete = true;
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete Relationship',
         'template': 'Are you sure you want to delete Relationships ' + relationship.name + '?'
@@ -57,13 +54,12 @@
             activate();
           });
         }
-        isDelete = false;
       });
     }
 
     function goToRelationship(id) {
       vm.relationshipIdSelected = id;
-      if (!isDelete) $location.path('/app/relationships/' + id);
+      $location.path('/app/relationships/' + id);
     }
 
     function newRelationship() {

@@ -11,7 +11,6 @@
   function OtherMapsController($http, $ionicLoading, $ionicModal, $ionicPopup, $log, $q, $scope, MapFactory,
                                OtherMapsFactory, UserFactory) {
     var vm = this;
-    var deleteSelected = false;
     var isEdit = false;
 
     vm.addMap = addMap;
@@ -141,7 +140,6 @@
     }
 
     function deleteMap(id) {
-      deleteSelected = true;
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete Map',
         'template': 'Are you sure you want to delete this map?'
@@ -153,17 +151,14 @@
           });
           OtherMapsFactory.setOtherMaps(vm.otherMaps);
         }
-        deleteSelected = false;
       });
     }
 
     function editMap(map) {
-      if (!deleteSelected) {
-        isEdit = true;
-        vm.modalTitle = 'Edit Mapbox Map';
-        vm.data = angular.fromJson(angular.toJson(map));  // Copy value, not reference
-        vm.openModal('addMapModal');
-      }
+      isEdit = true;
+      vm.modalTitle = 'Edit Mapbox Map';
+      vm.data = angular.fromJson(angular.toJson(map));  // Copy value, not reference
+      vm.openModal('addMapModal');
     }
 
     function getHelpText() {

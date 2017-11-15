@@ -14,7 +14,6 @@
                                    ProjectFactory, RemoteServerFactory, SpotFactory, UserFactory, IS_WEB) {
     var vm = this;
 
-    var deleteSelected;
     var downloadErrors = false;
     var notifyMessages = [];
     var uploadErrors = false;
@@ -798,7 +797,6 @@
     }
 
     function deleteProject(project) {
-      deleteSelected = true;
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete Project Warning!',
         'template': 'Are you sure you want to <span style="color:red">DELETE</span> the project' +
@@ -806,7 +804,6 @@
         'cssClass': 'warning-popup'
       });
       confirmPopup.then(function (res) {
-        deleteSelected = false;
         if (res) {
           RemoteServerFactory.deleteProject(project.id, UserFactory.getUser().encoded_login).then(function () {
             if (vm.project.id === project.id) {
@@ -1166,22 +1163,20 @@
     }
 
     function selectProject(project) {
-      if (!deleteSelected) {
-        $log.log('Selected:', project);
-        if (_.isEmpty(vm.project)) loadProjectRemote(project);
-        else {
-          var confirmPopup = $ionicPopup.confirm({
-            'title': 'Delete Local Project Warning!',
-            'template': 'Switching projects will <span style="color:red">DELETE</span> the local copy of the' +
-            ' current project <b>' + vm.project.description.project_name + '</b> including all datasets and Spots' +
-            ' contained within this project. Make sure you have already uploaded the project to the server if you' +
-            ' wish to preserve the data. Continue?',
-            'cssClass': 'warning-popup'
-          });
-          confirmPopup.then(function (res) {
-            if (res) loadProjectRemote(project);
-          });
-        }
+      $log.log('Selected:', project);
+      if (_.isEmpty(vm.project)) loadProjectRemote(project);
+      else {
+        var confirmPopup = $ionicPopup.confirm({
+          'title': 'Delete Local Project Warning!',
+          'template': 'Switching projects will <span style="color:red">DELETE</span> the local copy of the' +
+          ' current project <b>' + vm.project.description.project_name + '</b> including all datasets and Spots' +
+          ' contained within this project. Make sure you have already uploaded the project to the server if you' +
+          ' wish to preserve the data. Continue?',
+          'cssClass': 'warning-popup'
+        });
+        confirmPopup.then(function (res) {
+          if (res) loadProjectRemote(project);
+        });
       }
     }
 

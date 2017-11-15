@@ -16,7 +16,6 @@
     var vm = this;
 
     var initializing = true;
-    var isDelete = false;
 
     vm.color = undefined;
     vm.colorPickerModal = {};
@@ -57,8 +56,6 @@
     vm.loadMoreSpots = loadMoreSpots;
     vm.moreSpotsCanBeLoaded = moreSpotsCanBeLoaded;
     vm.openColorPicker = openColorPicker;
-    vm.removeFeature = removeFeature;
-    vm.removeSpot = removeSpot;
     vm.resetFilters = resetFilters;
     vm.selectItem = selectItem;
     vm.selectTypes = selectTypes;
@@ -329,7 +326,7 @@
     }
 
     function goToSpot(spotId) {
-      if (!isDelete) SpotFactory.goToSpot(spotId);
+      SpotFactory.goToSpot(spotId);
     }
 
     function goToTag(id) {
@@ -377,40 +374,6 @@
 
     function openColorPicker() {
       vm.colorPickerModal.show();
-    }
-
-    function removeFeature(spotId, featureId) {
-      isDelete = true;
-      var confirmPopup = $ionicPopup.confirm({
-        'title': 'Remove Feature',
-        'template': 'Are you sure you want to remove the Feature <b>' + getFeatureName(
-          spotId, featureId) + '</b> from this Tag Group? This will <b>not</b> delete the Feature itself.'
-      });
-      confirmPopup.then(function (res) {
-        if (res) {
-          ProjectFactory.removeTagFromFeature(vm.data.id, spotId, featureId).then(function () {
-            loadTag();
-          });
-        }
-        isDelete = false;
-      });
-    }
-
-    function removeSpot(spotId) {
-      isDelete = true;
-      var confirmPopup = $ionicPopup.confirm({
-        'title': 'Remove Spot',
-        'template': 'Are you sure you want to remove the Spot <b>' + getSpotName(
-          spotId) + '</b> from this Tag Group? This will <b>not</b> delete the Spot itself.'
-      });
-      confirmPopup.then(function (res) {
-        if (res) {
-          ProjectFactory.removeTagFromSpot(vm.data.id, spotId).then(function () {
-            loadTag();
-          });
-        }
-        isDelete = false;
-      });
     }
 
     function resetFilters() {

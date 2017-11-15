@@ -12,8 +12,6 @@
                           ProjectFactory, TagFactory, IS_WEB) {
     var vm = this;
 
-    var isDelete = false;
-
     vm.allTags = [];
     vm.allTagsToDisplay = [];
     vm.isTagging = TagFactory.getActiveTagging();
@@ -98,7 +96,6 @@
     }
 
     function deleteTag(tag) {
-      isDelete = true;
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete Tag',
         'template': 'Are you sure you want to delete Tag ' + tag.name + '?'
@@ -116,7 +113,6 @@
             activate();
           });
         }
-        isDelete = false;
       });
     }
 
@@ -143,7 +139,7 @@
 
     function goToTag(id) {
       vm.tagIdSelected = id;
-      if (!isDelete) $location.path('/app/tags/' + id);
+      $location.path('/app/tags/' + id);
     }
 
     function newTag() {

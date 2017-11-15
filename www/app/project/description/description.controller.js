@@ -13,7 +13,6 @@
     var vm = this;
 
     var initializing = true;
-    var isDelete = false;
 
     vm.dailySetup = {'date': new Date(), 'notes': ''};
     vm.data = {};
@@ -59,7 +58,7 @@
           }
         }, true);
 
-        $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){
+        $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
           if (vm.dataChanged && fromState.name === 'app.description') submit();
         });
       }
@@ -108,7 +107,6 @@
     }
 
     function deleteDailySetup(i) {
-      isDelete = true;
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete Daily Setup',
         'template': 'Are you sure you want to delete this Daily Setup?'
@@ -118,23 +116,20 @@
           vm.data.daily_setup.splice(i, 1);
           if (_.isEmpty(vm.data.daily_setup)) delete vm.data.daily_setup;
         }
-        isDelete = false;
       });
     }
 
     function showDailySetupModal(setup) {
-      if (!isDelete) {
-        if (setup) {
-          if (setup.date) setup.date = new Date(setup.date);
-          vm.dailySetup = setup;
-        }
-        else {
-          vm.dailySetup.date = new Date();
-          vm.dailySetup.date.setMilliseconds(0);
-          vm.dailySetup.notes = '';
-        }
-        vm.dailySetupModal.show();
+      if (setup) {
+        if (setup.date) setup.date = new Date(setup.date);
+        vm.dailySetup = setup;
       }
+      else {
+        vm.dailySetup.date = new Date();
+        vm.dailySetup.date.setMilliseconds(0);
+        vm.dailySetup.notes = '';
+      }
+      vm.dailySetupModal.show();
     }
 
     function showDescriptionModal() {
