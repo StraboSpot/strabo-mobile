@@ -304,7 +304,7 @@
 
         // Set Attribution
         if (layer.attributions) newMapLayer.getSource().setAttributions(layer.attributions);
-        else newMapLayer.getSource().setAttributions([new ol.Attribution({'html': ''})]);
+        else newMapLayer.getSource().setAttributions(' ');
 
         if (layer.overlay) overlays.getLayers().push(newMapLayer);
         else baselayers.getLayers().push(newMapLayer);

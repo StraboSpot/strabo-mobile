@@ -89,7 +89,7 @@ Generate Resources (icons and splash screens):
     npm: 3.10.10
     bower: 1.8.0
     ng-cordova: 0.1.27-alpha
-    openlayers: 4.2.0
+    openlayers: 4.5.0
     turfjs: 4.6.1
     jsts: 1.3.0
     underscore: 1.8.3

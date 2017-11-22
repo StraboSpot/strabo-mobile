@@ -46,11 +46,7 @@
     function getMapProviderInfo(mapSource) {
       var mapProviders = {
         'mapbox_classic': {
-          'attributions': [
-            new ol.Attribution({
-              'html': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            })
-          ],
+          'attributions': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
           'apiUrl': 'http://api.mapbox.com/v4/',
           'basePath': 'http://api.tiles.mapbox.com/v4/',
           'imageType': 'jpg',
@@ -64,11 +60,7 @@
           ]
         },
         'mapbox_styles': {
-          'attributions': [
-            new ol.Attribution({
-              'html': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            })
-          ],
+          'attributions': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
           'apiUrl': 'https://api.mapbox.com/styles/v1/',
           'basePath': 'https://api.mapbox.com/styles/v1/',
           'mime': 'image/jpeg',
@@ -76,6 +68,7 @@
           'url': ['https://api.mapbox.com/styles/v1/']
         },
         'osm': {
+          'attributions': '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
           'imageType': 'png',
           'mime': 'image/png',
           'url': [
@@ -85,11 +78,7 @@
           ]
         },
         'map_warper': {
-          'attributions': [
-            new ol.Attribution({
-              'html': '© <a href="http://mapwarper.net/home/about">Map Warper</a>'
-            })
-          ],
+          'attributions': '© <a href="http://mapwarper.net/home/about">Map Warper</a>',
           'apiUrl': 'http://mapwarper.net/maps/tile/',
           'basePath': 'http://mapwarper.net/maps/tile/',
           'imageType': 'png',

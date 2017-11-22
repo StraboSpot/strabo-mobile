@@ -85,11 +85,7 @@
             'type': 'base',
             'visible': imageBasemap.id === im.id,
             'source': new ol.source.ImageStatic({
-              'attributions': [
-                new ol.Attribution({
-                  'html': imageBasemap.image_source || 'Unknown Source'
-                })
-              ],
+              'attributions': imageBasemap.image_source || 'Unknown Source',
               'url': src,
               'projection': new ol.proj.Projection({
                 'code': 'map-image',
