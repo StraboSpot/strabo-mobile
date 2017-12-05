@@ -12,7 +12,7 @@
     var currentDatasets = [];
     var currentProject = {};
     var activeDatasets = [];
-    var defaultTypes = ['geomorhic', 'hydrologic', 'paleontological', 'igneous', 'metamorphic', 'sedimentological',
+    var defaultTypes = ['geomorphic', 'hydrologic', 'paleontological', 'igneous', 'metamorphic', 'sedimentological',
       'other'];
     var defaultRelationshipTypes = ['cross-cuts', 'mutually cross-cuts', 'is cut by', 'is younger than', 'is older than',
       'is lower metamorphic grade than', 'is higher metamorphic grade than', 'is included within', 'includes',

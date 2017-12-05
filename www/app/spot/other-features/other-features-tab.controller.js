@@ -12,7 +12,7 @@
     var vm = this;
     var vmParent = $scope.vm;
 
-    var defaultTypes = ['geomorhic', 'hydrologic', 'paleontological', 'igneous', 'metamorphic', 'sedimentological',
+    var defaultTypes = ['geomorphic', 'hydrologic', 'paleontological', 'igneous', 'metamorphic', 'sedimentological',
       'other'];
     var thisTabName = 'other-features';
 
