@@ -48,6 +48,8 @@
       {'state': 'relationships', 'url': 'relationships', 'template': 'relationships/relationships', 'controller': 'Relationships'},
       {'state': 'samples', 'url': 'samples', 'template': 'attributes/samples/samples', 'controller': 'Samples'},
       {'state': 'spots', 'url': 'spots', 'template': 'spots/spots', 'controller': 'Spots'},
+      {'state': 'strat-section', 'url': 'strat-sections/:stratSectionId', 'template': 'maps/strat-section/strat-section', 'controller': 'StratSection'},
+      {'state': 'strat-sections', 'url': 'strat-sections', 'template': 'maps/strat-sections/strat-sections', 'controller': 'StratSections'},
       {'state': 'tag', 'url': 'tags/:tag_id', 'template': 'tag/tag', 'controller': 'Tag'},
       {'state': 'tags', 'url': 'tags', 'template': 'tags/tags', 'controller': 'Tags'},
       {'state': 'tools', 'url': 'tools', 'template': 'project/tools/tools', 'controller': 'Tools'},
@@ -88,6 +90,8 @@
       {'state': 'relationships', 'template': 'relationships/relationships-tab', 'controller': 'Relationships'},
       {'state': 'samples', 'template': 'samples/samples-tab', 'controller': 'Samples'},
       {'state': 'spot', 'template': 'spot-tab/spot-tab', 'controller': 'Spot'},
+      {'state': 'strat-interval', 'template': 'strat-interval/strat-interval-tab', 'controller': 'StratInterval'},
+      {'state': 'strat-section', 'template': 'strat-section/strat-section-tab', 'controller': 'StratSection'},
       {'state': 'tags', 'template': 'tags/tags-tab', 'controller': 'Tags'}
       ];
     _.each(spotTabStates, function (spotTabState) {

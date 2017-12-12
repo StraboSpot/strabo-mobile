@@ -19,6 +19,7 @@
     var currentSpot = {};
     var datasetsLayerStates;
     var map;
+    var spotsThisMap = {};
     var tagsToAdd = [];
 
     vm.allTags = [];
@@ -73,6 +74,7 @@
       var switcher = new ol.control.LayerSwitcher();
 
       setImageBasemap();
+      gatherSpots();
       MapViewFactory.setInitialMapView(vm.imageBasemap);
       MapSetupFactory.setMap();
       MapSetupFactory.setImageBasemapLayers(vm.imageBasemap).then(function () {
@@ -81,9 +83,10 @@
         MapSetupFactory.setPopupOverlay();
 
         map = MapSetupFactory.getMap();
-        datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map, vm.imageBasemap);
-        MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map, vm.imageBasemap);
-        MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
+        MapFeaturesFactory.setMappableSpots(spotsThisMap);
+        datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map);
+        MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map);
+        MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
 
         // If we have a current feature set the selected symbol
         if (vm.clickedFeatureId && IS_WEB) {
@@ -166,14 +169,14 @@
 
     function createPageEvents() {
       $rootScope.$on('updateFeatureLayer', function () {
-        MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
+        MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
       });
 
       // Spot deleted from map side panel
       $rootScope.$on('deletedSpot', function () {
         vm.clickedFeatureId = undefined;
         MapFeaturesFactory.removeSelectedSymbol(map);
-        MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
+        MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
       });
 
       $scope.$on('$destroy', function () {
@@ -223,9 +226,6 @@
           }
         });
       });
-
-
-
     }
 
     function createPopover() {
@@ -244,18 +244,32 @@
           var lyr = e.target;
           if (lyr.get('layergroup') === 'Datasets') {     // Individual Datasets
             datasetsLayerStates[lyr.get('datasetId')] = lyr.getVisible();
-            MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
+            MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
             switcher.renderPanel();
           }
           else if (lyr.get('name') === 'datasetsLayer') {  // Datasets as a Group
             lyr.getLayers().forEach(function (layer) {     // Individual Datasets
               datasetsLayerStates[layer.get('datasetId')] = lyr.getVisible();
             });
-            MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
+            MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, mapp);
             switcher.renderPanel();
           }
         });
       });
+    }
+
+    // Get only the Spots where the image_basemap id matches the id of one of the linked images being loaded
+    function gatherSpots() {
+      var activeSpots = SpotFactory.getActiveSpots();
+      var linkedImagesIds = _.union([vm.imageBasemap.id], ProjectFactory.getLinkedImages(vm.imageBasemap.id));
+      var mappableSpots =_.filter(activeSpots, function (spot) {
+        return _.contains(linkedImagesIds, spot.properties.image_basemap);
+      });
+      // Remove spots that don't have a geometry defined
+      spotsThisMap = _.reject(mappableSpots, function (spot) {
+        return !_.has(spot, 'geometry');
+      });
+      $log.log('Spots on this Map:', spotsThisMap);
     }
 
     // Use predefined values as scale values
@@ -430,9 +444,9 @@
               }
             });
             MapSetupFactory.setImageBasemapLayers(vm.imageBasemap).then(function () {
-              datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map, vm.imageBasemap);
-              MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map, vm.imageBasemap);
-              MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
+              datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map);
+              MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map);
+              MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
             });
           }
         });
@@ -441,7 +455,7 @@
 
     function zoomToSpotsExtent() {
       vm.popover.hide().then(function(){
-        MapViewFactory.zoomToSpotsExtent(map, vm.imageBasemap);
+        MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
       });
     }
   }

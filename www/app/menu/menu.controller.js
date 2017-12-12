@@ -15,6 +15,7 @@
     vm.userName = null;
 
     vm.editUser = editUser;
+    vm.getIsStratSectionMode = getIsStratSectionMode;
     vm.getProjectName = getProjectName;
     vm.getUserImage = getUserImage;
     vm.getUserName = getUserName;
@@ -56,6 +57,11 @@
 
     function editUser() {
       $state.go('app.user');
+    }
+
+    function getIsStratSectionMode() {
+      var preferences = ProjectFactory.getPreferences();
+      return _.has(preferences, 'is_strat_mode');
     }
 
     function getProjectName() {

@@ -3,124 +3,138 @@
 
   angular
     .module('app')
-    .controller('MapController', MapController);
+    .controller('StratSectionController', StratSectionController);
 
-  MapController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup',
-    '$ionicSideMenuDelegate', '$location', '$log', '$rootScope', '$scope', '$timeout', 'FormFactory', 'HelpersFactory',
-    'MapFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory', 'MapSetupFactory', 'MapViewFactory',
-    'ProjectFactory', 'SpotFactory', 'IS_WEB'];
+  StratSectionController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup',
+    '$ionicSideMenuDelegate', '$location', '$log', '$rootScope', '$scope', '$state', '$timeout', 'FormFactory',
+    'HelpersFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory', 'MapSetupFactory', 'MapViewFactory',
+    'ProjectFactory', 'SpotFactory', 'StratSectionFactory', 'IS_WEB'];
 
-  function MapController($ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup, $ionicSideMenuDelegate,
-                         $location, $log, $rootScope, $scope, $timeout, FormFactory, HelpersFactory, MapFactory,
-                         MapDrawFactory, MapFeaturesFactory, MapLayerFactory, MapSetupFactory, MapViewFactory,
-                         ProjectFactory, SpotFactory, IS_WEB) {
+  function StratSectionController($ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup,
+                                  $ionicSideMenuDelegate, $location, $log, $rootScope, $scope, $state, $timeout,
+                                  FormFactory, HelpersFactory, MapDrawFactory, MapFeaturesFactory, MapLayerFactory,
+                                  MapSetupFactory, MapViewFactory, ProjectFactory, SpotFactory, StratSectionFactory,
+                                  IS_WEB) {
     var vm = this;
 
+    var currentSpot = {};
     var datasetsLayerStates;
     var map;
-    var onlineState;
-    var spotsThisMap = {};
+    var spotsThisMap = [];
+    var stratSection = {};
     var tagsToAdd = [];
 
+    vm.addIntervalModal = {};
     vm.allTags = [];
     vm.clickedFeatureId = undefined;
-    vm.currentSpot = {};
-    vm.currentZoom = '';
     vm.data = {};
+    vm.grainSizeOptions = {};
     vm.isNesting = SpotFactory.getActiveNesting();
-    vm.isWeb = IS_WEB;
     vm.newNestModal = {};
     vm.newNestProperties = {};
+    vm.mapView = true;
+    vm.popover = {};
     vm.saveEditsText = 'Save Edits';
     vm.showSaveEditsBtn = false;
+    vm.stratSectionIntervals = [];
+    vm.thisSpotWithStratSection = {};
 
-    vm.cacheOfflineTiles = cacheOfflineTiles;
+    vm.addInterval = addInterval;
     vm.closeModal = closeModal;
     vm.createTag = createTag;
+    vm.deleteSpot = deleteSpot;
+    vm.getTagNames = getTagNames;
     vm.goBack = goBack;
+    vm.goToSpot = goToSpot;
     vm.groupSpots = groupSpots;
-    vm.hasSpotBackView = hasSpotBackView;
+    vm.hasTags = hasTags;
     vm.isiOS = isiOS;
-    vm.isOnline = isOnline;
     vm.saveEdits = saveEdits;
+    vm.saveInterval = saveInterval;
     vm.stereonetSpots = stereonetSpots;
+    vm.switchView = switchView;
     vm.toggleNesting = toggleNesting;
     vm.toggleTagChecked = toggleTagChecked;
-    vm.toggleLocation = toggleLocation;
     vm.zoomToSpotsExtent = zoomToSpotsExtent;
 
     activate();
 
     /**
-     *  Private Functions
+     * Private Functions
      */
 
     function activate() {
       $ionicLoading.show({
-        'template': '<ion-spinner></ion-spinner><br>Loading Map...'
+        'template': '<ion-spinner></ion-spinner><br>Loading Strat Section...'
       });
-      $log.log('Loading Map ...');
+      $log.log('Loading Strat Section ...');
 
       // Disable dragging back to ionic side menu because this affects drawing tools
       $ionicSideMenuDelegate.canDragContent(false);
 
-      vm.currentSpot = SpotFactory.getCurrentSpot();
-      if (vm.currentSpot) vm.clickedFeatureId = vm.currentSpot.properties.id;
+      currentSpot = SpotFactory.getCurrentSpot();
+      if (currentSpot) vm.clickedFeatureId = currentSpot.properties.id;
+
+      vm.grainSizeOptions = StratSectionFactory.getGrainSizeOptions();
 
       createModals();
       createPopover();
       createMap();
     }
 
+    function addInterval() {
+      FormFactory.setForm('sed', 'add_interval');
+      vm.addIntervalModal.show();
+    }
+
     function createMap() {
       var switcher = new ol.control.LayerSwitcher();
 
-      // Get the Spots to be mapped
       gatherSpots();
-
-      // Setup the Map
-      MapViewFactory.setInitialMapView();
+      var blankStratSection = {'height': 3000, 'width': 2000};
+      MapViewFactory.setInitialMapView(blankStratSection);
       MapSetupFactory.setMap();
-      MapSetupFactory.setLayers();
-      MapSetupFactory.setMapControls(switcher);
-      MapSetupFactory.setPopupOverlay();
+      MapSetupFactory.setImageOverlays(vm.thisSpotWithStratSection).then(function () {
+        MapSetupFactory.setOtherLayers();
+        MapSetupFactory.setMapControls(switcher);
+        MapSetupFactory.setPopupOverlay();
 
-      // Get the Map
-      map = MapSetupFactory.getMap();
+        MapFeaturesFactory.setMappableSpots(spotsThisMap);
 
-      // Set the Map View
-      if (MapViewFactory.getMapView()) map.setView(MapViewFactory.getMapView());
-      else MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
+        map = MapSetupFactory.getMap();
+        datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map);
+        MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map);
+        MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
 
-      // Set the Map Vector Layers
-      MapFeaturesFactory.setMappableSpots(spotsThisMap);
-      datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map);
-      MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map);
-      MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
+        // If we have a current feature set the selected symbol
+        if (vm.clickedFeatureId && IS_WEB) {
+          var feature = MapFeaturesFactory.getFeatureById(vm.clickedFeatureId);
+          if (!_.isEmpty(feature)) MapFeaturesFactory.setSelectedSymbol(map, feature.getGeometry());
+        }
 
-      // If we have a current feature set the selected symbol
-      if (vm.clickedFeatureId && IS_WEB) {
-        var feature = MapFeaturesFactory.getFeatureById(vm.clickedFeatureId);
-        if (!_.isEmpty(feature)) MapFeaturesFactory.setSelectedSymbol(map, feature.getGeometry());
-      }
+        createSwitcher(switcher);
 
-      createSwitcher(switcher);
+        vm.currentZoom = HelpersFactory.roundToDecimalPlaces(map.getView().getZoom(), 2);
+        createMapInteractions();
+        createPageEvents();
 
-      createMapInteractions();
-      createPageEvents();
-
-      $ionicLoading.hide();
-      $log.log('Done Loading Map');
-      $timeout(function () {
-        map.updateSize();         // use OpenLayers API to force map to update
+        $ionicLoading.hide();
+        $log.log('Done Loading Strat Section');
+        $timeout(function () {
+          map.updateSize();         // use OpenLayers API to force map to update
+        });
+        MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
       });
     }
 
     function createMapInteractions() {
-      // When the map is moved save the new view and update the zoom control
+      // When the map is moved update the zoom control
       map.on('moveend', function (evt) {
-        vm.currentZoom = HelpersFactory.roundToDecimalPlaces(evt.map.getView().getZoom(), 2);
-        $scope.$apply();
+        var mapZoom = HelpersFactory.roundToDecimalPlaces(evt.map.getView().getZoom(), 2);
+        if (vm.currentZoom !== mapZoom) {
+          vm.currentZoom = mapZoom;
+          $scope.$apply();
+        }
       });
 
       map.on('touchstart', function (event) {
@@ -128,12 +142,13 @@
         $log.log(event);
       });
 
-      // Display popup on click
+      // display popup on click
       map.on('click', function (evt) {
         $log.log('map clicked');
+        $log.log('pixel:', evt.pixel, 'mapcoords:', map.getCoordinateFromPixel(evt.pixel));
         MapFeaturesFactory.removeSelectedSymbol(map);
 
-        // Are we in draw mode?  If so we don't want to display any popovers during draw mode
+        // are we in draw mode?  If so we dont want to display any popovers during draw mode
         if (!MapDrawFactory.isDrawMode()) {
           var feature = MapFeaturesFactory.getClickedFeature(map, evt);
           var layer = MapFeaturesFactory.getClickedLayer(map, evt);
@@ -149,13 +164,28 @@
           $scope.$apply();
         }
       });
+
+      // Draw Map Axes
+      map.on('precompose', function (event) {
+        if ($state.current.name === 'app.strat-section') {
+          //$log.log('postcompose');
+          var ctx = event.context;
+          var pixelRatio = event.frameState.pixelRatio;
+          StratSectionFactory.drawAxes(ctx, pixelRatio);
+
+          var mapSize = map.getSize();
+          var mapExtent = map.getView().calculateExtent(map.getSize());
+         // $log.log(mapSize, mapExtent);
+        }
+      });
     }
 
     function createModals() {
       $ionicModal.fromTemplateUrl('app/maps/map/add-tag-modal.html', {
         'scope': $scope,
         'animation': 'slide-in-up',
-        'backdropClickToClose': false
+        'backdropClickToClose': false,
+        'hardwareBackButtonClose': false
       }).then(function (modal) {
         vm.addTagModal = modal;
       });
@@ -168,30 +198,39 @@
       }).then(function (modal) {
         vm.newNestModal = modal;
       });
+
+      $ionicModal.fromTemplateUrl('app/maps/strat-section/add-interval-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false,
+        'hardwareBackButtonClose': false
+      }).then(function (modal) {
+        vm.addIntervalModal = modal;
+      });
     }
 
     function createPageEvents() {
       $rootScope.$on('updateFeatureLayer', function () {
-        MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
+        updateFeatureLayer();
       });
 
       // Spot deleted from map side panel
       $rootScope.$on('deletedSpot', function () {
+        $log.log('Handling Deleted Spot ...');
         vm.clickedFeatureId = undefined;
         MapFeaturesFactory.removeSelectedSymbol(map);
         MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
       });
 
       $scope.$on('$destroy', function () {
-        MapViewFactory.setMapView(map);
-        MapLayerFactory.saveVisibleLayers(map);
+        $log.log('Destroying Strat Section Page ...');
         MapDrawFactory.cancelEdits();    // Cancel any edits
-        if (vm.addTagModal) vm.addTagModal.remove();
-        if (vm.newNestModal) vm.newNestModal.remove();
         vm.popover.remove();            // Remove the popover
+        vm.addTagModal.remove();
       });
 
       $scope.$on('enableSaveEdits', function (e, data) {
+        $log.log('Enabling Save Edits ...');
         vm.showSaveEditsBtn = data;
         vm.saveEditsText = 'Save Edits';
         _.defer(function () {
@@ -200,6 +239,7 @@
       });
 
       $scope.$on('changedDrawMode', function () {
+        $log.log('Changing Draw Mode ...');
         var draw = MapDrawFactory.getDrawMode();
         var lmode = MapDrawFactory.getLassoMode();
         $log.log('LassoMode:', lmode);
@@ -233,19 +273,10 @@
           }
         });
       });
-
-      // Watch whether we have internet access or not
-      $scope.$watch('vm.isOnline()', function (online) {
-        if (onlineState !== online) {
-          onlineState = online;
-          MapLayerFactory.switchTileLayers(map, onlineState);
-          MapLayerFactory.setVisibleLayers(map);
-        }
-      });
     }
 
     function createPopover() {
-      $ionicPopover.fromTemplateUrl('app/maps/map/map-popover.html', {
+      $ionicPopover.fromTemplateUrl('app/maps/strat-section/strat-section-popover.html', {
         'scope': $scope
       }).then(function (popover) {
         vm.popover = popover;
@@ -260,64 +291,69 @@
           var lyr = e.target;
           if (lyr.get('layergroup') === 'Datasets') {     // Individual Datasets
             datasetsLayerStates[lyr.get('datasetId')] = lyr.getVisible();
-            MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
+            updateFeatureLayer();
             switcher.renderPanel();
           }
           else if (lyr.get('name') === 'datasetsLayer') {  // Datasets as a Group
             lyr.getLayers().forEach(function (layer) {     // Individual Datasets
               datasetsLayerStates[layer.get('datasetId')] = lyr.getVisible();
             });
-            MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
+            updateFeatureLayer();
             switcher.renderPanel();
           }
         });
       });
     }
 
-    // Get only the Spots not mapped on an image basemap or strat section
     function gatherSpots() {
-      var activeSpots = SpotFactory.getActiveSpots();
-      var mappableSpots = _.reject(activeSpots, function (spot) {
-        return _.has(spot.properties, 'image_basemap') || _.has(spot.properties, 'strat_section_id');
-      });
-      // Remove spots that don't have a geometry defined
-      spotsThisMap = _.reject(mappableSpots, function (spot) {
-        return !_.has(spot, 'geometry');
-      });
+      // Get the Spot that has this Strat Section
+      vm.thisSpotWithStratSection = StratSectionFactory.getSpotWithThisStratSection($state.params.stratSectionId);
+      $log.log('thisSpotWithStratSection', vm.thisSpotWithStratSection);
+
+      // Get all Strat Section Spots
+      StratSectionFactory.gatherStratSectionSpots($state.params.stratSectionId);
+      spotsThisMap = StratSectionFactory.getStratSectionSpots();
       $log.log('Spots on this Map:', spotsThisMap);
+
+      // Separate the Strat Section Spots into the Interval Spots and other Spots
+      var stratSectionSpotsPartitioned = _.partition(spotsThisMap, function (spot) {
+        return spot.properties.surface_feature && spot.properties.surface_feature.surface_feature_type === 'strat_interval';
+      });
+      vm.stratSectionIntervals = stratSectionSpotsPartitioned[0];
+      vm.stratSectionIntervals = StratSectionFactory.orderStratSectionIntervals(vm.stratSectionIntervals);
+      vm.stratSectionOtherSpots = stratSectionSpotsPartitioned[1];
+      $log.log('stratSectionIntervals', vm.stratSectionIntervals);
+    }
+
+    function saveInterval() {
+      if (!vm.data.grain_size || !vm.data.thickness) {
+        $ionicPopup.alert({
+          'title': 'Incomplete Data',
+          'template': 'You must enter both a valid Grain Size and Thickness to create a new interval.'
+        });
+      }
+      else {
+        vm.addIntervalModal.hide();
+        var newInterval = StratSectionFactory.createInterval(stratSection.strat_section_id, vm.data.thickness, vm.data.grain_size);
+        SpotFactory.setNewSpot(newInterval).then(function (id) {
+          updateFeatureLayer();
+        });
+      }
+    }
+
+    function updateFeatureLayer() {
+      $log.log('Updating Feature Layer ...');
+      gatherSpots();
+      MapFeaturesFactory.setMappableSpots(spotsThisMap);
+      datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map);
+      MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map);
+      MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
+      MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
     }
 
     /**
-     *  Public Functions
+     * Public Functions
      */
-
-    // Cache the tiles in the current view but don't switch to the offline layer
-    function cacheOfflineTiles() {
-      vm.popover.hide().then(function () {
-        if (onlineState) {
-          MapViewFactory.setMapView(map);
-          MapLayerFactory.saveVisibleLayers(map);
-
-          // Check valid zoom level
-          var maxZoom = _.find(MapFactory.getMaps(), function (gotMap) {
-            return gotMap.id === MapLayerFactory.getVisibleLayers()['baselayer'].get('id');
-          }).maxZoom;
-          if (HelpersFactory.roundToDecimalPlaces(map.getView().getZoom(), 2) > maxZoom) {
-            $ionicPopup.alert({
-              'title': 'Map Zoom Max Exceeded!',
-              'template': 'Max zoom level for this map is ' + maxZoom + '. Zoom out to save map.'
-            });
-          }
-          else $location.path('/app/map/archiveTiles');
-        }
-        else {
-          $ionicPopup.alert({
-            'title': 'Offline!',
-            'template': 'You must be online to save a map!'
-          });
-        }
-      });
-    }
 
     function closeModal(modal) {
       vm[modal].hide();
@@ -349,8 +385,47 @@
       $location.path('/app/tags/' + id);
     }
 
+    function deleteSpot(spot) {
+      if (SpotFactory.isSafeDelete(spot)) {
+        var confirmPopup = $ionicPopup.confirm({
+          'title': 'Delete Spot',
+          'template': 'Are you sure you want to delete Spot ' + spot.properties.name + '?'
+        });
+        confirmPopup.then(function (res) {
+          if (res) {
+            SpotFactory.destroy(spot.properties.id).then(function () {
+              updateFeatureLayer();
+              if (IS_WEB) {
+                vm.spotIdSelected = undefined;
+                $location.path('app/spotTab');
+              }
+            });
+          }
+        });
+      }
+      else {
+        $ionicPopup.alert({
+          'title': 'Spot Deletion Prohibited!',
+          'template': 'This Spot has at least one image being used as an image basemap. Remove any image basemaps' +
+          ' from this Spot before deleting.'
+        });
+      }
+    }
+
+    function getTagNames(spotId) {
+      var tags = ProjectFactory.getTagsBySpotId(spotId);
+      return _.pluck(tags, 'name').join(', ');
+    }
+
     function goBack() {
       if ($ionicHistory.backView()) $ionicHistory.goBack();
+      else $location.path('/app/strat-sections');
+    }
+
+    function goToSpot(id, page) {
+      vm.spotIdSelected = id;
+      if (page) $location.path('/app/spotTab/' + id + '/' + page);
+      else $location.path('/app/spotTab/' + id + '/spot');
     }
 
     function groupSpots() {
@@ -359,13 +434,8 @@
       });
     }
 
-    function hasSpotBackView() {
-      var backView = $ionicHistory.backView();
-      return backView && backView.stateName.split('.')[1] === 'spotTab';
-    }
-
-    function isOnline() {
-      return navigator.onLine;
+    function hasTags(spotId) {
+      return !_.isEmpty(ProjectFactory.getTagsBySpotId(spotId));
     }
 
     function isiOS() {
@@ -381,6 +451,11 @@
       vm.popover.hide().then(function () {
         MapDrawFactory.stereonetSpots();
       });
+    }
+
+    // Switch between map view and list of Spots on this map
+    function switchView() {
+      vm.mapView = !vm.mapView;
     }
 
     function toggleNesting() {
@@ -418,13 +493,6 @@
         });
       }
       else tagsToAdd.push(tag);
-    }
-
-    // Get current position
-    function toggleLocation() {
-      vm.locationOn = !vm.locationOn;
-      MapViewFactory.setLocationOn(vm.locationOn);
-      MapViewFactory.getCurrentLocation(map);
     }
 
     function zoomToSpotsExtent() {

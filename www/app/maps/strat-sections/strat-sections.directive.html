@@ -1,0 +1,11 @@
+<div>
+  <div class='padding' ng-if='!vm.spotsWithStratSections.length'>
+    No Stratigraphic Sections within the active datasets. Add a new Strat Section from within a Spot on the Strat Section tab.
+  </div>
+  <ion-list>
+    <ion-item ng-repeat='spotWithStratSection in vm.spotsWithStratSections track by spotWithStratSection.properties.id'
+              ng-click='vm.goToStratSection(spotWithStratSection)'>
+      {{ spotWithStratSection.properties.strat_section.label || 'Unnamed' }}
+    </ion-item>
+  </ion-list>
+</div>

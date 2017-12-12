@@ -9,11 +9,11 @@
     'IS_WEB'];
 
   function MapDrawFactory($document, $ionicPopup, $location, $log, $q, $rootScope, SpotFactory, IS_WEB) {
+    var belongsTo;
     var draw;               // draw is a ol3 drawing interaction
     var drawButtonActive;   // drawButtonActive used to keep state of which selected drawing tool is active
     var drawLayer;
     var featuresOrig = [];
-    var imageBasemap;       // id of an image basemap if an image basemap is being used
     var isFreeHand;
     var lassoMode;          // mode of current lasso (tag or stereonet)
     var map;
@@ -110,7 +110,7 @@
 
           var newGeom = e.target.get('geometry');
           var newCoords = newGeom.getCoordinates();
-          if (!imageBasemap) {
+          if (map.getView().getProjection().getUnits() !== 'pixels') {
             switch (newGeom.getType()) {
               case 'Point':
                 newCoords = ol.proj.toLonLat(newCoords);
@@ -223,12 +223,9 @@
 
       // the actual geojson object that was drawn
       var geojsonObj;
-      if (imageBasemap) {
-        // Drawing on an image basemap
+      if (map.getView().getProjection().getUnits() === 'pixels') {
         geojsonObj = geojson.writeFeatureObject(e.feature, {'decimals': 4});
-        geojsonObj.properties = {
-          'image_basemap': imageBasemap.id
-        };
+        if (belongsTo) geojsonObj.properties = belongsTo;     // Image Basemap or Strat Section
 
         if (_.find(_.flatten(geojsonObj.geometry.coordinates),
             function (num) {
@@ -254,11 +251,12 @@
         $log.log('Drawend : Freehand');
 
         // add the regular draw controls back
-        map.addControl(new DrawControls({
+        var drawControlProps = {
           'map': map,
           'drawLayer': drawLayer,
-          'imageBasemap': imageBasemap
-        }));
+        }
+        if (belongsTo) drawControlProps[belongsTo] = belongsTo;
+        map.addControl(new DrawControls(drawControlProps));
 
         // add the layer switcher controls back
         map.addControl(new ol.control.LayerSwitcher());
@@ -274,12 +272,20 @@
         var mappedSpots = _.filter(spots, function (spot) {
           return spot.geometry;
         });
-        if (imageBasemap) {
+        if (belongsTo && belongsTo.image_basemap) {
           var spotsOnImageBasemap = _.filter(mappedSpots, function (mappedSpot) {
             return mappedSpot.properties.image_basemap;
           });
           mappedSpots = _.filter(spotsOnImageBasemap, function (spotOnImageBasemap) {
-            return spotOnImageBasemap.properties.image_basemap === imageBasemap.id;
+            return spotOnImageBasemap.properties.image_basemap === belongsTo[image_basemap];
+          });
+        }
+        if (belongsTo && belongsTo.strat_section_id) {
+          var spotsOnStratSection = _.filter(mappedSpots, function (mappedSpot) {
+            return mappedSpot.properties.strat_section_id;
+          });
+          mappedSpots = _.filter(spotsOnStratSection, function (spotOnStratSection) {
+            return spotOnStratSection.properties.strat_section_id === belongsTo[strat_section_id];
           });
         }
         _.each(mappedSpots, function (spot) {
@@ -328,7 +334,7 @@
       var options = opt_options || {};
       map = opt_options.map;
       drawLayer = opt_options.drawLayer;
-      imageBasemap = opt_options.imageBasemap || null;
+      if (opt_options.belongsTo) belongsTo = opt_options.belongsTo;
       draw = null;
       drawButtonActive = null;
       modify = null;
@@ -439,15 +445,15 @@
         }
       });
 
-     var alertPopup = $ionicPopup.alert({
+      var alertPopup = $ionicPopup.alert({
         'title': 'Choose Spots',
         'template': 'Draw a polygon around the Spots you would like to transfer to Rick Allmendinger\'s Stereonet app.'
       });
-     alertPopup.then(function () {
-       // start the draw with freehand enabled
-       lassoMode = "stereonet";
-       startDraw('Polygon', true);
-     });
+      alertPopup.then(function () {
+        // start the draw with freehand enabled
+        lassoMode = "stereonet";
+        startDraw('Polygon', true);
+      });
     }
   }
 }());

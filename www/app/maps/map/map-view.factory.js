@@ -5,11 +5,10 @@
     .module('app')
     .factory('MapViewFactory', MapViewFactory);
 
-  MapViewFactory.$inject = ['$cordovaGeolocation', '$ionicPopup', '$log', 'CoordinateRangeFactory', 'HelpersFactory',
-    'MapLayerFactory', 'SpotFactory'];
+  MapViewFactory.$inject = ['$cordovaGeolocation', '$ionicPopup', '$log', 'HelpersFactory', 'MapLayerFactory',
+    'SpotFactory'];
 
-  function MapViewFactory($cordovaGeolocation, $ionicPopup, $log, CoordinateRangeFactory, HelpersFactory,
-                          MapLayerFactory, SpotFactory) {
+  function MapViewFactory($cordovaGeolocation, $ionicPopup, $log, HelpersFactory, MapLayerFactory, SpotFactory) {
     var mapView;
     var viewExtent;
     var initialMapView;
@@ -237,101 +236,41 @@
       });
     }
 
-    function zoomToSpotsExtent(map, imageBasemap) {
-      // nope, we have NO mapview set, so...
-      var isImageBasemap = angular.isDefined(imageBasemap);
-
-      // Remove spots that don't have a geometry defined or are mapped on an image
-      function getMapSpots(spots) {
-        return _.reject(spots, function (spot) {
-          return !_.has(spot, 'geometry') || _.has(spot.properties, 'image_basemap');
-        });
+    function zoomToSpotsExtent(map, spots) {
+      if (spots.length > 0) {
+        var features = turf.featureCollection(spots);
+        var allCoords = turf.coordAll(features)
+        var extent = ol.extent.boundingExtent(allCoords);
+        if (map.getView().getProjection().getUnits() === 'pixels') map.getView().fit(extent, {'maxZoom': 6});
+        else map.getView().fit(ol.proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857'),
+          {'maxZoom': 15, 'duration': 1000});
       }
-
-      // Get only the spots mapped on this image
-      function getImageBasemapSpots(spots) {
-        return _.filter(spots, function (spot) {
-          return spot.properties.image_basemap === imageBasemap.id;
-        });
-      }
-
-      // If there is just one spot set the map view centered at the single spot
-      // Otherwise fit the map view to the extent of the spots
-      function setNewMapView(spots) {
-        CoordinateRangeFactory.setAllCoordinates(spots);
-        var newExtent = ol.extent.boundingExtent(_.compact(CoordinateRangeFactory.getAllCoordinates()));
-        var newExtentCenter = ol.extent.getCenter(newExtent);
-        if (spots.length === 1) {
-          $log.log('Found 1 spot, setting the map view to center on the spot.');
-          map.getView().setCenter(ol.proj.transform(
-            [newExtentCenter[0], newExtentCenter[1]],
-            'EPSG:4326', 'EPSG:3857'));
-          map.getView().setZoom(15);
-        }
-        else {
-          $log.log('Found multiple spots, fitting the map view to the extent of the spots.');
-          var newView = new ol.View({
-            'center': ol.proj.transform([newExtentCenter[0], newExtentCenter[1]], 'EPSG:4326', 'EPSG:3857')
-          });
-          map.setView(newView);
-          // Next line should have {duration: 2000} for the fly-by animation for ol4 but this doesn't work
-          map.getView().fit(ol.proj.transformExtent(newExtent, 'EPSG:4326', 'EPSG:3857'));
-        }
-      }
-
-      // Fit the extent of the spots
-      function setNewImageBasemapView(spots) {
-        $log.log('Fitting the map view to the extent of the spots.');
-        CoordinateRangeFactory.setAllCoordinates(spots);
-        var newExtent = ol.extent.boundingExtent(_.compact(CoordinateRangeFactory.getAllCoordinates()));
-        map.getView().fit(newExtent);
-      }
-
-      // Loop through all spots and create ol vector layers
-      var spots = SpotFactory.getActiveSpots();
-      if (isImageBasemap) {
-        spots = getImageBasemapSpots(spots);
-        if (spots.length > 0) setNewImageBasemapView(spots);
+      else if (map.getView().getProjection().getUnits() === 'pixels') {
+        map.getView().fit([0, 0, 150, 150]);
       }
       else {
-        spots = getMapSpots(spots);
-        if (spots.length > 0) setNewMapView(spots);
-        else {
-          $log.log('No spots found, attempting to geolocate and center on the that.');
-          // attempt to geolocate instead
-          $cordovaGeolocation.getCurrentPosition({
-            'maximumAge': 0,
-            'timeout': 10000,
-            'enableHighAccuracy': true
-          }).then(
-            function (position) {
-              var lat = position.coords.latitude;
-              var lng = position.coords.longitude;
+        $log.log('No Spots found! Attempting to geolocate ...');
+        $cordovaGeolocation.getCurrentPosition({
+          'maximumAge': 0,
+          'timeout': 10000,
+          'enableHighAccuracy': true
+        }).then(function (position) {
+          var lat = position.coords.latitude;
+          var lng = position.coords.longitude;
+          $log.log('initial getLocation ', [lat, lng]);
 
-              $log.log('initial getLocation ', [lat, lng]);
-
-              var newView = new ol.View({
-                'center': ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
-                'zoom': 17,
-                'minZoom': 4
-              });
-              map.setView(newView);
-            },
-            function () {
-              // uh oh, cannot geolocate, nor have any spots
-              $ionicPopup.alert({
-                'title': 'Alert!',
-                'template': 'Could not geolocate your position.  Defaulting you to 0,0'
-              });
-              var newView = new ol.View({
-                'center': ol.proj.transform([0, 0], 'EPSG:4326', 'EPSG:3857'),
-                'zoom': 4,
-                'minZoom': 4
-              });
-              map.setView(newView);
-            }
-          );
-        }
+          var newView = new ol.View({
+            'center': ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
+            'zoom': 17,
+            'minZoom': 4
+          });
+          map.setView(newView);
+        }, function () {
+          $ionicPopup.alert({
+            'title': 'Geolocate Error!',
+            'template': 'Your position could not be geolocated.'
+          });
+        });
       }
     }
   }

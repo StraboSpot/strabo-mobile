@@ -5,11 +5,11 @@
     .module('app')
     .factory('MapFeaturesFactory', MapFeatures);
 
-  MapFeatures.$inject = ['$log', 'DataModelsFactory', 'HelpersFactory', 'MapLayerFactory', 'MapSetupFactory', 'ProjectFactory',
-    'SpotFactory', 'SymbologyFactory'];
+  MapFeatures.$inject = ['$log', 'DataModelsFactory', 'HelpersFactory', 'MapLayerFactory', 'MapSetupFactory',
+    'ProjectFactory', 'SpotFactory', 'SymbologyFactory'];
 
-  function MapFeatures($log, DataModelsFactory, HelpersFactory, MapLayerFactory, MapSetupFactory, ProjectFactory, SpotFactory,
-                       SymbologyFactory) {
+  function MapFeatures($log, DataModelsFactory, HelpersFactory, MapLayerFactory, MapSetupFactory, ProjectFactory,
+                       SpotFactory, SymbologyFactory) {
     var mappableSpots = {};
     var selectedHighlightLayer = {};
     var typeVisibility = {};
@@ -23,6 +23,7 @@
       'getInitialDatasetLayerStates': getInitialDatasetLayerStates,
       'getFeatureById': getFeatureById,
       'getVisibleLassoedSpots': getVisibleLassoedSpots,
+      'setMappableSpots': setMappableSpots,
       'setSelectedSymbol': setSelectedSymbol,
       'showMapPopup': showMapPopup,
       'showPopup': showPopup,
@@ -32,25 +33,6 @@
     /**
      * Private Functions
      */
-
-    function setMappableSpots(map, imageBasemap) {
-      var activeSpots = SpotFactory.getActiveSpots();
-      if (map.getView().getProjection().getUnits() === 'pixels') {
-        var linkedImagesIds = _.union([imageBasemap.id], ProjectFactory.getLinkedImages(imageBasemap.id));
-        mappableSpots = _.filter(activeSpots, function (spot) {
-          return _.contains(linkedImagesIds, spot.properties.image_basemap);
-        });
-        mappableSpots = _.reject(mappableSpots, function (spot) {
-          return !_.has(spot, 'geometry');
-        });
-      }
-      // Remove spots that don't have a geometry defined or are mapped on an image
-      else {
-        mappableSpots = _.reject(activeSpots, function (spot) {
-          return !_.has(spot, 'geometry') || _.has(spot.properties, 'image_basemap');
-        });
-      }
-    }
 
     function getVisibleSpots(states) {
       // Get the spot ids of mappable spots in the visible datasets
@@ -88,7 +70,7 @@
      * Public Functions
      */
 
-    function createDatasetsLayer(states, map, imageBasemap) {
+    function createDatasetsLayer(states, map) {
       var visibleSpotsDatasets = getVisibleSpots(states);
       var datasets = ProjectFactory.getActiveDatasets();
       var datasetsLayer = MapLayerFactory.getDatasetsLayer();
@@ -109,23 +91,24 @@
     }
 
     //returns spots that are lassoed and appear on the map
-    function getVisibleLassoedSpots(lassoedSpots, map, imageBasemap) {
+    function getVisibleLassoedSpots(lassoedSpots, map) {
 
       var visibleSpotIds = [];
       var writer = new ol.format.GeoJSON();
       var layers = map.getLayers();
 
       //gather all visible features from map
-      layers.forEach(function (layer){
-        if(layer.get('name')=='featureLayer'){
+      layers.forEach(function (layer) {
+        if (layer.get('name') == 'featureLayer') {
           var sublayers = layer.getLayers();
-          sublayers.forEach(function(sublayer){
-            if(sublayer.getVisible()){
+          sublayers.forEach(function (sublayer) {
+            if (sublayer.getVisible()) {
               var source = sublayer.getSource();
               var features = source.getFeatures();
-              var geojsonStr = writer.writeFeatures(features, { dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857' });
+              var geojsonStr = writer.writeFeatures(features,
+                {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'});
               var collection = angular.fromJson(geojsonStr);
-              _.each(collection.features, function(feature){
+              _.each(collection.features, function (feature) {
                 visibleSpotIds.push(feature.properties.id);
               })
             }
@@ -141,12 +124,11 @@
       return returnSpots;
     }
 
-    function createFeatureLayer(states, map, imageBasemap) {
+    function createFeatureLayer(states, map) {
 
       setCurrentTypeVisibility(map);
 
       // Loop through all spots and create ol vector layers
-      setMappableSpots(map, imageBasemap);
       var visibleSpotsDatasets = getVisibleSpots(states);
       var visibleSpots = [];
       _.each(visibleSpotsDatasets, function (visibleSpotsDataset) {
@@ -186,7 +168,7 @@
         if (feature.geometry.type === 'Point' || feature.geometry.type === 'MultiPoint') {
           if (feature.properties.orientation && feature.properties.orientation.feature_type) {
             return DataModelsFactory.getFeatureTypeLabel(
-                feature.properties.orientation.feature_type) || 'no orientation type';
+              feature.properties.orientation.feature_type) || 'no orientation type';
           }
           else return 'no orientation type'
         }
@@ -199,7 +181,7 @@
         else if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
           if (feature.properties.surface_feature && feature.properties.surface_feature.surface_feature_type) {
             return DataModelsFactory.getSurfaceFeatureTypeLabel(
-                feature.properties.surface_feature.surface_feature_type) || 'no surface feature type';
+              feature.properties.surface_feature.surface_feature_type) || 'no surface feature type';
           }
           else return 'no surface feature type';
         }
@@ -330,53 +312,104 @@
       }
 
       function getPolyFill(feature) {
-        var color = 'rgba(0, 0, 255, 0.4)';       // blue
-        var colorApplied = false;
-        var tags = ProjectFactory.getTagsBySpotId(feature.get('id'));
-        if (tags.length > 0) {
-          _.each(tags, function (tag) {
-            if (tag.type === 'geologic_unit' && tag.color && !_.isEmpty(tag.color) && !colorApplied) {
-              var rgbColor = HelpersFactory.hexToRgb(tag.color);
-              color = 'rgba(' + rgbColor.r + ', ' + rgbColor.g + ', ' + rgbColor.b + ', 0.4)';
-              colorApplied = true;
+        if (feature.get('grain_size')) {
+          switch (feature.get('grain_size')) {
+            case 'clay':
+              var color = 'rgba(255, 51, 153, 1)';       // pink
+              break;
+            case 'fine_silt':
+            case 'med_silt':
+            case 'coarse_silt':
+              var color = 'rgba(128, 128, 128, 1)';       // grey
+              break;
+            case 'vfine_sand':
+            case 'fine_sand':
+            case 'med_sand':
+            case 'coarse_sand':
+            case 'coarse_sand':
+            case 'vcoarse_sand':
+              var color = 'rgba(255, 255, 0, 1)';       // white
+              break;
+            case 'granule_congl':
+            case 'pebble_congl':
+            case 'cobble_congl':
+            case 'boulder_congl':
+              var color = 'rgba(255, 153, 0, 1)';       // orange
+              break;
+            default:
+              var color = 'rgba(0, 0, 255, 1)';         // blue
+          }
+          var canvas = document.createElement('canvas');
+          var context = canvas.getContext('2d');
+          var pattern = (function () {
+            canvas.width = 10;
+            canvas.height = 10
+            // white background
+            context.fillStyle = 'white';
+            context.fillRect(0, 0, 5, 5);
+            context.fill();
+            // outer circle
+            context.fillStyle = 'red';
+            context.fillRect(5, 5, 5, 5);
+            context.fill();
+
+            return context.createPattern(canvas, 'repeat');
+          }());
+
+          var fill = new ol.style.Fill();
+          fill.setColor(pattern);
+          fill.setColor(color);
+          return fill;
+        }
+        else {
+          var color = 'rgba(0, 0, 255, 0.4)';       // blue
+          var colorApplied = false;
+          var tags = ProjectFactory.getTagsBySpotId(feature.get('id'));
+          if (tags.length > 0) {
+            _.each(tags, function (tag) {
+              if (tag.type === 'geologic_unit' && tag.color && !_.isEmpty(tag.color) && !colorApplied) {
+                var rgbColor = HelpersFactory.hexToRgb(tag.color);
+                color = 'rgba(' + rgbColor.r + ', ' + rgbColor.g + ', ' + rgbColor.b + ', 0.4)';
+                colorApplied = true;
+              }
+            });
+          }
+          if (feature.get('surface_feature') && !colorApplied) {
+            var surfaceFeature = feature.get('surface_feature');
+            switch (surfaceFeature.surface_feature_type) {
+              case 'rock_unit':
+                color = 'rgba(0, 255, 255, 0.4)';   // light blue
+                break;
+              case 'contiguous_outcrop':
+                color = 'rgba(240, 128, 128, 0.4)'; // pink
+                break;
+              case 'geologic_structure':
+                color = 'rgba(0, 255, 255, 0.4)';   // light blue
+                break;
+              case 'geomorphic_feature':
+                color = 'rgba(0, 128, 0, 0.4)';     // green
+                break;
+              case 'anthropogenic_feature':
+                color = 'rgba(128, 0, 128, 0.4)';   // purple
+                break;
+              case 'extent_of_mapping':
+                color = 'rgba(128, 0, 128, 0)';     // no fill
+                break;
+              case 'extent_of_biological_marker':   // green
+                color = 'rgba(0, 128, 0, 0.4)';
+                break;
+              case 'subjected_to_similar_process':
+                color = 'rgba(255, 165, 0,0.4)';    // orange
+                break;
+              case 'gradients':
+                color = 'rgba(255, 165, 0,0.4)';    // orange
+                break;
             }
+          }
+          return new ol.style.Fill({
+            'color': color
           });
         }
-        if (feature.get('surface_feature') && !colorApplied) {
-          var surfaceFeature = feature.get('surface_feature');
-          switch (surfaceFeature.surface_feature_type) {
-            case 'rock_unit':
-              color = 'rgba(0, 255, 255, 0.4)';   // light blue
-              break;
-            case 'contiguous_outcrop':
-              color = 'rgba(240, 128, 128, 0.4)'; // pink
-              break;
-            case 'geologic_structure':
-              color = 'rgba(0, 255, 255, 0.4)';   // light blue
-              break;
-            case 'geomorphic_feature':
-              color = 'rgba(0, 128, 0, 0.4)';     // green
-              break;
-            case 'anthropogenic_feature':
-              color = 'rgba(128, 0, 128, 0.4)';   // purple
-              break;
-            case 'extent_of_mapping':
-              color = 'rgba(128, 0, 128, 0)';     // no fill
-              break;
-            case 'extent_of_biological_marker':   // green
-              color = 'rgba(0, 128, 0, 0.4)';
-              break;
-            case 'subjected_to_similar_process':
-              color = 'rgba(255, 165, 0,0.4)';    // orange
-              break;
-            case 'gradients':
-              color = 'rgba(255, 165, 0,0.4)';    // orange
-              break;
-          }
-        }
-        return new ol.style.Fill({
-          'color': color
-        });
       }
 
       // Set styles for points, lines and polygon and groups
@@ -474,20 +507,24 @@
       return foundFeature;
     }
 
-    function getInitialDatasetLayerStates(map, imageBasemap) {
+    function getInitialDatasetLayerStates(map) {
       // Set the default visible states for the datasets
       var datasets = ProjectFactory.getActiveDatasets();
       var datasetsLayerStates = {};
       _.each(datasets, function (dataset) {
         datasetsLayerStates[dataset.id] = true;
       });
-      setMappableSpots(map, imageBasemap);
+
       var states = {};
       var visibleSpotsDatasets = getVisibleSpots(datasetsLayerStates);
       _.each(visibleSpotsDatasets, function (visibleSpotsDataset, key) {
         if (visibleSpotsDataset.length > 0) states[key] = true;
       });
       return states;
+    }
+
+    function setMappableSpots(spots) {
+      mappableSpots = spots;
     }
 
     // Add a feature to highlight selected Spot
@@ -594,16 +631,18 @@
         return feat;
       }, this, function (lyr) {
         // we only want the layer where the spots are located
-        return (lyr instanceof ol.layer.Vector) && lyr.get('name') !== 'drawLayer' && lyr.get(
-            'name') !== 'geolocationLayer';
+        return (lyr instanceof ol.layer.Vector) &&
+          lyr.get('name') !== 'drawLayer' &&
+          lyr.get('name') !== 'geolocationLayer';
       });
 
       var layer = map.forEachFeatureAtPixel(evt.pixel, function (feat, lyr) {
         return lyr;
       }, this, function (lyr) {
         // we only want the layer where the spots are located
-        return (lyr instanceof ol.layer.Vector) && lyr.get('name') !== 'drawLayer' && lyr.get(
-            'name') !== 'geolocationLayer';
+        return (lyr instanceof ol.layer.Vector) &&
+          lyr.get('name') !== 'drawLayer' &&
+          lyr.get('name') !== 'geolocationLayer';
       });
 
       // we need to check that we're not clicking on the geolocation layer

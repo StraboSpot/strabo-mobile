@@ -424,6 +424,7 @@
     }
 
     function deleteImage() {
+      // ToDo: Do a check here if image is being used as a Strat Section overlay
       if (!isImageUsed(vmParent.data)) {
         var confirmPopup = $ionicPopup.confirm({
           'title': 'Delete Image',
