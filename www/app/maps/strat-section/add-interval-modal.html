@@ -1,0 +1,27 @@
+<ion-modal-view>
+  <ion-header-bar class='bar-stable nav-title-slide-ios7' align-title='center'>
+    <button class='button button-positive'
+            ng-click='vm.saveInterval()'>Save
+    </button>
+    <h1 class='title'>Add Strat Interval</h1>
+    <button class='button icon ion-close-round close-modal-button'
+            ng-click='vm.addIntervalModal.hide()'>
+    </button>
+  </ion-header-bar>
+  <ion-content class='has-header strabo-form'>
+    <ion-input class="item item-input item-select item-stacked-label item-text-wrap">
+      <ion-label>Grain Size</ion-label>
+      <select ng-model='vm.data.grain_size'
+              ng-options='grainSizeOption.value as grainSizeOption.label for grainSizeOption in vm.grainSizeOptions'>
+        <option value=''>-- Select Grain Size --</option>
+      </select>
+    </ion-input>
+    <ion-input class='item item-input item-stacked-label item-text-wrap'>
+      <ion-label>Thickness (m)</ion-label>
+      <input type='number' ng-model='vm.data.thickness'>
+    </ion-input>
+    <form name='straboForm' novalidate=''>
+      <auto-fields/>
+    </form>
+  </ion-content>
+</ion-modal-view>

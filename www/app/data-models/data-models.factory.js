@@ -81,6 +81,14 @@
         'choices': {},
         'choices_file': 'app/data-models/sample-choices.csv'
       },
+      'sed': {
+        'add_interval': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/add-interval-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/add-interval-choices.csv'
+        }
+      },
       'surface_feature': {
         'survey': {},
         'survey_file': 'app/data-models/surface_feature-survey.csv',
@@ -328,7 +336,7 @@
 
       $log.log('Loading data models ...');
       _.each(dataModels, function (dataModel, key) {
-        if (key === 'orientation_data' || key === '_3d_structures') {
+        if (key === 'orientation_data' || key === '_3d_structures' || key == 'sed') {
           _.each(dataModel, function (childDataModel, childKey) {
             //$log.log('Loading', key, childKey, ' ...');
             promises.push(loadDataModel(childDataModel));

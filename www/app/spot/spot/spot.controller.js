@@ -469,6 +469,9 @@
       if (_.has(vm.spot.properties, 'image_basemap')) {
         vm.submit('/app/image-basemaps/' + vm.spot.properties.image_basemap);
       }
+      else if (_.has(vm.spot.properties, 'strat_section_id')) {
+        vm.submit('/app/strat-sections/' + vm.spot.properties.strat_section_id);
+      }
       else {
         $ionicLoading.show({
           'template': '<ion-spinner></ion-spinner><br>Loading Map...'

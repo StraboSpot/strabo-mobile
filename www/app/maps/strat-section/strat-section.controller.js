@@ -3,48 +3,58 @@
 
   angular
     .module('app')
-    .controller('ImageBasemapController', ImageBasemapController);
+    .controller('StratSectionController', StratSectionController);
 
-  ImageBasemapController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup',
+  StratSectionController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup',
     '$ionicSideMenuDelegate', '$location', '$log', '$rootScope', '$scope', '$state', '$timeout', 'FormFactory',
-    'HelpersFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapSetupFactory', 'MapViewFactory',
-    'ProjectFactory', 'SpotFactory', 'IS_WEB'];
+    'HelpersFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory', 'MapSetupFactory', 'MapViewFactory',
+    'ProjectFactory', 'SpotFactory', 'StratSectionFactory', 'IS_WEB'];
 
-  function ImageBasemapController($ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup,
+  function StratSectionController($ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup,
                                   $ionicSideMenuDelegate, $location, $log, $rootScope, $scope, $state, $timeout,
-                                  FormFactory, HelpersFactory, MapDrawFactory, MapFeaturesFactory, MapSetupFactory,
-                                  MapViewFactory, ProjectFactory, SpotFactory, IS_WEB) {
+                                  FormFactory, HelpersFactory, MapDrawFactory, MapFeaturesFactory, MapLayerFactory,
+                                  MapSetupFactory, MapViewFactory, ProjectFactory, SpotFactory, StratSectionFactory,
+                                  IS_WEB) {
     var vm = this;
 
     var currentSpot = {};
     var datasetsLayerStates;
     var map;
-    var spotsThisMap = {};
+    var spotsThisMap = [];
+    var stratSection = {};
     var tagsToAdd = [];
 
+    vm.addIntervalModal = {};
     vm.allTags = [];
     vm.clickedFeatureId = undefined;
     vm.data = {};
-    vm.imageBasemap = {};
-    vm.imageBasemapScaleLabel = undefined;
+    vm.grainSizeOptions = {};
     vm.isNesting = SpotFactory.getActiveNesting();
     vm.newNestModal = {};
     vm.newNestProperties = {};
+    vm.mapView = true;
     vm.popover = {};
     vm.saveEditsText = 'Save Edits';
     vm.showSaveEditsBtn = false;
+    vm.stratSectionIntervals = [];
+    vm.thisSpotWithStratSection = {};
 
+    vm.addInterval = addInterval;
     vm.closeModal = closeModal;
     vm.createTag = createTag;
+    vm.deleteSpot = deleteSpot;
+    vm.getTagNames = getTagNames;
     vm.goBack = goBack;
+    vm.goToSpot = goToSpot;
     vm.groupSpots = groupSpots;
-    vm.hasLinkedImages = hasLinkedImages;
+    vm.hasTags = hasTags;
     vm.isiOS = isiOS;
     vm.saveEdits = saveEdits;
+    vm.saveInterval = saveInterval;
     vm.stereonetSpots = stereonetSpots;
+    vm.switchView = switchView;
     vm.toggleNesting = toggleNesting;
     vm.toggleTagChecked = toggleTagChecked;
-    vm.unlinkImages = unlinkImages;
     vm.zoomToSpotsExtent = zoomToSpotsExtent;
 
     activate();
@@ -55,9 +65,9 @@
 
     function activate() {
       $ionicLoading.show({
-        'template': '<ion-spinner></ion-spinner><br>Loading Image Basemap...'
+        'template': '<ion-spinner></ion-spinner><br>Loading Strat Section...'
       });
-      $log.log('Loading Image Basemap ...');
+      $log.log('Loading Strat Section ...');
 
       // Disable dragging back to ionic side menu because this affects drawing tools
       $ionicSideMenuDelegate.canDragContent(false);
@@ -65,25 +75,33 @@
       currentSpot = SpotFactory.getCurrentSpot();
       if (currentSpot) vm.clickedFeatureId = currentSpot.properties.id;
 
+      vm.grainSizeOptions = StratSectionFactory.getGrainSizeOptions();
+
       createModals();
       createPopover();
       createMap();
     }
 
+    function addInterval() {
+      FormFactory.setForm('sed', 'add_interval');
+      vm.addIntervalModal.show();
+    }
+
     function createMap() {
       var switcher = new ol.control.LayerSwitcher();
 
-      setImageBasemap();
       gatherSpots();
-      MapViewFactory.setInitialMapView(vm.imageBasemap);
+      var blankStratSection = {'height': 3000, 'width': 2000};
+      MapViewFactory.setInitialMapView(blankStratSection);
       MapSetupFactory.setMap();
-      MapSetupFactory.setImageBasemapLayers(vm.imageBasemap).then(function () {
+      MapSetupFactory.setImageOverlays(vm.thisSpotWithStratSection).then(function () {
         MapSetupFactory.setOtherLayers();
         MapSetupFactory.setMapControls(switcher);
         MapSetupFactory.setPopupOverlay();
 
-        map = MapSetupFactory.getMap();
         MapFeaturesFactory.setMappableSpots(spotsThisMap);
+
+        map = MapSetupFactory.getMap();
         datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map);
         MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map);
         MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
@@ -97,15 +115,15 @@
         createSwitcher(switcher);
 
         vm.currentZoom = HelpersFactory.roundToDecimalPlaces(map.getView().getZoom(), 2);
-        updateScaleBar(map.getView().getResolution());
         createMapInteractions();
         createPageEvents();
 
         $ionicLoading.hide();
-        $log.log('Done Loading Image Basemap');
+        $log.log('Done Loading Strat Section');
         $timeout(function () {
           map.updateSize();         // use OpenLayers API to force map to update
         });
+        MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
       });
     }
 
@@ -115,7 +133,6 @@
         var mapZoom = HelpersFactory.roundToDecimalPlaces(evt.map.getView().getZoom(), 2);
         if (vm.currentZoom !== mapZoom) {
           vm.currentZoom = mapZoom;
-          updateScaleBar(evt.map.getView().getResolution());
           $scope.$apply();
         }
       });
@@ -128,6 +145,7 @@
       // display popup on click
       map.on('click', function (evt) {
         $log.log('map clicked');
+        $log.log('pixel:', evt.pixel, 'mapcoords:', map.getCoordinateFromPixel(evt.pixel));
         MapFeaturesFactory.removeSelectedSymbol(map);
 
         // are we in draw mode?  If so we dont want to display any popovers during draw mode
@@ -146,13 +164,28 @@
           $scope.$apply();
         }
       });
+
+      // Draw Map Axes
+      map.on('precompose', function (event) {
+        if ($state.current.name === 'app.strat-section') {
+          //$log.log('postcompose');
+          var ctx = event.context;
+          var pixelRatio = event.frameState.pixelRatio;
+          StratSectionFactory.drawAxes(ctx, pixelRatio);
+
+          var mapSize = map.getSize();
+          var mapExtent = map.getView().calculateExtent(map.getSize());
+         // $log.log(mapSize, mapExtent);
+        }
+      });
     }
 
     function createModals() {
       $ionicModal.fromTemplateUrl('app/maps/map/add-tag-modal.html', {
         'scope': $scope,
         'animation': 'slide-in-up',
-        'backdropClickToClose': false
+        'backdropClickToClose': false,
+        'hardwareBackButtonClose': false
       }).then(function (modal) {
         vm.addTagModal = modal;
       });
@@ -165,27 +198,39 @@
       }).then(function (modal) {
         vm.newNestModal = modal;
       });
+
+      $ionicModal.fromTemplateUrl('app/maps/strat-section/add-interval-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false,
+        'hardwareBackButtonClose': false
+      }).then(function (modal) {
+        vm.addIntervalModal = modal;
+      });
     }
 
     function createPageEvents() {
       $rootScope.$on('updateFeatureLayer', function () {
-        MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
+        updateFeatureLayer();
       });
 
       // Spot deleted from map side panel
       $rootScope.$on('deletedSpot', function () {
+        $log.log('Handling Deleted Spot ...');
         vm.clickedFeatureId = undefined;
         MapFeaturesFactory.removeSelectedSymbol(map);
         MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
       });
 
       $scope.$on('$destroy', function () {
+        $log.log('Destroying Strat Section Page ...');
         MapDrawFactory.cancelEdits();    // Cancel any edits
         vm.popover.remove();            // Remove the popover
         vm.addTagModal.remove();
       });
 
       $scope.$on('enableSaveEdits', function (e, data) {
+        $log.log('Enabling Save Edits ...');
         vm.showSaveEditsBtn = data;
         vm.saveEditsText = 'Save Edits';
         _.defer(function () {
@@ -194,15 +239,16 @@
       });
 
       $scope.$on('changedDrawMode', function () {
+        $log.log('Changing Draw Mode ...');
         var draw = MapDrawFactory.getDrawMode();
         var lmode = MapDrawFactory.getLassoMode();
-        $log.log('LassoMode:',lmode);
+        $log.log('LassoMode:', lmode);
         draw.on('drawend', function (e) {
           MapDrawFactory.doOnDrawEnd(e);
           var selectedSpots = SpotFactory.getSelectedSpots();
           if (!_.isEmpty(selectedSpots)) {
 
-            if(lmode=="tags"){
+            if (lmode == "tags") {
               $log.log("tag mode enabled");
 
               //cull spots to only those shown on map
@@ -213,7 +259,8 @@
               tagsToAdd = [];
               vm.addTagModal.show();
               MapDrawFactory.setLassoMode("");
-            }else if(lmode=="stereonet"){
+            }
+            else if (lmode == "stereonet") {
               $log.log("stereonet mode enabled");
 
               //use MapFeaturesFactory to get only mapped orientations
@@ -229,7 +276,7 @@
     }
 
     function createPopover() {
-      $ionicPopover.fromTemplateUrl('app/maps/image-basemap/image-basemap-popover.html', {
+      $ionicPopover.fromTemplateUrl('app/maps/strat-section/strat-section-popover.html', {
         'scope': $scope
       }).then(function (popover) {
         vm.popover = popover;
@@ -244,86 +291,64 @@
           var lyr = e.target;
           if (lyr.get('layergroup') === 'Datasets') {     // Individual Datasets
             datasetsLayerStates[lyr.get('datasetId')] = lyr.getVisible();
-            MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
+            updateFeatureLayer();
             switcher.renderPanel();
           }
           else if (lyr.get('name') === 'datasetsLayer') {  // Datasets as a Group
             lyr.getLayers().forEach(function (layer) {     // Individual Datasets
               datasetsLayerStates[layer.get('datasetId')] = lyr.getVisible();
             });
-            MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, mapp);
+            updateFeatureLayer();
             switcher.renderPanel();
           }
         });
       });
     }
 
-    // Get only the Spots where the image_basemap id matches the id of one of the linked images being loaded
     function gatherSpots() {
-      var activeSpots = SpotFactory.getActiveSpots();
-      var linkedImagesIds = _.union([vm.imageBasemap.id], ProjectFactory.getLinkedImages(vm.imageBasemap.id));
-      var mappableSpots =_.filter(activeSpots, function (spot) {
-        return _.contains(linkedImagesIds, spot.properties.image_basemap);
-      });
-      // Remove spots that don't have a geometry defined
-      spotsThisMap = _.reject(mappableSpots, function (spot) {
-        return !_.has(spot, 'geometry');
-      });
+      // Get the Spot that has this Strat Section
+      vm.thisSpotWithStratSection = StratSectionFactory.getSpotWithThisStratSection($state.params.stratSectionId);
+      $log.log('thisSpotWithStratSection', vm.thisSpotWithStratSection);
+
+      // Get all Strat Section Spots
+      StratSectionFactory.gatherStratSectionSpots($state.params.stratSectionId);
+      spotsThisMap = StratSectionFactory.getStratSectionSpots();
       $log.log('Spots on this Map:', spotsThisMap);
-    }
 
-    // Use predefined values as scale values
-    function getScaleLabelValue(x) {
-      if (x < 2) return 1;
-      if (x < 5) return 2;
-      if (x < 10) return 5;
-      if (x < 20) return 10;
-      if (x < 50) return 20;
-      if (x < 100) return 50;
-      if (x < 200) return 100;
-      if (x < 500) return 200;
-      if (x < 1000) return 500;
-      if (x < 5000) return 1000;
-      return 5000;
-    }
-
-    function setImageBasemap() {
-      _.each(SpotFactory.getActiveSpots(), function (spot) {
-        _.each(spot.properties.images, function (image) {
-          if (image.id.toString() === $state.params.imagebasemapId) vm.imageBasemap = image;
-        });
+      // Separate the Strat Section Spots into the Interval Spots and other Spots
+      var stratSectionSpotsPartitioned = _.partition(spotsThisMap, function (spot) {
+        return spot.properties.surface_feature && spot.properties.surface_feature.surface_feature_type === 'strat_interval';
       });
+      vm.stratSectionIntervals = stratSectionSpotsPartitioned[0];
+      vm.stratSectionIntervals = StratSectionFactory.orderStratSectionIntervals(vm.stratSectionIntervals);
+      vm.stratSectionOtherSpots = stratSectionSpotsPartitioned[1];
+      $log.log('stratSectionIntervals', vm.stratSectionIntervals);
     }
 
-    function updateScaleBar(res) {
-      var imageBasemapScaleLine = document.getElementById('image-basemap-scale-line');
-      var imageBasemapScaleLineInner = document.getElementById('image-basemap-scale-line-inner');
-      if (vm.imageBasemap.width_of_image_view && vm.imageBasemap.units_of_image_view && vm.currentZoom) {
-        var width = {'value': vm.imageBasemap.width_of_image_view, 'unit': vm.imageBasemap.units_of_image_view};
-
-        // Convert value to larger or smaller unit if necessary
-        var x = width.value / vm.currentZoom / 4;
-        if (x < 1) width = HelpersFactory.convertToSmallerUnit(width.value, width.unit);
-        else if (width.unit === 'm' && x >= 1000) width = HelpersFactory.convertToLargerUnit(width.value, width.unit);
-        else if (width.unit === 'cm' && x >= 100) width = HelpersFactory.convertToLargerUnit(width.value, width.unit);
-        else if (width.unit === 'mm' && x >= 100) width = HelpersFactory.convertToLargerUnit(width.value, width.unit);
-        else if (width.unit === '_m' && x >= 1000) width = HelpersFactory.convertToLargerUnit(width.value, width.unit);
-
-        x = width.value / vm.currentZoom / 4;
-        var scaleWidthValueLabel = getScaleLabelValue(x);
-        var divisor = width.value / vm.currentZoom / scaleWidthValueLabel;
-        var scaleWidthUnitLabel = width.unit;
-        if (scaleWidthUnitLabel === '_m') scaleWidthUnitLabel = 'um';
-        var scaleWidthPixels = vm.imageBasemap.width / res / vm.currentZoom / divisor;
-        imageBasemapScaleLine.style.width = scaleWidthPixels.toString() + 'px';
-        vm.imageBasemapScaleLabel = scaleWidthValueLabel + ' ' + scaleWidthUnitLabel;
-        imageBasemapScaleLine.style.visibility = 'visible';
-        imageBasemapScaleLineInner.style.visibility = 'visible';
+    function saveInterval() {
+      if (!vm.data.grain_size || !vm.data.thickness) {
+        $ionicPopup.alert({
+          'title': 'Incomplete Data',
+          'template': 'You must enter both a valid Grain Size and Thickness to create a new interval.'
+        });
       }
       else {
-        imageBasemapScaleLine.style.visibility = 'hidden';
-        imageBasemapScaleLineInner.style.visibility = 'hidden';
+        vm.addIntervalModal.hide();
+        var newInterval = StratSectionFactory.createInterval(stratSection.strat_section_id, vm.data.thickness, vm.data.grain_size);
+        SpotFactory.setNewSpot(newInterval).then(function (id) {
+          updateFeatureLayer();
+        });
       }
+    }
+
+    function updateFeatureLayer() {
+      $log.log('Updating Feature Layer ...');
+      gatherSpots();
+      MapFeaturesFactory.setMappableSpots(spotsThisMap);
+      datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map);
+      MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map);
+      MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
+      MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
     }
 
     /**
@@ -360,25 +385,61 @@
       $location.path('/app/tags/' + id);
     }
 
+    function deleteSpot(spot) {
+      if (SpotFactory.isSafeDelete(spot)) {
+        var confirmPopup = $ionicPopup.confirm({
+          'title': 'Delete Spot',
+          'template': 'Are you sure you want to delete Spot ' + spot.properties.name + '?'
+        });
+        confirmPopup.then(function (res) {
+          if (res) {
+            SpotFactory.destroy(spot.properties.id).then(function () {
+              updateFeatureLayer();
+              if (IS_WEB) {
+                vm.spotIdSelected = undefined;
+                $location.path('app/spotTab');
+              }
+            });
+          }
+        });
+      }
+      else {
+        $ionicPopup.alert({
+          'title': 'Spot Deletion Prohibited!',
+          'template': 'This Spot has at least one image being used as an image basemap. Remove any image basemaps' +
+          ' from this Spot before deleting.'
+        });
+      }
+    }
+
+    function getTagNames(spotId) {
+      var tags = ProjectFactory.getTagsBySpotId(spotId);
+      return _.pluck(tags, 'name').join(', ');
+    }
+
     function goBack() {
       if ($ionicHistory.backView()) $ionicHistory.goBack();
-      else $location.path('/app/image-basemaps');
+      else $location.path('/app/strat-sections');
+    }
+
+    function goToSpot(id, page) {
+      vm.spotIdSelected = id;
+      if (page) $location.path('/app/spotTab/' + id + '/' + page);
+      else $location.path('/app/spotTab/' + id + '/spot');
     }
 
     function groupSpots() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         MapDrawFactory.groupSpots();
       });
     }
 
-    function hasLinkedImages() {
-      var linkedImages = ProjectFactory.getLinkedImages(vm.imageBasemap.id);
-      if (!linkedImages) return false;
-      else return ProjectFactory.getLinkedImages(vm.imageBasemap.id).length > 1;
+    function hasTags(spotId) {
+      return !_.isEmpty(ProjectFactory.getTagsBySpotId(spotId));
     }
 
     function isiOS() {
-      return ionic.Platform.device().platform=="iOS";
+      return ionic.Platform.device().platform == "iOS";
     }
 
     function saveEdits() {
@@ -387,13 +448,18 @@
     }
 
     function stereonetSpots() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         MapDrawFactory.stereonetSpots();
       });
     }
 
+    // Switch between map view and list of Spots on this map
+    function switchView() {
+      vm.mapView = !vm.mapView;
+    }
+
     function toggleNesting() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         vm.isNesting = !vm.isNesting;
         SpotFactory.setActiveNesting(vm.isNesting);
         if (vm.isNesting) {
@@ -429,32 +495,8 @@
       else tagsToAdd.push(tag);
     }
 
-    function unlinkImages() {
-      vm.popover.hide().then(function(){
-        var confirmPopup = $ionicPopup.confirm({
-          'title': 'Unlink Images',
-          'template': 'Are you sure you want to unlink <b>ALL</b> images in this set?'
-        });
-        confirmPopup.then(function (res) {
-          if (res) {
-            ProjectFactory.unlinkImages(vm.imageBasemap.id);
-            map.getLayers().forEach(function (layer) {
-              if (layer.get('name') === 'imageBasemapLayer') {
-                map.removeLayer(layer);
-              }
-            });
-            MapSetupFactory.setImageBasemapLayers(vm.imageBasemap).then(function () {
-              datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map);
-              MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map);
-              MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
-            });
-          }
-        });
-      });
-    }
-
     function zoomToSpotsExtent() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
       });
     }

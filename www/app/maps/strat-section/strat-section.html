@@ -1,0 +1,127 @@
+<ion-view>
+  <ion-nav-title>{{ vm.thisSpotWithStratSection.properties.strat_section.label }}</ion-nav-title>
+  <ion-nav-buttons side='left'>
+    <button ng-click='vm.goBack();' class='button button-icon icon ion-arrow-left-c'></button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side='right'>
+    <div ng-show='vm.isNesting' class='nesting-notification'>Nesting<br>On</div>
+    <button class='button button-icon ion-plus' ng-click='vm.addInterval()'></button>
+    <button ng-show='vm.mapView' ng-click='vm.switchView()' class='button button-icon icon ion-document-text'></button>
+    <button ng-show='!vm.mapView' ng-click='vm.switchView()'
+            class='button button-icon icon ion-podium rotate-90'></button>
+    <button ng-click='vm.popover.show($event)' class='button button-icon icon ion-more rotate-90'></button>
+  </ion-nav-buttons>
+  <ion-pane data-tap-disabled='true' ng-show='vm.mapView'>
+    <div id='mapdiv' style='height:100%'></div>
+
+    <div class='saveEdits' ng-show='vm.showSaveEditsBtn' ng-click='vm.saveEdits()'>{{ vm.saveEditsText }}</div>
+    <div id='image-basemap-zoom-info'>Zoom: {{ vm.currentZoom }}</div>
+  </ion-pane>
+  <ion-pane ng-show='!vm.mapView'>
+    <ion-content class='has-header'>
+      <div class='item item-divider'>
+        Spot with this Section
+      </div>
+      <ion-list>
+        <ion-item class='item-text-wrap item-button-right'>
+          <div ng-click='vm.goToSpot(vm.thisSpotWithStratSection.properties.id, "strat-section")'>
+            <img ng-if="vm.thisSpotWithStratSection.geometry.type === 'Point' && !vm.thisSpotWithStratSection.properties.image_basemap"
+                 class='geometry-icon' src='img/point.png'>
+            <img ng-if="vm.thisSpotWithStratSection.geometry.type === 'LineString' && !vm.thisSpotWithStratSection.properties.image_basemap"
+                 class='geometry-icon' src='img/line.png'>
+            <img ng-if="vm.thisSpotWithStratSection.geometry.type === 'Polygon' && !vm.thisSpotWithStratSection.properties.image_basemap"
+                 class='geometry-icon' src='img/polygon.png'>
+            <img ng-if="vm.thisSpotWithStratSection.geometry.type === 'Point' && vm.thisSpotWithStratSection.properties.image_basemap"
+                 class='geometry-icon' src='img/point-image-basemap.png'>
+            <img ng-if="vm.thisSpotWithStratSection.geometry.type === 'LineString' && vm.thisSpotWithStratSection.properties.image_basemap"
+                 class='geometry-icon' src='img/line-image-basemap.png'>
+            <img ng-if="vm.thisSpotWithStratSection.geometry.type === 'Polygon' && vm.thisSpotWithStratSection.properties.image_basemap"
+                 class='geometry-icon' src='img/polygon-image-basemap.png'>
+            <img ng-if="vm.thisSpotWithStratSection.geometry.type !== 'Point' && vm.thisSpotWithStratSection.geometry.type !== 'LineString' &&
+           vm.thisSpotWithStratSection.geometry.type !== 'Polygon'" class='geometry-icon' src='img/question.png'>
+            {{vm.thisSpotWithStratSection.properties.name}}
+            <div>
+              <span ng-show='vm.hasTags(vm.thisSpotWithStratSection.properties.id)' class='list-sub'>
+                Tags: {{ vm.getTagNames(vm.thisSpotWithStratSection.properties.id) }}
+              </span>
+            </div>
+          </div>
+          <button class='button button-clear button-assertive'
+                  ng-click='vm.deleteSpot(vm.thisSpotWithStratSection)'>
+            <i class='icon ion-minus-circled'></i>
+          </button>
+        </ion-item>
+      </ion-list>
+      <div class='item item-divider'>
+        Section Intervals
+      </div>
+      <div class='padding'>Section Top</div>
+      <ion-list>
+        <ion-item class='item-text-wrap item-button-right'
+                  ng-repeat='spot in vm.stratSectionIntervals track by spot.properties.id'>
+          <div ng-click='vm.goToSpot(spot.properties.id)'>
+            <img ng-if="spot.geometry.type === 'Point' && !spot.properties.image_basemap"
+                 class='geometry-icon' src='img/point.png'>
+            <img ng-if="spot.geometry.type === 'LineString' && !spot.properties.image_basemap"
+                 class='geometry-icon' src='img/line.png'>
+            <img ng-if="spot.geometry.type === 'Polygon' && !spot.properties.image_basemap"
+                 class='geometry-icon' src='img/polygon.png'>
+            <img ng-if="spot.geometry.type === 'Point' && spot.properties.image_basemap"
+                 class='geometry-icon' src='img/point-image-basemap.png'>
+            <img ng-if="spot.geometry.type === 'LineString' && spot.properties.image_basemap"
+                 class='geometry-icon' src='img/line-image-basemap.png'>
+            <img ng-if="spot.geometry.type === 'Polygon' && spot.properties.image_basemap"
+                 class='geometry-icon' src='img/polygon-image-basemap.png'>
+            <img ng-if="spot.geometry.type !== 'Point' && spot.geometry.type !== 'LineString' &&
+           spot.geometry.type !== 'Polygon'" class='geometry-icon' src='img/question.png'>
+            {{spot.properties.name}}
+            <div>
+              <span ng-show='vm.hasTags(spot.properties.id)' class='list-sub'>
+                Tags: {{ vm.getTagNames(spot.properties.id) }}
+              </span>
+            </div>
+          </div>
+          <button class='button button-clear button-assertive'
+                  ng-click='vm.deleteSpot(spot)'>
+            <i class='icon ion-minus-circled'></i>
+          </button>
+        </ion-item>
+      </ion-list>
+      <div class='padding'>Section Bottom</div>
+      <div class='item item-divider'>
+        Other Spots in this Section
+      </div>
+      <ion-list>
+        <ion-item class='item-text-wrap item-button-right'
+                  ng-repeat='spot in vm.stratSectionOtherSpots track by spot.properties.id'>
+          <div ng-click='vm.goToSpot(spot.properties.id)'>
+            <img ng-if="spot.geometry.type === 'Point' && !spot.properties.image_basemap"
+                 class='geometry-icon' src='img/point.png'>
+            <img ng-if="spot.geometry.type === 'LineString' && !spot.properties.image_basemap"
+                 class='geometry-icon' src='img/line.png'>
+            <img ng-if="spot.geometry.type === 'Polygon' && !spot.properties.image_basemap"
+                 class='geometry-icon' src='img/polygon.png'>
+            <img ng-if="spot.geometry.type === 'Point' && spot.properties.image_basemap"
+                 class='geometry-icon' src='img/point-image-basemap.png'>
+            <img ng-if="spot.geometry.type === 'LineString' && spot.properties.image_basemap"
+                 class='geometry-icon' src='img/line-image-basemap.png'>
+            <img ng-if="spot.geometry.type === 'Polygon' && spot.properties.image_basemap"
+                 class='geometry-icon' src='img/polygon-image-basemap.png'>
+            <img ng-if="spot.geometry.type !== 'Point' && spot.geometry.type !== 'LineString' &&
+           spot.geometry.type !== 'Polygon'" class='geometry-icon' src='img/question.png'>
+            {{spot.properties.name}}
+            <div>
+              <span ng-show='vm.hasTags(spot.properties.id)' class='list-sub'>
+                Tags: {{ vm.getTagNames(spot.properties.id) }}
+              </span>
+            </div>
+          </div>
+          <button class='button button-clear button-assertive'
+                  ng-click='vm.deleteSpot(spot)'>
+            <i class='icon ion-minus-circled'></i>
+          </button>
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  </ion-pane>
+</ion-view>

@@ -29,7 +29,8 @@
       {'value': 'samples', 'label': 'Samples', 'path': 'samples'},
       {'value': 'other_features', 'label': 'Other Features', 'path': 'other-features'},
       {'value': 'relationships', 'label': 'Relationships', 'path': 'relationships'},
-      {'value': 'tags', 'label': 'Tags', 'path': 'tags'}];
+      {'value': 'tags', 'label': 'Tags', 'path': 'tags'},
+      {'value': 'strat_section', 'label': 'Strat Section', 'path': 'strat-section'}];
     var visibleDatasets = [];
 
     return {

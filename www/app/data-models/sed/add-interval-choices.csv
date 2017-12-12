@@ -1,0 +1,42 @@
+list_name,name,label,order
+xt05j55,clastic,clastic,
+xt05j55,carbonate,carbonate,1
+xt05j55,mixed_clastic,mixed clastic/carbonate,2
+xt05j55,weathering_pro,weathering profile,3
+xt05j55,unexposed,unexposed/covered,4
+jv85i54,clay,clay,
+jv85i54,mud,mud,
+jv85i54,silt,silt,
+jv85i54,sand__very_fin,sand- very fine,
+jv85i54,sand__fine_low,sand- fine lower,
+jv85i54,sand__fine_upp,sand- fine upper,
+jv85i54,sand__medium_l,sand- medium lower,
+jv85i54,sand__medium_u,sand- medium upper,
+jv85i54,sand__coarse_l,sand- coarse lower,
+jv85i54,sand__coarse_u,sand- coarse upper,
+jv85i54,sand__very_coa,sand- very coarse,
+jv85i54,granule,granule,
+jv85i54,pebble,pebble,
+jv85i54,cobble,cobble,
+jv85i54,boulder,boulder,
+pu6vj59,mudstone,mudstone,
+pu6vj59,wackestone,wackestone,
+pu6vj59,packstone,packstone,
+pu6vj59,grainstone,grainstone,
+pu6vj59,boundstone,boundstone,
+pu6vj59,cementstone,cementstone,
+pu6vj59,recrystallized,recrystallized,
+pu6vj59,floatstone,floatstone,
+pu6vj59,rudstone,rudstone,
+pu6vj59,framestone,framestone,
+pu6vj59,bafflestone,bafflestone,
+pu6vj59,bindstone,bindstone,
+wc2ju40,1_least_resi,1 - least resistant,
+wc2ju40,2,2 ,
+wc2ju40,3_moderately,3 - moderately resistant,
+wc2ju40,4,4,
+wc2ju40,5_most_resis,5 - most resistant,
+jt6by54,cm,cm,
+jt6by54,m,m,1
+jt6by54,in,in,2
+jt6by54,ft,ft,3

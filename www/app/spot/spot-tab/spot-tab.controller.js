@@ -127,7 +127,7 @@
           setDisplayedCoords();
         }
       }
-      else if (vmParent.spot && vmParent.spot.properties.image_basemap) vm.showXY = true;
+      else if (vmParent.spot && (vmParent.spot.properties.image_basemap || vmParent.spot.properties.strat_section_id)) vm.showXY = true;
     }
 
     function reloadTab() {
@@ -141,7 +141,7 @@
     function setDisplayedCoords() {
       // Only show Latitude and Longitude input boxes if the geometry type is Point
       if (vmParent.spot.geometry.type === 'Point') {
-        if (_.has(vmParent.spot.properties, 'image_basemap')) {
+        if (_.has(vmParent.spot.properties, 'image_basemap') || _.has(vmParent.spot.properties, 'strat_section_id')) {
           vm.showXY = true;
           vm.y = vmParent.spot.geometry.coordinates[1];
           vm.x = vmParent.spot.geometry.coordinates[0];
@@ -236,6 +236,9 @@
       SpotFactory.setKeepSpotSelected(true);
       if (_.has(vmParent.spot.properties, 'image_basemap')) {
         vmParent.submit('/app/image-basemaps/' + vmParent.spot.properties.image_basemap);
+      }
+      else if (_.has(vmParent.spot.properties, 'strat_section_id')) {
+        vmParent.submit('/app/strat_sections/' + vmParent.spot.properties.strat_section_id);
       }
       else vmParent.submit('/app/map');
     }

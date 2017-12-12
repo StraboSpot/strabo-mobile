@@ -19,6 +19,7 @@
     var datasetsLayerStates;
     var map;
     var onlineState;
+    var spotsThisMap = {};
     var tagsToAdd = [];
 
     vm.allTags = [];
@@ -74,6 +75,9 @@
     function createMap() {
       var switcher = new ol.control.LayerSwitcher();
 
+      // Get the Spots to be mapped
+      gatherSpots();
+
       // Setup the Map
       MapViewFactory.setInitialMapView();
       MapSetupFactory.setMap();
@@ -86,9 +90,10 @@
 
       // Set the Map View
       if (MapViewFactory.getMapView()) map.setView(MapViewFactory.getMapView());
-      else MapViewFactory.zoomToSpotsExtent(map);
+      else MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
 
       // Set the Map Vector Layers
+      MapFeaturesFactory.setMappableSpots(spotsThisMap);
       datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map);
       MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map);
       MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
@@ -269,6 +274,19 @@
       });
     }
 
+    // Get only the Spots not mapped on an image basemap or strat section
+    function gatherSpots() {
+      var activeSpots = SpotFactory.getActiveSpots();
+      var mappableSpots = _.reject(activeSpots, function (spot) {
+        return _.has(spot.properties, 'image_basemap') || _.has(spot.properties, 'strat_section_id');
+      });
+      // Remove spots that don't have a geometry defined
+      spotsThisMap = _.reject(mappableSpots, function (spot) {
+        return !_.has(spot, 'geometry');
+      });
+      $log.log('Spots on this Map:', spotsThisMap);
+    }
+
     /**
      *  Public Functions
      */
@@ -411,7 +429,7 @@
 
     function zoomToSpotsExtent() {
       vm.popover.hide().then(function () {
-        MapViewFactory.zoomToSpotsExtent(map);
+        MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
       });
     }
   }
