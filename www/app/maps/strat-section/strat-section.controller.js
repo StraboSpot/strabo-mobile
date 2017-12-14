@@ -433,7 +433,7 @@
 
     function saveInterval() {
       $log.log(vm.data);
-      if (!(vm.data.principal_grain_size_clastic || vm.data.principle_grain_size_carbonate) ||
+      if (!(vm.data.principal_grain_size_clastic || vm.data.principal_dunham_classificatio) ||
         !vm.data.interval_thickness || !vm.data.thickness_units) {
         $ionicPopup.alert({
           'title': 'Incomplete Data',
