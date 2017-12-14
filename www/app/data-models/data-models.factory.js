@@ -331,10 +331,10 @@
       var grainSizeLabelsDictionary = {'clastic': [], 'carbonate': []};
       var survey = dataModels.sed.add_interval.survey;
       var clastic = _.find(survey, function (field) {
-        return field.name === 'principal_grain_size_clastic'
+        return field.name === 'principal_grain_size_clastic';
       });
       var carbonate = _.find(survey, function (field) {
-        return field.name === 'dunham_classification'
+        return field.name === 'principal_dunham_classificatio';
       });
       var clasticChoices = _.filter(dataModels.sed.add_interval.choices, function (choice) {
         return choice.list_name === clastic.type.split(' ')[1]
