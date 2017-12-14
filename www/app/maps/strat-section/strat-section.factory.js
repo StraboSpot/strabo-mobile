@@ -78,12 +78,23 @@
       var mapWidth = map.getSize()[1];
       var intervalHeight = data.interval_thickness * yMultiplier;
 
-      var grainSize = data.principal_grain_size_clastic || data.principle_grain_size_carbonate;
-
-      var i = _.findIndex(grainSizeOptions.clastic, function (grainSizeOption) {
-        return grainSizeOption.value === grainSize;
-      });
-      var intervalWidth = (i + 1) * xInterval;
+      var i, intervalWidth;
+      var grainSize = data.principal_grain_size_clastic;
+      if (grainSize) {
+        i = _.findIndex(grainSizeOptions.clastic, function (grainSizeOption) {
+          return grainSizeOption.value === grainSize;
+        });
+        intervalWidth = (i + 1) * xInterval;
+      }
+      else {
+        grainSize = data.principal_dunham_classificatio;
+        if (grainSize) {
+          i = _.findIndex(grainSizeOptions.carbonate, function (grainSizeOption) {
+            return grainSizeOption.value === grainSize;
+          });
+          intervalWidth = (i + 1.5) * xInterval;
+        }
+      }
 
       var maxY = minY + intervalHeight;
       var maxX = minX + intervalWidth;
@@ -156,6 +167,37 @@
         p = getPixel([x, -5], pixelRatio);
         ctx.translate(p.x, p.y);
         ctx.rotate(-Math.PI / 2);
+        ctx.fillText(grainSizeOption.label + ' ', 0, 0);
+        ctx.restore();
+
+        // Vertical Dashed Line
+        ctx.beginPath();
+        ctx.setLineDash([5]);
+        p = getPixel([x, 0], pixelRatio);
+        ctx.moveTo(p.x, p.y);
+        p = getPixel([x, yAxisHeight], pixelRatio);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+      });
+
+      _.each(grainSizeOptions.carbonate, function (grainSizeOption, i) {
+        var x = (i + 1.5) * xInterval;
+
+        // Tick Mark
+        ctx.beginPath();
+        ctx.setLineDash([]);
+        p = getPixel([x, 0], pixelRatio);
+        ctx.moveTo(p.x, p.y);
+        p = getPixel([x, -3], pixelRatio);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+
+        // Label
+        ctx.save();
+        p = getPixel([x, -3], pixelRatio);
+        ctx.translate(p.x, p.y);
+        ctx.rotate(-Math.PI / 2);
+        ctx.fillStyle = 'blue';
         ctx.fillText(grainSizeOption.label + ' ', 0, 0);
         ctx.restore();
 

@@ -315,7 +315,7 @@
         var featureProperties = feature.getProperties();
         try {
           var grainSize = featureProperties.sed.lithologies.principal_grain_size_clastic ||
-            featureProperties.sed.lithologies.dunham_classification;
+            featureProperties.sed.lithologies.principal_dunham_classificatio;
           if (grainSize === 'clay') color = 'rgba(128, 222, 77, 1)';                   // CMYK 50,13,70,0 USGS Color 682
           else if (grainSize === 'mud') color = 'rgba(77, 255, 0, 1)';                 // CMYK 70,0,100,0 USGS Color 890
           else if (grainSize === 'silt') color = 'rgba(153, 255, 102, 1)';             // CMYK 40,0,60,0 USGS Color 570
