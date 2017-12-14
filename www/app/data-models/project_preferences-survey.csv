@@ -16,6 +16,7 @@ acknowledge,is_strat_mode,Strat Section Mode,Show Strat Section and Strat Sectio
 end_group,,,,,,,,,
 begin_group,group_xx0xh36,Strat Section Tab Control,,,${is_strat_mode} != '',,,,
 acknowledge,strat_section,Strat Section,,false,${is_strat_mode} != '',true,,,
+acknowledge,sed_lithologies,Sed Lithologies,,false,${is_strat_mode} != '',true,,,
 end_group,,,,,,,,,
 begin_group,group_ep4pr46,Naming Conventions,,,,,,,
 text,spot_prefix,SPOT Prefix Label,Label prefix based on location or other,false,,,,,

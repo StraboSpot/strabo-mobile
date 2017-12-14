@@ -90,8 +90,8 @@
       {'state': 'relationships', 'template': 'relationships/relationships-tab', 'controller': 'Relationships'},
       {'state': 'samples', 'template': 'samples/samples-tab', 'controller': 'Samples'},
       {'state': 'spot', 'template': 'spot-tab/spot-tab', 'controller': 'Spot'},
-      {'state': 'strat-interval', 'template': 'strat-interval/strat-interval-tab', 'controller': 'StratInterval'},
-      {'state': 'strat-section', 'template': 'strat-section/strat-section-tab', 'controller': 'StratSection'},
+      {'state': 'sed-lithologies', 'template': 'sed/lithologies/lithologies-tab', 'controller': 'SedLithologies'},
+      {'state': 'strat-section', 'template': 'sed/strat-section/strat-section-tab', 'controller': 'StratSection'},
       {'state': 'tags', 'template': 'tags/tags-tab', 'controller': 'Tags'}
       ];
     _.each(spotTabStates, function (spotTabState) {

@@ -108,9 +108,9 @@
     }
 
     function setImageOverlays(spot) {
-      stratSectionId = spot.properties.strat_section.strat_section_id;
+      stratSectionId = spot.properties.sed.strat_section.strat_section_id;
       imageBasemap = null;
-      if (_.isEmpty(spot.properties.strat_section.images)) return $q.when(null);
+      if (_.isEmpty(spot.properties.sed.strat_section.images)) return $q.when(null);
 
       var imageOverlayLayers = new ol.layer.Group({
         'name': 'imageOverlaysLayer',
@@ -118,7 +118,7 @@
       });
 
       var promises = [];
-      _.each(spot.properties.strat_section.images, function (imageOverlay) {
+      _.each(spot.properties.sed.strat_section.images, function (imageOverlay) {
         var promise = ImageFactory.getImageById(imageOverlay.id).then(function (src) {
           if (IS_WEB) src = 'https://strabospot.org/pi/' + imageOverlay.id;
           else if (!src) src = 'img/image-not-found.png';

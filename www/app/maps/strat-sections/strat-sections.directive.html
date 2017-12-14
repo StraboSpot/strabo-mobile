@@ -5,7 +5,7 @@
   <ion-list>
     <ion-item ng-repeat='spotWithStratSection in vm.spotsWithStratSections track by spotWithStratSection.properties.id'
               ng-click='vm.goToStratSection(spotWithStratSection)'>
-      {{ spotWithStratSection.properties.strat_section.label || 'Unnamed' }}
+      {{ spotWithStratSection.properties.sed.strat_section.label || 'Unnamed' }}
     </ion-item>
   </ion-list>
 </div>

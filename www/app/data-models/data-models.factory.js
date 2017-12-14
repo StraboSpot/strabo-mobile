@@ -87,7 +87,14 @@
           'survey_file': 'app/data-models/sed/add-interval-survey.csv',
           'choices': {},
           'choices_file': 'app/data-models/sed/add-interval-choices.csv'
+        },
+        'lithologies': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/lithologies-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/lithologies-choices.csv'
         }
+
       },
       'surface_feature': {
         'survey': {},
@@ -116,6 +123,7 @@
       'getDataModel': getDataModel,
       'getFeatureTypeLabel': getFeatureTypeLabel,
       'getLabel': getLabel,
+      'getSedGrainSizeLabelsDictionary': getSedGrainSizeLabelsDictionary,
       'getSpotDataModel': getSpotDataModel,
       'getSurfaceFeatureTypeLabel': getSurfaceFeatureTypeLabel,
       'getTraceTypeLabel': getTraceTypeLabel,
@@ -205,7 +213,8 @@
       _.each(models, function (model, key) {
         var description = {};
         _.each(model.survey, function (field) {
-          if (field.type.split('_')[0] !== 'end' && field.type.split('_')[0] !== 'begin' && field.type !=='calculate') {
+          if (field.type.split('_')[0] !== 'end' && field.type.split(
+              '_')[0] !== 'begin' && field.type !== 'calculate') {
             var type = getType(field.type, model);
             var hint = field.hint ? '; Hint: ' + field.hint : '';
             var required = field.required === 'true' ? '; REQUIRED' : '';
@@ -316,6 +325,31 @@
 
     function getLabel(label) {
       return labelsDictionary[label] || undefined;
+    }
+
+    function getSedGrainSizeLabelsDictionary() {
+      var grainSizeLabelsDictionary = {'clastic': [], 'carbonate': []};
+      var survey = dataModels.sed.add_interval.survey;
+      var clastic = _.find(survey, function (field) {
+        return field.name === 'principal_grain_size_clastic'
+      });
+      var carbonate = _.find(survey, function (field) {
+        return field.name === 'dunham_classification'
+      });
+      var clasticChoices = _.filter(dataModels.sed.add_interval.choices, function (choice) {
+        return choice.list_name === clastic.type.split(' ')[1]
+      });
+      var carbonateChoices = _.filter(dataModels.sed.add_interval.choices, function (choice) {
+        return choice.list_name === carbonate.type.split(' ')[1]
+      });
+      _.each(clasticChoices, function (choice) {
+        grainSizeLabelsDictionary.clastic.push({'value': choice.name, 'label': choice.label});
+      });
+      _.each(carbonateChoices, function (choice) {
+        grainSizeLabelsDictionary.carbonate.push({'value': choice.name, 'label': choice.label});
+        //grainSizeLabelsDictionary.carbonate[choice.name] = choice.label;
+      });
+      return grainSizeLabelsDictionary;
     }
 
     function getSpotDataModel() {

@@ -5,24 +5,10 @@
     .module('app')
     .factory('StratSectionFactory', StratSectionFactory);
 
-  StratSectionFactory.$inject = ['$log', 'MapLayerFactory', 'MapSetupFactory', 'SpotFactory'];
+  StratSectionFactory.$inject = ['$log', 'DataModelsFactory', 'MapLayerFactory', 'MapSetupFactory', 'SpotFactory'];
 
-  function StratSectionFactory($log, MapLayerFactory, MapSetupFactory, SpotFactory) {
-    var grainSizeOptions = [
-      {'value': 'clay', 'label': 'Clay'},
-      {'value': 'fine_silt', 'label': 'Fine Silt'},
-      {'value': 'med_silt', 'label': 'Med Silt'},
-      {'value': 'coarse_silt', 'label': 'Coarse Silt'},
-      {'value': 'vfine_sand', 'label': 'VFine Sand'},
-      {'value': 'fine_sand', 'label': 'Fine Sand'},
-      {'value': 'med_sand', 'label': 'Med Sand'},
-      {'value': 'coarse_sand', 'label': 'Coarse Sand'},
-      {'value': 'vcoarse_sand', 'label': 'VCoarse Sand'},
-      {'value': 'granule_congl', 'label': 'Granuale Congl.'},
-      {'value': 'pebble_congl', 'label': 'Pebble Congl.'},
-      {'value': 'cobble_congl', 'label': 'Cobble Congl.'},
-      {'value': 'boulder_congl', 'label': 'Boulder Congl.'}
-    ];
+  function StratSectionFactory($log, DataModelsFactory, MapLayerFactory, MapSetupFactory, SpotFactory) {
+    var grainSizeOptions = DataModelsFactory.getSedGrainSizeLabelsDictionary();
     var spotsWithStratSections = {};
     var stratSectionSpots = {};
     var xInterval = 10;  // Horizontal spacing between grain sizes tick marks
@@ -83,16 +69,18 @@
      * Public Functions
      */
 
-    function createInterval(stratSectionId, thickness, grainSize) {
+    function createInterval(stratSectionId, data) {
       var minX = 0;
       var minY = getSectionHeight();
 
       var map = MapSetupFactory.getMap();
       var mapHeight = map.getSize()[0];
       var mapWidth = map.getSize()[1];
-      var intervalHeight = thickness * yMultiplier;
+      var intervalHeight = data.interval_thickness * yMultiplier;
 
-      var i = _.findIndex(grainSizeOptions, function (grainSizeOption) {
+      var grainSize = data.principal_grain_size_clastic || data.principle_grain_size_carbonate;
+
+      var i = _.findIndex(grainSizeOptions.clastic, function (grainSizeOption) {
         return grainSizeOption.value === grainSize;
       });
       var intervalWidth = (i + 1) * xInterval;
@@ -108,16 +96,12 @@
       geojsonObj.properties = {
         'strat_section_id': stratSectionId,
         'surface_feature': {'surface_feature_type': 'strat_interval'},
-        'grain_size': grainSize,
-        'thickness': thickness
+        'sed': {'lithologies': data }
       };
       return geojsonObj;
     }
 
     function drawAxes(ctx, pixelRatio) {
-     // ctx.globalCompositeOperation="source-out";
-     // ctx.globalCompositeOperation="destination-over";
-
       ctx.font = "30px Arial";
 
       // Y Axis
@@ -147,7 +131,7 @@
       // X Axis
       p = getPixel([-10, 0], pixelRatio);
       ctx.moveTo(p.x, p.y);
-      var xAxisLength = (_.size(grainSizeOptions) + 1) * xInterval;
+      var xAxisLength = (_.size(grainSizeOptions.clastic) + 1) * xInterval;
       p = getPixel([xAxisLength, 0], pixelRatio);
       ctx.lineTo(p.x, p.y);
       ctx.stroke();
@@ -155,7 +139,7 @@
       // Create Grain Size Labels for X Axis
       ctx.textAlign = "right";
       ctx.lineWidth = 3;
-      _.each(grainSizeOptions, function (grainSizeOption, i) {
+      _.each(grainSizeOptions.clastic, function (grainSizeOption, i) {
         var x = (i + 1) * xInterval;
 
         // Tick Mark
@@ -171,12 +155,10 @@
         ctx.save();
         p = getPixel([x, -5], pixelRatio);
         ctx.translate(p.x, p.y);
-        ctx.rotate(-Math.PI/2);
+        ctx.rotate(-Math.PI / 2);
         ctx.fillText(grainSizeOption.label + ' ', 0, 0);
         ctx.restore();
 
-      // ctx.save();
-     //   ctx.globalCompositeOperation="destination-over";
         // Vertical Dashed Line
         ctx.beginPath();
         ctx.setLineDash([5]);
@@ -185,9 +167,7 @@
         p = getPixel([x, yAxisHeight], pixelRatio);
         ctx.lineTo(p.x, p.y);
         ctx.stroke();
-   //    ctx.restore();
       });
-   // ctx.globalCompositeOperation="source-over";
     }
 
     // Gather all Spots Mapped on this Strat Section
@@ -207,7 +187,7 @@
     function gatherSpotsWithStratSections() {
       var activeSpots = SpotFactory.getActiveSpots();
       spotsWithStratSections = _.filter(activeSpots, function (spot) {
-        return _.has(spot.properties, 'strat_section');
+        return _.has(spot.properties, 'sed')&& _.has(spot.properties.sed, 'strat_section');
       });
     }
 
@@ -215,12 +195,12 @@
       return grainSizeOptions;
     }
 
-
     // Get the Spot that Contains a Specific Strat Section Given the Id of the Strat Section
     function getSpotWithThisStratSection(stratSectionId) {
       var activeSpots = SpotFactory.getActiveSpots();
       return _.find(activeSpots, function (spot) {
-        return spot.properties.strat_section && spot.properties.strat_section.strat_section_id == stratSectionId;  // Comparing int to string so use only 2 equal signs
+        return spot.properties.sed && spot.properties.sed.strat_section &&
+          spot.properties.sed.strat_section.strat_section_id == stratSectionId;  // Comparing int to string so use only 2 equal signs
       });
     }
 

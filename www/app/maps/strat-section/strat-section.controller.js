@@ -175,7 +175,7 @@
 
           var mapSize = map.getSize();
           var mapExtent = map.getView().calculateExtent(map.getSize());
-         // $log.log(mapSize, mapExtent);
+          // $log.log(mapSize, mapExtent);
         }
       });
     }
@@ -325,22 +325,6 @@
       $log.log('stratSectionIntervals', vm.stratSectionIntervals);
     }
 
-    function saveInterval() {
-      if (!vm.data.grain_size || !vm.data.thickness) {
-        $ionicPopup.alert({
-          'title': 'Incomplete Data',
-          'template': 'You must enter both a valid Grain Size and Thickness to create a new interval.'
-        });
-      }
-      else {
-        vm.addIntervalModal.hide();
-        var newInterval = StratSectionFactory.createInterval(stratSection.strat_section_id, vm.data.thickness, vm.data.grain_size);
-        SpotFactory.setNewSpot(newInterval).then(function (id) {
-          updateFeatureLayer();
-        });
-      }
-    }
-
     function updateFeatureLayer() {
       $log.log('Updating Feature Layer ...');
       gatherSpots();
@@ -445,6 +429,25 @@
     function saveEdits() {
       vm.saveEditsText = 'Saved Edits';
       MapDrawFactory.saveEdits(vm.clickedFeatureId);
+    }
+
+    function saveInterval() {
+      $log.log(vm.data);
+      if (!(vm.data.principal_grain_size_clastic || vm.data.principle_grain_size_carbonate) ||
+        !vm.data.interval_thickness || !vm.data.thickness_units) {
+        $ionicPopup.alert({
+          'title': 'Incomplete Data',
+          'template': 'You must enter both a valid Grain Size and Thickness to create a new interval.'
+        });
+      }
+      else {
+        vm.addIntervalModal.hide();
+        var newInterval = StratSectionFactory.createInterval(
+          vm.thisSpotWithStratSection.properties.sed.strat_section.strat_section_id, vm.data);
+        SpotFactory.setNewSpot(newInterval).then(function (id) {
+          updateFeatureLayer();
+        });
+      }
     }
 
     function stereonetSpots() {

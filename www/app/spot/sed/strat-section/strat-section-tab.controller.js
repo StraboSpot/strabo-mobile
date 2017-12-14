@@ -55,7 +55,7 @@
     }
 
     function createModals() {
-      $ionicModal.fromTemplateUrl('app/spot/strat-section/add-overlay-image-modal.html', {
+      $ionicModal.fromTemplateUrl('app/spot/sed/strat-section/add-overlay-image-modal.html', {
         'scope': $scope,
         'animation': 'slide-in-up',
         'backdropClickToClose': false,
@@ -72,8 +72,10 @@
 
     function loadTab(state) {
       vmParent.loadTab(state);     // Need to load current state into parent
-      $log.log('Strat Section:', vmParent.spot.properties.strat_section);
-      if (vmParent.spot.properties.strat_section) vm.showStratSection = true;
+      if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.strat_section) {
+        $log.log('Strat Section:', vmParent.spot.properties.sed.strat_section);
+        vm.showStratSection = true;
+      }
     }
 
     /**
@@ -94,12 +96,12 @@
       });
       confirmPopup.then(function (res) {
         if (res) {
-          vmParent.spot.properties.strat_section.images = _.reject(vmParent.spot.properties.strat_section.images,
+          vmParent.spot.properties.sed.strat_section.images = _.reject(vmParent.spot.properties.sed.strat_section.images,
             function (image) {
               return image.id === imageToDelete.id;
             });
-          if (vmParent.spot.properties.strat_section.images.length === 0) {
-            delete vmParent.spot.properties.strat_section.images;
+          if (vmParent.spot.properties.sed.strat_section.images.length === 0) {
+            delete vmParent.spot.properties.sed.strat_section.images;
           }
         }
       });
@@ -139,7 +141,7 @@
 
     function saveOverlayImage() {
       vm.data = HelpersFactory.cleanObj(vm.data);
-      var imageUsedAlready = _.find(vmParent.spot.properties.strat_section.images, function (image) {
+      var imageUsedAlready = _.find(vmParent.spot.properties.sed.strat_section.images, function (image) {
         return vm.data.id === image.id;
       });
       if (!isEdit && imageUsedAlready) {
@@ -151,38 +153,39 @@
         return 0;
       }
       vm.addOverlayImageModal.hide();
-      if (!vmParent.spot.properties.strat_section.images) vmParent.spot.properties.strat_section.images = [];
+      if (!vmParent.spot.properties.sed.strat_section.images) vmParent.spot.properties.sed.strat_section.images = [];
       else {
-        vmParent.spot.properties.strat_section.images = _.reject(vmParent.spot.properties.strat_section.images,
+        vmParent.spot.properties.sed.strat_section.images = _.reject(vmParent.spot.properties.sed.strat_section.images,
           function (image) {
             return vm.data.id === image.id;
           });
       }
-      vmParent.spot.properties.strat_section.images.push(vm.data);
+      vmParent.spot.properties.sed.strat_section.images.push(vm.data);
       vm.data = {};
       vmParent.saveSpot();
     }
 
     function toggleStratSection() {
       if (vm.showStratSection) {
-        vmParent.spot.properties.strat_section = {};
-        vmParent.spot.properties.strat_section.strat_section_id = HelpersFactory.getNewId();
+        vmParent.spot.properties.sed = {};
+        vmParent.spot.properties.sed.strat_section = {};
+        vmParent.spot.properties.sed.strat_section.strat_section_id = HelpersFactory.getNewId();
       }
-      if (!vm.showStratSection && !_.isEmpty(vmParent.spot.properties.strat_section)) {
+      if (!vm.showStratSection && !_.isEmpty(vmParent.spot.properties.sed.strat_section)) {
         // ToDo: Do a check here if there are any Spots mapped on the Strat Section - if so can't delete
         var confirmPopup = $ionicPopup.confirm({
           'title': 'Delete Strat Section?',
           'template': 'By toggling off the Strat Section option you will be deleting assoicated Spots. Continue?'
         });
         confirmPopup.then(function (res) {
-          if (res) delete vmParent.spot.properties.strat_section;
+          if (res) delete vmParent.spot.properties.sed;
           else vm.showStratSection = !vm.showStratSection;
         });
       }
     }
 
     function viewStratSection() {
-      vmParent.submit('/app/strat-sections/' + vmParent.spot.properties.strat_section.strat_section_id);
+      vmParent.submit('/app/strat-sections/' + vmParent.spot.properties.sed.strat_section.strat_section_id);
     }
   }
 }());

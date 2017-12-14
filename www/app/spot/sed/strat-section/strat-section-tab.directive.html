@@ -8,7 +8,7 @@
   <div ng-show='vmChild.showStratSection'>
     <ion-input class='item item-input item-stacked-label item-text-wrap'>
       <ion-label>Section Label</ion-label>
-      <input type='text' placeholder='Label this section' ng-model='vm.spot.properties.strat_section.label'>
+      <input type='text' placeholder='Label this section' ng-model='vm.spot.properties.sed.strat_section.label'>
     </ion-input>
     <button ng-click='vmChild.viewStratSection()'
             class='button button-clear button-positive'>
@@ -23,10 +23,10 @@
       <i class='icon ion-plus-circled'></i>
       <span class='button-text-big'>Add an Image Overlay</span>
     </button>
-    <div class='padding-left padding-bottom' ng-show='!vm.spot.properties.strat_section.images'>No Image Overlays Added Yet</div>
+    <div class='padding-left padding-bottom' ng-show='!vm.spot.properties.sed.strat_section.images'>No Image Overlays Added Yet</div>
     <ion-list>
       <ion-item class='item-text-wrap item-button-right'
-                ng-repeat='image in vm.spot.properties.strat_section.images track by image.id'>
+                ng-repeat='image in vm.spot.properties.sed.strat_section.images track by image.id'>
         <div ng-click='vmChild.editOverlayImage(image)'>
           {{ vmChild.getImageLabel(image.id) }}
         </div>
@@ -42,7 +42,7 @@
     </div>
     <ion-input class='item item-input'>
       <textarea placeholder='Notes about this Section' rows='12'
-                ng-model='vm.spot.properties.strat_section.notes'></textarea>
+                ng-model='vm.spot.properties.sed.strat_section.notes'></textarea>
     </ion-input>
   </div>
 </div>

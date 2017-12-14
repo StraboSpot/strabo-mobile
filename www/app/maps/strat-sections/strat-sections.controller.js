@@ -62,7 +62,7 @@
 
    function goToStratSection(spotWithStratSection) {
    // vm.imageBasemapIdSelected = stratSection.image_id;
-    $location.path('/app/strat-sections/' + spotWithStratSection.properties.strat_section.strat_section_id);
+    $location.path('/app/strat-sections/' + spotWithStratSection.properties.sed.strat_section.strat_section_id);
   }
 
     /*function newStratSection() {
