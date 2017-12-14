@@ -99,7 +99,7 @@
 
       //gather all visible features from map
       layers.forEach(function (layer) {
-        if (layer.get('name') == 'featureLayer') {
+        if (layer.get('name') === 'featureLayer') {
           var sublayers = layer.getLayers();
           sublayers.forEach(function (sublayer) {
             if (sublayer.getVisible()) {
@@ -114,14 +114,12 @@
             }
           })
         }
-      })
-
-      //return all spots from lassoedSpots whose ids are in visibleSpotIds
-      var returnSpots = _.filter(lassoedSpots, function (spot) {
-        return _.contains(visibleSpotIds, spot.properties.id);
       });
 
-      return returnSpots;
+      //return all spots from lassoedSpots whose ids are in visibleSpotIds
+      return _.filter(lassoedSpots, function (spot) {
+        return _.contains(visibleSpotIds, spot.properties.id);
+      });
     }
 
     function createFeatureLayer(states, map) {
@@ -312,38 +310,47 @@
       }
 
       function getPolyFill(feature) {
-        if (feature.get('grain_size')) {
-          switch (feature.get('grain_size')) {
-            case 'clay':
-              var color = 'rgba(255, 51, 153, 1)';       // pink
-              break;
-            case 'fine_silt':
-            case 'med_silt':
-            case 'coarse_silt':
-              var color = 'rgba(128, 128, 128, 1)';       // grey
-              break;
-            case 'vfine_sand':
-            case 'fine_sand':
-            case 'med_sand':
-            case 'coarse_sand':
-            case 'coarse_sand':
-            case 'vcoarse_sand':
-              var color = 'rgba(255, 255, 0, 1)';       // white
-              break;
-            case 'granule_congl':
-            case 'pebble_congl':
-            case 'cobble_congl':
-            case 'boulder_congl':
-              var color = 'rgba(255, 153, 0, 1)';       // orange
-              break;
-            default:
-              var color = 'rgba(0, 0, 255, 1)';         // blue
-          }
+        var color;
+        // Set colors for strat section
+        var featureProperties = feature.getProperties();
+        try {
+          var grainSize = featureProperties.sed.lithologies.principal_grain_size_clastic ||
+            featureProperties.sed.lithologies.dunham_classification;
+          if (grainSize === 'clay') color = 'rgba(128, 222, 77, 1)';                   // CMYK 50,13,70,0 USGS Color 682
+          else if (grainSize === 'mud') color = 'rgba(77, 255, 0, 1)';                 // CMYK 70,0,100,0 USGS Color 890
+          else if (grainSize === 'silt') color = 'rgba(153, 255, 102, 1)';             // CMYK 40,0,60,0 USGS Color 570
+          else if (grainSize === 'sand_v_fine') color = 'rgba(255, 255, 179, 1)';      // CMYK 0,0,30,0 USGS Color 40
+          else if (grainSize === 'sand_fine_lwr') color = 'rgba(255, 255, 153, 1)';    // CMYK 0,0,40,0 USGS Color 50
+          else if (grainSize === 'sand_fine_upr') color = 'rgba(255, 255, 128, 1)';    // CMYK 0,0,50,0 USGS Color 60
+          else if (grainSize === 'sand_med_lwr') color = 'rgba(255, 255, 102, 1)';     // CMYK 0,0,60,0 USGS Color 70
+          else if (grainSize === 'sand_med_upr') color = 'rgba(255, 255, 77, 1)';      // CMYK 0,0,70,0 USGS Color 80
+          else if (grainSize === 'sand_coar_lwr') color = 'rgba(255, 255, 0, 1)';      // CMYK 0,0,100,0 USGS Color 90
+          else if (grainSize === 'sand_coar_upr') color = 'rgba(255, 235, 0, 1)';      // CMYK 0,8,100,0 USGS Color 91
+          else if (grainSize === 'sand_v_coar') color = 'rgba(255, 222, 0, 1)';        // CMYK 0,13,100,0 USGS Color 92
+          else if (grainSize === 'granule') color = 'rgba(255, 153, 0, 1)';            // CMYK 0,40,100,0 USGS Color 95
+          else if (grainSize === 'pebble') color = 'rgba(255, 128, 0, 1)';             // CMYK 0,50,100,0 USGS Color 96
+          else if (grainSize === 'cobble') color = 'rgba(255, 102, 0, 1)';             // CMYK 0,60,100,0 USGS Color 97
+          else if (grainSize === 'boulder') color = 'rgba(255, 77, 0, 1)';             // CMYK 0,70,100,0 USGS Color 98
+          else if (grainSize === 'mudstone') color = 'rgba(77, 255, 128, 1)';          // CMYK 70,0,50,0 USGS Color 860
+          else if (grainSize === 'wackestone') color = 'rgba(77, 255, 179, 1)';        // CMYK 70,0,30,0 USGS Color 840
+          else if (grainSize === 'packstone') color = 'rgba(77, 255, 222, 1)';         // CMYK 70,0,13,0 USGS Color 820
+          else if (grainSize === 'grainstone') color = 'rgba(179, 255, 255, 1)';       // CMYK 30,0,0,0 USGS Color 400
+          else if (grainSize === 'boundstone') color = 'rgba(77, 128, 255, 1)';        // CMYK 70,50,0,0 USGS Color 806
+          else if (grainSize === 'cementstone') color = 'rgba(128, 222, 3, 1)';        // ToDo Color ????????????????
+          else if (grainSize === 'recrystallized') color = 'rgba(128, 222, 77, 1)';    // ToDo Color ????????????????
+          else if (grainSize === 'floatstone') color = 'rgba(77, 255, 255, 1)';        // CMYK 70,0,0,0 USGS Color 800
+          else if (grainSize === 'rudstone') color = 'rgba(77, 204, 255, 1)';          // CMYK 70,20,0,0 USGS Color 803
+          else if (grainSize === 'framestone') color = 'rgba(77, 128, 255, 1)';        // CMYK 70,50,0,0 USGS Color 806
+          else if (grainSize === 'bafflestone') color = 'rgba(77, 128, 255, 1)';       // CMYK 70,50,0,0 USGS Color 806
+          else if (grainSize === 'bindstone') color = 'rgba(77, 128, 255, 1)';         // CMYK 70,50,0,0 USGS Color 806
+          else color = 'rgba(255, 255, 255, 1)';  // default white
+
+          // Apply patterns
           var canvas = document.createElement('canvas');
           var context = canvas.getContext('2d');
           var pattern = (function () {
             canvas.width = 10;
-            canvas.height = 10
+            canvas.height = 10;
             // white background
             context.fillStyle = 'white';
             context.fillRect(0, 0, 5, 5);
@@ -361,8 +368,9 @@
           fill.setColor(color);
           return fill;
         }
-        else {
-          var color = 'rgba(0, 0, 255, 0.4)';       // blue
+        // Set colors for not strat section polys
+        catch (e) {
+          color = 'rgba(0, 0, 255, 0.4)';       // blue
           var colorApplied = false;
           var tags = ProjectFactory.getTagsBySpotId(feature.get('id'));
           if (tags.length > 0) {
