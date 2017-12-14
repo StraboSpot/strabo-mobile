@@ -9,17 +9,6 @@
     </button>
   </ion-header-bar>
   <ion-content class='has-header strabo-form'>
-    <ion-input class="item item-input item-select item-stacked-label item-text-wrap">
-      <ion-label>Grain Size</ion-label>
-      <select ng-model='vm.data.grain_size'
-              ng-options='grainSizeOption.value as grainSizeOption.label for grainSizeOption in vm.grainSizeOptions'>
-        <option value=''>-- Select Grain Size --</option>
-      </select>
-    </ion-input>
-    <ion-input class='item item-input item-stacked-label item-text-wrap'>
-      <ion-label>Thickness (m)</ion-label>
-      <input type='number' ng-model='vm.data.thickness'>
-    </ion-input>
     <form name='straboForm' novalidate=''>
       <auto-fields/>
     </form>

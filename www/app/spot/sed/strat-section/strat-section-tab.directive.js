@@ -9,7 +9,7 @@
     return {
       'restrict': 'AE',
       'replace': true,
-      'templateUrl': 'app/spot/strat-section/strat-section-tab.directive.html'
+      'templateUrl': 'app/spot/sed/strat-section/strat-section-tab.directive.html'
     };
   }
 }());
