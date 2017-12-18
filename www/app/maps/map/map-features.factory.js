@@ -315,35 +315,39 @@
         var featureProperties = feature.getProperties();
         try {
           var grainSize = featureProperties.sed.lithologies.principal_grain_size_clastic ||
-            featureProperties.sed.lithologies.principal_dunham_classificatio;
-          if (grainSize === 'clay') color = 'rgba(128, 222, 77, 1)';                   // CMYK 50,13,70,0 USGS Color 682
-          else if (grainSize === 'mud') color = 'rgba(77, 255, 0, 1)';                 // CMYK 70,0,100,0 USGS Color 890
-          else if (grainSize === 'silt') color = 'rgba(153, 255, 102, 1)';             // CMYK 40,0,60,0 USGS Color 570
-          else if (grainSize === 'sand_v_fine') color = 'rgba(255, 255, 179, 1)';      // CMYK 0,0,30,0 USGS Color 40
-          else if (grainSize === 'sand_fine_lwr') color = 'rgba(255, 255, 153, 1)';    // CMYK 0,0,40,0 USGS Color 50
-          else if (grainSize === 'sand_fine_upr') color = 'rgba(255, 255, 128, 1)';    // CMYK 0,0,50,0 USGS Color 60
-          else if (grainSize === 'sand_med_lwr') color = 'rgba(255, 255, 102, 1)';     // CMYK 0,0,60,0 USGS Color 70
-          else if (grainSize === 'sand_med_upr') color = 'rgba(255, 255, 77, 1)';      // CMYK 0,0,70,0 USGS Color 80
-          else if (grainSize === 'sand_coar_lwr') color = 'rgba(255, 255, 0, 1)';      // CMYK 0,0,100,0 USGS Color 90
-          else if (grainSize === 'sand_coar_upr') color = 'rgba(255, 235, 0, 1)';      // CMYK 0,8,100,0 USGS Color 91
-          else if (grainSize === 'sand_v_coar') color = 'rgba(255, 222, 0, 1)';        // CMYK 0,13,100,0 USGS Color 92
-          else if (grainSize === 'granule') color = 'rgba(255, 153, 0, 1)';            // CMYK 0,40,100,0 USGS Color 95
-          else if (grainSize === 'pebble') color = 'rgba(255, 128, 0, 1)';             // CMYK 0,50,100,0 USGS Color 96
-          else if (grainSize === 'cobble') color = 'rgba(255, 102, 0, 1)';             // CMYK 0,60,100,0 USGS Color 97
-          else if (grainSize === 'boulder') color = 'rgba(255, 77, 0, 1)';             // CMYK 0,70,100,0 USGS Color 98
-          else if (grainSize === 'mudstone') color = 'rgba(77, 255, 128, 1)';          // CMYK 70,0,50,0 USGS Color 860
-          else if (grainSize === 'wackestone') color = 'rgba(77, 255, 179, 1)';        // CMYK 70,0,30,0 USGS Color 840
-          else if (grainSize === 'packstone') color = 'rgba(77, 255, 222, 1)';         // CMYK 70,0,13,0 USGS Color 820
-          else if (grainSize === 'grainstone') color = 'rgba(179, 255, 255, 1)';       // CMYK 30,0,0,0 USGS Color 400
-          else if (grainSize === 'boundstone') color = 'rgba(77, 128, 255, 1)';        // CMYK 70,50,0,0 USGS Color 806
-          else if (grainSize === 'cementstone') color = 'rgba(128, 222, 3, 1)';        // ToDo Color ????????????????
-          else if (grainSize === 'recrystallized') color = 'rgba(128, 222, 77, 1)';    // ToDo Color ????????????????
-          else if (grainSize === 'floatstone') color = 'rgba(77, 255, 255, 1)';        // CMYK 70,0,0,0 USGS Color 800
-          else if (grainSize === 'rudstone') color = 'rgba(77, 204, 255, 1)';          // CMYK 70,20,0,0 USGS Color 803
-          else if (grainSize === 'framestone') color = 'rgba(77, 128, 255, 1)';        // CMYK 70,50,0,0 USGS Color 806
-          else if (grainSize === 'bafflestone') color = 'rgba(77, 128, 255, 1)';       // CMYK 70,50,0,0 USGS Color 806
-          else if (grainSize === 'bindstone') color = 'rgba(77, 128, 255, 1)';         // CMYK 70,50,0,0 USGS Color 806
-          else color = 'rgba(255, 255, 255, 1)';  // default white
+            featureProperties.sed.lithologies.principal_dunham_classificatio ||
+            featureProperties.sed.lithologies.misc_lithologies;
+          if (grainSize === 'clay') color = 'rgba(128, 222, 77, 1)';                // CMYK 50,13,70,0 USGS Color 682
+          else if (grainSize === 'mud') color = 'rgba(77, 255, 0, 1)';              // CMYK 70,0,100,0 USGS Color 890
+          else if (grainSize === 'silt') color = 'rgba(153, 255, 102, 1)';          // CMYK 40,0,60,0 USGS Color 570
+          else if (grainSize === 'sand_v_fine') color = 'rgba(255, 255, 179, 1)';   // CMYK 0,0,30,0 USGS Color 40
+          else if (grainSize === 'sand_fine_lwr') color = 'rgba(255, 255, 153, 1)'; // CMYK 0,0,40,0 USGS Color 50
+          else if (grainSize === 'sand_fine_upr') color = 'rgba(255, 255, 128, 1)'; // CMYK 0,0,50,0 USGS Color 60
+          else if (grainSize === 'sand_med_lwr') color = 'rgba(255, 255, 102, 1)';  // CMYK 0,0,60,0 USGS Color 70
+          else if (grainSize === 'sand_med_upr') color = 'rgba(255, 255, 77, 1)';   // CMYK 0,0,70,0 USGS Color 80
+          else if (grainSize === 'sand_coar_lwr') color = 'rgba(255, 255, 0, 1)';   // CMYK 0,0,100,0 USGS Color 90
+          else if (grainSize === 'sand_coar_upr') color = 'rgba(255, 235, 0, 1)';   // CMYK 0,8,100,0 USGS Color 91
+          else if (grainSize === 'sand_v_coar') color = 'rgba(255, 222, 0, 1)';     // CMYK 0,13,100,0 USGS Color 92
+          else if (grainSize === 'granule') color = 'rgba(255, 153, 0, 1)';         // CMYK 0,40,100,0 USGS Color 95
+          else if (grainSize === 'pebble') color = 'rgba(255, 128, 0, 1)';          // CMYK 0,50,100,0 USGS Color 96
+          else if (grainSize === 'cobble') color = 'rgba(255, 102, 0, 1)';          // CMYK 0,60,100,0 USGS Color 97
+          else if (grainSize === 'boulder') color = 'rgba(255, 77, 0, 1)';          // CMYK 0,70,100,0 USGS Color 98
+          else if (grainSize === 'mudstone') color = 'rgba(77, 255, 128, 1)';       // CMYK 70,0,50,0 USGS Color 860
+          else if (grainSize === 'wackestone') color = 'rgba(77, 255, 179, 1)';     // CMYK 70,0,30,0 USGS Color 840
+          else if (grainSize === 'packstone') color = 'rgba(77, 255, 222, 1)';      // CMYK 70,0,13,0 USGS Color 820
+          else if (grainSize === 'grainstone') color = 'rgba(179, 255, 255, 1)';    // CMYK 30,0,0,0 USGS Color 400
+          else if (grainSize === 'boundstone') color = 'rgba(77, 128, 255, 1)';     // CMYK 70,50,0,0 USGS Color 806
+          else if (grainSize === 'cementstone') color = 'rgba(0, 179, 179, 1)';     // CMYK 100,30,30,0 USGS Color 944
+          else if (grainSize === 'recrystallized') color = 'rgba(0, 102, 222, 1)';  // CMYK 100,60,13,0 USGS Color 927
+          else if (grainSize === 'floatstone') color = 'rgba(77, 255, 255, 1)';     // CMYK 70,0,0,0 USGS Color 800
+          else if (grainSize === 'rudstone') color = 'rgba(77, 204, 255, 1)';       // CMYK 70,20,0,0 USGS Color 803
+          else if (grainSize === 'framestone') color = 'rgba(77, 128, 255, 1)';     // CMYK 70,50,0,0 USGS Color 806
+          else if (grainSize === 'bafflestone') color = 'rgba(77, 128, 255, 1)';    // CMYK 70,50,0,0 USGS Color 806
+          else if (grainSize === 'bindstone') color = 'rgba(77, 128, 255, 1)';      // CMYK 70,50,0,0 USGS Color 806
+          else if (grainSize === 'coal') color = 'rgba(0, 0, 0, 1)';                // CMYK 100,100,100,0 USGS Color 999
+          else if (grainSize === 'evaporites') color = 'rgba(153, 77, 0, 1)';       // CMYK 40,70,0,0 USGS Color 508
+          else if (grainSize === 'tuff') color = 'rgba(255, 128, 255, 1)';          // CMYK 0,50,0,0 USGS Color 6
+          else color = 'rgba(255, 255, 255, 1)';                                    // default white
 
           // Apply patterns
           var canvas = document.createElement('canvas');

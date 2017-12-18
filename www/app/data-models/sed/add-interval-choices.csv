@@ -2,8 +2,9 @@ list_name,name,label,order
 xt05j55,clastic,clastic,
 xt05j55,carbonate,carbonate,1
 xt05j55,mixed_clastic,mixed clastic/carbonate,2
-xt05j55,weathering_pro,weathering profile,3
-xt05j55,unexposed,unexposed/covered,4
+xt05j55,misc_lithologi,misc. lithologies,3
+xt05j55,weathering_pro,weathering profile,4
+xt05j55,unexposed,unexposed/covered,5
 jv85i54,clay,clay,
 jv85i54,mud,mud,
 jv85i54,silt,silt,
@@ -31,6 +32,9 @@ qf3ff03,rudstone,rudstone,
 qf3ff03,framestone,framestone,
 qf3ff03,bafflestone,bafflestone,
 qf3ff03,bindstone,bindstone,
+dz6vz62,coal,coal,
+dz6vz62,evaporites,evaporites,
+dz6vz62,tuff,tuff,
 wc2ju40,1_least_resist,1 - least resistant,
 wc2ju40,2,2 ,
 wc2ju40,3_mod_resistan,3 - moderately resistant,

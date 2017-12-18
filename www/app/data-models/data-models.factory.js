@@ -328,7 +328,7 @@
     }
 
     function getSedGrainSizeLabelsDictionary() {
-      var grainSizeLabelsDictionary = {'clastic': [], 'carbonate': []};
+      var grainSizeLabelsDictionary = {'clastic': [], 'carbonate': [], 'misc': []};
       var survey = dataModels.sed.add_interval.survey;
       var clastic = _.find(survey, function (field) {
         return field.name === 'principal_grain_size_clastic';
@@ -336,11 +336,17 @@
       var carbonate = _.find(survey, function (field) {
         return field.name === 'principal_dunham_classificatio';
       });
+      var misc = _.find(survey, function (field) {
+        return field.name === 'misc_lithologies';
+      });
       var clasticChoices = _.filter(dataModels.sed.add_interval.choices, function (choice) {
         return choice.list_name === clastic.type.split(' ')[1]
       });
       var carbonateChoices = _.filter(dataModels.sed.add_interval.choices, function (choice) {
         return choice.list_name === carbonate.type.split(' ')[1]
+      });
+      var miscChoices = _.filter(dataModels.sed.add_interval.choices, function (choice) {
+        return choice.list_name === misc.type.split(' ')[1]
       });
       _.each(clasticChoices, function (choice) {
         grainSizeLabelsDictionary.clastic.push({'value': choice.name, 'label': choice.label});
@@ -348,6 +354,9 @@
       _.each(carbonateChoices, function (choice) {
         grainSizeLabelsDictionary.carbonate.push({'value': choice.name, 'label': choice.label});
         //grainSizeLabelsDictionary.carbonate[choice.name] = choice.label;
+      });
+      _.each(miscChoices, function (choice) {
+        grainSizeLabelsDictionary.misc.push({'value': choice.name, 'label': choice.label});
       });
       return grainSizeLabelsDictionary;
     }

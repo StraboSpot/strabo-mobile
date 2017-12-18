@@ -78,7 +78,7 @@
       var mapWidth = map.getSize()[1];
       var intervalHeight = data.interval_thickness * yMultiplier;
 
-      var i, intervalWidth;
+      var i, intervalWidth = xInterval;
       var grainSize = data.principal_grain_size_clastic;
       if (grainSize) {
         i = _.findIndex(grainSizeOptions.clastic, function (grainSizeOption) {
@@ -93,6 +93,15 @@
             return grainSizeOption.value === grainSize;
           });
           intervalWidth = (i + 1.5) * xInterval;
+        }
+        else {
+          grainSize = data.misc_lithologies;
+          if (grainSize) {
+            i = _.findIndex(grainSizeOptions.misc, function (grainSizeOption) {
+              return grainSizeOption.value === grainSize;
+            });
+            intervalWidth = (i + 1) * xInterval;
+          }
         }
       }
 
