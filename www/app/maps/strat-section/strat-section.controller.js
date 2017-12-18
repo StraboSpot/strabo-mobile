@@ -433,11 +433,13 @@
 
     function saveInterval() {
       $log.log(vm.data);
-      if (!(vm.data.principal_grain_size_clastic || vm.data.principal_dunham_classificatio) ||
+      if ((vm.data.interval_type === 'clastic' || vm.data.interval_type === 'carbonate' ||
+        vm.data.interval_type === 'mixed_clastic' || vm.data.interval_type === 'misc_lithologi') &&
+        !(vm.data.principal_grain_size_clastic || vm.data.principal_dunham_classificatio || vm.data.misc_lithologies) ||
         !vm.data.interval_thickness || !vm.data.thickness_units) {
         $ionicPopup.alert({
           'title': 'Incomplete Data',
-          'template': 'You must enter both a valid Grain Size and Thickness to create a new interval.'
+          'template': 'You must enter both a valid Interval Type and Thickness to create a new interval.'
         });
       }
       else {

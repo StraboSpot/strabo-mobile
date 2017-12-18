@@ -2,12 +2,13 @@ type,name,label,required,relevant,appearance,calculation
 start,start,,,,,
 end,end,,,,,
 begin_group,group_be9wh45,Basic Attributes,,,,
-select_one xt05j55,column_profile,Column Profile,false,,,
-select_one jv85i54,principal_grain_size_clastic,Principal Grain Size (Clastic),false,${column_profile} = 'clastic' or ${column_profile} = 'mixed_clastic',,
-select_one qf3ff03,principal_dunham_classificatio,Principal Dunham Classification,false,${column_profile} = 'carbonate' or ${column_profile} = 'mixed_clastic',,
-select_one wc2ju40,relative_resistance,Relative resistance (weathering profile),false,${column_profile} = 'weathering_pro',,
+select_one xt05j55,interval_type,Interval Type,false,,,
+select_one jv85i54,principal_grain_size_clastic,Principal Grain Size (Clastic),false,${interval_type} = 'clastic' or ${interval_type} = 'mixed_clastic',,
+select_one qf3ff03,principal_dunham_classificatio,Principal Dunham Classification,false,${interval_type} = 'carbonate' or ${interval_type} = 'mixed_clastic',,
+select_one dz6vz62,misc_lithologies,Miscellaneous lithologies,false,${interval_type} = 'misc_lithologi',,
+select_one wc2ju40,relative_resistance,Relative resistance (weathering profile),false,${interval_type} = 'weathering_pro',,
 decimal,interval_thickness,Interval thickness,false,,,
 select_one jt6by54,thickness_units,Thickness units,false,,,
 end_group,,,,,,
 text,interval_notes,Notes,false,,multiline,
-calculate,__version__,,,,,'vxBJ67ayTBQjoPngcGxfpT'
+calculate,__version__,,,,,'vjJhmfWY7goiXr4dpvinxn'
