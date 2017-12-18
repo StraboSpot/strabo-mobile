@@ -116,12 +116,12 @@
       geojsonObj.properties = {
         'strat_section_id': stratSectionId,
         'surface_feature': {'surface_feature_type': 'strat_interval'},
-        'sed': {'lithologies': data }
+        'sed': {'lithologies': data}
       };
       return geojsonObj;
     }
 
-    function drawAxes(ctx, pixelRatio) {
+    function drawAxes(ctx, pixelRatio, columnProfile) {
       ctx.font = "30px Arial";
 
       // Y Axis
@@ -159,66 +159,70 @@
       // Create Grain Size Labels for X Axis
       ctx.textAlign = "right";
       ctx.lineWidth = 3;
-      _.each(grainSizeOptions.clastic, function (grainSizeOption, i) {
-        var x = (i + 1) * xInterval;
+      if (columnProfile === 'clastic' || columnProfile === 'mixed_clastic') {
+        _.each(grainSizeOptions.clastic, function (grainSizeOption, i) {
+          var x = (i + 1) * xInterval;
 
-        // Tick Mark
-        ctx.beginPath();
-        ctx.setLineDash([]);
-        p = getPixel([x, 0], pixelRatio);
-        ctx.moveTo(p.x, p.y);
-        p = getPixel([x, -5], pixelRatio);
-        ctx.lineTo(p.x, p.y);
-        ctx.stroke();
+          // Tick Mark
+          ctx.beginPath();
+          ctx.setLineDash([]);
+          p = getPixel([x, 0], pixelRatio);
+          ctx.moveTo(p.x, p.y);
+          p = getPixel([x, -5], pixelRatio);
+          ctx.lineTo(p.x, p.y);
+          ctx.stroke();
 
-        // Label
-        ctx.save();
-        p = getPixel([x, -5], pixelRatio);
-        ctx.translate(p.x, p.y);
-        ctx.rotate(-Math.PI / 2);
-        ctx.fillText(grainSizeOption.label + ' ', 0, 0);
-        ctx.restore();
+          // Label
+          ctx.save();
+          p = getPixel([x, -5], pixelRatio);
+          ctx.translate(p.x, p.y);
+          ctx.rotate(-Math.PI / 2);
+          ctx.fillText(grainSizeOption.label + ' ', 0, 0);
+          ctx.restore();
 
-        // Vertical Dashed Line
-        ctx.beginPath();
-        ctx.setLineDash([5]);
-        p = getPixel([x, 0], pixelRatio);
-        ctx.moveTo(p.x, p.y);
-        p = getPixel([x, yAxisHeight], pixelRatio);
-        ctx.lineTo(p.x, p.y);
-        ctx.stroke();
-      });
+          // Vertical Dashed Line
+          ctx.beginPath();
+          ctx.setLineDash([5]);
+          p = getPixel([x, 0], pixelRatio);
+          ctx.moveTo(p.x, p.y);
+          p = getPixel([x, yAxisHeight], pixelRatio);
+          ctx.lineTo(p.x, p.y);
+          ctx.stroke();
+        });
+      }
 
-      _.each(grainSizeOptions.carbonate, function (grainSizeOption, i) {
-        var x = (i + 1.5) * xInterval;
+      if (columnProfile === 'carbonate' || columnProfile === 'mixed_clastic') {
+        _.each(grainSizeOptions.carbonate, function (grainSizeOption, i) {
+          var x = (i + 1.5) * xInterval;
 
-        // Tick Mark
-        ctx.beginPath();
-        ctx.setLineDash([]);
-        p = getPixel([x, 0], pixelRatio);
-        ctx.moveTo(p.x, p.y);
-        p = getPixel([x, -3], pixelRatio);
-        ctx.lineTo(p.x, p.y);
-        ctx.stroke();
+          // Tick Mark
+          ctx.beginPath();
+          ctx.setLineDash([]);
+          p = getPixel([x, 0], pixelRatio);
+          ctx.moveTo(p.x, p.y);
+          p = getPixel([x, -3], pixelRatio);
+          ctx.lineTo(p.x, p.y);
+          ctx.stroke();
 
-        // Label
-        ctx.save();
-        p = getPixel([x, -3], pixelRatio);
-        ctx.translate(p.x, p.y);
-        ctx.rotate(-Math.PI / 2);
-        ctx.fillStyle = 'blue';
-        ctx.fillText(grainSizeOption.label + ' ', 0, 0);
-        ctx.restore();
+          // Label
+          ctx.save();
+          p = getPixel([x, -3], pixelRatio);
+          ctx.translate(p.x, p.y);
+          ctx.rotate(-Math.PI / 2);
+          ctx.fillStyle = 'blue';
+          ctx.fillText(grainSizeOption.label + ' ', 0, 0);
+          ctx.restore();
 
-        // Vertical Dashed Line
-        ctx.beginPath();
-        ctx.setLineDash([5]);
-        p = getPixel([x, 0], pixelRatio);
-        ctx.moveTo(p.x, p.y);
-        p = getPixel([x, yAxisHeight], pixelRatio);
-        ctx.lineTo(p.x, p.y);
-        ctx.stroke();
-      });
+          // Vertical Dashed Line
+          ctx.beginPath();
+          ctx.setLineDash([5]);
+          p = getPixel([x, 0], pixelRatio);
+          ctx.moveTo(p.x, p.y);
+          p = getPixel([x, yAxisHeight], pixelRatio);
+          ctx.lineTo(p.x, p.y);
+          ctx.stroke();
+        });
+      }
     }
 
     // Gather all Spots Mapped on this Strat Section
@@ -238,7 +242,7 @@
     function gatherSpotsWithStratSections() {
       var activeSpots = SpotFactory.getActiveSpots();
       spotsWithStratSections = _.filter(activeSpots, function (spot) {
-        return _.has(spot.properties, 'sed')&& _.has(spot.properties.sed, 'strat_section');
+        return _.has(spot.properties, 'sed') && _.has(spot.properties.sed, 'strat_section');
       });
     }
 
