@@ -82,11 +82,6 @@
       createMap();
     }
 
-    function addInterval() {
-      FormFactory.setForm('sed', 'add_interval');
-      vm.addIntervalModal.show();
-    }
-
     function createMap() {
       var switcher = new ol.control.LayerSwitcher();
 
@@ -171,7 +166,7 @@
           //$log.log('postcompose');
           var ctx = event.context;
           var pixelRatio = event.frameState.pixelRatio;
-          StratSectionFactory.drawAxes(ctx, pixelRatio);
+          StratSectionFactory.drawAxes(ctx, pixelRatio, stratSection.column_profile);
 
           var mapSize = map.getSize();
           var mapExtent = map.getView().calculateExtent(map.getSize());
@@ -308,6 +303,7 @@
     function gatherSpots() {
       // Get the Spot that has this Strat Section
       vm.thisSpotWithStratSection = StratSectionFactory.getSpotWithThisStratSection($state.params.stratSectionId);
+      stratSection = vm.thisSpotWithStratSection.properties.sed.strat_section;
       $log.log('thisSpotWithStratSection', vm.thisSpotWithStratSection);
 
       // Get all Strat Section Spots
@@ -338,6 +334,13 @@
     /**
      * Public Functions
      */
+
+    function addInterval() {
+      FormFactory.setForm('sed', 'add_interval');
+      if (stratSection.column_profile) vm.data.interval_type = stratSection.column_profile;
+
+      vm.addIntervalModal.show();
+    }
 
     function closeModal(modal) {
       vm[modal].hide();
@@ -444,8 +447,7 @@
       }
       else {
         vm.addIntervalModal.hide();
-        var newInterval = StratSectionFactory.createInterval(
-          vm.thisSpotWithStratSection.properties.sed.strat_section.strat_section_id, vm.data);
+        var newInterval = StratSectionFactory.createInterval(stratSection.strat_section_id, vm.data);
         SpotFactory.setNewSpot(newInterval).then(function (id) {
           updateFeatureLayer();
         });

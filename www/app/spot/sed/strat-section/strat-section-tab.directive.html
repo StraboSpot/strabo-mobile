@@ -10,6 +10,16 @@
       <ion-label>Section Label</ion-label>
       <input type='text' placeholder='Label this section' ng-model='vm.spot.properties.sed.strat_section.label'>
     </ion-input>
+    <ion-input class="item item-input item-select item-stacked-label item-text-wrap">
+      <ion-label>Column Profile</ion-label>
+      <select ng-model='vm.spot.properties.sed.strat_section.column_profile'>
+        <option value='clastic'>clastic</option>
+        <option value='carbonate'>carbonate</option>
+        <option value='mixed_clastic'>mixed clastic/carbonate</option>
+        <option value='weathering_pro'>weathering profile</option>
+        <option value=''>-- Select Column Profile --</option>
+      </select>
+    </ion-input>
     <button ng-click='vmChild.viewStratSection()'
             class='button button-clear button-positive'>
       <i class='button button-icon icon button-clear button-positive ion-podium rotate-90'></i>
