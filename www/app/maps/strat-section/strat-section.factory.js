@@ -111,7 +111,7 @@
       var geojsonObj = {};
       geojsonObj.geometry = {
         'type': 'Polygon',
-        'coordinates': [[[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY]]]
+        'coordinates': [[[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY], [minX, minY]]]
       };
       geojsonObj.properties = {
         'strat_section_id': stratSectionId,
