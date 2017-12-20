@@ -166,7 +166,7 @@
           //$log.log('postcompose');
           var ctx = event.context;
           var pixelRatio = event.frameState.pixelRatio;
-          StratSectionFactory.drawAxes(ctx, pixelRatio, stratSection.column_profile);
+          StratSectionFactory.drawAxes(ctx, pixelRatio, stratSection);
 
           var mapSize = map.getSize();
           var mapExtent = map.getView().calculateExtent(map.getSize());
@@ -338,7 +338,7 @@
     function addInterval() {
       FormFactory.setForm('sed', 'add_interval');
       if (stratSection.column_profile) vm.data.interval_type = stratSection.column_profile;
-
+      if (stratSection.column_y_axis_units) vm.data.thickness_units = stratSection.column_y_axis_units;
       vm.addIntervalModal.show();
     }
 
@@ -436,6 +436,15 @@
 
     function saveInterval() {
       $log.log(vm.data);
+      if (stratSection.column_y_axis_units && vm.data.thickness_units !== stratSection.column_y_axis_units) {
+        $ionicPopup.alert({
+          'title': 'Units Mismatch',
+          'template': 'The units for the Y Axis are <b>' + stratSection.column_y_axis_units + '</b> but <b>' +
+          vm.data.thickness_units + '</b> have been designated for this interval. Please fix the units ' +
+          'for this interval.'
+        });
+        return 0;
+      }
       if ((vm.data.interval_type === 'clastic' || vm.data.interval_type === 'carbonate' ||
         vm.data.interval_type === 'mixed_clastic' || vm.data.interval_type === 'misc_lithologi') &&
         !(vm.data.principal_grain_size_clastic || vm.data.principal_dunham_classificatio || vm.data.misc_lithologies) ||

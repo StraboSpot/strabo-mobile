@@ -170,6 +170,7 @@
         vmParent.spot.properties.sed = {};
         vmParent.spot.properties.sed.strat_section = {};
         vmParent.spot.properties.sed.strat_section.strat_section_id = HelpersFactory.getNewId();
+        vmParent.spot.properties.sed.strat_section.column_y_axis_units = 'm';
       }
       if (!vm.showStratSection && !_.isEmpty(vmParent.spot.properties.sed.strat_section)) {
         // ToDo: Do a check here if there are any Spots mapped on the Strat Section - if so can't delete
