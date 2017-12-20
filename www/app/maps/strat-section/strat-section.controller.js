@@ -147,7 +147,7 @@
         if (!MapDrawFactory.isDrawMode()) {
           var feature = MapFeaturesFactory.getClickedFeature(map, evt);
           var layer = MapFeaturesFactory.getClickedLayer(map, evt);
-          if (feature && layer && layer.get('name') !== 'geolocationLayer') {
+          if (feature && feature.get('id') && layer && layer.get('name') !== 'geolocationLayer') {
             vm.clickedFeatureId = feature.get('id');
             if (IS_WEB) {
               MapFeaturesFactory.setSelectedSymbol(map, feature.getGeometry());
