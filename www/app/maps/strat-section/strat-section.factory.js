@@ -121,7 +121,7 @@
       return geojsonObj;
     }
 
-    function drawAxes(ctx, pixelRatio, columnProfile) {
+    function drawAxes(ctx, pixelRatio, stratSection) {
       ctx.font = "30px Arial";
 
       // Y Axis
@@ -137,7 +137,8 @@
 
       // Tick Marks for Y Axis
       p = getPixel([-15, 0], pixelRatio);
-      ctx.fillText("0 m", p.x, p.y);
+      if (stratSection.column_y_axis_units) ctx.fillText('0 ' + stratSection.column_y_axis_units, p.x, p.y);
+      else ctx.fillText('0', p.x, p.y);
       _.times(Math.floor(yAxisHeight / yMultiplier), function (i) {
         var y = (i + 1) * yMultiplier;
         p = getPixel([-10, y], pixelRatio);
@@ -159,7 +160,7 @@
       // Create Grain Size Labels for X Axis
       ctx.textAlign = "right";
       ctx.lineWidth = 3;
-      if (columnProfile === 'clastic' || columnProfile === 'mixed_clastic') {
+      if (stratSection.column_profile === 'clastic' || stratSection.column_profile === 'mixed_clastic') {
         _.each(grainSizeOptions.clastic, function (grainSizeOption, i) {
           var x = (i + 1) * xInterval;
 
@@ -191,7 +192,7 @@
         });
       }
 
-      if (columnProfile === 'carbonate' || columnProfile === 'mixed_clastic') {
+      if (stratSection.column_profile === 'carbonate' || stratSection.column_profile === 'mixed_clastic') {
         _.each(grainSizeOptions.carbonate, function (grainSizeOption, i) {
           var x = (i + 1.5) * xInterval;
 
