@@ -4,12 +4,12 @@
       <div class="text-left strabo-subheader-text">Strat Sections</div>
     </div>
   </div>
-  <strabo-image-basemaps-directive></strabo-image-basemaps-directive>
+  <strabo-strat-sections-directive></strabo-strat-sections-directive>
 </div>
 
 <div class="col-xs-9 map" id="right">
-  <div ng-hide="vm.imageBasemapIdSelected" class="padding">No Image Basemap Selected</div>
-  <div ng-show="vm.imageBasemapIdSelected" class="map">
-    <div ui-view="image-basemap-view" class="map"></div>
+  <div ng-hide="vm.stratSectionIdSelected" class="padding">No Strat Section Selected</div>
+  <div ng-show="vm.stratSectionIdSelected" class="map">
+    <div ui-view="strat-section-view" class="map"></div>
   </div>
 </div>

@@ -253,8 +253,8 @@
         // add the regular draw controls back
         var drawControlProps = {
           'map': map,
-          'drawLayer': drawLayer,
-        }
+          'drawLayer': drawLayer
+        };
         if (belongsTo) drawControlProps[belongsTo] = belongsTo;
         map.addControl(new DrawControls(drawControlProps));
 
