@@ -30,6 +30,51 @@
      * Private Functions
      */
 
+    // X Axis
+    function drawAxisX(ctx, pixelRatio, yAxisHeight, labels, spacing, color) {
+      var p = getPixel([-10, 0], pixelRatio);
+      ctx.moveTo(p.x, p.y);
+      var xAxisLength = (_.size(labels) + 1) * xInterval;
+      p = getPixel([xAxisLength, 0], pixelRatio);
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+
+      // Create Grain Size Labels for X Axis
+      ctx.textAlign = "right";
+      ctx.lineWidth = 3;
+
+      _.each(labels, function (label, i) {
+        var x = (i + spacing) * xInterval;
+
+        // Tick Mark
+        ctx.beginPath();
+        ctx.setLineDash([]);
+        p = getPixel([x, 0], pixelRatio);
+        ctx.moveTo(p.x, p.y);
+        p = getPixel([x, -5], pixelRatio);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+
+        // Label
+        ctx.save();
+        p = getPixel([x, -5], pixelRatio);
+        ctx.translate(p.x, p.y);
+        ctx.rotate(-Math.PI / 2);
+        if (color) ctx.fillStyle = color;
+        ctx.fillText(label + ' ', 0, 0);
+        ctx.restore();
+
+        // Vertical Dashed Line
+        ctx.beginPath();
+        ctx.setLineDash([5]);
+        p = getPixel([x, 0], pixelRatio);
+        ctx.moveTo(p.x, p.y);
+        p = getPixel([x, yAxisHeight], pixelRatio);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+      });
+    }
+
     // Get pixel coordinates from map coordinates
     function getPixel(coord, pixelRatio) {
       var map = MapSetupFactory.getMap();
@@ -79,30 +124,49 @@
       var intervalHeight = data.interval_thickness * yMultiplier;
 
       var i, intervalWidth = xInterval;
-      var grainSize = data.principal_grain_size_clastic;
-      if (grainSize) {
+      if (data.interval_type === 'clastic' && data.principal_grain_size_clastic) {
         i = _.findIndex(grainSizeOptions.clastic, function (grainSizeOption) {
-          return grainSizeOption.value === grainSize;
+          return grainSizeOption.value === data.principal_grain_size_clastic;
         });
         intervalWidth = (i + 1) * xInterval;
       }
-      else {
-        grainSize = data.principal_dunham_classificatio;
-        if (grainSize) {
+      else if (data.interval_type === 'carbonate' && data.principal_dunham_classificatio) {
+        i = _.findIndex(grainSizeOptions.carbonate, function (grainSizeOption) {
+          return grainSizeOption.value === data.principal_dunham_classificatio;
+        });
+        intervalWidth = (i + 1.5) * xInterval;
+      }
+      else if (data.interval_type === 'mixed_clastic' &&
+        (data.principal_grain_size_clastic || data.principal_dunham_classificatio)) {
+        if (data.principal_grain_size_clastic) {
+          i = _.findIndex(grainSizeOptions.clastic, function (grainSizeOption) {
+            return grainSizeOption.value === data.principal_grain_size_clastic;
+          });
+          intervalWidth = (i + 1) * xInterval;
+        }
+        else {
           i = _.findIndex(grainSizeOptions.carbonate, function (grainSizeOption) {
-            return grainSizeOption.value === grainSize;
+            return grainSizeOption.value === data.principal_dunham_classificatio;
           });
           intervalWidth = (i + 1.5) * xInterval;
         }
-        else {
-          grainSize = data.misc_lithologies;
-          if (grainSize) {
-            i = _.findIndex(grainSizeOptions.misc, function (grainSizeOption) {
-              return grainSizeOption.value === grainSize;
-            });
-            intervalWidth = (i + 1) * xInterval;
-          }
+      }
+      else if (data.interval_type === 'misc_lithologi' && data.misc_lithologies) {
+        if (data.misc_lithologies === 'coal' || data.misc_lithologies === 'evaporites') {
+          intervalWidth = (1 + 1) * xInterval;   // Same as mud
         }
+        else if (data.misc_lithologies === 'tuff') {
+          intervalWidth = (4 + 1) * xInterval;    // Same as sand - fine lower
+        }
+      }
+      else if (data.interval_type === 'weathering_pro' && data.relative_resistance) {
+        i = _.findIndex(grainSizeOptions.weathering, function (grainSizeOption) {
+          return grainSizeOption.value === data.relative_resistance;
+        });
+        intervalWidth = (i + 1) * xInterval;
+      }
+      else if (data.interval_type === 'unexposed') {
+        intervalWidth = (0 + 1) * xInterval;    // Same as clay
       }
 
       var maxY = minY + intervalHeight;
@@ -149,80 +213,25 @@
         ctx.lineTo(p.x, p.y);
       });
 
-      // X Axis
-      p = getPixel([-10, 0], pixelRatio);
-      ctx.moveTo(p.x, p.y);
-      var xAxisLength = (_.size(grainSizeOptions.clastic) + 1) * xInterval;
-      p = getPixel([xAxisLength, 0], pixelRatio);
-      ctx.lineTo(p.x, p.y);
-      ctx.stroke();
-
-      // Create Grain Size Labels for X Axis
-      ctx.textAlign = "right";
-      ctx.lineWidth = 3;
-      if (stratSection.column_profile === 'clastic' || stratSection.column_profile === 'mixed_clastic') {
-        _.each(grainSizeOptions.clastic, function (grainSizeOption, i) {
-          var x = (i + 1) * xInterval;
-
-          // Tick Mark
-          ctx.beginPath();
-          ctx.setLineDash([]);
-          p = getPixel([x, 0], pixelRatio);
-          ctx.moveTo(p.x, p.y);
-          p = getPixel([x, -5], pixelRatio);
-          ctx.lineTo(p.x, p.y);
-          ctx.stroke();
-
-          // Label
-          ctx.save();
-          p = getPixel([x, -5], pixelRatio);
-          ctx.translate(p.x, p.y);
-          ctx.rotate(-Math.PI / 2);
-          ctx.fillText(grainSizeOption.label + ' ', 0, 0);
-          ctx.restore();
-
-          // Vertical Dashed Line
-          ctx.beginPath();
-          ctx.setLineDash([5]);
-          p = getPixel([x, 0], pixelRatio);
-          ctx.moveTo(p.x, p.y);
-          p = getPixel([x, yAxisHeight], pixelRatio);
-          ctx.lineTo(p.x, p.y);
-          ctx.stroke();
-        });
+      // Setup to draw X Axis
+      var labels = {};
+      if (stratSection.column_profile === 'clastic') {
+        labels = _.pluck(grainSizeOptions.clastic, 'label');
+        drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 1);
       }
-
-      if (stratSection.column_profile === 'carbonate' || stratSection.column_profile === 'mixed_clastic') {
-        _.each(grainSizeOptions.carbonate, function (grainSizeOption, i) {
-          var x = (i + 1.5) * xInterval;
-
-          // Tick Mark
-          ctx.beginPath();
-          ctx.setLineDash([]);
-          p = getPixel([x, 0], pixelRatio);
-          ctx.moveTo(p.x, p.y);
-          p = getPixel([x, -3], pixelRatio);
-          ctx.lineTo(p.x, p.y);
-          ctx.stroke();
-
-          // Label
-          ctx.save();
-          p = getPixel([x, -3], pixelRatio);
-          ctx.translate(p.x, p.y);
-          ctx.rotate(-Math.PI / 2);
-          ctx.fillStyle = 'blue';
-          ctx.fillText(grainSizeOption.label + ' ', 0, 0);
-          ctx.restore();
-
-          // Vertical Dashed Line
-          ctx.beginPath();
-          ctx.setLineDash([5]);
-          p = getPixel([x, 0], pixelRatio);
-          ctx.moveTo(p.x, p.y);
-          p = getPixel([x, yAxisHeight], pixelRatio);
-          ctx.lineTo(p.x, p.y);
-          ctx.stroke();
-        });
+      else if (stratSection.column_profile === 'carbonate') {
+        labels = _.pluck(grainSizeOptions.carbonate, 'label');
+        drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 1.5);
+      }
+      else if (stratSection.column_profile === 'mixed_clastic') {
+        labels = _.pluck(grainSizeOptions.clastic, 'label');
+        drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 1);
+        labels = _.pluck(grainSizeOptions.carbonate, 'label');
+        drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 1.5, 'blue');
+      }
+      else if (stratSection.column_profile === 'weathering_pro') {
+        labels = _.pluck(grainSizeOptions.weathering, 'label');
+        drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 1);
       }
     }
 
