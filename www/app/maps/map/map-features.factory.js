@@ -309,7 +309,7 @@
         });
       }
 
-      function getPolyFill(feature) {
+      function getPolyFill(feature, resolution) {
         var color;
         // Set colors for strat section
         var featureProperties = feature.getProperties();
@@ -349,30 +349,32 @@
           else if (grainSize === 'tuff') color = 'rgba(255, 128, 255, 1)';          // CMYK 0,50,0,0 USGS Color 6
           else color = 'rgba(255, 255, 255, 1)';                                    // default white
 
-          // Apply patterns
-          var canvas = document.createElement('canvas');
-          var context = canvas.getContext('2d');
-          var pattern = (function () {
-            canvas.width = 10;
-            canvas.height = 10;
-            // white background
-            context.fillStyle = 'white';
-            context.fillRect(0, 0, 5, 5);
-            context.fill();
-            // outer circle
-            context.fillStyle = 'red';
-            context.fillRect(5, 5, 5, 5);
-            context.fill();
-
-            return context.createPattern(canvas, 'repeat');
-          }());
-
           var fill = new ol.style.Fill();
-          fill.setColor(pattern);
-          fill.setColor(color);
+          // Apply patterns
+          if (featureProperties.sed.lithologies.interval_type === 'unexposed') {
+            var canvas = document.createElement('canvas');
+            var ctx = canvas.getContext('2d');
+
+            var extent = feature.getGeometry().getExtent();
+            var width = 10 / resolution * 2;
+            var height = (extent[3] - extent[1]) / resolution * 2;
+            canvas.width = width;
+            canvas.height = height;
+
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(width, height);
+            ctx.moveTo(0, height);
+            ctx.lineTo(width, 0);
+            ctx.stroke();
+
+            var pattern = ctx.createPattern(canvas, 'no-repeat');
+            fill.setColor(pattern);
+          }
+          else fill.setColor(color);
           return fill;
         }
-        // Set colors for not strat section polys
+          // Set colors for not strat section polys
         catch (e) {
           color = 'rgba(0, 0, 255, 0.4)';       // blue
           var colorApplied = false;
@@ -453,7 +455,7 @@
               'color': '#000000',
               'width': 0.5
             }),
-            'fill': getPolyFill(feature),
+            'fill': getPolyFill(feature, resolution),
             'text': textStyle(polyText)
           })
         ];
