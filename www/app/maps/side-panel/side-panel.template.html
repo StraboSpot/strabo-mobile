@@ -68,6 +68,12 @@
         <div ng-show='sidePanel.isActiveTab("tags")' ng-controller='TagsTabController as vmChild'>
           <strabo-tags-tab-directive></strabo-tags-tab-directive>
         </div>
+        <div ng-show='sidePanel.isActiveTab("strat-section")' ng-controller='StratSectionTabController as vmChild'>
+          <strabo-strat-section-tab-directive></strabo-strat-section-tab-directive>
+        </div>
+        <div ng-show='sidePanel.isActiveTab("sed-lithologies")' ng-controller='SedLithologiesTabController as vmChild'>
+          <strabo-sed-lithologies-tab-directive></strabo-sed-lithologies-tab-directive>
+        </div>
       </div>
     </div>
   </div>
