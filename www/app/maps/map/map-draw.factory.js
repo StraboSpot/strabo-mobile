@@ -5,10 +5,11 @@
     .module('app')
     .factory('MapDrawFactory', MapDrawFactory);
 
-  MapDrawFactory.$inject = ['$document', '$ionicPopup', '$location', '$log', '$q', '$rootScope', 'SpotFactory',
-    'IS_WEB'];
+  MapDrawFactory.$inject = ['$document', '$ionicPopup', '$location', '$log', '$q', '$rootScope', 'HelpersFactory',
+    'SpotFactory', 'IS_WEB'];
 
-  function MapDrawFactory($document, $ionicPopup, $location, $log, $q, $rootScope, SpotFactory, IS_WEB) {
+  function MapDrawFactory($document, $ionicPopup, $location, $log, $q, $rootScope, HelpersFactory, SpotFactory,
+                          IS_WEB) {
     var belongsTo;
     var draw;               // draw is a ol3 drawing interaction
     var drawButtonActive;   // drawButtonActive used to keep state of which selected drawing tool is active
@@ -417,6 +418,15 @@
       $log.log('Saving edited spots ...', spotsEdited);
       var promises = [];
       _.each(spotsEdited, function (editedSpot) {
+        if (editedSpot.properties.strat_section_id && editedSpot.properties.surface_feature &&
+          editedSpot.properties.surface_feature.surface_feature_type === 'strat_interval') {
+          var extent = new ol.format.GeoJSON().readFeature(editedSpot).getGeometry().getExtent();
+          var thickness = (extent[3] - extent[1]) / 20; // 20 is yMultiplier - see StratSectionFactory
+          thickness = HelpersFactory.roundToDecimalPlaces(thickness, 2);
+          if (!editedSpot.properties.sed) editedSpot.properties.sed = {};
+          if (!editedSpot.properties.sed.lithologies) editedSpot.properties.sed.lithologies = {};
+          editedSpot.properties.sed.lithologies.interval_thickness = thickness;
+        }
         promises.push(SpotFactory.save(editedSpot));
         // Update the displayed geometry if edited feature is being displayed in the map side panel
         if (IS_WEB && editedSpot.properties.id === clickedFeatureId) {
