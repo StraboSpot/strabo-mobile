@@ -31,7 +31,6 @@
   <preference name="iosPersistentFileLocation" value="Library"/>
   <preference name="SplashScreen" value="splash"/>
 
-  <preference platform="ios" name="Orientation" value="all"/>
   <gap:config-file platform="ios" parent="UIFileSharingEnabled" mode="replace">
     <true/>
   </gap:config-file>
