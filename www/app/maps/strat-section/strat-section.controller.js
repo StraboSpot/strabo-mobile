@@ -337,6 +337,7 @@
 
     function addInterval() {
       FormFactory.setForm('sed', 'add_interval');
+      vm.data = {};
       if (stratSection.column_profile) vm.data.interval_type = stratSection.column_profile;
       if (stratSection.column_y_axis_units) vm.data.thickness_units = stratSection.column_y_axis_units;
       vm.addIntervalModal.show();
