@@ -92,15 +92,4 @@
     <splash qualifier="hdpi" src="www/res/screens/android/screen-hdpi-portrait.png"/>
     <splash qualifier="xhdpi" src="www/res/screens/android/screen-xhdpi-portrait.png"/>
   </platform>
-
-  <platform name="wp8">
-    <icon src="www/res/icons/wp8/ApplicationIcon.png" width="99" height="99"/>
-    <icon src="www/res/icons/wp8/Background.png" width="159" height="159"/>
-  </platform>
-
-  <platform name="windows">
-    <icon src="www/res/icons/windows8/logo.png" width="150" height="150"/>
-    <icon src="www/res/icons/windows8/smalllogo.png" width="30" height="30"/>
-    <icon src="www/res/icons/windows8/storelogo.png" width="50" height="50"/>
-  </platform>
 </widget>
