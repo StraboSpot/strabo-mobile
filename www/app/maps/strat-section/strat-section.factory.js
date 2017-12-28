@@ -5,9 +5,10 @@
     .module('app')
     .factory('StratSectionFactory', StratSectionFactory);
 
-  StratSectionFactory.$inject = ['$log', 'DataModelsFactory', 'MapLayerFactory', 'MapSetupFactory', 'SpotFactory'];
+  StratSectionFactory.$inject = ['$log', 'DataModelsFactory', 'HelpersFactory', 'MapLayerFactory', 'MapSetupFactory',
+    'SpotFactory'];
 
-  function StratSectionFactory($log, DataModelsFactory, MapLayerFactory, MapSetupFactory, SpotFactory) {
+  function StratSectionFactory($log, DataModelsFactory, HelpersFactory, MapLayerFactory, MapSetupFactory, SpotFactory) {
     var grainSizeOptions = DataModelsFactory.getSedGrainSizeLabelsDictionary();
     var spotsWithStratSections = {};
     var stratSectionSpots = {};
@@ -212,6 +213,24 @@
         p = getPixel([0, y], pixelRatio);
         ctx.lineTo(p.x, p.y);
       });
+      ctx.stroke();
+
+      // Tick Marks for Intervals
+      var intervalSpots = getStratIntervalSpots();
+      _.each(intervalSpots, function (intervalSpot) {
+        var extent = intervalSpot.getGeometry().getExtent();
+        var y = extent[3];
+        var label = HelpersFactory.roundToDecimalPlaces(extent[3] / yMultiplier, 2);
+        if (!Number.isInteger(label)) {
+          p = getPixel([-3, y], pixelRatio);
+          ctx.fillText(label, p.x, p.y);
+          p = getPixel([-2, y], pixelRatio);
+          ctx.moveTo(p.x, p.y);
+          p = getPixel([0, y], pixelRatio);
+          ctx.lineTo(p.x, p.y);
+        }
+      });
+      ctx.stroke();
 
       // Setup to draw X Axis
       var labels = {};
@@ -233,6 +252,7 @@
         labels = _.pluck(grainSizeOptions.weathering, 'label');
         drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 1);
       }
+      else drawAxisX(ctx, pixelRatio, yAxisHeight, [], 1);
     }
 
     // Gather all Spots Mapped on this Strat Section
