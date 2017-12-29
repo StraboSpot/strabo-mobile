@@ -418,6 +418,7 @@
       $log.log('Saving edited spots ...', spotsEdited);
       var promises = [];
       _.each(spotsEdited, function (editedSpot) {
+        // If the edited spot was an interval in a strat section update recalculate the thickness
         if (editedSpot.properties.strat_section_id && editedSpot.properties.surface_feature &&
           editedSpot.properties.surface_feature.surface_feature_type === 'strat_interval') {
           var extent = new ol.format.GeoJSON().readFeature(editedSpot).getGeometry().getExtent();
