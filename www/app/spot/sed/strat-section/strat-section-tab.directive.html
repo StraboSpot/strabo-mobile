@@ -6,6 +6,11 @@
     <span class='toggle-left-label'>Add a Stratigraphic Section at this Spot?</span>
   </ion-toggle>
   <div ng-show='vmChild.showStratSection'>
+    <button ng-click='vmChild.viewStratSection()'
+            class='button button-clear button-positive'>
+      <i class='button button-icon icon button-clear button-positive ion-podium rotate-90'></i>
+      <span class='button-text-big'>View Stratigraphic Section</span>
+    </button>
     <ion-input class='item item-input item-stacked-label item-text-wrap'>
       <ion-label>Section Label</ion-label>
       <input type='text' placeholder='Label this section' ng-model='vm.spot.properties.sed.strat_section.label'>
@@ -30,11 +35,6 @@
         <option value=''>-- Select Column Y-Axis Units --</option>
       </select>
     </ion-input>
-    <button ng-click='vmChild.viewStratSection()'
-            class='button button-clear button-positive'>
-      <i class='button button-icon icon button-clear button-positive ion-podium rotate-90'></i>
-      <span class='button-text-small'>View Stratigraphic Section</span>
-    </button>
     <div class='item item-divider'>
       Image Overlays
     </div>
