@@ -1,0 +1,18 @@
+list_name,name,label,order
+jt6by54,cm,cm,
+jt6by54,m,m,1
+jt6by54,in,in,2
+jt6by54,ft,ft,3
+vq5ai01,bed,bed,
+vq5ai01,interbedded,interbedded,1
+vq5ai01,package_succe,package (succession of beds),2
+vq5ai01,cover,cover,3
+wc2ju40,1_least_resist,1 - least resistant,
+wc2ju40,2,2,
+wc2ju40,3_mod_resistan,3 - moderately resistant,
+wc2ju40,4,4,
+wc2ju40,5_most_resista,5 - most resistant,
+kq9qb39,lithified,lithified,
+kq9qb39,poorly_lithifi,poorly lithified,
+kq9qb39,unlithified_un,unlithified/unconsolidated,
+kq9qb39,metamorphosed,metamorphosed,

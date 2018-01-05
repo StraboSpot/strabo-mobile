@@ -88,11 +88,29 @@
           'choices': {},
           'choices_file': 'app/data-models/sed/add-interval-choices.csv'
         },
-        'lithologies': {
+        'composition': {
           'survey': {},
-          'survey_file': 'app/data-models/sed/lithologies-survey.csv',
+          'survey_file': 'app/data-models/sed/composition-survey.csv',
           'choices': {},
-          'choices_file': 'app/data-models/sed/lithologies-choices.csv'
+          'choices_file': 'app/data-models/sed/composition-choices.csv'
+        },
+        'interval_basics': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/interval-basics-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/interval-basics-choices.csv'
+        },
+        'stratification': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/stratification-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/stratification-choices.csv'
+        },
+        'texture': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/texture-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/texture-choices.csv'
         }
 
       },
@@ -193,6 +211,7 @@
           'notes': 'Type: text',
           'orientation_data': [],
           'samples': [],
+          'sed': { 'lithologies': {}},
           'time': 'datetime',
           'trace': {}
         }
@@ -208,6 +227,10 @@
         'planar_orientation': dataModels.orientation_data.planar_orientation,
         'tabular_orientation': dataModels.orientation_data.tabular_orientation,
         'samples': dataModels.sample,
+        'sed_composition': dataModels.sed.composition,
+        'sed_interval_basics': dataModels.sed.interval_basics,
+        'sed_stratification': dataModels.sed.stratification,
+        'sed_texture': dataModels.sed.texture,
         'trace': dataModels.trace
       };
       _.each(models, function (model, key) {
@@ -238,6 +261,9 @@
         else if (key === 'samples') {
           description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id); REQUIRED';
           spotDataModel.properties[key].push(description);
+        }
+        else if (key === 'sed_composition' || key === 'sed_interval_basics' || key === 'sed_stratification' || key === 'sed_texture') {
+          _.extend(spotDataModel.properties.sed.lithologies, description);
         }
         else if (key === 'trace') {
           _.extend(spotDataModel.properties[key], description);
