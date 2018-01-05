@@ -1,0 +1,15 @@
+type,name,label,required,default,relevant,constraint_message,constraint,calculation
+begin_group,group_yr5ih99,Basics,,,,,,
+decimal,interval_thickness,Interval thickness,false,,,,,
+select_one jt6by54,thickness_units,Thickness Units,false,,,,,
+select_one vq5ai01,bed_package_or_covered,"Is this a bed, a package (succession of beds), or covered?",false,Package,,,,
+decimal,bed_thickness_m,Thickness of the bed (meters),false,,${bed_package_or_covered} = 'bed',The thickness must be greater than 0,,
+decimal,package_thickness_m,Thickness of the package (meters),false,,${bed_package_or_covered} = 'package_succe',The thickness must be greater than 0,. > 0,
+decimal,covered_thickness_m,Thickness of the covered interval (meters),false,,${bed_package_or_covered} = 'cover',The thickness must be greater than 0,,
+select_one wc2ju40,relative_resistance_weathering,Relative resistance (weathering profile),false,,,,,
+select_one kq9qb39,lithification,Lithification,false,,${bed_package_or_covered} != 'cover',,,
+text,fresh_color,Fresh Color,false,,${bed_package_or_covered} != 'cover',,,
+text,weathered_color,Weathered Color,false,,${bed_package_or_covered} != 'cover',,,
+text,rock_name,Rock Name,false,,,,,
+end_group,,,,,,,,
+calculate,__version__,,,,,,,'vbW5eweHZxKL67D7STtHnh'

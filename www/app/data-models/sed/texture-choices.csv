@@ -1,0 +1,73 @@
+list_name,name,label
+jv85i54,clay,clay
+jv85i54,mud,mud
+jv85i54,silt,silt
+jv85i54,sand_v_fine,sand - very fine
+jv85i54,sand_fine_lwr,sand - fine lower
+jv85i54,sand_fine_upr,sand - fine upper
+jv85i54,sand_med_lwr,sand - medium lower
+jv85i54,sand_med_upr,sand - medium upper
+jv85i54,sand_coar_lwr,sand - coarse lower
+jv85i54,sand_coarse_up,sand - coarse upper
+jv85i54,sand_v_coar,sand - very coarse
+jv85i54,granule,granule
+jv85i54,pebble,pebble
+jv85i54,cobble,cobble
+jv85i54,boulder,boulder
+ww4nv53,clay,clay
+ww4nv53,mud,mud
+ww4nv53,silt,silt
+ww4nv53,sand_v_fine,sand - very fine
+ww4nv53,sand_fine_lwr,sand - fine lower
+ww4nv53,sand_fine_upr,sand - fine upper
+ww4nv53,sand_med_lwr,sand - medium lower
+ww4nv53,sand_med_upr,sand - medium upper
+ww4nv53,sand_coar_lwr,sand - coarse lower
+ww4nv53,sand_coar_upr,sand - coarse upper
+ww4nv53,sand_v_coar,sand - very coarse
+ww4nv53,granule,granule
+ww4nv53,pebble,pebble
+ww4nv53,cobble,cobble
+ww4nv53,boulder,boulder
+fz52a24,mud,mud
+fz52a24,silt,silt
+fz52a24,sand,sand
+fz52a24,granule,granule
+fz52a24,pebble,pebble
+fz52a24,cement,cement
+fz52a24,none,none
+en1dw51,mud,grain-supported
+en1dw51,silt,matrix-supported
+en1dw51,sand,imbrication
+en1dw51,granule,alignment
+dx3pb08,normal,normal
+dx3pb08,normal_base_only,normal base only
+dx3pb08,normal_top_only,normal top only
+dx3pb08,reverse,reverse
+dx3pb08,reverse_base_only,reverse base only
+dx3pb08,reverse_top_only,reverse top only
+dx3pb08,composite,composite
+dx3pb08,foreset_normal,foreset normal
+dx3pb08,foreset_reverse,foreset reverse
+ib39f35,coarsening_upwards,coarsening upwards
+ib39f35,fining_upwards,fining upwards
+ib39f35,uniform_no_tre,uniform (no trend)
+zh2pu30,v_well_sorted,very well sorted
+zh2pu30,well_sorted,well sorted
+zh2pu30,mod_sorted,moderately sorted
+zh2pu30,poorly_sorted,poorly sorted
+zh2pu30,v_poorly_sorte,very poorly sorted
+tz12z20,spherical,spherical
+tz12z20,equant,equant
+tz12z20,tabular,tabular
+tz12z20,disk_chip_like,disk/chip-like
+tz12z20,prolate,prolate
+tz12z20,bladed,bladed
+tz12z20,rod_like,rod-like
+tz12z20,biogenic,biogenic
+hs69g66,well_rounded,well-rounded
+hs69g66,rounded,rounded
+hs69g66,subrounded,subrounded
+hs69g66,subangular,subangular
+hs69g66,angular,angular
+hs69g66,very_angular,very angular
