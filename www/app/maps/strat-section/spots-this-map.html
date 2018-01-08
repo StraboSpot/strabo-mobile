@@ -5,26 +5,40 @@
   <ion-list>
     <ion-item class='item-text-wrap item-button-right'>
       <div ng-click='vm.goToSpot(vm.thisSpotWithStratSection.properties.id, "strat-section")'>
-        <img
-          ng-if="vm.thisSpotWithStratSection.geometry.type === 'Point' && !vm.thisSpotWithStratSection.properties.image_basemap"
+        <img ng-if="vm.thisSpotWithStratSection.geometry.type === 'Point' &&
+            !vm.thisSpotWithStratSection.properties.image_basemap &&
+            !vm.thisSpotWithStratSection.properties.strat_section_id"
           class='geometry-icon' src='img/point.png'>
-        <img
-          ng-if="vm.thisSpotWithStratSection.geometry.type === 'LineString' && !vm.thisSpotWithStratSection.properties.image_basemap"
+        <img ng-if="vm.thisSpotWithStratSection.geometry.type === 'LineString' &&
+            !vm.thisSpotWithStratSection.properties.image_basemap &&
+            !vm.thisSpotWithStratSection.properties.strat_section_id"
           class='geometry-icon' src='img/line.png'>
-        <img
-          ng-if="vm.thisSpotWithStratSection.geometry.type === 'Polygon' && !vm.thisSpotWithStratSection.properties.image_basemap"
+        <img ng-if="vm.thisSpotWithStratSection.geometry.type === 'Polygon' &&
+            !vm.thisSpotWithStratSection.properties.image_basemap &&
+            !vm.thisSpotWithStratSection.properties.strat_section_id"
           class='geometry-icon' src='img/polygon.png'>
-        <img
-          ng-if="vm.thisSpotWithStratSection.geometry.type === 'Point' && vm.thisSpotWithStratSection.properties.image_basemap"
+        <img ng-if="vm.thisSpotWithStratSection.geometry.type === 'Point' &&
+            vm.thisSpotWithStratSection.properties.image_basemap"
           class='geometry-icon' src='img/point-image-basemap.png'>
-        <img
-          ng-if="vm.thisSpotWithStratSection.geometry.type === 'LineString' && vm.thisSpotWithStratSection.properties.image_basemap"
+        <img ng-if="vm.thisSpotWithStratSection.geometry.type === 'LineString' &&
+            vm.thisSpotWithStratSection.properties.image_basemap"
           class='geometry-icon' src='img/line-image-basemap.png'>
-        <img
-          ng-if="vm.thisSpotWithStratSection.geometry.type === 'Polygon' && vm.thisSpotWithStratSection.properties.image_basemap"
+        <img ng-if="vm.thisSpotWithStratSection.geometry.type === 'Polygon' &&
+            vm.thisSpotWithStratSection.properties.image_basemap"
           class='geometry-icon' src='img/polygon-image-basemap.png'>
-        <img ng-if="vm.thisSpotWithStratSection.geometry.type !== 'Point' && vm.thisSpotWithStratSection.geometry.type !== 'LineString' &&
-           vm.thisSpotWithStratSection.geometry.type !== 'Polygon'" class='geometry-icon' src='img/question.png'>
+        <img ng-if="vm.thisSpotWithStratSection.geometry.type === 'Point' &&
+            vm.thisSpotWithStratSection.properties.strat_section_id"
+             class='geometry-icon' src='img/point-strat-section.png'>
+        <img ng-if="vm.thisSpotWithStratSection.geometry.type === 'LineString' &&
+            vm.thisSpotWithStratSection.properties.strat_section_id"
+             class='geometry-icon' src='img/line-strat-section.png'>
+        <img ng-if="vm.thisSpotWithStratSection.geometry.type === 'Polygon' &&
+            vm.thisSpotWithStratSection.properties.strat_section_id"
+             class='geometry-icon' src='img/polygon-strat-section.png'>
+        <img ng-if="vm.thisSpotWithStratSection.geometry.type !== 'Point' &&
+            vm.thisSpotWithStratSection.geometry.type !== 'LineString' &&
+            vm.thisSpotWithStratSection.geometry.type !== 'Polygon'"
+             class='geometry-icon' src='img/question.png'>
         {{vm.thisSpotWithStratSection.properties.name}}
         <div>
               <span ng-show='vm.hasTags(vm.thisSpotWithStratSection.properties.id)' class='list-sub'>
@@ -46,25 +60,11 @@
     <ion-item class='item-text-wrap item-button-right'
               ng-repeat='spot in vm.stratSectionIntervals track by spot.properties.id'>
       <div ng-click='vm.goToSpot(spot.properties.id)'>
-        <img ng-if="spot.geometry.type === 'Point' && !spot.properties.image_basemap"
-             class='geometry-icon' src='img/point.png'>
-        <img ng-if="spot.geometry.type === 'LineString' && !spot.properties.image_basemap"
-             class='geometry-icon' src='img/line.png'>
-        <img ng-if="spot.geometry.type === 'Polygon' && !spot.properties.image_basemap"
-             class='geometry-icon' src='img/polygon.png'>
-        <img ng-if="spot.geometry.type === 'Point' && spot.properties.image_basemap"
-             class='geometry-icon' src='img/point-image-basemap.png'>
-        <img ng-if="spot.geometry.type === 'LineString' && spot.properties.image_basemap"
-             class='geometry-icon' src='img/line-image-basemap.png'>
-        <img ng-if="spot.geometry.type === 'Polygon' && spot.properties.image_basemap"
-             class='geometry-icon' src='img/polygon-image-basemap.png'>
-        <img ng-if="spot.geometry.type !== 'Point' && spot.geometry.type !== 'LineString' &&
-           spot.geometry.type !== 'Polygon'" class='geometry-icon' src='img/question.png'>
-        {{spot.properties.name}}
+        <strabo-spots-list-directive></strabo-spots-list-directive>
         <div>
-              <span ng-show='vm.hasTags(spot.properties.id)' class='list-sub'>
-                Tags: {{ vm.getTagNames(spot.properties.id) }}
-              </span>
+          <span ng-show='vm.hasTags(spot.properties.id)' class='list-sub'>
+             Tags: {{ vm.getTagNames(spot.properties.id) }}
+          </span>
         </div>
       </div>
       <button class='button button-clear button-assertive'
@@ -81,25 +81,11 @@
     <ion-item class='item-text-wrap item-button-right'
               ng-repeat='spot in vm.stratSectionOtherSpots track by spot.properties.id'>
       <div ng-click='vm.goToSpot(spot.properties.id)'>
-        <img ng-if="spot.geometry.type === 'Point' && !spot.properties.image_basemap"
-             class='geometry-icon' src='img/point.png'>
-        <img ng-if="spot.geometry.type === 'LineString' && !spot.properties.image_basemap"
-             class='geometry-icon' src='img/line.png'>
-        <img ng-if="spot.geometry.type === 'Polygon' && !spot.properties.image_basemap"
-             class='geometry-icon' src='img/polygon.png'>
-        <img ng-if="spot.geometry.type === 'Point' && spot.properties.image_basemap"
-             class='geometry-icon' src='img/point-image-basemap.png'>
-        <img ng-if="spot.geometry.type === 'LineString' && spot.properties.image_basemap"
-             class='geometry-icon' src='img/line-image-basemap.png'>
-        <img ng-if="spot.geometry.type === 'Polygon' && spot.properties.image_basemap"
-             class='geometry-icon' src='img/polygon-image-basemap.png'>
-        <img ng-if="spot.geometry.type !== 'Point' && spot.geometry.type !== 'LineString' &&
-           spot.geometry.type !== 'Polygon'" class='geometry-icon' src='img/question.png'>
-        {{spot.properties.name}}
+        <strabo-spots-list-directive></strabo-spots-list-directive>
         <div>
-              <span ng-show='vm.hasTags(spot.properties.id)' class='list-sub'>
-                Tags: {{ vm.getTagNames(spot.properties.id) }}
-              </span>
+          <span ng-show='vm.hasTags(spot.properties.id)' class='list-sub'>
+            Tags: {{ vm.getTagNames(spot.properties.id) }}
+          </span>
         </div>
       </div>
       <button class='button button-clear button-assertive'

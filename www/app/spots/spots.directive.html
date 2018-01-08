@@ -14,21 +14,7 @@
     <ion-item class='item-text-wrap item-button-right'
               ng-repeat='spot in vm.spotsDisplayed track by spot.properties.id'>
       <div ng-click='vm.goToSpot(spot.properties.id)'>
-        <img ng-if="spot.geometry.type === 'Point' && !spot.properties.image_basemap"
-             class='geometry-icon' src='img/point.png'>
-        <img ng-if="spot.geometry.type === 'LineString' && !spot.properties.image_basemap"
-             class='geometry-icon' src='img/line.png'>
-        <img ng-if="spot.geometry.type === 'Polygon' && !spot.properties.image_basemap"
-             class='geometry-icon' src='img/polygon.png'>
-        <img ng-if="spot.geometry.type === 'Point' && spot.properties.image_basemap"
-             class='geometry-icon' src='img/point-image-basemap.png'>
-        <img ng-if="spot.geometry.type === 'LineString' && spot.properties.image_basemap"
-             class='geometry-icon' src='img/line-image-basemap.png'>
-        <img ng-if="spot.geometry.type === 'Polygon' && spot.properties.image_basemap"
-             class='geometry-icon' src='img/polygon-image-basemap.png'>
-        <img ng-if="spot.geometry.type !== 'Point' && spot.geometry.type !== 'LineString' &&
-           spot.geometry.type !== 'Polygon'" class='geometry-icon' src='img/question.png'>
-        {{spot.properties.name}}
+        <strabo-spots-list-directive></strabo-spots-list-directive>
         <span ng-show='vm.showDetail.tabs'>
           <span ng-if='spot.properties.orientation_data' class='spot-tabs-on orientation-on'>Orientation</span>
           <span ng-if='spot.properties._3d_structures' class='spot-tabs-on _3d-structures-on'>3D Structures</span>
