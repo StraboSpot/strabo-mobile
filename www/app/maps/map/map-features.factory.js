@@ -223,10 +223,15 @@
       }
 
       function textStylePoint(text, rotation) {
+        var labelText;
+        if ((rotation >= 60 && rotation <= 120) || (rotation >= 240 && rotation <= 300)) {
+          labelText = '         ' + text  // we pad with spaces due to rotational offset
+        }
+        else labelText = '     ' + text;
         return new ol.style.Text({
           'font': '12px Calibri,sans-serif',
-          'text': '          ' + text,  // we pad with spaces due to rotational offset
-          'textAlign': 'center',
+          'text': labelText,
+          'textAlign': 'left',
           'fill': new ol.style.Fill({
             'color': '#000'
           }),
