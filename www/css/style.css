@@ -235,6 +235,14 @@ Map Popups Style
   padding: 5px;
 }
 
+.popup-title {
+  text-decoration: underline;
+}
+
+.popup-more-button {
+  float: right;
+}
+
 /*--------------------
 Buttons
 --------------------*/
