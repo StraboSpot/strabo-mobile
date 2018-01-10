@@ -35,7 +35,7 @@
         'title': 'OSM Streets',
         'id': 'osm',
         'source': 'osm',
-        'maxZoom': 19                   // http://wiki.openstreetmap.org/wiki/Zoom_levels
+        'maxZoom': 16                  // http://wiki.openstreetmap.org/wiki/Zoom_levels
       }];
     }
 
