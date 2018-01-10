@@ -601,39 +601,38 @@
       popup.hide();  // Clear any existing popovers
 
       // popup content
-      var content = '';
-      content += '<a href="#/app/spotTab/' + feature.get('id') + '/spot"><b>' + feature.get('name') + '</b></a>';
-
+      var el = document.createElement('div');
+      var title = document.createElement('h5');
+      title.className = 'popup-title';
+      title.innerHTML = feature.get('name');
+      el.appendChild(title);
+      var content = document.createElement('p');
+      var text = [];
       var orientation = feature.get('orientation');
-
       if (orientation) {
-        content += '<br>';
-        content += '<small>' + orientation.type + '</small>';
-
         if ((orientation.strike || orientation.dip_direction) && orientation.dip) {
-          content += '<br>';
           if (orientation.strike) {
-            content += '<small>' + orientation.strike + '&deg; strike / ' + orientation.dip + '&deg; dip</small>';
+            text.push('<small>' + orientation.strike + '&deg; strike / ' + orientation.dip + '&deg; dip</small>');
           }
           else {
-            content += '<small>' + orientation.dip_direction + '&deg; dip direction / ' + orientation.dip + '&deg; dip</small>';
+            text.push('<small>' + orientation.dip_direction + '&deg; dip direction / ' + orientation.dip + '&deg; dip</small>');
           }
         }
 
         if (orientation.trend && orientation.plunge) {
-          content += '<br>';
-          content += '<small>' + orientation.trend + '&deg; trend / ' + orientation.plunge + '&deg; plunge</small>';
+          text.push('<small>' + orientation.trend + '&deg; trend / ' + orientation.plunge + '&deg; plunge</small>');
         }
 
         if (orientation.feature_type) {
-          content += '<br>';
-          content += '<small>' + orientation.feature_type + '</small>';
+          text.push('<small>' + orientation.feature_type + '</small>');
         }
       }
-      content = content.replace(/_/g, ' ');
+      text.push('<a href="#" data-action="more" class="popup-more-button">See More</a>');
+      content.innerHTML = text.join('<br>');
+      el.appendChild(content);
 
       // setup the popup position
-      popup.show(evt.coordinate, content);
+      popup.show(evt.coordinate, el);
     }
 
     /* ToDo: Delete this when use showMapPopup with image basemap */

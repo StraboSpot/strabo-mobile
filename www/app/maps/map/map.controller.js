@@ -149,6 +149,19 @@
           $scope.$apply();
         }
       });
+
+      var popup = MapSetupFactory.getPopupOverlay();
+      popup.getElement().addEventListener('click', function (e) {
+        var action = e.target.getAttribute('data-action');
+        if (action) {
+          if (action === 'more') {
+            popup.hide();
+            $location.path('/app/spotTab/' +vm.clickedFeatureId + '/spot');
+            $scope.$apply();
+          }
+          e.preventDefault();
+        }
+      }, false);
     }
 
     function createModals() {
