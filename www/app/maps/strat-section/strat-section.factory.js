@@ -132,7 +132,7 @@
         intervalWidth = (i + 1) * xInterval;
       }
       // Unexposed/Covered
-      else if (data.interval_type === 'unexposed') intervalWidth = (0 + 1) * xInterval;    // Same as clay
+      else if (data.interval_type === 'unexposed_covered') intervalWidth = (0 + 1) * xInterval;    // Same as clay
       // Lithology = siliclastic
       else if (data.principal_grain_size_clastic) {
         i = _.findIndex(grainSizeOptions.clastic, function (grainSizeOption) {

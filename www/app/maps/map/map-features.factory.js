@@ -359,7 +359,7 @@
 
           var fill = new ol.style.Fill();
           // Apply patterns
-          if (featureProperties.sed.lithologies.interval_type === 'unexposed') {
+          if (featureProperties.sed.lithologies.interval_type === 'unexposed_covered') {
             var canvas = document.createElement('canvas');
             var ctx = canvas.getContext('2d');
 
