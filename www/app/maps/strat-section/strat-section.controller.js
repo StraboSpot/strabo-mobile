@@ -75,8 +75,6 @@
       currentSpot = SpotFactory.getCurrentSpot();
       if (currentSpot) vm.clickedFeatureId = currentSpot.properties.id;
 
-      vm.grainSizeOptions = StratSectionFactory.getGrainSizeOptions();
-
       createModals();
       createPopover();
       createMap();
@@ -179,7 +177,7 @@
         if (action) {
           if (action === 'more') {
             popup.hide();
-            $location.path('/app/spotTab/' +vm.clickedFeatureId + '/spot');
+            $location.path('/app/spotTab/' + vm.clickedFeatureId + '/sed-lithologies');
             $scope.$apply();
           }
           e.preventDefault();
@@ -350,7 +348,20 @@
     function addInterval() {
       FormFactory.setForm('sed', 'add_interval');
       vm.data = {};
-      if (stratSection.column_profile) vm.data.interval_type = stratSection.column_profile;
+      if (stratSection.column_profile && stratSection.column_profile === 'clastic') {
+        vm.data.interval_type = 'lithology';
+        vm.data.lithologies = 'siliciclastic';
+      }
+      else if (stratSection.column_profile && stratSection.column_profile === 'carbonate') {
+        vm.data.interval_type = 'lithology';
+        vm.data.lithologies = 'limestone';
+      }
+      else if (stratSection.column_profile && stratSection.column_profile === 'mixed_clastic') {
+        vm.data.interval_type = 'lithology';
+      }
+      else if (stratSection.column_profile && stratSection.column_profile === 'weathering_pro') {
+        vm.data.interval_type = 'weathering_profile';
+      }
       if (stratSection.column_y_axis_units) vm.data.thickness_units = stratSection.column_y_axis_units;
       vm.addIntervalModal.show();
     }
@@ -459,12 +470,12 @@
         return 0;
       }
       var incomplete = false;
-      if (vm.data.interval_type === 'clastic' && !vm.data.principal_grain_size_clastic) incomplete = true;
-      else if (vm.data.interval_type === 'carbonate' && !vm.data.principal_dunham_classificatio) incomplete = true;
-      else if (vm.data.interval_type === 'mixed_clastic' &&
-        !(vm.data.principal_grain_size_clastic || vm.data.principal_dunham_classificatio)) incomplete = true;
-      else if (vm.data.interval_type === 'misc_lithologi' && !vm.data.misc_lithologies) incomplete = true;
-      else if (vm.data.interval_type === 'weathering_pro' && !vm.data.relative_resistance) incomplete = true;
+      if (vm.data.interval_type === 'lithology' && !vm.data.lithologies) incomplete = true;
+      else if (vm.data.interval_type === 'lithology' && vm.data.lithologies === 'siliciclastic' &&
+        !vm.data.principal_grain_size_clastic) incomplete = true;
+      else if (vm.data.interval_type === 'lithology' && (vm.data.lithologies === 'limestone' ||
+          vm.data.lithologies === 'dolomite') && !vm.data.principal_dunham_classificatio) incomplete = true;
+      else if (vm.data.interval_type === 'weathering_pro' && !vm.data.relative_resistance_weathering) incomplete = true;
       if (!vm.data.interval_thickness || !vm.data.thickness_units) incomplete = true;
       if (incomplete) {
         $ionicPopup.alert({

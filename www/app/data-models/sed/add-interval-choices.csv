@@ -1,46 +1,49 @@
 list_name,name,label,order
-xt05j55,clastic,clastic,
-xt05j55,carbonate,carbonate,1
-xt05j55,mixed_clastic,mixed clastic/carbonate,2
-xt05j55,misc_lithologi,misc. lithologies,3
-xt05j55,weathering_pro,weathering profile,4
-xt05j55,unexposed,unexposed/covered,5
-jv85i54,clay,clay,
-jv85i54,mud,mud,
-jv85i54,silt,silt,
-jv85i54,sand_v_fine,sand - very fine,
-jv85i54,sand_fine_lwr,sand - fine lower,
-jv85i54,sand_fine_upr,sand - fine upper,
-jv85i54,sand_med_lwr,sand - medium lower,
-jv85i54,sand_med_upr,sand - medium upper,
-jv85i54,sand_coar_lwr,sand - coarse lower,
-jv85i54,sand_coar_upr,sand - coarse upper,
-jv85i54,sand_v_coar,sand - very coarse,
-jv85i54,granule,granule,
-jv85i54,pebble,pebble,
-jv85i54,cobble,cobble,
-jv85i54,boulder,boulder,
-qf3ff03,mudstone,mudstone,
-qf3ff03,wackestone,wackestone,
-qf3ff03,packstone,packstone,
-qf3ff03,grainstone,grainstone,
-qf3ff03,boundstone,boundstone,
-qf3ff03,cementstone,cementstone,
-qf3ff03,recrystallized,recrystallized,
-qf3ff03,floatstone,floatstone,
-qf3ff03,rudstone,rudstone,
-qf3ff03,framestone,framestone,
-qf3ff03,bafflestone,bafflestone,
-qf3ff03,bindstone,bindstone,
-dz6vz62,coal,coal,
-dz6vz62,evaporites,evaporites,
-dz6vz62,tuff,tuff,
-wc2ju40,1_least_resist,1 - least resistant,
-wc2ju40,2,2 ,
-wc2ju40,3_mod_resistan,3 - moderately resistant,
-wc2ju40,4,4,
-wc2ju40,5_most_resista,5 - most resistant,
-jt6by54,cm,cm,
-jt6by54,m,m,1
-jt6by54,in,in,2
-jt6by54,ft,ft,3
+hq17k89,cm,cm,
+hq17k89,m,m,
+hq17k89,in,in,
+hq17k89,ft,ft,
+ts5mf52,lithology,lithology,
+ts5mf52,weathering_profile,weathering profile,
+ts5mf52,unexposed_covered,unexposed/covered,
+eb2oc45,siliciclastic,siliciclastic,
+eb2oc45,limestone,limestone,1
+eb2oc45,dolomite,dolomite,2
+eb2oc45,organic_coal,organic/coal,3
+eb2oc45,evaporite,evaporite,4
+eb2oc45,chert,chert,5
+eb2oc45,ironstone,ironstone,6
+eb2oc45,phosphatic,phosphatic,7
+eb2oc45,volcaniclastic,volcaniclastic,8
+su4gj26,clay,clay,
+su4gj26,mud,mud,
+su4gj26,silt,silt,
+su4gj26,sand_v_fine,sand - very fine,
+su4gj26,sand_fine_lwr,sand - fine lower,
+su4gj26,sand_fine_upr,sand - fine upper,
+su4gj26,sand_med_lwr,sand - medium lower,
+su4gj26,sand_med_upr,sand - medium upper,
+su4gj26,sand_coar_lwr,sand - coarse lower,
+su4gj26,sand_coar_upr,sand - coarse upper,
+su4gj26,sand_v_coar,sand - very coarse,
+su4gj26,granule,granule,
+su4gj26,pebble,pebble,
+su4gj26,cobble,cobble,
+su4gj26,boulder,boulder,
+uf03r86,mudstone,mudstone,
+uf03r86,wackestone,wackestone,1
+uf03r86,packstone,packstone,2
+uf03r86,grainstone,grainstone,3
+uf03r86,floatstone,floatstone,4
+uf03r86,rudstone,rudstone,5
+uf03r86,framestone,framestone,6
+uf03r86,bafflestone,bafflestone,7
+uf03r86,bindstone,bindstone,8
+uf03r86,boundstone,boundstone,9
+uf03r86,cementstone,cementstone,10
+uf03r86,recrystallized,recrystallized,11
+dt0dc27,1_least_resist,1 - least resistant,
+dt0dc27,2,2,
+dt0dc27,3_mod_resistan,3 - moderately resistant,
+dt0dc27,4,4,
+dt0dc27,5_most_resista,5 - most resistant,
