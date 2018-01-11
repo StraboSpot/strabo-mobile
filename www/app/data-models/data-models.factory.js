@@ -133,6 +133,7 @@
     };
     var featureTypeLabels = {};
     var labelsDictionary = {};
+    var sedLabelsDictionary = {};
     var spotDataModel = {};
     var surfaceFeatureTypeLabels = {};
     var traceTypeLabels = {};
@@ -141,7 +142,8 @@
       'getDataModel': getDataModel,
       'getFeatureTypeLabel': getFeatureTypeLabel,
       'getLabel': getLabel,
-      'getSedGrainSizeLabelsDictionary': getSedGrainSizeLabelsDictionary,
+      'getSedLabel': getSedLabel,
+      'getSedLabelsDictionary': getSedLabelsDictionary,
       'getSpotDataModel': getSpotDataModel,
       'getSurfaceFeatureTypeLabel': getSurfaceFeatureTypeLabel,
       'getTraceTypeLabel': getTraceTypeLabel,
@@ -195,6 +197,51 @@
       $log.log('Labels Dictionary:', labelsDictionary);
     }
 
+    function createSedLabelsDictionary() {
+      sedLabelsDictionary = {'clastic': [], 'carbonate': [], 'lithologies': [], 'weathering': []};
+      var survey = dataModels.sed.add_interval.survey;
+      var clastic = _.find(survey, function (field) {
+        return field.name === 'principal_grain_size_clastic';
+      });
+      var carbonate = _.find(survey, function (field) {
+        return field.name === 'principal_dunham_classificatio';
+      });
+      var lithologies = _.find(survey, function (field) {
+        return field.name === 'lithologies';
+      });
+      var weathering = _.find(survey, function (field) {
+        return field.name === 'relative_resistance_weathering';
+      });
+      var clasticChoices = _.filter(dataModels.sed.add_interval.choices, function (choice) {
+        return choice.list_name === clastic.type.split(' ')[1]
+      });
+      var carbonateChoices = _.filter(dataModels.sed.add_interval.choices, function (choice) {
+        return choice.list_name === carbonate.type.split(' ')[1]
+      });
+      var lithologiesChoices = _.filter(dataModels.sed.add_interval.choices, function (choice) {
+        return choice.list_name === lithologies.type.split(' ')[1]
+      });
+      var weatheringChoices = _.filter(dataModels.sed.add_interval.choices, function (choice) {
+        return choice.list_name === weathering.type.split(' ')[1]
+      });
+      _.each(clasticChoices, function (choice, i) {
+        sedLabelsDictionary.clastic.push({'value': choice.name, 'label': choice.label});
+        //sedLabelsDictionary.clastic[choice.name] = {'label': choice.label, 'order': i};
+      });
+      _.each(carbonateChoices, function (choice, i) {
+        sedLabelsDictionary.carbonate.push({'value': choice.name, 'label': choice.label});
+        //sedLabelsDictionary.carbonate[choice.name] = {'label': choice.label, 'order': i};
+      });
+      _.each(lithologiesChoices, function (choice, i) {
+        sedLabelsDictionary.lithologies.push({'value': choice.name, 'label': choice.label});
+        //sedLabelsDictionary.lithologies[choice.name] = {'label': choice.label, 'order': i};
+      });
+      _.each(weatheringChoices, function (choice, i) {
+        sedLabelsDictionary.weathering.push({'value': choice.name, 'label': choice.label});
+        //sedLabelsDictionary.weathering[choice.name] = {'label': choice.label, 'order': i};
+      });
+    }
+
     function createSpotDataModel() {
       spotDataModel = {
         'geometry': {
@@ -211,7 +258,7 @@
           'notes': 'Type: text',
           'orientation_data': [],
           'samples': [],
-          'sed': { 'lithologies': {}},
+          'sed': {'lithologies': {}},
           'time': 'datetime',
           'trace': {}
         }
@@ -353,47 +400,20 @@
       return labelsDictionary[label] || undefined;
     }
 
-    function getSedGrainSizeLabelsDictionary() {
-      var grainSizeLabelsDictionary = {'clastic': [], 'carbonate': [], 'misc': [], 'weathering': []};
-      var survey = dataModels.sed.add_interval.survey;
-      var clastic = _.find(survey, function (field) {
-        return field.name === 'principal_grain_size_clastic';
+    function getSedLabel(value) {
+      var matchedSedLabelsSet = _.find(sedLabelsDictionary, function (sedLabelsSet) {
+        return _.find(sedLabelsSet, function (sedLabel) {
+          return sedLabel.value === value;
+        });
       });
-      var carbonate = _.find(survey, function (field) {
-        return field.name === 'principal_dunham_classificatio';
+      var matchedLabel = _.find(matchedSedLabelsSet, function (sedLabel) {
+        return sedLabel.value === value;
       });
-      var misc = _.find(survey, function (field) {
-        return field.name === 'misc_lithologies';
-      });
-      var weathering = _.find(survey, function (field) {
-        return field.name === 'relative_resistance';
-      });
-      var clasticChoices = _.filter(dataModels.sed.add_interval.choices, function (choice) {
-        return choice.list_name === clastic.type.split(' ')[1]
-      });
-      var carbonateChoices = _.filter(dataModels.sed.add_interval.choices, function (choice) {
-        return choice.list_name === carbonate.type.split(' ')[1]
-      });
-      var miscChoices = _.filter(dataModels.sed.add_interval.choices, function (choice) {
-        return choice.list_name === misc.type.split(' ')[1]
-      });
-      var weatheringChoices = _.filter(dataModels.sed.add_interval.choices, function (choice) {
-        return choice.list_name === weathering.type.split(' ')[1]
-      });
-      _.each(clasticChoices, function (choice) {
-        grainSizeLabelsDictionary.clastic.push({'value': choice.name, 'label': choice.label});
-      });
-      _.each(carbonateChoices, function (choice) {
-        grainSizeLabelsDictionary.carbonate.push({'value': choice.name, 'label': choice.label});
-        //grainSizeLabelsDictionary.carbonate[choice.name] = choice.label;
-      });
-      _.each(miscChoices, function (choice) {
-        grainSizeLabelsDictionary.misc.push({'value': choice.name, 'label': choice.label});
-      });
-      _.each(weatheringChoices, function (choice) {
-        grainSizeLabelsDictionary.weathering.push({'value': choice.name, 'label': choice.label});
-      });
-      return grainSizeLabelsDictionary;
+      return matchedLabel.label;
+    }
+
+    function getSedLabelsDictionary() {
+      return sedLabelsDictionary;
     }
 
     function getSpotDataModel() {
@@ -430,6 +450,7 @@
         createSpotDataModel();
         createFeatureTypesDictionary();
         createOtherLabelsDictionary();
+        createSedLabelsDictionary();
         deferred.resolve();
       });
       return deferred.promise;

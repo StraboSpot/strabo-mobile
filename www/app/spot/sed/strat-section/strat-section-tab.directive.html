@@ -16,7 +16,7 @@
       <input type='text' placeholder='Label this section' ng-model='vm.spot.properties.sed.strat_section.label'>
     </ion-input>
     <ion-input class="item item-input item-select item-stacked-label item-text-wrap">
-      <ion-label>Column Profile</ion-label>
+      <ion-label>Column Profile (X-Axis Labels)</ion-label>
       <select ng-model='vm.spot.properties.sed.strat_section.column_profile'>
         <option value='clastic'>clastic</option>
         <option value='carbonate'>carbonate</option>
@@ -25,6 +25,7 @@
         <option value=''>-- Select Column Profile --</option>
       </select>
     </ion-input>
+    <ion-checkbox ng-model="vm.spot.properties.sed.strat_section.misc_labels">Show Labels for Misc Lithologies</ion-checkbox>
     <ion-input class="item item-input item-select item-stacked-label item-text-wrap">
       <ion-label>Column Y-Axis Units</ion-label>
       <select ng-model='vm.spot.properties.sed.strat_section.column_y_axis_units'>
