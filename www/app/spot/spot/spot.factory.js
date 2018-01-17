@@ -6,10 +6,10 @@
     .factory('SpotFactory', SpotFactory);
 
   SpotFactory.$inject = ['$ionicPopup', '$location', '$log', '$state', '$q', 'HelpersFactory', 'LiveDBFactory',
-    'LocalStorageFactory', 'ProjectFactory'];
+    'LocalStorageFactory', 'ProjectFactory', 'IS_WEB'];
 
   function SpotFactory($ionicPopup, $location, $log, $state, $q, HelpersFactory, LiveDBFactory, LocalStorageFactory,
-                       ProjectFactory) {
+                       ProjectFactory, IS_WEB) {
     var activeNest = [];
     var activeSpots;  // Only Spots in the active datasets
     var currentSpotId = undefined;
@@ -257,12 +257,12 @@
 
     function getImagePropertiesById(imageId) {
       var foundImage = undefined;
-     _.each(spots, function (spot) {
+      _.each(spots, function (spot) {
         _.each(spot.properties.images, function (image) {
           if (imageId === image.id) foundImage = image;
         });
       });
-     return foundImage;
+      return foundImage;
     }
 
     function getKeepSpotSelected() {
@@ -297,7 +297,7 @@
       return spotsTemp;
     }
 
-    function getTabs(){
+    function getTabs() {
       return tabs;
     }
 
@@ -338,28 +338,16 @@
 
     // Save the Spot to the local database if it's been changed
     function save(saveSpot) {
-      $log.log('In Spot Factory Save();');
-      $log.log('Spot to save: ', saveSpot);
-      $log.log('Existing Spot: ', spots[saveSpot.properties.id]);
       var deferred = $q.defer(); // init promise
-      var isEqual = _.isEqual(saveSpot, spots[saveSpot.properties.id]);
-      if (isEqual) {
-        $log.log('Spot not changed. No need to save Spot.');
-        $log.log('All Spots:', spots);
+      saveSpot.properties.modified_timestamp = Date.now();
+      $log.log('Spot has changed. Saving Spot:', saveSpot, '...');
+      if (IS_WEB) LiveDBFactory.save(saveSpot, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
+      LocalStorageFactory.getDb().spotsDb.setItem(saveSpot.properties.id.toString(), saveSpot).then(function () {
+        spots[saveSpot.properties.id] = angular.fromJson(angular.toJson(saveSpot));
+        deferred.notify();
+        $log.log('Spot Saved. All Spots:', spots);
         deferred.resolve(spots);
-      }
-      else {
-        saveSpot.properties.modified_timestamp = Date.now();
-        $log.log('Spot has changed. Saving Spot:', saveSpot, '...');
-        $log.log('Calling LiveDBFactory ...');
-        LiveDBFactory.save(saveSpot, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
-        LocalStorageFactory.getDb().spotsDb.setItem(saveSpot.properties.id.toString(), saveSpot).then(function () {
-          spots[saveSpot.properties.id] = angular.fromJson(angular.toJson(saveSpot));
-          deferred.notify();
-          $log.log('Spot Saved. All Spots:', spots);
-          deferred.resolve(spots);
-        });
-      }
+      });
       return deferred.promise;
     }
 

@@ -7,12 +7,12 @@
 
   SpotController.$inject = ['$document', '$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover',
     '$ionicPopup', '$location', '$log', '$q', '$rootScope', '$scope', '$state', '$timeout', 'FormFactory',
-    'HelpersFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'TagFactory', 'IS_WEB'];
+    'HelpersFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'StratSectionFactory', 'TagFactory', 'IS_WEB'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
   function SpotController($document, $ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup, $location,
                           $log, $q, $rootScope, $scope, $state, $timeout, FormFactory, HelpersFactory, MapViewFactory,
-                          ProjectFactory, SpotFactory, TagFactory, IS_WEB) {
+                          ProjectFactory, SpotFactory, StratSectionFactory, TagFactory, IS_WEB) {
     var vmParent = $scope.vm;
     var vm = this;
 
@@ -116,7 +116,7 @@
         }, true);
       }
 
-      $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
+      $scope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
         if (vm.spotChanged && fromState.name === 'app.spotTab.spot') {
           saveSpot().then(function (spots) {
             vm.spotChanged = false;
@@ -406,23 +406,34 @@
 
     function saveSpot() {
       if (vm.spot && vm.spot.properties) {
-        // Validate the form first
-        if (FormFactory.validateForm(vm.stateName, vm.spot, vm.data)) {
-          if (vm.stateName === 'app.spotTab.spot' && !_.isEmpty(vm.data)) {
-            if (vm.showTrace === true) {
-              if (!vm.spot.properties.trace) vm.spot.properties.trace = {};
-              vm.spot.properties.trace = vm.data;
+        vm.spot = HelpersFactory.cleanObj(vm.spot);
+        var savedSpot = SpotFactory.getSpotById(vm.spot.properties.id);
+        var isEqual = _.isEqual(vm.spot, savedSpot);
+        if (isEqual) return $q.resolve(vm.spot);
+        else {
+          $log.log('Spot Changed! Existing Spot:', savedSpot, 'Spot to Save:', vm.spot);
+          vm.data = HelpersFactory.cleanObj(vm.data);
+          // Validate the form first
+          if (FormFactory.validateForm(vm.stateName, vm.spot, vm.data)) {
+            if (vm.stateName === 'app.spotTab.spot' && !_.isEmpty(vm.data)) {
+              if (vm.showTrace === true) {
+                if (!vm.spot.properties.trace) vm.spot.properties.trace = {};
+                vm.spot.properties.trace = vm.data;
+              }
+              else if (vm.showSurfaceFeature === true) {
+                if (!vm.spot.properties.surface_feature) vm.spot.properties.surface_feature = {};
+                vm.spot.properties.surface_feature = vm.data;
+              }
             }
-            else if (vm.showSurfaceFeature === true) {
-              if (!vm.spot.properties.surface_feature) vm.spot.properties.surface_feature = {};
-              vm.spot.properties.surface_feature = vm.data;
+            // If Spot is an interval check if we need to do any updates to the interval
+            if (StratSectionFactory.isInterval(vm.spot)) {
+              vm.spot = StratSectionFactory.checkForIntervalUpdates(vm.stateName, vm.spot, savedSpot);
             }
+            if (vm.spot.properties.inferences) delete vm.spot.properties.inferences;  // Remove leftover inferences
+            return SpotFactory.save(vm.spot);
           }
-          if (vm.spot.properties.inferences) delete vm.spot.properties.inferences;  // Remove leftover inferences
-          vm.spot = HelpersFactory.cleanObj(vm.spot);
-          return SpotFactory.save(vm.spot);
+          else $ionicLoading.hide();
         }
-        else $ionicLoading.hide();
       }
       return $q.reject(null);
     }
