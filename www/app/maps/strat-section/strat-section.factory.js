@@ -16,6 +16,7 @@
     var yMultiplier = 20;  // 1 m interval thickness = 20 pixels
 
     return {
+      'checkForIntervalUpdates': checkForIntervalUpdates,
       'createInterval': createInterval,
       'drawAxes': drawAxes,
       'gatherSpotsWithStratSections': gatherSpotsWithStratSections,
@@ -23,6 +24,7 @@
       'getSpotWithThisStratSection': getSpotWithThisStratSection,
       'getSpotsWithStratSections': getSpotsWithStratSections,
       'getStratSectionSpots': getStratSectionSpots,
+      'isInterval': isInterval,
       'orderStratSectionIntervals': orderStratSectionIntervals
     };
 
@@ -113,6 +115,44 @@
     /**
      * Public Functions
      */
+
+    function checkForIntervalUpdates(state, spot, savedSpot) {
+      // Current state is spot tab
+      if (state === 'app.spotTab.spot') {
+        // If Spot is an interval with geometry and and the surface feature type has been changed update interval thickness
+        if (!savedSpot.properties.surface_feature || !savedSpot.properties.surface_feature.surface_feature_type ||
+        !savedSpot.properties.surface_feature.surface_feature_type  !== 'strat_interval') {
+          if (spot.geometry) {
+            if (!spot.properties.sed) spot.properties.sed = {};
+            if (!spot.properties.sed.lithologies) spot.properties.sed.lithologies = {};
+            $log.log('Updating interval thickness ...');
+            var extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
+            var thickness = (extent[3] - extent[1]) / yMultiplier; // 20 is yMultiplier
+            thickness = HelpersFactory.roundToDecimalPlaces(thickness, 2);
+            spot.properties.sed.lithologies.interval_thickness = thickness;
+          }
+        }
+      }
+      // Current state is sed-lithologies tab
+      else if (state === 'app.spotTab.sed-lithologies') {
+        // If Spot is an interval with geometry and the interval thickness has changed update the geometry
+        if (spot.properties.sed && spot.properties.sed.lithologies &&
+          spot.properties.sed.lithologies.interval_thickness && savedSpot.properties.sed &&
+          savedSpot.properties.sed.lithologies && savedSpot.properties.sed.lithologies.interval_thickness &&
+          spot.properties.sed.lithologies.interval_thickness !==
+          savedSpot.properties.sed.lithologies.interval_thickness) {
+          $log.log('Interval thickness changed. Updating geometry ...');
+          var extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
+          var intervalHeight = spot.properties.sed.lithologies.interval_thickness * yMultiplier;
+          var minX = extent[0];
+          var maxX = extent[2];
+          var minY = extent[1];
+          var maxY = minY + intervalHeight;
+          spot.geometry.coordinates =  [[[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY], [minX, minY]]];
+        }
+      }
+      return spot;
+    }
 
     function createInterval(stratSectionId, data) {
       var minX = 0;
@@ -283,6 +323,12 @@
 
     function getSpotsWithStratSections() {
       return spotsWithStratSections;
+    }
+
+    function isInterval(spot) {
+      return spot.properties && spot.properties.surface_feature &&
+        spot.properties.surface_feature.surface_feature_type &&
+        spot.properties.surface_feature.surface_feature_type === 'strat_interval';
     }
 
     function orderStratSectionIntervals(intervals) {
