@@ -137,7 +137,7 @@
 
       // display popup on click
       map.on('click', function (evt) {
-        $log.log('map clicked at pixel:', evt.pixel, 'mapcoords:', map.getCoordinateFromPixel(evt.pixel));
+        //$log.log('map clicked at pixel:', evt.pixel, 'mapcoords:', map.getCoordinateFromPixel(evt.pixel));
         MapFeaturesFactory.removeSelectedSymbol(map);
 
         // are we in draw mode?  If so we dont want to display any popovers during draw mode
