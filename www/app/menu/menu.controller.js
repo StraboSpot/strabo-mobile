@@ -61,7 +61,7 @@
 
     function getIsStratSectionMode() {
       var preferences = ProjectFactory.getPreferences();
-      return _.has(preferences, 'is_strat_mode');
+      return _.has(preferences, 'strat_mode');
     }
 
     function getProjectName() {
