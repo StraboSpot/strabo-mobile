@@ -421,12 +421,32 @@
         // If the edited spot was an interval in a strat section recalculate the thickness
         if (editedSpot.properties.strat_section_id && editedSpot.properties.surface_feature &&
           editedSpot.properties.surface_feature.surface_feature_type === 'strat_interval') {
-          var extent = new ol.format.GeoJSON().readFeature(editedSpot).getGeometry().getExtent();
+          var geometry = new ol.format.GeoJSON().readFeature(editedSpot).getGeometry();
+          // Make sure edited intervals do not have min x or min y values less than 0
+          var coords = _.map(geometry.getCoordinates()[0], function (coord) {
+            return [coord[0] > 0 ? coord[0] : 0, coord[1] > 0 ? coord[1] : 0];
+          });
+          editedSpot.geometry.coordinates = [coords];
+          geometry.setCoordinates([coords]);
+          var extent = geometry.getExtent();
           var thickness = (extent[3] - extent[1]) / 20; // 20 is yMultiplier - see StratSectionFactory
           thickness = HelpersFactory.roundToDecimalPlaces(thickness, 2);
           if (!editedSpot.properties.sed) editedSpot.properties.sed = {};
           if (!editedSpot.properties.sed.lithologies) editedSpot.properties.sed.lithologies = {};
           editedSpot.properties.sed.lithologies.interval_thickness = thickness;
+          // Update Map Feature
+          map.getLayers().forEach(function (layerGroup) {
+            if (layerGroup.get('name') === 'featureLayer') {
+              layerGroup.getLayers().forEach(function (layer) {
+                layer.getSource().getFeatures().forEach(function (feature) {
+                  if (feature.get('id') === editedSpot.properties.id) {
+                    feature.setProperties(editedSpot.properties);       // Update map feature with new thickness
+                    feature.getGeometry().setCoordinates([coords]);     // Update map feature with new geometry
+                  }
+                });
+              });
+            }
+          });
         }
         promises.push(SpotFactory.save(editedSpot));
         // Update the displayed geometry if edited feature is being displayed in the map side panel
