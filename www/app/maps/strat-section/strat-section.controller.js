@@ -203,15 +203,6 @@
       }).then(function (modal) {
         vm.newNestModal = modal;
       });
-
-      $ionicModal.fromTemplateUrl('app/maps/strat-section/add-interval-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up',
-        'backdropClickToClose': false,
-        'hardwareBackButtonClose': false
-      }).then(function (modal) {
-        vm.addIntervalModal = modal;
-      });
     }
 
     function createPageEvents() {
@@ -331,6 +322,18 @@
       $log.log('stratSectionIntervals', vm.stratSectionIntervals);
     }
 
+    function openIntervalModal() {
+      $ionicModal.fromTemplateUrl('app/maps/strat-section/add-interval-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false,
+        'hardwareBackButtonClose': false
+      }).then(function (modal) {
+        vm.addIntervalModal = modal;
+        vm.addIntervalModal.show();
+      });
+    }
+
     function updateFeatureLayer() {
       $log.log('Updating Feature Layer ...');
       gatherSpots();
@@ -350,20 +353,20 @@
       vm.data = {};
       if (stratSection.column_profile && stratSection.column_profile === 'clastic') {
         vm.data.interval_type = 'lithology';
-        vm.data.lithologies = 'siliciclastic';
+        vm.data.primary_lithology = 'siliciclastic';
       }
       else if (stratSection.column_profile && stratSection.column_profile === 'carbonate') {
         vm.data.interval_type = 'lithology';
-        vm.data.lithologies = 'limestone';
+        vm.data.primary_lithology = 'limestone';
       }
       else if (stratSection.column_profile && stratSection.column_profile === 'mixed_clastic') {
         vm.data.interval_type = 'lithology';
       }
       else if (stratSection.column_profile && stratSection.column_profile === 'weathering_pro') {
-        vm.data.interval_type = 'weathering_profile';
+        vm.data.interval_type = 'weathering_pro';
       }
       if (stratSection.column_y_axis_units) vm.data.thickness_units = stratSection.column_y_axis_units;
-      vm.addIntervalModal.show();
+      openIntervalModal();
     }
 
     function closeModal(modal) {
@@ -467,24 +470,9 @@
           vm.data.thickness_units + '</b> have been designated for this interval. Please fix the units ' +
           'for this interval.'
         });
-        return 0;
       }
-      var incomplete = false;
-      if (vm.data.interval_type === 'lithology' && !vm.data.lithologies) incomplete = true;
-      else if (vm.data.interval_type === 'lithology' && vm.data.lithologies === 'siliciclastic' &&
-        !vm.data.principal_grain_size_clastic) incomplete = true;
-      else if (vm.data.interval_type === 'lithology' && (vm.data.lithologies === 'limestone' ||
-          vm.data.lithologies === 'dolomite') && !vm.data.principal_dunham_classificatio) incomplete = true;
-      else if (vm.data.interval_type === 'weathering_pro' && !vm.data.relative_resistance_weathering) incomplete = true;
-      if (!vm.data.interval_thickness || !vm.data.thickness_units) incomplete = true;
-      if (incomplete) {
-        $ionicPopup.alert({
-          'title': 'Incomplete Data',
-          'template': 'You must enter all required fields to create a new interval.'
-        });
-      }
-      else {
-        vm.addIntervalModal.hide();
+      else if (FormFactory.validate(vm.data)) {
+        vm.addIntervalModal.remove();
         var newInterval = StratSectionFactory.createInterval(stratSection.strat_section_id, vm.data);
         SpotFactory.setNewSpot(newInterval).then(function (id) {
           updateFeatureLayer();

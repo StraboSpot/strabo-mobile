@@ -25,6 +25,30 @@
     };
 
     /**
+     * Private Functions
+     */
+
+    function validateSedData(data, errorMessages) {
+      if (data.interval_type === 'lithology' && !data.primary_lithology) {
+        errorMessages.push('The Primary Lithology must be specified if the Interval Type is lithology.');
+      }
+      else if (data.interval_type === 'lithology' && data.primary_lithology === 'siliciclastic' &&
+        !data.principal_grain_size_clastic) {
+        errorMessages.push('The Principal Grain Size must be specified if the Primary Lithology is siliciclastic.');
+      }
+      else if (data.interval_type === 'lithology' && (data.primary_lithology === 'limestone' ||
+          data.primary_lithology === 'dolomite') && !data.principal_dunham_classificatio) {
+        errorMessages.push('The Principal Dunham Classification must be specified if the Primary Lithology is ' +
+          'limestone or dolomite.');
+      }
+      else if (data.interval_type === 'weathering_pro' && !data.relative_resistance_weathering) {
+        errorMessages.push('The Relative Resistance (Weathering Profile) must be specified if the Interval ' +
+          'Type is weathering profile.');
+      }
+      return errorMessages;
+    }
+
+    /**
      * Public Functions
      */
 
@@ -125,7 +149,7 @@
 
     function validate(data) {
       $log.log('Validating form with data:', data);
-      var errorMessages = '';
+      var errorMessages = [];
       var formCtrl = angular.element(document.getElementById('straboFormCtrlId')).scope();
       // If a field is visible and required but empty give the user an error message and return to the form
       _.each(form.survey, function (field) {
@@ -133,59 +157,52 @@
           var ele = $document[0].getElementById(field.name);
           var formEle = formCtrl.straboForm[ele.id];
           if (getComputedStyle(ele).display !== 'none' && formEle && formEle.$valid === false) {
-            if (field.required === 'true') errorMessages += '<b>' + field.label + '</b>: Required!<br>';
+            if (field.required === 'true') errorMessages.push('<b>' + field.label + '</b>: Required!');
             else {
               var constraint = field.constraint_message ? field.constraint_message : 'Error in field.';
-              errorMessages += '<b>' + field.label + '</b>: ' + constraint + '<br>';
+              errorMessages.push('<b>' + field.label + '</b>: ' + constraint);
             }
           }
           else if (getComputedStyle(ele).display === 'none') delete data[field.name];
         }
       });
 
-      if (errorMessages) {
+      if (_.isEmpty(errorMessages)) return true;
+      else {
         $ionicPopup.alert({
           'title': 'Validation Error!',
-          'template': 'Fix the following errors before continuing:<br>' + errorMessages
+          'template': 'Fix the following errors before continuing:<br>' + errorMessages.join('<br>')
         });
-        $log.log('Not valid!');
         return false;
       }
-      $log.log('Valid!');
-      return true;
     }
 
     // Validate Spot Tab
     function validateForm(stateName, spot, data) {
-      if (stateName === 'app.spotTab.spot') {
-        if (!spot.properties.name) {
+      if (_.isEmpty(form.survey)) return true;
+      else if (validate(data)) {
+        var errorMessages = [];
+        if (stateName === 'app.spotTab.spot') {
+          if (!spot.properties.name) errorMessages.push('<b>Spot Name</b> is required.');
+          if (spot.geometry && spot.geometry.type === 'Point' && (!spot.geometry.coordinates[0] ||
+              !spot.geometry.coordinates[1])) {
+            errorMessages.push('Both <b>Latitude</b> and <b>longitude</b> are required.');
+          }
+        }
+        else if (stateName === 'app.spotTab.sed-lithologies' && spot.properties.sed &&
+          spot.properties.sed.lithologies) {
+          errorMessages = validateSedData(spot.properties.sed.lithologies, errorMessages);
+        }
+        if (_.isEmpty(errorMessages)) return true;
+        else {
           $ionicPopup.alert({
-            'title': 'Validation Error!',
-            'template': '<b>Spot Name</b> is required.'
+            'title': 'Data Validation Error',
+            'template': errorMessages.join('<br>')
           });
           return false;
         }
-        if (spot.geometry) {
-          if (spot.geometry.type === 'Point') {
-            var geoError;
-            if (!spot.geometry.coordinates[0] && !spot.geometry.coordinates[1]) {
-              geoError = '<b>Latitude</b> and <b>longitude</b> are required.';
-            }
-            else if (!spot.geometry.coordinates[0]) geoError = '<b>Longitude</b> is required.';
-            else if (!spot.geometry.coordinates[1]) geoError = '<b>Latitude</b> is required.';
-            if (geoError) {
-              $ionicPopup.alert({
-                'title': 'Validation Error!',
-                'template': geoError
-              });
-              return false;
-            }
-          }
-        }
-        if (!_.isEmpty(form.survey)) return validate(data);
-        return true;
       }
-      return true;
+      else return false;
     }
   }
 }());

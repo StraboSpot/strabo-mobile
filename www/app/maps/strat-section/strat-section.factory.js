@@ -117,16 +117,17 @@
      */
 
     function checkForIntervalUpdates(state, spot, savedSpot) {
+      var i, extent;
       // Current state is spot tab
       if (state === 'app.spotTab.spot') {
-        // If Spot is an interval with geometry and and the surface feature type has been changed update interval thickness
+        // Calculate interval thickness if Spot has geometry and the surface feature type changed to strat interval
         if (!savedSpot.properties.surface_feature || !savedSpot.properties.surface_feature.surface_feature_type ||
-        !savedSpot.properties.surface_feature.surface_feature_type  !== 'strat_interval') {
+          !savedSpot.properties.surface_feature.surface_feature_type !== 'strat_interval') {
           if (spot.geometry) {
             if (!spot.properties.sed) spot.properties.sed = {};
             if (!spot.properties.sed.lithologies) spot.properties.sed.lithologies = {};
             $log.log('Updating interval thickness ...');
-            var extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
+            extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
             var thickness = (extent[3] - extent[1]) / yMultiplier; // 20 is yMultiplier
             thickness = HelpersFactory.roundToDecimalPlaces(thickness, 2);
             spot.properties.sed.lithologies.interval_thickness = thickness;
@@ -135,20 +136,55 @@
       }
       // Current state is sed-lithologies tab
       else if (state === 'app.spotTab.sed-lithologies') {
-        // If Spot is an interval with geometry and the interval thickness has changed update the geometry
-        if (spot.properties.sed && spot.properties.sed.lithologies &&
-          spot.properties.sed.lithologies.interval_thickness && savedSpot.properties.sed &&
-          savedSpot.properties.sed.lithologies && savedSpot.properties.sed.lithologies.interval_thickness &&
-          spot.properties.sed.lithologies.interval_thickness !==
-          savedSpot.properties.sed.lithologies.interval_thickness) {
-          $log.log('Interval thickness changed. Updating geometry ...');
-          var extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
+        // Recalculate interval geometry from thickness and width, whether these particular fields changed or not
+        if (spot.geometry && spot.properties.sed && spot.properties.sed.lithologies) {
+          extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
+          var intervalWidth = extent[2] - extent[0];
           var intervalHeight = spot.properties.sed.lithologies.interval_thickness * yMultiplier;
-          var minX = extent[0];
-          var maxX = extent[2];
+          // Weathering Profile
+          if (spot.properties.sed.lithologies.interval_type === 'weathering_pro' &&
+            spot.properties.sed.lithologies.relative_resistance_weathering) {
+            i = _.findIndex(grainSizeOptions.weathering, function (grainSizeOption) {
+              return grainSizeOption.value === spot.properties.sed.lithologies.relative_resistance_weathering;
+            });
+            intervalWidth = (i + 1) * xInterval;
+          }
+          // Unexposed/Covered
+          else if (spot.properties.sed.lithologies.interval_type === 'unexposed_covered') {
+            intervalWidth = (0 + 1) * xInterval;    // Same as clay
+          }
+          else if (spot.properties.sed.lithologies.interval_type === 'lithology') {
+            // Lithology = siliciclastic
+            if (spot.properties.sed.lithologies.primary_lithology === 'siliciclastic') {
+              i = _.findIndex(grainSizeOptions.clastic, function (grainSizeOption) {
+                return grainSizeOption.value === spot.properties.sed.lithologies.principal_grain_size_clastic;
+              });
+              intervalWidth = (i + 1) * xInterval;
+            }
+            // Lithology = limestone or dolomite
+            else if (spot.properties.sed.lithologies.primary_lithology === 'limestone' ||
+                spot.properties.sed.lithologies.primary_lithology === 'dolomite') {
+              i = _.findIndex(grainSizeOptions.carbonate, function (grainSizeOption) {
+                return grainSizeOption.value === spot.properties.sed.lithologies.principal_dunham_classificatio;
+              });
+              intervalWidth = (i + 2.33) * xInterval;
+            }
+            // Other Lithologies
+            else {
+              i = _.findIndex(grainSizeOptions.lithologies, function (grainSizeOption) {
+                return grainSizeOption.value === spot.properties.sed.lithologies.primary_lithology;
+              });
+              i = i - 3; // First 3 indexes are siliclastic, limestone & dolomite which are handled above
+              intervalWidth = (i + 2.66) * xInterval;
+            }
+          }
+          else $log.error('Sed data error');
+          var minX = 0;
+          var maxX = intervalWidth;
           var minY = extent[1];
           var maxY = minY + intervalHeight;
-          spot.geometry.coordinates =  [[[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY], [minX, minY]]];
+          spot.geometry.coordinates = [[[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY], [minX, minY]]];
+          $log.log('Recalculated Spot geometry');
         }
       }
       return spot;
@@ -165,15 +201,15 @@
 
       var i, intervalWidth = xInterval;
       // Weathering Profile
-      if (data.interval_type === 'weathering_proile' && data.relative_resistance_weathering) {
+      if (data.interval_type === 'weathering_pro' && data.relative_resistance_weathering) {
         i = _.findIndex(grainSizeOptions.weathering, function (grainSizeOption) {
-          return grainSizeOption.value === data.relative_resistance;
+          return grainSizeOption.value === data.relative_resistance_weathering;
         });
         intervalWidth = (i + 1) * xInterval;
       }
       // Unexposed/Covered
       else if (data.interval_type === 'unexposed_covered') intervalWidth = (0 + 1) * xInterval;    // Same as clay
-      // Lithology = siliclastic
+      // Lithology = siliciclastic
       else if (data.principal_grain_size_clastic) {
         i = _.findIndex(grainSizeOptions.clastic, function (grainSizeOption) {
           return grainSizeOption.value === data.principal_grain_size_clastic;
@@ -190,7 +226,7 @@
       // Other Lithologies
       else {
         i = _.findIndex(grainSizeOptions.lithologies, function (grainSizeOption) {
-          return grainSizeOption.value === data.lithologies;
+          return grainSizeOption.value === data.primary_lithology;
         });
         i = i - 3; // First 3 indexes are siliclastic, limestone & dolomite which are handled above
         intervalWidth = (i + 2.66) * xInterval;
