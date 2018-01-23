@@ -801,6 +801,12 @@ Spots Page
 .relationships-on{
   background-color: #fccde5;
 }
+.strat-section-on{
+  background-color: #9bfdea;
+}
+.lithologies-on{
+  background-color: #f2a9fc;
+}
 .list-sub{
   font-size: small;
   padding-left: 24px;
