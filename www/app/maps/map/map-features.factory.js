@@ -321,7 +321,7 @@
         try {
           var lithology = featureProperties.sed.lithologies.principal_grain_size_clastic ||
             featureProperties.sed.lithologies.principal_dunham_classificatio ||
-            featureProperties.sed.lithologies.lithologies;
+            featureProperties.sed.lithologies.primary_lithology;
           if (lithology === 'clay') color = 'rgba(128, 222, 77, 1)';                // CMYK 50,13,70,0 USGS Color 682
           else if (lithology === 'mud') color = 'rgba(77, 255, 0, 1)';              // CMYK 70,0,100,0 USGS Color 890
           else if (lithology === 'silt') color = 'rgba(153, 255, 102, 1)';          // CMYK 40,0,60,0 USGS Color 570
@@ -364,8 +364,8 @@
             var ctx = canvas.getContext('2d');
 
             var extent = feature.getGeometry().getExtent();
-            var width = 10 / resolution * 2;
-            var height = (extent[3] - extent[1]) / resolution * 2;
+            var width = 10 / resolution * 2.5;
+            var height = (extent[3] - extent[1]) / resolution * 2.5;
             canvas.width = width;
             canvas.height = height;
 
@@ -642,8 +642,8 @@
         if (props.sed && props.sed.lithologies) {
           if (props.sed.lithologies.interval_thickness) text.push('Thickness: '+
             props.sed.lithologies.interval_thickness + ' ' + props.sed.lithologies.thickness_units);
-          if (props.sed.lithologies.lithologies) {
-            text.push('Lithology: '+ DataModelsFactory.getSedLabel(props.sed.lithologies.lithologies));
+          if (props.sed.lithologies.primary_lithology) {
+            text.push('Primary Lithology: '+ DataModelsFactory.getSedLabel(props.sed.lithologies.primary_lithology));
           }
           if (props.sed.lithologies.principal_grain_size_clastic) {
             text.push('Principal Grain Size: '+

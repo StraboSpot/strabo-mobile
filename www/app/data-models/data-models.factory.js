@@ -207,7 +207,7 @@
         return field.name === 'principal_dunham_classificatio';
       });
       var lithologies = _.find(survey, function (field) {
-        return field.name === 'lithologies';
+        return field.name === 'primary_lithology';
       });
       var weathering = _.find(survey, function (field) {
         return field.name === 'relative_resistance_weathering';

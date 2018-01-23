@@ -164,6 +164,19 @@
       });
     }
 
+    function go() {
+      if ($ionicHistory.backView()) {
+        if ($ionicHistory.backView().url === '/app/map') {
+          $ionicLoading.show({
+            'template': '<ion-spinner></ion-spinner><br>Loading Map...'
+          });
+          $log.log('Loading Map ...');
+        }
+        $ionicHistory.goBack();
+      }
+      else $location.path('/app/spots');      // default backView if no backView set
+    }
+
     // If the backView is within the same Spot keep getting backViews until
     // we get a backView out of the Spot or there are no more backViews
     function removeSameSpotBackViews() {
@@ -337,18 +350,10 @@
     function goBack() {
       SpotFactory.clearCurrentSpot();
       removeSameSpotBackViews();
-      saveSpot().finally(function () {
-        if ($ionicHistory.backView()) {
-          if ($ionicHistory.backView().url === '/app/map') {
-            $ionicLoading.show({
-              'template': '<ion-spinner></ion-spinner><br>Loading Map...'
-            });
-            $log.log('Loading Map ...');
-          }
-          $ionicHistory.goBack();
-        }
-        else $location.path('/app/spots');      // default backView if no backView set
-      });
+      if (vm.spot) saveSpot().then(function () {
+          go();
+        });
+      else go();
     }
 
     function goToBackHistoryUrl(url) {
@@ -399,15 +404,15 @@
     }
 
     function showTab(tab) {
-      if (tab === 'spot') return true;
       var preferences = ProjectFactory.getPreferences();
-      if (tab === 'strat_section' && preferences['strat_mode'] && !vm.spot.properties.strat_section_id) {
-        return true;
+      if (tab === 'spot') return true;
+      else if (tab === 'strat_section') {
+        return preferences['strat_mode'] && vm.spot && vm.spot.properties && !vm.spot.properties.strat_section_id;
       }
-      else if (tab === 'sed_lithologies' && preferences['strat_mode'] && vm.spot.properties.surface_feature &&
-        vm.spot.properties.surface_feature.surface_feature_type &&
-        vm.spot.properties.surface_feature.surface_feature_type === 'strat_interval') {
-        return true;
+      else if (tab === 'sed_lithologies') {
+        return preferences['strat_mode'] && vm.spot && vm.spot.properties && vm.spot.properties.surface_feature &&
+          vm.spot.properties.surface_feature.surface_feature_type &&
+          vm.spot.properties.surface_feature.surface_feature_type === 'strat_interval';
       }
       else return preferences[tab];
     }
@@ -457,7 +462,7 @@
         }
         $ionicHistory.backView();
         $location.path(toPath);
-      })
+      });
     }
 
     function toggleTagChecked(tag) {
