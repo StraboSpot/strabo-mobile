@@ -94,6 +94,12 @@
           'choices': {},
           'choices_file': 'app/data-models/sed/composition-choices.csv'
         },
+        'interpretations': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/interpretations-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/interpretations-choices.csv'
+        },
         'interval_basics': {
           'survey': {},
           'survey_file': 'app/data-models/sed/interval-basics-survey.csv',
