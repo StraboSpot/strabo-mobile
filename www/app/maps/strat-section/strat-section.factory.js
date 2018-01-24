@@ -5,10 +5,11 @@
     .module('app')
     .factory('StratSectionFactory', StratSectionFactory);
 
-  StratSectionFactory.$inject = ['$log', 'DataModelsFactory', 'HelpersFactory', 'MapLayerFactory', 'MapSetupFactory',
-    'SpotFactory'];
+  StratSectionFactory.$inject = ['$ionicPopup', '$log', '$q', 'DataModelsFactory', 'HelpersFactory', 'MapLayerFactory',
+    'MapSetupFactory', 'SpotFactory'];
 
-  function StratSectionFactory($log, DataModelsFactory, HelpersFactory, MapLayerFactory, MapSetupFactory, SpotFactory) {
+  function StratSectionFactory($ionicPopup, $log, $q, DataModelsFactory, HelpersFactory, MapLayerFactory,
+                               MapSetupFactory, SpotFactory) {
     var grainSizeOptions = DataModelsFactory.getSedLabelsDictionary();
     var spotsWithStratSections = {};
     var stratSectionSpots = {};
@@ -16,6 +17,7 @@
     var yMultiplier = 20;  // 1 m interval thickness = 20 pixels
 
     return {
+      'changeFromInterval': changeFromInterval,
       'checkForIntervalUpdates': checkForIntervalUpdates,
       'createInterval': createInterval,
       'drawAxes': drawAxes,
@@ -116,6 +118,36 @@
      * Public Functions
      */
 
+    // If a the surface feature of a Spot is being changed from a strat interval to something else
+    // delete the Sed fields we don't need anymore
+    function changeFromInterval(spot) {
+      var deferred = $q.defer(); // init promise
+      if (spot.properties.sed && (spot.properties.sed.lithologies || spot.properties.sed.structures)) {
+        var confirmPopup = $ionicPopup.confirm({
+          'cssClass': 'warning-popup',
+          'title': 'Change From Interval',
+          'template': 'Are you sure you want to change this Spot from a Strat Interval? This will ' +
+          '<span style="color:red">DELETE</span> all Sed properties for this interval.'
+        });
+        confirmPopup.then(function (res) {
+          if (res) {
+            if (spot.properties.sed.lithologies) delete spot.properties.sed.lithologies;
+            if (spot.properties.sed.structures) delete spot.properties.sed.structures;
+            if (_.isEmpty(spot.properties.sed)) delete spot.properties.sed;
+            return deferred.resolve();
+          }
+          else {
+            spot.properties.surface_feature.surface_feature_type = 'strat_interval';
+            return deferred.reject();
+          }
+        });
+      }
+      else deferred.resolve();
+      return deferred.promise;
+    }
+
+    // Check for any changes we need to make to the Sed fields or geometry when a Spot that is a strat interval
+    // has fields that are changed
     function checkForIntervalUpdates(state, spot, savedSpot) {
       var i, extent;
       // Current state is spot tab
@@ -131,6 +163,13 @@
             var thickness = (extent[3] - extent[1]) / yMultiplier; // 20 is yMultiplier
             thickness = HelpersFactory.roundToDecimalPlaces(thickness, 2);
             spot.properties.sed.lithologies.interval_thickness = thickness;
+            var spotWithThisStratSection = getSpotWithThisStratSection(spot.properties.strat_section_id);
+            if (spotWithThisStratSection.properties && spotWithThisStratSection.properties.sed &&
+              spotWithThisStratSection.properties.sed.strat_section) {
+              spot.properties.sed.lithologies.thickness_units =
+                spotWithThisStratSection.properties.sed.strat_section.column_y_axis_units;
+            }
+            spot.properties.sed.lithologies.interval_type = 'unexposed_covered';
           }
         }
       }
@@ -163,7 +202,7 @@
             }
             // Lithology = limestone or dolomite
             else if (spot.properties.sed.lithologies.primary_lithology === 'limestone' ||
-                spot.properties.sed.lithologies.primary_lithology === 'dolomite') {
+              spot.properties.sed.lithologies.primary_lithology === 'dolomite') {
               i = _.findIndex(grainSizeOptions.carbonate, function (grainSizeOption) {
                 return grainSizeOption.value === spot.properties.sed.lithologies.principal_dunham_classificatio;
               });

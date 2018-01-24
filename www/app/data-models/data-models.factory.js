@@ -106,6 +106,12 @@
           'choices': {},
           'choices_file': 'app/data-models/sed/stratification-choices.csv'
         },
+        'structures': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/structures-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/structures-choices.csv'
+        },
         'texture': {
           'survey': {},
           'survey_file': 'app/data-models/sed/texture-survey.csv',

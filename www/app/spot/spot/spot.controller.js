@@ -351,8 +351,8 @@
       SpotFactory.clearCurrentSpot();
       removeSameSpotBackViews();
       if (vm.spot) saveSpot().then(function () {
-          go();
-        });
+        go();
+      });
       else go();
     }
 
@@ -409,7 +409,7 @@
       else if (tab === 'strat_section') {
         return preferences['strat_mode'] && vm.spot && vm.spot.properties && !vm.spot.properties.strat_section_id;
       }
-      else if (tab === 'sed_lithologies') {
+      else if (tab === 'sed_lithologies' || tab === 'sed_structures') {
         return preferences['strat_mode'] && vm.spot && vm.spot.properties && vm.spot.properties.surface_feature &&
           vm.spot.properties.surface_feature.surface_feature_type &&
           vm.spot.properties.surface_feature.surface_feature_type === 'strat_interval';
@@ -421,32 +421,41 @@
       if (vm.spot && vm.spot.properties) {
         vm.spot = HelpersFactory.cleanObj(vm.spot);
         var savedSpot = SpotFactory.getSpotById(vm.spot.properties.id);
-        var isEqual = _.isEqual(vm.spot, savedSpot);
-        if (isEqual) return $q.resolve(vm.spot);
-        else {
-          $log.log('Spot Changed! Existing Spot:', savedSpot, 'Spot to Save:', vm.spot);
-          vm.data = HelpersFactory.cleanObj(vm.data);
-          // Validate the form first
-          if (FormFactory.validateForm(vm.stateName, vm.spot, vm.data)) {
-            if (vm.stateName === 'app.spotTab.spot' && !_.isEmpty(vm.data)) {
-              if (vm.showTrace === true) {
-                if (!vm.spot.properties.trace) vm.spot.properties.trace = {};
-                vm.spot.properties.trace = vm.data;
-              }
-              else if (vm.showSurfaceFeature === true) {
-                if (!vm.spot.properties.surface_feature) vm.spot.properties.surface_feature = {};
-                vm.spot.properties.surface_feature = vm.data;
-              }
+        vm.data = HelpersFactory.cleanObj(vm.data);
+        if (FormFactory.validateForm(vm.stateName, vm.spot, vm.data)) {
+          if (vm.stateName === 'app.spotTab.spot' && !_.isEmpty(vm.data)) {
+            if (vm.showTrace === true) {
+              if (!vm.spot.properties.trace) vm.spot.properties.trace = {};
+              vm.spot.properties.trace = vm.data;
             }
+            else if (vm.showSurfaceFeature === true) {
+              if (!vm.spot.properties.surface_feature) vm.spot.properties.surface_feature = {};
+              vm.spot.properties.surface_feature = vm.data;
+            }
+          }
+          else if (vm.stateName === 'app.spotTab.sed-structures' && !_.isEmpty(vm.data)) {
+            if (!vm.spot.properties.sed.structures) vm.spot.properties.sed.structures = {};
+            vm.spot.properties.sed.structures = vm.data;
+          }
+          var isEqual = _.isEqual(vm.spot, savedSpot);
+          if (isEqual) return $q.resolve(vm.spot);
+          else {
+            $log.log('Spot Changed! Existing Spot:', savedSpot, 'Spot to Save:', vm.spot);
+            if (vm.spot.properties.inferences) delete vm.spot.properties.inferences;  // Remove leftover inferences
             // If Spot is an interval check if we need to do any updates to the interval
             if (StratSectionFactory.isInterval(vm.spot)) {
               vm.spot = StratSectionFactory.checkForIntervalUpdates(vm.stateName, vm.spot, savedSpot);
             }
-            if (vm.spot.properties.inferences) delete vm.spot.properties.inferences;  // Remove leftover inferences
+            // If Spot used to be an interval remove extra sed fields
+            else if (StratSectionFactory.isInterval(savedSpot)) {
+              return StratSectionFactory.changeFromInterval(vm.spot).then(function () {
+                return SpotFactory.save(vm.spot);
+              });
+            }
             return SpotFactory.save(vm.spot);
           }
-          else $ionicLoading.hide();
         }
+        else $ionicLoading.hide();
       }
       return $q.reject(null);
     }

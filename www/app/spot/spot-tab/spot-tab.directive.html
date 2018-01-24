@@ -22,7 +22,6 @@
     <span class='button-text-small'>Set From Map</span>
   </button>
 
-  <form name='straboForm' novalidate=''>
     <div ng-if='vmChild.mapped'>
       <ion-input class='item item-input item-stacked-label item-text-wrap'>
         <ion-label>Geometry</ion-label>
@@ -105,15 +104,18 @@
       <div class='item item-divider'>
         Trace Feature
       </div>
-      <auto-fields/>
+      <form name='straboForm' novalidate=''>
+        <auto-fields/>
+      </form>
     </div>
-  </form>
 
   <div ng-show='vm.showSurfaceFeature'>
     <div class='item item-divider'>
       Surface Feature
     </div>
-    <auto-fields/>
+    <form name='straboForm' novalidate=''>
+      <auto-fields/>
+    </form>
   </div>
 
 

@@ -807,6 +807,9 @@ Spots Page
 .lithologies-on{
   background-color: #f2a9fc;
 }
+.sed-structures-on{
+  background-color: #6bcffc;
+}
 .list-sub{
   font-size: small;
   padding-left: 24px;
