@@ -6,9 +6,10 @@
     .controller('StratSectionTabController', StratSectionTabController);
 
   StratSectionTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'FormFactory',
-    'HelpersFactory'];
+    'HelpersFactory', 'SpotFactory', 'StratSectionFactory'];
 
-  function StratSectionTabController($ionicModal, $ionicPopup, $log, $scope, $state, FormFactory, HelpersFactory) {
+  function StratSectionTabController($ionicModal, $ionicPopup, $log, $scope, $state, FormFactory, HelpersFactory,
+                                     SpotFactory, StratSectionFactory) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -20,6 +21,7 @@
     vm.showStratSection = false;
 
     vm.addOverlayImage = addOverlayImage;
+    vm.changeUnits = changeUnits;
     vm.deleteOverlayImage = deleteOverlayImage;
     vm.editOverlayImage = editOverlayImage;
     vm.getImageLabel = getImageLabel;
@@ -86,6 +88,48 @@
       vm.data = {};
       isEdit = false;
       vm.addOverlayImageModal.show();
+    }
+
+    function changeUnits(newUnits, oldUnits) {
+      var confirmPopup = $ionicPopup.confirm({
+        'title': 'Units Change!',
+        'template': 'Changing the units for this Strat Section will also convert the interval thickness ' +
+        'for all intervals in this Strat Section to use the same units. Are you sure you want to continue?'
+      });
+      confirmPopup.then(function (res) {
+        if (res) {
+          StratSectionFactory.gatherStratSectionSpots(vmParent.spot.properties.sed.strat_section.strat_section_id);
+          var spots = StratSectionFactory.getStratSectionSpots();
+          // Separate the Strat Section Spots into the Interval Spots and other Spots
+          var stratSectionSpotsPartitioned = _.partition(spots, function (spot) {
+            return spot.properties.surface_feature &&
+              spot.properties.surface_feature.surface_feature_type === 'strat_interval';
+          });
+          var stratSectionIntervals = stratSectionSpotsPartitioned[0];
+          _.each(stratSectionIntervals, function (stratSectionInterval) {
+            if (stratSectionInterval.properties.sed && stratSectionInterval.properties.sed.lithologies) {
+              var thickness = stratSectionInterval.properties.sed.lithologies.interval_thickness;
+              if (oldUnits === 'cm' && newUnits === 'm') thickness = thickness / 100;             // cm to m
+              else if (oldUnits === 'cm' && newUnits === 'in') thickness = thickness / 2.54;      // cm to in
+              else if (oldUnits === 'cm' && newUnits === 'ft') thickness = thickness / 30.48;     // cm to ft
+              else if (oldUnits === 'm' && newUnits === 'cm') thickness = thickness * 100;        // m to cm
+              else if (oldUnits === 'm' && newUnits === 'in') thickness = thickness / 0.0254;     // m to in
+              else if (oldUnits === 'm' && newUnits === 'ft') thickness = thickness / 0.3048;     // m to ft
+              else if (oldUnits === 'in' && newUnits === 'cm') thickness = thickness * 2.54;      // in to cm
+              else if (oldUnits === 'in' && newUnits === 'm') thickness = thickness * 0.0254;     // in to m
+              else if (oldUnits === 'in' && newUnits === 'ft') thickness = thickness / 12;        // in to ft
+              else if (oldUnits === 'ft' && newUnits === 'cm') thickness = thickness * 30.48;     // ft to cm
+              else if (oldUnits === 'ft' && newUnits === 'm') thickness = thickness * 0.3048;     // ft to m
+              else if (oldUnits === 'ft' && newUnits === 'in') thickness = thickness * 12;        // ft to in
+              thickness = HelpersFactory.roundToDecimalPlaces(thickness, 2);
+              stratSectionInterval.properties.sed.lithologies.interval_thickness = thickness;
+              stratSectionInterval.properties.sed.lithologies.thickness_units = newUnits;
+              SpotFactory.save(stratSectionInterval);
+            }
+          });
+        }
+        else vmParent.spot.properties.sed.strat_section.column_y_axis_units = oldUnits;
+      });
     }
 
     function deleteOverlayImage(imageToDelete) {
@@ -170,6 +214,7 @@
         vmParent.spot.properties.sed = {};
         vmParent.spot.properties.sed.strat_section = {};
         vmParent.spot.properties.sed.strat_section.strat_section_id = HelpersFactory.getNewId();
+        vmParent.spot.properties.sed.strat_section.column_profile = 'clastic';
         vmParent.spot.properties.sed.strat_section.column_y_axis_units = 'm';
       }
       if (!vm.showStratSection && !_.isEmpty(vmParent.spot.properties.sed.strat_section)) {
