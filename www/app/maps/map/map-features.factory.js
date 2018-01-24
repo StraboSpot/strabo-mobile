@@ -364,8 +364,8 @@
             var ctx = canvas.getContext('2d');
 
             var extent = feature.getGeometry().getExtent();
-            var width = 10 / resolution * 2.5;
-            var height = (extent[3] - extent[1]) / resolution * 2.5;
+            var width = 10 / resolution * 2;
+            var height = (extent[3] - extent[1]) / resolution * 2;
             canvas.width = width;
             canvas.height = height;
 

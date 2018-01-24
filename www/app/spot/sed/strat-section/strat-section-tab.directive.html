@@ -22,18 +22,18 @@
         <option value='carbonate'>carbonate</option>
         <option value='mixed_clastic'>mixed clastic/carbonate</option>
         <option value='weathering_pro'>weathering profile</option>
-        <option value=''>-- Select Column Profile --</option>
       </select>
     </ion-input>
     <ion-checkbox ng-model="vm.spot.properties.sed.strat_section.misc_labels">Show Labels for Misc Lithologies</ion-checkbox>
     <ion-input class="item item-input item-select item-stacked-label item-text-wrap">
       <ion-label>Column Y-Axis Units</ion-label>
-      <select ng-model='vm.spot.properties.sed.strat_section.column_y_axis_units'>
+      <select ng-model='vm.spot.properties.sed.strat_section.column_y_axis_units'
+              ng-change='vmChild.changeUnits(vm.spot.properties.sed.strat_section.column_y_axis_units,
+              "{{vm.spot.properties.sed.strat_section.column_y_axis_units }}")'>
         <option value='cm'>cm</option>
         <option value='m'>m</option>
         <option value='in'>in</option>
         <option value='ft'>ft</option>
-        <option value=''>-- Select Column Y-Axis Units --</option>
       </select>
     </ion-input>
     <div class='item item-divider'>
