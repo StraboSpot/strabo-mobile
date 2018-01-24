@@ -409,7 +409,7 @@
       else if (tab === 'strat_section') {
         return preferences['strat_mode'] && vm.spot && vm.spot.properties && !vm.spot.properties.strat_section_id;
       }
-      else if (tab === 'sed_lithologies' || tab === 'sed_structures') {
+      else if (tab === 'sed_lithologies' || tab === 'sed_structures' || tab === 'sed_interpretations') {
         return preferences['strat_mode'] && vm.spot && vm.spot.properties && vm.spot.properties.surface_feature &&
           vm.spot.properties.surface_feature.surface_feature_type &&
           vm.spot.properties.surface_feature.surface_feature_type === 'strat_interval';
@@ -436,6 +436,10 @@
           else if (vm.stateName === 'app.spotTab.sed-structures' && !_.isEmpty(vm.data)) {
             if (!vm.spot.properties.sed.structures) vm.spot.properties.sed.structures = {};
             vm.spot.properties.sed.structures = vm.data;
+          }
+          else if (vm.stateName === 'app.spotTab.sed-interpretations' && !_.isEmpty(vm.data)) {
+            if (!vm.spot.properties.sed.interpretations) vm.spot.properties.sed.interpretations = {};
+            vm.spot.properties.sed.interpretations = vm.data;
           }
           var isEqual = _.isEqual(vm.spot, savedSpot);
           if (isEqual) return $q.resolve(vm.spot);
