@@ -1,0 +1,376 @@
+list_name,name,label,order
+zy6cd16,yes,yes,
+zy6cd16,no,no,
+yy7ga03,no_bedding_or_,no bedding or laminae,
+yy7ga03,planar_stratif,planar stratified,1
+yy7ga03,cross_stratifi,cross stratified,2
+yy7ga03,can_t_be_determined,can't be determined,3
+yy7ga03,n_a,n/a,4
+re0hj03,trough,trough,
+re0hj03,hummocky,hummocky,1
+re0hj03,swaley,swaley,2
+re0hj03,planar_tabular,planar tabular,3
+re0hj03,festoon,festoon,4
+re0hj03,wedge,wedge,5
+re0hj03,low_angle,low angle,6
+re0hj03,symmetric,symmetric,7
+re0hj03,asymmetric,asymmetric,8
+re0hj03,climbing,climbing,9
+re0hj03,interference,interference,10
+re0hj03,translatent,translatent,11
+re0hj03,flaser,flaser,12
+re0hj03,wavy,wavy,13
+re0hj03,lenticular,lenticular,14
+re0hj03,starved_ripple,starved ripples,15
+re0hj03,adhesion,adhesion,16
+re0hj03,herringbone,herringbone,17
+re0hj03,sigmoidal,sigmoidal,18
+re0hj03,tidal_bundle,tidal bundle,19
+re0hj03,rhythmic,rhythmic,20
+re0hj03,bi_directional,bi-directional asymmetric,21
+re0hj03,pinstripe,pinstripe,22
+re0hj03,mud_drape,mud drape,23
+re0hj03,other,other,24
+jc3as89,trough_axis__plunge___trend,trough axis (plunge & trend),
+jc3as89,cross_bed__strike___dip,cross bed (dip & dip direction),
+oj08o54,festoon_trough_axis__plunge___,festoon trough axis (plunge & trend),
+oj08o54,festoon_cross_bedding__dip___d,festoon cross bedding (dip & dip direction),
+hp2ng68,subcritical,subcritical,
+hp2ng68,critical,critical,
+hp2ng68,supercritical,supercritical,
+cs0rc13,bedforms,bedforms,
+cs0rc13,sole_marks,sole marks,
+cs0rc13,flute_cast,flute cast,
+cs0rc13,groove_cast,groove cast,
+cs0rc13,tool_marks,tool marks,
+cs0rc13,gutter_cast,gutter cast,
+cs0rc13,load_cast,load cast,
+cs0rc13,parting_lineat,parting lineation,
+cs0rc13,mudcracks,mudcracks,
+cs0rc13,syneresis_crac,syneresis cracks,
+cs0rc13,evaporite_mold,evaporite molds,
+cs0rc13,raindrop_impre,raindrop impressions,
+cs0rc13,glacial_striat,glacial striations,
+cs0rc13,hardground_fir,hardground/firmground,
+cs0rc13,other,other,
+bd2tc58,wave_ripples,wave ripples,
+bd2tc58,current_ripples,current ripples,1
+bd2tc58,dunes,dunes,2
+bd2tc58,antidunes,antidunes,3
+bd2tc58,2d_crests,2D crests,4
+bd2tc58,3d_crests,3D crests,5
+bd2tc58,lunate,lunate,6
+bd2tc58,cuspate,cuspate,7
+bd2tc58,linguoid,linguoid,8
+bd2tc58,bifurcations,bifurcations,9
+bd2tc58,ladderback,ladderback,10
+bd2tc58,interference_r,interference ripples,11
+bd2tc58,adhesion_struc,adhesion structures,12
+bd2tc58,swales,swales,13
+bd2tc58,hummocks_and_s,hummocks and swales,14
+bd2tc58,other,other,
+aj0xd06,contorted_bedd,contorted bedding,
+aj0xd06,convolute_bedd,convolute bedding,1
+aj0xd06,option_17,rip-up clasts,2
+aj0xd06,nodular_beddin,nodular bedding,3
+aj0xd06,pipes,pipes,4
+aj0xd06,dikes,dikes,5
+aj0xd06,sills,sills,6
+aj0xd06,dish_structrue,dish structrues,7
+aj0xd06,flame_structur,flame structures,8
+aj0xd06,sand_mud_volca,sand/mud volcanoes,9
+aj0xd06,load_structure,load structures,10
+aj0xd06,ball_and_pillo,ball and pillow,11
+aj0xd06,boudinage,boudinage,12
+aj0xd06,intrastratal_c,intrastratal cracks,13
+aj0xd06,liquefaction_f,liquefaction features,14
+aj0xd06,syn_sedimentar,syn-sedimentary faults,15
+aj0xd06,neptunian_dike,Neptunian dikes,16
+aj0xd06,post_lithifica,post-lithification deformational structures,
+aj0xd06,other,other,
+we8cl09,yes,yes,
+we8cl09,no,no,
+tj0kn57,yes,yes,
+tj0kn57,no,no,
+ny3eb23,1__sparse_biot,"1 (sparse bioturbation, bedding distinct)",
+ny3eb23,2__uncommon_bi,"2 (uncommon bioturbation, bedding distinct)",
+ny3eb23,3__moderate_bi,"3 (moderate bioturbation, bedding distinct, overlap rare)",
+ny3eb23,4__common_biot,"4 (common bioturbation, bedding indistinct, common overlap)",
+ny3eb23,5__abundant_bi,"5 (abundant bioturbation, bedding completely disturbed (just visible))",
+ny3eb23,6__complete_bi,"6 (complete bioturbation, total homogenization of sediment)",
+bp1qw24,low,low,
+bp1qw24,medium,medium,
+bp1qw24,high,high,
+qa4vg03,horizontal,horizontal,
+qa4vg03,sub_vertical,sub-vertical,1
+qa4vg03,vertical,vertical,2
+qa4vg03,oblique,oblique,3
+qa4vg03,branching,branching,4
+qa4vg03,u_shaped,u-shaped,5
+qa4vg03,y_shaped,y-shaped,
+qa4vg03,lined,lined,
+qa4vg03,unlined,unlined,
+qa4vg03,other,other,
+yb2wj13,passive,passive,
+yb2wj13,active,active,1
+yb2wj13,siliciclastic_,siliciclastic sand,2
+yb2wj13,siliciclastic__1,siliciclastic silt,3
+yb2wj13,siliciclastic__2,siliciclastic mud,4
+yb2wj13,carbonate_mud,carbonate mud,5
+yb2wj13,carbonate_grai,carbonate grains,6
+yb2wj13,mudstone,mudstone,7
+yb2wj13,wackestone,wackestone,8
+yb2wj13,packstone,packstone,9
+yb2wj13,grainstone,grainstone,10
+yb2wj13,cementstone,cementstone,11
+yb2wj13,other,other,
+fu9zy74,resting,resting,
+fu9zy74,locomotion,locomotion,
+fu9zy74,grazing,grazing,
+fu9zy74,feeding,feeding,
+fu9zy74,dwelling_struc,dwelling structure,
+fu9zy74,escape,escape,
+fu9zy74,farming,farming,
+fu9zy74,predation,predation,
+fu9zy74,brooding,brooding,
+fu9zy74,multipurpose,multipurpose,
+fu9zy74,equilibrium,equilibrium,
+fu9zy74,other,other,
+xn91l41,psilonichnus,psilonichnus,
+xn91l41,skolithos,skolithos,
+xn91l41,cruziana,cruziana,
+xn91l41,zoophycos,zoophycos,
+xn91l41,nereites,nereites,
+xn91l41,trypanites,trypanites,
+xn91l41,glossifungites,glossifungites,
+xn91l41,teredolites,teredolites,
+jf5zf51,yes,yes,
+jf5zf51,no,no,
+cj5tu73,skeletal_reef,skeletal reef,
+cj5tu73,skeletal_micro,skeletal-microbial reef,
+cj5tu73,microbial_reef,microbial reef,
+cj5tu73,mud_mound,mud mound,
+cj5tu73,other,other,
+vl19n89,microbial_laminate,microbial laminate,
+vl19n89,domal_structure,domal structure,
+vl19n89,columnar_stromatolite,columnar stromatolite,
+vl19n89,branching_columnar_stromatolit,branching columnar stromatolite,
+vl19n89,conical_stromatolite,conical stromatolite,
+vl19n89,tufa,tufa,
+vl19n89,giant_stromatolite_mound,giant stromatolite mound,
+vl19n89,cuspate_mircrobialite,cuspate mircrobialite,
+vl19n89,thrombolite,thrombolite,
+vl19n89,oncoid,oncoid,
+vl19n89,turbinate_stromatolite,turbinate stromatolite,
+vl19n89,dendritic_branching_stromatoli,dendritic branching stromatolite,
+vl19n89,coalesced_branching_stromatoli,coalesced branching stromatolite,
+vl19n89,anastomosed_branching_stromato,anastomosed branching stromatolite,
+vl19n89,lateral_branching_stromatolite,lateral branching stromatolite,
+vl19n89,laterally_linked_stromatolite,laterally-linked stromatolite,
+vl19n89,elongate,elongate,
+vl19n89,other,other,
+qt9pb22,mollusca,mollusca,
+qt9pb22,brachiopoda,brachiopoda,
+qt9pb22,arthropoda,arthropoda,
+qt9pb22,echinodermata,echinodermata,
+qt9pb22,cnidaria,cnidaria,
+qt9pb22,chordata,chordata,
+qt9pb22,bryozoa,bryozoa,
+qt9pb22,porifera,porifera,
+qt9pb22,plant_algae,plant/algae,
+qt9pb22,protista,protista,
+qt9pb22,calcimicrobe,calcimicrobe,
+qt9pb22,other,other,
+xg73d31,gastropod,gastropod,
+xg73d31,cephalopod,cephalopod,
+xg73d31,scaphopod,scaphopod,
+xg73d31,bivalve,bivalve,
+xg73d31,ammonite,ammonite,
+xg73d31,nautiloid,nautiloid,
+xg73d31,belemnite,belemnite,
+xg73d31,rudist,rudist,
+xg73d31,other,other,
+ez9qn01,trilobite,trilobite,
+ez9qn01,eurypterid,eurypterid,
+ez9qn01,ostracod,ostracod,
+ez9qn01,crustacean,crustacean,
+ez9qn01,barnacle,barnacle,
+ez9qn01,crab,crab,
+ez9qn01,shrimp,shrimp,
+ez9qn01,lobster,lobster,
+ez9qn01,other,other,
+wr57l51,echinoidea,echinoidea,
+wr57l51,blastazoa,blastazoa,
+wr57l51,crinoidea,crinoidea,
+wr57l51,asteroidea,asteroidea,
+wr57l51,ophiuroidea,ophiuroidea,
+wr57l51,holothuroidea,holothuroidea,
+wr57l51,other,other,
+mx9kl50,solitary_rugos,solitary rugose,
+mx9kl50,fasciculate_ru,fasciculate rugose,
+mx9kl50,massive_rugose,massive rugose,
+mx9kl50,tabulate,tabulate,
+mx9kl50,scleractinian,scleractinian,
+mx9kl50,other,other,
+sf15j48,actinopterygii,actinopterygii,
+sf15j48,chondrichthyes,chondrichthyes,
+sf15j48,aves,aves,
+sf15j48,amphibia,amphibia,
+sf15j48,reptilia,reptilia,
+sf15j48,mammalia,mammalia,
+sf15j48,other,other,
+yp6he07,coralline,coralline,
+yp6he07,udoteaceans,udoteaceans,
+yp6he07,dasyclads,dasyclads,
+yp6he07,phylloid,phylloid,
+yp6he07,charophytes,charophytes,
+yp6he07,bryophyta,bryophyta,
+yp6he07,pteridophytae,pteridophytae,
+yp6he07,angiosperm,angiosperm,
+yp6he07,gymnosperm,gymnosperm,
+yp6he07,other,other,
+yg3rh07,foraminifera,foraminifera,
+yg3rh07,coccolith,coccolith,
+yg3rh07,radiolarian,radiolarian,
+yg3rh07,diatom,diatom,
+yg3rh07,fusulinid,fusulinid,
+yg3rh07,other,other,
+oh1xa40,giryanella,giryanella,
+oh1xa40,epiphyton,epiphyton,
+oh1xa40,hedstroemia,hedstroemia,
+oh1xa40,renalcis,renalcis,
+oh1xa40,garwoodia,garwoodia,
+oh1xa40,rothpletzella,rothpletzella,
+oh1xa40,other,other,
+rs3py25,heterozoan,heterozoan,
+rs3py25,photozoan,photozoan,
+vb0ao86,clotted,clotted,
+vb0ao86,peloidal,peloidal,
+vb0ao86,laminated,laminated,
+vb0ao86,stromatactis_c,stromatactis cavities,
+vb0ao86,cement,cement,
+vb0ao86,other,other,
+oh76z01,bioherm__lens_,bioherm (lens-shaped),
+oh76z01,biostrom__tabu,biostrom (tabular),
+oh76z01,dome,dome,
+oh76z01,mound,mound,
+uc1je36,fringing,fringing,
+uc1je36,patch_reef,patch reef,
+uc1je36,atoll,atoll,
+uc1je36,other,other,
+af3pl79,fenestrae,fenestrae,
+af3pl79,geopetal,geopetal,
+af3pl79,framework_cavi,framework cavities,
+af3pl79,cement_fill,cement-fill,
+af3pl79,other,other,
+zk0mz63,yes,yes,
+zk0mz63,no,no,
+hl0ml08,cements,cements,
+hl0ml08,compaction,compaction,1
+hl0ml08,nodules_concre,nodules/concretions,2
+hl0ml08,liesegang_band,liesegang banding,3
+hl0ml08,dendrites,dendrites,4
+hl0ml08,dissolution,dissolution,5
+hl0ml08,stylolites,stylolites,6
+hl0ml08,intergranular,intergranular,7
+hl0ml08,fault,fault,8
+hl0ml08,veins,veins,9
+hl0ml08,vugs,vugs,10
+hl0ml08,cavities,cavities,11
+hl0ml08,recrystallizat,recrystallization,12
+hl0ml08,recrystallized,"recrystallized ""foam""",13
+hl0ml08,hardground,hardground,14
+hl0ml08,cementation_fr,cementation front,15
+hl0ml08,weathering_hor,weathering horizon,16
+hl0ml08,oil_staining,oil staining,17
+hl0ml08,random_cumulat,random cumulates,18
+hl0ml08,bottom_growth_,bottom growth textures,19
+hl0ml08,fractures,fractures,20
+hl0ml08,other,other,22
+yh9fg32,calcite,calcite,
+yh9fg32,dolomite,dolomite,
+yh9fg32,silica,silica,
+yh9fg32,iron_oxides,iron oxides,
+yh9fg32,evaporite_mine,evaporite minerals,
+yh9fg32,other,other,
+jp0wh38,blocky,blocky,
+jp0wh38,radial,radial,
+jp0wh38,fibrous,fibrous,
+jp0wh38,botryoidal,botryoidal,
+jp0wh38,displacive,displacive,
+jp0wh38,chevrons,chevrons,
+jp0wh38,other,other,
+hl0ww19,calcite,calcite,
+hl0ww19,dolomite,dolomite,
+hl0ww19,pyrite,pyrite,
+hl0ww19,siderite,siderite,
+hl0ww19,iron_oxide,iron oxide,
+hl0ww19,apatite,apatite,
+hl0ww19,chert,chert,
+hl0ww19,gypsum_anhydri,gypsum/anhydrite,
+hl0ww19,other,other,
+zb73n93,spherical,spherical,
+zb73n93,elongate,elongate,
+zb73n93,pods,pods,
+zb73n93,irregular,irregular,
+zb73n93,other,other,
+st8ub31,tepee_structur,tepee structures,
+st8ub31,karst_pipes,karst pipes,
+st8ub31,grykes,grykes,
+st8ub31,fissures,fissures,
+st8ub31,pavement,pavement,
+st8ub31,caliche,caliche,
+st8ub31,geopetal,geopetal,
+st8ub31,sheet_cracks,sheet cracks,
+st8ub31,paleosol_horiz,paleosol horizon,
+st8ub31,karst_topograp,karst topography,
+st8ub31,vugs,vugs,
+st8ub31,cavities,cavities,
+st8ub31,collapse_struc,collapse structures,
+st8ub31,caves,caves,
+st8ub31,other,other,
+lo0dl30,interparticle,interparticle,
+lo0dl30,intraparticle,intraparticle,
+lo0dl30,intercrystal,intercrystal,
+lo0dl30,moldic,moldic,
+lo0dl30,fenestral,fenestral,
+lo0dl30,shelter,shelter,
+lo0dl30,growth_framewo,growth-framework,
+lo0dl30,boring,boring,
+lo0dl30,burrow,burrow,
+lo0dl30,shrinkage,shrinkage,
+lo0dl30,breccia,breccia,
+lo0dl30,other,other,
+ts4kt62,fracture,fracture,
+ts4kt62,channel,channel,
+ts4kt62,vug,vug,
+ts4kt62,cavern,cavern,
+ts4kt62,other,other,
+ls9ch15,yes,yes,
+ls9ch15,no,no,
+da8ok49,o,o,
+da8ok49,a,a,
+da8ok49,e,e,
+da8ok49,b,b,
+da8ok49,k,k,
+da8ok49,c,c,
+da8ok49,r,r,
+da8ok49,compound,compound,
+da8ok49,composite,composite,
+da8ok49,other,other,
+lg4oy98,peds,peds,
+lg4oy98,slickensides,slickensides,
+lg4oy98,rooting,rooting,
+lg4oy98,mottling,mottling,
+lg4oy98,carbonate_nodu,carbonate nodules,
+lg4oy98,leaching_horiz,leaching horizons,
+lg4oy98,other,other,
+mw8xp09,histosol,histosol,
+mw8xp09,protosol,protosol,
+mw8xp09,vertisol,vertisol,
+mw8xp09,gleysol,gleysol,
+mw8xp09,calcisol,calcisol,
+mw8xp09,gypsisol,gypsisol,
+mw8xp09,argillisol,argillisol,
+mw8xp09,spodosol,spodosol,
+mw8xp09,oxisol,oxisol,

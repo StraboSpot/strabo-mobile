@@ -5,9 +5,9 @@
     .module('app')
     .factory('FormFactory', FormFactory);
 
-  FormFactory.$inject = ['$document', '$ionicPopup', '$log', '$rootScope', 'DataModelsFactory'];
+  FormFactory.$inject = ['$document', '$ionicPopup', '$log', '$rootScope', 'DataModelsFactory', 'StratSectionFactory'];
 
-  function FormFactory($document, $ionicPopup, $log, $rootScope, DataModelsFactory) {
+  function FormFactory($document, $ionicPopup, $log, $rootScope, DataModelsFactory, StratSectionFactory) {
 
     var form = {};   // form = {'choices': {}, 'survey': {}};
 
@@ -28,21 +28,32 @@
      * Private Functions
      */
 
-    function validateSedData(data, errorMessages) {
-      if (data.interval_type === 'lithology' && !data.primary_lithology) {
-        errorMessages.push('The Primary Lithology must be specified if the Interval Type is lithology.');
+    function validateSedData(spot, errorMessages) {
+      var lithologies = spot.properties.sed.lithologies;
+      var spotWithThisStratSection = StratSectionFactory.getSpotWithThisStratSection(spot.properties.strat_section_id);
+      if (spotWithThisStratSection.properties && spotWithThisStratSection.properties.sed &&
+        spotWithThisStratSection.properties.sed.strat_section) {
+        var units = spotWithThisStratSection.properties.sed.strat_section.column_y_axis_units;
+        if (units !== lithologies.thickness_units) {
+          errorMessages.push('- The <b>Thickness Units</b> must be <b>' + units + '</b> since <b>' + units +
+            '</b> have been assigned for the properties of this strat section.')
+        }
       }
-      else if (data.interval_type === 'lithology' && data.primary_lithology === 'siliciclastic' &&
-        !data.principal_grain_size_clastic) {
-        errorMessages.push('The Principal Grain Size must be specified if the Primary Lithology is siliciclastic.');
+      if (lithologies.interval_type === 'lithology' && !lithologies.primary_lithology) {
+        errorMessages.push('- The <b>Primary Lithology</b> must be specified if the Interval Type is lithology.');
       }
-      else if (data.interval_type === 'lithology' && (data.primary_lithology === 'limestone' ||
-          data.primary_lithology === 'dolomite') && !data.principal_dunham_classificatio) {
-        errorMessages.push('The Principal Dunham Classification must be specified if the Primary Lithology is ' +
-          'limestone or dolomite.');
+      else if (lithologies.interval_type === 'lithology' && lithologies.primary_lithology === 'siliciclastic' &&
+        !lithologies.principal_grain_size_clastic) {
+        errorMessages.push('- The <b>Principal Grain Size</b> must be specified if the Primary Lithology is ' +
+          'siliciclastic.');
       }
-      else if (data.interval_type === 'weathering_pro' && !data.relative_resistance_weathering) {
-        errorMessages.push('The Relative Resistance (Weathering Profile) must be specified if the Interval ' +
+      else if (lithologies.interval_type === 'lithology' && (lithologies.primary_lithology === 'limestone' ||
+          lithologies.primary_lithology === 'dolomite') && !lithologies.principal_dunham_classificatio) {
+        errorMessages.push('- The <b>Principal Dunham Classification</b> must be specified if the Primary Lithology' +
+          ' is limestone or dolomite.');
+      }
+      else if (lithologies.interval_type === 'weathering_pro' && !lithologies.relative_resistance_weathering) {
+        errorMessages.push('- The <b>Relative Resistance (Weathering Profile)</b> must be specified if the Interval ' +
           'Type is weathering profile.');
       }
       return errorMessages;
@@ -148,6 +159,7 @@
     }
 
     function validate(data) {
+      if (_.isEmpty(data)) return true;
       $log.log('Validating form with data:', data);
       var errorMessages = [];
       var formCtrl = angular.element(document.getElementById('straboFormCtrlId')).scope();
@@ -191,7 +203,7 @@
         }
         else if (stateName === 'app.spotTab.sed-lithologies' && spot.properties.sed &&
           spot.properties.sed.lithologies) {
-          errorMessages = validateSedData(spot.properties.sed.lithologies, errorMessages);
+          errorMessages = validateSedData(spot, errorMessages);
         }
         if (_.isEmpty(errorMessages)) return true;
         else {
