@@ -40,6 +40,7 @@
     vm.thisSpotWithStratSection = {};
 
     vm.addInterval = addInterval;
+    vm.addMoreDetail = addMoreDetail;
     vm.closeModal = closeModal;
     vm.createTag = createTag;
     vm.deleteSpot = deleteSpot;
@@ -367,6 +368,25 @@
       }
       if (stratSection.column_y_axis_units) vm.data.thickness_units = stratSection.column_y_axis_units;
       openIntervalModal();
+    }
+
+    function addMoreDetail() {
+      $log.log(vm.data);
+      if (stratSection.column_y_axis_units && vm.data.thickness_units !== stratSection.column_y_axis_units) {
+        $ionicPopup.alert({
+          'title': 'Units Mismatch',
+          'template': 'The units for the Y Axis are <b>' + stratSection.column_y_axis_units + '</b> but <b>' +
+          vm.data.thickness_units + '</b> have been designated for this interval. Please fix the units ' +
+          'for this interval.'
+        });
+      }
+      else if (FormFactory.validate(vm.data)) {
+        vm.addIntervalModal.remove();
+        var newInterval = StratSectionFactory.createInterval(stratSection.strat_section_id, vm.data);
+        SpotFactory.setNewSpot(newInterval).then(function (id) {
+          goToSpot(newInterval.properties.id, 'sed-lithologies');
+        });
+      }
     }
 
     function closeModal(modal) {
