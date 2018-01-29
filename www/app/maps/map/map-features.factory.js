@@ -5,11 +5,11 @@
     .module('app')
     .factory('MapFeaturesFactory', MapFeatures);
 
-  MapFeatures.$inject = ['$log', 'DataModelsFactory', 'HelpersFactory', 'MapLayerFactory', 'MapSetupFactory',
-    'ProjectFactory', 'SpotFactory', 'SymbologyFactory'];
+  MapFeatures.$inject = ['$log', '$q', 'DataModelsFactory', 'HelpersFactory', 'ImageFactory', 'MapLayerFactory',
+    'MapSetupFactory', 'ProjectFactory', 'SpotFactory', 'SymbologyFactory'];
 
-  function MapFeatures($log, DataModelsFactory, HelpersFactory, MapLayerFactory, MapSetupFactory, ProjectFactory,
-                       SpotFactory, SymbologyFactory) {
+  function MapFeatures($log, $q, DataModelsFactory, HelpersFactory, ImageFactory, MapLayerFactory, MapSetupFactory,
+                       ProjectFactory, SpotFactory, SymbologyFactory) {
     var mappableSpots = {};
     var selectedHighlightLayer = {};
     var typeVisibility = {};
@@ -26,13 +26,103 @@
       'setMappableSpots': setMappableSpots,
       'setSelectedSymbol': setSelectedSymbol,
       'showMapPopup': showMapPopup,
-      'showPopup': showPopup,
       'removeSelectedSymbol': removeSelectedSymbol
     };
 
     /**
      * Private Functions
      */
+
+    // Finish creating and display the popup
+    function continuePopup(feature, evt, imageSource) {
+      var popup = MapSetupFactory.getPopupOverlay();
+      popup.hide();  // Clear any existing popovers
+
+      // popup title
+      var el = document.createElement('div');
+      var title = document.createElement('h5');
+      title.className = 'popup-title';
+      title.innerHTML = feature.get('name') + '<hr>';
+      el.appendChild(title);
+
+      // popup main content
+      var content = document.createElement('div');
+      var text = getPopupText(feature.getProperties());
+      var detailHTML = text.join('<br>');
+      if (imageSource) {
+        el.style.width = 250;
+        var numOfImages = _.size(feature.getProperties().images);
+        var firstImageHTML = "<a><img src=" + imageSource + " width='100' height='100'></a><br>1/" + numOfImages + " image(s)";
+        content.innerHTML = '<div class="row"> <div class="col">' + firstImageHTML + '</div> <div class="col">' +
+          detailHTML + '</div> </div>';
+      }
+      else content.innerHTML = detailHTML;
+      el.appendChild(content);
+
+      // popup more detail button
+      var moreButton = document.createElement('div');
+      moreButton.innerHTML = '<a href="#" data-action="more" class="popup-more-button">See More</a>';
+      el.appendChild(moreButton);
+
+      // setup the popup position
+      popup.show(evt.coordinate, el);
+    }
+
+    // Get the first image in a Spot for display in the popup
+    function getFirstImageSource(image) {
+      var deferred = $q.defer(); // init promise
+      var firstImageSource;
+      ImageFactory.getImageById(image.id).then(function (src) {
+        /*if (IS_WEB) firstImageSource = "https://strabospot.org/pi/" + images[0].id;   // Popups aren't used on WEB
+        else */if (src) firstImageSource = src;
+        else firstImageSource = 'img/image-not-found.png';
+        deferred.resolve(firstImageSource);
+      }, function () {
+        deferred.resolve(null);
+      });
+      return deferred.promise;
+    }
+
+    // Build the text to be displayed in the popup
+    function getPopupText(props) {
+      var text = [];
+      // Orientation Detail
+      if (props.orientation) {
+        if ((props.orientation.strike || props.orientation.dip_direction) && props.orientation.dip) {
+          if (props.orientation.strike) {
+            text.push(props.orientation.strike + '&deg; strike / ' + props.orientation.dip + '&deg; dip');
+          }
+          else {
+            text.push(props.orientation.dip_direction + '&deg; dip direction / ' + props.orientation.dip + '&deg; dip');
+          }
+        }
+        if (props.orientation.trend && props.orientation.plunge) {
+          text.push(props.orientation.trend + '&deg; trend / ' + props.orientation.plunge + '&deg; plunge');
+        }
+        if (props.orientation.feature_type) text.push(props.orientation.feature_type);
+      }
+
+      // Interval Detail
+      if (props.surface_feature && props.surface_feature.surface_feature_type &&
+        props.surface_feature.surface_feature_type === 'strat_interval') {
+        if (props.sed && props.sed.lithologies) {
+          if (props.sed.lithologies.interval_thickness) text.push('Thickness: ' +
+            props.sed.lithologies.interval_thickness + ' ' + props.sed.lithologies.thickness_units);
+          if (props.sed.lithologies.primary_lithology) {
+            text.push('Primary Lithology: ' + DataModelsFactory.getSedLabel(props.sed.lithologies.primary_lithology));
+          }
+          if (props.sed.lithologies.principal_grain_size_clastic) {
+            text.push('Principal Grain Size: ' +
+              DataModelsFactory.getSedLabel(props.sed.lithologies.principal_grain_size_clastic));
+          }
+          if (props.sed.lithologies.principal_dunham_classificatio) {
+            text.push('Principal Duhham Classification: ' +
+              DataModelsFactory.getSedLabel(props.sed.lithologies.principal_dunham_classificatio));
+          }
+        }
+      }
+      return text;
+    }
 
     function getVisibleSpots(states) {
       // Get the spot ids of mappable spots in the visible datasets
@@ -604,121 +694,17 @@
       map.addLayer(selectedHighlightLayer);
     }
 
+    // Start creating the map popup
     function showMapPopup(feature, evt) {
-      var popup = MapSetupFactory.getPopupOverlay();
-      popup.hide();  // Clear any existing popovers
-
-      // popup content
-      var el = document.createElement('div');
-      var title = document.createElement('h5');
-      title.className = 'popup-title';
-      title.innerHTML = feature.get('name') + '<hr>';
-      el.appendChild(title);
-      var content = document.createElement('p');
-      var text = [];
-      var orientation = feature.get('orientation');
-      if (orientation) {
-        if ((orientation.strike || orientation.dip_direction) && orientation.dip) {
-          if (orientation.strike) {
-            text.push('<small>' + orientation.strike + '&deg; strike / ' + orientation.dip + '&deg; dip</small>');
-          }
-          else {
-            text.push('<small>' + orientation.dip_direction + '&deg; dip direction / ' + orientation.dip +
-              '&deg; dip</small>');
-          }
-        }
-
-        if (orientation.trend && orientation.plunge) {
-          text.push('<small>' + orientation.trend + '&deg; trend / ' + orientation.plunge + '&deg; plunge</small>');
-        }
-
-        if (orientation.feature_type) {
-          text.push('<small>' + orientation.feature_type + '</small>');
-        }
-      }
       var props = feature.getProperties();
-      if (props.surface_feature && props.surface_feature.surface_feature_type &&
-        props.surface_feature.surface_feature_type === 'strat_interval') {
-        if (props.sed && props.sed.lithologies) {
-          if (props.sed.lithologies.interval_thickness) text.push('Thickness: '+
-            props.sed.lithologies.interval_thickness + ' ' + props.sed.lithologies.thickness_units);
-          if (props.sed.lithologies.primary_lithology) {
-            text.push('Primary Lithology: '+ DataModelsFactory.getSedLabel(props.sed.lithologies.primary_lithology));
-          }
-          if (props.sed.lithologies.principal_grain_size_clastic) {
-            text.push('Principal Grain Size: '+
-              DataModelsFactory.getSedLabel(props.sed.lithologies.principal_grain_size_clastic));
-          }
-          if (props.sed.lithologies.principal_dunham_classificatio) {
-            text.push('Principal Duhham Classification: '+
-              DataModelsFactory.getSedLabel(props.sed.lithologies.principal_dunham_classificatio));
-          }
-        }
+      if (props.images) {
+        getFirstImageSource(props.images[0]).then(function (imageSource) {
+          continuePopup(feature, evt, imageSource);
+        }, function () {
+          continuePopup(feature, evt);
+        });
       }
-
-      text.push('<a href="#" data-action="more" class="popup-more-button">See More</a>');
-      content.innerHTML = text.join('<br>');
-      el.appendChild(content);
-
-      // setup the popup position
-      popup.show(evt.coordinate, el);
-    }
-
-    /* ToDo: Delete this when use showMapPopup with image basemap */
-    function showPopup(map, evt) {
-      var popup = MapSetupFactory.getPopupOverlay();
-      popup.hide();  // Clear any existing popovers
-
-      var feature = map.forEachFeatureAtPixel(evt.pixel, function (feat, lyr) {
-        return feat;
-      }, this, function (lyr) {
-        // we only want the layer where the spots are located
-        return (lyr instanceof ol.layer.Vector) &&
-          lyr.get('name') !== 'drawLayer' &&
-          lyr.get('name') !== 'geolocationLayer';
-      });
-
-      var layer = map.forEachFeatureAtPixel(evt.pixel, function (feat, lyr) {
-        return lyr;
-      }, this, function (lyr) {
-        // we only want the layer where the spots are located
-        return (lyr instanceof ol.layer.Vector) &&
-          lyr.get('name') !== 'drawLayer' &&
-          lyr.get('name') !== 'geolocationLayer';
-      });
-
-      // we need to check that we're not clicking on the geolocation layer
-      if (feature && layer && layer.get('name') !== 'geolocationLayer') {
-        // popup content
-        var content = '';
-        content += '<a href="#/app/spotTab/' + feature.get('id') + '/spot"><b>' + feature.get('name') + '</b></a>';
-
-        var orientation = feature.get('orientation');
-
-        if (orientation) {
-          content += '<br>';
-          content += '<small>' + orientation.type + '</small>';
-
-          if (orientation.strike && orientation.dip) {
-            content += '<br>';
-            content += '<small>' + orientation.strike + '&deg; strike / ' + orientation.dip + '&deg; dip</small>';
-          }
-
-          if (orientation.trend && orientation.plunge) {
-            content += '<br>';
-            content += '<small>' + orientation.trend + '&deg; trend / ' + orientation.plunge + '&deg; plunge</small>';
-          }
-
-          if (orientation.feature_type) {
-            content += '<br>';
-            content += '<small>' + orientation.feature_type + '</small>';
-          }
-        }
-        content = content.replace(/_/g, ' ');
-
-        // setup the popup position
-        popup.show(evt.coordinate, content);
-      }
+      else continuePopup(feature, evt);
     }
 
     // Remove feature showing highlighted Spot
