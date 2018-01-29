@@ -178,7 +178,7 @@
         if (action) {
           if (action === 'more') {
             popup.hide();
-            $location.path('/app/spotTab/' + vm.clickedFeatureId + '/sed-lithologies');
+            goToSpot(vm.clickedFeatureId, 'sed-lithologies');
             $scope.$apply();
           }
           e.preventDefault();
