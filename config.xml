@@ -48,12 +48,12 @@
   <plugin name="cordova-plugin-filepath" spec="1.0.2"/>
   <plugin name="cordova-plugin-geolocation" spec="2.4.1"/>
   <plugin name="cordova-plugin-inappbrowser" spec="1.5.0"/>
+  <plugin name="cordova-plugin-ionic-keyboard" spec="2.0.5"/>
   <plugin name="cordova-plugin-network-information" spec="1.2.0"/>
   <plugin name="cordova-plugin-splashscreen" spec="3.2.1"/>
   <plugin name="cordova-plugin-whitelist" spec="1.2.1"/>
   <plugin name="cordova-plugin-statusbar" spec="2.1.3"/>
   <plugin name="cordova-sqlite-storage" spec="0.7.14"/>
-  <plugin name="ionic-plugin-keyboard" spec="2.0.1"/>
 
   <platform name="ios">
     <icon src="www/res/icons/ios/icon-small.png" width="29" height="29"/>
