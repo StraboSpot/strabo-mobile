@@ -1,8 +1,28 @@
-<div class="strabo-form">
+<div class="strabo-form" ng-controller='FormController as form'>
   <ion-input class='item item-input item-stacked-label item-text-wrap'>
     <ion-label>Project Name</ion-label>
     <input type='text' placeholder='Name this Project' ng-model='vm.data.project_name'>
   </ion-input>
+  <form name='straboForm' novalidate=''>
+    <ion-input class='item item-input item-stacked-label item-text-wrap'
+               ng-class='{ "has-errors" : straboForm.magnetic_declination.$invalid, "no-errors" : straboForm.magnetic_declination.$valid }'>
+      <ion-label>
+        Magnetic Declination
+        <button class='button button-small button-icon ion-information-circled strabo-field-info-button'
+                ng-click='form.showFieldInfo({"label": "Magnetic Declination", "hint": "The difference between the north geographic pole and the north magnetic pole. A positive number is East and negative is West."})'></button>
+      </ion-label>
+      <input type='number'
+             name='magnetic_declination'
+             ng-model='vm.data.magnetic_declination'
+             min='-180'
+             max='180'>
+    </ion-input>
+    <div ng-if='straboForm.magnetic_declination.$touched'>
+      <div ng-messages='straboForm.magnetic_declination.$error'>
+        <div ng-messages-include='app/form/error-messages.html'></div>
+      </div>
+    </div>
+  </form>
   <button ng-click='vm.showDescriptionModal()'
           class='button button-clear button-small button-positive'>
     <i class='icon ion-information-circled'></i>

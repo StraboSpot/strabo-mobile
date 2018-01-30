@@ -21,6 +21,7 @@
     vm.compassData = {};
     vm.compassModal = {};
     vm.error = {};
+    vm.magneticDeclination = 0;
     vm.modalTitle = '';
     vm.msgText = '';
     vm.parentOrientation = {};
@@ -84,7 +85,7 @@
       var x = vm.result.x;
       var y = vm.result.y;
       var z = vm.result.z;
-      var magneticHeading = vm.result.magneticHeading;
+      var actualHeading = HelpersFactory.mod(vm.result.magneticHeading + vm.magneticDeclination, 360);
 
       // Calculate base values given the x, y, and z from the device. The x-axis runs side-to-side across
       // the mobile phone screen, or the laptop keyboard, and is positive towards the right side. The y-axis
@@ -101,7 +102,7 @@
 
       // Calculate dip direction, strike and dip (in degrees)
       var dipdir, strike, dip;
-      var diry = magneticHeading;
+      var diry = actualHeading;
       if (x === 0 && y === 0) {
         d = 0;
         dipdir = 180;
@@ -389,6 +390,7 @@
     function openCompass() {
       vm.msgText = '';
       vm.compassModal.show();
+      vm.magneticDeclination = ProjectFactory.getCurrentProject().description.magnetic_declination || 0;
       getCompassInfo();
     }
 

@@ -6,8 +6,12 @@
     <h1 class='title'>Strabo Compass</h1>
   </ion-header-bar>
   <ion-content class='has-header' ng-click='vmChild.pause()'>
+    <div class='padding'>Current Magnetic Declination: {{ vmChild.magneticDeclination }}
+      <br>
+      <small>Magnetic Declination is set in Project Description.</small>
+    </div>
     <div class='padding'
-      ng-show='!vmChild.result.x && !vmChild.result.y && !vmChild.result.z && !vmChild.result.magneticHeading &&
+         ng-show='!vmChild.result.x && !vmChild.result.y && !vmChild.result.z && !vmChild.result.magneticHeading &&
        !vmChild.error.both && !vmChild.error.compass && !vmChild.error.acceleration'>
       Working, please wait ...
     </div>

@@ -1,13 +1,14 @@
-name,type,label,required,hint,appearance
-project_name,text,Project Name,true,,
-start_date,date,Start Date,false,,
-end_date,date,End Date,false,,
-purpose_of_study,text,Purpose of Study,false,,
-other_team_members,text,Other Team Members,false,,
-area_of_interest,text,Area of Interest,false,,
-instruments,text,Instruments Used,false,,
-gps_datum,text,GPS Datum,false,default to WGS84,
-magnetic_declination,text,Magnetic Declination,false,Enter range for high latitude areas,
-notes,text,Notes,false,,multiline
-start,start,,,,
-end,end,,,,
+type,name,label,hint,required,constraint_message,constraint,appearance,calculation
+start,start,,,,,,,
+end,end,,,,,,,
+text,project_name,Project Name,,true,,,,
+date,start_date,Start Date,,false,,,,
+date,end_date,End Date,,false,,,,
+text,purpose_of_study,Purpose of Study,,false,,,,
+text,other_team_members,Other Team Members,,false,,,,
+text,area_of_interest,Area of Interest,,false,,,,
+text,instruments,Instruments Used,,false,,,,
+text,gps_datum,GPS Datum,default to WGS84,false,,,,
+decimal,magnetic_declination,Magnetic Declination,The difference between the north geographic pole and the north magnetic pole. A positive number is East and negative is West.,false,Declination must be between -180 to 180.,. >= -180 and . <= 180,,
+text,notes,Notes,,false,,,multiline,
+calculate,__version__,,,,,,,'vTMHSWSjntxQJYynztQVPL'
