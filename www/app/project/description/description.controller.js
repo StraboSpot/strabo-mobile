@@ -38,6 +38,7 @@
       else {
         FormFactory.setForm('project');
         vm.data = ProjectFactory.getCurrentProject().description;
+        $log.log('Project Description:', vm.data);
         fixDates();
         createModals();
       }
