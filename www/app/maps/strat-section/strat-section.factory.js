@@ -169,7 +169,9 @@
               spot.properties.sed.lithologies.thickness_units =
                 spotWithThisStratSection.properties.sed.strat_section.column_y_axis_units;
             }
-            spot.properties.sed.lithologies.interval_type = 'unexposed_covered';
+            if (!spot.properties.sed.lithologies.interval_type) {
+              spot.properties.sed.lithologies.interval_type = 'unexposed_covered';
+            }
           }
         }
       }
