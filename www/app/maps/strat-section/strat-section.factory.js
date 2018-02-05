@@ -292,6 +292,9 @@
     function drawAxes(ctx, pixelRatio, stratSection) {
       ctx.font = "30px Arial";
 
+      var map = MapSetupFactory.getMap();
+      var zoom = map.getView().getZoom();
+
       // Y Axis
       var currentSectionHeight = getSectionHeight();
       var yAxisHeight = currentSectionHeight + 40;
@@ -304,36 +307,41 @@
       ctx.lineTo(p.x, p.y);
 
       // Tick Marks for Y Axis
-      p = getPixel([-15, 0], pixelRatio);
-      if (stratSection.column_y_axis_units) ctx.fillText('0 ' + stratSection.column_y_axis_units, p.x, p.y);
-      else ctx.fillText('0', p.x, p.y);
-      _.times(Math.floor(yAxisHeight / yMultiplier), function (i) {
-        var y = (i + 1) * yMultiplier;
-        p = getPixel([-10, y], pixelRatio);
-        ctx.fillText(i + 1, p.x, p.y);
-        p = getPixel([-5, y], pixelRatio);
-        ctx.moveTo(p.x, p.y);
-        p = getPixel([0, y], pixelRatio);
-        ctx.lineTo(p.x, p.y);
-      });
-      ctx.stroke();
-
-      // Tick Marks for Intervals
-      var intervalSpots = getStratIntervalSpots();
-      _.each(intervalSpots, function (intervalSpot) {
-        var extent = intervalSpot.getGeometry().getExtent();
-        var y = extent[3];
-        var label = HelpersFactory.roundToDecimalPlaces(extent[3] / yMultiplier, 2);
-        if (!Number.isInteger(label)) {
-          p = getPixel([-3, y], pixelRatio);
-          ctx.fillText(label, p.x, p.y);
-          p = getPixel([-2, y], pixelRatio);
+      _.times(Math.floor(yAxisHeight / yMultiplier) + 1, function (i) {
+        var y = i * yMultiplier;
+        p = i === 0 ? getPixel([-15, 0], pixelRatio) : getPixel([-10, y], pixelRatio);
+        if (i === 0 || zoom >= 5 || (zoom < 5 && zoom > 2 && i % 5 === 0) || (zoom <= 2 && i % 10 === 0)) {
+          if (i === 0 && stratSection.column_y_axis_units) {
+            ctx.fillText('0 ' + stratSection.column_y_axis_units, p.x, p.y);
+          }
+          else ctx.fillText(i, p.x, p.y);
+          p = getPixel([-5, y], pixelRatio);
           ctx.moveTo(p.x, p.y);
           p = getPixel([0, y], pixelRatio);
           ctx.lineTo(p.x, p.y);
         }
       });
       ctx.stroke();
+
+      // Tick Marks for Intervals
+      // Only show tick marks if zoom level is 6 or greater
+      if (zoom >= 6) {
+        var intervalSpots = getStratIntervalSpots();
+        _.each(intervalSpots, function (intervalSpot) {
+          var extent = intervalSpot.getGeometry().getExtent();
+          var y = extent[3];
+          var label = HelpersFactory.roundToDecimalPlaces(extent[3] / yMultiplier, 2);
+          if (!Number.isInteger(label)) {
+            p = getPixel([-3, y], pixelRatio);
+            ctx.fillText(label, p.x, p.y);
+            p = getPixel([-2, y], pixelRatio);
+            ctx.moveTo(p.x, p.y);
+            p = getPixel([0, y], pixelRatio);
+            ctx.lineTo(p.x, p.y);
+          }
+        });
+        ctx.stroke();
+      }
 
       // Setup to draw X Axis
       var labels = {};
