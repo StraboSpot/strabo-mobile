@@ -161,7 +161,6 @@
       // Draw Map Axes
       map.on('precompose', function (event) {
         if ($state.current.name === 'app.strat-section') {
-          //$log.log('postcompose');
           var ctx = event.context;
           var pixelRatio = event.frameState.pixelRatio;
           StratSectionFactory.drawAxes(ctx, pixelRatio, stratSection);
