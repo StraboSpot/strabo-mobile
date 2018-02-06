@@ -1,0 +1,10 @@
+type,name,label,required,relevant,calculation
+begin_group,group_ck6ux23,Pedogenic Structures,,,
+select_multiple da8ok49,Paleosol_horizons,Paleosol horizons,false,,
+text,Other,Other,false,"selected(${Paleosol_horizons}, 'other')",
+select_multiple lg4oy98,Paleosol_structures,Paleosol structures,false,,
+text,Other_001,Other,false,"selected(${Paleosol_structures}, 'other')",
+text,Additional_modifiers,Additional modifiers,false,,
+select_multiple mw8xp09,Paleosol_classification,Paleosol classification,false,,
+end_group,,,,,
+calculate,__version__,,,,'vpon62zw3wMDoUuXZ4uGu2'

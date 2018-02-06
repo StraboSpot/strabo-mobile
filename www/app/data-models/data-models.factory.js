@@ -88,6 +88,18 @@
           'choices': {},
           'choices_file': 'app/data-models/sed/add-interval-choices.csv'
         },
+        'biogenic_structures': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/biogenic-structures-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/biogenic-structures-choices.csv'
+        },
+        'chemogenic_structures': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/chemogenic-structures-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/chemogenic-structures-choices.csv'
+        },
         'composition': {
           'survey': {},
           'survey_file': 'app/data-models/sed/composition-survey.csv',
@@ -112,11 +124,17 @@
           'choices': {},
           'choices_file': 'app/data-models/sed/stratification-choices.csv'
         },
-        'structures': {
+        'pedogenic_structures': {
           'survey': {},
-          'survey_file': 'app/data-models/sed/structures-survey.csv',
+          'survey_file': 'app/data-models/sed/pedogenic-structures-survey.csv',
           'choices': {},
-          'choices_file': 'app/data-models/sed/structures-choices.csv'
+          'choices_file': 'app/data-models/sed/pedogenic-structures-choices.csv'
+        },
+        'physical_structures': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/physical-structures-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/physical-structures-choices.csv'
         },
         'texture': {
           'survey': {},

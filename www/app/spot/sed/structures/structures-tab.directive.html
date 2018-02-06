@@ -1,4 +1,10 @@
 <div>
+  <div class='button-bar'>
+    <button class='button' ng-click='vmChild.switchForm("physical_structures")'>Physical</button>
+    <button class='button' ng-click='vmChild.switchForm("biogenic_structures")'>Biogenic</button>
+    <button class='button' ng-click='vmChild.switchForm("chemogenic_structures")'>Chemogenic</button>
+    <button class='button' ng-click='vmChild.switchForm("pedogenic_structures")'>Pedogenic</button>
+  </div>
   <form name='straboForm' novalidate=''>
     <auto-fields/>
   </form>
