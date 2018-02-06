@@ -1,0 +1,90 @@
+list_name,name,label,order
+zy6cd16,yes,yes,
+zy6cd16,no,no,
+yy7ga03,no_bedding_or_,no bedding or laminae,
+yy7ga03,planar_stratif,planar stratified,1
+yy7ga03,cross_stratifi,cross stratified,2
+yy7ga03,can_t_be_determined,can't be determined,3
+yy7ga03,n_a,n/a,4
+re0hj03,trough,trough,
+re0hj03,hummocky,hummocky,1
+re0hj03,swaley,swaley,2
+re0hj03,planar_tabular,planar tabular,3
+re0hj03,festoon,festoon,4
+re0hj03,wedge,wedge,5
+re0hj03,low_angle,low angle,6
+re0hj03,symmetric,symmetric,7
+re0hj03,asymmetric,asymmetric,8
+re0hj03,climbing,climbing,9
+re0hj03,interference,interference,10
+re0hj03,translatent,translatent,11
+re0hj03,flaser,flaser,12
+re0hj03,wavy,wavy,13
+re0hj03,lenticular,lenticular,14
+re0hj03,starved_ripple,starved ripples,15
+re0hj03,adhesion,adhesion,16
+re0hj03,herringbone,herringbone,17
+re0hj03,sigmoidal,sigmoidal,18
+re0hj03,tidal_bundle,tidal bundle,19
+re0hj03,rhythmic,rhythmic,20
+re0hj03,bi_directional,bi-directional asymmetric,21
+re0hj03,pinstripe,pinstripe,22
+re0hj03,mud_drape,mud drape,23
+re0hj03,other,other,24
+jc3as89,trough_axis__plunge___trend,trough axis (plunge & trend),
+jc3as89,cross_bed__strike___dip,cross bed (dip & dip direction),
+oj08o54,festoon_trough_axis__plunge___,festoon trough axis (plunge & trend),
+oj08o54,festoon_cross_bedding__dip___d,festoon cross bedding (dip & dip direction),
+hp2ng68,subcritical,subcritical,
+hp2ng68,critical,critical,
+hp2ng68,supercritical,supercritical,
+cs0rc13,bedforms,bedforms,
+cs0rc13,sole_marks,sole marks,
+cs0rc13,flute_cast,flute cast,
+cs0rc13,groove_cast,groove cast,
+cs0rc13,tool_marks,tool marks,
+cs0rc13,gutter_cast,gutter cast,
+cs0rc13,load_cast,load cast,
+cs0rc13,parting_lineat,parting lineation,
+cs0rc13,mudcracks,mudcracks,
+cs0rc13,syneresis_crac,syneresis cracks,
+cs0rc13,evaporite_mold,evaporite molds,
+cs0rc13,raindrop_impre,raindrop impressions,
+cs0rc13,glacial_striat,glacial striations,
+cs0rc13,hardground_fir,hardground/firmground,
+cs0rc13,other,other,
+bd2tc58,wave_ripples,wave ripples,
+bd2tc58,current_ripples,current ripples,1
+bd2tc58,dunes,dunes,2
+bd2tc58,antidunes,antidunes,3
+bd2tc58,2d_crests,2D crests,4
+bd2tc58,3d_crests,3D crests,5
+bd2tc58,lunate,lunate,6
+bd2tc58,cuspate,cuspate,7
+bd2tc58,linguoid,linguoid,8
+bd2tc58,bifurcations,bifurcations,9
+bd2tc58,ladderback,ladderback,10
+bd2tc58,interference_r,interference ripples,11
+bd2tc58,adhesion_struc,adhesion structures,12
+bd2tc58,swales,swales,13
+bd2tc58,hummocks_and_s,hummocks and swales,14
+bd2tc58,other,other,
+aj0xd06,contorted_bedd,contorted bedding,
+aj0xd06,convolute_bedd,convolute bedding,1
+aj0xd06,option_17,rip-up clasts,2
+aj0xd06,nodular_beddin,nodular bedding,3
+aj0xd06,pipes,pipes,4
+aj0xd06,dikes,dikes,5
+aj0xd06,sills,sills,6
+aj0xd06,dish_structrue,dish structrues,7
+aj0xd06,flame_structur,flame structures,8
+aj0xd06,sand_mud_volca,sand/mud volcanoes,9
+aj0xd06,load_structure,load structures,10
+aj0xd06,ball_and_pillo,ball and pillow,11
+aj0xd06,boudinage,boudinage,12
+aj0xd06,intrastratal_c,intrastratal cracks,13
+aj0xd06,liquefaction_f,liquefaction features,14
+aj0xd06,syn_sedimentar,syn-sedimentary faults,15
+aj0xd06,neptunian_dike,Neptunian dikes,16
+aj0xd06,post_lithifica,post-lithification deformational structures,
+aj0xd06,other,other,

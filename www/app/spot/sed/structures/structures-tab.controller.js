@@ -13,6 +13,8 @@
 
     var thisTabName = 'sed-structures';
 
+    vm.switchForm = switchForm;
+
     activate();
 
     /**
@@ -40,7 +42,7 @@
 
     function loadTab(state) {
       vmParent.loadTab(state);     // Need to load current state into parent
-      FormFactory.setForm('sed', 'structures');
+      FormFactory.setForm('sed', 'physical_structures');
       if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.structures) {
         $log.log('Sed Structures:', vmParent.spot.properties.sed.structures);
         vmParent.data = vmParent.spot.properties.sed.structures;
@@ -51,6 +53,10 @@
     /**
      * Public Functions
      */
+
+    function switchForm(form) {
+      FormFactory.setForm('sed', form);
+    }
 
   }
 }());
