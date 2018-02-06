@@ -34,7 +34,7 @@
      * Private Functions
      */
 
-    // X Axis
+    // X-Axis
     function drawAxisX(ctx, pixelRatio, yAxisHeight, labels, spacing, color) {
       var p = getPixel([-10, 0], pixelRatio);
       ctx.moveTo(p.x, p.y);
@@ -76,6 +76,72 @@
         p = getPixel([x, yAxisHeight], pixelRatio);
         ctx.lineTo(p.x, p.y);
         ctx.stroke();
+      });
+    }
+
+    // X Axis Stacked
+    function drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, spacing, y, color, profile) {
+      var p = y === 0 ? getPixel([-10, y], pixelRatio) : getPixel([0, y], pixelRatio);
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      var xAxisLength = (_.size(labels) + 1) * xInterval;
+      p = getPixel([xAxisLength, y], pixelRatio);
+      ctx.lineTo(p.x, p.y);
+      ctx.strokeStyle = color;
+      ctx.stroke();
+
+      // Create Grain Size Labels for X Axis
+      ctx.textAlign = 'left';
+      ctx.lineWidth = 3;
+
+      // Line and label for x-axis group
+      ctx.beginPath();
+      p = getPixel([0, y], pixelRatio);
+      ctx.moveTo(p.x, p.y);
+      p = getPixel([0, y-20], pixelRatio);
+      ctx.lineTo(p.x, p.y);
+      ctx.strokeStyle = color;
+      ctx.stroke();
+      ctx.save();
+      p = getPixel([-2, y-15], pixelRatio);
+      ctx.translate(p.x, p.y);
+      ctx.rotate(270 * Math.PI / 180);     // text at 270 degrees
+      ctx.fillStyle = color;
+      ctx.fillText(profile, 0, 0);
+      ctx.restore();
+
+      _.each(labels, function (label, i) {
+        var x = (i + spacing) * xInterval;
+
+        // Tick Mark
+        ctx.beginPath();
+        ctx.setLineDash([]);
+        p = getPixel([x, y], pixelRatio);
+        ctx.moveTo(p.x, p.y);
+        p = getPixel([x, y - 4], pixelRatio);
+        ctx.lineTo(p.x, p.y);
+        ctx.strokeStyle = color;
+        ctx.stroke();
+
+        // Label
+        ctx.save();
+        p = getPixel([x, y - 5], pixelRatio);
+        ctx.translate(p.x, p.y);
+        ctx.rotate(30 * Math.PI / 180);     // text at 30 degrees
+        ctx.fillStyle = color;
+        ctx.fillText(label, 0, 0);
+        ctx.restore();
+
+        // Vertical Dashed Line
+        ctx.beginPath();
+        ctx.setLineDash([5]);
+        p = getPixel([x, 0], pixelRatio);
+        ctx.moveTo(p.x, p.y);
+        p = getPixel([x, yAxisHeight], pixelRatio);
+        ctx.lineTo(p.x, p.y);
+        ctx.strokeStyle = 'black';
+        ctx.stroke();
+        ctx.setLineDash([]);
       });
     }
 
@@ -311,6 +377,7 @@
         var y = i * yMultiplier;
         p = i === 0 ? getPixel([-15, 0], pixelRatio) : getPixel([-10, y], pixelRatio);
         if (i === 0 || zoom >= 5 || (zoom < 5 && zoom > 2 && i % 5 === 0) || (zoom <= 2 && i % 10 === 0)) {
+          ctx.textAlign = 'right';
           if (i === 0 && stratSection.column_y_axis_units) {
             ctx.fillText('0 ' + stratSection.column_y_axis_units, p.x, p.y);
           }
@@ -333,6 +400,7 @@
           var label = HelpersFactory.roundToDecimalPlaces(extent[3] / yMultiplier, 2);
           if (!Number.isInteger(label)) {
             p = getPixel([-3, y], pixelRatio);
+            ctx.textAlign = 'right';
             ctx.fillText(label, p.x, p.y);
             p = getPixel([-2, y], pixelRatio);
             ctx.moveTo(p.x, p.y);
@@ -345,30 +413,42 @@
 
       // Setup to draw X Axis
       var labels = {};
+      var y = 0;
       if (stratSection.column_profile === 'clastic') {
         labels = _.pluck(grainSizeOptions.clastic, 'label');
-        drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 1);
+        //drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 1);
+        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 1, y, 'black', stratSection.column_profile);
+        y += -20;
       }
       else if (stratSection.column_profile === 'carbonate') {
         labels = _.pluck(grainSizeOptions.carbonate, 'label');
-        drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 2.33);
+        //drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 2.33);
+        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 2, y, 'blue', stratSection.column_profile);
+        y += -20
       }
       else if (stratSection.column_profile === 'mixed_clastic') {
         labels = _.pluck(grainSizeOptions.clastic, 'label');
-        drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 1);
+        //drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 1);
+        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 1, y, 'black', 'clastic');
+        y += -20;
         labels = _.pluck(grainSizeOptions.carbonate, 'label');
-        drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 2.33, 'blue');
+        //drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 2.33, 'blue');
+        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 2, y, 'blue', 'carbonate');
+        y += -20
       }
       else if (stratSection.column_profile === 'weathering_pro') {
         labels = _.pluck(grainSizeOptions.weathering, 'label');
-        drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 1);
+        //drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 1);
+        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 1, y, 'black', 'weathering');
+        y += -20
       }
-      else drawAxisX(ctx, pixelRatio, yAxisHeight, [], 1);
+      else $log.error('Incorrect profile type:', stratSection.column_profile);
 
       if (stratSection.misc_labels === true) {
         labels = _.pluck(grainSizeOptions.lithologies, 'label');
         labels = _.rest(labels, 3);
-        drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 2.66, 'green');
+        //drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 2.66, 'green');
+        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 2, y, 'green', 'misc.');
       }
     }
 
