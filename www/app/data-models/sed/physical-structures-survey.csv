@@ -1,6 +1,5 @@
 type,name,label,required,relevant,calculation
-select_one zy6cd16,Add_Physical_Structures,Add physical structures,false,,
-begin_group,group_wn3bk05,Physical Structures,,${Add_Physical_Structures} = 'yes',
+begin_group,group_wn3bk05,Physical Structures,,,
 select_one yy7ga03,Physical_Structures,Internal bedding structures,false,,
 select_multiple re0hj03,Type,Cross stratified types,false,${Physical_Structures} = 'cross_stratifi',
 text,Other,Other,false,"selected(${Type}, 'other')",
@@ -83,4 +82,4 @@ text,_3D_Crests_crest_orie_tion_azimuth_0_360,"3D Crests crest orientation (azim
 select_multiple aj0xd06,Deformation_Structures,Deformation Structures,false,,
 text,Other_003,Other,false,"selected(${Deformation_Structures}, 'other')",
 end_group,,,,,
-calculate,__version__,,,,'v4h2ShrdpQCFBwzDf5iYzT'
+calculate,__version__,,,,'vrrfFTtAncfHuJXNK4G5pH'
