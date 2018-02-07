@@ -48,6 +48,7 @@
     vm.goBack = goBack;
     vm.goToSpot = goToSpot;
     vm.groupSpots = groupSpots;
+    vm.hasRelationships = hasRelationships;
     vm.hasTags = hasTags;
     vm.isiOS = isiOS;
     vm.saveEdits = saveEdits;
@@ -464,6 +465,10 @@
       vm.popover.hide().then(function () {
         MapDrawFactory.groupSpots();
       });
+    }
+
+    function hasRelationships(spotId) {
+      return !_.isEmpty(ProjectFactory.getRelationshipsBySpotId(spotId));
     }
 
     function hasTags(spotId) {
