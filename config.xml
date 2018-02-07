@@ -54,6 +54,7 @@
   <plugin name="cordova-plugin-whitelist" spec="1.2.1"/>
   <plugin name="cordova-plugin-statusbar" spec="2.1.3"/>
   <plugin name="cordova-sqlite-storage" spec="0.7.14"/>
+  <plugin name="cordova-plugin-itunesfilesharing" spec="^0.0.1" />
 
   <platform name="ios">
     <icon src="www/res/icons/ios/icon-small.png" width="29" height="29"/>
