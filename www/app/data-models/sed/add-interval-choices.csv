@@ -15,31 +15,38 @@ eb2oc45,chert,chert,5
 eb2oc45,ironstone,ironstone,6
 eb2oc45,phosphatic,phosphatic,7
 eb2oc45,volcaniclastic,volcaniclastic,8
-su4gj26,clay,clay,
-su4gj26,mud,mud,
-su4gj26,silt,silt,
-su4gj26,sand_v_fine,sand - very fine,
-su4gj26,sand_fine_lwr,sand - fine lower,
-su4gj26,sand_fine_upr,sand - fine upper,
-su4gj26,sand_med_lwr,sand - medium lower,
-su4gj26,sand_med_upr,sand - medium upper,
-su4gj26,sand_coar_lwr,sand - coarse lower,
-su4gj26,sand_coar_upr,sand - coarse upper,
-su4gj26,sand_v_coar,sand - very coarse,
-su4gj26,granule,granule,
-su4gj26,pebble,pebble,
-su4gj26,cobble,cobble,
-su4gj26,boulder,boulder,
+md69g21,claystone,claystone,
+md69g21,mudstone,mudstone,
+md69g21,shale,shale,
+md69g21,siltstone,siltstone,
+md69g21,sandstone,sandstone,
+md69g21,conglomerate,conglomerate,
+md69g21,breccia,breccia,
+en2os90,clay,clay,
+en2os90,mud,mud ,
+en2os90,silt,silt,
+he4ke66,sand__very_fin,sand- very fine,
+he4ke66,sand__fine_low,sand- fine lower,
+he4ke66,sand__fine_upp,sand- fine upper,
+he4ke66,sand__medium_l,sand- medium lower,
+he4ke66,sand__medium_u,sand- medium upper,
+he4ke66,sand__coarse_l,sand- coarse lower,
+he4ke66,sand__coarse_u,sand- coarse upper,
+he4ke66,sand__very_coa,sand- very coarse,
+te32l95,granule,granule,
+te32l95,pebble,pebble,
+te32l95,cobble,cobble,
+te32l95,boulder,boulder,
 uf03r86,mudstone,mudstone,
 uf03r86,wackestone,wackestone,1
 uf03r86,packstone,packstone,2
 uf03r86,grainstone,grainstone,3
 uf03r86,floatstone,floatstone,4
 uf03r86,rudstone,rudstone,5
-uf03r86,framestone,framestone,6
-uf03r86,bafflestone,bafflestone,7
+uf03r86,boundstone,boundstone,6
+uf03r86,framestone,framestone,7
 uf03r86,bindstone,bindstone,8
-uf03r86,boundstone,boundstone,9
+uf03r86,bafflestone,bafflestone,9
 uf03r86,cementstone,cementstone,10
 uf03r86,recrystallized,recrystallized,11
 dt0dc27,1_least_resist,1 - least resistant,

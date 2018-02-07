@@ -1,21 +1,92 @@
 list_name,name,label,order
-jt6by54,cm,cm,
-jt6by54,m,m,1
-jt6by54,in,in,2
-jt6by54,ft,ft,3
-ts5mf52,lithology,lithology,
-ts5mf52,weathering_pro,weathering profile,
-ts5mf52,unexposed_covered,unexposed/covered,
-vq5ai01,bed,bed,
-vq5ai01,interbedded,interbedded,1
-vq5ai01,package_succe,package (succession of beds),2
-vq5ai01,cover,cover,3
-wc2ju40,1_least_resist,1 - least resistant,
-wc2ju40,2,2,
-wc2ju40,3_mod_resistan,3 - moderately resistant,
-wc2ju40,4,4,
-wc2ju40,5_most_resista,5 - most resistant,
-kq9qb39,lithified,lithified,
-kq9qb39,poorly_lithifi,poorly lithified,
-kq9qb39,unlithified_un,unlithified/unconsolidated,
-kq9qb39,metamorphosed,metamorphosed,
+zw9ye70,m,m,
+zw9ye70,ft,ft,1
+zw9ye70,cm,cm,2
+zw9ye70,in,in,3
+we36h70,siliciclastic,siliciclastic,
+we36h70,limestone,limestone,1
+we36h70,dolomite,dolomite,2
+we36h70,organic_coal,organic/coal,3
+we36h70,evaporite,evaporite,4
+we36h70,chert,chert,5
+we36h70,ironstone,ironstone,6
+we36h70,phosphatic,phosphatic,7
+we36h70,volcaniclastic,volcaniclastic,8
+vb9ph32,claystone,claystone,
+vb9ph32,mudstone,mudstone,
+vb9ph32,shale,shale,
+vb9ph32,siltstone,siltstone,
+vb9ph32,sandstone,sandstone,
+vb9ph32,conglomerate,conglomerate,
+vb9ph32,breccia,breccia,
+jm3fd49,clay,clay,
+jm3fd49,mud,mud,
+jm3fd49,silt,silt,
+gf7lv09,sand__very_fin,sand- very fine,1
+gf7lv09,sand__fine_low,sand- fine lower,2
+gf7lv09,sand__fine_upp,sand- fine upper,3
+gf7lv09,sand__medium_l,sand- medium lower,4
+gf7lv09,sand__medium_u,sand- medium upper,5
+gf7lv09,sand__coarse_l,sand- coarse lower,6
+gf7lv09,sand__coarse_u,sand- coarse upper,7
+gf7lv09,sand__very_coa,sand- very coarse,8
+jk0sn61,granule,granule,
+jk0sn61,pebble,pebble,
+jk0sn61,cobble,cobble,
+jk0sn61,boulder,boulder,
+ap2mh08,mudstone,mudstone,
+ap2mh08,wackestone,wackestone,
+ap2mh08,packstone,packstone,
+ap2mh08,grainstone,grainstone,
+ap2mh08,floatstone,floatstone,
+ap2mh08,rudstone,rudstone,
+ap2mh08,boundstone,boundstone,
+ap2mh08,framestone,framestone,
+ap2mh08,bindstone,bindstone,
+ap2mh08,bafflestone,bafflestone,
+ap2mh08,cementstone,cementstone,
+ap2mh08,recrystallized,recrystallized,
+ga9oo42,massive_struct,massive/structureless,
+ga9oo42,horizontal_str,horizontal lamination,
+ga9oo42,thin_bedded,thin-bedded,
+ga9oo42,thick_bedded,thick bedded,
+ga9oo42,ripple_laminat,ripple laminated,
+ga9oo42,trough_cross_s,trough cross-stratification,
+ga9oo42,planar_cross_s,planar cross-stratification,
+ga9oo42,low_angle_cros,low-angle cross-stratification,
+iu3km02,massive_struct,massive/structureless,
+iu3km02,horizontal_lam,horizontal lamination,
+iu3km02,ripple_laminat,ripple lamination,
+oi98y12,massive_struct,massive/structureless,
+oi98y12,normal_grading,normal grading,
+oi98y12,reverse_gradin,reverse grading,
+oi98y12,horizontal_bed,horizontal bedding,
+oi98y12,trough_cross_s,trough cross-stratification,
+oi98y12,planar_cross_s,planar cross-stratification,
+so29n97,glass,glass,
+so29n97,crystals,crystals,
+so29n97,lithic_fragments,lithic fragments,
+so29n97,volcanic_mudstone,volcanic mudstone,
+so29n97,volcanic_sandstone,volcanic sandstone,
+so29n97,lapillistone,lapillistone,
+so29n97,agglomerate,agglomerate,
+so29n97,volcanic_breccia,volcanic breccia,
+so29n97,bentonite,bentonite,
+so29n97,tuff,tuff,
+so29n97,welded_tuff,welded tuff,
+so29n97,ignimbrite,ignimbrite,
+so29n97,other,other,
+gg6bk97,gyp_anhyd_prim,gypsum - anhydrite primary,
+gg6bk97,gyp_anhyd_dia,gypsum - anhydrite diagenetic,
+gg6bk97,halite_primary,halite - primary,
+gg6bk97,halite_diagene,halite - diagenetic,
+om8xr30,amber,amber,
+om8xr30,peat,peat,
+om8xr30,lignite,lignite,
+om8xr30,subbituminous,subbituminous,
+om8xr30,bituminous,bituminous,
+om8xr30,coal_ball,coal ball,
+om8xr30,tar,tar,
+mo7ce83,nodular,nodular,
+mo7ce83,bedded,bedded,
+mo7ce83,massive,massive,

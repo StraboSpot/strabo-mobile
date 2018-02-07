@@ -357,7 +357,6 @@
       }
       else if (stratSection.column_profile && stratSection.column_profile === 'carbonate') {
         vm.data.interval_type = 'lithology';
-        vm.data.primary_lithology = 'limestone';
       }
       else if (stratSection.column_profile && stratSection.column_profile === 'mixed_clastic') {
         vm.data.interval_type = 'lithology';

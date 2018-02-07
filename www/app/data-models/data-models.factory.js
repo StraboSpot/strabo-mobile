@@ -230,8 +230,10 @@
     function createSedLabelsDictionary() {
       sedLabelsDictionary = {'clastic': [], 'carbonate': [], 'lithologies': [], 'weathering': []};
       var survey = dataModels.sed.add_interval.survey;
-      var clastic = _.find(survey, function (field) {
-        return field.name === 'principal_grain_size_clastic';
+      var clastic = _.filter(survey, function (field) {
+        return field.name === 'mudstone_siltstone_principal_grain_size' ||
+          field.name === 'sandstone_principal_grain_size' ||
+          field.name === 'conglomerate_breccia_principal_grain_size';
       });
       var carbonate = _.find(survey, function (field) {
         return field.name === 'principal_dunham_classificatio';
@@ -242,9 +244,14 @@
       var weathering = _.find(survey, function (field) {
         return field.name === 'relative_resistance_weathering';
       });
-      var clasticChoices = _.filter(dataModels.sed.add_interval.choices, function (choice) {
-        return choice.list_name === clastic.type.split(' ')[1]
+      var clasticChoices = [];
+      _.each(clastic, function (c) {
+        var clasticChoicesTemp =_.filter(dataModels.sed.add_interval.choices, function (choice) {
+          return choice.list_name === c.type.split(' ')[1]
+        });
+        clasticChoices.push(clasticChoicesTemp);
       });
+      clasticChoices = _.flatten(clasticChoices);
       var carbonateChoices = _.filter(dataModels.sed.add_interval.choices, function (choice) {
         return choice.list_name === carbonate.type.split(' ')[1]
       });
