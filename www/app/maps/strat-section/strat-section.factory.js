@@ -98,12 +98,12 @@
       ctx.beginPath();
       p = getPixel([0, y], pixelRatio);
       ctx.moveTo(p.x, p.y);
-      p = getPixel([0, y-20], pixelRatio);
+      p = getPixel([0, y - 20], pixelRatio);
       ctx.lineTo(p.x, p.y);
       ctx.strokeStyle = color;
       ctx.stroke();
       ctx.save();
-      p = getPixel([-2, y-15], pixelRatio);
+      p = getPixel([-2, y - 15], pixelRatio);
       ctx.translate(p.x, p.y);
       ctx.rotate(270 * Math.PI / 180);     // text at 270 degrees
       ctx.fillStyle = color;
@@ -264,7 +264,9 @@
             // Lithology = siliciclastic
             if (spot.properties.sed.lithologies.primary_lithology === 'siliciclastic') {
               i = _.findIndex(grainSizeOptions.clastic, function (grainSizeOption) {
-                return grainSizeOption.value === spot.properties.sed.lithologies.principal_grain_size_clastic;
+                return grainSizeOption.value === spot.properties.sed.lithologies.mudstone_siltstone_principal_grain_size ||
+                  grainSizeOption.value === spot.properties.sed.lithologies.sandstone_principal_grain_size ||
+                  grainSizeOption.value === spot.properties.sed.lithologies.conglomerate_breccia_principal_grain_size;
               });
               intervalWidth = (i + 1) * xInterval;
             }
@@ -274,7 +276,7 @@
               i = _.findIndex(grainSizeOptions.carbonate, function (grainSizeOption) {
                 return grainSizeOption.value === spot.properties.sed.lithologies.principal_dunham_classificatio;
               });
-              intervalWidth = (i + 2.33) * xInterval;
+              intervalWidth = (i + 2) * xInterval;
             }
             // Other Lithologies
             else {
@@ -282,7 +284,7 @@
                 return grainSizeOption.value === spot.properties.sed.lithologies.primary_lithology;
               });
               i = i - 3; // First 3 indexes are siliclastic, limestone & dolomite which are handled above
-              intervalWidth = (i + 2.66) * xInterval;
+              intervalWidth = (i + 2) * xInterval;
             }
           }
           else $log.error('Sed data error');
@@ -317,9 +319,12 @@
       // Unexposed/Covered
       else if (data.interval_type === 'unexposed_covered') intervalWidth = (0 + 1) * xInterval;    // Same as clay
       // Lithology = siliciclastic
-      else if (data.principal_grain_size_clastic) {
+      else if (data.mudstone_siltstone_principal_grain_size || data.sandstone_principal_grain_size ||
+        data.conglomerate_breccia_principal_grain_size) {
         i = _.findIndex(grainSizeOptions.clastic, function (grainSizeOption) {
-          return grainSizeOption.value === data.principal_grain_size_clastic;
+          return grainSizeOption.value === data.mudstone_siltstone_principal_grain_size ||
+            grainSizeOption.value === data.sandstone_principal_grain_size ||
+            grainSizeOption.value === data.conglomerate_breccia_principal_grain_size;
         });
         intervalWidth = (i + 1) * xInterval;
       }
@@ -328,7 +333,7 @@
         i = _.findIndex(grainSizeOptions.carbonate, function (grainSizeOption) {
           return grainSizeOption.value === data.principal_dunham_classificatio;
         });
-        intervalWidth = (i + 2.33) * xInterval;
+        intervalWidth = (i + 2) * xInterval;
       }
       // Other Lithologies
       else {
@@ -336,7 +341,7 @@
           return grainSizeOption.value === data.primary_lithology;
         });
         i = i - 3; // First 3 indexes are siliclastic, limestone & dolomite which are handled above
-        intervalWidth = (i + 2.66) * xInterval;
+        intervalWidth = (i + 2) * xInterval;
       }
 
       var maxY = minY + intervalHeight;

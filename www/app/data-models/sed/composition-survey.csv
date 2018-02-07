@@ -109,8 +109,7 @@ decimal,halite_primary_percent,Halite - primary percent,false,"selected(${evapor
 select_multiple la9sa83,halite_primary_type,Halite - primary type,false,"selected(${evaporite_type}, 'halite_primary')",
 decimal,halite_diagenetic_percent,Halite - diagenetic percent,false,"selected(${evaporite_type}, 'halite_diagene')",
 select_multiple dv3xg82,halite_diagenetic_type,Halite - diagenetic type,false,"selected(${evaporite_type}, 'halite_diagene')",
-decimal,phosphorite_percent,Phosphorite percent,false,"selected(${evaporite_type}, 'phosphorite')",
-select_multiple mo7ce83,phosphorite_type,Phosphorite type,false,"selected(${evaporite_type}, 'phosphorite')",
+select_multiple mo7ce83,phosphorite_type,Phosphorite type,false,${primary_lithology} = 'phosphatic',
 select_multiple om8xr30,organic_coal_lithologies,Organic Coal Lithologies,false,"selected(${secondary_lithologies}, 'organic_coal') or ${primary_lithology} = 'organic_coal'",
 decimal,amber_percent,Amber percent,false,"selected(${organic_coal_lithologies}, 'amber')",
 decimal,peat_percent,Peat percent,false,"selected(${organic_coal_lithologies}, 'peat')",
@@ -122,4 +121,4 @@ decimal,tar_percent,Tar percent,false,"selected(${organic_coal_lithologies}, 'ta
 select_multiple yf18f03,minerals_present,Minerals present,false,,
 text,other_mineral_s,Other mineral(s),false,"selected(${minerals_present}, 'other')",
 end_group,,,,,
-calculate,__version__,,,,'vz4tcW2Jygm8YMn5xVtxog'
+calculate,__version__,,,,'vSK7dbLSjQY29mvb3XFach'

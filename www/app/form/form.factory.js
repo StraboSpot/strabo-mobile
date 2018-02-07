@@ -43,7 +43,8 @@
         errorMessages.push('- The <b>Primary Lithology</b> must be specified if the Interval Type is lithology.');
       }
       else if (lithologies.interval_type === 'lithology' && lithologies.primary_lithology === 'siliciclastic' &&
-        !lithologies.principal_grain_size_clastic) {
+        (!lithologies.mudstone_siltstone_principal_grain_size && !lithologies.sandstone_principal_grain_size &&
+          !lithologies.conglomerate_breccia_principal_grain_size)) {
         errorMessages.push('- The <b>Principal Grain Size</b> must be specified if the Primary Lithology is ' +
           'siliciclastic.');
       }
