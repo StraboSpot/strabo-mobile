@@ -390,10 +390,17 @@
       var deferred = $q.defer(); // init promise
       // Load the survey
       readCSV(dataModel.survey_file, function (surveyFields) {
+        surveyFields = _.each(surveyFields, function (surveyField) {
+          surveyField.name = surveyField.name.toLowerCase();
+          if (surveyField.relevant) surveyField.relevant = surveyField.relevant.toLowerCase();
+        });
         dataModel.survey = surveyFields;
         // Load the choices
         if (dataModel.choices_file) {
           readCSV(dataModel.choices_file, function (choicesFields) {
+            choicesFields = _.each(choicesFields, function (choicesField) {
+              choicesField.name = choicesField.name.toLowerCase();
+            });
             dataModel.choices = choicesFields;
             deferred.resolve();
           });
