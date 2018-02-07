@@ -407,10 +407,10 @@
       var preferences = ProjectFactory.getPreferences();
       if (tab === 'spot') return true;
       else if (tab === 'strat_section') {
-        return preferences['strat_mode'] && vm.spot && vm.spot.properties && !vm.spot.properties.strat_section_id;
+        return preferences['sed_mode'] && vm.spot && vm.spot.properties && !vm.spot.properties.strat_section_id;
       }
       else if (tab === 'sed_lithologies' || tab === 'sed_structures' || tab === 'sed_interpretations') {
-        return preferences['strat_mode'] && vm.spot && vm.spot.properties && vm.spot.properties.surface_feature &&
+        return preferences['sed_mode'] && vm.spot && vm.spot.properties && vm.spot.properties.surface_feature &&
           vm.spot.properties.surface_feature.surface_feature_type &&
           vm.spot.properties.surface_feature.surface_feature_type === 'strat_interval';
       }
