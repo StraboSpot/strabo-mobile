@@ -61,6 +61,7 @@
               ng-repeat='spot in vm.stratSectionIntervals track by spot.properties.id'>
       <div ng-click='vm.goToSpot(spot.properties.id, "sed-lithologies")'>
         <strabo-spots-list-directive></strabo-spots-list-directive>
+        <strabo-spots-list-tabs-detail-directive></strabo-spots-list-tabs-detail-directive>
         <div>
           <span ng-show='vm.hasTags(spot.properties.id)' class='list-sub'>
              Tags: {{ vm.getTagNames(spot.properties.id) }}
@@ -82,6 +83,7 @@
               ng-repeat='spot in vm.stratSectionOtherSpots track by spot.properties.id'>
       <div ng-click='vm.goToSpot(spot.properties.id)'>
         <strabo-spots-list-directive></strabo-spots-list-directive>
+        <strabo-spots-list-tabs-detail-directive></strabo-spots-list-tabs-detail-directive>
         <div>
           <span ng-show='vm.hasTags(spot.properties.id)' class='list-sub'>
             Tags: {{ vm.getTagNames(spot.properties.id) }}

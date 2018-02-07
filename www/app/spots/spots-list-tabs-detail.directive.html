@@ -1,0 +1,13 @@
+<span>
+  <span ng-if='spot.properties.orientation_data' class='spot-tabs-on orientation-on'>Orientation</span>
+  <span ng-if='spot.properties._3d_structures' class='spot-tabs-on _3d-structures-on'>3D Structures</span>
+  <span ng-if='spot.properties.images' class='spot-tabs-on images-on'>Images</span>
+  <span ng-if='vm.hasTags(spot.properties.id)' class='spot-tabs-on tags-on'>Tags</span>
+  <span ng-if='spot.properties.samples' class='spot-tabs-on samples-on'>Samples</span>
+  <span ng-if='spot.properties.other_features' class='spot-tabs-on other-features-on'>Other Features</span>
+  <span ng-if='vm.hasRelationships(spot.properties.id)' class='spot-tabs-on relationships-on'>Relationships</span>
+  <span ng-if='spot.properties.sed && spot.properties.sed.strat_section' class='spot-tabs-on strat-section-on'>Strat Section</span>
+  <span ng-if='spot.properties.sed && spot.properties.sed.lithologies' class='spot-tabs-on lithologies-on'>Lithologies</span>
+  <span ng-if='spot.properties.sed && spot.properties.sed.structures' class='spot-tabs-on sed-structures-on'>Sed Structures</span>
+  <span ng-if='spot.properties.sed && spot.properties.sed.interpretations' class='spot-tabs-on sed-interpretations-on'>Sed Interpretations</span>
+</span>
