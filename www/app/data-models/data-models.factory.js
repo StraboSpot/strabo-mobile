@@ -246,7 +246,7 @@
       });
       var clasticChoices = [];
       _.each(clastic, function (c) {
-        var clasticChoicesTemp =_.filter(dataModels.sed.add_interval.choices, function (choice) {
+        var clasticChoicesTemp = _.filter(dataModels.sed.add_interval.choices, function (choice) {
           return choice.list_name === c.type.split(' ')[1]
         });
         clasticChoices.push(clasticChoicesTemp);
@@ -295,7 +295,7 @@
           'notes': 'Type: text',
           'orientation_data': [],
           'samples': [],
-          'sed': {'lithologies': {}},
+          'sed': {'lithologies': {}, 'structures': {}, 'interpretations': {}},
           'time': 'datetime',
           'trace': {}
         }
@@ -315,6 +315,11 @@
         'sed_interval_basics': dataModels.sed.interval_basics,
         'sed_stratification': dataModels.sed.stratification,
         'sed_texture': dataModels.sed.texture,
+        'sed_biogenic_structures': dataModels.sed.biogenic_structures,
+        'sed_chemogenic_structures': dataModels.sed.chemogenic_structures,
+        'sed_pedogenic_structures': dataModels.sed.pedogenic_structures,
+        'sed_physical_structures': dataModels.sed.physical_structures,
+        'sed_interpretations': dataModels.sed.interpretations,
         'trace': dataModels.trace
       };
       _.each(models, function (model, key) {
@@ -330,31 +335,39 @@
         });
         description = sortby(description);
         if (key === 'linear_orientation' || key === 'planar_orientation' || key === 'tabular_orientation') {
-          description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id); REQUIRED';
+          description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number ' +
+            'appended (= 14 digit id); REQUIRED';
           description.type = key + '; REQUIRED';
           description.associated_orientation = [];
           description = sortby(description);
           spotDataModel.properties.orientation_data.push(description);
         }
         else if (key === 'fabric' || key === 'fold' || key === 'other' || key === 'tensor') {
-          description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id); REQUIRED';
+          description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number ' +
+            'appended (= 14 digit id); REQUIRED';
           description.type = key + '; REQUIRED';
           description = sortby(description);
           spotDataModel.properties._3d_structures.push(description);
         }
         else if (key === 'samples') {
-          description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id); REQUIRED';
+          description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number ' +
+            'appended (= 14 digit id); REQUIRED';
           spotDataModel.properties[key].push(description);
         }
-        else if (key === 'sed_composition' || key === 'sed_interval_basics' || key === 'sed_stratification' || key === 'sed_texture') {
+        else if (key === 'sed_composition' || key === 'sed_interval_basics' || key === 'sed_stratification' ||
+          key === 'sed_texture') {
           _.extend(spotDataModel.properties.sed.lithologies, description);
         }
-        else if (key === 'trace') {
-          _.extend(spotDataModel.properties[key], description);
+        else if (key === 'sed_biogenic_structures' || key === 'sed_chemogenic_structures' ||
+          key === 'sed_pedogenic_structures' || key === 'sed_physical_structures') {
+          _.extend(spotDataModel.properties.sed.structures, description);
         }
+        else if (key === 'sed_interpretations') _.extend(spotDataModel.properties.sed.interpretations, description);
+        else if (key === 'trace') _.extend(spotDataModel.properties[key], description);
         else if (key === 'images') {
           description.annotated = 'true/false for whether or not the image is used as an Image Basemap';
-          description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id); REQUIRED';
+          description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number ' +
+            'appended (= 14 digit id); REQUIRED';
           description = sortby(description);
           spotDataModel.properties.images.push(description);
         }
