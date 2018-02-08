@@ -38,7 +38,7 @@
     vm.addFilters = addFilters;
     vm.addRelationshipType = addRelationshipType;
     vm.applyFilters = applyFilters;
-    vm.checkedDataset = checkedDataset;
+    vm.checkedFilterCondition = checkedFilterCondition;
     vm.closeFilterModal = closeFilterModal;
     vm.closeModal = closeModal;
     vm.getNumTaggedFeatures = getNumTaggedFeatures;
@@ -48,7 +48,7 @@
     vm.go = go;
     vm.goToSpot = goToSpot;
     vm.goToTag = goToTag;
-    vm.isDatasetChecked = isDatasetChecked;
+    vm.isFilterConditionChecked = isFilterConditionChecked;
     vm.isOptionChecked = isOptionChecked;
     vm.isShowItem = isShowItem;
     vm.isTypeChecked = isTypeChecked;
@@ -211,13 +211,13 @@
       }
     }
 
-    function checkedDataset(datasetId) {
-      if (_.contains(vm.filterConditions.datasets, datasetId)) {
-        vm.filterConditions.datasets = _.without(vm.filterConditions.datasets, datasetId);
+    function checkedFilterCondition(filter, condition) {
+      if (_.contains(vm.filterConditions[filter], condition)) {
+        vm.filterConditions[filter] = _.without(vm.filterConditions[filter], condition);
       }
       else {
-        if (!vm.filterConditions.datasets) vm.filterConditions.datasets = [];
-        vm.filterConditions.datasets.push(datasetId);
+        if (!vm.filterConditions[filter]) vm.filterConditions[filter] = [];
+        vm.filterConditions[filter].push(condition);
       }
     }
 
@@ -308,8 +308,8 @@
       return parseInt(key);
     }
 
-    function isDatasetChecked(datasetId) {
-      return _.contains(vm.filterConditions.datasets, datasetId) || false;
+    function isFilterConditionChecked(filter, condition) {
+      return _.contains(vm.filterConditions[filter], condition) || false;
     }
 
     function isOptionChecked(item, id, parentSpotId) {
