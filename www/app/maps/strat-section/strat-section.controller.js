@@ -178,7 +178,12 @@
         if (action) {
           if (action === 'more') {
             popup.hide();
-            goToSpot(vm.clickedFeatureId, 'sed-lithologies');
+            var spot = SpotFactory.getSpotById(vm.clickedFeatureId);
+            if (spot.properties.surface_feature &&
+              spot.properties.surface_feature.surface_feature_type === 'strat_interval') {
+              goToSpot(vm.clickedFeatureId, 'sed-lithologies');
+            }
+            else goToSpot(vm.clickedFeatureId, 'spot');
             $scope.$apply();
           }
           e.preventDefault();
