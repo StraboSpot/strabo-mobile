@@ -123,8 +123,20 @@ Map Controls Style
   background-repeat: no-repeat;
   border-bottom: 1px solid lightgray;
 }
+.draw-controls .LineStringFreehand {
+  background-image: url('../img/lineFreehand.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  border-bottom: 1px solid lightgray;
+}
 .draw-controls .Polygon {
   background-image: url('../img/polygon.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  border-bottom: 1px solid lightgray;
+}
+.draw-controls .PolygonFreehand {
+  background-image: url('../img/polygonFreehand.png');
   background-position: center;
   background-repeat: no-repeat;
   border-bottom: 1px solid lightgray;
