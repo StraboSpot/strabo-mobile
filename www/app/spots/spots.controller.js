@@ -26,14 +26,14 @@
 
     vm.addFilters = addFilters;
     vm.applyFilters = applyFilters;
-    vm.checkedDataset = checkedDataset;
+    vm.checkedFilterCondition = checkedFilterCondition;
     vm.deleteSpot = deleteSpot;
     //vm.exportToCSV = exportToCSV;
     vm.getTagNames = getTagNames;
     vm.goToSpot = goToSpot;
     vm.hasRelationships = hasRelationships;
     vm.hasTags = hasTags;
-    vm.isDatasetChecked = isDatasetChecked;
+    vm.isFilterConditionChecked = isFilterConditionChecked;
     vm.isOnlineLoggedIn = isOnlineLoggedIn;
     vm.isWeb = isWeb;
     vm.loadMoreSpots = loadMoreSpots;
@@ -182,13 +182,13 @@
       }
     }
 
-    function checkedDataset(datasetId) {
-      if (_.contains(vm.filterConditions.datasets, datasetId)) {
-        vm.filterConditions.datasets = _.without(vm.filterConditions.datasets, datasetId);
+    function checkedFilterCondition(filter, condition) {
+      if (_.contains(vm.filterConditions[filter], condition)) {
+        vm.filterConditions[filter] = _.without(vm.filterConditions[filter], condition);
       }
       else {
-        if (!vm.filterConditions.datasets) vm.filterConditions.datasets = [];
-        vm.filterConditions.datasets.push(datasetId);
+        if (!vm.filterConditions[filter]) vm.filterConditions[filter] = [];
+        vm.filterConditions[filter].push(condition);
       }
     }
 
@@ -305,8 +305,8 @@
       return !_.isEmpty(ProjectFactory.getTagsBySpotId(spotId));
     }
 
-    function isDatasetChecked(datasetId) {
-      return _.contains(vm.filterConditions.datasets, datasetId) || false;
+    function isFilterConditionChecked(filter, condition) {
+      return _.contains(vm.filterConditions[filter], condition) || false;
     }
 
     // Is the user online and logged in

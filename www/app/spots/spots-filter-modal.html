@@ -73,9 +73,29 @@
     </ion-toggle>
     <div ng-show='vm.filterConditions.datasets'>
       <ion-checkbox ng-repeat='dataset in vm.activeDatasets'
-                    ng-checked='vm.isDatasetChecked(dataset.id)'
-                    ng-click='vm.checkedDataset(dataset.id)'>
+                    ng-checked='vm.isFilterConditionChecked("datasets", dataset.id)'
+                    ng-click='vm.checkedFilterCondition("datasets", dataset.id)'>
         {{ dataset.name }}
+      </ion-checkbox>
+    </div>
+    <ion-toggle
+      ng-checked='vm.filterConditions.spotType'
+      ng-click='vm.toggleFilter("spotType", [])'
+      toggle-class='toggle-positive'>
+      <span class='toggle-left-label'>Spot Type</span>
+    </ion-toggle>
+    <div ng-show='vm.filterConditions.spotType'>
+      <ion-checkbox ng-checked='vm.isFilterConditionChecked("spotType", "geo")'
+                    ng-click='vm.checkedFilterCondition("spotType", "geo")'>
+        Geographic Spots
+      </ion-checkbox>
+      <ion-checkbox ng-checked='vm.isFilterConditionChecked("spotType", "image-basemap")'
+                    ng-click='vm.checkedFilterCondition("spotType", "image-basemap")'>
+        Spots on an Image Basemap
+      </ion-checkbox>
+      <ion-checkbox ng-checked='vm.isFilterConditionChecked("spotType", "strat-section")'
+                    ng-click='vm.checkedFilterCondition("spotType", "strat-section")'>
+        Spots in a Strat Section
       </ion-checkbox>
     </div>
     <br>
