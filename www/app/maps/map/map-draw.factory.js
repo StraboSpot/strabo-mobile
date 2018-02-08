@@ -46,10 +46,12 @@
     // Remove draw interaction
     function cancelDraw() {
       if (draw !== null) {
+        $log.log('Canceling draw ...');
         map.removeInteraction(draw);
         draw = null;
         drawButtonActive = null;
       }
+      cancelEdits();
     }
 
     function enableDrawMode(inIsFreeHand, type) {
@@ -152,26 +154,9 @@
     }
 
     function startDraw(type, inIsFreeHand) {
+      $log.log('Starting draw ...');
       isFreeHand = inIsFreeHand;
-      // if the type is already selected, we want to stop drawing
-      if (drawButtonActive === type && !isFreeHand) {
-        cancelDraw();
-        cancelEdits();
-        return;
-      }
-
       drawButtonActive = type;
-
-      // $log.log('isFreeHand, ', isFreeHand);
-
-      // is draw already set?
-      if (isDrawMode()) {
-        // if (draw !== null) {
-        // yes, stop and remove the drawing interaction
-        cancelDraw();
-        cancelEdits();
-      }
-
       if (type === 'Edit') enableEditMode();
       else enableDrawMode(isFreeHand, type);
     }
@@ -248,9 +233,7 @@
         });
       }
 
-      if (isFreeHand) {
-        $log.log('Drawend : Freehand');
-
+      if (lassoMode) {
         // add the regular draw controls back
         var drawControlProps = {
           'map': map,
@@ -348,19 +331,65 @@
         drawControls[key] = $document[0].createElement('a');
         drawControls[key].id = 'draw' + key + 'Control';
         drawControls[key].className = key;
-        drawControls[key].addEventListener('click', handleDraw, false);
-        drawControls[key].addEventListener('touchstart', handleDraw, false);
+        drawControls[key].style.backgroundColor = 'transparent';
+        drawControls[key].addEventListener('click', handleClick);
+        drawControls[key].addEventListener('dblclick', handleDoubleClick);
+        drawControls[key].addEventListener('touchstart', handleTouchStart);
+        drawControls[key].addEventListener('touchend', handleTouchEnd);
         element.appendChild(drawControls[key]);
       });
 
+      function handleClick(e) {
+        longpress = false;
+        handleDraw(e);
+      }
+
+      function handleDoubleClick(e) {
+        $log.log('double');
+        longpress = true;
+        handleDraw(e);
+      }
+
+      function handleTouchStart() {
+        longpress = false;
+        startTime = new Date().getTime();
+      }
+
+      function handleTouchEnd(e) {
+        endTime = new Date().getTime();
+        longpress = endTime - startTime >= 500;
+        handleDraw(e);
+      }
+
       function handleDraw(e) {
+        cancelDraw();
+        // Set clicked control to gray and all others to transparent
         _.each(drawControls, function (value, key) {
-          if (value.id !== e.target.id) drawControls[key].style.backgroundColor = '';
+          if (value.id === e.target.id) {
+            if (e.target.style.backgroundColor === 'transparent') drawControls[key].style.backgroundColor = '#DDDDDD';
+            else drawControls[key].style.backgroundColor = 'transparent';
+          }
+          else drawControls[key].style.backgroundColor = 'transparent';
         });
-        if (e.target.style.backgroundColor === '') drawControls[e.target.className].style.backgroundColor = '#DDDDDD';
-        else drawControls[e.target.className].style.backgroundColor = '';
-        e.preventDefault();
-        startDraw(e.target.className);
+
+        var control = e.target.className;
+        if (e.target.className === 'LineStringFreehand') control = 'LineString';
+        else if (e.target.className === 'PolygonFreehand') control = 'Polygon';
+
+        if (longpress && (e.target.id === 'drawLineStringControl' || e.target.id === 'drawPolygonControl')) {
+          if (e.target.className === 'LineString') e.target.className = 'LineStringFreehand';
+          else if (e.target.className === 'LineStringFreehand') e.target.className = 'LineString';
+          else if (e.target.className === 'Polygon') e.target.className = 'PolygonFreehand';
+          else if (e.target.className === 'PolygonFreehand') e.target.className = 'Polygon';
+          startDraw(control, true);
+        }
+        else if (e.target.style.backgroundColor === 'transparent') cancelDraw();
+        else {
+          if (e.target.className === 'LineStringFreehand' || e.target.className === 'PolygonFreehand') {
+            startDraw(control, true);
+          }
+          else startDraw(control, false);
+        }
       }
 
       ol.control.Control.call(this, {
