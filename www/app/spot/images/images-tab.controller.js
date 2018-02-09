@@ -23,20 +23,9 @@
     var thisTabName = 'images';
 
     vm.activeSlide = null;
-    vm.cameraSource = [{
-      'text': 'Photo Library',
-      'value': 'PHOTOLIBRARY'
-    }, {
-      'text': 'Camera',
-      'value': 'CAMERA'
-    }, {
-      'text': 'Saved Photo Album',
-      'value': 'SAVEDPHOTOALBUM'
-    }];
-    vm.imageType = 'photo';
+    vm.imageType = undefined;
     vm.imageTypeChoices = {};
     vm.otherImageType = undefined;
-    vm.selectedCameraSource = {};
     vm.zoomMin = 1;
 
     vm.addImage = addImage;
@@ -49,6 +38,7 @@
     vm.moreDetail = moreDetail;
     vm.reattachImage = reattachImage;
     vm.showImages = showImages;
+    vm.takePicture = takePicture;
     vm.toggleImageBasemap = toggleImageBasemap;
     vm.updateSlideStatus = updateSlideStatus;
 
@@ -98,36 +88,6 @@
         saveSpot(imageData);
       });
     }*/
-
-    function cameraModal() {
-      // camera modal popup
-      var myPopup = $ionicPopup.show({
-        'template': '<ion-radio ng-repeat="source in vmChild.cameraSource" ng-value="source.value" ng-model="vmChild.selectedCameraSource.source">{{ source.text }}</ion-radio>',
-        'title': 'Select an image source',
-        'scope': $scope,
-        'buttons': [{
-          'text': 'Cancel'
-        }, {
-          'text': '<b>Go</b>',
-          'type': 'button-positive',
-          'onTap': function (e) {
-            if (!vm.selectedCameraSource.source) {
-              // don't allow the user to close unless a value is set
-              e.preventDefault();
-            }
-            else {
-              return vm.selectedCameraSource.source;
-            }
-          }
-        }]
-      });
-
-      myPopup.then(function (cameraSource) {
-        if (cameraSource) {
-          launchCamera(cameraSource);
-        }
-      });
-    }
 
     // Set default image type to 'photo' if no image type has been set
     function checkImageType() {
@@ -257,12 +217,6 @@
       // all plugins must be wrapped in a ready function
       document.addEventListener('deviceready', function () {
         //getGeoInfo = false;
-        if (source === 'PHOTOLIBRARY') source = Camera.PictureSourceType.PHOTOLIBRARY;
-        else if (source === 'SAVEDPHOTOALBUM') source = Camera.PictureSourceType.SAVEDPHOTOALBUM;
-        else if (source === 'CAMERA') {
-          //getGeoInfo = true;
-          source = Camera.PictureSourceType.CAMERA;
-        }
 
         var cameraOptions = {
           'quality': 100,
@@ -381,7 +335,16 @@
               'width': image.width,
               'id': HelpersFactory.getNewId()
             };
-            getImageType(imageData, image);
+            if (vm.imageType) {
+              imageData.image_type = vm.imageType;
+              ImageFactory.saveImage(imageData.id, image.src);
+              $log.log('Also save image to live db here');
+              LiveDBFactory.saveImageFile(imageData.id, image.src);
+
+              imageSources[imageData.id] = image.src;
+              saveSpot(imageData);
+            }
+            else getImageType(imageData, image);
           }
         };
         image.onerror = function () {
@@ -406,14 +369,11 @@
      */
 
     function addImage() {
-      vm.imageType = 'photo';
+      vm.imageType = undefined;
       vm.otherImageType = undefined;
       isReattachImage = false;
-      vm.selectedCameraSource = {
-        'source': 'CAMERA'  // default is always camera
-      };
       if (IS_WEB) ionic.trigger('click', {'target': $document[0].getElementById('file')});
-      else cameraModal();
+      else launchCamera(Camera.PictureSourceType.PHOTOLIBRARY);
     }
 
     function closeModal(modal) {
@@ -503,10 +463,7 @@
       confirmPopup.then(function (res) {
         if (res) {
           isReattachImage = true;
-          vm.selectedCameraSource = {
-            'source': 'PHOTOLIBRARY'
-          };
-          cameraModal();
+          launchCamera(Camera.PictureSourceType.PHOTOLIBRARY);
         }
       });
     }
@@ -520,6 +477,12 @@
         vm.imageModal = modal;
         vm.imageModal.show();
       });
+    }
+
+    function takePicture() {
+      vm.imageType = 'photo';
+      isReattachImage = false;
+      launchCamera(Camera.PictureSourceType.CAMERA);
     }
 
     function toggleImageBasemap(image) {
@@ -543,6 +506,6 @@
       var zoomFactor = $ionicScrollDelegate.$getByHandle('scrollHandle' + slide).getScrollPosition().zoom;
       if (zoomFactor == vm.zoomMin) $ionicSlideBoxDelegate.enableSlide(true);
       else $ionicSlideBoxDelegate.enableSlide(false);
-    };
+    }
   }
 }());
