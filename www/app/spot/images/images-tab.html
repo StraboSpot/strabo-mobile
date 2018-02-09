@@ -1,9 +1,14 @@
 <ion-view>
   <ion-content>
-    <button ng-click='vmChild.addImage()'
+    <button ng-click='vmChild.takePicture()'
             class='button button-clear button-positive'>
       <i class='icon ion-camera'></i>
-      <span class='button-text-big'>Add Photo or Image</span>
+      <span class='button-text-big'>Take a Picture</span>
+    </button>
+    <button ng-click='vmChild.addImage()'
+            class='button button-clear button-positive'>
+      <i class='icon ion-image'></i>
+      <span class='button-text-big'>Add Image From File</span>
     </button>
     <input type='file' id='file' style='display: none;'/>
     <strabo-images-tab-directive></strabo-images-tab-directive>
