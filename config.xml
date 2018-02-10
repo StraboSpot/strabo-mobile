@@ -36,9 +36,9 @@
   </gap:config-file>
 
   <plugin name="cordova-plugin-camera" spec="2.3.1">
-    <variable name="CAMERA_USAGE_DESCRIPTION" value="The strabospot app uses the camera to add photos to data." />
-    <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value="StraboSpot uses the photo library to add user-selected images to data." />
-    <variable name="NSPhotoLibraryAddUsageDescription" value="StraboSpot uses the photo library to add user-selected images to data." />
+    <variable name="CAMERA_USAGE_DESCRIPTION" value="StraboSpot uses the camera to add photos to data." />
+    <variable name="NSPhotoLibraryUsageDescription" value="Allow StraboSpot to access my photo library to save photos taken through the app or add selected photos to data." />
+    <variable name="NSPhotoLibraryAddUsageDescription" value="Allow StraboSpot to access my photo library to save photos taken through the app or add selected photos to data." />
   </plugin>
   <plugin name="com.verso.cordova.clipboard" spec="https://github.com/VersoSolutions/CordovaClipboard" />
   <plugin name="cordova-plugin-console" spec="1.0.2"/>
