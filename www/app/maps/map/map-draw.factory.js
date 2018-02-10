@@ -332,10 +332,10 @@
         drawControls[key].id = 'draw' + key + 'Control';
         drawControls[key].className = key;
         drawControls[key].style.backgroundColor = 'transparent';
-        drawControls[key].addEventListener('click', handleClick);
-        drawControls[key].addEventListener('dblclick', handleDoubleClick);
-        drawControls[key].addEventListener('touchstart', handleTouchStart);
-        drawControls[key].addEventListener('touchend', handleTouchEnd);
+        if (IS_WEB) drawControls[key].addEventListener('click', handleClick);
+        if (IS_WEB) drawControls[key].addEventListener('dblclick', handleDoubleClick);
+        if (!IS_WEB) drawControls[key].addEventListener('touchstart', handleTouchStart);
+        if (!IS_WEB) drawControls[key].addEventListener('touchend', handleTouchEnd);
         element.appendChild(drawControls[key]);
       });
 
@@ -363,33 +363,37 @@
 
       function handleDraw(e) {
         cancelDraw();
+
         // Set clicked control to gray and all others to transparent
         _.each(drawControls, function (value, key) {
           if (value.id === e.target.id) {
-            if (e.target.style.backgroundColor === 'transparent') drawControls[key].style.backgroundColor = '#DDDDDD';
+            if (e.target.style.backgroundColor === 'transparent' || longpress) {
+              drawControls[key].style.backgroundColor = '#DDDDDD';
+            }
             else drawControls[key].style.backgroundColor = 'transparent';
           }
           else drawControls[key].style.backgroundColor = 'transparent';
         });
 
+        // Freehand line and freehand poly are still under the controls line and poly respectively
         var control = e.target.className;
         if (e.target.className === 'LineStringFreehand') control = 'LineString';
         else if (e.target.className === 'PolygonFreehand') control = 'Polygon';
 
+        // If long press switch classes for line and poly
         if (longpress && (e.target.id === 'drawLineStringControl' || e.target.id === 'drawPolygonControl')) {
           if (e.target.className === 'LineString') e.target.className = 'LineStringFreehand';
           else if (e.target.className === 'LineStringFreehand') e.target.className = 'LineString';
           else if (e.target.className === 'Polygon') e.target.className = 'PolygonFreehand';
           else if (e.target.className === 'PolygonFreehand') e.target.className = 'Polygon';
+        }
+
+        // Cancel draw if button transparent otherwise start draw with or without freehand based on class
+        if (e.target.style.backgroundColor === 'transparent') cancelDraw();
+        else if (e.target.className === 'LineStringFreehand' || e.target.className === 'PolygonFreehand') {
           startDraw(control, true);
         }
-        else if (e.target.style.backgroundColor === 'transparent') cancelDraw();
-        else {
-          if (e.target.className === 'LineStringFreehand' || e.target.className === 'PolygonFreehand') {
-            startDraw(control, true);
-          }
-          else startDraw(control, false);
-        }
+        else startDraw(control, false);
       }
 
       ol.control.Control.call(this, {
