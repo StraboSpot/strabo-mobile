@@ -231,12 +231,12 @@
       sedLabelsDictionary = {'clastic': [], 'carbonate': [], 'lithologies': [], 'weathering': []};
       var survey = dataModels.sed.add_interval.survey;
       var clastic = _.filter(survey, function (field) {
-        return field.name === 'mudstone_siltstone_principal_grain_size' ||
-          field.name === 'sandstone_principal_grain_size' ||
-          field.name === 'conglomerate_breccia_principal_grain_size';
+        return field.name === 'mud_silt_principal_grain_size' ||
+          field.name === 'sand_principal_grain_size' ||
+          field.name === 'congl_breccia_principal_grain_size';
       });
       var carbonate = _.find(survey, function (field) {
-        return field.name === 'principal_dunham_classificatio';
+        return field.name === 'principal_dunham_class';
       });
       var lithologies = _.find(survey, function (field) {
         return field.name === 'primary_lithology';
