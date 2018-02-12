@@ -98,15 +98,16 @@
       ctx.beginPath();
       p = getPixel([0, y], pixelRatio);
       ctx.moveTo(p.x, p.y);
-      p = getPixel([0, y - 20], pixelRatio);
+      p = getPixel([0, y - 40], pixelRatio);
       ctx.lineTo(p.x, p.y);
       ctx.strokeStyle = color;
       ctx.stroke();
       ctx.save();
-      p = getPixel([-2, y - 15], pixelRatio);
+      p = getPixel([-2, y - 2], pixelRatio);
       ctx.translate(p.x, p.y);
       ctx.rotate(270 * Math.PI / 180);     // text at 270 degrees
       ctx.fillStyle = color;
+      ctx.textAlign = 'right';
       ctx.fillText(profile, 0, 0);
       ctx.restore();
 
@@ -236,7 +237,7 @@
                 spotWithThisStratSection.properties.sed.strat_section.column_y_axis_units;
             }
             if (!spot.properties.sed.lithologies.interval_type) {
-              spot.properties.sed.lithologies.interval_type = 'unexposed_covered';
+              spot.properties.sed.lithologies.interval_type = 'unexposed_cov';
             }
           }
         }
@@ -257,16 +258,16 @@
             intervalWidth = (i + 1) * xInterval;
           }
           // Unexposed/Covered
-          else if (spot.properties.sed.lithologies.interval_type === 'unexposed_covered') {
+          else if (spot.properties.sed.lithologies.interval_type === 'unexposed_cov') {
             intervalWidth = (0 + 1) * xInterval;    // Same as clay
           }
           else if (spot.properties.sed.lithologies.interval_type === 'lithology') {
             // Lithology = siliciclastic
             if (spot.properties.sed.lithologies.primary_lithology === 'siliciclastic') {
               i = _.findIndex(grainSizeOptions.clastic, function (grainSizeOption) {
-                return grainSizeOption.value === spot.properties.sed.lithologies.mudstone_siltstone_principal_grain_size ||
-                  grainSizeOption.value === spot.properties.sed.lithologies.sandstone_principal_grain_size ||
-                  grainSizeOption.value === spot.properties.sed.lithologies.conglomerate_breccia_principal_grain_size;
+                return grainSizeOption.value === spot.properties.sed.lithologies.mud_silt_principal_grain_size ||
+                  grainSizeOption.value === spot.properties.sed.lithologies.sand_principal_grain_size ||
+                  grainSizeOption.value === spot.properties.sed.lithologies.congl_breccia_principal_grain_size;
               });
               intervalWidth = (i + 1) * xInterval;
             }
@@ -274,7 +275,7 @@
             else if (spot.properties.sed.lithologies.primary_lithology === 'limestone' ||
               spot.properties.sed.lithologies.primary_lithology === 'dolomite') {
               i = _.findIndex(grainSizeOptions.carbonate, function (grainSizeOption) {
-                return grainSizeOption.value === spot.properties.sed.lithologies.principal_dunham_classificatio;
+                return grainSizeOption.value === spot.properties.sed.lithologies.principal_dunham_class;
               });
               intervalWidth = (i + 2) * xInterval;
             }
@@ -317,21 +318,21 @@
         intervalWidth = (i + 1) * xInterval;
       }
       // Unexposed/Covered
-      else if (data.interval_type === 'unexposed_covered') intervalWidth = (0 + 1) * xInterval;    // Same as clay
+      else if (data.interval_type === 'unexposed_cov') intervalWidth = (0 + 1) * xInterval;    // Same as clay
       // Lithology = siliciclastic
-      else if (data.mudstone_siltstone_principal_grain_size || data.sandstone_principal_grain_size ||
-        data.conglomerate_breccia_principal_grain_size) {
+      else if (data.mud_silt_principal_grain_size || data.sand_principal_grain_size ||
+        data.congl_breccia_principal_grain_size) {
         i = _.findIndex(grainSizeOptions.clastic, function (grainSizeOption) {
-          return grainSizeOption.value === data.mudstone_siltstone_principal_grain_size ||
-            grainSizeOption.value === data.sandstone_principal_grain_size ||
-            grainSizeOption.value === data.conglomerate_breccia_principal_grain_size;
+          return grainSizeOption.value === data.mud_silt_principal_grain_size ||
+            grainSizeOption.value === data.sand_principal_grain_size ||
+            grainSizeOption.value === data.congl_breccia_principal_grain_size;
         });
         intervalWidth = (i + 1) * xInterval;
       }
       // Lithology = limestone or dolomite
-      else if (data.principal_dunham_classificatio) {
+      else if (data.principal_dunham_class) {
         i = _.findIndex(grainSizeOptions.carbonate, function (grainSizeOption) {
-          return grainSizeOption.value === data.principal_dunham_classificatio;
+          return grainSizeOption.value === data.principal_dunham_class;
         });
         intervalWidth = (i + 2) * xInterval;
       }
@@ -419,33 +420,37 @@
       // Setup to draw X Axis
       var labels = {};
       var y = 0;
+      var a = 174.5;
+      var b = -40.5;
+      var c = 2.5;
+      var x = zoom;
       if (stratSection.column_profile === 'clastic') {
         labels = _.pluck(grainSizeOptions.clastic, 'label');
         //drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 1);
         drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 1, y, 'black', stratSection.column_profile);
-        y += -20;
+        y += (a + b * x + c * x * x) * -1
       }
       else if (stratSection.column_profile === 'carbonate') {
         labels = _.pluck(grainSizeOptions.carbonate, 'label');
         //drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 2.33);
         drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 2, y, 'blue', stratSection.column_profile);
-        y += -20
+        y += (a + b * x + c * x * x) * -1
       }
       else if (stratSection.column_profile === 'mixed_clastic') {
         labels = _.pluck(grainSizeOptions.clastic, 'label');
         //drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 1);
         drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 1, y, 'black', 'clastic');
-        y += -20;
+        y += (a + b * x + c * x * x) * -1;
         labels = _.pluck(grainSizeOptions.carbonate, 'label');
         //drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 2.33, 'blue');
         drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 2, y, 'blue', 'carbonate');
-        y += -20
+        y += (a + b * x + c * x * x) * -1
       }
       else if (stratSection.column_profile === 'weathering_pro') {
         labels = _.pluck(grainSizeOptions.weathering, 'label');
         //drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 1);
         drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 1, y, 'black', 'weathering');
-        y += -20
+        y += (a + b * x + c * x * x) * -1
       }
       else $log.error('Incorrect profile type:', stratSection.column_profile);
 

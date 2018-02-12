@@ -6,7 +6,7 @@ select_multiple yh9fg32,Cement_composition,Cement composition,false,"selected(${
 text,Other_001,Other,false,"selected(${Cement_composition}, 'other')",
 select_multiple jp0wh38,Cement_texture,Cement texture,false,"selected(${Chemogenic_Structures_Type}, 'cements')",
 text,Other_002,Other,false,"selected(${Cement_texture}, 'other')",
-select_multiple hl0ww19,nodules_concretions_compositio,nodules/concretions composition,false,"selected(${Chemogenic_Structures_Type}, 'nodules_concre')",
+select_multiple hl0ww19,nodules_concretions_compositio,Nodules/concretions composition,false,"selected(${Chemogenic_Structures_Type}, 'nodules_concre')",
 text,Other_003,Other,false,"selected(${nodules_concretions_compositio}, 'other')",
 select_multiple zb73n93,nodules_concretions_shape,Nodules/concretions shape,false,"selected(${Chemogenic_Structures_Type}, 'nodules_concre')",
 text,Other_004,Other,false,"selected(${nodules_concretions_shape}, 'other')",
@@ -27,6 +27,7 @@ select_multiple lo0dl30,Fabric_selective,Fabric selective,false,,
 text,Other_006,Other,false,"selected(${Fabric_selective}, 'other')",
 select_multiple ts4kt62,Non_selective,Non-selective,false,,
 text,Other_007,Other,false,"selected(${Non_selective}, 'other')",
+text,Notes,Notes,false,,
 end_group,,,,,
 end_group,,,,,
-calculate,__version__,,,,'vJoQo4wHPCgiu74bCt4Uhh'
+calculate,__version__,,,,'vHuq2thZa9XX4LED572LE7'

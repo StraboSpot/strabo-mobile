@@ -43,13 +43,13 @@
         errorMessages.push('- The <b>Primary Lithology</b> must be specified if the Interval Type is lithology.');
       }
       else if (lithologies.interval_type === 'lithology' && lithologies.primary_lithology === 'siliciclastic' &&
-        (!lithologies.mudstone_siltstone_principal_grain_size && !lithologies.sandstone_principal_grain_size &&
-          !lithologies.conglomerate_breccia_principal_grain_size)) {
+        (!lithologies.mud_silt_principal_grain_size && !lithologies.sand_principal_grain_size &&
+          !lithologies.congl_breccia_principal_grain_size)) {
         errorMessages.push('- The <b>Principal Grain Size</b> must be specified if the Primary Lithology is ' +
           'siliciclastic.');
       }
       else if (lithologies.interval_type === 'lithology' && (lithologies.primary_lithology === 'limestone' ||
-          lithologies.primary_lithology === 'dolomite') && !lithologies.principal_dunham_classificatio) {
+          lithologies.primary_lithology === 'dolomite') && !lithologies.principal_dunham_class) {
         errorMessages.push('- The <b>Principal Dunham Classification</b> must be specified if the Primary Lithology' +
           ' is limestone or dolomite.');
       }

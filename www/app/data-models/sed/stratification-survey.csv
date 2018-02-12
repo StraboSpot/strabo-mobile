@@ -15,5 +15,6 @@ text,lower_contact_relief,Lower contact relief,false,,
 select_multiple fo9ve04,shape_of_upper_conta_select_more_than_one,"Shape of upper contact(s) (if variable, select more than one)",false,,
 select_multiple rx9bj85,character_of_upper_c_select_more_than_one,"Character of upper contact(s) (if variable, select more than one)",false,,
 text,upper_contact_relief,upper contact relief,false,,
+text,Notes,Notes,false,,
 end_group,,,,,
-calculate,__version__,,,,'v25PVJoHXXANoEkimL7Xv4'
+calculate,__version__,,,,'vEaSKANZJQWJ8aGCd2zYAc'

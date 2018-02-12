@@ -111,17 +111,17 @@
           if (props.sed.lithologies.primary_lithology) {
             text.push('Primary Lithology: ' + DataModelsFactory.getSedLabel(props.sed.lithologies.primary_lithology));
           }
-          if (props.sed.lithologies.mudstone_siltstone_principal_grain_size ||
-            props.sed.lithologies.sandstone_principal_grain_size ||
-            props.sed.lithologies.conglomerate_breccia_principal_grain_size) {
-            var grainSize = props.sed.lithologies.mudstone_siltstone_principal_grain_size ||
-              props.sed.lithologies.sandstone_principal_grain_size ||
-              props.sed.lithologies.conglomerate_breccia_principal_grain_size;
+          if (props.sed.lithologies.mud_silt_principal_grain_size ||
+            props.sed.lithologies.sand_principal_grain_size ||
+            props.sed.lithologies.congl_breccia_principal_grain_size) {
+            var grainSize = props.sed.lithologies.mud_silt_principal_grain_size ||
+              props.sed.lithologies.sand_principal_grain_size ||
+              props.sed.lithologies.congl_breccia_principal_grain_size;
             text.push('Principal Grain Size: ' + DataModelsFactory.getSedLabel(grainSize));
           }
-          if (props.sed.lithologies.principal_dunham_classificatio) {
-            text.push('Principal Duhham Classification: ' +
-              DataModelsFactory.getSedLabel(props.sed.lithologies.principal_dunham_classificatio));
+          if (props.sed.lithologies.principal_dunham_class) {
+            text.push('Principal Dunham Classification: ' +
+              DataModelsFactory.getSedLabel(props.sed.lithologies.principal_dunham_class));
           }
         }
       }
@@ -413,10 +413,10 @@
         // Set colors for strat section
         var featureProperties = feature.getProperties();
         try {
-          var lithology = featureProperties.sed.lithologies.mudstone_siltstone_principal_grain_size ||
-            featureProperties.sed.lithologies.sandstone_principal_grain_size ||
-            featureProperties.sed.lithologies.conglomerate_breccia_principal_grain_size ||
-            featureProperties.sed.lithologies.principal_dunham_classificatio ||
+          var lithology = featureProperties.sed.lithologies.mud_silt_principal_grain_size ||
+            featureProperties.sed.lithologies.sand_principal_grain_size ||
+            featureProperties.sed.lithologies.congl_breccia_principal_grain_size ||
+            featureProperties.sed.lithologies.principal_dunham_class ||
             featureProperties.sed.lithologies.primary_lithology;
           if (lithology === 'clay') color = 'rgba(128, 222, 77, 1)';                // CMYK 50,13,70,0 USGS Color 682
           else if (lithology === 'mud') color = 'rgba(77, 255, 0, 1)';              // CMYK 70,0,100,0 USGS Color 890
@@ -455,7 +455,7 @@
 
           var fill = new ol.style.Fill();
           // Apply patterns
-          if (featureProperties.sed.lithologies.interval_type === 'unexposed_covered') {
+          if (featureProperties.sed.lithologies.interval_type === 'unexposed_cov') {
             var canvas = document.createElement('canvas');
             var ctx = canvas.getContext('2d');
 

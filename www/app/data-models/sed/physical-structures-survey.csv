@@ -81,5 +81,6 @@ text,_2D_Crests_crest_orie_tion_azimuth_0_360,"2D Crests crest orientation (azim
 text,_3D_Crests_crest_orie_tion_azimuth_0_360,"3D Crests crest orientation (azimuth, 0-360)",false,"selected(${Bedform_type}, '3d_crests')",
 select_multiple aj0xd06,Deformation_Structures,Deformation Structures,false,,
 text,Other_003,Other,false,"selected(${Deformation_Structures}, 'other')",
+text,Notes,Notes,false,,
 end_group,,,,,
-calculate,__version__,,,,'vrrfFTtAncfHuJXNK4G5pH'
+calculate,__version__,,,,'vobqXnfrxHwzExAZiJkQwe'
