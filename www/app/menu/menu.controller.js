@@ -15,7 +15,7 @@
     vm.userName = null;
 
     vm.editUser = editUser;
-    vm.getIsSedMode = getIsSedMode;
+    vm.getIsStratMode = getIsStratMode;
     vm.getProjectName = getProjectName;
     vm.getUserImage = getUserImage;
     vm.getUserName = getUserName;
@@ -59,9 +59,9 @@
       $state.go('app.user');
     }
 
-    function getIsSedMode() {
+    function getIsStratMode() {
       var preferences = ProjectFactory.getPreferences();
-      return _.has(preferences, 'sed_mode');
+      return _.has(preferences, 'strat_mode');
     }
 
     function getProjectName() {

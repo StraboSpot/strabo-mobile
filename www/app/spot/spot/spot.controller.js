@@ -403,20 +403,6 @@
       filterTagType();
     }
 
-    function showTab(tab) {
-      var preferences = ProjectFactory.getPreferences();
-      if (tab === 'spot') return true;
-      else if (tab === 'strat_section') {
-        return preferences['sed_mode'] && vm.spot && vm.spot.properties && !vm.spot.properties.strat_section_id;
-      }
-      else if (tab === 'sed_lithologies' || tab === 'sed_structures' || tab === 'sed_interpretations') {
-        return preferences['sed_mode'] && vm.spot && vm.spot.properties && vm.spot.properties.surface_feature &&
-          vm.spot.properties.surface_feature.surface_feature_type &&
-          vm.spot.properties.surface_feature.surface_feature_type === 'strat_interval';
-      }
-      else return preferences[tab];
-    }
-
     function saveSpot() {
       if (vm.spot && vm.spot.properties) {
         vm.spot = HelpersFactory.cleanObj(vm.spot);
@@ -462,6 +448,15 @@
         else $ionicLoading.hide();
       }
       return $q.reject(null);
+    }
+
+    function showTab(tab) {
+      var preferences = ProjectFactory.getPreferences();
+      if (tab === 'spot') return true;
+      else if (tab === 'strat_section') {
+        return preferences['strat_mode'] && vm.spot && vm.spot.properties && !vm.spot.properties.strat_section_id;
+      }
+      else return preferences[tab];
     }
 
     // Save the Spot
