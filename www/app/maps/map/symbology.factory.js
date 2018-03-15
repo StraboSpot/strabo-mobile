@@ -31,7 +31,7 @@
       if (featureProperties.sed && featureProperties.sed.lithologies) {
         //$log.log(props.sed.lithologies);
 
-        if (featureProperties.sed.lithologies.interval_type === 'unexposed_cov') {
+        if (featureProperties.sed.lithologies.is_this_a_bed_or_package === 'unexposed_cove') {
           var canvas = document.createElement('canvas');
           var ctx = canvas.getContext('2d');
 

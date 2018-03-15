@@ -358,17 +358,14 @@
       FormFactory.setForm('sed', 'add_interval');
       vm.data = {};
       if (stratSection.column_profile && stratSection.column_profile === 'clastic') {
-        vm.data.interval_type = 'lithology';
+        vm.data.is_this_a_bed_or_package = 'bed';
         vm.data.primary_lithology = 'siliciclastic';
       }
       else if (stratSection.column_profile && stratSection.column_profile === 'carbonate') {
-        vm.data.interval_type = 'lithology';
+        vm.data.is_this_a_bed_or_package = 'bed';
       }
       else if (stratSection.column_profile && stratSection.column_profile === 'mixed_clastic') {
-        vm.data.interval_type = 'lithology';
-      }
-      else if (stratSection.column_profile && stratSection.column_profile === 'weathering_pro') {
-        vm.data.interval_type = 'weathering_pro';
+        vm.data.is_this_a_bed_or_package = 'bed';
       }
       if (stratSection.column_y_axis_units) vm.data.thickness_units = stratSection.column_y_axis_units;
       openIntervalModal();

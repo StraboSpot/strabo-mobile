@@ -236,8 +236,8 @@
               spot.properties.sed.lithologies.thickness_units =
                 spotWithThisStratSection.properties.sed.strat_section.column_y_axis_units;
             }
-            if (!spot.properties.sed.lithologies.interval_type) {
-              spot.properties.sed.lithologies.interval_type = 'unexposed_cov';
+            if (!spot.properties.sed.lithologies.is_this_a_bed_or_package) {
+              spot.properties.sed.lithologies.is_this_a_bed_or_package = 'unexposed_cove';
             }
           }
         }
@@ -249,19 +249,13 @@
           extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
           var intervalWidth = extent[2] - extent[0];
           var intervalHeight = spot.properties.sed.lithologies.interval_thickness * yMultiplier;
-          // Weathering Profile
-          if (spot.properties.sed.lithologies.interval_type === 'weathering_pro' &&
-            spot.properties.sed.lithologies.relative_resistance_weathering) {
-            i = _.findIndex(grainSizeOptions.weathering, function (grainSizeOption) {
-              return grainSizeOption.value === spot.properties.sed.lithologies.relative_resistance_weathering;
-            });
-            intervalWidth = (i + 1) * xInterval;
-          }
           // Unexposed/Covered
-          else if (spot.properties.sed.lithologies.interval_type === 'unexposed_cov') {
+          if (spot.properties.sed.lithologies.is_this_a_bed_or_package === 'unexposed_cove') {
             intervalWidth = (0 + 1) * xInterval;    // Same as clay
           }
-          else if (spot.properties.sed.lithologies.interval_type === 'lithology') {
+          else if (spot.properties.sed.lithologies.is_this_a_bed_or_package === 'bed' ||
+            spot.properties.sed.lithologies.is_this_a_bed_or_package === 'interbedded' ||
+            spot.properties.sed.lithologies.is_this_a_bed_or_package === 'package__succe') {
             // Lithology = siliciclastic
             if (spot.properties.sed.lithologies.primary_lithology === 'siliciclastic') {
               i = _.findIndex(grainSizeOptions.clastic, function (grainSizeOption) {
@@ -310,15 +304,8 @@
       var intervalHeight = data.interval_thickness * yMultiplier;
 
       var i, intervalWidth = xInterval;
-      // Weathering Profile
-      if (data.interval_type === 'weathering_pro' && data.relative_resistance_weathering) {
-        i = _.findIndex(grainSizeOptions.weathering, function (grainSizeOption) {
-          return grainSizeOption.value === data.relative_resistance_weathering;
-        });
-        intervalWidth = (i + 1) * xInterval;
-      }
       // Unexposed/Covered
-      else if (data.interval_type === 'unexposed_cov') intervalWidth = (0 + 1) * xInterval;    // Same as clay
+      if (data.is_this_a_bed_or_package === 'unexposed_cove') intervalWidth = (0 + 1) * xInterval;  // Same as clay
       // Lithology = siliciclastic
       else if (data.mud_silt_principal_grain_size || data.sand_principal_grain_size ||
         data.congl_breccia_principal_grain_size) {

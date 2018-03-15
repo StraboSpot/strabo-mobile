@@ -3,9 +3,10 @@ hq17k89,cm,cm,
 hq17k89,m,m,
 hq17k89,in,in,
 hq17k89,ft,ft,
-ts5mf52,lithology,lithology,
-ts5mf52,weathering_pro,weathering profile,
-ts5mf52,unexposed_cov,unexposed/covered,
+th1pp14,bed,bed,
+th1pp14,interbedded,interbedded,
+th1pp14,package__succe,package (succession of beds),
+th1pp14,unexposed_cove,unexposed/covered,
 eb2oc45,siliciclastic,siliciclastic,
 eb2oc45,limestone,limestone,1
 eb2oc45,dolomite,dolomite,2
