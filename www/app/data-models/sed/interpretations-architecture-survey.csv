@@ -1,0 +1,11 @@
+type,name,label,required,calculation
+begin_group,group_wo9iu92,Architecture Interpretation,,
+select_one pu79d34,Description,Description,false,
+select_multiple di5fn81,Stacking_Sequence_Stratigraphy,Stacking/Sequence Stratigraphy,false,
+select_multiple nk4ga99,Fluvial_Architectural_Elements,Fluvial Architectural Elements,false,
+select_multiple oa3pi37,Lacustrine_Architecture_Interpretation,Lacustrine Architecture Interpretation,false,
+select_multiple dh0ic29,Carbonate_Platform_Geometry,Carbonate Platform Geometry,false,
+select_multiple rm7cl73,Carbonate_Margin_Geometry,Carbonate Margin Geometry,false,
+text,Other,Other,false,
+end_group,,,,
+calculate,__version__,,,'vLPuUhEVaP8GEn7kAbadcM'
