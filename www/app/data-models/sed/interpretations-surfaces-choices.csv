@@ -1,0 +1,48 @@
+list_name,name,label,order
+sz3eh26,flat,Flat,
+sz3eh26,undulatory,Undulatory,
+sz3eh26,concave_up,Concave up,
+sz3eh26,concave_down,Concave down,
+sz3eh26,curved,Curved,
+sz3eh26,irregular,Irregular,
+id9jw28,cm,cm,
+id9jw28,m,m,
+me6zn01,cm,cm,
+me6zn01,m,m,
+me6zn01,km,km,
+yj8ul45,mineralization,Mineralization,
+yj8ul45,karst,Karst,
+yj8ul45,hardground,Hardground,
+yj8ul45,firmground,Firmground,
+yj8ul45,burrowed,Burrowed,
+yj8ul45,pedogenic,Pedogenic,
+yj8ul45,weathering,Weathering,
+yj8ul45,lag,Lag,
+yj8ul45,condensed,Condensed,
+yj8ul45,erosional,Erosional,
+yj8ul45,conformable,Conformable,
+yj8ul45,unconformable,Unconformable,
+yj8ul45,ash_tuff,Ash/tuff,
+yj8ul45,fault,Fault,
+ew1qt64,onlap,Onlap,
+ew1qt64,downlap,Downlap,
+ew1qt64,toplap,Toplap,
+ew1qt64,offlap,Offlap,
+vk3ri97,exposure,Exposure,
+vk3ri97,flooding,Flooding,
+vk3ri97,ravinement,Ravinement,
+vk3ri97,hiatus__hiatal,Hiatus (hiatal),
+vk3ri97,reactivation,Reactivation,
+vk3ri97,supersurface,Supersurface,
+vk3ri97,interdune,Interdune,
+vk3ri97,deflation,Deflation,
+xb6oy11,type_1_sequenc,Type 1 Sequence Boundary,
+xb6oy11,type_2_sequenc,Type 2 Sequence Boundary,1
+xb6oy11,type_3_sequenc,Type 3 Sequence Boundary (drowning unconformity),2
+xb6oy11,interfluve_exp,Interfluve Expression,3
+xb6oy11,erosional_expr,Erosional Expression,4
+xb6oy11,correlative_co,Correlative Conformity,5
+xb6oy11,parasequence_b,Parasequence Boundary,6
+xb6oy11,maximum_floodi,Maximum Flooding Surface,7
+xb6oy11,transgressive_,Transgressive surface of erosion,8
+xb6oy11,subaerial_unco,Subaerial unconformity,9

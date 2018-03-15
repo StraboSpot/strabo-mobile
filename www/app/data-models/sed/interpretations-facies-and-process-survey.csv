@@ -1,0 +1,14 @@
+type,name,label,required,calculation
+begin_group,group_nm5aj57,Sedimentary Facies,,
+select_multiple qp1no08,Modifier,Modifier,false,
+select_multiple cf7sc66,Lithology,Lithology,false,
+text,Other,Other,false,
+end_group,,,,
+begin_group,group_ei1uf86,Process Interpretation,,
+select_one lp9ir83,Energy,Energy,false,
+select_multiple nr37l64,Sediment_Transport,Sediment Transport,false,
+select_one fe1pj82,Fluidization,Fluidization,false,
+select_multiple kk8ql20,Miscellaneous,Miscellaneous,false,
+text,Other_001,Other,false,
+end_group,,,,
+calculate,__version__,,,'vumpj8fEZ7xx5H4fYwCs56'

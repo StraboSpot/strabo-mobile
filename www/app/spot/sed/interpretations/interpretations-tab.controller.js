@@ -13,6 +13,8 @@
 
     var thisTabName = 'sed-interpretations';
 
+    vm.switchForm = switchForm;
+
     activate();
 
     /**
@@ -40,7 +42,7 @@
 
     function loadTab(state) {
       vmParent.loadTab(state);     // Need to load current state into parent
-      FormFactory.setForm('sed', 'interpretations');
+      FormFactory.setForm('sed', 'facies_and_process');
       if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.interpretations) {
         $log.log('Sed Interpretations:', vmParent.spot.properties.sed.interpretations);
         vmParent.data = vmParent.spot.properties.sed.interpretations;
@@ -52,5 +54,8 @@
      * Public Functions
      */
 
+    function switchForm(form) {
+      FormFactory.setForm('sed', form);
+    }
   }
 }());

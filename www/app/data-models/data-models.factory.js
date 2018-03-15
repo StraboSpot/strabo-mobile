@@ -88,6 +88,12 @@
           'choices': {},
           'choices_file': 'app/data-models/sed/add-interval-choices.csv'
         },
+        'architecture': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/interpretations-architecture-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/interpretations-architecture-choices.csv'
+        },
         'biogenic_structures': {
           'survey': {},
           'survey_file': 'app/data-models/sed/biogenic-structures-survey.csv',
@@ -106,11 +112,17 @@
           'choices': {},
           'choices_file': 'app/data-models/sed/composition-choices.csv'
         },
-        'interpretations': {
+        'environment': {
           'survey': {},
-          'survey_file': 'app/data-models/sed/interpretations-survey.csv',
+          'survey_file': 'app/data-models/sed/interpretations-environment-survey.csv',
           'choices': {},
-          'choices_file': 'app/data-models/sed/interpretations-choices.csv'
+          'choices_file': 'app/data-models/sed/interpretations-environment-choices.csv'
+        },
+        'facies_and_process': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/interpretations-facies-and-process-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/interpretations-facies-and-process-choices.csv'
         },
         'interval_basics': {
           'survey': {},
@@ -136,13 +148,18 @@
           'choices': {},
           'choices_file': 'app/data-models/sed/physical-structures-choices.csv'
         },
+        'surfaces': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/interpretations-surfaces-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/interpretations-surfaces-choices.csv'
+        },
         'texture': {
           'survey': {},
           'survey_file': 'app/data-models/sed/texture-survey.csv',
           'choices': {},
           'choices_file': 'app/data-models/sed/texture-choices.csv'
         }
-
       },
       'surface_feature': {
         'survey': {},
@@ -319,7 +336,10 @@
         'sed_chemogenic_structures': dataModels.sed.chemogenic_structures,
         'sed_pedogenic_structures': dataModels.sed.pedogenic_structures,
         'sed_physical_structures': dataModels.sed.physical_structures,
-        'sed_interpretations': dataModels.sed.interpretations,
+        'sed_facies_and_process': dataModels.sed.facies_and_process,
+        'sed_environment': dataModels.sed.environment,
+        'sed_surfaces': dataModels.sed.surfaces,
+        'sed_architecture': dataModels.sed.architecture,
         'trace': dataModels.trace
       };
       _.each(models, function (model, key) {
@@ -362,7 +382,10 @@
           key === 'sed_pedogenic_structures' || key === 'sed_physical_structures') {
           _.extend(spotDataModel.properties.sed.structures, description);
         }
-        else if (key === 'sed_interpretations') _.extend(spotDataModel.properties.sed.interpretations, description);
+        else if (key === 'sed_facies_and_process' || key === 'sed_environment' || key === 'sed_surfaces' ||
+          key === 'sed_architecture') {
+          _.extend(spotDataModel.properties.sed.interpretations, description);
+        }
         else if (key === 'trace') _.extend(spotDataModel.properties[key], description);
         else if (key === 'images') {
           description.annotated = 'true/false for whether or not the image is used as an Image Basemap';
