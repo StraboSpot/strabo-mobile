@@ -1,17 +1,12 @@
 list_name,name,label,order
-th1pp14,bed,bed,
-th1pp14,interbedded,interbedded,
-th1pp14,package__succe,package (succession of beds),
-th1pp14,unexposed_cov,unexposed/covered,
 zw9ye70,m,m,
 zw9ye70,ft,ft,1
 zw9ye70,cm,cm,2
 zw9ye70,in,in,3
-jx0op03,1__least_resis,1- least resistant,
-jx0op03,2,2,
-jx0op03,3__moderately_,3- moderately resistant,
-jx0op03,4,4,
-jx0op03,5__most_resist,5- most resistant,
+th1pp14,bed,bed,
+th1pp14,interbedded,interbedded,
+th1pp14,package__succe,package (succession of beds),
+th1pp14,unexposed_cove,unexposed/covered,
 we36h70,siliciclastic,siliciclastic,
 we36h70,limestone,limestone,1
 we36h70,dolomite,dolomite,2
@@ -103,3 +98,8 @@ kl1cz02,lithified,lithified,
 kl1cz02,poorly_lithifi,poorly lithified,
 kl1cz02,unlithified_un,unlithified/unconsolidated,
 kl1cz02,metamorphosed,metamorphosed,
+jx0op03,1__least_resis,1- least resistant,
+jx0op03,2,2,
+jx0op03,3__moderately_,3- moderately resistant,
+jx0op03,4,4,
+jx0op03,5__most_resist,5- most resistant,

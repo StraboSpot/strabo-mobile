@@ -39,23 +39,21 @@
             '</b> have been assigned for the properties of this strat section.')
         }
       }
-      if (lithologies.interval_type === 'lithology' && !lithologies.primary_lithology) {
-        errorMessages.push('- The <b>Primary Lithology</b> must be specified if the Interval Type is lithology.');
-      }
-      else if (lithologies.interval_type === 'lithology' && lithologies.primary_lithology === 'siliciclastic' &&
-        (!lithologies.mud_silt_principal_grain_size && !lithologies.sand_principal_grain_size &&
-          !lithologies.congl_breccia_principal_grain_size)) {
-        errorMessages.push('- The <b>Principal Grain Size</b> must be specified if the Primary Lithology is ' +
-          'siliciclastic.');
-      }
-      else if (lithologies.interval_type === 'lithology' && (lithologies.primary_lithology === 'limestone' ||
-          lithologies.primary_lithology === 'dolomite') && !lithologies.principal_dunham_class) {
-        errorMessages.push('- The <b>Principal Dunham Classification</b> must be specified if the Primary Lithology' +
-          ' is limestone or dolomite.');
-      }
-      else if (lithologies.interval_type === 'weathering_pro' && !lithologies.relative_resistance_weathering) {
-        errorMessages.push('- The <b>Relative Resistance (Weathering Profile)</b> must be specified if the Interval ' +
-          'Type is weathering profile.');
+      if (lithologies.is_this_a_bed_or_package === 'bed' || lithologies.is_this_a_bed_or_package === 'interbedded' ||
+        lithologies.is_this_a_bed_or_package === 'package__succe') {
+        if (!lithologies.primary_lithology) {
+          errorMessages.push('- The <b>Primary Lithology</b> must be specified if the there is any type of bedding.');
+        }
+        else if (lithologies.primary_lithology === 'siliciclastic' && (!lithologies.mud_silt_principal_grain_size &&
+            !lithologies.sand_principal_grain_size && !lithologies.congl_breccia_principal_grain_size)) {
+          errorMessages.push('- The <b>Principal Grain Size</b> must be specified if the Primary Lithology is ' +
+            'siliciclastic.');
+        }
+        else if ((lithologies.primary_lithology === 'limestone' || lithologies.primary_lithology === 'dolomite') &&
+          !lithologies.principal_dunham_class) {
+          errorMessages.push('- The <b>Principal Dunham Classification</b> must be specified if the Primary Lithology' +
+            ' is limestone or dolomite.');
+        }
       }
       return errorMessages;
     }
