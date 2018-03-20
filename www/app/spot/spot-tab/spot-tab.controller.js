@@ -83,10 +83,16 @@
       $cordovaGeolocation.getCurrentPosition().then(function (position) {
         vm.lat = HelpersFactory.roundToDecimalPlaces(position.coords.latitude, 4);
         vm.lng = HelpersFactory.roundToDecimalPlaces(position.coords.longitude, 4);
-        vmParent.spot.geometry = {
-          'type': 'Point',
-          'coordinates': [vm.lng, vm.lat]
-        };
+        if (isPixelMapping()) {
+          vmParent.spot.properties.lng = vm.lng;
+          vmParent.spot.properties.lat = vm.lat;
+        }
+        else {
+          vmParent.spot.geometry = {
+            'type': 'Point',
+            'coordinates': [vm.lng, vm.lat]
+          };
+        }
         if (position.coords.altitude) {
           vmParent.spot.properties.altitude = HelpersFactory.roundToDecimalPlaces(position.coords.altitude, 2);
         }
@@ -136,15 +142,17 @@
 
     function setDisplayedCoords() {
       // Show Lat and Long if Pixel Coordinates or if the geometry type is Point
-      if (vmParent.spot.geometry.type === 'Point') {
-        if (isPixelMapping()) {
+      if (isPixelMapping()) {
+        vm.lat = vmParent.spot.properties.lat;
+        vm.lng = vmParent.spot.properties.lng;
+        if (vmParent.spot.geometry.type === 'Point') {
           vm.y = vmParent.spot.geometry.coordinates[1];
           vm.x = vmParent.spot.geometry.coordinates[0];
         }
-        else {
+      }
+      else if (vmParent.spot.geometry.type === 'Point') {
           vm.lat = vmParent.spot.geometry.coordinates[1];
           vm.lng = vmParent.spot.geometry.coordinates[0];
-        }
       }
     }
 
@@ -275,14 +283,14 @@
 
     // Update the value for the Latitude from the user input
     function updateLatitude(lat) {
-      if (isPixelMapping()) vmParent.lat = lat;
+      if (isPixelMapping()) vmParent.spot.properties.lat = lat;
       else vmParent.spot.geometry.coordinates[1] = lat;
     }
 
     // Update the value for the Longitude from the user input
     function updateLongitude(lng) {
-      if (isPixelMapping()) vmParent.lng = lng;
-      vmParent.spot.geometry.coordinates[0] = lng;
+      if (isPixelMapping()) vmParent.spot.properties.lng = lng;
+      else vmParent.spot.geometry.coordinates[0] = lng;
     }
 
     // Update the value for the x from the user input

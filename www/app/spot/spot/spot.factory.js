@@ -5,11 +5,11 @@
     .module('app')
     .factory('SpotFactory', SpotFactory);
 
-  SpotFactory.$inject = ['$ionicPopup', '$location', '$log', '$state', '$q', 'HelpersFactory', 'LiveDBFactory',
-    'LocalStorageFactory', 'ProjectFactory', 'IS_WEB'];
+  SpotFactory.$inject = ['$cordovaGeolocation', '$ionicPopup', '$location', '$log', '$state', '$q', 'HelpersFactory',
+    'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'IS_WEB'];
 
-  function SpotFactory($ionicPopup, $location, $log, $state, $q, HelpersFactory, LiveDBFactory, LocalStorageFactory,
-                       ProjectFactory, IS_WEB) {
+  function SpotFactory($cordovaGeolocation, $ionicPopup, $location, $log, $state, $q, HelpersFactory, LiveDBFactory,
+                       LocalStorageFactory, ProjectFactory, IS_WEB) {
     var activeNest = [];
     var activeSpots;  // Only Spots in the active datasets
     var currentSpotId = undefined;
@@ -421,9 +421,33 @@
 
         ProjectFactory.incrementSpotNumber();
         ProjectFactory.addSpotToDataset(newSpot.properties.id, ProjectFactory.getSpotsDataset().id);
-        save(newSpot).then(function () {
-          deferred.resolve(newSpot.properties.id);
-        });
+
+        // Get current location when creating a new Spot that is mapped on a strat section
+        if (newSpot.properties.strat_section_id) {
+          $cordovaGeolocation.getCurrentPosition().then(function (position) {
+            newSpot.properties.lat = HelpersFactory.roundToDecimalPlaces(position.coords.latitude, 4);
+            newSpot.properties.lng = HelpersFactory.roundToDecimalPlaces(position.coords.longitude, 4);
+            if (position.coords.altitude) {
+              newSpot.properties.altitude = HelpersFactory.roundToDecimalPlaces(position.coords.altitude, 2);
+            }
+          }, function (err) {
+            $log.log('Unable to get current location: ' + err.message);
+            // ToDo: The following freezes the app in the Chrome dev evnvironment
+            /*$ionicPopup.alert({
+              'title': 'Alert!',
+              'template': 'Unable to get current location: ' + err.message
+            });*/
+          }).finally(function () {
+            save(newSpot).then(function () {
+              deferred.resolve(newSpot.properties.id);
+            });
+          });
+        }
+        else {
+          save(newSpot).then(function () {
+            deferred.resolve(newSpot.properties.id);
+          });
+        }
       }
       return deferred.promise;
     }
