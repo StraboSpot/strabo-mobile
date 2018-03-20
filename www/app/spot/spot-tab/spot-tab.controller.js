@@ -19,18 +19,20 @@
     vm.isSelectGeologicUnitTag = false;
     vm.lat = undefined;
     vm.lng = undefined;
-    vm.mapped = false;
-    vm.showLatLng = false;
-    vm.showXY = false;
     vm.x = undefined;
     vm.y = undefined;
 
     vm.addGeologicUnitTag = addGeologicUnitTag;
     vm.closeGeologicUnitTagModal = closeGeologicUnitTagModal;
     vm.createGeologicUnitTag = createGeologicUnitTag;
+    vm.getCoordArray = getCoordArray;
+    vm.isImageBasemapSpot = isImageBasemapSpot;
+    vm.isMapped = isMapped;
+    vm.isPixelMapping = isPixelMapping;
+    vm.isPointSpot = isPointSpot;
+    vm.isStratSectionSpot= isStratSectionSpot;
     vm.setCurrentLocation = setCurrentLocation;
     vm.setFromMap = setFromMap;
-    vm.showSetToMyLocation = showSetToMyLocation;
     vm.updateDatetime = updateDatetime;
     vm.updateLatitude = updateLatitude;
     vm.updateLongitude = updateLongitude;
@@ -85,8 +87,6 @@
           'type': 'Point',
           'coordinates': [vm.lng, vm.lat]
         };
-        vm.showLatLng = true;
-        vm.mapped = true;
         if (position.coords.altitude) {
           vmParent.spot.properties.altitude = HelpersFactory.roundToDecimalPlaces(position.coords.altitude, 2);
         }
@@ -122,12 +122,8 @@
       if (vmParent.spot && vmParent.spot.geometry && vmParent.spot.geometry.coordinates) {
         // If the geometry coordinates contain any null values, delete the geometry; it shouldn't be defined
         if (_.indexOf(_.flatten(vmParent.spot.geometry.coordinates), null) !== -1) delete vmParent.spot.geometry;
-        else {
-          vm.mapped = true;
-          setDisplayedCoords();
-        }
+        else setDisplayedCoords();
       }
-      else if (vmParent.spot && (vmParent.spot.properties.image_basemap || vmParent.spot.properties.strat_section_id)) vm.showXY = true;
     }
 
     function reloadTab() {
@@ -139,15 +135,13 @@
     }
 
     function setDisplayedCoords() {
-      // Only show Latitude and Longitude input boxes if the geometry type is Point
+      // Show Lat and Long if Pixel Coordinates or if the geometry type is Point
       if (vmParent.spot.geometry.type === 'Point') {
-        if (_.has(vmParent.spot.properties, 'image_basemap') || _.has(vmParent.spot.properties, 'strat_section_id')) {
-          vm.showXY = true;
+        if (isPixelMapping()) {
           vm.y = vmParent.spot.geometry.coordinates[1];
           vm.x = vmParent.spot.geometry.coordinates[0];
         }
         else {
-          vm.showLatLng = true;
           vm.lat = vmParent.spot.geometry.coordinates[1];
           vm.lng = vmParent.spot.geometry.coordinates[0];
         }
@@ -217,6 +211,37 @@
       FormFactory.setForm('rock_unit');
     }
 
+    // Get the array of coordinates as a string
+    function  getCoordArray() {
+      var coordString = JSON.stringify(vmParent.spot.geometry.coordinates);
+      return '[' + coordString.replace(/^\[+|\]+$/g,'') + ']';              // Remove extra [ and ] from start and end
+    }
+
+    // Is the Spot mapped on an image basemap?
+    function isImageBasemapSpot() {
+      return vmParent.spot.properties.image_basemap;
+    }
+
+    // Has the Spot been mapped?
+    function isMapped() {
+      return vmParent.spot && vmParent.spot.geometry && vmParent.spot.geometry.coordinates;
+    }
+
+    // Does the Spot have pixel coordinates
+    function isPixelMapping() {
+      return isImageBasemapSpot() || isStratSectionSpot();
+    }
+
+    // Is the Spot a Point
+    function isPointSpot() {
+      return vmParent.spot.geometry && vmParent.spot.geometry.type === 'Point';
+    }
+
+    // Is the Spot mapped ona strat section
+    function isStratSectionSpot() {
+      return vmParent.spot.properties.strat_section_id;
+    }
+
     function setCurrentLocation() {
       if (vmParent.spot && vmParent.spot.geometry) {
         var confirmPopup = $ionicPopup.confirm({
@@ -243,12 +268,6 @@
       else vmParent.submit('/app/map');
     }
 
-    function showSetToMyLocation() {
-      return vmParent.spot &&
-        (!vmParent.spot.geometry || (vmParent.spot.geometry && vmParent.spot.geometry.type === 'Point')) &&
-        !vm.showXY
-    }
-
     function updateDatetime(datetime) {
       vmParent.spot.properties.date = datetime.toISOString();
       vmParent.spot.properties.time = datetime.toISOString(); // ToDo: remove time property when no longer needed
@@ -256,11 +275,13 @@
 
     // Update the value for the Latitude from the user input
     function updateLatitude(lat) {
-      vmParent.spot.geometry.coordinates[1] = lat;
+      if (isPixelMapping()) vmParent.lat = lat;
+      else vmParent.spot.geometry.coordinates[1] = lat;
     }
 
     // Update the value for the Longitude from the user input
     function updateLongitude(lng) {
+      if (isPixelMapping()) vmParent.lng = lng;
       vmParent.spot.geometry.coordinates[0] = lng;
     }
 
