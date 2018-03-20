@@ -530,6 +530,12 @@ textarea {
   height: 43px;               /* Set back to original for range */
 }
 
+.only-bottom-border {
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+
 /*--------------------
 Style fields for input errors and no-errors
 --------------------*/

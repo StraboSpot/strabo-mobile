@@ -9,88 +9,127 @@
   </div>
 
   <!-- Map Interaction -->
-  <div class='padding' ng-if='!vmChild.mapped'>
+  <div class='padding' ng-if='!vmChild.isMapped()'>
     This spot has not been mapped yet.
   </div>
-  <button ng-click='vmChild.setCurrentLocation();' ng-show='vmChild.showSetToMyLocation()'
-          class='button button-clear button-positive'>
+  <button class='button button-clear button-positive'
+          ng-show='!vmChild.isMapped() || vmChild.isPointSpot() || vmChild.isPixelMapping()'
+          ng-click='vmChild.setCurrentLocation()'>
     <i class='icon ion-pinpoint'></i>
-    <span class='button-text-small'>Set to My Location</span>
+    <span class='button-text-small' ng-hide='vmChild.isPixelMapping()'>Set to My Location</span>
+    <span class='button-text-small' ng-show='vmChild.isPixelMapping()'>Set Real-World Coordinates to My Location</span>
   </button>
-  <button ng-click='vmChild.setFromMap();' ng-hide='vmChild.mapped' class='button button-clear button-positive'>
+  <button class='button button-clear button-positive' ng-hide='vmChild.isMapped()' ng-click='vmChild.setFromMap()'>
     <i class='icon ion-map'></i>
     <span class='button-text-small'>Set From Map</span>
   </button>
 
-    <div ng-if='vmChild.mapped'>
+  <!-- Geometry -->
+  <div ng-show='vmChild.isMapped()'>
+    <ion-input class='item item-input item-stacked-label item-text-wrap'>
+      <ion-label>Geometry</ion-label>
+      <input type='text' disabled ng-model='vm.spot.geometry.type'>
+    </ion-input>
+  </div>
+
+  <!-- X and Y for Spots with pixel mapping -->
+  <form name='straboForm' novalidate=''>
+    <div ng-if='vmChild.isMapped()'>
+      <div ng-show='vmChild.isPixelMapping()'>
+
+        <div class='padding-left padding-right orientation-text' ng-show="vmChild.isStratSectionSpot()">
+          Strat Section Coordinates
+        </div>
+        <div class='padding-left padding-right orientation-text' ng-show="vmChild.isImageBasemapSpot()">
+          Image Basemap Coordinates
+        </div>
+        <div ng-show='vmChild.isPointSpot()'>
+          <div class="row row-no-padding">
+            <div class="col">
+              <ion-input class='item item-input item-stacked-label item-text-wrap only-bottom-border '
+                         ng-class='{ "has-errors": straboForm["x"].$invalid, "no-errors": straboForm["y"].$valid }'>
+                <ion-label>X Pixels</ion-label>
+                <input type='number' name='x' ng-model='vmChild.x' ng-change='vmChild.updateX(vmChild.x)'
+                       required min='0'>
+              </ion-input>
+              <div ng-if='straboForm["x"].$touched'>
+                <div ng-messages='straboForm["x"].$error'>
+                  <div ng-messages-include='app/form/error-messages.html'></div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <ion-input class='item item-input item-stacked-label item-text-wrap only-bottom-border '
+                         ng-class='{ "has-errors": straboForm["y"].$invalid, "no-errors": straboForm["y"].$valid }'>
+                <ion-label>Y Pixels</ion-label>
+                <input type='number' name='y' ng-model='vmChild.y' ng-change='vmChild.updateY(vmChild.y)'
+                       required min='0'>
+              </ion-input>
+              <div ng-if='straboForm["y"].$touched'>
+                <div ng-messages='straboForm["y"].$error'>
+                  <div ng-messages-include='app/form/error-messages.html'></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div ng-show='!vmChild.isPointSpot()'>
+          <ion-input class='item item-input item-stacked-label item-text-wrap only-bottom-border'>
+            <ion-label>In [x, y] Pixels</ion-label>
+            {{ vmChild.getCoordArray() }}
+          </ion-input>
+        </div>
+
+        <!-- Latitude and Longitude boxes -->
+        <div class='padding-left padding-right orientation-text' ng-show="vmChild.isPixelMapping()">
+          Real-World Coordinates
+        </div>
+      </div>
+      <div ng-show='vmChild.isPointSpot() || vmChild.isPixelMapping()'>
+        <div class="row row-no-padding">
+          <div class="col">
+            <ion-input class='item item-input item-stacked-label item-text-wrap only-bottom-border'
+                       ng-class='{ "has-errors": straboForm["lat"].$invalid, "no-errors": straboForm["lat"].$valid }'>
+              <ion-label>Latitude</ion-label>
+              <input type='number' name='lat' ng-model='vmChild.lat' ng-change='vmChild.updateLatitude(vmChild.lat)'
+                     required min='-90' max='90'>
+            </ion-input>
+            <div ng-if='straboForm["lat"].$touched'>
+              <div ng-messages='straboForm["lat"].$error'>
+                <div ng-messages-include='app/form/error-messages.html'></div>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <ion-input class='item item-input item-stacked-label item-text-wrap only-bottom-border'
+                       ng-class='{ "has-errors": straboForm["lng"].$invalid, "no-errors": straboForm["lng"].$valid }'>
+              <ion-label>Longitude</ion-label>
+              <input type='number' name='lng' ng-model='vmChild.lng' ng-change='vmChild.updateLongitude(vmChild.lng)'
+                     required min='-180' max='180'>
+            </ion-input>
+            <div ng-if='straboForm["lng"].$touched'>
+              <div ng-messages='straboForm["lng"].$error'>
+                <div ng-messages-include='app/form/error-messages.html'></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div ng-show='!vmChild.isPointSpot() && !vmChild.isPixelMapping()'>
+        <ion-input class='item item-input item-stacked-label item-text-wrap only-bottom-border'>
+          <ion-label>Coordinates as [Longitude, Latitude]</ion-label>
+          <input type='text' disabled ng-value='vmChild.getCoordArray()'>
+        </ion-input>
+      </div>
+
       <ion-input class='item item-input item-stacked-label item-text-wrap'>
-        <ion-label>Geometry</ion-label>
-        <input type='text' disabled ng-model='vm.spot.geometry.type'>
+        <ion-label>Altitude (m)
+          <button class='button button-small button-icon ion-information-circled strabo-field-info-button'
+                  ng-click='form.showFieldInfo({"label": "Altitude (m)", "hint": "Height of the position in meters above the ellipsoid of the earth.."})'></button>
+        </ion-label>
+        <input type='number' placeholder='Height of the position in meters above the ellipsoid of the earth.'
+               ng-model='vm.spot.properties.altitude'>
       </ion-input>
-
-      <div ng-show='vmChild.showLatLng'>
-        <!-- Latitude and Longitude text boxes for Point features -->
-        <ion-input ng-show='vmChild.showLatLng'
-                   class='item item-input item-stacked-label item-text-wrap'
-                   ng-class='{ "has-errors": straboForm["lat"].$invalid, "no-errors": straboForm["lat"].$valid }'>
-          <ion-label>Latitude</ion-label>
-          <input type='number' name='lat' ng-model='vmChild.lat' ng-change='vmChild.updateLatitude(vmChild.lat)'
-                 required min='-90' max='90'>
-        </ion-input>
-        <div ng-if='straboForm["lat"].$touched'>
-          <div ng-messages='straboForm["lat"].$error'>
-            <div ng-messages-include='app/form/error-messages.html'></div>
-          </div>
-        </div>
-
-        <ion-input class='item item-input item-stacked-label item-text-wrap'
-                   ng-class='{ "has-errors": straboForm["lng"].$invalid, "no-errors": straboForm["lng"].$valid }'>
-          <ion-label>Longitude</ion-label>
-          <input type='number' name='lng' ng-model='vmChild.lng' ng-change='vmChild.updateLongitude(vmChild.lng)'
-                 required min='-180' max='180'>
-        </ion-input>
-        <div ng-if='straboForm["lng"].$touched'>
-          <div ng-messages='straboForm["lng"].$error'>
-            <div ng-messages-include='app/form/error-messages.html'></div>
-          </div>
-        </div>
-
-        <ion-input class='item item-input item-stacked-label item-text-wrap'>
-          <ion-label>Altitude (m)
-            <button class='button button-small button-icon ion-information-circled strabo-field-info-button'
-                    ng-click='form.showFieldInfo({"label": "Altitude (m)", "hint": "Height of the position in meters above the ellipsoid of the earth.."})'></button>
-          </ion-label>
-          <input type='number' placeholder='Height of the position in meters above the ellipsoid of the earth.'
-                 ng-model='vm.spot.properties.altitude'>
-        </ion-input>
-      </div>
-
-      <!-- X and Y text boxes for Point features mapped on an image -->
-      <div ng-show='vmChild.showXY'>
-        <ion-input class='item item-input item-stacked-label item-text-wrap'
-                   ng-class='{ "has-errors": straboForm["x"].$invalid, "no-errors": straboForm["y"].$valid }'>
-          <ion-label>Pixels in the X direction</ion-label>
-          <input type='number' name='x' ng-model='vmChild.x' ng-change='vmChild.updateX(vmChild.x)'
-                 required min='0'>
-        </ion-input>
-        <div ng-if='straboForm["x"].$touched'>
-          <div ng-messages='straboForm["x"].$error'>
-            <div ng-messages-include='app/form/error-messages.html'></div>
-          </div>
-        </div>
-
-        <ion-input class='item item-input item-stacked-label item-text-wrap'
-                   ng-class='{ "has-errors": straboForm["y"].$invalid, "no-errors": straboForm["y"].$valid }'>
-          <ion-label>Pixels in the Y direction</ion-label>
-          <input type='number' name='y' ng-model='vmChild.y' ng-change='vmChild.updateY(vmChild.y)'
-                 required min='0'>
-        </ion-input>
-        <div ng-if='straboForm["y"].$touched'>
-          <div ng-messages='straboForm["y"].$error'>
-            <div ng-messages-include='app/form/error-messages.html'></div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <div ng-show='vm.showRadius'>
@@ -104,18 +143,15 @@
       <div class='item item-divider'>
         Trace Feature
       </div>
-      <form name='straboForm' novalidate=''>
-        <auto-fields/>
-      </form>
+      <auto-fields/>
     </div>
+  </form>
 
   <div ng-show='vm.showSurfaceFeature'>
     <div class='item item-divider'>
       Surface Feature
     </div>
-    <form name='straboForm' novalidate=''>
-      <auto-fields/>
-    </form>
+    <auto-fields/>
   </div>
 
 
