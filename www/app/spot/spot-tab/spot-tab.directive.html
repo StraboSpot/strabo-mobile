@@ -92,7 +92,7 @@
                        ng-class='{ "has-errors": straboForm["lat"].$invalid, "no-errors": straboForm["lat"].$valid }'>
               <ion-label>Latitude</ion-label>
               <input type='number' name='lat' ng-model='vmChild.lat' ng-change='vmChild.updateLatitude(vmChild.lat)'
-                     required min='-90' max='90'>
+                     min='-90' max='90'>
             </ion-input>
             <div ng-if='straboForm["lat"].$touched'>
               <div ng-messages='straboForm["lat"].$error'>
@@ -105,7 +105,7 @@
                        ng-class='{ "has-errors": straboForm["lng"].$invalid, "no-errors": straboForm["lng"].$valid }'>
               <ion-label>Longitude</ion-label>
               <input type='number' name='lng' ng-model='vmChild.lng' ng-change='vmChild.updateLongitude(vmChild.lng)'
-                     required min='-180' max='180'>
+                     min='-180' max='180'>
             </ion-input>
             <div ng-if='straboForm["lng"].$touched'>
               <div ng-messages='straboForm["lng"].$error'>

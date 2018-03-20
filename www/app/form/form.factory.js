@@ -190,9 +190,17 @@
 
     // Validate Spot Tab
     function validateForm(stateName, spot, data) {
-      if (_.isEmpty(form.survey)) return true;
+      var errorMessages = [];
+      if (_.isEmpty(form.survey)) {
+        if (stateName === 'app.spotTab.spot') {
+          if (!spot.properties.name) errorMessages.push('<b>Spot Name</b> is required.');
+          if (spot.geometry && spot.geometry.type === 'Point' && (!spot.geometry.coordinates[0] ||
+              !spot.geometry.coordinates[1])) {
+            errorMessages.push('Both <b>Latitude</b> and <b>longitude</b> are required.');
+          }
+        }
+      }
       else if (validate(data)) {
-        var errorMessages = [];
         if (stateName === 'app.spotTab.spot') {
           if (!spot.properties.name) errorMessages.push('<b>Spot Name</b> is required.');
           if (spot.geometry && spot.geometry.type === 'Point' && (!spot.geometry.coordinates[0] ||
@@ -204,16 +212,16 @@
           spot.properties.sed.lithologies) {
           errorMessages = validateSedData(spot, errorMessages);
         }
-        if (_.isEmpty(errorMessages)) return true;
-        else {
-          $ionicPopup.alert({
-            'title': 'Data Validation Error',
-            'template': errorMessages.join('<br>')
-          });
-          return false;
-        }
       }
       else return false;
+      if (_.isEmpty(errorMessages)) return true;
+      else {
+        $ionicPopup.alert({
+          'title': 'Data Validation Error',
+          'template': errorMessages.join('<br>')
+        });
+        return false;
+      }
     }
   }
 }());
