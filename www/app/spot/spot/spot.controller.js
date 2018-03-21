@@ -280,36 +280,38 @@
 
     // Delete the spot
     function deleteSpot() {
-      if (SpotFactory.isSafeDelete(vm.spot)) {
-        var confirmPopup = $ionicPopup.confirm({
-          'title': 'Delete Spot',
-          'template': 'Are you sure you want to delete this spot?'
-        });
-        confirmPopup.then(function (res) {
-          if (res) {
-            SpotFactory.destroy(vm.spot.properties.id).then(function () {
-              vm.spot = undefined;
-              vm.initializing = true;
-              if (!IS_WEB) goBack();
-              else {
-                if ($state.current.name === 'app.spotTab.spot') {   // Update Spots list
-                  vmParent.updateSpots();
-                  vmParent.spotIdSelected = undefined;
-                  $location.path('app/spotTab');
+      vm.popover.hide().then(function () {
+        if (SpotFactory.isSafeDelete(vm.spot)) {
+          var confirmPopup = $ionicPopup.confirm({
+            'title': 'Delete Spot',
+            'template': 'Are you sure you want to delete this spot?'
+          });
+          confirmPopup.then(function (res) {
+            if (res) {
+              SpotFactory.destroy(vm.spot.properties.id).then(function () {
+                vm.spot = undefined;
+                vm.initializing = true;
+                if (!IS_WEB) goBack();
+                else {
+                  if ($state.current.name === 'app.spotTab.spot') {   // Update Spots list
+                    vmParent.updateSpots();
+                    vmParent.spotIdSelected = undefined;
+                    $location.path('app/spotTab');
+                  }
+                  else $rootScope.$broadcast('deletedSpot');  // Clear Spot from map side panel
                 }
-                else $rootScope.$broadcast('deletedSpot');  // Clear Spot from map side panel
-              }
-            });
-          }
-        });
-      }
-      else {
-        $ionicPopup.alert({
-          'title': 'Spot Deletion Prohibited!',
-          'template': 'This Spot has at least one image being used as an image basemap. Remove any image basemaps' +
-          ' from this Spot before deleting.'
-        });
-      }
+              });
+            }
+          });
+        }
+        else {
+          $ionicPopup.alert({
+            'title': 'Spot Deletion Prohibited!',
+            'template': 'This Spot has at least one image being used as an image basemap. Remove any image basemaps' +
+            ' from this Spot before deleting.'
+          });
+        }
+      });
     }
 
     function filterAllTagsType() {
