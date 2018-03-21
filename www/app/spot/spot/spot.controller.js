@@ -478,7 +478,9 @@
     }
 
     function takePicture() {
+      ImageFactory.setIsReattachImage(false);
       ImageFactory.setCurrentSpot(vm.spot);
+      ImageFactory.setCurrentImage({'image_type': 'photo'});
       ImageFactory.takePicture();
     }
 
