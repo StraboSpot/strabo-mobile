@@ -7,12 +7,13 @@
 
   SpotController.$inject = ['$document', '$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover',
     '$ionicPopup', '$location', '$log', '$q', '$rootScope', '$scope', '$state', '$timeout', 'FormFactory',
-    'HelpersFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'StratSectionFactory', 'TagFactory', 'IS_WEB'];
+    'HelpersFactory', 'ImageFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'StratSectionFactory',
+    'TagFactory', 'IS_WEB'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
   function SpotController($document, $ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup, $location,
-                          $log, $q, $rootScope, $scope, $state, $timeout, FormFactory, HelpersFactory, MapViewFactory,
-                          ProjectFactory, SpotFactory, StratSectionFactory, TagFactory, IS_WEB) {
+                          $log, $q, $rootScope, $scope, $state, $timeout, FormFactory, HelpersFactory, ImageFactory,
+                          MapViewFactory, ProjectFactory, SpotFactory, StratSectionFactory, TagFactory, IS_WEB) {
     var vmParent = $scope.vm;
     var vm = this;
 
@@ -70,6 +71,7 @@
     vm.saveSpot = saveSpot;
     vm.showTab = showTab;
     vm.submit = submit;
+    vm.takePicture = takePicture;
     vm.viewMap = viewMap;
 
     activate();
@@ -471,6 +473,11 @@
         $ionicHistory.backView();
         $location.path(toPath);
       });
+    }
+
+    function takePicture() {
+      ImageFactory.setCurrentSpot(vm.spot);
+      ImageFactory.takePicture();
     }
 
     function toggleTagChecked(tag) {
