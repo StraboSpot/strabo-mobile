@@ -227,7 +227,7 @@
 
     // Is the Spot mapped on an image basemap?
     function isImageBasemapSpot() {
-      return vmParent.spot.properties.image_basemap;
+      return vmParent.spot && vmParent.spot.properties && vmParent.spot.properties.image_basemap;
     }
 
     // Has the Spot been mapped?
@@ -242,12 +242,12 @@
 
     // Is the Spot a Point
     function isPointSpot() {
-      return vmParent.spot.geometry && vmParent.spot.geometry.type === 'Point';
+      return vmParent.spot && vmParent.spot.geometry && vmParent.spot.geometry.type === 'Point';
     }
 
     // Is the Spot mapped ona strat section
     function isStratSectionSpot() {
-      return vmParent.spot.properties.strat_section_id;
+      return vmParent.spot && vmParent.spot.properties && vmParent.spot.properties.strat_section_id;
     }
 
     function setCurrentLocation() {
