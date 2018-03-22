@@ -15,6 +15,7 @@
     var currentSpot = {};
     var images = [];
     var isReattachImage = false;
+    var takeMorePictures = false;
 
     return {
       'deleteAllImages': deleteAllImages,
@@ -172,6 +173,11 @@
         $rootScope.$broadcast('updatedImages');
       });
       LiveDBFactory.save(currentSpot, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
+
+      if (takeMorePictures) {
+        setCurrentImage({'image_type': 'photo'});
+        takePicture();
+      }
     }
 
     /**
@@ -193,10 +199,12 @@
     }
 
     function getImageFromGallery() {
+      takeMorePictures = false;
       getPicture(Camera.PictureSourceType.PHOTOLIBRARY);
     }
 
     function readFile(file) {
+      takeMorePictures = false;
       readDataUrl(file);
     }
 
@@ -218,6 +226,7 @@
     }
 
     function takePicture() {
+      takeMorePictures = true;
       getPicture(Camera.PictureSourceType.CAMERA);
     }
   }
