@@ -45,10 +45,10 @@
           <strabo3-d-structures-tab-directive></strabo3-d-structures-tab-directive>
         </div>
         <div ng-show='sidePanel.isActiveTab("images")' ng-controller='ImagesTabController as vmChild'>
-          <button onclick="document.getElementById('file').click()"
+          <button ng-click="vmChild.addImage()"
                   class='button button-clear button-positive'>
             <i class='icon ion-camera'></i>
-            <span class='button-text-big'>Add Photo or Image</span>
+            <span class='button-text-big'>Add Image From File</span>
           </button>
           <input type='file' id='file' style='display: none;'>
           <strabo-images-tab-directive></strabo-images-tab-directive>

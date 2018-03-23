@@ -5,10 +5,10 @@
     .module('app')
     .factory('ImageFactory', ImageFactory);
 
-  ImageFactory.$inject = ['$cordovaCamera', '$ionicPopup', '$log', '$rootScope', '$window', 'HelpersFactory',
+  ImageFactory.$inject = ['$cordovaCamera', '$ionicPopup', '$log', '$rootScope', '$state', '$window', 'HelpersFactory',
     'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'SpotFactory'];
 
-  function ImageFactory($cordovaCamera, $ionicPopup, $log, $rootScope, $window, HelpersFactory, LiveDBFactory,
+  function ImageFactory($cordovaCamera, $ionicPopup, $log, $rootScope, $state, $window, HelpersFactory, LiveDBFactory,
                         LocalStorageFactory, ProjectFactory, SpotFactory) {
 
     var currentImageData = {};
@@ -169,8 +169,17 @@
     function saveImageDataToSpot(imageData) {
       if (angular.isUndefined(currentSpot.properties.images)) currentSpot.properties.images = [];
       currentSpot.properties.images.push(imageData);
-      SpotFactory.save(currentSpot).then(function() {
+      SpotFactory.save(currentSpot).then(function () {
         $rootScope.$broadcast('updatedImages');
+        if ($state.current.name === 'app.map') $rootScope.$broadcast('updateMapFeatureLayer');
+        else if ($state.current.name === 'app.image-basemaps.image-basemap' ||
+          $state.current.name === 'app.image-basemap') {
+          $rootScope.$broadcast('updateImageBasemapFeatureLayer');
+        }
+        else if ($state.current.name === 'app.strat-sections.strat-section' ||
+          $state.current.name === 'app.strat-section') {
+          $rootScope.$broadcast('updateStratSectionFeatureLayer');
+        }
       });
       LiveDBFactory.save(currentSpot, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
 

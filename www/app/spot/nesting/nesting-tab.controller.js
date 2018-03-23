@@ -234,9 +234,12 @@
     function updateNest() {
       vm.parentSpots = getParents(vmParent.spot);
       vm.childrenSpots = getChildren(vmParent.spot);
-      if (IS_WEB && $state.current.name === 'app.map') $rootScope.$broadcast('updateFeatureLayer');
+      if (IS_WEB && $state.current.name === 'app.map') $rootScope.$broadcast('updateMapFeatureLayer');
       else if (IS_WEB && $state.current.name === 'app.image-basemaps.image-basemap') {
-        $rootScope.$broadcast('updateFeatureLayer');
+        $rootScope.$broadcast('updateImageBasemapFeatureLayer');
+      }
+      else if ($state.current.name === 'app.strat-sections.strat-section') {
+        $rootScope.$broadcast('updateStratSectionFeatureLayer');
       }
     }
   }

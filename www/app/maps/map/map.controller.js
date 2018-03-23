@@ -7,13 +7,13 @@
 
   MapController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup',
     '$ionicSideMenuDelegate', '$location', '$log', '$rootScope', '$scope', '$timeout', 'FormFactory', 'HelpersFactory',
-    'MapFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory', 'MapSetupFactory', 'MapViewFactory',
-    'ProjectFactory', 'SpotFactory', 'IS_WEB'];
+    'ImageFactory', 'MapFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory', 'MapSetupFactory',
+    'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
 
   function MapController($ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup, $ionicSideMenuDelegate,
-                         $location, $log, $rootScope, $scope, $timeout, FormFactory, HelpersFactory, MapFactory,
-                         MapDrawFactory, MapFeaturesFactory, MapLayerFactory, MapSetupFactory, MapViewFactory,
-                         ProjectFactory, SpotFactory, IS_WEB) {
+                         $location, $log, $rootScope, $scope, $timeout, FormFactory, HelpersFactory, ImageFactory,
+                         MapFactory, MapDrawFactory, MapFeaturesFactory, MapLayerFactory, MapSetupFactory,
+                         MapViewFactory, ProjectFactory, SpotFactory, IS_WEB) {
     var vm = this;
 
     var datasetsLayerStates;
@@ -154,7 +154,14 @@
       popup.getElement().addEventListener('click', function (e) {
         var action = e.target.getAttribute('data-action');
         if (action) {
-          if (action === 'more') {
+          if (action === 'takePicture') {
+            popup.hide();
+            ImageFactory.setIsReattachImage(false);
+            ImageFactory.setCurrentSpot(SpotFactory.getSpotById(vm.clickedFeatureId));
+            ImageFactory.setCurrentImage({'image_type': 'photo'});
+            ImageFactory.takePicture();
+          }
+          else if (action === 'more') {
             popup.hide();
             $location.path('/app/spotTab/' +vm.clickedFeatureId + '/spot');
             $scope.$apply();
@@ -184,15 +191,15 @@
     }
 
     function createPageEvents() {
-      $rootScope.$on('updateFeatureLayer', function () {
-        MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
+      $rootScope.$on('updateMapFeatureLayer', function () {
+        updateFeatureLayer();
       });
 
       // Spot deleted from map side panel
       $rootScope.$on('deletedSpot', function () {
         vm.clickedFeatureId = undefined;
         MapFeaturesFactory.removeSelectedSymbol(map);
-        MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
+        updateFeatureLayer();
       });
 
       $scope.$on('$destroy', function () {
@@ -273,14 +280,14 @@
           var lyr = e.target;
           if (lyr.get('layergroup') === 'Datasets') {     // Individual Datasets
             datasetsLayerStates[lyr.get('datasetId')] = lyr.getVisible();
-            MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
+            updateFeatureLayer();
             switcher.renderPanel();
           }
           else if (lyr.get('name') === 'datasetsLayer') {  // Datasets as a Group
             lyr.getLayers().forEach(function (layer) {     // Individual Datasets
               datasetsLayerStates[layer.get('datasetId')] = lyr.getVisible();
             });
-            MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
+            updateFeatureLayer();
             switcher.renderPanel();
           }
         });
@@ -298,6 +305,13 @@
         return !_.has(spot, 'geometry');
       });
       $log.log('Spots on this Map:', spotsThisMap);
+    }
+
+    function updateFeatureLayer() {
+      $log.log('Updating Map Feature Layer ...');
+      gatherSpots();
+      MapFeaturesFactory.setMappableSpots(spotsThisMap);
+      MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
     }
 
     /**
