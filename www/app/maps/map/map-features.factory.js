@@ -45,16 +45,22 @@
       title.innerHTML = feature.get('name') + '<hr>';
       el.appendChild(title);
 
+      // Camera and Tags Icons
+      var iconsHTML = '<div class="padding-top">';
+      iconsHTML += typeof Camera !== 'undefined' ? '<a href="#" data-action="takePicture" class="button-icon icon button-small button-text-small ion-camera"></a>' : '';
+      iconsHTML += '</div>';
+
       // popup main content
       var content = document.createElement('div');
       var text = getPopupText(feature.getProperties());
       var detailHTML = text.join('<br>');
+      detailHTML += iconsHTML;
       if (imageSource) {
         el.style.width = 250;
         var numOfImages = _.size(feature.getProperties().images);
         var firstImageHTML = "<a><img src=" + imageSource + " width='100' height='100'></a><br>1/" + numOfImages + " image(s)";
         content.innerHTML = '<div class="row"> <div class="col">' + firstImageHTML + '</div> <div class="col">' +
-          detailHTML + '</div> </div>';
+          detailHTML + '</div></div>';
       }
       else content.innerHTML = detailHTML;
       el.appendChild(content);
@@ -176,7 +182,7 @@
           return dataset.id.toString() === key;
         });
         var titlePart = visibleSpotsDataset.length === 1 ? '(1 Spot)' : '(' + visibleSpotsDataset.length + ' Spots)';
-        var datasetLayer = new ol.layer.Tile({
+        var datasetLayer = new ol.layer.Vector({
           'datasetId': d.id,
           'title': d.name + ' ' + titlePart,
           'layergroup': 'Datasets'

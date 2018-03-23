@@ -7,14 +7,14 @@
 
   StratSectionController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup',
     '$ionicSideMenuDelegate', '$location', '$log', '$rootScope', '$scope', '$state', '$timeout', 'FormFactory',
-    'HelpersFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory', 'MapSetupFactory', 'MapViewFactory',
-    'ProjectFactory', 'SpotFactory', 'StratSectionFactory', 'IS_WEB'];
+    'HelpersFactory', 'ImageFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory', 'MapSetupFactory',
+    'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'StratSectionFactory', 'IS_WEB'];
 
   function StratSectionController($ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup,
                                   $ionicSideMenuDelegate, $location, $log, $rootScope, $scope, $state, $timeout,
-                                  FormFactory, HelpersFactory, MapDrawFactory, MapFeaturesFactory, MapLayerFactory,
-                                  MapSetupFactory, MapViewFactory, ProjectFactory, SpotFactory, StratSectionFactory,
-                                  IS_WEB) {
+                                  FormFactory, HelpersFactory, ImageFactory, MapDrawFactory, MapFeaturesFactory,
+                                  MapLayerFactory, MapSetupFactory, MapViewFactory, ProjectFactory, SpotFactory,
+                                  StratSectionFactory, IS_WEB) {
     var vm = this;
 
     var currentSpot = {};
@@ -176,7 +176,14 @@
       popup.getElement().addEventListener('click', function (e) {
         var action = e.target.getAttribute('data-action');
         if (action) {
-          if (action === 'more') {
+          if (action === 'takePicture') {
+            popup.hide();
+            ImageFactory.setIsReattachImage(false);
+            ImageFactory.setCurrentSpot(SpotFactory.getSpotById(vm.clickedFeatureId));
+            ImageFactory.setCurrentImage({'image_type': 'photo'});
+            ImageFactory.takePicture();
+          }
+          else if (action === 'more') {
             popup.hide();
             var spot = SpotFactory.getSpotById(vm.clickedFeatureId);
             if (spot.properties.surface_feature &&
@@ -212,7 +219,7 @@
     }
 
     function createPageEvents() {
-      $rootScope.$on('updateFeatureLayer', function () {
+      $rootScope.$on('updateStratSectionFeatureLayer', function () {
         updateFeatureLayer();
       });
 
@@ -341,11 +348,9 @@
     }
 
     function updateFeatureLayer() {
-      $log.log('Updating Feature Layer ...');
+      $log.log('Updating Strat Section Feature Layer ...');
       gatherSpots();
       MapFeaturesFactory.setMappableSpots(spotsThisMap);
-      datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map);
-      MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map);
       MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
       MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
     }
