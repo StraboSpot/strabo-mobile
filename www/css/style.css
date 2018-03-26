@@ -536,6 +536,10 @@ textarea {
   border-right: none;
 }
 
+.no-left-margin {
+  margin-left: 0;
+}
+
 /*--------------------
 Style fields for input errors and no-errors
 --------------------*/

@@ -44,7 +44,7 @@
           Image Basemap Coordinates
         </div>
         <div ng-show='vmChild.isPointSpot()'>
-          <div class="row row-no-padding">
+          <div class="row row-no-padding no-left-margin">
             <div class="col">
               <ion-input class='item item-input item-stacked-label item-text-wrap only-bottom-border '
                          ng-class='{ "has-errors": straboForm["x"].$invalid, "no-errors": straboForm["y"].$valid }'>
@@ -86,7 +86,7 @@
         </div>
       </div>
       <div ng-show='vmChild.isPointSpot() || vmChild.isPixelMapping()'>
-        <div class="row row-no-padding">
+        <div class="row row-no-padding no-left-margin">
           <div class="col">
             <ion-input class='item item-input item-stacked-label item-text-wrap only-bottom-border'
                        ng-class='{ "has-errors": straboForm["lat"].$invalid, "no-errors": straboForm["lat"].$valid }'>
