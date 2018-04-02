@@ -94,12 +94,9 @@
         MapSetupFactory.setMapControls(switcher);
         MapSetupFactory.setPopupOverlay();
 
-        MapFeaturesFactory.setMappableSpots(spotsThisMap);
-
         map = MapSetupFactory.getMap();
-        datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map);
-        MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map);
-        MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
+
+        updateFeatureLayer();
 
         // If we have a current feature set the selected symbol
         if (vm.clickedFeatureId && IS_WEB) {
@@ -118,7 +115,6 @@
         $timeout(function () {
           map.updateSize();         // use OpenLayers API to force map to update
         });
-        MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
       });
     }
 
@@ -228,7 +224,7 @@
         $log.log('Handling Deleted Spot ...');
         vm.clickedFeatureId = undefined;
         MapFeaturesFactory.removeSelectedSymbol(map);
-        MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
+        updateFeatureLayer();
       });
 
       $scope.$on('$destroy', function () {
@@ -351,6 +347,8 @@
       $log.log('Updating Strat Section Feature Layer ...');
       gatherSpots();
       MapFeaturesFactory.setMappableSpots(spotsThisMap);
+      datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map);
+      MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map);
       MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
       MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
     }
