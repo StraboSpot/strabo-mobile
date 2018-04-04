@@ -27,7 +27,8 @@
       'getSpotsWithStratSections': getSpotsWithStratSections,
       'getStratSectionSpots': getStratSectionSpots,
       'isInterval': isInterval,
-      'orderStratSectionIntervals': orderStratSectionIntervals
+      'orderStratSectionIntervals': orderStratSectionIntervals,
+      'validateNewInterval': validateNewInterval
     };
 
     /**
@@ -179,6 +180,29 @@
         });
       });
       return intervalSpots;
+    }
+
+    // Determine if the field should be shown or not by looking at the relevant key-value pair
+    // The 2nd param, data, is used in the eval method
+    // This copied from Form Factory and modified to use data instead of properties
+    function isRelevant(relevant, data) {
+      if (!relevant) return true;
+
+      relevant = relevant.replace(/selected\(\$/g, '_.contains(');
+      relevant = relevant.replace(/\$/g, '');
+      relevant = relevant.replace(/{/g, 'data.');
+      relevant = relevant.replace(/}/g, '');
+      relevant = relevant.replace(/''/g, 'undefined');
+      relevant = relevant.replace(/ = /g, ' == ');
+      relevant = relevant.replace(/ or /g, ' || ');
+      relevant = relevant.replace(/ and /g, ' && ');
+
+      try {
+        return eval(relevant);
+      }
+      catch (e) {
+        return false;
+      }
     }
 
     /**
@@ -519,6 +543,34 @@
         }
       });
       return orderedIntervals;
+    }
+
+    // We can't use validation in Form Factory for the Add Interval Modal because of the sidepanel in the Web
+    // version. With the side panel and the open modal there are multiple form elements with the same ID
+    // - bad HTML but this is how it is now - so we can't easily grab the proper element for validation.
+    // Below code copied from Form Factory and modified.
+    function validateNewInterval(data, form) {
+      if (_.isEmpty(data)) return true;
+      $log.log('Validating new interval with data:', data);
+      var errorMessages = [];
+      // If a field is visible and required but empty give the user an error message and return to the form
+      _.each(form.survey, function (field) {
+        if (field.name && isRelevant(field.relevant, data)) {
+          if (field.required === 'true' && !data[field.name]) {
+            errorMessages.push('<b>' + field.label + '</b>: Required!');
+          }
+        }
+        else delete data[field.name];
+      });
+
+      if (_.isEmpty(errorMessages)) return true;
+      else {
+        $ionicPopup.alert({
+          'title': 'Validation Error!',
+          'template': 'Fix the following errors before continuing:<br>' + errorMessages.join('<br>')
+        });
+        return false;
+      }
     }
   }
 }());
