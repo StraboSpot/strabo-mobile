@@ -239,7 +239,7 @@
     function zoomToSpotsExtent(map, spots) {
       if (spots.length > 0) {
         var features = turf.featureCollection(spots);
-        var allCoords = turf.coordAll(features)
+        var allCoords = turf.coordAll(features);
         var extent = ol.extent.boundingExtent(allCoords);
         if (map.getView().getProjection().getUnits() === 'pixels') map.getView().fit(extent, {'maxZoom': 6});
         else map.getView().fit(ol.proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857'),

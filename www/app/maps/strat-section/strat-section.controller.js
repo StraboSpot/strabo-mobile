@@ -97,12 +97,7 @@
         map = MapSetupFactory.getMap();
 
         updateFeatureLayer();
-
-        // If we have a current feature set the selected symbol
-        if (vm.clickedFeatureId && IS_WEB) {
-          var feature = MapFeaturesFactory.getFeatureById(vm.clickedFeatureId);
-          if (!_.isEmpty(feature)) MapFeaturesFactory.setSelectedSymbol(map, feature.getGeometry());
-        }
+        updateSelectedSymbol();
 
         createSwitcher(switcher);
 
@@ -352,6 +347,17 @@
       MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map);
       MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
       MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
+
+      updateSelectedSymbol();
+    }
+
+    // If on WEB and we have a current feature set the selected symbol
+    function updateSelectedSymbol() {
+      if (IS_WEB && vm.clickedFeatureId) {
+        MapFeaturesFactory.removeSelectedSymbol(map);
+        var feature = MapFeaturesFactory.getFeatureById(vm.clickedFeatureId);
+        if (!_.isEmpty(feature)) MapFeaturesFactory.setSelectedSymbol(map, feature.getGeometry());
+      }
     }
 
     /**
@@ -385,7 +391,7 @@
           'for this interval.'
         });
       }
-      else if (StratSectionFactory.validateNewInterval(vm.data)) {
+      else if (StratSectionFactory.validateNewInterval(vm.data, FormFactory.getForm())) {
         vm.addIntervalModal.remove();
         var newInterval = StratSectionFactory.createInterval(stratSection.strat_section_id, vm.data);
         SpotFactory.setNewSpot(newInterval).then(function (id) {
@@ -435,8 +441,8 @@
             SpotFactory.destroy(spot.properties.id).then(function () {
               updateFeatureLayer();
               if (IS_WEB) {
-                vm.spotIdSelected = undefined;
-                $location.path('app/spotTab');
+                vm.clickedFeatureId = undefined;
+                MapFeaturesFactory.removeSelectedSymbol(map);
               }
             });
           }
@@ -462,7 +468,7 @@
     }
 
     function goToSpot(id, page) {
-      vm.spotIdSelected = id;
+      vm.clickedFeatureId = id;
       if (page) $location.path('/app/spotTab/' + id + '/' + page);
       else $location.path('/app/spotTab/' + id + '/spot');
     }
