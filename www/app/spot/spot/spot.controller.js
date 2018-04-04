@@ -443,10 +443,20 @@
             // If Spot used to be an interval remove extra sed fields
             else if (StratSectionFactory.isInterval(savedSpot)) {
               return StratSectionFactory.changeFromInterval(vm.spot).then(function () {
-                return SpotFactory.save(vm.spot);
+                return SpotFactory.save(vm.spot).then(function () {
+                  // Need to update the strat section map in case on WEB and fields were changed in the sidepanel
+                  if (IS_WEB && $state.current.name === 'app.strat-section') {
+                    $rootScope.$broadcast('updateStratSectionFeatureLayer');
+                  }
+                });
               });
             }
-            return SpotFactory.save(vm.spot);
+            return SpotFactory.save(vm.spot).then(function () {
+              // Need to update the strat section map in case on WEB and fields were changed in the sidepanel
+              if (IS_WEB && $state.current.name === 'app.strat-section') {
+                $rootScope.$broadcast('updateStratSectionFeatureLayer');
+              }
+            });
           }
         }
         else $ionicLoading.hide();
