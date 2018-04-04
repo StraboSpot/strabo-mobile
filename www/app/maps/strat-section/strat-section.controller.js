@@ -216,6 +216,7 @@
 
     function createPageEvents() {
       $rootScope.$on('updateStratSectionFeatureLayer', function () {
+        $log.log('Updating Strat Section Feature Layer ...');
         updateFeatureLayer();
       });
 
@@ -384,7 +385,7 @@
           'for this interval.'
         });
       }
-      else if (FormFactory.validate(vm.data)) {
+      else if (StratSectionFactory.validateNewInterval(vm.data)) {
         vm.addIntervalModal.remove();
         var newInterval = StratSectionFactory.createInterval(stratSection.strat_section_id, vm.data);
         SpotFactory.setNewSpot(newInterval).then(function (id) {
@@ -499,7 +500,7 @@
           'for this interval.'
         });
       }
-      else if (FormFactory.validate(vm.data)) {
+      else if (StratSectionFactory.validateNewInterval(vm.data, FormFactory.getForm())) {
         vm.addIntervalModal.remove();
         var newInterval = StratSectionFactory.createInterval(stratSection.strat_section_id, vm.data);
         SpotFactory.setNewSpot(newInterval).then(function (id) {
