@@ -81,8 +81,8 @@
     // Get current location of the user
     function getCurrentLocation() {
       $cordovaGeolocation.getCurrentPosition().then(function (position) {
-        vm.lat = HelpersFactory.roundToDecimalPlaces(position.coords.latitude, 4);
-        vm.lng = HelpersFactory.roundToDecimalPlaces(position.coords.longitude, 4);
+        vm.lat = HelpersFactory.roundToDecimalPlaces(position.coords.latitude, 6);
+        vm.lng = HelpersFactory.roundToDecimalPlaces(position.coords.longitude, 6);
         if (isPixelMapping()) {
           vmParent.spot.properties.lng = vm.lng;
           vmParent.spot.properties.lat = vm.lat;
