@@ -425,8 +425,8 @@
         // Get current location when creating a new Spot that is mapped on a strat section
         if (newSpot.properties.strat_section_id) {
           $cordovaGeolocation.getCurrentPosition().then(function (position) {
-            newSpot.properties.lat = HelpersFactory.roundToDecimalPlaces(position.coords.latitude, 4);
-            newSpot.properties.lng = HelpersFactory.roundToDecimalPlaces(position.coords.longitude, 4);
+            newSpot.properties.lat = HelpersFactory.roundToDecimalPlaces(position.coords.latitude, 6);
+            newSpot.properties.lng = HelpersFactory.roundToDecimalPlaces(position.coords.longitude, 6);
             if (position.coords.altitude) {
               newSpot.properties.altitude = HelpersFactory.roundToDecimalPlaces(position.coords.altitude, 2);
             }
