@@ -26,5 +26,5 @@ text,weathered_color,weathered color,false,${is_this_a_bed_or_package} = 'bed' o
 end_group,,,,,,
 text,Notes,Notes,false,,,
 calculate,__version__,,false,,'vYjQCtGRV2iET3JjCTcYeg',
-calculate,_version_,,,,'v6yUKf53r3MWtgr8ebBTtV',__version__
-calculate,_version__001,,,,'v5HMzJR58LiyPjrADhCP89',__version__
+calculate,_version_,,false,,'v6yUKf53r3MWtgr8ebBTtV',__version__
+calculate,_version__001,,,,'vpdSRxSqUmHBSYqYmaxHaD',__version__

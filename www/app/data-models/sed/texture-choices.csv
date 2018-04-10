@@ -9,14 +9,14 @@ nq1zz74,breccia,breccia
 br57a34,clay,clay
 br57a34,mud,mud
 br57a34,silt,silt
-yt6dh35,sand__very_fin,sand- very fine
-yt6dh35,sand__fine_low,sand- fine lower
-yt6dh35,sand__fine_upp,sand- fine upper
-yt6dh35,sand__medium_l,sand- medium lower
-yt6dh35,sand__medium_u,sand- medium upper
-yt6dh35,sand__coarse_l,sand- coarse lower
-yt6dh35,sand__coarse_u,sand- coarse upper
-yt6dh35,sand__very_coa,sand- very coarse
+yt6dh35,sand_very_fin,sand- very fine
+yt6dh35,sand_fine_low,sand- fine lower
+yt6dh35,sand_fine_upp,sand- fine upper
+yt6dh35,sand_medium_l,sand- medium lower
+yt6dh35,sand_medium_u,sand- medium upper
+yt6dh35,sand_coarse_l,sand- coarse lower
+yt6dh35,sand_coarse_u,sand- coarse upper
+yt6dh35,sand_very_coa,sand- very coarse
 hx7uv11,granule,granule
 hx7uv11,pebble,pebble
 hx7uv11,cobble,cobble
@@ -24,14 +24,14 @@ hx7uv11,boulder,boulder
 ww4nv53,clay,clay
 ww4nv53,mud,mud
 ww4nv53,silt,silt
-ww4nv53,sand_v_fine,sand - very fine
-ww4nv53,sand_fine_lwr,sand - fine lower
-ww4nv53,sand_fine_upr,sand - fine upper
-ww4nv53,sand_med_lwr,sand - medium lower
-ww4nv53,sand_med_upr,sand - medium upper
-ww4nv53,sand_coar_lwr,sand - coarse lower
-ww4nv53,sand_coar_upr,sand - coarse upper
-ww4nv53,sand_v_coar,sand - very coarse
+ww4nv53,sand_very_fin,sand- very fine
+ww4nv53,sand_fine_low,sand- fine lower
+ww4nv53,sand_fine_upp,sand- fine upper
+ww4nv53,sand_medium_l,sand- medium lower
+ww4nv53,sand_medium_u,sand- medium upper
+ww4nv53,sand_coarse_l,sand- coarse lower
+ww4nv53,sand_coarse_u,sand- coarse upper
+ww4nv53,sand_very_coa,sand- very coarse
 ww4nv53,granule,granule
 ww4nv53,pebble,pebble
 ww4nv53,cobble,cobble
