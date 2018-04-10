@@ -64,6 +64,7 @@
     vm.closeModal = closeModal;
     vm.copyThisSpot = copyThisSpot;
     vm.deleteSpot = deleteSpot;
+    vm.fieldChanged = fieldChanged;
     vm.goBack = goBack;
     vm.goToBackHistoryUrl = goToBackHistoryUrl;
     vm.goToTag = goToTag;
@@ -312,6 +313,32 @@
           });
         }
       });
+    }
+
+    // Handle changes to specific fields in form
+    function fieldChanged(fieldName) {
+      var formName = FormFactory.getFormName();
+      $log.log(fieldName, 'changed in form', formName);
+      if (formName === 'sed.interval_basics' || formName === 'sed.texture') {
+        if (fieldName === 'mud_silt_principal_grain_size') {
+          if (!vm.data.grain_size) vm.data.grain_size = [];
+          vm.data.grain_size.push(vm.data.mud_silt_principal_grain_size);
+        }
+        else if (fieldName === 'sand_principal_grain_size') {
+          if (!vm.data.grain_size) vm.data.grain_size = [];
+          vm.data.grain_size.push(vm.data.sand_principal_grain_size);
+        }
+        else if (fieldName === 'congl_breccia_principal_grain_size') {
+          if (!vm.data.grain_size) vm.data.grain_size = [];
+          vm.data.grain_size.push(vm.data.congl_breccia_principal_grain_size);
+        }
+      }
+      if (formName === 'sed.interval_basics' || formName === 'sed.composition') {
+        if (fieldName === 'principal_dunham_class') {
+          if (!vm.data.dunham_class) vm.data.dunham_class = [];
+          vm.data.dunham_class.push(vm.data.principal_dunham_class);
+        }
+      }
     }
 
     function filterAllTagsType() {

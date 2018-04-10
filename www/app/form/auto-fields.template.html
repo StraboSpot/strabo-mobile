@@ -106,6 +106,7 @@
                       ng-show='field.hint' ng-click='form.showFieldInfo(field)'></button>
             </ion-label>
             <select name='{{ field.name }}'
+                    ng-change='vm.fieldChanged(field.name)'
                     ng-model='vm.data[field.name]'
                     ng-options='choice.name as choice.label for choice in form.choices
                                 | filter: { "list_name": field.type.split(" ")[1] }'
