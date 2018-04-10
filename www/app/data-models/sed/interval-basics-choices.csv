@@ -26,14 +26,14 @@ vb9ph32,breccia,breccia,
 jm3fd49,clay,clay,
 jm3fd49,mud,mud,
 jm3fd49,silt,silt,
-gf7lv09,sand__very_fin,sand- very fine,1
-gf7lv09,sand__fine_low,sand- fine lower,2
-gf7lv09,sand__fine_upp,sand- fine upper,3
-gf7lv09,sand__medium_l,sand- medium lower,4
-gf7lv09,sand__medium_u,sand- medium upper,5
-gf7lv09,sand__coarse_l,sand- coarse lower,6
-gf7lv09,sand__coarse_u,sand- coarse upper,7
-gf7lv09,sand__very_coa,sand- very coarse,8
+gf7lv09,sand_very_fin,sand- very fine,1
+gf7lv09,sand_fine_low,sand- fine lower,2
+gf7lv09,sand_fine_upp,sand- fine upper,3
+gf7lv09,sand_medium_l,sand- medium lower,4
+gf7lv09,sand_medium_u,sand- medium upper,5
+gf7lv09,sand_coarse_l,sand- coarse lower,6
+gf7lv09,sand_coarse_u,sand- coarse upper,7
+gf7lv09,sand_very_coa,sand- very coarse,8
 jk0sn61,granule,granule,
 jk0sn61,pebble,pebble,
 jk0sn61,cobble,cobble,

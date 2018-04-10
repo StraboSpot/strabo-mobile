@@ -13,4 +13,4 @@ select_one uf03r86,principal_dunham_class,Principal Dunham Classification,true,$
 select_one dt0dc27,relative_resistance_weathering,Relative Resistance (Weathering Profile),false,${is_this_a_bed_or_package} = 'bed' or ${is_this_a_bed_or_package} = 'interbedded' or ${is_this_a_bed_or_package} = 'package__succe',,
 text,notes,Notes,false,,,
 calculate,__version__,,false,,'vNiTHUwnQZKJk9JW5qVQRg',
-calculate,_version_,,,,'vKv65fAtyU58jTsSsFb9RD',__version__
+calculate,_version_,,,,'v4kUUcfX6BKAB3Tn5hmY5j',__version__

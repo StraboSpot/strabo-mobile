@@ -61,14 +61,14 @@
           if (lithology === 'clay') color = 'rgba(128, 222, 77, 1)';                // CMYK 50,13,70,0 USGS Color 682
           else if (lithology === 'mud') color = 'rgba(77, 255, 0, 1)';              // CMYK 70,0,100,0 USGS Color 890
           else if (lithology === 'silt') color = 'rgba(153, 255, 102, 1)';          // CMYK 40,0,60,0 USGS Color 570
-          else if (lithology === 'sand__very_fin') color = 'rgba(255, 255, 179, 1)';   // CMYK 0,0,30,0 USGS Color 40
-          else if (lithology === 'sand__fine_low') color = 'rgba(255, 255, 153, 1)'; // CMYK 0,0,40,0 USGS Color 50
-          else if (lithology === 'sand__fine_upp') color = 'rgba(255, 255, 128, 1)'; // CMYK 0,0,50,0 USGS Color 60
-          else if (lithology === 'sand__medium_l') color = 'rgba(255, 255, 102, 1)';  // CMYK 0,0,60,0 USGS Color 70
-          else if (lithology === 'sand__medium_u') color = 'rgba(255, 255, 77, 1)';   // CMYK 0,0,70,0 USGS Color 80
-          else if (lithology === 'sand__coarse_l') color = 'rgba(255, 255, 0, 1)';   // CMYK 0,0,100,0 USGS Color 90
-          else if (lithology === 'sand__coarse_u') color = 'rgba(255, 235, 0, 1)';   // CMYK 0,8,100,0 USGS Color 91
-          else if (lithology === 'sand__very_coa') color = 'rgba(255, 222, 0, 1)';     // CMYK 0,13,100,0 USGS Color 92
+          else if (lithology === 'sand_very_fin') color = 'rgba(255, 255, 179, 1)';   // CMYK 0,0,30,0 USGS Color 40
+          else if (lithology === 'sand_fine_low') color = 'rgba(255, 255, 153, 1)'; // CMYK 0,0,40,0 USGS Color 50
+          else if (lithology === 'sand_fine_upp') color = 'rgba(255, 255, 128, 1)'; // CMYK 0,0,50,0 USGS Color 60
+          else if (lithology === 'sand_medium_l') color = 'rgba(255, 255, 102, 1)';  // CMYK 0,0,60,0 USGS Color 70
+          else if (lithology === 'sand_medium_u') color = 'rgba(255, 255, 77, 1)';   // CMYK 0,0,70,0 USGS Color 80
+          else if (lithology === 'sand_coarse_l') color = 'rgba(255, 255, 0, 1)';   // CMYK 0,0,100,0 USGS Color 90
+          else if (lithology === 'sand_coarse_u') color = 'rgba(255, 235, 0, 1)';   // CMYK 0,8,100,0 USGS Color 91
+          else if (lithology === 'sand_very_coa') color = 'rgba(255, 222, 0, 1)';     // CMYK 0,13,100,0 USGS Color 92
           else if (lithology === 'granule') color = 'rgba(255, 153, 0, 1)';         // CMYK 0,40,100,0 USGS Color 95
           else if (lithology === 'pebble') color = 'rgba(255, 128, 0, 1)';          // CMYK 0,50,100,0 USGS Color 96
           else if (lithology === 'cobble') color = 'rgba(255, 102, 0, 1)';          // CMYK 0,60,100,0 USGS Color 97
