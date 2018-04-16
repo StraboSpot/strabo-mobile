@@ -14,6 +14,7 @@ qp1no08,intraclast,Intraclast,11
 qp1no08,skeletal,Skeletal,12
 qp1no08,non_skeletal,Non-skeletal,13
 qp1no08,microbial,Microbial,14
+qp1no08,other,Other,
 cf7sc66,sandstone,Sandstone,
 cf7sc66,siltstone,Siltstone,1
 cf7sc66,conglomerate,Conglomerate,2
@@ -30,9 +31,11 @@ cf7sc66,framestone,Framestone,12
 cf7sc66,bindstone,Bindstone,13
 cf7sc66,bafflestone,Bafflestone,14
 cf7sc66,cementstone,Cementstone,15
+cf7sc66,other,Other,
 lp9ir83,high_energy,High energy,
 lp9ir83,low_energy,Low energy,
 lp9ir83,variable_energ,Variable energy,
+lp9ir83,other,Other,
 nr37l64,waves,Waves,
 nr37l64,current,Current,
 nr37l64,combined_flow,Combined flow,
@@ -53,9 +56,11 @@ nr37l64,ice,Ice,
 nr37l64,pyroclastic_fl,Pyroclastic flow,
 nr37l64,ground_surge,Ground surge,
 nr37l64,base_surge,Base surge,
+nr37l64,other,Other,
 fe1pj82,liquefaction,Liquefaction,
 fe1pj82,granular,Granular,
 fe1pj82,mass_flow,Mass flow,
+fe1pj82,other,Other,
 kk8ql20,ice_rafting,Ice rafting,
 kk8ql20,till,Till,
 kk8ql20,moraine,Moraine,
@@ -73,3 +78,4 @@ kk8ql20,pedogenic,Pedogenic,
 kk8ql20,biomediated,Biomediated,
 kk8ql20,microbial,Microbial,
 kk8ql20,bedform_migrat,Bedform migration,
+kk8ql20,other,Other,

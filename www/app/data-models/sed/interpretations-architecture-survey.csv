@@ -1,11 +1,15 @@
-type,name,label,required,calculation
-begin_group,group_wo9iu92,Architecture Interpretation,,
-select_one pu79d34,Description,Description,false,
-select_multiple di5fn81,Stacking_Sequence_Stratigraphy,Stacking/Sequence Stratigraphy,false,
-select_multiple nk4ga99,Fluvial_Architectural_Elements,Fluvial Architectural Elements,false,
-select_multiple oa3pi37,Lacustrine_Architecture_Interpretation,Lacustrine Architecture Interpretation,false,
-select_multiple dh0ic29,Carbonate_Platform_Geometry,Carbonate Platform Geometry,false,
-select_multiple rm7cl73,Carbonate_Margin_Geometry,Carbonate Margin Geometry,false,
-text,Other,Other,false,
-end_group,,,,
-calculate,__version__,,,'vLPuUhEVaP8GEn7kAbadcM'
+type,name,label,required,relevant,calculation,$given_name
+begin_group,group_wo9iu92,Architecture Interpretation,,,,
+select_one pu79d34,description,Description,false,,,
+select_multiple di5fn81,stacking_sequence_stratigraphy,Stacking/Sequence Stratigraphy,false,,,
+select_multiple nk4ga99,fluvial_architectural_elements,Fluvial Architectural Elements,false,,,
+text,other_fluvial_element,Other Fluvial Element,false,"selected(${fluvial_architectural_elements}, 'other')",,
+select_multiple oa3pi37,lacustrine_architecture_interpretation,Lacustrine Architecture Interpretation,false,,,
+select_multiple dh0ic29,carbonate_platform_geometry,Carbonate Platform Geometry,false,,,
+text,other_platform_geometry,Other Platform Geometry,false,"selected(${carbonate_platform_geometry}, 'other')",,
+select_multiple rm7cl73,carbonate_margin_geometry,Carbonate Margin Geometry,false,,,
+text,other_margin_geometry,Other Margin Geometry,false,"selected(${carbonate_margin_geometry}, 'other')",,
+text,notes,Notes,false,,,
+end_group,,,,,,
+calculate,__version__,,false,,'vJxDtJFELDdH6dpQqg5d9n',
+calculate,_version_,,,,'vVAuvvD9UqeTpBkfX9DQgp',__version__
