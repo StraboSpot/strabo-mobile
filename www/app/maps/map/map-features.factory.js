@@ -5,11 +5,12 @@
     .module('app')
     .factory('MapFeaturesFactory', MapFeatures);
 
-  MapFeatures.$inject = ['$log', '$q', 'DataModelsFactory', 'HelpersFactory', 'ImageFactory', 'MapLayerFactory',
-    'MapSetupFactory', 'ProjectFactory', 'SpotFactory', 'SymbologyFactory'];
+  MapFeatures.$inject = ['$document', '$log', '$q', 'DataModelsFactory', 'HelpersFactory', 'ImageFactory',
+    'MapEmogeosFactory', 'MapLayerFactory', 'MapSetupFactory', 'ProjectFactory', 'SpotFactory',
+    'SymbologyFactory', 'IS_WEB'];
 
-  function MapFeatures($log, $q, DataModelsFactory, HelpersFactory, ImageFactory, MapLayerFactory, MapSetupFactory,
-                       ProjectFactory, SpotFactory, SymbologyFactory) {
+  function MapFeatures($document, $log, $q, DataModelsFactory, HelpersFactory, ImageFactory, MapEmogeosFactory,
+                       MapLayerFactory, MapSetupFactory, ProjectFactory, SpotFactory, SymbologyFactory, IS_WEB) {
     var mappableSpots = {};
     var selectedHighlightLayer = {};
     var typeVisibility = {};
@@ -72,6 +73,12 @@
 
       // setup the popup position
       popup.show(evt.coordinate, el);
+
+      // Set event on popup close
+      var closer = $document[0].getElementsByClassName('ol-popup-closer')[0];
+      closer.addEventListener('click', function (evt) {
+        MapEmogeosFactory.resetAllEmogeoButtons();
+      });
     }
 
     // Get the first image in a Spot for display in the popup

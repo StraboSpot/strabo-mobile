@@ -74,6 +74,12 @@
         <div ng-show='sidePanel.isActiveTab("sed-lithologies")' ng-controller='SedLithologiesTabController as vmChild'>
           <strabo-sed-lithologies-tab-directive></strabo-sed-lithologies-tab-directive>
         </div>
+        <div ng-show='sidePanel.isActiveTab("sed-structures")' ng-controller='SedStructuresTabController as vmChild'>
+          <strabo-sed-structures-tab-directive></strabo-sed-structures-tab-directive>
+        </div>
+        <div ng-show='sidePanel.isActiveTab("sed-interpretations")' ng-controller='SedInterpretationsTabController as vmChild'>
+          <strabo-sed-interpretations-tab-directive></strabo-sed-interpretations-tab-directive>
+        </div>
       </div>
     </div>
   </div>

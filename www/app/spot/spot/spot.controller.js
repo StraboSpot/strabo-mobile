@@ -7,13 +7,14 @@
 
   SpotController.$inject = ['$document', '$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover',
     '$ionicPopup', '$location', '$log', '$q', '$rootScope', '$scope', '$state', '$timeout', 'FormFactory',
-    'HelpersFactory', 'ImageFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'StratSectionFactory',
-    'TagFactory', 'IS_WEB'];
+    'HelpersFactory', 'ImageFactory', 'MapEmogeosFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory',
+    'StratSectionFactory', 'TagFactory', 'IS_WEB'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
   function SpotController($document, $ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup, $location,
                           $log, $q, $rootScope, $scope, $state, $timeout, FormFactory, HelpersFactory, ImageFactory,
-                          MapViewFactory, ProjectFactory, SpotFactory, StratSectionFactory, TagFactory, IS_WEB) {
+                          MapEmogeosFactory, MapViewFactory, ProjectFactory, SpotFactory, StratSectionFactory,
+                          TagFactory, IS_WEB) {
     var vmParent = $scope.vm;
     var vm = this;
 
@@ -128,6 +129,12 @@
             $state.go(fromState);     // If saving failed don't change state
           });
         }
+      });
+
+      // Spot updated by emogeo
+      $scope.$on('updated-spot', function (event, args) {
+        $log.log('Updated Spot by emogeo');
+        vm.spot = SpotFactory.getCurrentSpot();
       });
     }
 
@@ -474,6 +481,7 @@
                   // Need to update the strat section map in case on WEB and fields were changed in the sidepanel
                   if (IS_WEB && $state.current.name === 'app.strat-section') {
                     $rootScope.$broadcast('updateStratSectionFeatureLayer');
+                    MapEmogeosFactory.setSelectedSpot(vm.spot);
                   }
                 });
               });
@@ -482,6 +490,7 @@
               // Need to update the strat section map in case on WEB and fields were changed in the sidepanel
               if (IS_WEB && $state.current.name === 'app.strat-section') {
                 $rootScope.$broadcast('updateStratSectionFeatureLayer');
+                MapEmogeosFactory.setSelectedSpot(vm.spot);
               }
             });
           }

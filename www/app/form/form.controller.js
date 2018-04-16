@@ -32,7 +32,7 @@
       vm.survey = FormFactory.getForm().survey;
       vm.choices = FormFactory.getForm().choices;
       $scope.$on('formUpdated', function (e, form) {
-        $log.log('Form updated to', form);
+        //$log.log('Form updated to', form);
         vm.survey = form.survey;
         vm.choices = form.choices;
       });

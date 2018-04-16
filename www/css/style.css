@@ -146,6 +146,33 @@ Map Controls Style
   background-position: center;
   background-repeat: no-repeat;
 }
+
+.emogeo-controls {
+  position: absolute;
+  top: 65px;
+  right: .65em;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid lightgray;
+}
+.ol-touch .emogeo-controls {
+  top: 65px;
+}
+.emogeo-controls a {
+  display: block;
+  font-size: 20px;
+  height: 30px;
+  width: 30px;
+}
+.emogeo-controls a:hover {
+  background-color: lightgray;
+}
+.emogeo-controls .emogeo-icon {
+  background-position: center;
+  background-repeat: no-repeat;
+  border-bottom: 1px solid lightgray;
+}
+
 .saveEdits {
   position: absolute;
   font-size: 0.9em;
