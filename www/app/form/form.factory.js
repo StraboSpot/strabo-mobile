@@ -10,11 +10,13 @@
   function FormFactory($document, $ionicPopup, $log, $rootScope, DataModelsFactory, StratSectionFactory) {
 
     var form = {};   // form = {'choices': {}, 'survey': {}};
+    var formName = [];
 
     return {
       'clearForm': clearForm,
       'clearFormElements': clearFormElements,
       'getForm': getForm,
+      'getFormName': getFormName,
       'getMax': getMax,
       'getMin': getMin,
       'isRelevant': isRelevant,
@@ -87,6 +89,10 @@
       return form;
     }
 
+    function getFormName() {
+      return formName
+    }
+
     // Get the max value allowed for a number field
     function getMax(constraint) {
       try {
@@ -135,14 +141,16 @@
       }
     }
 
-    function setForm(formName, type) {
+    function setForm(inFormName, type) {
+      $log.log('Setting form to', inFormName, type);
+      formName = type ? inFormName + '.' + type : inFormName;
       if (type) {
-        form.survey = DataModelsFactory.getDataModel(formName)[type].survey;
-        form.choices = DataModelsFactory.getDataModel(formName)[type].choices;
+        form.survey = DataModelsFactory.getDataModel(inFormName)[type].survey;
+        form.choices = DataModelsFactory.getDataModel(inFormName)[type].choices;
       }
       else {
-        form.survey = DataModelsFactory.getDataModel(formName).survey;
-        form.choices = DataModelsFactory.getDataModel(formName).choices;
+        form.survey = DataModelsFactory.getDataModel(inFormName).survey;
+        form.choices = DataModelsFactory.getDataModel(inFormName).choices;
       }
       $rootScope.$broadcast('formUpdated', form);
     }

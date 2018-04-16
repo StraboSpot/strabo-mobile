@@ -397,8 +397,8 @@
       }
 
       ol.control.Control.call(this, {
-        'element': element,
-        'target': options.target
+        'element': element//,
+       // 'target': options.target  // ToDo Not Needed
       });
 
       // Recognize a long press - used for deleting vertexes

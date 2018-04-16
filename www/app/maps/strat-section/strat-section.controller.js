@@ -7,14 +7,14 @@
 
   StratSectionController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup',
     '$ionicSideMenuDelegate', '$location', '$log', '$rootScope', '$scope', '$state', '$timeout', 'FormFactory',
-    'HelpersFactory', 'ImageFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory', 'MapSetupFactory',
-    'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'StratSectionFactory', 'IS_WEB'];
+    'HelpersFactory', 'ImageFactory', 'MapDrawFactory', 'MapEmogeosFactory', 'MapFeaturesFactory', 'MapLayerFactory',
+    'MapSetupFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'StratSectionFactory', 'IS_WEB'];
 
   function StratSectionController($ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup,
                                   $ionicSideMenuDelegate, $location, $log, $rootScope, $scope, $state, $timeout,
-                                  FormFactory, HelpersFactory, ImageFactory, MapDrawFactory, MapFeaturesFactory,
-                                  MapLayerFactory, MapSetupFactory, MapViewFactory, ProjectFactory, SpotFactory,
-                                  StratSectionFactory, IS_WEB) {
+                                  FormFactory, HelpersFactory, ImageFactory, MapDrawFactory, MapEmogeosFactory,
+                                  MapFeaturesFactory, MapLayerFactory, MapSetupFactory, MapViewFactory, ProjectFactory,
+                                  SpotFactory, StratSectionFactory, IS_WEB) {
     var vm = this;
 
     var currentSpot = {};
@@ -76,6 +76,7 @@
 
       currentSpot = SpotFactory.getCurrentSpot();
       if (currentSpot) vm.clickedFeatureId = currentSpot.properties.id;
+      MapEmogeosFactory.clearSelectedSpot();
 
       createModals();
       createPopover();
@@ -132,6 +133,7 @@
       map.on('click', function (evt) {
         //$log.log('map clicked at pixel:', evt.pixel, 'mapcoords:', map.getCoordinateFromPixel(evt.pixel));
         MapFeaturesFactory.removeSelectedSymbol(map);
+        MapEmogeosFactory.clearSelectedSpot();
 
         // are we in draw mode?  If so we dont want to display any popovers during draw mode
         if (!MapDrawFactory.isDrawMode()) {
@@ -139,13 +141,17 @@
           var layer = MapFeaturesFactory.getClickedLayer(map, evt);
           if (feature && feature.get('id') && layer && layer.get('name') !== 'geolocationLayer') {
             vm.clickedFeatureId = feature.get('id');
+            MapEmogeosFactory.setSelectedSpot(SpotFactory.getSpotById(vm.clickedFeatureId));
             if (IS_WEB) {
               MapFeaturesFactory.setSelectedSymbol(map, feature.getGeometry());
               $rootScope.$broadcast('clicked-mapped-spot', {'spotId': vm.clickedFeatureId});
             }
             else MapFeaturesFactory.showMapPopup(feature, evt);
           }
-          else vm.clickedFeatureId = undefined;
+          else {
+            vm.clickedFeatureId = undefined;
+            if (IS_WEB) MapEmogeosFactory.resetAllEmogeoButtons();
+          }
           $scope.$apply();
         }
       });

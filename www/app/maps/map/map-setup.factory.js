@@ -5,11 +5,11 @@
     .module('app')
     .factory('MapSetupFactory', MapSetupFactory);
 
-  MapSetupFactory.$inject = ['$log', '$q', 'ImageFactory', 'MapDrawFactory', 'MapFactory', 'MapLayerFactory',
-    'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
+  MapSetupFactory.$inject = ['$log', '$q', 'ImageFactory', 'MapDrawFactory', 'MapEmogeosFactory', 'MapFactory',
+    'MapLayerFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
 
-  function MapSetupFactory($log, $q, ImageFactory, MapDrawFactory, MapFactory, MapLayerFactory, MapViewFactory,
-                           ProjectFactory, SpotFactory, IS_WEB) {
+  function MapSetupFactory($log, $q, ImageFactory, MapDrawFactory, MapEmogeosFactory, MapFactory, MapLayerFactory,
+                           MapViewFactory, ProjectFactory, SpotFactory, IS_WEB) {
     var map;
     var imageBasemap;
     var initialMapView;
@@ -136,7 +136,7 @@
           var y = imageOverlay.image_origin_y || 0;
           var width = imageOverlay.image_width || image.width;
           var height = imageOverlay.image_height || image.height;
-          var extent = [x, y, width+x, height+y];
+          var extent = [x, y, width + x, height + y];
           var imageOverlayLayer = new ol.layer.Image({
             'title': image.title || 'Untitled',
             'id': imageOverlay.id,
@@ -208,6 +208,10 @@
 
       ol.inherits(MapDrawFactory.DrawControls, ol.control.Control);
       map.addControl(new MapDrawFactory.DrawControls(drawControlProps));
+      if (stratSectionId) {
+        ol.inherits(MapEmogeosFactory.EmogeoControls, ol.control.Control);
+        map.addControl(new MapEmogeosFactory.EmogeoControls('strat-section'));
+      }
       map.addControl(switcher);
     }
 
