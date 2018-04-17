@@ -111,25 +111,25 @@ Map Controls Style
 .draw-controls a:hover {
   background-color: lightgray;
 }
-.draw-controls .point {
+.draw-controls .Point {
   background-image: url('../img/point.png');
   background-position: center;
   background-repeat: no-repeat;
   border-bottom: 1px solid lightgray;
 }
-.draw-controls .lineString {
+.draw-controls .LineString {
   background-image: url('../img/line.png');
   background-position: center;
   background-repeat: no-repeat;
   border-bottom: 1px solid lightgray;
 }
-.draw-controls .polygon {
+.draw-controls .Polygon {
   background-image: url('../img/polygon.png');
   background-position: center;
   background-repeat: no-repeat;
   border-bottom: 1px solid lightgray;
 }
-.draw-controls .edit {
+.draw-controls .Edit {
   background-image: url('../img/edit.png');
   background-position: center;
   background-repeat: no-repeat;
