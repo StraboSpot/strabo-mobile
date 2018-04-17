@@ -5,9 +5,10 @@
     .module('app')
     .factory('HelpersFactory', HelpersFactory);
 
-  HelpersFactory.$inject = ['$cordovaClipboard', '$cordovaDevice', '$cordovaFile', '$ionicPopup', '$log', '$q', '$window'];
+  HelpersFactory.$inject = ['$cordovaClipboard', '$cordovaDevice', '$cordovaFile', '$ionicPopup', '$log', '$q',
+    '$window', 'IS_WEB'];
 
-  function HelpersFactory($cordovaClipboard, $cordovaDevice, $cordovaFile, $ionicPopup, $log, $q, $window) {
+  function HelpersFactory($cordovaClipboard, $cordovaDevice, $cordovaFile, $ionicPopup, $log, $q, $window, IS_WEB) {
     var backView = 'app/spots';
     var ids = [];
 
@@ -240,8 +241,7 @@
             }
           }
         });
-
-      })
+      });
 
       if (lines.length > 0 || planes.length > 0) {
         var recordnum = 1;
@@ -268,12 +268,19 @@
       //$log.log("out: ", out);
 
       if (hasdata) {
-        $cordovaClipboard.copy(out).then(function () {
-          $ionicPopup.alert({
-            'title': 'Success!',
-            'template': 'Data has been copied to clipboard.'
+        if (IS_WEB) {
+          out = out.replace(/\n/g, '<br>');
+          var win = $window.open();
+          win.document.body.innerHTML = out;
+        }
+        else {
+          $cordovaClipboard.copy(out).then(function () {
+            $ionicPopup.alert({
+              'title': 'Success!',
+              'template': 'Data has been copied to clipboard.'
+            });
           });
-        });
+        }
       }
       else {
         $ionicPopup.alert({
