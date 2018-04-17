@@ -10,7 +10,7 @@
 
   function MapDrawFactory($document, $ionicPopup, $location, $log, $q, $rootScope, HelpersFactory, SpotFactory,
                           IS_WEB) {
-    var belongsTo;
+    var belongsTo = {};
     var draw;               // draw is a ol3 drawing interaction
     var drawButtonActive;   // drawButtonActive used to keep state of which selected drawing tool is active
     var drawLayer;
@@ -211,7 +211,7 @@
       var geojsonObj;
       if (map.getView().getProjection().getUnits() === 'pixels') {
         geojsonObj = geojson.writeFeatureObject(e.feature, {'decimals': 4});
-        if (belongsTo) geojsonObj.properties = belongsTo;     // Image Basemap or Strat Section
+        if (!_.isEmpty(belongsTo)) geojsonObj.properties = belongsTo;     // Image Basemap or Strat Section
 
         if (_.find(_.flatten(geojsonObj.geometry.coordinates),
             function (num) {
@@ -239,7 +239,7 @@
           'map': map,
           'drawLayer': drawLayer
         };
-        if (belongsTo) drawControlProps[belongsTo] = belongsTo;
+        if (!_.isEmpty(belongsTo)) drawControlProps[belongsTo] = belongsTo;
         map.addControl(new DrawControls(drawControlProps));
 
         // add the layer switcher controls back
@@ -256,7 +256,7 @@
         var mappedSpots = _.filter(spots, function (spot) {
           return spot.geometry;
         });
-        if (belongsTo && belongsTo.image_basemap) {
+        if (!_.isEmpty(belongsTo) && belongsTo.image_basemap) {
           var spotsOnImageBasemap = _.filter(mappedSpots, function (mappedSpot) {
             return mappedSpot.properties.image_basemap;
           });
@@ -264,7 +264,7 @@
             return spotOnImageBasemap.properties.image_basemap === belongsTo[image_basemap];
           });
         }
-        if (belongsTo && belongsTo.strat_section_id) {
+        if (!_.isEmpty(belongsTo) && belongsTo.strat_section_id) {
           var spotsOnStratSection = _.filter(mappedSpots, function (mappedSpot) {
             return mappedSpot.properties.strat_section_id;
           });
@@ -319,6 +319,7 @@
       map = opt_options.map;
       drawLayer = opt_options.drawLayer;
       if (opt_options.belongsTo) belongsTo = opt_options.belongsTo;
+      else belongsTo = {};
       draw = null;
       drawButtonActive = null;
       modify = null;
