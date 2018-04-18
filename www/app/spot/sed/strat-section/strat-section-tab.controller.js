@@ -74,10 +74,14 @@
 
     function loadTab(state) {
       vmParent.loadTab(state);     // Need to load current state into parent
+      vmParent.child = vm;
+      FormFactory.setForm('sed', 'strat_section');
       if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.strat_section) {
         $log.log('Strat Section:', vmParent.spot.properties.sed.strat_section);
+        vmParent.data = vmParent.spot.properties.sed.strat_section;
         vm.showStratSection = true;
       }
+      else vmParent.data = {};
     }
 
     /**

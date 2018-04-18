@@ -148,6 +148,12 @@
           'choices': {},
           'choices_file': 'app/data-models/sed/physical-structures-choices.csv'
         },
+        'strat_section': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/strat-section-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/strat-section-choices.csv'
+        },
         'surfaces': {
           'survey': {},
           'survey_file': 'app/data-models/sed/interpretations-surfaces-survey.csv',

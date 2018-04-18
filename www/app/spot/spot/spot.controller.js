@@ -323,7 +323,7 @@
     }
 
     // Handle changes to specific fields in form
-    function fieldChanged(fieldName) {
+    function fieldChanged(fieldName, newValue, oldValue) {
       var formName = FormFactory.getFormName();
       $log.log(fieldName, 'changed in form', formName);
       if (formName === 'sed.interval_basics' || formName === 'sed.texture') {
@@ -346,6 +346,7 @@
           vm.data.dunham_class.push(vm.data.principal_dunham_class);
         }
       }
+      if (formName === 'sed.strat_section') vm.child.changeUnits(newValue, oldValue);
     }
 
     function filterAllTagsType() {
