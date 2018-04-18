@@ -40,9 +40,35 @@
       });
     }
 
+    function getStructuresFromLithologies() {
+      if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.lithologies) {
+        if (vmParent.spot.properties.sed.lithologies.mud_silt_prin_struct) {
+          if (!vmParent.spot.properties.sed.structures) vmParent.spot.properties.sed.structures = {};
+          vmParent.spot.properties.sed.structures.mudstone_structures = true;
+          vmParent.spot.properties.sed.structures.mud_silt_prin_struct = vmParent.spot.properties.sed.lithologies.mud_silt_prin_struct;
+        }
+        if (vmParent.spot.properties.sed.lithologies.sandstone_prin_struct) {
+          if (!vmParent.spot.properties.sed.structures) vmParent.spot.properties.sed.structures = {};
+          vmParent.spot.properties.sed.structures.sandstone_structures = true;
+          vmParent.spot.properties.sed.structures.sandstone_prin_struct = vmParent.spot.properties.sed.lithologies.sandstone_prin_struct;
+        }
+        if (vmParent.spot.properties.sed.lithologies.congl_breccia_prin_struct) {
+          if (!vmParent.spot.properties.sed.structures) vmParent.spot.properties.sed.structures = {};
+          vmParent.spot.properties.sed.structures.conglomerate_structures = true;
+          vmParent.spot.properties.sed.structures.congl_breccia_prin_struct = vmParent.spot.properties.sed.lithologies.congl_breccia_prin_struct;
+        }
+        if (vmParent.spot.properties.sed.lithologies.limestone_dolomite_prin_struct) {
+          if (!vmParent.spot.properties.sed.structures) vmParent.spot.properties.sed.structures = {};
+          vmParent.spot.properties.sed.structures.limestone_structures = true;
+          vmParent.spot.properties.sed.structures.limestone_dolomite_prin_struct = vmParent.spot.properties.sed.lithologies.limestone_dolomite_prin_struct;
+        }
+      }
+    }
+
     function loadTab(state) {
       vmParent.loadTab(state);     // Need to load current state into parent
       FormFactory.setForm('sed', 'physical_structures');
+      getStructuresFromLithologies();
       if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.structures) {
         $log.log('Sed Structures:', vmParent.spot.properties.sed.structures);
         vmParent.data = vmParent.spot.properties.sed.structures;
