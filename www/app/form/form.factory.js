@@ -42,7 +42,7 @@
         }
       }
       if (lithologies.is_this_a_bed_or_package === 'bed' || lithologies.is_this_a_bed_or_package === 'interbedded' ||
-        lithologies.is_this_a_bed_or_package === 'package__succe') {
+        lithologies.is_this_a_bed_or_package === 'package_succe') {
         if (!lithologies.primary_lithology) {
           errorMessages.push('- The <b>Primary Lithology</b> must be specified if the there is any type of bedding.');
         }

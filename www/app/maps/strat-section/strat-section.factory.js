@@ -279,7 +279,7 @@
           }
           else if (spot.properties.sed.lithologies.is_this_a_bed_or_package === 'bed' ||
             spot.properties.sed.lithologies.is_this_a_bed_or_package === 'interbedded' ||
-            spot.properties.sed.lithologies.is_this_a_bed_or_package === 'package__succe') {
+            spot.properties.sed.lithologies.is_this_a_bed_or_package === 'package_succe') {
             // Lithology = siliciclastic
             if (spot.properties.sed.lithologies.primary_lithology === 'siliciclastic') {
               i = _.findIndex(grainSizeOptions.clastic, function (grainSizeOption) {
