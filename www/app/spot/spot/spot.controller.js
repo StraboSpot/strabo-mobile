@@ -346,7 +346,9 @@
           vm.data.dunham_class.push(vm.data.principal_dunham_class);
         }
       }
-      if (formName === 'sed.strat_section') vm.child.changeUnits(newValue, oldValue);
+      if (formName === 'sed.strat_section' && fieldName === 'column_y_axis_units') {
+        vm.child.changeUnits(newValue, oldValue);
+      }
     }
 
     function filterAllTagsType() {
