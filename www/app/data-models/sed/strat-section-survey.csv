@@ -3,6 +3,7 @@ start,start,,,,,,
 end,end,,,,,,
 text,section_well_name,Section/Well Name,false,,,,
 select_one gz3ra74,column_profile,Column Profile,false,,,,
+acknowledge,misc_labels,Show Labels for Misc Lithologies,false,,,,
 select_one zc89y27,column_y_axis_units,Column Y-Axis Units,false,,,,
 select_one pu1qb77,section_type,Section Type,false,,,,
 text,what_core_repository,What Core Repository?,false,${section_type} = 'core',,,
@@ -19,4 +20,4 @@ select_one gy5ky31,obs_interval_bed_obs_scale,Observation Interval (average bed/
 select_one ao6ek37,how_is_section_georeferenced,How is the Section Georeferenced?,false,,,,
 text,strat_section_notes,Notes,false,,multiline,,
 calculate,__version__,,false,,,'vABoyibvTTxS8wqHZcbXuC',
-calculate,_version_,,,,,'vEadEC4JDf8Lw2E7u2r2Hi',__version__
+calculate,_version_,,,,,'vNZ5yYpv33wjrFUhpTVwae',__version__
