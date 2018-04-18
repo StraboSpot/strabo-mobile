@@ -5,7 +5,7 @@ hq17k89,in,in,
 hq17k89,ft,ft,
 th1pp14,bed,bed,
 th1pp14,interbedded,interbedded,
-th1pp14,package__succe,package (succession of beds),
+th1pp14,package_succe,package (succession of beds),
 th1pp14,unexposed_cove,unexposed/covered,
 eb2oc45,siliciclastic,siliciclastic,
 eb2oc45,limestone,limestone,1
@@ -50,8 +50,8 @@ uf03r86,bindstone,bindstone,8
 uf03r86,bafflestone,bafflestone,9
 uf03r86,cementstone,cementstone,10
 uf03r86,recrystallized,recrystallized,11
-dt0dc27,1_least_resist,1 - least resistant,
+dt0dc27,1_least_resis,1 - least resistant,
 dt0dc27,2,2,
-dt0dc27,3_mod_resistan,3 - moderately resistant,
+dt0dc27,3_mod_resist,3 - moderately resistant,
 dt0dc27,4,4,
-dt0dc27,5_most_resista,5 - most resistant,
+dt0dc27,5_most_resist,5 - most resistant,
