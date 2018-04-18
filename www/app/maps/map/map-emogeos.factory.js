@@ -37,31 +37,31 @@
       emogeos = {
         'sed': {
           'lithologies': {
-            'mud_silt_stratification': [
+            'mud_silt_prin_struct': [
               {'value': 'massive_struct', 'icon': 'url("../img/emogeos/sed/Massive.png")'},
-              {'value': 'horizontal_lam', 'icon': 'url("../img/emogeos/sed/Horizontal.png")'},
+              {'value': 'horizontal', 'icon': 'url("../img/emogeos/sed/Horizontal.png")'},
               {'value': 'ripple_laminat', 'icon': 'url("../img/emogeos/sed/RippleLamination.png")'},
               {'value': 'mud_drape', 'icon': 'url("../img/emogeos/sed/MudDrape2.png")'}
             ],
-            'sand_stratification': [
-              {'value': 'trough_cross_s', 'icon': 'url("../img/emogeos/sed/TCS.png")'},
+            'sandstone_prin_struct': [
+              {'value': 'trough', 'icon': 'url("../img/emogeos/sed/TCS.png")'},
               {'value': 'hummocky', 'icon': 'url("../img/emogeos/sed/HCS.png")'},
-              {'value': 'planar_cross_s', 'icon': 'url("../img/emogeos/sed/PlanarTabular.png")'},
-              {'value': 'massive_struct', 'icon': 'url("../img/emogeos/sed/LowAngle.png")'},
-              {'value': 'massive_struct_1', 'icon': 'url("../img/emogeos/sed/Massive.png")'},
-              {'value': 'horizontal_lam', 'icon': 'url("../img/emogeos/sed/Horizontal.png")'}
+              {'value': 'planar_tabular', 'icon': 'url("../img/emogeos/sed/PlanarTabular.png")'},
+              {'value': 'low_angle', 'icon': 'url("../img/emogeos/sed/LowAngle.png")'},
+              {'value': 'massive_struct', 'icon': 'url("../img/emogeos/sed/Massive.png")'},
+              {'value': 'horizontal', 'icon': 'url("../img/emogeos/sed/Horizontal.png")'}
             ],
-            'congl_breccia_stratification': [
-              {'value': 'massive_struct', 'icon': 'url("../img/emogeos/sed/TCS.png")'},
-              {'value': 'normal_grading', 'icon': 'url("../img/emogeos/sed/PlanarTabular.png")'},
-              {'value': 'planar_cross_s', 'icon': 'url("../img/emogeos/sed/Massive.png")'},
-              {'value': 'horizontal_lam', 'icon': 'url("../img/emogeos/sed/Horizontal.png")'}
+            'congl_breccia_prin_struct': [
+              {'value': 'trough', 'icon': 'url("../img/emogeos/sed/TCS.png")'},
+              {'value': 'planar_tabular', 'icon': 'url("../img/emogeos/sed/PlanarTabular.png")'},
+              {'value': 'massive_struct', 'icon': 'url("../img/emogeos/sed/Massive.png")'},
+              {'value': 'horizontal', 'icon': 'url("../img/emogeos/sed/Horizontal.png")'}
             ],
-            'limestone_dolomite_stratificat': [
+            'limestone_dolomite_prin_struct': [
               {'value': 'trough', 'icon': 'url("../img/emogeos/sed/TCS.png")'},
               {'value': 'hummocky', 'icon': 'url("../img/emogeos/sed/HCS.png")'},
               {'value': 'massive_struct', 'icon': 'url("../img/emogeos/sed/Massive.png")'},
-              {'value': 'horizontal_lam', 'icon': 'url("../img/emogeos/sed/Horizontal.png")'}
+              {'value': 'horizontal', 'icon': 'url("../img/emogeos/sed/Horizontal.png")'}
             ]
           }
         }
@@ -257,10 +257,10 @@
     // For select emogeo buttons only show the emogeo buttons that meet certain conditions
     function showRelevantEmogeoButtons() {
       // First hide ALL emogeo buttons that have conditions to being shown
-      hideEmogeoButton('mud_silt_stratification');
-      hideEmogeoButton('sand_stratification');
-      hideEmogeoButton('congl_breccia_stratification');
-      hideEmogeoButton('limestone_dolomite_stratificat');
+      hideEmogeoButton('mud_silt_prin_struct');
+      hideEmogeoButton('sandstone_prin_struct');
+      hideEmogeoButton('congl_breccia_prin_struct');
+      hideEmogeoButton('limestone_dolomite_prin_struct');
 
       // Then determine which emogeo buttons with conditions should be shown
       if (spot.properties.sed && spot.properties.sed.lithologies) {
@@ -269,18 +269,18 @@
             spot.properties.sed.lithologies.principal_siliciclastic_type === 'mudstone' ||
             spot.properties.sed.lithologies.principal_siliciclastic_type === 'shale' ||
             spot.properties.sed.lithologies.principal_siliciclastic_type === 'siltstone') {
-            showEmogeoButton('mud_silt_stratification');
+            showEmogeoButton('mud_silt_prin_struct');
           }
           if (spot.properties.sed.lithologies.principal_siliciclastic_type === 'sandstone') {
-            showEmogeoButton('sand_stratification');
+            showEmogeoButton('sandstone_prin_struct');
           }
           if (spot.properties.sed.lithologies.principal_siliciclastic_type === 'conglomerate' ||
             spot.properties.sed.lithologies.principal_siliciclastic_type === 'breccia') {
-            showEmogeoButton('congl_breccia_stratification');
+            showEmogeoButton('congl_breccia_prin_struct');
           }
         }
         if (spot.properties.sed.lithologies.principal_dunham_class) {
-          showEmogeoButton('limestone_dolomite_stratificat');
+          showEmogeoButton('limestone_dolomite_prin_struct');
         }
       }
     }

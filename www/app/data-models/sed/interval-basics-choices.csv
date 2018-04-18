@@ -1,144 +1,144 @@
-list_name,name,label,order
-zw9ye70,m,m,
-zw9ye70,ft,ft,1
-zw9ye70,cm,cm,2
-zw9ye70,in,in,3
-th1pp14,bed,bed,
-th1pp14,interbedded,interbedded,
-th1pp14,package__succe,package (succession of beds),
-th1pp14,unexposed_cove,unexposed/covered,
-we36h70,siliciclastic,siliciclastic,
-we36h70,limestone,limestone,1
-we36h70,dolomite,dolomite,2
-we36h70,organic_coal,organic/coal,3
-we36h70,evaporite,evaporite,4
-we36h70,chert,chert,5
-we36h70,ironstone,ironstone,6
-we36h70,phosphatic,phosphatic,7
-we36h70,volcaniclastic,volcaniclastic,8
-vb9ph32,claystone,claystone,
-vb9ph32,mudstone,mudstone,
-vb9ph32,shale,shale,
-vb9ph32,siltstone,siltstone,
-vb9ph32,sandstone,sandstone,
-vb9ph32,conglomerate,conglomerate,
-vb9ph32,breccia,breccia,
-jm3fd49,clay,clay,
-jm3fd49,mud,mud,
-jm3fd49,silt,silt,
-gf7lv09,sand_very_fin,sand- very fine,1
-gf7lv09,sand_fine_low,sand- fine lower,2
-gf7lv09,sand_fine_upp,sand- fine upper,3
-gf7lv09,sand_medium_l,sand- medium lower,4
-gf7lv09,sand_medium_u,sand- medium upper,5
-gf7lv09,sand_coarse_l,sand- coarse lower,6
-gf7lv09,sand_coarse_u,sand- coarse upper,7
-gf7lv09,sand_very_coa,sand- very coarse,8
-jk0sn61,granule,granule,
-jk0sn61,pebble,pebble,
-jk0sn61,cobble,cobble,
-jk0sn61,boulder,boulder,
-ap2mh08,mudstone,mudstone,
-ap2mh08,wackestone,wackestone,
-ap2mh08,packstone,packstone,
-ap2mh08,grainstone,grainstone,
-ap2mh08,floatstone,floatstone,
-ap2mh08,rudstone,rudstone,
-ap2mh08,boundstone,boundstone,
-ap2mh08,framestone,framestone,
-ap2mh08,bindstone,bindstone,
-ap2mh08,bafflestone,bafflestone,
-ap2mh08,cementstone,cementstone,
-ap2mh08,recrystallized,recrystallized,
-iu3km02,massive_struct,massive/structureless,
-iu3km02,horizontal_lam,horizontal,
-iu3km02,ripple_laminat,ripple lamination,
-iu3km02,symmetric,symmetric,
-iu3km02,asymmetric,asymmetric,
-iu3km02,climbing,climbing,
-iu3km02,interference,interference,
-iu3km02,flaser,flaser,
-iu3km02,wavy,wavy,
-iu3km02,lenticular,lenticular,
-iu3km02,rhythmic,rhythmic,
-iu3km02,mud_drape,mud drape,
-ga9oo42,trough_cross_s,trough,
-ga9oo42,hummocky,hummocky,1
-ga9oo42,planar_cross_s,planar tabular,2
-ga9oo42,festoon,festoon,3
-ga9oo42,low_angle_cros,wedge,4
-ga9oo42,massive_struct,low angle,5
-ga9oo42,horizontal_str,symmetric,6
-ga9oo42,ripple_laminat,asymmetric,7
-ga9oo42,climbing,climbing,
-ga9oo42,interference,interference,
-ga9oo42,translatent,translatent,
-ga9oo42,flaser,flaser,
-ga9oo42,wavy,wavy,
-ga9oo42,lenticular,lenticular,
-ga9oo42,starved_ripple,starved ripples,
-ga9oo42,adhesion,adhesion,
-ga9oo42,herringbone,herringbone,
-ga9oo42,sigmoidal,sigmoidal,
-ga9oo42,tidal_bundle,tidal bundle,
-ga9oo42,rhythmic,rhythmic,
-ga9oo42,bi_directional,bi-directional asymmetric,
-ga9oo42,pinstripe,pinstripe,
-ga9oo42,massive_struct_1,massive/structureless,
-ga9oo42,horizontal_lam,horizontal,
-ga9oo42,ripple_laminat_1,ripple lamination,
-oi98y12,massive_struct,trough,
-oi98y12,normal_grading,planar tabular,1
-oi98y12,reverse_gradin,festoon,2
-oi98y12,horizontal_bed,wedge,3
-oi98y12,trough_cross_s,low angle,4
-oi98y12,planar_cross_s,massive/structureless,5
-oi98y12,horizontal_lam,horizontal,6
-oi98y12,ripple_laminat,ripple lamination,7
-og95s36,trough,trough,
-og95s36,hummocky,hummocky,
-og95s36,swaley,swaley,
-og95s36,planar_tabular,planar tabular,
-og95s36,festoon,festoon,
-og95s36,symmetric,symmetric,
-og95s36,asymmetric,asymmetric,
-og95s36,wavy,wavy,
-og95s36,massive_struct,massive/structureless,
-og95s36,horizontal_lam,horizontal,
-og95s36,ripple_laminat,ripple lamination,
-so29n97,glass,glass,
-so29n97,crystals,crystals,
-so29n97,lithic_fragments,lithic fragments,
-so29n97,volcanic_mudstone,volcanic mudstone,
-so29n97,volcanic_sandstone,volcanic sandstone,
-so29n97,lapillistone,lapillistone,
-so29n97,agglomerate,agglomerate,
-so29n97,volcanic_breccia,volcanic breccia,
-so29n97,bentonite,bentonite,
-so29n97,tuff,tuff,
-so29n97,welded_tuff,welded tuff,
-so29n97,ignimbrite,ignimbrite,
-so29n97,other,other,
-gg6bk97,gyp_anhyd_prim,gypsum - anhydrite primary,
-gg6bk97,gyp_anhyd_dia,gypsum - anhydrite diagenetic,
-gg6bk97,halite_primary,halite - primary,
-gg6bk97,halite_diagene,halite - diagenetic,
-om8xr30,amber,amber,
-om8xr30,peat,peat,
-om8xr30,lignite,lignite,
-om8xr30,subbituminous,subbituminous,
-om8xr30,bituminous,bituminous,
-om8xr30,coal_ball,coal ball,
-om8xr30,tar,tar,
-mo7ce83,nodular,nodular,
-mo7ce83,bedded,bedded,
-mo7ce83,massive,massive,
-kl1cz02,lithified,lithified,
-kl1cz02,poorly_lithifi,poorly lithified,
-kl1cz02,unlithified_un,unlithified/unconsolidated,
-kl1cz02,metamorphosed,metamorphosed,
-jx0op03,1__least_resis,1- least resistant,
-jx0op03,2,2,
-jx0op03,3__moderately_,3- moderately resistant,
-jx0op03,4,4,
-jx0op03,5__most_resist,5- most resistant,
+list_name,name,label,,order
+zw9ye70,m,m,1,
+zw9ye70,ft,ft,2,1
+zw9ye70,cm,cm,2,2
+zw9ye70,in,in,2,3
+th1pp14,bed,bed,3,
+th1pp14,interbedded,interbedded,11,
+th1pp14,package_succe,package (succession of beds),14,
+th1pp14,unexposed_cove,unexposed/covered,14,
+we36h70,siliciclastic,siliciclastic,13,
+we36h70,limestone,limestone,9,1
+we36h70,dolomite,dolomite,8,2
+we36h70,organic_coal,organic/coal,12,3
+we36h70,evaporite,evaporite,9,4
+we36h70,chert,chert,5,5
+we36h70,ironstone,ironstone,9,6
+we36h70,phosphatic,phosphatic,10,7
+we36h70,volcaniclastic,volcaniclastic,14,8
+vb9ph32,claystone,claystone,9,
+vb9ph32,mudstone,mudstone,8,
+vb9ph32,shale,shale,5,
+vb9ph32,siltstone,siltstone,9,
+vb9ph32,sandstone,sandstone,9,
+vb9ph32,conglomerate,conglomerate,12,
+vb9ph32,breccia,breccia,7,
+jm3fd49,clay,clay,4,
+jm3fd49,mud,mud,3,
+jm3fd49,silt,silt,4,
+gf7lv09,sand_very_fin,sand- very fine,13,1
+gf7lv09,sand_fine_low,sand- fine lower,13,2
+gf7lv09,sand_fine_upp,sand- fine upper,13,3
+gf7lv09,sand_medium_l,sand- medium lower,13,4
+gf7lv09,sand_medium_u,sand- medium upper,13,5
+gf7lv09,sand_coarse_l,sand- coarse lower,13,6
+gf7lv09,sand_coarse_u,sand- coarse upper,13,7
+gf7lv09,sand_very_coa,sand- very coarse,13,8
+jk0sn61,granule,granule,7,
+jk0sn61,pebble,pebble,6,
+jk0sn61,cobble,cobble,6,
+jk0sn61,boulder,boulder,7,
+ap2mh08,mudstone,mudstone,8,
+ap2mh08,wackestone,wackestone,10,
+ap2mh08,packstone,packstone,9,
+ap2mh08,grainstone,grainstone,10,
+ap2mh08,floatstone,floatstone,10,
+ap2mh08,rudstone,rudstone,8,
+ap2mh08,boundstone,boundstone,10,
+ap2mh08,framestone,framestone,10,
+ap2mh08,bindstone,bindstone,9,
+ap2mh08,bafflestone,bafflestone,11,
+ap2mh08,cementstone,cementstone,11,
+ap2mh08,recrystallized,recrystallized,14,
+iu3km02,massive_struct,massive/structureless,14,
+iu3km02,horizontal,horizontal,14,
+iu3km02,ripple_laminat,ripple lamination,14,
+iu3km02,symmetric,symmetric,9,
+iu3km02,asymmetric,asymmetric,10,
+iu3km02,climbing,climbing,8,
+iu3km02,interference,interference,12,
+iu3km02,flaser,flaser,6,
+iu3km02,wavy,wavy,4,
+iu3km02,lenticular,lenticular,10,
+iu3km02,rhythmic,rhythmic,8,
+iu3km02,mud_drape,mud drape,9,
+ga9oo42,trough,trough,14,
+ga9oo42,hummocky,hummocky,8,1
+ga9oo42,planar_tabular,planar tabular,14,2
+ga9oo42,festoon,festoon,7,3
+ga9oo42,wedge,wedge,14,4
+ga9oo42,low_angle,low angle,14,5
+ga9oo42,symmetric,symmetric,14,6
+ga9oo42,asymmetric,asymmetric,14,7
+ga9oo42,climbing,climbing,8,
+ga9oo42,interference,interference,12,
+ga9oo42,translatent,translatent,11,
+ga9oo42,flaser,flaser,6,
+ga9oo42,wavy,wavy,4,
+ga9oo42,lenticular,lenticular,10,
+ga9oo42,starved_ripple,starved ripples,14,
+ga9oo42,adhesion,adhesion,8,
+ga9oo42,herringbone,herringbone,11,
+ga9oo42,sigmoidal,sigmoidal,9,
+ga9oo42,tidal_bundle,tidal bundle,12,
+ga9oo42,rhythmic,rhythmic,8,
+ga9oo42,bi_directional,bi-directional asymmetric,14,
+ga9oo42,pinstripe,pinstripe,9,
+ga9oo42,massive_struct,massive/structureless,14,
+ga9oo42,horizontal,horizontal,14,
+ga9oo42,ripple_laminat,ripple lamination,14,
+oi98y12,trough,trough,14,
+oi98y12,planar_tabular,planar tabular,14,1
+oi98y12,festoon,festoon,14,2
+oi98y12,wedge,wedge,14,3
+oi98y12,low_angle,low angle,14,4
+oi98y12,massive_struct,massive/structureless,14,5
+oi98y12,horizontal,horizontal,14,6
+oi98y12,ripple_laminat,ripple lamination,14,7
+og95s36,trough,trough,6,
+og95s36,hummocky,hummocky,8,
+og95s36,swaley,swaley,6,
+og95s36,planar_tabular,planar tabular,14,
+og95s36,festoon,festoon,7,
+og95s36,symmetric,symmetric,9,
+og95s36,asymmetric,asymmetric,10,
+og95s36,wavy,wavy,4,
+og95s36,massive_struct,massive/structureless,14,
+og95s36,horizontal,horizontal,14,
+og95s36,ripple_laminat,ripple lamination,14,
+so29n97,glass,glass,5,
+so29n97,crystals,crystals,8,
+so29n97,lithic_frag,lithic fragments,11,
+so29n97,volcanic_mudst,volcanic mudstone,14,
+so29n97,volcanic_ss,volcanic sandstone,11,
+so29n97,lapillistone,lapillistone,12,
+so29n97,agglomerate,agglomerate,11,
+so29n97,volcanic_brec,volcanic breccia,13,
+so29n97,bentonite,bentonite,9,
+so29n97,tuff,tuff,4,
+so29n97,welded_tuff,welded tuff,11,
+so29n97,ignimbrite,ignimbrite,10,
+so29n97,other,other,5,
+gg6bk97,gyp_anhyd_prim,gypsum - anhydrite primary,14,
+gg6bk97,gyp_anhyd_dia,gypsum - anhydrite diagenetic,13,
+gg6bk97,halite_primary,halite - primary,14,
+gg6bk97,halite_diagene,halite - diagenetic,14,
+om8xr30,amber,amber,5,
+om8xr30,peat,peat,4,
+om8xr30,lignite,lignite,7,
+om8xr30,subbituminous,subbituminous,13,
+om8xr30,bituminous,bituminous,10,
+om8xr30,coal_ball,coal ball,9,
+om8xr30,tar,tar,3,
+mo7ce83,nodular,nodular,7,
+mo7ce83,bedded,bedded,6,
+mo7ce83,massive,massive,7,
+kl1cz02,lithified,lithified,9,
+kl1cz02,poorly_lithifi,poorly lithified,14,
+kl1cz02,unlithified_un,unlithified/unconsolidated,14,
+kl1cz02,metamorphosed,metamorphosed,13,
+jx0op03,1_least_resis,1- least resistant,13,
+jx0op03,2,2,1,
+jx0op03,3_mod_resist,3- moderately resistant,13,
+jx0op03,4,4,1,
+jx0op03,5_most_resist,5- most resistant,13,
