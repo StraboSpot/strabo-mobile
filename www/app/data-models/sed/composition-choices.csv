@@ -1,4 +1,8 @@
 list_name,name,label,order
+th1pp14,bed,bed,
+th1pp14,interbedded,interbedded,
+th1pp14,package_succe,package (succession of beds),
+th1pp14,unexposed_cove,unexposed/covered,
 eb2oc45,siliciclastic,siliciclastic,
 eb2oc45,limestone,limestone,1
 eb2oc45,dolomite,dolomite,2

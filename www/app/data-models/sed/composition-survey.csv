@@ -1,6 +1,7 @@
 type,name,label,required,relevant,calculation,$given_name
 begin_group,group_gw3td21,Lithology,,,,
-select_one eb2oc45,primary_lithology,Primary Lithology,false,,,
+select_one th1pp14,is_this_a_bed_or_package,Is this a bed or package (succession of beds) or covered?,false,,,
+select_one eb2oc45,primary_lithology,Primary Lithology,false,${is_this_a_bed_or_package} = 'bed' or ${is_this_a_bed_or_package} = 'interbedded' or ${is_this_a_bed_or_package} = 'package_succe',,
 select_multiple js5zp52,secondary_lithologies,Secondary Lithologies,false,,,
 text,other_lithology,Other lithology,false,"selected(${secondary_lithologies}, 'other')",,
 select_one qf3ff03,principal_dunham_class,Principal Dunham Classification,false,"${primary_lithology} = 'limestone' or ${primary_lithology} = 'dolomite' or selected(${secondary_lithologies}, 'limestone') or selected(${secondary_lithologies}, 'dolomite')",,
@@ -122,5 +123,5 @@ select_multiple yf18f03,minerals_present,Minerals present,false,,,
 text,other_mineral_s,Other mineral(s),false,"selected(${minerals_present}, 'other')",,
 text,Notes,Notes,false,,,
 end_group,,,,,,
-calculate,__version__,,,,'vRnYCGaNi4EKRrsngjB5jp',
-calculate,_version_,,,,'vKtDJpWFi2ydyfk2QMbmFi',__version__
+calculate,__version__,,false,,'vRnYCGaNi4EKRrsngjB5jp',
+calculate,_version_,,,,'vcjAaT8nDxKgY49ReKsyqa',__version__

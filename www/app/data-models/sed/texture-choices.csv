@@ -1,4 +1,8 @@
 list_name,name,label,,order
+th1pp14,bed,bed,,
+th1pp14,interbedded,interbedded,,
+th1pp14,package_succe,package (succession of beds),,
+th1pp14,unexposed_cove,unexposed/covered,,
 we36h70,siliciclastic,siliciclastic,13,
 we36h70,limestone,limestone,9,1
 we36h70,dolomite,dolomite,8,2

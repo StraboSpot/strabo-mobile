@@ -1,6 +1,7 @@
 type,name,label,required,relevant,calculation,$given_name
 begin_group,group_ha0qn59,Texture,,,,
-select_one we36h70,primary_lithology,Primary Lithology,true,,,
+select_one th1pp14,is_this_a_bed_or_package,Is this a bed or package (succession of beds) or covered?,false,,,
+select_one we36h70,primary_lithology,Primary Lithology,true,${is_this_a_bed_or_package} = 'bed' or ${is_this_a_bed_or_package} = 'interbedded' or ${is_this_a_bed_or_package} = 'package_succe',,
 select_one nq1zz74,principal_siliciclastic_type,Principal Siliciclastic Type,false,${primary_lithology} = 'siliciclastic',,
 select_one br57a34,mud_silt_principal_grain_size,Mudstone/Siltstone Principal Grain Size,false,${principal_siliciclastic_type} = 'claystone' or ${principal_siliciclastic_type} = 'mudstone' or ${principal_siliciclastic_type} = 'shale' or ${principal_siliciclastic_type} = 'siltstone',,
 select_one yt6dh35,sand_principal_grain_size,Sandstone Principal Grain Size,false,${principal_siliciclastic_type} = 'sandstone',,
@@ -36,4 +37,4 @@ select_multiple hs69g66,rounding,Rounding,false,,,
 text,Notes,Notes,false,,,
 end_group,,,,,,
 calculate,__version__,,false,,'vpSRWLYg7xtLSMswzEzCvi',
-calculate,_version_,,,,'vZJyB7QgLFwCBhAgGT3ran',__version__
+calculate,_version_,,,,'vvQmpKEgP3qJCZrbFSQbDu',__version__
