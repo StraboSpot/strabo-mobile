@@ -4,7 +4,7 @@ end,end,,,,,
 decimal,interval_thickness,Interval Thickness,true,,,
 select_one zw9ye70,thickness_units,Thickness Units,true,,,
 select_one th1pp14,is_this_a_bed_or_package,Is this a bed or package (succession of beds) or covered?,true,,,
-begin_group,group_hx8lo41,Characteristics,,${is_this_a_bed_or_package} = 'bed' or ${is_this_a_bed_or_package} = 'interbedded' or ${is_this_a_bed_or_package} = 'bed',,
+begin_group,group_hx8lo41,Characteristics,,${is_this_a_bed_or_package} = 'bed' or ${is_this_a_bed_or_package} = 'interbedded' or ${is_this_a_bed_or_package} = 'package_succe',,
 select_one we36h70,primary_lithology,Primary Lithology,true,${is_this_a_bed_or_package} = 'bed' or ${is_this_a_bed_or_package} = 'interbedded' or ${is_this_a_bed_or_package} = 'package_succe',,
 select_one vb9ph32,principal_siliciclastic_type,Principal Siliciclastic Type,true,${primary_lithology} = 'siliciclastic',,
 select_one jm3fd49,mud_silt_principal_grain_size,Mudstone/Siltstone Principal Grain Size,true,${principal_siliciclastic_type} = 'claystone' or ${principal_siliciclastic_type} = 'mudstone' or ${principal_siliciclastic_type} = 'shale' or ${principal_siliciclastic_type} = 'siltstone',,
@@ -29,4 +29,4 @@ text,basics_notes,Notes,false,,,
 calculate,__version__,,false,,'vYjQCtGRV2iET3JjCTcYeg',
 calculate,_version_,,false,,'v6yUKf53r3MWtgr8ebBTtV',__version__
 calculate,_version__001,,false,,'v7uzUyMHWuKeW2scMssmN2',__version__
-calculate,_version__002,,,,'vicpkzzUa3SwMpb49riVEg',__version__
+calculate,_version__002,,,,'vZuJf9nSQ2pvi9yDQLnW3L',__version__
