@@ -1,9 +1,11 @@
 type,name,label,required,relevant,appearance,calculation,$given_name
 start,start,,,,,,
 end,end,,,,,,
+begin_group,group_qz88e24,Basics,,,,,
 decimal,interval_thickness,Interval Thickness,true,,,,
 select_one zw9ye70,thickness_units,Thickness Units,true,,,,
 select_one th1pp14,is_this_a_bed_or_package,Is this a bed or package (succession of beds) or covered?,true,,,,
+end_group,,,,,,,
 begin_group,group_hx8lo41,Characteristics,,${is_this_a_bed_or_package} = 'bed' or ${is_this_a_bed_or_package} = 'interbedded' or ${is_this_a_bed_or_package} = 'package_succe',,,
 select_one we36h70,primary_lithology,Primary Lithology,true,${is_this_a_bed_or_package} = 'bed' or ${is_this_a_bed_or_package} = 'interbedded' or ${is_this_a_bed_or_package} = 'package_succe',,,
 select_one vb9ph32,principal_siliciclastic_type,Principal Siliciclastic Type,true,${primary_lithology} = 'siliciclastic',,,
@@ -29,4 +31,4 @@ text,notes,Notes,false,,multiline,,
 calculate,__version__,,false,,,'vYjQCtGRV2iET3JjCTcYeg',
 calculate,_version_,,false,,,'v6yUKf53r3MWtgr8ebBTtV',__version__
 calculate,_version__001,,false,,,'v7uzUyMHWuKeW2scMssmN2',__version__
-calculate,_version__002,,,,,'vANX38FG8PfVZXiUcyXMif',__version__
+calculate,_version__002,,,,,'vD4VdudQSzTGEFCimxsEJe',__version__
