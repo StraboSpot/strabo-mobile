@@ -111,29 +111,6 @@
         });
         vmParent.spot.properties.sed.strat_section.column_y_axis_units = oldUnits;
       }
-      else {
-        _.each(stratSectionIntervals, function (stratSectionInterval) {
-          if (stratSectionInterval.properties.sed && stratSectionInterval.properties.sed.lithologies) {
-            var thickness = stratSectionInterval.properties.sed.lithologies.interval_thickness;
-            if (oldUnits === 'cm' && newUnits === 'm') thickness = thickness / 100;             // cm to m
-            else if (oldUnits === 'cm' && newUnits === 'in') thickness = thickness / 2.54;      // cm to in
-            else if (oldUnits === 'cm' && newUnits === 'ft') thickness = thickness / 30.48;     // cm to ft
-            else if (oldUnits === 'm' && newUnits === 'cm') thickness = thickness * 100;        // m to cm
-            else if (oldUnits === 'm' && newUnits === 'in') thickness = thickness / 0.0254;     // m to in
-            else if (oldUnits === 'm' && newUnits === 'ft') thickness = thickness / 0.3048;     // m to ft
-            else if (oldUnits === 'in' && newUnits === 'cm') thickness = thickness * 2.54;      // in to cm
-            else if (oldUnits === 'in' && newUnits === 'm') thickness = thickness * 0.0254;     // in to m
-            else if (oldUnits === 'in' && newUnits === 'ft') thickness = thickness / 12;        // in to ft
-            else if (oldUnits === 'ft' && newUnits === 'cm') thickness = thickness * 30.48;     // ft to cm
-            else if (oldUnits === 'ft' && newUnits === 'm') thickness = thickness * 0.3048;     // ft to m
-            else if (oldUnits === 'ft' && newUnits === 'in') thickness = thickness * 12;        // ft to in
-            thickness = HelpersFactory.roundToDecimalPlaces(thickness, 2);
-            stratSectionInterval.properties.sed.lithologies.interval_thickness = thickness;
-            stratSectionInterval.properties.sed.lithologies.thickness_units = newUnits;
-            SpotFactory.save(stratSectionInterval);
-          }
-        });
-      }
     }
 
     function deleteOverlayImage(imageToDelete) {
