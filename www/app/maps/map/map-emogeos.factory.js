@@ -38,30 +38,30 @@
         'sed': {
           'lithologies': {
             'mud_silt_prin_struct': [
-              {'value': 'massive_struct', 'icon': 'url("../img/emogeos/sed/Massive.png")'},
-              {'value': 'horizontal', 'icon': 'url("../img/emogeos/sed/Horizontal.png")'},
-              {'value': 'ripple_laminat', 'icon': 'url("../img/emogeos/sed/RippleLamination.png")'},
-              {'value': 'mud_drape', 'icon': 'url("../img/emogeos/sed/MudDrape2.png")'}
+              {'value': 'massive_struct', 'icon': 'url("img/emogeos/sed/Massive.png")'},
+              {'value': 'horizontal', 'icon': 'url("img/emogeos/sed/Horizontal.png")'},
+              {'value': 'ripple_laminat', 'icon': 'url("img/emogeos/sed/RippleLamination.png")'},
+              {'value': 'mud_drape', 'icon': 'url("img/emogeos/sed/MudDrape2.png")'}
             ],
             'sandstone_prin_struct': [
-              {'value': 'trough', 'icon': 'url("../img/emogeos/sed/TCS.png")'},
-              {'value': 'hummocky', 'icon': 'url("../img/emogeos/sed/HCS.png")'},
-              {'value': 'planar_tabular', 'icon': 'url("../img/emogeos/sed/PlanarTabular.png")'},
-              {'value': 'low_angle', 'icon': 'url("../img/emogeos/sed/LowAngle.png")'},
-              {'value': 'massive_struct', 'icon': 'url("../img/emogeos/sed/Massive.png")'},
-              {'value': 'horizontal', 'icon': 'url("../img/emogeos/sed/Horizontal.png")'}
+              {'value': 'trough', 'icon': 'url("img/emogeos/sed/TCS.png")'},
+              {'value': 'hummocky', 'icon': 'url("img/emogeos/sed/HCS.png")'},
+              {'value': 'planar_tabular', 'icon': 'url("img/emogeos/sed/PlanarTabular.png")'},
+              {'value': 'low_angle', 'icon': 'url("img/emogeos/sed/LowAngle.png")'},
+              {'value': 'massive_struct', 'icon': 'url("img/emogeos/sed/Massive.png")'},
+              {'value': 'horizontal', 'icon': 'url("img/emogeos/sed/Horizontal.png")'}
             ],
             'congl_breccia_prin_struct': [
-              {'value': 'trough', 'icon': 'url("../img/emogeos/sed/TCS.png")'},
-              {'value': 'planar_tabular', 'icon': 'url("../img/emogeos/sed/PlanarTabular.png")'},
-              {'value': 'massive_struct', 'icon': 'url("../img/emogeos/sed/Massive.png")'},
-              {'value': 'horizontal', 'icon': 'url("../img/emogeos/sed/Horizontal.png")'}
+              {'value': 'trough', 'icon': 'url("img/emogeos/sed/TCS.png")'},
+              {'value': 'planar_tabular', 'icon': 'url("img/emogeos/sed/PlanarTabular.png")'},
+              {'value': 'massive_struct', 'icon': 'url("img/emogeos/sed/Massive.png")'},
+              {'value': 'horizontal', 'icon': 'url("img/emogeos/sed/Horizontal.png")'}
             ],
             'limestone_dolomite_prin_struct': [
-              {'value': 'trough', 'icon': 'url("../img/emogeos/sed/TCS.png")'},
-              {'value': 'hummocky', 'icon': 'url("../img/emogeos/sed/HCS.png")'},
-              {'value': 'massive_struct', 'icon': 'url("../img/emogeos/sed/Massive.png")'},
-              {'value': 'horizontal', 'icon': 'url("../img/emogeos/sed/Horizontal.png")'}
+              {'value': 'trough', 'icon': 'url("img/emogeos/sed/TCS.png")'},
+              {'value': 'hummocky', 'icon': 'url("img/emogeos/sed/HCS.png")'},
+              {'value': 'massive_struct', 'icon': 'url("img/emogeos/sed/Massive.png")'},
+              {'value': 'horizontal', 'icon': 'url("img/emogeos/sed/Horizontal.png")'}
             ]
           }
         }
