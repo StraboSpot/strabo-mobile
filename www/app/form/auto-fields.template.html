@@ -124,7 +124,7 @@
             </ion-label>
             <ion-checkbox name='{{ field.name }}'
                           ng-repeat='choice in form.choices | filter: { "list_name": field.type.split(" ")[1] }'
-                          ng-checked='form.isOptionChecked(vm.spot, field.name, choice.name, vm.data)'
+                          ng-checked='form.isOptionChecked(field.name, choice.name, vm.data)'
                           ng-click='form.toggleChecked(field.name, choice.name, vm.data)'
                           ng-required='{{ field.required }}'>
               {{ choice.label }}

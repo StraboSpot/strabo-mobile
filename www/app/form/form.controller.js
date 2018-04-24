@@ -66,11 +66,8 @@
       return FormFactory.getForm().survey
     }
 
-    function isOptionChecked(spot, field, choice, data) {
-      if (spot) {
-        if (data[field]) return data[field].indexOf(choice) !== -1;
-      }
-      else return false;
+    function isOptionChecked(field, choice, data) {
+      return _.contains(data[field], choice);
     }
 
     // Set the class for the select_multiple fields here because it is not working
