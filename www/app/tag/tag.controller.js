@@ -148,8 +148,9 @@
     function createPageEvents() {
       // Cleanup the modals when we're done with it!
       $scope.$on('$destroy', function () {
-        vm.selectItemModal.remove();
-        vm.filterModal.remove();
+        if (vm.selectItemModal) vm.selectItemModal.remove();
+        if (vm.filterModal) vm.filterModal.remove();
+        if (vm.colorPickerModal) vm.colorPickerModal.remove();
       });
     }
 
