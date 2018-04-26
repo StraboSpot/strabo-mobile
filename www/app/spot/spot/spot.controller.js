@@ -460,11 +460,18 @@
               vm.spot.properties.surface_feature = vm.data;
             }
           }
+          else if (vm.stateName === 'app.spotTab.sed-lithologies' && !_.isEmpty(vm.data)) {
+            if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
+            if (!vm.spot.properties.sed.lithologies) vm.spot.properties.sed.lithologies = {};
+            vm.spot.properties.sed.lithologies = vm.data;
+          }
           else if (vm.stateName === 'app.spotTab.sed-structures' && !_.isEmpty(vm.data)) {
+            if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
             if (!vm.spot.properties.sed.structures) vm.spot.properties.sed.structures = {};
             vm.spot.properties.sed.structures = vm.data;
           }
           else if (vm.stateName === 'app.spotTab.sed-interpretations' && !_.isEmpty(vm.data)) {
+            if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
             if (!vm.spot.properties.sed.interpretations) vm.spot.properties.sed.interpretations = {};
             vm.spot.properties.sed.interpretations = vm.data;
           }
@@ -476,18 +483,6 @@
             // If Spot is an interval check if we need to do any updates to the interval
             if (StratSectionFactory.isInterval(vm.spot)) {
               vm.spot = StratSectionFactory.checkForIntervalUpdates(vm.stateName, vm.spot, savedSpot);
-            }
-            // If Spot used to be an interval remove extra sed fields
-            else if (StratSectionFactory.isInterval(savedSpot)) {
-              return StratSectionFactory.changeFromInterval(vm.spot).then(function () {
-                return SpotFactory.save(vm.spot).then(function () {
-                  // Need to update the strat section map in case on WEB and fields were changed in the sidepanel
-                  if (IS_WEB && $state.current.name === 'app.strat-section') {
-                    $rootScope.$broadcast('updateStratSectionFeatureLayer');
-                    MapEmogeosFactory.setSelectedSpot(vm.spot);
-                  }
-                });
-              });
             }
             return SpotFactory.save(vm.spot).then(function () {
               // Need to update the strat section map in case on WEB and fields were changed in the sidepanel

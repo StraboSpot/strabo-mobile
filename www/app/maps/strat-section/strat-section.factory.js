@@ -17,7 +17,6 @@
     var yMultiplier = 20;  // 1 m interval thickness = 20 pixels
 
     return {
-      'changeFromInterval': changeFromInterval,
       'checkForIntervalUpdates': checkForIntervalUpdates,
       'createInterval': createInterval,
       'drawAxes': drawAxes,
@@ -208,34 +207,6 @@
     /**
      * Public Functions
      */
-
-    // If a the surface feature of a Spot is being changed from a strat interval to something else
-    // delete the Sed fields we don't need anymore
-    function changeFromInterval(spot) {
-      var deferred = $q.defer(); // init promise
-      if (spot.properties.sed && (spot.properties.sed.lithologies || spot.properties.sed.structures)) {
-        var confirmPopup = $ionicPopup.confirm({
-          'cssClass': 'warning-popup',
-          'title': 'Change From Interval',
-          'template': 'Are you sure you want to change this Spot from a Strat Interval? This will ' +
-          '<span style="color:red">DELETE</span> all Sed properties for this interval.'
-        });
-        confirmPopup.then(function (res) {
-          if (res) {
-            if (spot.properties.sed.lithologies) delete spot.properties.sed.lithologies;
-            if (spot.properties.sed.structures) delete spot.properties.sed.structures;
-            if (_.isEmpty(spot.properties.sed)) delete spot.properties.sed;
-            return deferred.resolve();
-          }
-          else {
-            spot.properties.surface_feature.surface_feature_type = 'strat_interval';
-            return deferred.reject();
-          }
-        });
-      }
-      else deferred.resolve();
-      return deferred.promise;
-    }
 
     // Check for any changes we need to make to the Sed fields or geometry when a Spot that is a strat interval
     // has fields that are changed
@@ -498,7 +469,8 @@
     function getSpotWithThisStratSection(stratSectionId) {
       var activeSpots = SpotFactory.getActiveSpots();
       return _.find(activeSpots, function (spot) {
-        return spot.properties.sed && spot.properties.sed.strat_section &&
+        return _.has(spot, 'properties') && _.has(spot.properties, 'sed') &&
+          _.has(spot.properties.sed, 'strat_section') &&
           spot.properties.sed.strat_section.strat_section_id == stratSectionId;  // Comparing int to string so use only 2 equal signs
       });
     }
@@ -512,8 +484,8 @@
     }
 
     function isInterval(spot) {
-      return spot.properties && spot.properties.surface_feature &&
-        spot.properties.surface_feature.surface_feature_type &&
+      return _.has(spot, 'properties') && _.has(spot.properties, 'strat_section_id') &&
+        _.has(spot.properties, 'surface_feature') && _.has(spot.properties.surface_feature, 'surface_feature_type') &&
         spot.properties.surface_feature.surface_feature_type === 'strat_interval';
     }
 

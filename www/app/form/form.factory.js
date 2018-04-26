@@ -32,13 +32,16 @@
 
     function validateSedData(spot, errorMessages) {
       var lithologies = spot.properties.sed.lithologies;
-      var spotWithThisStratSection = StratSectionFactory.getSpotWithThisStratSection(spot.properties.strat_section_id);
-      if (spotWithThisStratSection.properties && spotWithThisStratSection.properties.sed &&
-        spotWithThisStratSection.properties.sed.strat_section) {
-        var units = spotWithThisStratSection.properties.sed.strat_section.column_y_axis_units;
-        if (units !== lithologies.thickness_units) {
-          errorMessages.push('- The <b>Thickness Units</b> must be <b>' + units + '</b> since <b>' + units +
-            '</b> have been assigned for the properties of this strat section.')
+      if (StratSectionFactory.isInterval(spot)) {
+        var spotWithThisStratSection = StratSectionFactory.getSpotWithThisStratSection(
+          spot.properties.strat_section_id);
+        if (spotWithThisStratSection && spotWithThisStratSection.properties &&
+          spotWithThisStratSection.properties.sed && spotWithThisStratSection.properties.sed.strat_section) {
+          var units = spotWithThisStratSection.properties.sed.strat_section.column_y_axis_units;
+          if (units !== lithologies.thickness_units) {
+            errorMessages.push('- The <b>Thickness Units</b> must be <b>' + units + '</b> since <b>' + units +
+              '</b> have been assigned for the properties of this strat section.')
+          }
         }
       }
       if (lithologies.is_this_a_bed_or_package === 'bed' || lithologies.is_this_a_bed_or_package === 'interbedded' ||
