@@ -441,6 +441,7 @@
             'template': 'Please enter more fields to save this tag.'
           });
         }
+        else $location.path(path);
       }
     }
 
