@@ -473,6 +473,8 @@
           'featureProjection': projection
         });
       }
+      SymbologyFactory.setFeatureLayer(MapLayerFactory.getFeatureLayer());
+      SymbologyFactory.setFillPatterns(features);
 
       return new ol.layer.Vector({
         'source': new ol.source.Vector({
