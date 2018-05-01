@@ -349,6 +349,9 @@
       if (formName === 'sed.strat_section' && fieldName === 'column_y_axis_units') {
         vm.child.changeUnits(newValue, oldValue);
       }
+      if (formName === 'sed.strat_section' && fieldName === 'column_profile') {
+        vm.child.changeColumnProfile(newValue, oldValue);
+      }
     }
 
     function filterAllTagsType() {
