@@ -101,9 +101,20 @@
       else if (((oldProfile === 'clastic' || oldProfile === 'carbonate' || oldProfile === 'mixed_clastic') &&
         newProfile === 'weathering_pro') || (oldProfile === 'weathering_pro' &&
         (newProfile === 'clastic' || newProfile === 'carbonate' || newProfile === 'mixed_clastic'))) {
-        SpotFactory.save(vmParent.spot).then(function () {
-          StratSectionFactory.changedColumnProfile(stratSectionId);
+        var confirmPopup = $ionicPopup.confirm({
+          'title': 'Column Profile Change Warning!',
+          'template': 'Changing the column profile will redraw all intervals as rectangles so any drawing edits to ' +
+          'current interval shapes will be lost. Continue anyway?'
         });
+        confirmPopup.then(function (res) {
+          if (res) {
+            SpotFactory.save(vmParent.spot).then(function () {
+              StratSectionFactory.changedColumnProfile(stratSectionId);
+            });
+          }
+          else vmParent.spot.properties.sed.strat_section.column_profile = oldProfile;
+        });
+
       }
     }
 
