@@ -125,12 +125,11 @@
           if (props.sed.lithologies.primary_lithology) {
             text.push('Primary Lithology: ' + DataModelsFactory.getSedLabel(props.sed.lithologies.primary_lithology));
           }
-          if (props.sed.lithologies.mud_silt_principal_grain_size ||
-            props.sed.lithologies.sand_principal_grain_size ||
-            props.sed.lithologies.congl_breccia_principal_grain_size) {
+          if (props.sed.lithologies.mud_silt_principal_grain_size || props.sed.lithologies.sand_principal_grain_size ||
+            props.sed.lithologies.congl_principal_grain_size || props.sed.lithologies.breccia_principal_grain_size) {
             var grainSize = props.sed.lithologies.mud_silt_principal_grain_size ||
-              props.sed.lithologies.sand_principal_grain_size ||
-              props.sed.lithologies.congl_breccia_principal_grain_size;
+              props.sed.lithologies.sand_principal_grain_size || props.sed.lithologies.congl_principal_grain_size ||
+              props.sed.lithologies.breccia_principal_grain_size;
             text.push('Principal Grain Size: ' + DataModelsFactory.getSedLabel(grainSize));
           }
           if (props.sed.lithologies.principal_dunham_class) {

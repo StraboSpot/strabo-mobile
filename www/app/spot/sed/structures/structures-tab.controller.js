@@ -52,10 +52,15 @@
           vmParent.spot.properties.sed.structures.sandstone_structures = true;
           vmParent.spot.properties.sed.structures.sandstone_prin_struct = vmParent.spot.properties.sed.lithologies.sandstone_prin_struct;
         }
-        if (vmParent.spot.properties.sed.lithologies.congl_breccia_prin_struct) {
+        if (vmParent.spot.properties.sed.lithologies.conglomerate_prin_struct) {
           if (!vmParent.spot.properties.sed.structures) vmParent.spot.properties.sed.structures = {};
           vmParent.spot.properties.sed.structures.conglomerate_structures = true;
-          vmParent.spot.properties.sed.structures.congl_breccia_prin_struct = vmParent.spot.properties.sed.lithologies.congl_breccia_prin_struct;
+          vmParent.spot.properties.sed.structures.conglomerate_prin_struct = vmParent.spot.properties.sed.lithologies.conglomerate_prin_struct;
+        }
+        if (vmParent.spot.properties.sed.lithologies.breccia_prin_struct) {
+          if (!vmParent.spot.properties.sed.structures) vmParent.spot.properties.sed.structures = {};
+          vmParent.spot.properties.sed.structures.breccia_structures = true;
+          vmParent.spot.properties.sed.structures.breccia_prin_struct = vmParent.spot.properties.sed.lithologies.breccia_prin_struct;
         }
         if (vmParent.spot.properties.sed.lithologies.limestone_dolomite_prin_struct) {
           if (!vmParent.spot.properties.sed.structures) vmParent.spot.properties.sed.structures = {};

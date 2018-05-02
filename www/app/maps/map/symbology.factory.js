@@ -40,11 +40,20 @@
           var primaryLithology = featureProperties.sed.lithologies.primary_lithology;
           var grainSize = featureProperties.sed.lithologies.mud_silt_principal_grain_size ||
             featureProperties.sed.lithologies.sand_principal_grain_size ||
-            featureProperties.sed.lithologies.congl_breccia_principal_grain_size ||
+            featureProperties.sed.lithologies.congl_principal_grain_size ||
+            featureProperties.sed.lithologies.breccia_principal_grain_size ||
             featureProperties.sed.lithologies.principal_dunham_class ||
             featureProperties.sed.lithologies.primary_lithology;
           if (primaryLithology === 'limestone') fill = patterns['li_' + grainSize];
           else if (primaryLithology === 'dolomite') fill = patterns['do_' + grainSize];
+          else if (primaryLithology === 'siliciclastic' &&
+            featureProperties.sed.lithologies.principal_siliciclastic_type === 'conglomerate') {
+            fill = patterns['congl_' + grainSize];
+          }
+          else if (primaryLithology === 'siliciclastic' &&
+            featureProperties.sed.lithologies.principal_siliciclastic_type === 'breccia') {
+            fill = patterns['brec_' + grainSize];
+          }
           else fill = patterns[grainSize];
         }
         if (!fill) {
@@ -72,12 +81,15 @@
           else {
             var lithology = featureProperties.sed.lithologies.mud_silt_principal_grain_size ||
               featureProperties.sed.lithologies.sand_principal_grain_size ||
-              featureProperties.sed.lithologies.congl_breccia_principal_grain_size ||
+              featureProperties.sed.lithologies.congl_principal_grain_size ||
+              featureProperties.sed.lithologies.breccia_principal_grain_size ||
               featureProperties.sed.lithologies.principal_dunham_class ||
               featureProperties.sed.lithologies.primary_lithology;
+            // Mudstone/Shale
             if (lithology === 'clay') color = 'rgba(128, 222, 77, 1)';                // CMYK 50,13,70,0 USGS Color 682
             else if (lithology === 'mud') color = 'rgba(77, 255, 0, 1)';              // CMYK 70,0,100,0 USGS Color 890
             else if (lithology === 'silt') color = 'rgba(153, 255, 102, 1)';          // CMYK 40,0,60,0 USGS Color 570
+            // Sandstone
             else if (lithology === 'sand_very_fin') color = 'rgba(255, 255, 179, 1)'; // CMYK 0,0,30,0 USGS Color 40
             else if (lithology === 'sand_fine_low') color = 'rgba(255, 255, 153, 1)'; // CMYK 0,0,40,0 USGS Color 50
             else if (lithology === 'sand_fine_upp') color = 'rgba(255, 255, 128, 1)'; // CMYK 0,0,50,0 USGS Color 60
@@ -86,10 +98,23 @@
             else if (lithology === 'sand_coarse_l') color = 'rgba(255, 255, 0, 1)';   // CMYK 0,0,100,0 USGS Color 90
             else if (lithology === 'sand_coarse_u') color = 'rgba(255, 235, 0, 1)';   // CMYK 0,8,100,0 USGS Color 91
             else if (lithology === 'sand_very_coa') color = 'rgba(255, 222, 0, 1)';   // CMYK 0,13,100,0 USGS Color 92
-            else if (lithology === 'granule') color = 'rgba(255, 153, 0, 1)';         // CMYK 0,40,100,0 USGS Color 95
-            else if (lithology === 'pebble') color = 'rgba(255, 128, 0, 1)';          // CMYK 0,50,100,0 USGS Color 96
-            else if (lithology === 'cobble') color = 'rgba(255, 102, 0, 1)';          // CMYK 0,60,100,0 USGS Color 97
-            else if (lithology === 'boulder') color = 'rgba(255, 77, 0, 1)';          // CMYK 0,70,100,0 USGS Color 98
+            // Conglomerate
+            else if (featureProperties.sed.lithologies.primary_lithology === 'siliciclastic' &&
+              featureProperties.sed.lithologies.principal_siliciclastic_type === 'conglomerate') {
+              if (lithology === 'granule') color = 'rgba(255, 153, 0, 1)';            // CMYK 0,40,100,0 USGS Color 95
+              else if (lithology === 'pebble') color = 'rgba(255, 128, 0, 1)';        // CMYK 0,50,100,0 USGS Color 96
+              else if (lithology === 'cobble') color = 'rgba(255, 102, 0, 1)';        // CMYK 0,60,100,0 USGS Color 97
+              else if (lithology === 'boulder') color = 'rgba(255, 77, 0, 1)';        // CMYK 0,70,100,0 USGS Color 98
+            }
+            // Breccia
+            else if (featureProperties.sed.lithologies.primary_lithology === 'siliciclastic' &&
+              featureProperties.sed.lithologies.principal_siliciclastic_type === 'breccia') {
+              if (lithology === 'granule') color = 'rgba(230, 0, 0, 1)';              // CMYK 10,100,100,0 USGS Color 95
+              else if (lithology === 'pebble') color = 'rgba(204, 0, 0, 1)';          // CMYK 20,100,100,0 USGS Color 96
+              else if (lithology === 'cobble') color = 'rgba(179, 0, 0, 1)';          // CMYK 30,100,100,0 USGS Color 97
+              else if (lithology === 'boulder') color = 'rgba(153, 0, 0, 1)';         // CMYK 40,100,100,0 USGS Color 98
+            }
+            // Limestone / Dolomite
             else if (lithology === 'mudstone') color = 'rgba(77, 255, 128, 1)';       // CMYK 70,0,50,0 USGS Color 860
             else if (lithology === 'wackestone') color = 'rgba(77, 255, 179, 1)';     // CMYK 70,0,30,0 USGS Color 840
             else if (lithology === 'packstone') color = 'rgba(77, 255, 222, 1)';      // CMYK 70,0,13,0 USGS Color 820
@@ -102,6 +127,7 @@
             else if (lithology === 'framestone') color = 'rgba(77, 128, 255, 1)';     // CMYK 70,50,0,0 USGS Color 806
             else if (lithology === 'bafflestone') color = 'rgba(77, 128, 255, 1)';    // CMYK 70,50,0,0 USGS Color 806
             else if (lithology === 'bindstone') color = 'rgba(77, 128, 255, 1)';      // CMYK 70,50,0,0 USGS Color 806
+            // Misc. Lithologies
             else if (lithology === 'evaporite') color = 'rgba(153, 77, 255, 1)';      // CMYK 40,70,0,0 USGS Color 508
             else if (lithology === 'chert') color = 'rgba(102, 77, 77, 1)';           // CMYK 40,70,0,0 USGS Color 508
             else if (lithology === 'ironstone') color = 'rgba(153, 0, 0, 1)';         // CMYK 40,70,0,0 USGS Color 508
@@ -272,7 +298,8 @@
           var primaryLithology = featureProperties.sed.lithologies.primary_lithology;
           var grainSize = featureProperties.sed.lithologies.mud_silt_principal_grain_size ||
             featureProperties.sed.lithologies.sand_principal_grain_size ||
-            featureProperties.sed.lithologies.congl_breccia_principal_grain_size ||
+            featureProperties.sed.lithologies.congl_principal_grain_size ||
+            featureProperties.sed.lithologies.breccia_principal_grain_size ||
             featureProperties.sed.lithologies.principal_dunham_class ||
             featureProperties.sed.lithologies.primary_lithology;
           // Mudstone/Shale
@@ -289,15 +316,21 @@
           else if (grainSize === 'sand_coarse_u') patterns[grainSize] = loadPattern('siliciclastics/CUBasic');
           else if (grainSize === 'sand_very_coa') patterns[grainSize] = loadPattern('siliciclastics/VCBasic');
           // Conglomerate
-          else if (grainSize === 'granule') patterns[grainSize] = loadPattern('siliciclastics/CGrBasic');
-          else if (grainSize === 'pebble') patterns[grainSize] = loadPattern('siliciclastics/CPebBasic');
-          else if (grainSize === 'cobble') patterns[grainSize] = loadPattern('siliciclastics/CCobBasic');
-          else if (grainSize === 'boulder') patterns[grainSize] = loadPattern('siliciclastics/CBoBasic');
+          else if (primaryLithology === 'siliciclastic' &&
+            featureProperties.sed.lithologies.principal_siliciclastic_type === 'conglomerate') {
+            if (grainSize === 'granule') patterns['congl_' + grainSize] = loadPattern('siliciclastics/CGrBasic');
+            else if (grainSize === 'pebble') patterns['congl_' + grainSize] = loadPattern('siliciclastics/CPebBasic');
+            else if (grainSize === 'cobble') patterns['congl_' + grainSize] = loadPattern('siliciclastics/CCobBasic');
+            else if (grainSize === 'boulder') patterns['congl_' + grainSize] = loadPattern('siliciclastics/CBoBasic');
+          }
           // Breccia
-          /*else if (grainSize === 'granule') patterns[grainSize] = loadPattern('siliciclastics/BGrBasic');
-          else if (grainSize === 'pebble') patterns[grainSize] = loadPattern('siliciclastics/BPebBasic');
-          else if (grainSize === 'cobble') patterns[grainSize] = loadPattern('siliciclastics/BCobBasic');
-          else if (grainSize === 'boulder') patterns[grainSize] = loadPattern('siliciclastics/BBoBasic');*/
+          else if (primaryLithology === 'siliciclastic' &&
+            featureProperties.sed.lithologies.principal_siliciclastic_type === 'breccia') {
+            if (grainSize === 'granule') patterns['brec_' + grainSize] = loadPattern('siliciclastics/BGrBasic');
+            else if (grainSize === 'pebble') patterns['brec_' + grainSize] = loadPattern('siliciclastics/BPebBasic');
+            else if (grainSize === 'cobble') patterns['brec_' + grainSize] = loadPattern('siliciclastics/BCobBasic');
+            else if (grainSize === 'boulder') patterns['brec_' + grainSize] = loadPattern('siliciclastics/BBoBasic');
+          }
           // Limestone
           else if (primaryLithology === 'limestone') {
             if (grainSize === 'bafflestone') patterns['li_' + grainSize] = loadPattern('limestone/LiBafBasic');

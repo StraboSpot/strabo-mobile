@@ -166,11 +166,12 @@
         }
         // Primary Lithology = siliciclastic
         else if (lithology.mud_silt_principal_grain_size || lithology.sand_principal_grain_size ||
-          lithology.congl_breccia_principal_grain_size) {
+          lithology.congl_principal_grain_size || lithology.breccia_principal_grain_size) {
           i = _.findIndex(grainSizeOptions.clastic, function (grainSizeOption) {
             return grainSizeOption.value === lithology.mud_silt_principal_grain_size ||
               grainSizeOption.value === lithology.sand_principal_grain_size ||
-              grainSizeOption.value === lithology.congl_breccia_principal_grain_size;
+              grainSizeOption.value === lithology.congl_principal_grain_size ||
+              grainSizeOption.value === lithology.breccia_principal_grain_size;
           });
           intervalWidth = i === -1 ? defaultWidth : (i + 1) * xInterval;
         }

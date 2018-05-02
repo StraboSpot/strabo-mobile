@@ -50,7 +50,8 @@
           errorMessages.push('- The <b>Primary Lithology</b> must be specified if the there is any type of bedding.');
         }
         else if (lithologies.primary_lithology === 'siliciclastic' && (!lithologies.mud_silt_principal_grain_size &&
-            !lithologies.sand_principal_grain_size && !lithologies.congl_breccia_principal_grain_size)) {
+            !lithologies.sand_principal_grain_size && !lithologies.congl_principal_grain_size &&
+          !lithologies.breccia_principal_grain_size)) {
           errorMessages.push('- The <b>Principal Grain Size</b> must be specified if the Primary Lithology is ' +
             'siliciclastic.');
         }

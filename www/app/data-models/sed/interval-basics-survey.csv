@@ -11,11 +11,13 @@ select_one we36h70,primary_lithology,Primary Lithology,true,${is_this_a_bed_or_p
 select_one vb9ph32,principal_siliciclastic_type,Principal Siliciclastic Type,true,${primary_lithology} = 'siliciclastic',,,
 select_one jm3fd49,mud_silt_principal_grain_size,Mudstone/Siltstone Principal Grain Size,true,${principal_siliciclastic_type} = 'claystone' or ${principal_siliciclastic_type} = 'mudstone' or ${principal_siliciclastic_type} = 'shale' or ${principal_siliciclastic_type} = 'siltstone',,,
 select_one gf7lv09,sand_principal_grain_size,Sandstone Principal Grain Size,true,${principal_siliciclastic_type} = 'sandstone',,,
-select_one jk0sn61,congl_breccia_principal_grain_size,Conglomerate/Breccia Principal Grain Size,true,${principal_siliciclastic_type} = 'conglomerate' or ${principal_siliciclastic_type} = 'breccia',,,
+select_one jk0sn61,congl_principal_grain_size,Conglomerate Principal Grain Size,true,${principal_siliciclastic_type} = 'conglomerate',,,
+select_one jk0sn61,breccia_principal_grain_size,Breccia Principal Grain Size,true,${principal_siliciclastic_type} = 'breccia',,,
 select_one ap2mh08,principal_dunham_class,Principal Dunham Classification,true,${primary_lithology} = 'limestone' or ${primary_lithology} = 'dolomite',,,
 select_one iu3km02,mud_silt_prin_struct,Mudstone/Siltstone Principal Structures,false,${principal_siliciclastic_type} = 'claystone' or ${principal_siliciclastic_type} = 'mudstone' or ${principal_siliciclastic_type} = 'shale' or ${principal_siliciclastic_type} = 'siltstone',,,
 select_one ga9oo42,sandstone_prin_struct,Sandstone Principal Structures,false,${principal_siliciclastic_type} = 'sandstone',,,
-select_one oi98y12,congl_breccia_prin_struct,Conglomerate/Breccia Principal Structures,false,${principal_siliciclastic_type} = 'conglomerate' or ${principal_siliciclastic_type} = 'breccia',,,
+select_one oi98y12,conglomerate_prin_struct,Conglomerate Principal Structures,false,${principal_siliciclastic_type} = 'conglomerate',,,
+select_one oi98y12,breccia_prin_struct,Breccia Principal Structures,false,${principal_siliciclastic_type} = 'breccia',,,
 select_one og95s36,limestone_dolomite_prin_struct,Limestone/Dolomite Principal Structures,false,${primary_lithology} = 'limestone' or ${primary_lithology} = 'dolomite',,,
 select_multiple so29n97,volcaniclastic_type,Volcaniclastic type,false,${primary_lithology} = 'volcaniclastic',,,
 text,other_volcaniclastic_type,Other volcaniclastic type,false,"selected(${volcaniclastic_type}, 'other')",,,
@@ -31,4 +33,4 @@ text,notes,Notes,false,,multiline,,
 calculate,__version__,,false,,,'vYjQCtGRV2iET3JjCTcYeg',
 calculate,_version_,,false,,,'v6yUKf53r3MWtgr8ebBTtV',__version__
 calculate,_version__001,,false,,,'v7uzUyMHWuKeW2scMssmN2',__version__
-calculate,_version__002,,,,,'vpY4atsMwi46YuLrE8aRQ3',__version__
+calculate,_version__002,,,,,'vz6aLiQrCNkmKRENfMQD8H',__version__

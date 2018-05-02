@@ -335,9 +335,13 @@
           if (!vm.data.grain_size) vm.data.grain_size = [];
           vm.data.grain_size.push(vm.data.sand_principal_grain_size);
         }
-        else if (fieldName === 'congl_breccia_principal_grain_size') {
+        else if (fieldName === 'congl_principal_grain_size') {
           if (!vm.data.grain_size) vm.data.grain_size = [];
-          vm.data.grain_size.push(vm.data.congl_breccia_principal_grain_size);
+          vm.data.grain_size.push(vm.data.congl_principal_grain_size);
+        }
+        else if (fieldName === 'breccia_principal_grain_size') {
+          if (!vm.data.grain_size) vm.data.grain_size = [];
+          vm.data.grain_size.push(vm.data.breccia_principal_grain_size);
         }
       }
       if (formName === 'sed.interval_basics' || formName === 'sed.composition') {

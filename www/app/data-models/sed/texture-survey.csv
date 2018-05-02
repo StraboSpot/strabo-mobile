@@ -5,7 +5,8 @@ select_one we36h70,primary_lithology,Primary Lithology,true,${is_this_a_bed_or_p
 select_one nq1zz74,principal_siliciclastic_type,Principal Siliciclastic Type,false,${primary_lithology} = 'siliciclastic',,
 select_one br57a34,mud_silt_principal_grain_size,Mudstone/Siltstone Principal Grain Size,false,${principal_siliciclastic_type} = 'claystone' or ${principal_siliciclastic_type} = 'mudstone' or ${principal_siliciclastic_type} = 'shale' or ${principal_siliciclastic_type} = 'siltstone',,
 select_one yt6dh35,sand_principal_grain_size,Sandstone Principal Grain Size,false,${principal_siliciclastic_type} = 'sandstone',,
-select_one hx7uv11,congl_breccia_principal_grain_size,Conglomerate/Breccia Principal Grain Size,false,${principal_siliciclastic_type} = 'conglomerate' or ${principal_siliciclastic_type} = 'breccia',,
+select_one hx7uv11,congl_principal_grain_size,Conglomerate Principal Grain Size,false,${principal_siliciclastic_type} = 'conglomerate',,
+select_one hx7uv11,breccia_principal_grain_size,Breccia Principal Grain Size,false,${principal_siliciclastic_type} = 'breccia',,
 select_multiple ww4nv53,grain_size,Grain Size Range,false,,,
 decimal,clay_percent,Clay percent,false,"selected(${grain_size}, 'clay')",,
 decimal,mud_percent,Mud percent,false,"selected(${grain_size}, 'mud')",,
@@ -37,4 +38,4 @@ select_multiple hs69g66,rounding,Rounding,false,,,
 text,Notes,Notes,false,,,
 end_group,,,,,,
 calculate,__version__,,false,,'vpSRWLYg7xtLSMswzEzCvi',
-calculate,_version_,,,,'vvQmpKEgP3qJCZrbFSQbDu',__version__
+calculate,_version_,,,,'vMYYhdDXtFjwYFDtyUSedA',__version__
