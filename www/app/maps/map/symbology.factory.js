@@ -124,7 +124,7 @@
       var canvas = document.createElement('canvas');
       var context = canvas.getContext('2d');
       var img = new Image();
-      img.src = 'img/sed/' + src + '.svg';
+      img.src = 'img/sed/' + src + '.png';
       img.onload = function () {
         canvas.width = img.width;
         canvas.height = img.height;
