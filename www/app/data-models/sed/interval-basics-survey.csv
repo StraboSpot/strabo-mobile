@@ -23,7 +23,7 @@ select_multiple gg6bk97,evaporite_type,Evaporite type,false,${primary_lithology}
 select_multiple om8xr30,organic_coal_lithologies,Organic/Coal Lithologies,false,${primary_lithology} = 'organic_coal',,,
 select_multiple mo7ce83,phosphorite_type,Phosphorite type,false,${primary_lithology} = 'phosphatic',,,
 select_one kl1cz02,lithification,Lithification,false,${is_this_a_bed_or_package} = 'bed' or ${is_this_a_bed_or_package} = 'interbedded' or ${is_this_a_bed_or_package} = 'package_succe',,,
-select_one jx0op03,relative_resistance_weathering,Relative resistance (weathering profile),true,${is_this_a_bed_or_package} = 'bed' or ${is_this_a_bed_or_package} = 'interbedded' or ${is_this_a_bed_or_package} = 'package_succe',,,
+select_one jx0op03,relative_resistance_weathering,Relative resistance (weathering profile),false,${is_this_a_bed_or_package} = 'bed' or ${is_this_a_bed_or_package} = 'interbedded' or ${is_this_a_bed_or_package} = 'package_succe',,,
 text,fresh_color,Fresh color,false,${is_this_a_bed_or_package} = 'bed' or ${is_this_a_bed_or_package} = 'interbedded' or ${is_this_a_bed_or_package} = 'package_succe',,,
 text,weathered_color,weathered color,false,${is_this_a_bed_or_package} = 'bed' or ${is_this_a_bed_or_package} = 'interbedded' or ${is_this_a_bed_or_package} = 'package_succe',,,
 end_group,,,,,,,
@@ -31,4 +31,4 @@ text,notes,Notes,false,,multiline,,
 calculate,__version__,,false,,,'vYjQCtGRV2iET3JjCTcYeg',
 calculate,_version_,,false,,,'v6yUKf53r3MWtgr8ebBTtV',__version__
 calculate,_version__001,,false,,,'v7uzUyMHWuKeW2scMssmN2',__version__
-calculate,_version__002,,,,,'vvt5pUNTJgmuFepsbBavhZ',__version__
+calculate,_version__002,,,,,'vpY4atsMwi46YuLrE8aRQ3',__version__

@@ -10,7 +10,7 @@ select_one en2os90,mud_silt_principal_grain_size,Mudstone/Siltstone Principal Gr
 select_one he4ke66,sand_principal_grain_size,Sandstone Principal Grain Size,true,${principal_siliciclastic_type} = 'sandstone',,,
 select_one te32l95,congl_breccia_principal_grain_size,Conglomerate/Breccia Principal Grain Size,true,${principal_siliciclastic_type} = 'conglomerate' or ${principal_siliciclastic_type} = 'breccia',,,
 select_one uf03r86,principal_dunham_class,Principal Dunham Classification,true,${primary_lithology} = 'limestone' or ${primary_lithology} = 'dolomite',,,
-select_one dt0dc27,relative_resistance_weathering,Relative Resistance (Weathering Profile),true,${is_this_a_bed_or_package} = 'bed' or ${is_this_a_bed_or_package} = 'interbedded' or ${is_this_a_bed_or_package} = 'package_succe',,,
+select_one dt0dc27,relative_resistance_weathering,Relative Resistance (Weathering Profile),false,${is_this_a_bed_or_package} = 'bed' or ${is_this_a_bed_or_package} = 'interbedded' or ${is_this_a_bed_or_package} = 'package_succe',,,
 text,notes,Notes,false,,multiline,,
 calculate,__version__,,false,,,'vNiTHUwnQZKJk9JW5qVQRg',
-calculate,_version_,,,,,'vsvjs4E3z386NWYneEhE4V',__version__
+calculate,_version_,,,,,'vWEmUm7ppU9creips7EBtE',__version__
