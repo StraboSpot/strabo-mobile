@@ -273,7 +273,7 @@
         });
         clasticChoices.push(clasticChoicesTemp);
       });
-      clasticChoices = _.flatten(clasticChoices);
+      clasticChoices = _.uniq(_.flatten(clasticChoices));
       var carbonateChoices = _.filter(dataModels.sed.add_interval.choices, function (choice) {
         return choice.list_name === carbonate.type.split(' ')[1]
       });
