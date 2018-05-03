@@ -1,6 +1,6 @@
 {
     "name": "StraboSpot",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "StraboSpot: An app for Structural Geology and Tectonics (SG&T)",
     "dependencies": {
         "com.verso.cordova.clipboard": "https://github.com/VersoSolutions/CordovaClipboard",
