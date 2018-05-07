@@ -8,7 +8,7 @@ text,purpose_of_study,Purpose of Study,,false,,,,
 text,other_team_members,Other Team Members,,false,,,,
 text,area_of_interest,Area of Interest,,false,,,,
 text,instruments,Instruments Used,,false,,,,
-text,gps_datum,GPS Datum,default to WGS84,false,,,,
-decimal,magnetic_declination,Magnetic Declination,The difference between the north geographic pole and the north magnetic pole. A positive number is East and negative is West.,false,Declination must be between -180 to 180.,. >= -180 and . <= 180,,
+text,gps_datum,GPS Datum,"default value is WGS84, enter to change",false,,,,
+decimal,magnetic_declination,Magnetic Declination,"Enter declination based on whether magnetic north is east or west of geographic north. If magnetic north is west of geographic north, enter declination as a negative number; if it is east enter declination as a positive number.",false,Declination must be between -180 to 180.,. >= -180 and . <= 180,,
 text,notes,Notes,,false,,,multiline,
-calculate,__version__,,,,,,,'vTMHSWSjntxQJYynztQVPL'
+calculate,__version__,,,,,,,'vBddZJCK5Uxzut7y9x7FG3'
