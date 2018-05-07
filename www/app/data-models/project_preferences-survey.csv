@@ -1,7 +1,7 @@
 type,name,label,hint,required,constraint_message,constraint,calculation
 start,start,,,,,,
 end,end,,,,,,
-begin_group,group_tab_control,Basic Tab Control,,,,,
+begin_group,group_tab_control,Basic Spot Page Control,,,,,
 acknowledge,orientations,Orientations,,false,,,
 acknowledge,_3dstructures,3D Structures,,false,,,
 acknowledge,images,Images,,false,,,
@@ -11,7 +11,7 @@ acknowledge,other_features,Other Features,,false,,,
 acknowledge,relationships,Relationships,,false,,,
 acknowledge,tags,Tags,,false,,,
 end_group,,,,,,,
-begin_group,group_sed_tab_control,Sedimentology Tab Control,,,,,
+begin_group,group_sed_tab_control,Sedimentology Spot Page Control,,,,,
 acknowledge,sed_lithologies,Lithologies,,false,,,
 acknowledge,sed_structures,Structures,,false,,,
 acknowledge,sed_interpretations,Interpretations,,false,,,
@@ -28,4 +28,4 @@ end_group,,,,,,,
 begin_group,group_vw6ff56,Privacy Control,,,,,
 acknowledge,public,Public?,,false,,,
 end_group,,,,,,,
-calculate,__version__,,,,,,'vjFUHBrwqdCvWdzqc8ASa8'
+calculate,__version__,,,,,,'vboGGVSAMgsqbCFHLSGVu5'

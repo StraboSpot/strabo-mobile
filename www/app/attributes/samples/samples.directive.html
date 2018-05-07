@@ -1,6 +1,6 @@
 <div>
   <div class='padding' ng-show='vm.samples.length === 0'>
-    No Samples found in any of the active Spots. Add a new Sample from the Samples tab within a Spot.
+    No Samples found in any of the active Spots. Add a new Sample from the Samples Page within a Spot.
   </div>
   <ul class='strabo-flex-container strabo-wrap' ng-show='vm.samples.length > 0'>
     <li class="strabo-flex-item" ng-repeat='sample in vm.samples | orderBy:"name" track by sample.id'
