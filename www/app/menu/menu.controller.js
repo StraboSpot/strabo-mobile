@@ -61,7 +61,8 @@
 
     function getIsStratMode() {
       var preferences = ProjectFactory.getPreferences();
-      return _.has(preferences, 'strat_mode');
+      var project = ProjectFactory.getCurrentProject();
+      return _.has(preferences, 'strat_mode') && project.is_testing_mode;
     }
 
     function getProjectName() {

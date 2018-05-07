@@ -18,6 +18,7 @@
 
     vm.dataChanged = false;
     vm.dbUrl = undefined;
+    vm.isTestingMode = false;
     vm.msg = undefined;
     vm.pointsToGenerate = undefined;
     vm.spotDataModel = {};
@@ -28,6 +29,7 @@
     vm.resetDbUrl = resetDbUrl;
     vm.save = save;
     vm.submit = submit;
+    vm.toggleTestingMode = toggleTestingMode;
 
     activate();
 
@@ -37,6 +39,9 @@
 
     function activate() {
       vm.dbUrl = RemoteServerFactory.getDbUrl();
+
+      var project = ProjectFactory.getCurrentProject();
+      vm.isTestingMode = project.is_testing_mode || false;
 
       $ionicModal.fromTemplateUrl('app/misc/misc-modal.html', {
         'scope': $scope,
@@ -194,6 +199,18 @@
     function submit(pointsToGenerate) {
       $log.log('Generating ' + pointsToGenerate + ' random Spots ...');
       generateRandomGeojsonPoint(pointsToGenerate);
+    }
+
+    function toggleTestingMode() {
+      ProjectFactory.saveProjectItem('is_testing_mode', vm.isTestingMode);
+      if (!vm.isTestingMode) {
+        var preferences = ProjectFactory.getPreferences();
+        preferences.sed_lithologies = false;
+        preferences.sed_structures = false;
+        preferences.sed_interpretations = false;
+        preferences.strat_mode = false;
+        ProjectFactory.saveProjectItem('preferences', preferences);
+      }
     }
   }
 }());

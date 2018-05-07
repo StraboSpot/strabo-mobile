@@ -5,9 +5,10 @@
     .module('app')
     .controller('FormController', FormController);
 
-  FormController.$inject = ['$document', '$ionicModal', '$ionicPopup', '$log', '$scope', 'FormFactory'];
+  FormController.$inject = ['$document', '$ionicModal', '$ionicPopup', '$log', '$scope', 'FormFactory',
+    'ProjectFactory'];
 
-  function FormController($document, $ionicModal, $ionicPopup, $log, $scope, FormFactory) {
+  function FormController($document, $ionicModal, $ionicPopup, $log, $scope, FormFactory, ProjectFactory) {
     var vm = this;
 
     vm.choices = {};
@@ -94,6 +95,12 @@
       }
       if (!show) {
         if (data[field.name]) delete data[field.name];
+      }
+      var project = ProjectFactory.getCurrentProject();
+      if (!project.is_testing_mode) {
+        if (field.name === 'group_sed_tab_control' || field.name === 'sed_lithologies' ||
+          field.name === 'sed_structures' || field.name === 'sed_interpretations' ||
+          field.name === 'group_other_modes' || field.name === 'strat_mode') show = false;
       }
       return show;
     }
