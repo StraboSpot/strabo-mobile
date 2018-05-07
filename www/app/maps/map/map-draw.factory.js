@@ -5,15 +5,16 @@
     .module('app')
     .factory('MapDrawFactory', MapDrawFactory);
 
-  MapDrawFactory.$inject = ['$document', '$ionicPopup', '$location', '$log', '$q', '$rootScope', 'SpotFactory',
-    'IS_WEB'];
+  MapDrawFactory.$inject = ['$document', '$ionicPopup', '$location', '$log', '$q', '$rootScope', 'HelpersFactory',
+    'SpotFactory', 'IS_WEB'];
 
-  function MapDrawFactory($document, $ionicPopup, $location, $log, $q, $rootScope, SpotFactory, IS_WEB) {
+  function MapDrawFactory($document, $ionicPopup, $location, $log, $q, $rootScope, HelpersFactory, SpotFactory,
+                          IS_WEB) {
+    var belongsTo = {};
     var draw;               // draw is a ol3 drawing interaction
     var drawButtonActive;   // drawButtonActive used to keep state of which selected drawing tool is active
     var drawLayer;
     var featuresOrig = [];
-    var imageBasemap;       // id of an image basemap if an image basemap is being used
     var isFreeHand;
     var lassoMode;          // mode of current lasso (tag or stereonet)
     var map;
@@ -45,10 +46,12 @@
     // Remove draw interaction
     function cancelDraw() {
       if (draw !== null) {
+        $log.log('Canceling draw ...');
         map.removeInteraction(draw);
         draw = null;
         drawButtonActive = null;
       }
+      cancelEdits();
     }
 
     function enableDrawMode(inIsFreeHand, type) {
@@ -110,7 +113,7 @@
 
           var newGeom = e.target.get('geometry');
           var newCoords = newGeom.getCoordinates();
-          if (!imageBasemap) {
+          if (map.getView().getProjection().getUnits() !== 'pixels') {
             switch (newGeom.getType()) {
               case 'Point':
                 newCoords = ol.proj.toLonLat(newCoords);
@@ -151,26 +154,9 @@
     }
 
     function startDraw(type, inIsFreeHand) {
+      $log.log('Starting draw ...');
       isFreeHand = inIsFreeHand;
-      // if the type is already selected, we want to stop drawing
-      if (drawButtonActive === type && !isFreeHand) {
-        cancelDraw();
-        cancelEdits();
-        return;
-      }
-
       drawButtonActive = type;
-
-      // $log.log('isFreeHand, ', isFreeHand);
-
-      // is draw already set?
-      if (isDrawMode()) {
-        // if (draw !== null) {
-        // yes, stop and remove the drawing interaction
-        cancelDraw();
-        cancelEdits();
-      }
-
       if (type === 'Edit') enableEditMode();
       else enableDrawMode(isFreeHand, type);
     }
@@ -223,12 +209,9 @@
 
       // the actual geojson object that was drawn
       var geojsonObj;
-      if (imageBasemap) {
-        // Drawing on an image basemap
+      if (map.getView().getProjection().getUnits() === 'pixels') {
         geojsonObj = geojson.writeFeatureObject(e.feature, {'decimals': 4});
-        geojsonObj.properties = {
-          'image_basemap': imageBasemap.id
-        };
+        if (!_.isEmpty(belongsTo)) geojsonObj.properties = belongsTo;     // Image Basemap or Strat Section
 
         if (_.find(_.flatten(geojsonObj.geometry.coordinates),
             function (num) {
@@ -250,15 +233,14 @@
         });
       }
 
-      if (isFreeHand) {
-        $log.log('Drawend : Freehand');
-
+      if (lassoMode) {
         // add the regular draw controls back
-        map.addControl(new DrawControls({
+        var drawControlProps = {
           'map': map,
-          'drawLayer': drawLayer,
-          'imageBasemap': imageBasemap
-        }));
+          'drawLayer': drawLayer
+        };
+        if (!_.isEmpty(belongsTo)) drawControlProps[belongsTo] = belongsTo;
+        map.addControl(new DrawControls(drawControlProps));
 
         // add the layer switcher controls back
         map.addControl(new ol.control.LayerSwitcher());
@@ -274,12 +256,20 @@
         var mappedSpots = _.filter(spots, function (spot) {
           return spot.geometry;
         });
-        if (imageBasemap) {
+        if (!_.isEmpty(belongsTo) && belongsTo.image_basemap) {
           var spotsOnImageBasemap = _.filter(mappedSpots, function (mappedSpot) {
             return mappedSpot.properties.image_basemap;
           });
           mappedSpots = _.filter(spotsOnImageBasemap, function (spotOnImageBasemap) {
-            return spotOnImageBasemap.properties.image_basemap === imageBasemap.id;
+            return spotOnImageBasemap.properties.image_basemap === belongsTo[image_basemap];
+          });
+        }
+        if (!_.isEmpty(belongsTo) && belongsTo.strat_section_id) {
+          var spotsOnStratSection = _.filter(mappedSpots, function (mappedSpot) {
+            return mappedSpot.properties.strat_section_id;
+          });
+          mappedSpots = _.filter(spotsOnStratSection, function (spotOnStratSection) {
+            return spotOnStratSection.properties.strat_section_id === belongsTo[strat_section_id];
           });
         }
         _.each(mappedSpots, function (spot) {
@@ -328,7 +318,8 @@
       var options = opt_options || {};
       map = opt_options.map;
       drawLayer = opt_options.drawLayer;
-      imageBasemap = opt_options.imageBasemap || null;
+      if (opt_options.belongsTo) belongsTo = opt_options.belongsTo;
+      else belongsTo = {};
       draw = null;
       drawButtonActive = null;
       modify = null;
@@ -341,24 +332,74 @@
         drawControls[key] = $document[0].createElement('a');
         drawControls[key].id = 'draw' + key + 'Control';
         drawControls[key].className = key;
-        drawControls[key].addEventListener('click', handleDraw, false);
-        drawControls[key].addEventListener('touchstart', handleDraw, false);
+        drawControls[key].style.backgroundColor = 'transparent';
+        if (IS_WEB) drawControls[key].addEventListener('click', handleClick);
+        if (IS_WEB) drawControls[key].addEventListener('dblclick', handleDoubleClick);
+        if (!IS_WEB) drawControls[key].addEventListener('touchstart', handleTouchStart);
+        if (!IS_WEB) drawControls[key].addEventListener('touchend', handleTouchEnd);
         element.appendChild(drawControls[key]);
       });
 
+      function handleClick(e) {
+        longpress = false;
+        handleDraw(e);
+      }
+
+      function handleDoubleClick(e) {
+        $log.log('double');
+        longpress = true;
+        handleDraw(e);
+      }
+
+      function handleTouchStart() {
+        longpress = false;
+        startTime = new Date().getTime();
+      }
+
+      function handleTouchEnd(e) {
+        endTime = new Date().getTime();
+        longpress = endTime - startTime >= 500;
+        handleDraw(e);
+      }
+
       function handleDraw(e) {
+        cancelDraw();
+
+        // Set clicked control to gray and all others to transparent
         _.each(drawControls, function (value, key) {
-          if (value.id !== e.target.id) drawControls[key].style.backgroundColor = '';
+          if (value.id === e.target.id) {
+            if (e.target.style.backgroundColor === 'transparent' || longpress) {
+              drawControls[key].style.backgroundColor = '#DDDDDD';
+            }
+            else drawControls[key].style.backgroundColor = 'transparent';
+          }
+          else drawControls[key].style.backgroundColor = 'transparent';
         });
-        if (e.target.style.backgroundColor === '') drawControls[e.target.className].style.backgroundColor = '#DDDDDD';
-        else drawControls[e.target.className].style.backgroundColor = '';
-        e.preventDefault();
-        startDraw(e.target.className);
+
+        // Freehand line and freehand poly are still under the controls line and poly respectively
+        var control = e.target.className;
+        if (e.target.className === 'LineStringFreehand') control = 'LineString';
+        else if (e.target.className === 'PolygonFreehand') control = 'Polygon';
+
+        // If long press switch classes for line and poly
+        if (longpress && (e.target.id === 'drawLineStringControl' || e.target.id === 'drawPolygonControl')) {
+          if (e.target.className === 'LineString') e.target.className = 'LineStringFreehand';
+          else if (e.target.className === 'LineStringFreehand') e.target.className = 'LineString';
+          else if (e.target.className === 'Polygon') e.target.className = 'PolygonFreehand';
+          else if (e.target.className === 'PolygonFreehand') e.target.className = 'Polygon';
+        }
+
+        // Cancel draw if button transparent otherwise start draw with or without freehand based on class
+        if (e.target.style.backgroundColor === 'transparent') cancelDraw();
+        else if (e.target.className === 'LineStringFreehand' || e.target.className === 'PolygonFreehand') {
+          startDraw(control, true);
+        }
+        else startDraw(control, false);
       }
 
       ol.control.Control.call(this, {
-        'element': element,
-        'target': options.target
+        'element': element//,
+       // 'target': options.target  // ToDo Not Needed
       });
 
       // Recognize a long press - used for deleting vertexes
@@ -411,6 +452,36 @@
       $log.log('Saving edited spots ...', spotsEdited);
       var promises = [];
       _.each(spotsEdited, function (editedSpot) {
+        // If the edited spot was an interval in a strat section recalculate the thickness
+        if (editedSpot.properties.strat_section_id && editedSpot.properties.surface_feature &&
+          editedSpot.properties.surface_feature.surface_feature_type === 'strat_interval') {
+          var geometry = new ol.format.GeoJSON().readFeature(editedSpot).getGeometry();
+          // Make sure edited intervals do not have min x or min y values less than 0
+          var coords = _.map(geometry.getCoordinates()[0], function (coord) {
+            return [coord[0] > 0 ? coord[0] : 0, coord[1] > 0 ? coord[1] : 0];
+          });
+          editedSpot.geometry.coordinates = [coords];
+          geometry.setCoordinates([coords]);
+          var extent = geometry.getExtent();
+          var thickness = (extent[3] - extent[1]) / 20; // 20 is yMultiplier - see StratSectionFactory
+          thickness = HelpersFactory.roundToDecimalPlaces(thickness, 2);
+          if (!editedSpot.properties.sed) editedSpot.properties.sed = {};
+          if (!editedSpot.properties.sed.lithologies) editedSpot.properties.sed.lithologies = {};
+          editedSpot.properties.sed.lithologies.interval_thickness = thickness;
+          // Update Map Feature
+          map.getLayers().forEach(function (layerGroup) {
+            if (layerGroup.get('name') === 'featureLayer') {
+              layerGroup.getLayers().forEach(function (layer) {
+                layer.getSource().getFeatures().forEach(function (feature) {
+                  if (feature.get('id') === editedSpot.properties.id) {
+                    feature.setProperties(editedSpot.properties);       // Update map feature with new thickness
+                    feature.getGeometry().setCoordinates([coords]);     // Update map feature with new geometry
+                  }
+                });
+              });
+            }
+          });
+        }
         promises.push(SpotFactory.save(editedSpot));
         // Update the displayed geometry if edited feature is being displayed in the map side panel
         if (IS_WEB && editedSpot.properties.id === clickedFeatureId) {
@@ -439,15 +510,15 @@
         }
       });
 
-     var alertPopup = $ionicPopup.alert({
+      var alertPopup = $ionicPopup.alert({
         'title': 'Choose Spots',
         'template': 'Draw a polygon around the Spots you would like to transfer to Rick Allmendinger\'s Stereonet app.'
       });
-     alertPopup.then(function () {
-       // start the draw with freehand enabled
-       lassoMode = "stereonet";
-       startDraw('Polygon', true);
-     });
+      alertPopup.then(function () {
+        // start the draw with freehand enabled
+        lassoMode = "stereonet";
+        startDraw('Polygon', true);
+      });
     }
   }
 }());

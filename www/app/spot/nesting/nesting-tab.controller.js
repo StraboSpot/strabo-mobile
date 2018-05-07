@@ -5,11 +5,11 @@
     .module('app')
     .controller('NestingTabController', NestingTabController);
 
-  NestingTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$rootScope', '$scope', '$state', 'FormFactory', 'HelpersFactory',
-    'SpotFactory', 'IS_WEB'];
+  NestingTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$rootScope', '$scope', '$state', 'FormFactory',
+    'HelpersFactory', 'SpotFactory', 'IS_WEB'];
 
-  function NestingTabController($ionicModal, $ionicPopup, $log, $rootScope, $scope, $state, FormFactory, HelpersFactory, SpotFactory,
-                                IS_WEB) {
+  function NestingTabController($ionicModal, $ionicPopup, $log, $rootScope, $scope, $state, FormFactory, HelpersFactory,
+                                SpotFactory, IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.nestTab = vm;
@@ -86,10 +86,18 @@
         var imageBasemaps = _.map(thisSpot.properties.images, function (image) {
           return image.id;
         });
-        childrenSpots = _.filter(vmParent.spots, function (spot) {
+        var imageBasemapChildrenSpots = _.filter(vmParent.spots, function (spot) {
           return _.contains(imageBasemaps, spot.properties.image_basemap);
         });
+        childrenSpots.push(imageBasemapChildrenSpots);
       }
+      if (thisSpot.properties.sed && thisSpot.properties.sed.strat_section) {
+        var stratSectionChildrenSpots = _.filter(vmParent.spots, function (spot) {
+          return thisSpot.properties.sed.strat_section.strat_section_id === spot.properties.strat_section_id;
+        });
+        childrenSpots.push(stratSectionChildrenSpots);
+      }
+      childrenSpots = _.flatten(childrenSpots);
       // Only non-point features can have children
       if (_.propertyOf(thisSpot.geometry)('type')) {
         if (_.propertyOf(thisSpot.geometry)('type') !== 'Point') {
@@ -135,6 +143,15 @@
         });
         parentSpots.push(parentImageBasemapSpot);
       }
+      if (thisSpot.properties.strat_section_id) {
+        var parentStratSectionSpot = _.find(vmParent.spots, function (spot) {
+          return _.find(spot.properties.sed, function (sed) {
+            return sed.strat_section_id === thisSpot.properties.strat_section_id;
+          });
+        });
+        parentSpots.push(parentStratSectionSpot);
+      }
+      parentSpots = _.flatten(parentSpots);
       var otherSpots = _.reject(vmParent.spots, function (spot) {
         return spot.properties.id === thisSpot.properties.id || !spot.geometry;
       });
@@ -184,7 +201,7 @@
     }
 
     function isiOS() {
-      return ionic.Platform.device().platform=="iOS";
+      return ionic.Platform.device().platform == "iOS";
     }
 
     function stereonetSpots(childrenSpots) {
@@ -217,9 +234,12 @@
     function updateNest() {
       vm.parentSpots = getParents(vmParent.spot);
       vm.childrenSpots = getChildren(vmParent.spot);
-      if (IS_WEB && $state.current.name === 'app.map') $rootScope.$broadcast('updateFeatureLayer');
+      if (IS_WEB && $state.current.name === 'app.map') $rootScope.$broadcast('updateMapFeatureLayer');
       else if (IS_WEB && $state.current.name === 'app.image-basemaps.image-basemap') {
-        $rootScope.$broadcast('updateFeatureLayer');
+        $rootScope.$broadcast('updateImageBasemapFeatureLayer');
+      }
+      else if ($state.current.name === 'app.strat-sections.strat-section') {
+        $rootScope.$broadcast('updateStratSectionFeatureLayer');
       }
     }
   }

@@ -8,15 +8,6 @@
   function config($urlRouterProvider, $stateProvider) {
     // Declare Login and Main Menu States and Dashboard State for WEB
     $stateProvider
-    /* .state('login', {
-     'cache': false,
-     'url': '/login',
-     'templateUrl': 'app/login/login.html',
-     'controller': 'LoginController as vm',
-     'resolve': {
-     'prepLogin': prepLogin
-     }
-     })*/
       .state('app', {
         'url': '/app',
         'abstract': true,
@@ -37,41 +28,42 @@
         }
       });
 
-    // Declare Main Menu Content States
-    var mainStates = [
-      {'state': 'about', 'url': 'about', 'template': 'about/about', 'controller': 'About'},
-      //{'state': 'archiveTiles', 'url': 'map/archiveTiles', 'template': 'maps/offline-maps/archive-tiles', 'controller': 'ArchiveTiles'},
-      {'state': 'description', 'url': 'description', 'template': 'project/description/description', 'controller': 'Description'},
-      {'state': 'image-basemap', 'url': 'image-basemaps/:imagebasemapId', 'template': 'maps/image-basemap/image-basemap', 'controller': 'ImageBasemap'},
-      {'state': 'image-basemaps', 'url': 'image-basemaps', 'template': 'maps/image-basemaps/image-basemaps', 'controller': 'ImageBasemaps'},
-      {'state': 'images', 'url': 'images', 'template': 'attributes/images/images', 'controller': 'Images'},
-      {'state': 'manage-project', 'url': 'manage-project', 'template': 'project/manage/manage-project', 'controller': 'ManageProject'},
-      {'state': 'map', 'url': 'map', 'template': 'maps/map/map', 'controller': 'Map'},
-      {'state': 'misc', 'url': 'misc', 'template': 'misc/misc', 'controller': 'Misc'},
-      //{'state': 'offlinemap', 'url': 'offlinemap', 'template': 'maps/offline-maps/offline-map', 'controller': 'OfflineMap'},
-      {'state': 'other-maps', 'url': 'other-maps', 'template': 'maps/other-maps/other-maps', 'controller': 'OtherMaps'},
-      {'state': 'preferences', 'url': 'preferences', 'template': 'project/preferences/preferences', 'controller': 'Preferences'},
-      {'state': 'relationship', 'url': 'relationships/:relationship_id', 'template': 'relationship/relationship', 'controller': 'Relationship'},
-      {'state': 'relationships', 'url': 'relationships', 'template': 'relationships/relationships', 'controller': 'Relationships'},
-      {'state': 'samples', 'url': 'samples', 'template': 'attributes/samples/samples', 'controller': 'Samples'},
-      //{'state': 'spots', 'url': 'spots', 'template': 'spots/spots', 'controller': 'Spots'},
-      {'state': 'tag', 'url': 'tags/:tag_id', 'template': 'tag/tag', 'controller': 'Tag'},
-      {'state': 'tags', 'url': 'tags', 'template': 'tags/tags', 'controller': 'Tags'},
-      {'state': 'tools', 'url': 'tools', 'template': 'project/tools/tools', 'controller': 'Tools'},
-      {'state': 'user', 'url': 'user', 'template': 'user/user', 'controller': 'User'},
+    // Declare Main Menu and Child Content States
+    var states = [
+      {'state': 'about', 'url': 'about', 'template': 'about/about', 'controller': 'About', 'view': 'menuContent'},
+      {'state': 'description', 'url': 'description', 'template': 'project/description/description', 'controller': 'Description', 'view': 'menuContent'},
+      {'state': 'image-basemaps.image-basemap', 'url': ':imagebasemapId', 'template': 'maps/image-basemap/image-basemap', 'controller': 'ImageBasemap', 'view': 'image-basemap-view'},
+      {'state': 'image-basemaps', 'url': 'image-basemaps', 'template': 'maps/image-basemaps/image-basemaps', 'controller': 'ImageBasemaps', 'view': 'menuContent'},
+      {'state': 'images', 'url': 'images', 'template': 'attributes/images/images', 'controller': 'Images', 'view': 'menuContent'},
+      {'state': 'manage-project', 'url': 'manage-project', 'template': 'project/manage/manage-project', 'controller': 'ManageProject', 'view': 'menuContent'},
+      {'state': 'map', 'url': 'map', 'template': 'maps/map/map', 'controller': 'Map', 'view': 'menuContent'},
+      {'state': 'misc', 'url': 'misc', 'template': 'misc/misc', 'controller': 'Misc', 'view': 'menuContent'},
+      {'state': 'other-maps', 'url': 'other-maps', 'template': 'maps/other-maps/other-maps', 'controller': 'OtherMaps', 'view': 'menuContent'},
+      {'state': 'preferences', 'url': 'preferences', 'template': 'project/preferences/preferences', 'controller': 'Preferences', 'view': 'menuContent'},
+      {'state': 'relationships.relationship', 'url': ':relationship_id', 'template': 'relationship/relationship', 'controller': 'Relationship', 'view': 'relationship-view@app.relationships'},
+      {'state': 'relationships', 'url': 'relationships', 'template': 'relationships/relationships', 'controller': 'Relationships', 'view': 'menuContent'},
+      {'state': 'samples', 'url': 'samples', 'template': 'attributes/samples/samples', 'controller': 'Samples', 'view': 'menuContent'},
+      {'state': 'strat-section', 'url': 'strat-sections/:stratSectionId', 'template': 'maps/strat-section/strat-section', 'controller': 'StratSection', 'view': 'menuContent'},
+      //{'state': 'strat-sections.strat-section', 'url': ':stratSectionId', 'template': 'maps/strat-section/strat-section', 'controller': 'StratSection', 'view': 'strat-section-view'},
+      {'state': 'strat-sections', 'url': 'strat-sections', 'template': 'maps/strat-sections/strat-sections', 'controller': 'StratSections', 'view': 'menuContent'},
+      {'state': 'tags.tag', 'url': ':tag_id', 'template': 'tag/tag', 'controller': 'Tag', 'view': 'tag-view@app.tags'},
+      {'state': 'tags', 'url': 'tags', 'template': 'tags/tags', 'controller': 'Tags', 'view': 'menuContent'},
+      {'state': 'tools', 'url': 'tools', 'template': 'project/tools/tools', 'controller': 'Tools', 'view': 'menuContent'},
+      {'state': 'user', 'url': 'user', 'template': 'user/user', 'controller': 'User', 'view': 'menuContent'},
       // For WEB only
-      {'state': 'login', 'url': 'login', 'template': 'login/login', 'controller': 'Login'}
+      {'state': 'login', 'url': 'login', 'template': 'login/login', 'controller': 'Login', 'view': 'menuContent'}
     ];
-    _.each(mainStates, function (mainState) {
-      $stateProvider.state('app.' + mainState.state, {
+    _.each(states, function (state) {
+      var viewKey = state.view;
+      var view = {};
+      view[viewKey] = {
+        'templateUrl': 'app/' + state.template + '.web.html',   // Added .web for WEB
+        'controller': state.controller + 'Controller as vm'
+      };
+      $stateProvider.state('app.' + state.state, {
         'cache': false,
-        'url': '/' + mainState.url,
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/' + mainState.template + '.web.html',   // Added .web for WEB
-            'controller': mainState.controller + 'Controller as vm'
-          }
-        }
+        'url': '/' + state.url,
+        'views': view
       });
     });
 
@@ -108,6 +100,10 @@
       {'state': 'relationships', 'template': 'relationships/relationships-tab', 'controller': 'Relationships'},
       {'state': 'samples', 'template': 'samples/samples-tab', 'controller': 'Samples'},
       {'state': 'spot', 'template': 'spot-tab/spot-tab', 'controller': 'Spot'},
+      {'state': 'sed-interpretations', 'template': 'sed/interpretations/interpretations-tab', 'controller': 'SedInterpretations'},
+      {'state': 'sed-lithologies', 'template': 'sed/lithologies/lithologies-tab', 'controller': 'SedLithologies'},
+      {'state': 'sed-structures', 'template': 'sed/structures/structures-tab', 'controller': 'SedStructures'},
+      {'state': 'strat-section', 'template': 'sed/strat-section/strat-section-tab', 'controller': 'StratSection'},
       {'state': 'tags', 'template': 'tags/tags-tab', 'controller': 'Tags'}
     ];
     _.each(spotTabStates, function (spotTabState) {
@@ -127,13 +123,6 @@
     $urlRouterProvider.otherwise('/app/map');
   }
 
-  /*
-   function prepLogin(LocalStorageFactory, UserFactory) {
-   return LocalStorageFactory.setupLocalforage().then(function () {
-   return UserFactory.loadUser();
-   });
-   }
-   */
   function prepMenu($ionicLoading, LocalStorageFactory, DataModelsFactory, ProjectFactory, RemoteServerFactory, SpotFactory,
                     UserFactory, OtherMapsFactory, AutoLoginFactory) {
     $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loading Data Models...'});

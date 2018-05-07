@@ -5,16 +5,18 @@
     .module('app')
     .factory('FormFactory', FormFactory);
 
-  FormFactory.$inject = ['$document', '$ionicPopup', '$log', '$rootScope', 'DataModelsFactory'];
+  FormFactory.$inject = ['$document', '$ionicPopup', '$log', '$rootScope', 'DataModelsFactory', 'StratSectionFactory'];
 
-  function FormFactory($document, $ionicPopup, $log, $rootScope, DataModelsFactory) {
+  function FormFactory($document, $ionicPopup, $log, $rootScope, DataModelsFactory, StratSectionFactory) {
 
     var form = {};   // form = {'choices': {}, 'survey': {}};
+    var formName = [];
 
     return {
       'clearForm': clearForm,
       'clearFormElements': clearFormElements,
       'getForm': getForm,
+      'getFormName': getFormName,
       'getMax': getMax,
       'getMin': getMin,
       'isRelevant': isRelevant,
@@ -23,6 +25,44 @@
       'validate': validate,
       'validateForm': validateForm
     };
+
+    /**
+     * Private Functions
+     */
+
+    function validateSedData(spot, errorMessages) {
+      var lithologies = spot.properties.sed.lithologies;
+      if (StratSectionFactory.isInterval(spot)) {
+        var spotWithThisStratSection = StratSectionFactory.getSpotWithThisStratSection(
+          spot.properties.strat_section_id);
+        if (spotWithThisStratSection && spotWithThisStratSection.properties &&
+          spotWithThisStratSection.properties.sed && spotWithThisStratSection.properties.sed.strat_section) {
+          var units = spotWithThisStratSection.properties.sed.strat_section.column_y_axis_units;
+          if (units !== lithologies.thickness_units) {
+            errorMessages.push('- The <b>Thickness Units</b> must be <b>' + units + '</b> since <b>' + units +
+              '</b> have been assigned for the properties of this strat section.')
+          }
+        }
+      }
+      if (lithologies.is_this_a_bed_or_package === 'bed' || lithologies.is_this_a_bed_or_package === 'interbedded' ||
+        lithologies.is_this_a_bed_or_package === 'package_succe') {
+        if (!lithologies.primary_lithology) {
+          errorMessages.push('- The <b>Primary Lithology</b> must be specified if the there is any type of bedding.');
+        }
+        else if (lithologies.primary_lithology === 'siliciclastic' && (!lithologies.mud_silt_principal_grain_size &&
+            !lithologies.sand_principal_grain_size && !lithologies.congl_principal_grain_size &&
+          !lithologies.breccia_principal_grain_size)) {
+          errorMessages.push('- The <b>Principal Grain Size</b> must be specified if the Primary Lithology is ' +
+            'siliciclastic.');
+        }
+        else if ((lithologies.primary_lithology === 'limestone' || lithologies.primary_lithology === 'dolomite') &&
+          !lithologies.principal_dunham_class) {
+          errorMessages.push('- The <b>Principal Dunham Classification</b> must be specified if the Primary Lithology' +
+            ' is limestone or dolomite.');
+        }
+      }
+      return errorMessages;
+    }
 
     /**
      * Public Functions
@@ -51,6 +91,10 @@
 
     function getForm() {
       return form;
+    }
+
+    function getFormName() {
+      return formName
     }
 
     // Get the max value allowed for a number field
@@ -101,14 +145,16 @@
       }
     }
 
-    function setForm(formName, type) {
+    function setForm(inFormName, type) {
+      $log.log('Setting form to', inFormName, type);
+      formName = type ? inFormName + '.' + type : inFormName;
       if (type) {
-        form.survey = DataModelsFactory.getDataModel(formName)[type].survey;
-        form.choices = DataModelsFactory.getDataModel(formName)[type].choices;
+        form.survey = DataModelsFactory.getDataModel(inFormName)[type].survey;
+        form.choices = DataModelsFactory.getDataModel(inFormName)[type].choices;
       }
       else {
-        form.survey = DataModelsFactory.getDataModel(formName).survey;
-        form.choices = DataModelsFactory.getDataModel(formName).choices;
+        form.survey = DataModelsFactory.getDataModel(inFormName).survey;
+        form.choices = DataModelsFactory.getDataModel(inFormName).choices;
       }
       $rootScope.$broadcast('formUpdated', form);
     }
@@ -124,8 +170,9 @@
     }
 
     function validate(data) {
+      if (_.isEmpty(data)) return true;
       $log.log('Validating form with data:', data);
-      var errorMessages = '';
+      var errorMessages = [];
       var formCtrl = angular.element(document.getElementById('straboFormCtrlId')).scope();
       // If a field is visible and required but empty give the user an error message and return to the form
       _.each(form.survey, function (field) {
@@ -133,59 +180,60 @@
           var ele = $document[0].getElementById(field.name);
           var formEle = formCtrl.straboForm[ele.id];
           if (getComputedStyle(ele).display !== 'none' && formEle && formEle.$valid === false) {
-            if (field.required === 'true') errorMessages += '<b>' + field.label + '</b>: Required!<br>';
+            if (field.required === 'true') errorMessages.push('<b>' + field.label + '</b>: Required!');
             else {
               var constraint = field.constraint_message ? field.constraint_message : 'Error in field.';
-              errorMessages += '<b>' + field.label + '</b>: ' + constraint + '<br>';
+              errorMessages.push('<b>' + field.label + '</b>: ' + constraint);
             }
           }
           else if (getComputedStyle(ele).display === 'none') delete data[field.name];
         }
       });
 
-      if (errorMessages) {
+      if (_.isEmpty(errorMessages)) return true;
+      else {
         $ionicPopup.alert({
           'title': 'Validation Error!',
-          'template': 'Fix the following errors before continuing:<br>' + errorMessages
+          'template': 'Fix the following errors before continuing:<br>' + errorMessages.join('<br>')
         });
-        $log.log('Not valid!');
         return false;
       }
-      $log.log('Valid!');
-      return true;
     }
 
     // Validate Spot Tab
     function validateForm(stateName, spot, data) {
-      if (stateName === 'app.spotTab.spot') {
-        if (!spot.properties.name) {
-          $ionicPopup.alert({
-            'title': 'Validation Error!',
-            'template': '<b>Spot Name</b> is required.'
-          });
-          return false;
-        }
-        if (spot.geometry) {
-          if (spot.geometry.type === 'Point') {
-            var geoError;
-            if (!spot.geometry.coordinates[0] && !spot.geometry.coordinates[1]) {
-              geoError = '<b>Latitude</b> and <b>longitude</b> are required.';
-            }
-            else if (!spot.geometry.coordinates[0]) geoError = '<b>Longitude</b> is required.';
-            else if (!spot.geometry.coordinates[1]) geoError = '<b>Latitude</b> is required.';
-            if (geoError) {
-              $ionicPopup.alert({
-                'title': 'Validation Error!',
-                'template': geoError
-              });
-              return false;
-            }
+      var errorMessages = [];
+      if (_.isEmpty(form.survey)) {
+        if (stateName === 'app.spotTab.spot') {
+          if (!spot.properties.name) errorMessages.push('<b>Spot Name</b> is required.');
+          if (spot.geometry && spot.geometry.type === 'Point' && (!spot.geometry.coordinates[0] ||
+              !spot.geometry.coordinates[1])) {
+            errorMessages.push('Both <b>Latitude</b> and <b>longitude</b> are required.');
           }
         }
-        if (!_.isEmpty(form.survey)) return validate(data);
-        return true;
       }
-      return true;
+      else if (validate(data)) {
+        if (stateName === 'app.spotTab.spot') {
+          if (!spot.properties.name) errorMessages.push('<b>Spot Name</b> is required.');
+          if (spot.geometry && spot.geometry.type === 'Point' && (!spot.geometry.coordinates[0] ||
+              !spot.geometry.coordinates[1])) {
+            errorMessages.push('Both <b>Latitude</b> and <b>longitude</b> are required.');
+          }
+        }
+        else if (stateName === 'app.spotTab.sed-lithologies' && spot.properties.sed &&
+          spot.properties.sed.lithologies) {
+          errorMessages = validateSedData(spot, errorMessages);
+        }
+      }
+      else return false;
+      if (_.isEmpty(errorMessages)) return true;
+      else {
+        $ionicPopup.alert({
+          'title': 'Data Validation Error',
+          'template': errorMessages.join('<br>')
+        });
+        return false;
+      }
     }
   }
 }());

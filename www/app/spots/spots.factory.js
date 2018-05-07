@@ -50,7 +50,7 @@
           inFilterConditions.date.start = new Date("1000-02-01T05:00:00.000Z");    // Jan 31, 1000
         }
         if (!inFilterConditions.date.end) inFilterConditions.date.end = new Date(); // today
-        inFilterConditions.date.end.setHours(23,59,59,999);
+        inFilterConditions.date.end.setHours(23, 59, 59, 999);
         if (inFilterConditions.date.start > inFilterConditions.date.end) {
           $ionicPopup.alert({
             'title': 'Invalid Dates',
@@ -65,7 +65,7 @@
           inFilterConditions.dateModified.start = new Date("1000-02-01T05:00:00.000Z");     // Jan 31, 1000
         }
         if (!inFilterConditions.dateModified.end) inFilterConditions.dateModified.end = new Date(); // today
-        inFilterConditions.dateModified.end.setHours(23,59,59,999);
+        inFilterConditions.dateModified.end.setHours(23, 59, 59, 999);
         if (inFilterConditions.dateModified.start > inFilterConditions.dateModified.end) {
           $ionicPopup.alert({
             'title': 'Invalid Modified Dates',
@@ -164,6 +164,16 @@
             return new Date(spot.properties.modified_timestamp) >= filterConditions.dateModified.start &&
               new Date(spot.properties.modified_timestamp) <= filterConditions.dateModified.end;
           }
+        });
+      }
+      // Filter by Spot Type
+      if (filterConditions.spotType) {
+        filteredSpots = _.filter(filteredSpots, function (spot) {
+          if (!spot.properties.image_basemap && !spot.properties.strat_section_id) {
+            return _.contains(filterConditions.spotType, 'geo')
+          }
+          if (spot.properties.image_basemap) return _.contains(filterConditions.spotType, 'image-basemap');
+          if (spot.properties.strat_section_id) return _.contains(filterConditions.spotType, 'strat-section');
         });
       }
     }

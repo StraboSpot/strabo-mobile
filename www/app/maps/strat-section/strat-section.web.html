@@ -1,0 +1,54 @@
+<div class='map' ng-show='vm.mapView'>
+  <div id='mapdiv' data-tap-disabled='true'></div>
+  <div class='saveEdits' ng-show='vm.showSaveEditsBtn' ng-click='vm.saveEdits()'>{{ vm.saveEditsText }}</div>
+  <div class='map-menu'>
+    <span ng-show='vm.isNesting' class='nesting-notification-web'>Nesting On</span>
+    <button class='button button-icon button-small ion-plus' ng-click='vm.addInterval()'></button>
+    <button ng-show='vm.mapView' ng-click='vm.switchView()'
+            class='button button-icon icon button-small ion-document-text'></button>
+    <button ng-show='!vm.mapView' ng-click='vm.switchView()'
+            class='button button-icon icon button-small ion-podium rotate-90'></button>
+    <button ng-click='vm.popover.show($event)'
+            class='button button-icon icon button-small ion-more rotate-90'></button>
+  </div>
+  <div id='image-basemap-zoom-info'>Zoom: {{ vm.currentZoom }}</div>
+  <div class="ol-scale-line ol-unselectable" id="image-basemap-scale-line">
+    <div class="ol-scale-line-inner" id="image-basemap-scale-line-inner">{{ vm.imageBasemapScaleLabel }}</div>
+  </div>
+
+  <!-- Side Slide Content -->
+  <div>
+    <div id='map-side-panel'>
+      <strabo-map-side-panel></strabo-map-side-panel>
+    </div>
+    <script>
+      $('#map-side-panel').BootSideMenu({
+        side: 'right',          // 'left' or 'right'
+        duration: 500,          // animation speed
+        remember: true,         // restore last menu status on page refresh
+        autoClose: false,       // auto close
+        pushBody: false,        // push the whole page
+        closeOnClick: true,     // close on click
+        width: '25%'            // width
+      });
+    </script>
+  </div>
+</div>
+<div ng-show='!vm.mapView'>
+  <div class='strabo-subheader  padding-left '>
+    <div class="strabo-subheader-text subheader-left">
+      {{ vm.thisSpotWithStratSection.properties.sed.strat_section.section_well_name }} Related Spots
+    </div>
+    <div class="subheader-right padding-top">
+      <span ng-show='vm.isNesting' class='nesting-notification-web'>Nesting On</span>
+      <button class='button button-icon button-small ion-plus' ng-click='vm.addInterval()'></button>
+      <button ng-show='vm.mapView' ng-click='vm.switchView()'
+              class='button button-icon icon button-small ion-document-text'></button>
+      <button ng-show='!vm.mapView' ng-click='vm.switchView()'
+              class='button button-icon icon button-small ion-podium rotate-90'></button>
+      <button ng-click='vm.popover.show($event)'
+              class='button button-icon icon button-small ion-more rotate-90'></button>
+    </div>
+  </div>
+  <spots-this-map-directive></spots-this-map-directive>
+</div>

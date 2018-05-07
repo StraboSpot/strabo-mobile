@@ -1,0 +1,57 @@
+<ion-modal-view>
+  <ion-header-bar class='bar-stable nav-title-slide-ios7' align-title='center'>
+    <button class='button button-positive'
+            ng-click='vmChild.saveOverlayImage()'>Save
+    </button>
+    <h1 class='title'>Add Image Overlay</h1>
+    <button class='button icon ion-close-round close-modal-button'
+            ng-click='vmChild.addOverlayImageModal.hide()'>
+    </button>
+  </ion-header-bar>
+  <ion-content class='has-header strabo-form'>
+    <ion-input class='item item-input item-select item-stacked-label item-text-wrap'>
+      <ion-label>
+        Image to Use as Overlay
+      </ion-label>
+      <select ng-model='vmChild.data.id'
+              ng-options='image.id as image.title + " (" + image.width + " x " + image.height + ")" for image in vm.spot.properties.images'
+              ng-change='vmChild.changeBaseImage(image)'>
+        <option value=''>-- Select an Image --</option>
+      </select>
+    </ion-input>
+    <div ng-show='vmChild.data.id'>
+      <ion-input class='item item-input item-stacked-label item-text-wrap'>
+        <ion-label>Image Origin X Value</ion-label>
+        <input type='number' placeholder='x value for the bottom left corner of image relative to axes origin (0,0)'
+               ng-model='vmChild.data.image_origin_x'>
+      </ion-input>
+      <ion-input class='item item-input item-stacked-label item-text-wrap'>
+        <ion-label>Image Origin Y Value</ion-label>
+        <input type='number' placeholder='y value for the bottom left corner of image relative to axes origin (0,0)'
+               ng-model='vmChild.data.image_origin_y'>
+      </ion-input>
+      <ion-input class='item item-input item-stacked-label item-text-wrap'>
+        <ion-label>Adjusted Image Width</ion-label>
+        <input type='number' placeholder='height adjusted automatically to maintain aspect ratio'
+               ng-model='vmChild.data.image_width'
+               ng-change='vmChild.resizeImage("w")'>
+      </ion-input>
+      <ion-input class='item item-input item-stacked-label item-text-wrap'>
+        <ion-label>Adjusted Image Height</ion-label>
+        <input type='number' placeholder='width adjusted automatically to maintain aspect ratio'
+               ng-model='vmChild.data.image_height'
+               ng-change='vmChild.resizeImage("h")'>
+      </ion-input>
+      <ion-input class='item item-input item-stacked-label item-text-wrap'>
+        <ion-label>Image Opacity</ion-label>
+        <input type='number' placeholder='0-1 with 0 being transparent and 1 opaque'
+               ng-model='vmChild.data.image_opacity'>
+      </ion-input>
+      <ion-input class='item item-input item-stacked-label item-text-wrap'>
+        <ion-label>Z-Index</ion-label>
+        <input type='number' placeholder='layer ordering'
+               ng-model='vmChild.data.z_index'>
+      </ion-input>
+    </div>
+  </ion-content>
+</ion-modal-view>

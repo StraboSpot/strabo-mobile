@@ -52,7 +52,7 @@ Generate Resources (icons and splash screens):
     ionic resources
     
 ### Tested Environment - Plugins    
-    cordova-plugin-camera 2.1.1 "Camera"
+    cordova-plugin-camera 2.4.1 "Camera"
     cordova-plugin-compat 1.1.0 "Compat"
     cordova-plugin-console 1.0.2 "Console"
     cordova-plugin-device 1.1.1 "Device"

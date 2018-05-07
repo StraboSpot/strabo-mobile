@@ -35,10 +35,16 @@
     <true/>
   </gap:config-file>
 
-  <plugin name="cordova-plugin-camera" spec="2.3.1">
-    <variable name="CAMERA_USAGE_DESCRIPTION" value="Take my own photo." />
-    <variable name="NSPHOTOLIBRARYUSAGEDESCRIPTIONENTRY" value="Access my photo library." />
-  </plugin>
+  <plugin name="cordova-plugin-camera" spec="2.4.1"/>
+  <edit-config target="NSCameraUsageDescription" file="*-Info.plist" mode="overwrite">
+    <string>StraboSpot uses the camera to add photos to Spots.</string>
+  </edit-config>
+  <edit-config target="NSPhotoLibraryUsageDescription" file="*-Info.plist" mode="overwrite">
+    <string>StraboSpot accesses the photo library to save photos taken through the app or add selected photos to Spots.</string>
+  </edit-config>
+  <edit-config target="NSPhotoLibraryAddUsageDescription" file="*-Info.plist" mode="overwrite">
+    <string>StraboSpot accesses the photo library to save photos taken through the app.</string>
+  </edit-config>
   <plugin name="com.verso.cordova.clipboard" spec="https://github.com/VersoSolutions/CordovaClipboard" />
   <plugin name="cordova-plugin-console" spec="1.0.2"/>
   <plugin name="cordova-plugin-device" spec="1.1.1"/>
@@ -54,6 +60,7 @@
   <plugin name="cordova-plugin-whitelist" spec="1.2.1"/>
   <plugin name="cordova-plugin-statusbar" spec="2.1.3"/>
   <plugin name="cordova-sqlite-storage" spec="0.7.14"/>
+  <plugin name="cordova-plugin-itunesfilesharing" spec="^0.0.1" />
 
   <platform name="ios">
     <icon src="www/res/icons/ios/icon-small.png" width="29" height="29"/>

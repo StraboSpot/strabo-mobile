@@ -81,6 +81,92 @@
         'choices': {},
         'choices_file': 'app/data-models/sample-choices.csv'
       },
+      'sed': {
+        'add_interval': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/add-interval-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/add-interval-choices.csv'
+        },
+        'architecture': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/interpretations-architecture-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/interpretations-architecture-choices.csv'
+        },
+        'biogenic_structures': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/biogenic-structures-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/biogenic-structures-choices.csv'
+        },
+        'chemogenic_structures': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/chemogenic-structures-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/chemogenic-structures-choices.csv'
+        },
+        'composition': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/composition-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/composition-choices.csv'
+        },
+        'environment': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/interpretations-environment-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/interpretations-environment-choices.csv'
+        },
+        'facies_and_process': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/interpretations-facies-and-process-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/interpretations-facies-and-process-choices.csv'
+        },
+        'interval_basics': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/interval-basics-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/interval-basics-choices.csv'
+        },
+        'stratification': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/stratification-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/stratification-choices.csv'
+        },
+        'pedogenic_structures': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/pedogenic-structures-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/pedogenic-structures-choices.csv'
+        },
+        'physical_structures': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/physical-structures-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/physical-structures-choices.csv'
+        },
+        'strat_section': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/strat-section-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/strat-section-choices.csv'
+        },
+        'surfaces': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/interpretations-surfaces-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/interpretations-surfaces-choices.csv'
+        },
+        'texture': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/texture-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/texture-choices.csv'
+        }
+      },
       'surface_feature': {
         'survey': {},
         'survey_file': 'app/data-models/surface_feature-survey.csv',
@@ -100,6 +186,7 @@
     };
     var featureTypeLabels = {};
     var labelsDictionary = {};
+    var sedLabelsDictionary = {};
     var spotDataModel = {};
     var surfaceFeatureTypeLabels = {};
     var traceTypeLabels = {};
@@ -108,6 +195,8 @@
       'getDataModel': getDataModel,
       'getFeatureTypeLabel': getFeatureTypeLabel,
       'getLabel': getLabel,
+      'getSedLabel': getSedLabel,
+      'getSedLabelsDictionary': getSedLabelsDictionary,
       'getSpotDataModel': getSpotDataModel,
       'getSurfaceFeatureTypeLabel': getSurfaceFeatureTypeLabel,
       'getTraceTypeLabel': getTraceTypeLabel,
@@ -161,6 +250,57 @@
       $log.log('Labels Dictionary:', labelsDictionary);
     }
 
+    function createSedLabelsDictionary() {
+      sedLabelsDictionary = {'clastic': [], 'carbonate': [], 'lithologies': [], 'weathering': []};
+      var survey = dataModels.sed.add_interval.survey;
+      var clastic = _.filter(survey, function (field) {
+        return field.name === 'mud_silt_principal_grain_size' || field.name === 'sand_principal_grain_size' ||
+          field.name === 'congl_principal_grain_size' || field.name === 'breccia_principal_grain_size';
+      });
+      var carbonate = _.find(survey, function (field) {
+        return field.name === 'principal_dunham_class';
+      });
+      var lithologies = _.find(survey, function (field) {
+        return field.name === 'primary_lithology';
+      });
+      var weathering = _.find(survey, function (field) {
+        return field.name === 'relative_resistance_weathering';
+      });
+      var clasticChoices = [];
+      _.each(clastic, function (c) {
+        var clasticChoicesTemp = _.filter(dataModels.sed.add_interval.choices, function (choice) {
+          return choice.list_name === c.type.split(' ')[1]
+        });
+        clasticChoices.push(clasticChoicesTemp);
+      });
+      clasticChoices = _.uniq(_.flatten(clasticChoices));
+      var carbonateChoices = _.filter(dataModels.sed.add_interval.choices, function (choice) {
+        return choice.list_name === carbonate.type.split(' ')[1]
+      });
+      var lithologiesChoices = _.filter(dataModels.sed.add_interval.choices, function (choice) {
+        return choice.list_name === lithologies.type.split(' ')[1]
+      });
+      var weatheringChoices = _.filter(dataModels.sed.add_interval.choices, function (choice) {
+        return choice.list_name === weathering.type.split(' ')[1]
+      });
+      _.each(clasticChoices, function (choice, i) {
+        sedLabelsDictionary.clastic.push({'value': choice.name, 'label': choice.label});
+        //sedLabelsDictionary.clastic[choice.name] = {'label': choice.label, 'order': i};
+      });
+      _.each(carbonateChoices, function (choice, i) {
+        sedLabelsDictionary.carbonate.push({'value': choice.name, 'label': choice.label});
+        //sedLabelsDictionary.carbonate[choice.name] = {'label': choice.label, 'order': i};
+      });
+      _.each(lithologiesChoices, function (choice, i) {
+        sedLabelsDictionary.lithologies.push({'value': choice.name, 'label': choice.label});
+        //sedLabelsDictionary.lithologies[choice.name] = {'label': choice.label, 'order': i};
+      });
+      _.each(weatheringChoices, function (choice, i) {
+        sedLabelsDictionary.weathering.push({'value': choice.name, 'label': choice.label});
+        //sedLabelsDictionary.weathering[choice.name] = {'label': choice.label, 'order': i};
+      });
+    }
+
     function createSpotDataModel() {
       spotDataModel = {
         'geometry': {
@@ -177,6 +317,7 @@
           'notes': 'Type: text',
           'orientation_data': [],
           'samples': [],
+          'sed': {'lithologies': {}, 'structures': {}, 'interpretations': {}},
           'time': 'datetime',
           'trace': {}
         }
@@ -192,12 +333,25 @@
         'planar_orientation': dataModels.orientation_data.planar_orientation,
         'tabular_orientation': dataModels.orientation_data.tabular_orientation,
         'samples': dataModels.sample,
+        'sed_composition': dataModels.sed.composition,
+        'sed_interval_basics': dataModels.sed.interval_basics,
+        'sed_stratification': dataModels.sed.stratification,
+        'sed_texture': dataModels.sed.texture,
+        'sed_biogenic_structures': dataModels.sed.biogenic_structures,
+        'sed_chemogenic_structures': dataModels.sed.chemogenic_structures,
+        'sed_pedogenic_structures': dataModels.sed.pedogenic_structures,
+        'sed_physical_structures': dataModels.sed.physical_structures,
+        'sed_facies_and_process': dataModels.sed.facies_and_process,
+        'sed_environment': dataModels.sed.environment,
+        'sed_surfaces': dataModels.sed.surfaces,
+        'sed_architecture': dataModels.sed.architecture,
         'trace': dataModels.trace
       };
       _.each(models, function (model, key) {
         var description = {};
         _.each(model.survey, function (field) {
-          if (field.type.split('_')[0] !== 'end' && field.type.split('_')[0] !== 'begin' && field.type !=='calculate') {
+          if (field.type.split('_')[0] !== 'end' && field.type.split(
+              '_')[0] !== 'begin' && field.type !== 'calculate') {
             var type = getType(field.type, model);
             var hint = field.hint ? '; Hint: ' + field.hint : '';
             var required = field.required === 'true' ? '; REQUIRED' : '';
@@ -206,28 +360,42 @@
         });
         description = sortby(description);
         if (key === 'linear_orientation' || key === 'planar_orientation' || key === 'tabular_orientation') {
-          description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id); REQUIRED';
+          description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number ' +
+            'appended (= 14 digit id); REQUIRED';
           description.type = key + '; REQUIRED';
           description.associated_orientation = [];
           description = sortby(description);
           spotDataModel.properties.orientation_data.push(description);
         }
         else if (key === 'fabric' || key === 'fold' || key === 'other' || key === 'tensor') {
-          description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id); REQUIRED';
+          description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number ' +
+            'appended (= 14 digit id); REQUIRED';
           description.type = key + '; REQUIRED';
           description = sortby(description);
           spotDataModel.properties._3d_structures.push(description);
         }
         else if (key === 'samples') {
-          description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id); REQUIRED';
+          description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number ' +
+            'appended (= 14 digit id); REQUIRED';
           spotDataModel.properties[key].push(description);
         }
-        else if (key === 'trace') {
-          _.extend(spotDataModel.properties[key], description);
+        else if (key === 'sed_composition' || key === 'sed_interval_basics' || key === 'sed_stratification' ||
+          key === 'sed_texture') {
+          _.extend(spotDataModel.properties.sed.lithologies, description);
         }
+        else if (key === 'sed_biogenic_structures' || key === 'sed_chemogenic_structures' ||
+          key === 'sed_pedogenic_structures' || key === 'sed_physical_structures') {
+          _.extend(spotDataModel.properties.sed.structures, description);
+        }
+        else if (key === 'sed_facies_and_process' || key === 'sed_environment' || key === 'sed_surfaces' ||
+          key === 'sed_architecture') {
+          _.extend(spotDataModel.properties.sed.interpretations, description);
+        }
+        else if (key === 'trace') _.extend(spotDataModel.properties[key], description);
         else if (key === 'images') {
           description.annotated = 'true/false for whether or not the image is used as an Image Basemap';
-          description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id); REQUIRED';
+          description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number ' +
+            'appended (= 14 digit id); REQUIRED';
           description = sortby(description);
           spotDataModel.properties.images.push(description);
         }
@@ -270,10 +438,17 @@
       var deferred = $q.defer(); // init promise
       // Load the survey
       readCSV(dataModel.survey_file, function (surveyFields) {
+        surveyFields = _.each(surveyFields, function (surveyField) {
+          surveyField.name = surveyField.name.toLowerCase();
+          if (surveyField.relevant) surveyField.relevant = surveyField.relevant.toLowerCase();
+        });
         dataModel.survey = surveyFields;
         // Load the choices
         if (dataModel.choices_file) {
           readCSV(dataModel.choices_file, function (choicesFields) {
+            choicesFields = _.each(choicesFields, function (choicesField) {
+              choicesField.name = choicesField.name.toLowerCase();
+            });
             dataModel.choices = choicesFields;
             deferred.resolve();
           });
@@ -310,6 +485,22 @@
       return labelsDictionary[label] || undefined;
     }
 
+    function getSedLabel(value) {
+      var matchedSedLabelsSet = _.find(sedLabelsDictionary, function (sedLabelsSet) {
+        return _.find(sedLabelsSet, function (sedLabel) {
+          return sedLabel.value === value;
+        });
+      });
+      var matchedLabel = _.find(matchedSedLabelsSet, function (sedLabel) {
+        return sedLabel.value === value;
+      });
+      return matchedLabel.label;
+    }
+
+    function getSedLabelsDictionary() {
+      return sedLabelsDictionary;
+    }
+
     function getSpotDataModel() {
       return spotDataModel;
     }
@@ -328,7 +519,7 @@
 
       $log.log('Loading data models ...');
       _.each(dataModels, function (dataModel, key) {
-        if (key === 'orientation_data' || key === '_3d_structures') {
+        if (key === 'orientation_data' || key === '_3d_structures' || key === 'sed') {
           _.each(dataModel, function (childDataModel, childKey) {
             //$log.log('Loading', key, childKey, ' ...');
             promises.push(loadDataModel(childDataModel));
@@ -344,6 +535,7 @@
         createSpotDataModel();
         createFeatureTypesDictionary();
         createOtherLabelsDictionary();
+        createSedLabelsDictionary();
         deferred.resolve();
       });
       return deferred.promise;

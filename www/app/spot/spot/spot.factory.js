@@ -5,11 +5,11 @@
     .module('app')
     .factory('SpotFactory', SpotFactory);
 
-  SpotFactory.$inject = ['$ionicPopup', '$location', '$log', '$state', '$q', 'HelpersFactory', 'LiveDBFactory',
-    'LocalStorageFactory', 'ProjectFactory'];
+  SpotFactory.$inject = ['$cordovaGeolocation', '$ionicPopup', '$location', '$log', '$state', '$q', 'HelpersFactory',
+    'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'IS_WEB'];
 
-  function SpotFactory($ionicPopup, $location, $log, $state, $q, HelpersFactory, LiveDBFactory, LocalStorageFactory,
-                       ProjectFactory) {
+  function SpotFactory($cordovaGeolocation, $ionicPopup, $location, $log, $state, $q, HelpersFactory, LiveDBFactory,
+                       LocalStorageFactory, ProjectFactory, IS_WEB) {
     var activeNest = [];
     var activeSpots;  // Only Spots in the active datasets
     var currentSpotId = undefined;
@@ -29,7 +29,11 @@
       {'value': 'samples', 'label': 'Samples', 'path': 'samples'},
       {'value': 'other_features', 'label': 'Other Features', 'path': 'other-features'},
       {'value': 'relationships', 'label': 'Relationships', 'path': 'relationships'},
-      {'value': 'tags', 'label': 'Tags', 'path': 'tags'}];
+      {'value': 'tags', 'label': 'Tags', 'path': 'tags'},
+      {'value': 'strat_section', 'label': 'Strat Section', 'path': 'strat-section'},
+      {'value': 'sed_lithologies', 'label': 'Sed Lithologies', 'path': 'sed-lithologies'},
+      {'value': 'sed_structures', 'label': 'Sed Structures', 'path': 'sed-structures'},
+      {'value': 'sed_interpretations', 'label': 'Sed Interpretations', 'path': 'sed-interpretations'}];
     var visibleDatasets = [];
 
     return {
@@ -255,12 +259,12 @@
 
     function getImagePropertiesById(imageId) {
       var foundImage = undefined;
-     _.each(spots, function (spot) {
+      _.each(spots, function (spot) {
         _.each(spot.properties.images, function (image) {
           if (imageId === image.id) foundImage = image;
         });
       });
-     return foundImage;
+      return foundImage;
     }
 
     function getKeepSpotSelected() {
@@ -295,7 +299,7 @@
       return spotsTemp;
     }
 
-    function getTabs(){
+    function getTabs() {
       return tabs;
     }
 
@@ -336,28 +340,16 @@
 
     // Save the Spot to the local database if it's been changed
     function save(saveSpot) {
-      $log.log('In Spot Factory Save();');
-      $log.log('Spot to save: ', saveSpot);
-      $log.log('Existing Spot: ', spots[saveSpot.properties.id]);
       var deferred = $q.defer(); // init promise
-      var isEqual = _.isEqual(saveSpot, spots[saveSpot.properties.id]);
-      if (isEqual) {
-        $log.log('Spot not changed. No need to save Spot.');
-        $log.log('All Spots:', spots);
+      saveSpot.properties.modified_timestamp = Date.now();
+      $log.log('Spot has changed. Saving Spot:', saveSpot, '...');
+      if (IS_WEB) LiveDBFactory.save(saveSpot, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
+      LocalStorageFactory.getDb().spotsDb.setItem(saveSpot.properties.id.toString(), saveSpot).then(function () {
+        spots[saveSpot.properties.id] = angular.fromJson(angular.toJson(saveSpot));
+        deferred.notify();
+        $log.log('Spot Saved. All Spots:', spots);
         deferred.resolve(spots);
-      }
-      else {
-        saveSpot.properties.modified_timestamp = Date.now();
-        $log.log('Spot has changed. Saving Spot:', saveSpot, '...');
-        $log.log('Calling LiveDBFactory ...');
-        LiveDBFactory.save(saveSpot, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
-        LocalStorageFactory.getDb().spotsDb.setItem(saveSpot.properties.id.toString(), saveSpot).then(function () {
-          spots[saveSpot.properties.id] = angular.fromJson(angular.toJson(saveSpot));
-          deferred.notify();
-          $log.log('Spot Saved. All Spots:', spots);
-          deferred.resolve(spots);
-        });
-      }
+      });
       return deferred.promise;
     }
 
@@ -429,9 +421,33 @@
 
         ProjectFactory.incrementSpotNumber();
         ProjectFactory.addSpotToDataset(newSpot.properties.id, ProjectFactory.getSpotsDataset().id);
-        save(newSpot).then(function () {
-          deferred.resolve(newSpot.properties.id);
-        });
+
+        // Get current location when creating a new Spot that is mapped on a strat section
+        if (newSpot.properties.strat_section_id) {
+          $cordovaGeolocation.getCurrentPosition().then(function (position) {
+            newSpot.properties.lat = HelpersFactory.roundToDecimalPlaces(position.coords.latitude, 6);
+            newSpot.properties.lng = HelpersFactory.roundToDecimalPlaces(position.coords.longitude, 6);
+            if (position.coords.altitude) {
+              newSpot.properties.altitude = HelpersFactory.roundToDecimalPlaces(position.coords.altitude, 2);
+            }
+          }, function (err) {
+            $log.log('Unable to get current location: ' + err.message);
+            // ToDo: The following freezes the app in the Chrome dev evnvironment
+            /*$ionicPopup.alert({
+              'title': 'Alert!',
+              'template': 'Unable to get current location: ' + err.message
+            });*/
+          }).finally(function () {
+            save(newSpot).then(function () {
+              deferred.resolve(newSpot.properties.id);
+            });
+          });
+        }
+        else {
+          save(newSpot).then(function () {
+            deferred.resolve(newSpot.properties.id);
+          });
+        }
       }
       return deferred.promise;
     }

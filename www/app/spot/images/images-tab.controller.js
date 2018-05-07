@@ -5,38 +5,26 @@
     .module('app')
     .controller('ImagesTabController', ImagesTabController);
 
-  ImagesTabController.$inject = ['$cordovaCamera', /*'$cordovaGeolocation',*/ '$document', '$ionicModal', '$ionicPopup',
-    '$ionicScrollDelegate', '$ionicSlideBoxDelegate', '$log', '$q', '$scope', '$state', '$window', 'FormFactory',
-    'HelpersFactory', 'ImageFactory', 'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'SpotFactory',
-    'IS_WEB'];
+  ImagesTabController.$inject = ['$document', '$http', '$ionicModal', '$ionicPopup', '$ionicScrollDelegate',
+    '$ionicSlideBoxDelegate', '$log', '$q', '$rootScope', '$scope', '$state', '$window', 'FormFactory',
+    'HelpersFactory', 'ImageFactory', 'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'RemoteServerFactory',
+    'SpotFactory', 'UserFactory', 'IS_WEB'];
 
-  function ImagesTabController($cordovaCamera, /*$cordovaGeolocation,*/ $document, $ionicModal, $ionicPopup,
-                               $ionicScrollDelegate, $ionicSlideBoxDelegate, $log, $q, $scope, $state, $window,
-                               FormFactory, HelpersFactory, ImageFactory, LiveDBFactory, LocalStorageFactory,
-                               ProjectFactory, SpotFactory, IS_WEB) {
+  function ImagesTabController($document, $http, $ionicModal, $ionicPopup, $ionicScrollDelegate, $ionicSlideBoxDelegate,
+                               $log, $q, $rootScope, $scope, $state, $window, FormFactory, HelpersFactory, ImageFactory,
+                               LiveDBFactory, LocalStorageFactory, ProjectFactory, RemoteServerFactory, SpotFactory,
+                               UserFactory, IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
 
-    //var getGeoInfo = false;
     var imageSources = {};
-    var isReattachImage = false;
+    var newImageData = {};
     var thisTabName = 'images';
 
     vm.activeSlide = null;
-    vm.cameraSource = [{
-      'text': 'Photo Library',
-      'value': 'PHOTOLIBRARY'
-    }, {
-      'text': 'Camera',
-      'value': 'CAMERA'
-    }, {
-      'text': 'Saved Photo Album',
-      'value': 'SAVEDPHOTOALBUM'
-    }];
-    vm.imageType = 'photo';
+    vm.imageType = undefined;
     vm.imageTypeChoices = {};
     vm.otherImageType = undefined;
-    vm.selectedCameraSource = {};
     vm.zoomMin = 1;
 
     vm.addImage = addImage;
@@ -49,6 +37,7 @@
     vm.moreDetail = moreDetail;
     vm.reattachImage = reattachImage;
     vm.showImages = showImages;
+    vm.takePicture = takePicture;
     vm.toggleImageBasemap = toggleImageBasemap;
     vm.updateSlideStatus = updateSlideStatus;
 
@@ -75,6 +64,10 @@
           });
         }
       });
+
+      $rootScope.$on('updatedImages', function () {
+        getImageSources();
+      });
     }
 
     function loadTab(state) {
@@ -84,49 +77,6 @@
       getImageSources();
       checkImageType();     // Set default image type to 'photo' if no image type has been set
       ionic.on('change', getFile, $document[0].getElementById('file'));
-    }
-
-    /*function addGeoInfo(imageData) {
-      $cordovaGeolocation.getCurrentPosition().then(function (position) {
-        getGeoInfo = false;
-        imageData.lat = position.coords.latitude;
-        imageData.lng = position.coords.longitude;
-        saveSpot(imageData);
-      }, function (err) {
-        getGeoInfo = false;
-        $log.log('Error getting the current position. Ignoring geolocation.');
-        saveSpot(imageData);
-      });
-    }*/
-
-    function cameraModal() {
-      // camera modal popup
-      var myPopup = $ionicPopup.show({
-        'template': '<ion-radio ng-repeat="source in vmChild.cameraSource" ng-value="source.value" ng-model="vmChild.selectedCameraSource.source">{{ source.text }}</ion-radio>',
-        'title': 'Select an image source',
-        'scope': $scope,
-        'buttons': [{
-          'text': 'Cancel'
-        }, {
-          'text': '<b>Go</b>',
-          'type': 'button-positive',
-          'onTap': function (e) {
-            if (!vm.selectedCameraSource.source) {
-              // don't allow the user to close unless a value is set
-              e.preventDefault();
-            }
-            else {
-              return vm.selectedCameraSource.source;
-            }
-          }
-        }]
-      });
-
-      myPopup.then(function (cameraSource) {
-        if (cameraSource) {
-          launchCamera(cameraSource);
-        }
-      });
     }
 
     // Set default image type to 'photo' if no image type has been set
@@ -150,16 +100,28 @@
 
     function getFile(event) {
       $log.log('Getting file ....');
-      var file = event.target.files[0];
-      readDataUrl(file);
+      ImageFactory.readFile(event.target.files[0]);
     }
 
     function getImageSources() {
       var promises = [];
-      imageSources = [];
+      imageSources = {};
       _.each(vmParent.spot.properties.images, function (image) {
         var promise = ImageFactory.getImageById(image.id).then(function (src) {
-          if (IS_WEB) imageSources[image.id] = "https://strabospot.org/pi/" + image.id;
+          if (IS_WEB && UserFactory.getUser()) {
+            // Check that the image exists on the server and then grab the URL for it
+            return RemoteServerFactory.verifyImageExistance(image.id, UserFactory.getUser().encoded_login).then(
+              function (response) {
+                $log.log('Image', image, 'in Spot', vmParent.spot.properties.id, vmParent.spot,
+                  'EXISTS on server. Server response', response);
+                imageSources[image.id] = "https://strabospot.org/pi/" + image.id;
+              },
+              function (response) {
+                $log.error('Image', image, 'in Spot', vmParent.spot.properties.id, vmParent.spot,
+                  'DOES NOT EXIST on server. Server response', response);
+                imageSources[image.id] = 'img/image-not-found.png';
+              });
+          }
           else if (src) imageSources[image.id] = src;
           else imageSources[image.id] = 'img/image-not-found.png';
         });
@@ -171,6 +133,8 @@
     }
 
     function getImageType(imageData, image) {
+      var deferred = $q.defer(); // init promise
+      vm.imageType = undefined;
       var imageTypeField = _.findWhere(FormFactory.getForm().survey, {'name': 'image_type'});
       vm.imageTypeChoices = _.filter(FormFactory.getForm().choices, function (choice) {
         return choice['list_name'] === imageTypeField.type.split(" ")[1]
@@ -198,29 +162,10 @@
       });
 
       imageTypePopup.then(function (res) {
-        if (res) {
-          imageData.image_type = vm.imageType;
-          if (vm.imageType === 'other_image_ty') imageData.other_image_type = vm.otherImageType;
-          ImageFactory.saveImage(imageData.id, image.src);
-          $log.log('Also save image to live db here');
-          LiveDBFactory.saveImageFile(imageData.id, image.src);
-
-          imageSources[imageData.id] = image.src;
-          saveSpot(imageData);
-          /*if (getGeoInfo) addGeoInfo(imageData);
-          else {
-            var confirmPopup = $ionicPopup.confirm({
-              'title': 'Get Geolocation?',
-              'template': 'Use current latitude and longitude for this image?',
-              'cancelText': 'No'
-            });
-            confirmPopup.then(function (res) {
-              if (res) addGeoInfo(imageData);
-              else saveSpot(imageData);
-            });
-          }*/
-        }
+        if (res) deferred.resolve({'image_type': vm.imageType, 'other_image_type': vm.otherImageType});
+        else deferred.reject();
       });
+      return deferred.promise;
     }
 
     function isImageUsed(image) {
@@ -253,177 +198,33 @@
       return false;
     }
 
-    function launchCamera(source) {
-      // all plugins must be wrapped in a ready function
-      document.addEventListener('deviceready', function () {
-        //getGeoInfo = false;
-        if (source === 'PHOTOLIBRARY') source = Camera.PictureSourceType.PHOTOLIBRARY;
-        else if (source === 'SAVEDPHOTOALBUM') source = Camera.PictureSourceType.SAVEDPHOTOALBUM;
-        else if (source === 'CAMERA') {
-          //getGeoInfo = true;
-          source = Camera.PictureSourceType.CAMERA;
-        }
-
-        var cameraOptions = {
-          'quality': 100,
-          'destinationType': Camera.DestinationType.FILE_URI,
-          'sourceType': source,
-          'allowEdit': true,
-          'encodingType': Camera.EncodingType.JPEG,
-          // 'popoverOptions': CameraPopoverOptions,
-          'saveToPhotoAlbum': source === Camera.PictureSourceType.CAMERA
-        };
-
-        $cordovaCamera.getPicture(cameraOptions).then(function (imageURI) {
-          /* the image has been written to the mobile device and the source is a camera type.
-           * It is written in two places:
-           *
-           * Android:
-           * 1) the local strabo-mobile cache, aka '/storage/emulated/0/Android/data/com.ionicframework.strabomobile327690/cache/filename.jpg'
-           * 2) the Photo Album folder, on Android, this is: '/sdcard/Pictures/filename.jpg'
-           *
-           * iOS:
-           * 1) in iOS, this is in the Photos Gallery???
-           *
-           *
-           * If pulling from Photo Library:
-           *
-           * Android: file:///storage/emulated/0/DCIM/Camera/file.jpg
-           * iOS: ???
-           *
-           */
-
-          $log.log('original imageURI ', imageURI);
-
-          // are we on an android device and is the URI schema a 'content://' type?
-          if (imageURI.substring(0, 10) === 'content://') {
-            // yes, then convert it to a 'file://' yet schemaless type
-            $window.FilePath.resolveNativePath(imageURI, resolveSuccess, resolveFail);
-          }
-          else {
-            // no, so no conversion is needed
-            resolveSuccess(imageURI);
-          }
-
-          function resolveFail(message) {
-            //getGeoInfo = false;
-            $log.log('failed to resolve URI', message);
-          }
-
-          // now we read the image from the filesystem and save the image to the spot
-          function resolveSuccess(imageURI) {
-            // is this a real file schema?
-            if (imageURI.substring(0, 7) !== 'file://') {
-              // nope, then lets make this a real file schema
-              imageURI = 'file://' + imageURI;
-            }
-
-            $log.log('final imageURI ', imageURI);
-
-            var gotFileEntry = function (fileEntry) {
-              $log.log('inside gotFileEntry');
-              fileEntry.file(gotFile, resolveFail);
-            };
-
-            var gotFile = function (file) {
-              $log.log('inside gotFile');
-              $log.log('file is ', file);
-              readDataUrl(file);
-            };
-
-            // invoke the reading of the image file from the local filesystem
-            $window.resolveLocalFileSystemURL(imageURI, gotFileEntry, resolveFail);
-          }
-        }, function (err) {
-          $log.log('error: ', err);
-        });
-      });
-    }
-
-    function readDataUrl(file) {
-      // $log.log('inside readDataUrl');
-
-      // create an images array if it doesn't exist -- camera images are stored here
-      if (angular.isUndefined(vmParent.spot.properties.images)) {
-        vmParent.spot.properties.images = [];
-      }
-
-      var reader = new FileReader();
-      var image = new Image();
-      reader.onloadend = function (evt) {
-        // $log.log('Read as data URL');
-        // $log.log(evt.target.result);
-        image.src = evt.target.result;
-        image.onload = function () {
-          if (isReattachImage) {
-            if (image.height === vmParent.data.height && image.width === vmParent.data.width) {
-              ImageFactory.saveImage(vmParent.data.id, image.src).then(function () {
-                $log.log('Also save image to live db here');
-                LiveDBFactory.saveImageFile(vmParent.data.id, image.src);
-                isReattachImage = false;
-                getImageSources();
-                $ionicPopup.alert({
-                  'title': 'Finished Reattaching Image',
-                  'template': 'The selected image source was reattached to the selected image properties.'
-                });
-              });
-            }
-            else {
-              $ionicPopup.alert({
-                'title': 'Mismatched Image',
-                'template': 'The selected image does not have the same height and width as the original. Unable to reattach image.'
-              });
-            }
-          }
-          else {
-            var imageData = {
-              'height': image.height,
-              'width': image.width,
-              'id': HelpersFactory.getNewId()
-            };
-            getImageType(imageData, image);
-          }
-        };
-        image.onerror = function () {
-          $ionicPopup.alert({
-            'title': 'Error!',
-            'template': 'Invalid file type.'
-          });
-        };
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function saveSpot(imageData) {
-      vmParent.spot.properties.images.push(imageData);
-      vmParent.submit();
-      $log.log('Also save spot to live db', vmParent.spot);
-      LiveDBFactory.save(vmParent.spot, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
-    }
-
     /**
      * Public Functions
      */
 
     function addImage() {
-      vm.imageType = 'photo';
-      vm.otherImageType = undefined;
-      isReattachImage = false;
-      vm.selectedCameraSource = {
-        'source': 'CAMERA'  // default is always camera
-      };
-      if (IS_WEB) ionic.trigger('click', {'target': $document[0].getElementById('file')});
-      else cameraModal();
+      getImageType().then(function (imageType) {
+        newImageData.image_type = imageType.image_type;
+        if (imageType.image_type === 'other_image_ty') newImageData.other_image_type = imageType.other_image_type;
+        ImageFactory.setIsReattachImage(false);
+        ImageFactory.setCurrentSpot(vmParent.spot);
+        ImageFactory.setCurrentImage(newImageData);
+        if (IS_WEB) document.getElementById('file').click();
+        else {
+          ImageFactory.getImageFromGallery();
+        }
+        getImageSources();
+      });
     }
 
     function closeModal(modal) {
-      if (modal === 'imagePropertiesModal') {
-        if (FormFactory.validate(vmParent.data)) vm[modal].hide();
-      }
+      if (modal === 'imagePropertiesModal' && FormFactory.validate(vmParent.data)) vm[modal].hide();
       else vm[modal].hide();
+      vmParent.data = {};
     }
 
     function deleteImage() {
+      // ToDo: Do a check here if image is being used as a Strat Section overlay
       if (!isImageUsed(vmParent.data)) {
         var confirmPopup = $ionicPopup.confirm({
           'title': 'Delete Image',
@@ -501,11 +302,11 @@
       });
       confirmPopup.then(function (res) {
         if (res) {
-          isReattachImage = true;
-          vm.selectedCameraSource = {
-            'source': 'PHOTOLIBRARY'
-          };
-          cameraModal();
+          ImageFactory.setIsReattachImage(true);
+          ImageFactory.setCurrentSpot(vmParent.spot);
+          ImageFactory.setCurrentImage(vmParent.data);
+          ImageFactory.getImageFromGallery();
+          getImageSources();
         }
       });
     }
@@ -519,6 +320,14 @@
         vm.imageModal = modal;
         vm.imageModal.show();
       });
+    }
+
+    function takePicture() {
+      ImageFactory.setIsReattachImage(false);
+      ImageFactory.setCurrentSpot(vmParent.spot);
+      ImageFactory.setCurrentImage({'image_type': 'photo'});
+      ImageFactory.takePicture();
+      getImageSources();
     }
 
     function toggleImageBasemap(image) {
@@ -542,6 +351,6 @@
       var zoomFactor = $ionicScrollDelegate.$getByHandle('scrollHandle' + slide).getScrollPosition().zoom;
       if (zoomFactor == vm.zoomMin) $ionicSlideBoxDelegate.enableSlide(true);
       else $ionicSlideBoxDelegate.enableSlide(false);
-    };
+    }
   }
 }());

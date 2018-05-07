@@ -1,0 +1,25 @@
+<ion-view>
+  <ion-nav-title>{{ vm.thisSpotWithStratSection.properties.sed.strat_section.section_well_name }}</ion-nav-title>
+  <ion-nav-buttons side='left'>
+    <button ng-click='vm.goBack();' class='button button-icon icon ion-arrow-left-c'></button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side='right'>
+    <div ng-show='vm.isNesting' class='nesting-notification'>Nesting<br>On</div>
+    <button class='button button-icon ion-plus' ng-click='vm.addInterval()'></button>
+    <button ng-show='vm.mapView' ng-click='vm.switchView()' class='button button-icon icon ion-document-text'></button>
+    <button ng-show='!vm.mapView' ng-click='vm.switchView()'
+            class='button button-icon icon ion-podium rotate-90'></button>
+    <button ng-click='vm.popover.show($event)' class='button button-icon icon ion-more rotate-90'></button>
+  </ion-nav-buttons>
+  <ion-pane data-tap-disabled='true' ng-show='vm.mapView'>
+    <div id='mapdiv' style='height:100%'></div>
+
+    <div class='saveEdits' ng-show='vm.showSaveEditsBtn' ng-click='vm.saveEdits()'>{{ vm.saveEditsText }}</div>
+    <div id='image-basemap-zoom-info'>Zoom: {{ vm.currentZoom }}</div>
+  </ion-pane>
+  <ion-pane ng-show='!vm.mapView'>
+    <ion-content class='has-header'>
+      <spots-this-map-directive></spots-this-map-directive>
+    </ion-content>
+  </ion-pane>
+</ion-view>

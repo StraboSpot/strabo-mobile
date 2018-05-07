@@ -1,0 +1,17 @@
+type,name,label,required,relevant,appearance,calculation,$given_name
+start,start,,,,,,
+end,end,,,,,,
+decimal,interval_thickness,Interval Thickness,true,,,,
+select_one hq17k89,thickness_units,Thickness Units,true,,,,
+select_one th1pp14,is_this_a_bed_or_package,Is this a bed or package (succession of beds) or covered?,false,,,,
+select_one eb2oc45,primary_lithology,Primary Lithology,true,${is_this_a_bed_or_package} = 'bed' or ${is_this_a_bed_or_package} = 'interbedded' or ${is_this_a_bed_or_package} = 'package_succe',,,
+select_one md69g21,principal_siliciclastic_type,Principal Siliciclastic Type,true,${primary_lithology} = 'siliciclastic',,,
+select_one en2os90,mud_silt_principal_grain_size,Mudstone/Siltstone Principal Grain Size,true,${principal_siliciclastic_type} = 'claystone' or ${principal_siliciclastic_type} = 'mudstone' or ${principal_siliciclastic_type} = 'shale' or ${principal_siliciclastic_type} = 'siltstone',,,
+select_one he4ke66,sand_principal_grain_size,Sandstone Principal Grain Size,true,${principal_siliciclastic_type} = 'sandstone',,,
+select_one te32l95,congl_principal_grain_size,Conglomerate Principal Grain Size,true,${principal_siliciclastic_type} = 'conglomerate',,,
+select_one te32l95,breccia_principal_grain_size,Breccia Principal Grain Size,true,${principal_siliciclastic_type} = 'breccia',,,
+select_one uf03r86,principal_dunham_class,Principal Dunham Classification,true,${primary_lithology} = 'limestone' or ${primary_lithology} = 'dolomite',,,
+select_one dt0dc27,relative_resistance_weathering,Relative Resistance (Weathering Profile),false,${is_this_a_bed_or_package} = 'bed' or ${is_this_a_bed_or_package} = 'interbedded' or ${is_this_a_bed_or_package} = 'package_succe',,,
+text,notes,Notes,false,,multiline,,
+calculate,__version__,,false,,,'vNiTHUwnQZKJk9JW5qVQRg',
+calculate,_version_,,,,,'vTZeQ9nNDR7BEiiDcAiSsD',__version__

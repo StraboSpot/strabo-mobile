@@ -5,21 +5,23 @@
     .module('app')
     .factory('MapSetupFactory', MapSetupFactory);
 
-  MapSetupFactory.$inject = ['$log', '$q', 'ImageFactory', 'MapDrawFactory', 'MapFactory', 'MapLayerFactory',
-    'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
+  MapSetupFactory.$inject = ['$log', '$q', 'ImageFactory', 'MapDrawFactory', 'MapEmogeosFactory', 'MapFactory',
+    'MapLayerFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
 
-  function MapSetupFactory($log, $q, ImageFactory, MapDrawFactory, MapFactory, MapLayerFactory, MapViewFactory,
-                           ProjectFactory, SpotFactory, IS_WEB) {
+  function MapSetupFactory($log, $q, ImageFactory, MapDrawFactory, MapEmogeosFactory, MapFactory, MapLayerFactory,
+                           MapViewFactory, ProjectFactory, SpotFactory, IS_WEB) {
     var map;
     var imageBasemap;
     var initialMapView;
     var popup;
+    var stratSectionId;
 
     return {
       'getInitialMapView': getInitialMapView,
       'getMap': getMap,
       'getPopupOverlay': getPopupOverlay,
       'setImageBasemapLayers': setImageBasemapLayers,
+      'setImageOverlays': setImageOverlays,
       'setLayers': setLayers,
       'setOtherLayers': setOtherLayers,
       'setMap': setMap,
@@ -49,6 +51,7 @@
 
     function setImageBasemapLayers(im) {
       imageBasemap = im;
+      stratSectionId = null;
       var imageBasemaps = [im];
       var linkedImagesIds = ProjectFactory.getLinkedImages(im.id);
       if (!linkedImagesIds) $log.log('No linked images.');
@@ -104,8 +107,65 @@
       });
     }
 
+    function setImageOverlays(spot) {
+      stratSectionId = spot.properties.sed.strat_section.strat_section_id;
+      imageBasemap = null;
+      if (_.isEmpty(spot.properties.sed.strat_section.images)) return $q.when(null);
+
+      var imageOverlayLayers = new ol.layer.Group({
+        'name': 'imageOverlaysLayer',
+        'title': 'Image Overlays'
+      });
+
+      var promises = [];
+      _.each(spot.properties.sed.strat_section.images, function (imageOverlay) {
+        var promise = ImageFactory.getImageById(imageOverlay.id).then(function (src) {
+          if (IS_WEB) src = 'https://strabospot.org/pi/' + imageOverlay.id;
+          else if (!src) src = 'img/image-not-found.png';
+          var image = _.find(spot.properties.images, function (image) {
+            return image.id === imageOverlay.id;
+          });
+          if (!image.height || !image.width) {
+            var tempIm = new Image();
+            tempIm.src = src;
+            image.height = tempIm.height;
+            image.width = tempIm.width;
+          }
+
+          var x = imageOverlay.image_origin_x || 0;
+          var y = imageOverlay.image_origin_y || 0;
+          var width = imageOverlay.image_width || image.width;
+          var height = imageOverlay.image_height || image.height;
+          var extent = [x, y, width + x, height + y];
+          var imageOverlayLayer = new ol.layer.Image({
+            'title': image.title || 'Untitled',
+            'id': imageOverlay.id,
+            'type': 'overlay',
+            'opacity': imageOverlay.image_opacity || 1,
+            'zIndex': imageOverlay.z_index || 0,
+            'source': new ol.source.ImageStatic({
+              'attributions': imageOverlay.image_source || 'Unknown Source',
+              'url': src,
+              'projection': new ol.proj.Projection({
+                'code': 'map-image',
+                'units': 'pixels',
+                'extent': extent
+              }),
+              'imageExtent': extent
+            })
+          });
+          imageOverlayLayers.getLayers().push(imageOverlayLayer);
+        });
+        promises.push(promise);
+      });
+      return $q.all(promises).then(function () {
+        map.getLayers().insertAt(0, imageOverlayLayers);
+      });
+    }
+
     function setLayers() {
-      imageBasemap = undefined;
+      stratSectionId = null;
+      imageBasemap = null;
       MapFactory.setMaps();
       map.addLayer(MapLayerFactory.getBaselayers());
       map.addLayer(MapLayerFactory.getOverlays());
@@ -139,14 +199,19 @@
     function setMapControls(switcher) {
       var drawControlProps = {
         'map': map,
-        'drawLayer': MapLayerFactory.getDrawLayer(),
-        'imageBasemap': imageBasemap      // null if not using an image basemap
+        'drawLayer': MapLayerFactory.getDrawLayer()
       };
+      if (imageBasemap) drawControlProps['belongsTo'] = {'image_basemap': imageBasemap.id};
+      if (stratSectionId) drawControlProps['belongsTo'] = {'strat_section_id': stratSectionId};
 
-      if (!imageBasemap) map.addControl(new ol.control.ScaleLine());
+      if (map.getView().getProjection().getUnits() !== 'pixels') map.addControl(new ol.control.ScaleLine());
 
       ol.inherits(MapDrawFactory.DrawControls, ol.control.Control);
       map.addControl(new MapDrawFactory.DrawControls(drawControlProps));
+      if (stratSectionId) {
+        ol.inherits(MapEmogeosFactory.EmogeoControls, ol.control.Control);
+        map.addControl(new MapEmogeosFactory.EmogeoControls('strat-section'));
+      }
       map.addControl(switcher);
     }
 

@@ -123,8 +123,20 @@ Map Controls Style
   background-repeat: no-repeat;
   border-bottom: 1px solid lightgray;
 }
+.draw-controls .LineStringFreehand {
+  background-image: url('../img/lineFreehand.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  border-bottom: 1px solid lightgray;
+}
 .draw-controls .Polygon {
   background-image: url('../img/polygon.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  border-bottom: 1px solid lightgray;
+}
+.draw-controls .PolygonFreehand {
+  background-image: url('../img/polygonFreehand.png');
   background-position: center;
   background-repeat: no-repeat;
   border-bottom: 1px solid lightgray;
@@ -134,6 +146,33 @@ Map Controls Style
   background-position: center;
   background-repeat: no-repeat;
 }
+
+.emogeo-controls {
+  position: absolute;
+  top: 65px;
+  right: .65em;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid lightgray;
+}
+.ol-touch .emogeo-controls {
+  top: 65px;
+}
+.emogeo-controls a {
+  display: block;
+  font-size: 20px;
+  height: 30px;
+  width: 30px;
+}
+.emogeo-controls a:hover {
+  background-color: lightgray;
+}
+.emogeo-controls .emogeo-icon {
+  background-position: center;
+  background-repeat: no-repeat;
+  border-bottom: 1px solid lightgray;
+}
+
 .saveEdits {
   position: absolute;
   font-size: 0.9em;
@@ -233,6 +272,10 @@ Map Popups Style
 --------------------*/
 .ol-popup {
   padding: 5px;
+}
+
+.popup-more-button {
+  float: right;
 }
 
 /*--------------------
@@ -512,6 +555,16 @@ textarea {
 
 .range input {
   height: 43px;               /* Set back to original for range */
+}
+
+.only-bottom-border {
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+
+.no-left-margin {
+  margin-left: 0;
 }
 
 /*--------------------
@@ -796,6 +849,18 @@ Spots Page
 }
 .relationships-on{
   background-color: #fccde5;
+}
+.strat-section-on{
+  background-color: #9bfdea;
+}
+.sed-interpretations-on{
+  background-color: #fcbf90;
+}
+.lithologies-on{
+  background-color: #f2a9fc;
+}
+.sed-structures-on{
+  background-color: #6bcffc;
 }
 .list-sub{
   font-size: small;

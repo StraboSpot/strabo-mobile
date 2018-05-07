@@ -7,12 +7,14 @@
 
   SpotController.$inject = ['$document', '$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover',
     '$ionicPopup', '$location', '$log', '$q', '$rootScope', '$scope', '$state', '$timeout', 'FormFactory',
-    'HelpersFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'TagFactory', 'IS_WEB'];
+    'HelpersFactory', 'ImageFactory', 'MapEmogeosFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory',
+    'StratSectionFactory', 'TagFactory', 'IS_WEB'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
   function SpotController($document, $ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup, $location,
-                          $log, $q, $rootScope, $scope, $state, $timeout, FormFactory, HelpersFactory, MapViewFactory,
-                          ProjectFactory, SpotFactory, TagFactory, IS_WEB) {
+                          $log, $q, $rootScope, $scope, $state, $timeout, FormFactory, HelpersFactory, ImageFactory,
+                          MapEmogeosFactory, MapViewFactory, ProjectFactory, SpotFactory, StratSectionFactory,
+                          TagFactory, IS_WEB) {
     var vmParent = $scope.vm;
     var vm = this;
 
@@ -63,6 +65,7 @@
     vm.closeModal = closeModal;
     vm.copyThisSpot = copyThisSpot;
     vm.deleteSpot = deleteSpot;
+    vm.fieldChanged = fieldChanged;
     vm.goBack = goBack;
     vm.goToBackHistoryUrl = goToBackHistoryUrl;
     vm.goToTag = goToTag;
@@ -70,6 +73,7 @@
     vm.saveSpot = saveSpot;
     vm.showTab = showTab;
     vm.submit = submit;
+    vm.takePicture = takePicture;
     vm.viewMap = viewMap;
 
     activate();
@@ -116,7 +120,7 @@
         }, true);
       }
 
-      $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
+      $scope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
         if (vm.spotChanged && fromState.name === 'app.spotTab.spot') {
           saveSpot().then(function (spots) {
             vm.spotChanged = false;
@@ -125,6 +129,12 @@
             $state.go(fromState);     // If saving failed don't change state
           });
         }
+      });
+
+      // Spot updated by emogeo
+      $scope.$on('updated-spot', function (event, args) {
+        $log.log('Updated Spot by emogeo');
+        vm.spot = SpotFactory.getCurrentSpot();
       });
     }
 
@@ -162,6 +172,19 @@
       }).then(function (popover) {
         vm.backHistoriesPopover = popover;
       });
+    }
+
+    function go() {
+      if ($ionicHistory.backView()) {
+        if ($ionicHistory.backView().url === '/app/map') {
+          $ionicLoading.show({
+            'template': '<ion-spinner></ion-spinner><br>Loading Map...'
+          });
+          $log.log('Loading Map ...');
+        }
+        $ionicHistory.goBack();
+      }
+      else $location.path('/app/spots');      // default backView if no backView set
     }
 
     // If the backView is within the same Spot keep getting backViews until
@@ -219,6 +242,7 @@
 
     function clearBasicForm() {
       FormFactory.clearFormElements();
+      vm.data = {};
     }
 
     function closeModal(modal) {
@@ -265,35 +289,73 @@
 
     // Delete the spot
     function deleteSpot() {
-      if (SpotFactory.isSafeDelete(vm.spot)) {
-        var confirmPopup = $ionicPopup.confirm({
-          'title': 'Delete Spot',
-          'template': 'Are you sure you want to delete this spot?'
-        });
-        confirmPopup.then(function (res) {
-          if (res) {
-            SpotFactory.destroy(vm.spot.properties.id).then(function () {
-              vm.spot = undefined;
-              vm.initializing = true;
-              if (!IS_WEB) goBack();
-              else {
-                if ($state.current.name === 'app.spotTab.spot') {   // Update Spots list
-                  vmParent.updateSpots();
-                  vmParent.spotIdSelected = undefined;
-                  $location.path('app/spotTab');
+      vm.popover.hide().then(function () {
+        if (SpotFactory.isSafeDelete(vm.spot)) {
+          var confirmPopup = $ionicPopup.confirm({
+            'title': 'Delete Spot',
+            'template': 'Are you sure you want to delete this spot?'
+          });
+          confirmPopup.then(function (res) {
+            if (res) {
+              SpotFactory.destroy(vm.spot.properties.id).then(function () {
+                vm.spot = undefined;
+                vm.initializing = true;
+                if (!IS_WEB) goBack();
+                else {
+                  if ($state.current.name === 'app.spotTab.spot') {   // Update Spots list
+                    vmParent.updateSpots();
+                    vmParent.spotIdSelected = undefined;
+                    $location.path('app/spotTab');
+                  }
+                  else $rootScope.$broadcast('deletedSpot');  // Clear Spot from map side panel
                 }
-                else $rootScope.$broadcast('deletedSpot');  // Clear Spot from map side panel
-              }
-            });
-          }
-        });
+              });
+            }
+          });
+        }
+        else {
+          $ionicPopup.alert({
+            'title': 'Spot Deletion Prohibited!',
+            'template': 'This Spot has at least one image being used as an image basemap. Remove any image basemaps' +
+            ' from this Spot before deleting.'
+          });
+        }
+      });
+    }
+
+    // Handle changes to specific fields in form
+    function fieldChanged(fieldName, newValue, oldValue) {
+      var formName = FormFactory.getFormName();
+      $log.log(fieldName, 'changed in form', formName);
+      if (formName === 'sed.interval_basics' || formName === 'sed.texture') {
+        if (fieldName === 'mud_silt_principal_grain_size') {
+          if (!vm.data.grain_size) vm.data.grain_size = [];
+          vm.data.grain_size.push(vm.data.mud_silt_principal_grain_size);
+        }
+        else if (fieldName === 'sand_principal_grain_size') {
+          if (!vm.data.grain_size) vm.data.grain_size = [];
+          vm.data.grain_size.push(vm.data.sand_principal_grain_size);
+        }
+        else if (fieldName === 'congl_principal_grain_size') {
+          if (!vm.data.grain_size) vm.data.grain_size = [];
+          vm.data.grain_size.push(vm.data.congl_principal_grain_size);
+        }
+        else if (fieldName === 'breccia_principal_grain_size') {
+          if (!vm.data.grain_size) vm.data.grain_size = [];
+          vm.data.grain_size.push(vm.data.breccia_principal_grain_size);
+        }
       }
-      else {
-        $ionicPopup.alert({
-          'title': 'Spot Deletion Prohibited!',
-          'template': 'This Spot has at least one image being used as an image basemap. Remove any image basemaps' +
-          ' from this Spot before deleting.'
-        });
+      if (formName === 'sed.interval_basics' || formName === 'sed.composition') {
+        if (fieldName === 'principal_dunham_class') {
+          if (!vm.data.dunham_class) vm.data.dunham_class = [];
+          vm.data.dunham_class.push(vm.data.principal_dunham_class);
+        }
+      }
+      if (formName === 'sed.strat_section' && fieldName === 'column_y_axis_units') {
+        vm.child.changeUnits(newValue, oldValue);
+      }
+      if (formName === 'sed.strat_section' && fieldName === 'column_profile') {
+        vm.child.changeColumnProfile(newValue, oldValue);
       }
     }
 
@@ -337,18 +399,10 @@
     function goBack() {
       SpotFactory.clearCurrentSpot();
       removeSameSpotBackViews();
-      saveSpot().finally(function () {
-        if ($ionicHistory.backView()) {
-          if ($ionicHistory.backView().url === '/app/map') {
-            $ionicLoading.show({
-              'template': '<ion-spinner></ion-spinner><br>Loading Map...'
-            });
-            $log.log('Loading Map ...');
-          }
-          $ionicHistory.goBack();
-        }
-        else $location.path('/app/spots');      // default backView if no backView set
+      if (vm.spot) saveSpot().then(function () {
+        go();
       });
+      else go();
     }
 
     function goToBackHistoryUrl(url) {
@@ -398,15 +452,11 @@
       filterTagType();
     }
 
-    function showTab(tab) {
-      if (tab === 'spot') return true;
-      var preferences = ProjectFactory.getPreferences();
-      return preferences[tab];
-    }
-
     function saveSpot() {
       if (vm.spot && vm.spot.properties) {
-        // Validate the form first
+        vm.spot = HelpersFactory.cleanObj(vm.spot);
+        var savedSpot = SpotFactory.getSpotById(vm.spot.properties.id);
+        vm.data = HelpersFactory.cleanObj(vm.data);
         if (FormFactory.validateForm(vm.stateName, vm.spot, vm.data)) {
           if (vm.stateName === 'app.spotTab.spot' && !_.isEmpty(vm.data)) {
             if (vm.showTrace === true) {
@@ -418,13 +468,51 @@
               vm.spot.properties.surface_feature = vm.data;
             }
           }
-          if (vm.spot.properties.inferences) delete vm.spot.properties.inferences;  // Remove leftover inferences
-          vm.spot = HelpersFactory.cleanObj(vm.spot);
-          return SpotFactory.save(vm.spot);
+          else if (vm.stateName === 'app.spotTab.sed-lithologies' && !_.isEmpty(vm.data)) {
+            if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
+            if (!vm.spot.properties.sed.lithologies) vm.spot.properties.sed.lithologies = {};
+            vm.spot.properties.sed.lithologies = vm.data;
+          }
+          else if (vm.stateName === 'app.spotTab.sed-structures' && !_.isEmpty(vm.data)) {
+            if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
+            if (!vm.spot.properties.sed.structures) vm.spot.properties.sed.structures = {};
+            vm.spot.properties.sed.structures = vm.data;
+          }
+          else if (vm.stateName === 'app.spotTab.sed-interpretations' && !_.isEmpty(vm.data)) {
+            if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
+            if (!vm.spot.properties.sed.interpretations) vm.spot.properties.sed.interpretations = {};
+            vm.spot.properties.sed.interpretations = vm.data;
+          }
+          var isEqual = _.isEqual(vm.spot, savedSpot);
+          if (isEqual) return $q.resolve(vm.spot);
+          else {
+            $log.log('Spot Changed! Existing Spot:', savedSpot, 'Spot to Save:', vm.spot);
+            if (vm.spot.properties.inferences) delete vm.spot.properties.inferences;  // Remove leftover inferences
+            // If Spot is an interval check if we need to do any updates to the interval
+            if (StratSectionFactory.isInterval(vm.spot)) {
+              vm.spot = StratSectionFactory.checkForIntervalUpdates(vm.stateName, vm.spot, savedSpot);
+            }
+            return SpotFactory.save(vm.spot).then(function () {
+              // Need to update the strat section map in case on WEB and fields were changed in the sidepanel
+              if (IS_WEB && $state.current.name === 'app.strat-section') {
+                $rootScope.$broadcast('updateStratSectionFeatureLayer');
+                MapEmogeosFactory.setSelectedSpot(vm.spot);
+              }
+            });
+          }
         }
         else $ionicLoading.hide();
       }
       return $q.reject(null);
+    }
+
+    function showTab(tab) {
+      var preferences = ProjectFactory.getPreferences();
+      if (tab === 'spot') return true;
+      else if (tab === 'strat_section') {
+        return preferences['strat_mode'] && vm.spot && vm.spot.properties && !vm.spot.properties.strat_section_id;
+      }
+      else return preferences[tab];
     }
 
     // Save the Spot
@@ -432,13 +520,20 @@
       saveSpot().then(function (spots) {
         vm.spotChanged = false;
         if (IS_WEB && $state.current.name === 'app.spotTab.spot') vmParent.updateSpots();
-        else if (IS_WEB && $state.current.name === 'app.map') $rootScope.$broadcast('updateFeatureLayer');
+        else if (IS_WEB && $state.current.name === 'app.map') $rootScope.$broadcast('updateMapFeatureLayer');
         else if (IS_WEB && $state.current.name === 'app.image-basemaps.image-basemap') {
-          $rootScope.$broadcast('updateFeatureLayer');
+          $rootScope.$broadcast('updateImageBasemapFeatureLayer');
         }
         $ionicHistory.backView();
         $location.path(toPath);
-      })
+      });
+    }
+
+    function takePicture() {
+      ImageFactory.setIsReattachImage(false);
+      ImageFactory.setCurrentSpot(vm.spot);
+      ImageFactory.setCurrentImage({'image_type': 'photo'});
+      ImageFactory.takePicture();
     }
 
     function toggleTagChecked(tag) {
@@ -468,6 +563,9 @@
       SpotFactory.setKeepSpotSelected(true);
       if (_.has(vm.spot.properties, 'image_basemap')) {
         vm.submit('/app/image-basemaps/' + vm.spot.properties.image_basemap);
+      }
+      else if (_.has(vm.spot.properties, 'strat_section_id')) {
+        vm.submit('/app/strat-sections/' + vm.spot.properties.strat_section_id);
       }
       else {
         $ionicLoading.show({

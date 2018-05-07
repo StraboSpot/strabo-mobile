@@ -37,7 +37,7 @@
 
     vm.addFilters = addFilters;
     vm.applyFilters = applyFilters;
-    vm.checkedDataset = checkedDataset;
+    vm.checkedFilterCondition = checkedFilterCondition;
     vm.clearColor = clearColor;
     vm.closeFilterModal = closeFilterModal;
     vm.closeModal = closeModal;
@@ -48,7 +48,7 @@
     vm.go = go;
     vm.goToSpot = goToSpot;
     vm.goToTag = goToTag;
-    vm.isDatasetChecked = isDatasetChecked;
+    vm.isFilterConditionChecked = isFilterConditionChecked;
     vm.isOptionChecked = isOptionChecked;
     vm.isShowItem = isShowItem;
     vm.isTypeChecked = isTypeChecked;
@@ -80,7 +80,7 @@
       setTags();
 
       createPageComponents();
-      createPageEvents()
+      createPageEvents();
 
       vm.currentSpot = SpotFactory.getCurrentSpot();
       if (vm.currentSpot) {
@@ -148,9 +148,129 @@
     function createPageEvents() {
       // Cleanup the modals when we're done with it!
       $scope.$on('$destroy', function () {
-        vm.selectItemModal.remove();
-        vm.filterModal.remove();
+        if (vm.selectItemModal) vm.selectItemModal.remove();
+        if (vm.filterModal) vm.filterModal.remove();
+        if (vm.colorPickerModal) vm.colorPickerModal.remove();
       });
+    }
+
+    // Change old data into new data format
+    function fixOldData() {
+      var origData = angular.fromJson(angular.toJson(vm.data));
+
+      // Fix all old tags which have a categorization element
+      if (vm.data.categorization) {
+        vm.data.type = 'other';
+        vm.data.other_type = vm.data.categorization;
+        delete vm.data.categorization;
+      }
+
+      if (vm.data.type === 'geologic_unit') fixOldGeologicUnitData();
+
+      if (!_.isEqual(origData, vm.data)) saveTag();
+    }
+
+    // Change old data into new data format for Rock Unit Description form updated 4.24.2018
+    function fixOldGeologicUnitData() {
+      // Fix changed choice value
+      if (vm.data.metamorphic_grade === 'sillimanite-K_' || vm.data.metamorphic_grade === 'sillimanite-k_') {
+        vm.data.metamorphic_grade = 'sillimanite-k';
+      }
+
+      // Map epoch field
+      if (vm.data.epoch) {
+        if (vm.data.epoch === 'holocene') vm.data.epoch_quaternary = ['holocene'];
+        else if (vm.data.epoch === 'pleistocene') vm.data.epoch_quaternary = ['pleistocene'];
+        else if (vm.data.epoch === 'pliocene') vm.data.epoch_teritary = ['pliocene'];
+        else if (vm.data.epoch === 'miocene') vm.data.epoch_teritary = ['miocene'];
+        else if (vm.data.epoch === 'oligocene') vm.data.epoch_teritary = ['oligocene'];
+        else if (vm.data.epoch === 'eocene') vm.data.epoch_teritary = ['eocene'];
+        else if (vm.data.epoch === 'paleocene') vm.data.epoch_teritary = ['paleocene'];
+        else if (vm.data.epoch === 'other') delete vm.data.other_epoch;
+        delete vm.data.epoch;
+      }
+
+      // Map period field
+      if (vm.data.period) {
+        if (vm.data.period === 'quaternary') vm.data.period_cenozoic = ['quaternary'];
+        else if (vm.data.period === 'tertiary') vm.data.period_cenozoic = ['tertiary'];
+        else if (vm.data.period === 'neogene') vm.data.period_cenozoic = ['neogene'];
+        else if (vm.data.period === 'paleogene') vm.data.period_cenozoic = ['paleogene'];
+        else if (vm.data.period === 'cretaceous') vm.data.period_mesozoic = ['cretaceous'];
+        else if (vm.data.period === 'jurassic') vm.data.period_mesozoic = ['jurassic'];
+        else if (vm.data.period === 'triassic') vm.data.period_mesozoic = ['triassic'];
+        else if (vm.data.period === 'permian') vm.data.period_paleozoic = ['permian'];
+        else if (vm.data.period === 'carboniferous') vm.data.period_paleozoic = ['carboniferous'];
+        else if (vm.data.period === 'pennsylvanian') vm.data.period_paleozoic = ['pennsylvanian'];
+        else if (vm.data.period === 'mississippian') vm.data.period_paleozoic = ['mississippian'];
+        else if (vm.data.period === 'devonian') vm.data.period_paleozoic = ['devonian'];
+        else if (vm.data.period === 'silurian') vm.data.period_paleozoic = ['silurian'];
+        else if (vm.data.period === 'ordovician') vm.data.period_paleozoic = ['ordovician'];
+        else if (vm.data.period === 'cambrian') vm.data.period_paleozoic = ['cambrian'];
+        else if (vm.data.period === 'ediacaran') vm.data.period_neoproterozoic = ['ediacaran'];
+        else if (vm.data.period === 'cryogenian') vm.data.period_neoproterozoic = ['cryogenian'];
+        else if (vm.data.period === 'tonian') vm.data.period_neoproterozoic = ['tonian'];
+        else if (vm.data.period === 'stenian') vm.data.period_mesoproterozoic = ['stenian'];
+        else if (vm.data.period === 'ectasian') vm.data.period_mesoproterozoic = ['ectasian'];
+        else if (vm.data.period === 'calymmian') vm.data.period_mesoproterozoic = ['calymmian'];
+        else if (vm.data.period === 'statherian') vm.data.period_paleoproterozoic = ['statherian'];
+        else if (vm.data.period === 'orosirian') vm.data.period_paleoproterozoic = ['orosirian'];
+        else if (vm.data.period === 'rhyacian') vm.data.period_paleoproterozoic = ['rhyacian'];
+        else if (vm.data.period === 'siderian') vm.data.period_paleoproterozoic = ['siderian'];
+        delete vm.data.period;
+      }
+
+      // Map era field
+      if (vm.data.era) {
+        if (vm.data.era === 'cenozoic') vm.data.era_phanerozoic = ['cenozoic'];
+        else if (vm.data.era === 'mesozoic') vm.data.era_phanerozoic = ['mesozoic'];
+        else if (vm.data.era === 'paleozoic') vm.data.era_phanerozoic = ['paleozoic'];
+        else if (vm.data.era === 'neoproterozoic') vm.data.era_proterozoic = ['neoproterozoic'];
+        else if (vm.data.era === 'mesoproterozoi') vm.data.era_proterozoic = ['mesoproterozoi'];
+        else if (vm.data.era === 'paleoproterozo') vm.data.era_proterozoic = ['paleoproterozo'];
+        else if (vm.data.era === 'neoarchean') vm.data.era_archean = ['neoarchean'];
+        else if (vm.data.era === 'mesoarchean') vm.data.era_archean = ['mesoarchean'];
+        else if (vm.data.era === 'paleoarchean') vm.data.era_archean = ['paleoarchean'];
+        else if (vm.data.era === 'eoarchean') vm.data.era_archean = ['eoarchean'];
+        delete vm.data.era;
+      }
+
+      // Map eon field
+      if (vm.data.eon && _.isString(vm.data.eon)) vm.data.eon = [vm.data.eon];
+
+      // Add fields for epoch, period and era as required by new skip logic
+      if (vm.data.epoch_quaternary || vm.data.epoch_teritary) {
+        if (!vm.data.period_cenozoic) vm.data.period_cenozoic = [];
+        if (vm.data.epoch_quaternary) vm.data.period_cenozoic = _.union(vm.data.period_cenozoic, ['quaternary']);
+        if (vm.data.epoch_teritary) vm.data.period_cenozoic = _.union(vm.data.period_cenozoic, ['teritary']);
+      }
+      if (vm.data.period_cenozoic || vm.data.period_mesozoic || vm.data.period_paleozoic) {
+        if (!vm.data.era_phanerozoic) vm.data.era_phanerozoic = [];
+        if (vm.data.period_cenozoic) vm.data.era_phanerozoic = _.union(vm.data.era_phanerozoic, ['cenozoic']);
+        if (vm.data.period_mesozoic) vm.data.era_phanerozoic = _.union(vm.data.era_phanerozoic, ['mesozoic']);
+        if (vm.data.period_paleozoic) vm.data.era_phanerozoic = _.union(vm.data.era_phanerozoic, ['paleozoic']);
+      }
+      if (vm.data.period_neoproterozoic || vm.data.period_mesoproterozoic || vm.data.period_paleoproterozoic) {
+        if (!vm.data.era_proterozoic) vm.data.era_proterozoic = [];
+        if (vm.data.period_neoproterozoic) {
+          vm.data.era_proterozoic = _.union(vm.data.era_proterozoic, ['neoproterozoic']);
+        }
+        if (vm.data.period_mesoproterozoic) {
+          vm.data.era_proterozoic = _.union(vm.data.era_proterozoic, ['mesoproterozoi']);
+        }
+        if (vm.data.period_paleoproterozoic) {
+          vm.data.era_proterozoic = _.union(vm.data.era_proterozoic, ['paleoproterozo']);
+        }
+      }
+      if (vm.data.era_phanerozoic || vm.data.era_proterozoic || vm.data.era_archean) {
+        if (!vm.data.eon) vm.data.eon = [];
+        if (vm.data.era_phanerozoic) vm.data.eon = _.union(vm.data.eon, ['phanerozoic']);
+        if (vm.data.era_proterozoic) vm.data.eon = _.union(vm.data.eon, ['proterozoic']);
+        if (vm.data.era_archean) vm.data.eon = _.union(vm.data.eon, ['archean']);
+      }
+
+      // Map age modifier field
+      if (vm.data.age_modifier && _.isString(vm.data.age_modifier)) vm.data.age_modifier = [vm.data.age_modifier];
     }
 
     function loadTag() {
@@ -162,14 +282,21 @@
 
       if (vm.data.type === 'geologic_unit') FormFactory.setForm('rock_unit');
 
-      // Fix all old tags which have a categorization element
-      if (vm.data.categorization) {
-        vm.data.type = 'other';
-        vm.data.other_type = vm.data.categorization;
-        delete vm.data.categorization;
-      }
+      fixOldData();
 
       $log.log('Loaded Tag:', vm.data);
+    }
+
+    function saveTag() {
+      return ProjectFactory.saveTag(vm.data).then(function () {
+        $log.log('Tag saved');
+        vm.dataChanged = false;
+        if (IS_WEB) {
+          $log.log('Save tags to LiveDB.', ProjectFactory.getCurrentProject());
+          LiveDBFactory.save(null, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
+          vmParent.updateTags();
+        }
+      });
     }
 
     function setFeatures() {
@@ -227,13 +354,13 @@
       }
     }
 
-    function checkedDataset(datasetId) {
-      if (_.contains(vm.filterConditions.datasets, datasetId)) {
-        vm.filterConditions.datasets = _.without(vm.filterConditions.datasets, datasetId);
+    function checkedFilterCondition(filter, condition) {
+      if (_.contains(vm.filterConditions[filter], condition)) {
+        vm.filterConditions[filter] = _.without(vm.filterConditions[filter], condition);
       }
       else {
-        if (!vm.filterConditions.datasets) vm.filterConditions.datasets = [];
-        vm.filterConditions.datasets.push(datasetId);
+        if (!vm.filterConditions[filter]) vm.filterConditions[filter] = [];
+        vm.filterConditions[filter].push(condition);
       }
     }
 
@@ -302,14 +429,7 @@
             TagFactory.setActiveTags(vm.data);
             TagFactory.setAddNewActiveTag(false);
           }
-          ProjectFactory.saveTag(vm.data).then(function () {
-            $log.log('Tag saved');
-            vm.dataChanged = false;
-            if (IS_WEB) {
-              $log.log('Save tags to LiveDB.', ProjectFactory.getCurrentProject());
-              LiveDBFactory.save(null, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
-              vmParent.updateTags();
-            }
+          saveTag().then(function () {
             $location.path(path);
           });
         }
@@ -321,7 +441,7 @@
             'template': 'Please enter more fields to save this tag.'
           });
         }
-        $location.path(path);
+        else $location.path(path);
       }
     }
 
@@ -337,8 +457,8 @@
       return parseInt(key);
     }
 
-    function isDatasetChecked(datasetId) {
-      return _.contains(vm.filterConditions.datasets, datasetId) || false;
+    function isFilterConditionChecked(filter, condition) {
+      return _.contains(vm.filterConditions[filter], condition) || false;
     }
 
     function isOptionChecked(item, id, parentSpotId) {
