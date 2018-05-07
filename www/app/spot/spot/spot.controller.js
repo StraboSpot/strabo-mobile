@@ -242,6 +242,7 @@
 
     function clearBasicForm() {
       FormFactory.clearFormElements();
+      vm.data = {};
     }
 
     function closeModal(modal) {
