@@ -6,7 +6,7 @@ cs0gb99,pyrite,Pyrite,
 cs0gb99,sanidine,Sanidine,
 ak3ds31,actinolite,Actinolite,
 ak3ds31,albite,Albite,1
-ak3ds31,alkali feldspar,Alkali feldspar,2
+ak3ds31,alkali_feldspa,Alkali feldspar,2
 ak3ds31,allanite,Allanite,3
 ak3ds31,amphibole,Amphibole,4
 ak3ds31,andalusite,Andalusite,5
@@ -38,14 +38,14 @@ ak3ds31,hornblende,Hornblende,30
 ak3ds31,hypersthene,Hypersthene,31
 ak3ds31,ilmenite,Ilmenite,32
 ak3ds31,jadeite,Jadeite,33
-ak3ds31,k-feldspar,K-feldspar,34
+ak3ds31,k_feldspar,K-feldspar,34
 ak3ds31,kyanite,Kyanite,35
 ak3ds31,lawsonite,Lawsonite,36
-ak3ds31,limonite 1,Limonite 1,37
+ak3ds31,limonite ,Limonite ,37
 ak3ds31,magnetite,Magnetite,38
 ak3ds31,monazite,Monazite,39
 ak3ds31,muscovite,Muscovite,40
-ak3ds31,na pyroxene,Na pyroxene,41
+ak3ds31,na_pyroxene,Na pyroxene,41
 ak3ds31,olivine,Olivine,42
 ak3ds31,orthoamphibole,Orthoamphibole,43
 ak3ds31,orthopyroxene,Orthopyroxene,44
@@ -57,7 +57,7 @@ ak3ds31,pyrophyllite,Pyrophyllite,49
 ak3ds31,pyrrhotite,Pyrrhotite,50
 ak3ds31,quartz,Quartz,51
 ak3ds31,rutile,Rutile,52
-ak3ds31,sanidine 1,Sanidine 1,53
+ak3ds31,sanidine,Sanidine ,53
 ak3ds31,sapphirine,Sapphirine,54
 ak3ds31,serpentine,Serpentine,55
 ak3ds31,sillimanite,Sillimanite,56
@@ -72,4 +72,4 @@ ak3ds31,vesuvanite,Vesuvanite,64
 ak3ds31,wollastonite,Wollastonite,65
 ak3ds31,zeolite,Zeolite,66
 ak3ds31,zircon,Zircon,67
-ak3ds31,zoisite 3,Zoisite 3,68
+ak3ds31,zoisite,Zoisite ,68
