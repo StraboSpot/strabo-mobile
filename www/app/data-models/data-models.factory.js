@@ -251,7 +251,9 @@
     function createOtherLabelsDictionary() {
       var models = {
         'images': dataModels.image,
-        'samples': dataModels.sample
+        'samples': dataModels.sample,
+        'metamorphic': dataModels.minerals.metamorphic,
+        'igneous': dataModels.minerals.igneous
       };
       _.each(models, function (model) {
         _.each(model.choices, function (field) {
@@ -385,7 +387,8 @@
           spotDataModel.properties.orientation_data.push(description);
         }
         else if (key === 'metamorphic' || key === 'igneous') {
-          _.extend(spotDataModel.properties.minerals, description);
+          var mineralsChoices = getMineralsChoices();
+          spotDataModel.properties.minerals = 'Type: select multiple [' + mineralsChoices.join(', ') + ']';
         }
         else if (key === 'fabric' || key === 'fold' || key === 'other' || key === 'tensor') {
           description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number ' +
@@ -444,15 +447,22 @@
       return tempTypeLabels;
     }
 
+    function getMineralsChoices() {
+      var choicesMetamorphic = _.pluck(dataModels.minerals.metamorphic.choices, 'name');
+      var choicesIgneous = _.pluck(dataModels.minerals.igneous.choices, 'name');
+      return _.union(choicesMetamorphic, choicesIgneous).sort();
+    }
+
     function getType(type, model) {
+      var choices = {};
       if (type.split(' ')[0] === 'select_one') {
-        var choices = _.filter(model.choices, function (choice) {
+        choices = _.filter(model.choices, function (choice) {
           return choice['list_name'] === type.split(' ')[1];
         });
         type = 'select one [' + _.pluck(choices, 'name').join(', ') + ']';
       }
       else if (type.split(' ')[0] === 'select_multiple') {
-        var choices = _.filter(model.choices, function (choice) {
+        choices = _.filter(model.choices, function (choice) {
           return choice['list_name'] === type.split(' ')[1];
         });
         type = 'select multiple [' + _.pluck(choices, 'name').join(', ') + ']';
