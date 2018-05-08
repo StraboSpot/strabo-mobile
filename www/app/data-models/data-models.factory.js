@@ -41,6 +41,20 @@
         'choices': {},
         'choices_file': 'app/data-models/image_properties-choices.csv'
       },
+      'minerals': {
+        'igneous': {
+          'survey': {},
+          'survey_file': 'app/data-models/minerals-igneous-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/minerals-igneous-choices.csv'
+       },
+        'metamorphic': {
+          'survey': {},
+          'survey_file': 'app/data-models/minerals-metamorphic-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/minerals-metamorphic-choices.csv'
+        }
+       },
       'orientation_data': {
         'linear_orientation': {
           'survey': {},
@@ -312,6 +326,7 @@
           'date': 'datetime',
           'id': 'number; timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id)',
           'images': [],
+          'minerals': [],
           'modified_timestamp': 'timestamp',
           'name': 'Type: text; REQUIRED',
           'notes': 'Type: text',
@@ -329,6 +344,8 @@
         'other': dataModels._3d_structures.other,
         'tensor': dataModels._3d_structures.tensor,
         'images': dataModels.image,
+        'metamorphic': dataModels.minerals.metamorphic,
+        'igneous': dataModels.minerals.igneous,
         'linear_orientation': dataModels.orientation_data.linear_orientation,
         'planar_orientation': dataModels.orientation_data.planar_orientation,
         'tabular_orientation': dataModels.orientation_data.tabular_orientation,
@@ -366,6 +383,9 @@
           description.associated_orientation = [];
           description = sortby(description);
           spotDataModel.properties.orientation_data.push(description);
+        }
+        else if (key === 'metamorphic' || key === 'igneous') {
+          _.extend(spotDataModel.properties.minerals, description);
         }
         else if (key === 'fabric' || key === 'fold' || key === 'other' || key === 'tensor') {
           description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number ' +
@@ -519,7 +539,7 @@
 
       $log.log('Loading data models ...');
       _.each(dataModels, function (dataModel, key) {
-        if (key === 'orientation_data' || key === '_3d_structures' || key === 'sed') {
+        if (key === 'orientation_data' || key === '_3d_structures' || key === 'sed' || key === 'minerals') {
           _.each(dataModel, function (childDataModel, childKey) {
             //$log.log('Loading', key, childKey, ' ...');
             promises.push(loadDataModel(childDataModel));

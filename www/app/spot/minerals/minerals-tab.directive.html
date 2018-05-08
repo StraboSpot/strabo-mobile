@@ -1,0 +1,15 @@
+<div>
+  <button ng-click='vmChild.addMineral("metamorphic")' class='button button-clear button-positive'>
+    <i class='icon ion-plus-circled'></i>
+    <span class='button-text-big'>Add/Remove Metamorphic Minerals</span>
+  </button>
+  <button ng-click='vmChild.addMineral("igneous")' class='button button-clear button-positive'>
+    <i class='icon ion-plus-circled'></i>
+    <span class='button-text-big'>Add/Remove Igneous Minerals</span>
+  </button>
+  <ion-list>
+    <ion-item class='item-text-wrap item-button-right' ng-repeat='mineral in vm.spot.properties.minerals'>
+      {{mineral}}
+    </ion-item>
+  </ion-list>
+</div>
