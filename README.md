@@ -94,7 +94,7 @@ Generate Resources (icons and splash screens):
     jsts: 1.3.0
     underscore: 1.8.3
 
-*Note: When updates to the app are made, edit the version number of the app in `www/app/about/about.html`, `www/app/user/login.html`, `config.xml`, and `package.json`.*
+*Note: When updates to the app are made, edit the version number of the app in `www/app/about/about.html`, `www/app/login/login.html`, `config.xml`, and `package.json`.*
 
 ## Running/Testing the Standalone App
 
