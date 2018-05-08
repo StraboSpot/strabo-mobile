@@ -100,7 +100,7 @@
       if (!project.is_testing_mode) {
         if (field.name === 'group_sed_tab_control' || field.name === 'sed_lithologies' ||
           field.name === 'sed_structures' || field.name === 'sed_interpretations' ||
-          field.name === 'group_other_modes' || field.name === 'strat_mode') show = false;
+          field.name === 'group_other_modes' || field.name === 'strat_mode' || field.name === 'minerals') show = false;
       }
       return show;
     }
