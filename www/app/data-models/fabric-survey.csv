@@ -1,16 +1,14 @@
-list_name,name,label
-sv2ru77,tectonite,tectonite
-sv2ru77,igneous_migmat,igneous/migmatite
-sv2ru77,soft_sediment_,soft sediment deformation
-sv2ru77,other_fabric,other fabric
-tectonite_type_ny4wm6D8TYk_,s_tectonite,S tectonite
-tectonite_type_ny4wm6D8TYk_,sl_tectonite,SL tectonite
-tectonite_type_ny4wm6D8TYk_,ls_tectonite,LS tectonite
-tectonite_type_ny4wm6D8TYk_,l_tectonite,L tectonite
-tectonite_character_gSrbYXndbvA_,s_only,S only
-tectonite_character_gSrbYXndbvA_,s___l,S >> L
-tectonite_character_gSrbYXndbvA_,s___l_1,S > L
-tectonite_character_gSrbYXndbvA_,s___l_2,S = L
-tectonite_character_gSrbYXndbvA_,l___s,L > S
-tectonite_character_gSrbYXndbvA_,l___s_1,L >> S
-tectonite_character_gSrbYXndbvA_,l_only,L only
+type,name,label,hint,required,relevant,appearance,calculation
+start,start,,,,,,
+end,end,,,,,,
+text,label,Label,If a label is not specified a default label will be given.,false,,,
+select_one sv2ru77,feature_type,Fabric Type,,false,,,
+begin_group,group_tectonite,Tectonites,,,${feature_type} = 'tectonite',,
+select_one tectonite_type_ny4wm6D8TYk_,tectonite_type,Tectonite Type,,false,${feature_type} = 'tectonite',,
+select_one tectonite_character_gSrbYXndbvA_,tectonite_character,Tectonite Character,,false,${feature_type} = 'tectonite',,
+end_group,,,,,,,
+text,igneous_migmatite_feat_descrip,Igneous/Migmatite Features Description,,false,${feature_type} = 'igneous_migmat',,
+text,soft_sediment_def_description,Soft Sediment Deformation Description,,false,${feature_type} = 'soft_sediment_',,
+text,other_fabric_description,Other Fabric Description,,false,${feature_type} = 'other_fabric',,
+text,struct_notes,Fabric Notes,,false,,multiline,
+calculate,__version__,,,,,,'vqtai5btg7pfmfcNobpoVZ'
