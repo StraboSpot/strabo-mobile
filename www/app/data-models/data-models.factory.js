@@ -451,6 +451,12 @@
         });
         type = 'select one [' + _.pluck(choices, 'name').join(', ') + ']';
       }
+      else if (type.split(' ')[0] === 'select_multiple') {
+        var choices = _.filter(model.choices, function (choice) {
+          return choice['list_name'] === type.split(' ')[1];
+        });
+        type = 'select multiple [' + _.pluck(choices, 'name').join(', ') + ']';
+      }
       return type;
     }
 
