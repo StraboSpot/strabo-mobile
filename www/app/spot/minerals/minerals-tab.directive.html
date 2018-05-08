@@ -9,7 +9,7 @@
   </button>
   <ion-list>
     <ion-item class='item-text-wrap item-button-right' ng-repeat='mineral in vm.spot.properties.minerals'>
-      {{mineral}}
+      {{  vmChild.getLabel(mineral) }}
     </ion-item>
   </ion-list>
 </div>

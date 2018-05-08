@@ -5,10 +5,10 @@
     .module('app')
     .controller('MineralsTabController', MineralsTabController);
 
-  MineralsTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'FormFactory',
+  MineralsTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state','DataModelsFactory', 'FormFactory',
     'HelpersFactory', 'ProjectFactory'];
 
-  function MineralsTabController($ionicModal, $ionicPopup, $log, $scope, $state, FormFactory, HelpersFactory,
+  function MineralsTabController($ionicModal, $ionicPopup, $log, $scope, $state, DataModelsFactory, FormFactory, HelpersFactory, 
     ProjectFactory) {
     var vm = this;
     var vmParent = $scope.vm;
@@ -19,6 +19,7 @@
     vm.basicFormModal = {};
     vm.modalTitle = '';
     vm.submit = submit;
+    vm.getLabel = getLabel;
 
     activate();
 
@@ -70,6 +71,9 @@
     /**
     * Public Functions
     */
+    function getLabel(label) {
+      return DataModelsFactory.getLabel(label);
+    }
 
     function addMineral(type) {
       FormFactory.setForm('minerals', type);
