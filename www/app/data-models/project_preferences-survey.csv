@@ -10,6 +10,7 @@ acknowledge,samples,Samples,,false,,,
 acknowledge,other_features,Other Features,,false,,,
 acknowledge,relationships,Relationships,,false,,,
 acknowledge,tags,Tags,,false,,,
+acknowledge,minerals,Minerals,,false,,,
 end_group,,,,,,,
 begin_group,group_sed_tab_control,Sedimentology Spot Page Control,,,,,
 acknowledge,sed_lithologies,Lithologies,,false,,,
@@ -28,4 +29,4 @@ end_group,,,,,,,
 begin_group,group_vw6ff56,Privacy Control,,,,,
 acknowledge,public,Public?,,false,,,
 end_group,,,,,,,
-calculate,__version__,,,,,,'vboGGVSAMgsqbCFHLSGVu5'
+calculate,__version__,,,,,,'vsrMckvH4WpMBQAfvLvf6L'
