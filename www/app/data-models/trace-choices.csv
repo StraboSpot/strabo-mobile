@@ -6,15 +6,16 @@ wb5nf41,inferred,inferred,3
 wb5nf41,inferred(?),questionable inferred,4
 wb5nf41,concealed,concealed,5
 wb5nf41,other,other,7
-pl5yo85,contact,contact,0
+pl5yo85,contact,contact,
 pl5yo85,geologic_struc,geologic structure,1
 pl5yo85,geomorphic_fea,geomorphic feature,2
 pl5yo85,anthropenic_fe,anthropogenic feature,3
 pl5yo85,scale_bar,scale bar,4
-pl5yo85,geological_cross_section,geological cross section,5
-pl5yo85,geophysical_cross_section,geophysical cross section,6
-pl5yo85,stratigraphic_section,stratigraphic section,7
-pl5yo85,other_feature,other feature,8
+pl5yo85,bedding,bedding,5
+pl5yo85,geological_cross_section,geological cross section,6
+pl5yo85,geophysical_cross_section,geophysical cross section,7
+pl5yo85,stratigraphic_section,stratigraphic section,8
+pl5yo85,other_feature,other feature,9
 lx9ax28,depositional,depositional,0
 lx9ax28,intrusive,intrusive,1
 lx9ax28,metamorphic,metamorphic,2

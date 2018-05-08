@@ -34,4 +34,4 @@ text,other_other_feature,Other Other Features,,true,${other_feature} = 'other',,
 select_one rd1pp06,trace_character,Trace Character,"sharp, gradational, chilled, brecciated, other",false,${contact_type} = 'depositional' or ${contact_type} = 'intrusive' or ${contact_type} = 'metamorphic',horizontal,,,
 text,other_trace_character,Other Trace Character,,true,${trace_character} = 'other',,,,
 text,tace_notes,Trace Notes,,false,${trace_feature} != '',multiline,,,
-calculate,__version__,,,,,,,,'vpsHptWB7sLxFrbUSNadF2'
+calculate,__version__,,,,,,,,'v3suZcfr3TA3dA5fGpftrD'
