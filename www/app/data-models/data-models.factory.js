@@ -227,7 +227,8 @@
       return _.reject(json.data, function (obj) {
         return ((obj.name === 'start' && obj.type === 'start') ||
           (obj.name === 'end' && obj.type === 'end') ||
-          (obj.name === '__version__' && obj.type === 'calculate'));
+          (obj.name === '__version__' && obj.type === 'calculate') ||
+          (obj.name === '_version_' && obj.type === 'calculate'));
       });
     }
 
