@@ -316,8 +316,7 @@
         else {
           $ionicPopup.alert({
             'title': 'Spot Deletion Prohibited!',
-            'template': 'This Spot has at least one image being used as an image basemap. Remove any image basemaps' +
-            ' from this Spot before deleting.'
+            'template': 'This Spot has dependencies that need to be removed before it can be deleted.'
           });
         }
       });

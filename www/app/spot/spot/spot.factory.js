@@ -317,6 +317,9 @@
     }
 
     function isSafeDelete(spotToDelete) {
+      if (spotToDelete.properties && spotToDelete.properties.sed && spotToDelete.properties.sed.strat_section) {
+        return false;
+      }
       if (!spotToDelete.properties.images) return true;
       return !_.find(spotToDelete.properties.images, function (image) {
         return image.annotated === true;
