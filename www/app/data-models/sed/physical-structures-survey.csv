@@ -1,9 +1,11 @@
 type,name,label,required,relevant,calculation,$given_name
+begin_group,group_ug0pg18,Physical Structures,,,,
 acknowledge,mudstone_structures,Mudstone Structures,false,,,
 acknowledge,sandstone_structures,Sandstone Structures,false,,,
 acknowledge,conglomerate_structures,Conglomerate Structures,false,,,
 acknowledge,breccia_structures,Breccia Structures,false,,,
 acknowledge,limestone_structures,Limestone Structures,false,,,
+end_group,,,,,,
 begin_group,group_pv0dl44,Mudstone Structures,,${mudstone_structures} != '',,
 select_one iu3km02,mud_silt_prin_struct,Mudstone/Siltstone Principal Structures,false,${mudstone_structures} != '',,
 select_multiple op9jw07,addl_mud_silt_struct,Additional Mudstone/Siltstone Structures,false,${mudstone_structures} != '',,
@@ -119,4 +121,4 @@ text,other_deformation_structure,Other Deformation Structure,false,"selected(${d
 text,all_physical_struct_notes,Notes,false,,,
 end_group,,,,,,
 calculate,__version__,,false,,'vdgL9ZEh2jqTQTiP4h3Qe5',
-calculate,_version_,,,,'vvvgucsDhqvJv7FwNWXk3o',__version__
+calculate,_version_,,,,'vGipjrKFAumz6hcZmJ6o6P',__version__
