@@ -5,9 +5,9 @@
     .module('app')
     .factory('SymbologyFactory', SymbologyFactory);
 
-  SymbologyFactory.$inject = ['$log', 'ProjectFactory', 'StratSectionFactory'];
+  SymbologyFactory.$inject = ['$log', 'HelpersFactory', 'ProjectFactory', 'StratSectionFactory'];
 
-  function SymbologyFactory($log, ProjectFactory, StratSectionFactory) {
+  function SymbologyFactory($log, HelpersFactory, ProjectFactory, StratSectionFactory) {
     var featureLayer = {};
     var symbols;
     var patterns = {};
