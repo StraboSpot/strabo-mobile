@@ -53,6 +53,12 @@
           'survey_file': 'app/data-models/minerals-metamorphic-survey.csv',
           'choices': {},
           'choices_file': 'app/data-models/minerals-metamorphic-choices.csv'
+        },
+        'sedimentary': {
+          'survey':{},
+          'survey_file': 'app/data-models/minerals-sedimentary-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/minerals-sedimentary-choices.csv'
         }
        },
       'orientation_data': {
@@ -254,7 +260,8 @@
         'images': dataModels.image,
         'samples': dataModels.sample,
         'metamorphic': dataModels.minerals.metamorphic,
-        'igneous': dataModels.minerals.igneous
+        'igneous': dataModels.minerals.igneous,
+        'sedimentary': dataModels.minerals.sedimentary
       };
       _.each(models, function (model) {
         _.each(model.choices, function (field) {
@@ -349,6 +356,7 @@
         'images': dataModels.image,
         'metamorphic': dataModels.minerals.metamorphic,
         'igneous': dataModels.minerals.igneous,
+        'sedimentary': dataModels.minerals.sedimentary,
         'linear_orientation': dataModels.orientation_data.linear_orientation,
         'planar_orientation': dataModels.orientation_data.planar_orientation,
         'tabular_orientation': dataModels.orientation_data.tabular_orientation,
@@ -387,7 +395,7 @@
           description = sortby(description);
           spotDataModel.properties.orientation_data.push(description);
         }
-        else if (key === 'metamorphic' || key === 'igneous') {
+        else if (key === 'metamorphic' || key === 'igneous' || key === 'sedimentary') {
           var mineralsChoices = getMineralsChoices();
           spotDataModel.properties.minerals = 'Type: select multiple [' + mineralsChoices.join(', ') + ']';
         }
@@ -451,7 +459,8 @@
     function getMineralsChoices() {
       var choicesMetamorphic = _.pluck(dataModels.minerals.metamorphic.choices, 'name');
       var choicesIgneous = _.pluck(dataModels.minerals.igneous.choices, 'name');
-      return _.union(choicesMetamorphic, choicesIgneous).sort();
+      var choicesSedimentary = _.pluck(dataModels.minerals.sedimentary.choices, 'name');
+      return _.union(choicesMetamorphic, choicesIgneous, choicesSedimentary).sort();
     }
 
     function getType(type, model) {

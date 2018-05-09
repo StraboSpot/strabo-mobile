@@ -82,7 +82,7 @@
       _.each(survey, function (field) {
         vmParent.data[field.name] = vmParent.spot.properties.minerals || [];
       });
-      vm.modalTitle = 'Add/Remove Minerals';
+      vm.modalTitle = type + ' Minerals';
       vm.basicFormModal.show();
     }
 

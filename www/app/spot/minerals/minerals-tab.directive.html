@@ -7,9 +7,13 @@
     <i class='icon ion-plus-circled'></i>
     <span class='button-text-big'>Add/Remove Igneous Minerals</span>
   </button>
+  <button ng-click='vmChild.addMineral("sedimentary")' class='button button-clear button-positive'>
+    <i class='icon ion-plus-circled'></i>
+    <span class='button-text-big'>Add/Remove Sedimentary Minerals</span>
+  </button>
   <ion-list>
     <ion-item class='item-text-wrap item-button-right' ng-repeat='mineral in vm.spot.properties.minerals'>
-      {{  vmChild.getLabel(mineral) }}
+      {{ vmChild.getLabel(mineral) }}
     </ion-item>
   </ion-list>
 </div>
