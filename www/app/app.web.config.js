@@ -94,6 +94,7 @@
     var spotTabStates = [
       {'state': '_3dstructures', 'template': '3d-structures/3dstructures-tab', 'controller': '_3DStructures'},
       {'state': 'images', 'template': 'images/images-tab', 'controller': 'Images'},
+      {'state': 'minerals', 'template': 'minerals/minerals-tab', 'controller': 'Minerals'},
       {'state': 'nesting', 'template': 'nesting/nesting-tab', 'controller': 'Nesting'},
       {'state': 'orientations', 'template': 'orientations/orientations-tab', 'controller': 'Orientations'},
       {'state': 'other-features', 'template': 'other-features/other-features-tab', 'controller': 'OtherFeatures'},

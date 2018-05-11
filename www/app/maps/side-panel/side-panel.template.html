@@ -53,6 +53,9 @@
           <input type='file' id='file' style='display: none;'>
           <strabo-images-tab-directive></strabo-images-tab-directive>
         </div>
+        <div ng-show='sidePanel.isActiveTab("minerals")' ng-controller='MineralsTabController as vmChild'>
+          <strabo-minerals-tab-directive></strabo-minerals-tab-directive>
+        </div>
         <div ng-show='sidePanel.isActiveTab("nesting")' ng-controller='NestingTabController as vmChild'>
           <strabo-nesting-tab-directive></strabo-nesting-tab-directive>
         </div>
