@@ -202,7 +202,7 @@
       var image = _.find(vmParent.spot.properties.images, function (image) {
         return id === image.id;
       });
-      return image.title || 'Untitled';
+      return image && image.title ? image.title : 'Untitled';
     }
 
     // Resize image preserving image ratio
@@ -226,28 +226,30 @@
 
     function saveOverlayImage() {
       vm.data = HelpersFactory.cleanObj(vm.data);
-      var imageUsedAlready = _.find(vmParent.spot.properties.sed.strat_section.images, function (image) {
-        return vm.data.id === image.id;
-      });
-      if (!isEdit && imageUsedAlready) {
-        $ionicPopup.alert({
-          'title': 'Image Used Already!',
-          'template': 'This image has already been used as an overlay in this Strat Section. ' +
-          'Select another image or modify the existing overlay with this image.'
+      if (!_.isEmpty(vm.data)) {
+        var imageUsedAlready = _.find(vmParent.spot.properties.sed.strat_section.images, function (image) {
+          return vm.data.id === image.id;
         });
-        return 0;
+        if (!isEdit && imageUsedAlready) {
+          $ionicPopup.alert({
+            'title': 'Image Used Already!',
+            'template': 'This image has already been used as an overlay in this Strat Section. ' +
+            'Select another image or modify the existing overlay with this image.'
+          });
+          return 0;
+        }
+        if (!vmParent.spot.properties.sed.strat_section.images) vmParent.spot.properties.sed.strat_section.images = [];
+        else {
+          vmParent.spot.properties.sed.strat_section.images = _.reject(vmParent.spot.properties.sed.strat_section.images,
+            function (image) {
+              return vm.data.id === image.id;
+            });
+        }
+        vmParent.spot.properties.sed.strat_section.images.push(vm.data);
+        vm.data = {};
+        vmParent.saveSpot();
       }
       vm.addOverlayImageModal.hide();
-      if (!vmParent.spot.properties.sed.strat_section.images) vmParent.spot.properties.sed.strat_section.images = [];
-      else {
-        vmParent.spot.properties.sed.strat_section.images = _.reject(vmParent.spot.properties.sed.strat_section.images,
-          function (image) {
-            return vm.data.id === image.id;
-          });
-      }
-      vmParent.spot.properties.sed.strat_section.images.push(vm.data);
-      vm.data = {};
-      vmParent.saveSpot();
     }
 
     function toggleStratSection() {
