@@ -568,6 +568,62 @@ textarea {
 }
 
 /*--------------------
+Form Select Multiple Choices Fields Style
+--------------------*/
+.strabo-choices-flex-container {
+  padding-left: 16px;
+  margin: 0;
+  list-style: none;
+  -ms-box-orient: horizontal;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -moz-flex;
+  display: -webkit-flex;
+  display: flex;
+}
+.strabo-choices-flex-item {
+  flex: 1 0 200px;
+  margin-bottom: 1px;
+  display: table;
+}
+@media (min-width: 410px) {
+  .strabo-flex-container .strabo-choices-flex-item {
+    max-width: calc(50% - 10px);
+  }
+}
+@media (min-width: 620px) {
+  .strabo-flex-container .strabo-choices-flex-item {
+    max-width: calc(33.33333% - 10px);
+  }
+}
+@media (min-width: 830px) {
+  .strabo-flex-container .strabo-choices-flex-item {
+    max-width: calc(25% - 10px);
+  }
+}
+@media (min-width: 1040px) {
+  .strabo-flex-container .strabo-choices-flex-item {
+    max-width: calc(20% - 10px);
+  }
+}
+@media (min-width: 1250px) {
+  .strabo-flex-container .strabo-choices-flex-item {
+    max-width: calc(16.66667% - 10px);
+  }
+}
+@media (min-width: 1460px) {
+  .strabo-flex-container .strabo-choices-flex-item {
+    max-width: calc(14.28571% - 10px);
+  }
+}
+@media (min-width: 1670px) {
+  .strabo-flex-container .strabo-choices-flex-item {
+    min-width: calc(12.5% - 10px);
+  }
+}
+
+/*--------------------
 Style fields for input errors and no-errors
 --------------------*/
 .error {

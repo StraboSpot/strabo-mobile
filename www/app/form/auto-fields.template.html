@@ -116,13 +116,14 @@
           </ion-input>
         </div>
         <div ng-switch-when='select_multiple'>
-          <ion-input class='item item-input item-text-wrap' ng-class='form.setSelMultClass(field, vm.data)'>
+          <ion-input class='item-text-wrap strabo-choices-flex-container strabo-wrap' ng-class='form.setSelMultClass(field, vm.data)'>
             <ion-label>
               {{ field.label }}
               <button class='button button-small button-icon ion-information-circled strabo-field-info-button'
                       ng-show='field.hint' ng-click='form.showFieldInfo(field)'></button>
             </ion-label>
             <ion-checkbox name='{{ field.name }}'
+                          class="strabo-choices-flex-item"
                           ng-repeat='choice in form.choices | filter: { "list_name": field.type.split(" ")[1] }'
                           ng-checked='form.isOptionChecked(field.name, choice.name, vm.data)'
                           ng-click='form.toggleChecked(field.name, choice.name, vm.data)'
