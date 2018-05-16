@@ -67,7 +67,7 @@
     <engine name="android" spec="~6.2.3" />
     <engine name="ios" spec="^4.4.0" />
     <plugin name="cordova-plugin-camera" spec="^3.0.0" />
-    <plugin name="com.verso.cordova.clipboard" spec="https://github.com/VersoSolutions/CordovaClipboard" />
+    <plugin name="org.strabospot.clipboard" spec="https://github.com/StraboSpot/clipboard_plugin" />
     <plugin name="cordova-plugin-console" spec="^1.0.2" />
     <plugin name="cordova-plugin-device" spec="^1.1.1" />
     <plugin name="cordova-plugin-device-motion" spec="^1.2.1" />
