@@ -251,13 +251,21 @@
       var promises = [];
 
       if (mapToSave.tiles.need.length > 0) {
-        $log.log('Requesting to download', mapToSave.tiles.need.length, 'tiles from ', mapToSave.id,
+        $log.log('Requesting to download', mapToSave.tiles.need.length, 'tiles from', mapToSave.id,
           'for map', mapToSave.name);
         _.each(mapToSave.tiles.need, function (tile) {
           var promise = downloadTile(mapToSave, tile).then(function (size) {
             tilesDownloaded.success.push(tile);
             mapToSave.tiles.saved.push({'tile': tile, 'size': size});
-            deferred.notify(tilesDownloaded);
+            var mapSize = _.reduce(_.pluck(mapToSave.tiles.saved, 'size'), function (memo, num) {
+              return memo + num;
+            }, 0);
+            return writeMap(mapToSave, mapSize).then(function() {
+              /*$log.log('Saved map:', mapToSave.name, 'with tiles from', mapToSave.title, 'of size',
+                mapSize, ':',
+                mapToSave.tiles.saved);*/
+              deferred.notify(tilesDownloaded);
+            });
           }, function (err) {
             $log.log('Error downloading tile:', err);
             tilesDownloaded.failed.push(tile);
