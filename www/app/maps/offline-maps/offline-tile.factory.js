@@ -109,6 +109,7 @@
         });
         confirmPopup.then(function (res) {
           if (res) {
+            $ionicLoading.show({'template': '<ion-spinner></ion-spinner>'});
             var savedTilesUnion = _.union(map.tiles.saved, foundOfflineMap.tileArray);
             map.tiles.saved = _.uniq(savedTilesUnion, false, 'tile');
             deferred.resolve();
@@ -126,6 +127,7 @@
       }
       // If the map name doesn't exist yet, create it with a size 0
       else {
+        $ionicLoading.show({'template': '<ion-spinner></ion-spinner>'});
         writeMap(map, 0).then(function () {
           deferred.resolve();
         });
