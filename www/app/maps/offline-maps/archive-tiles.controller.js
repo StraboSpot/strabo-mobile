@@ -91,21 +91,26 @@
 
     function continueDownload() {
       OfflineTilesFactory.checkValidMapName(vm.map).then(function () {
+        $ionicLoading.show({'template': '<ion-spinner></ion-spinner>'});
         vm.submitBtnText = 'Saving map . . . please wait.';
         vm.downloading = true;
         saveMap(vm.map).then(function (statusMsg) {
+          $ionicLoading.hide();
+          vm.downloading = false;
           $ionicPopup.alert({
             'title': 'Download Finished!',
             'template': statusMsg
           }).then(function () {
-            $state.reload();
+            resetZoomOptions();
           });
         }, function (statusMsg) {
+          $ionicLoading.hide();
+          vm.downloading = false;
           $ionicPopup.alert({
             'title': 'Download Failed!',
             'template': statusMsg
           }).then(function () {
-            $state.reload();
+            resetZoomOptions();
           });
         });
       });
@@ -166,6 +171,16 @@
       });
     }
 
+    function resetZoomOptions() {
+      vm.outerZoomsAll.tilesHave = [];
+      vm.outerZoomsAll.tilesNeed = [];
+      countOuterZooms();
+      _.each(vm.zoomOptions, function (z, i) {
+        if (vm.checkedZooms[i]) countTiles(i);
+      });
+      vm.checkedZooms = [];
+    }
+
     function saveMap(mapToSave) {
       var deferred = $q.defer(); // init promise
 
@@ -202,7 +217,9 @@
      */
 
     function countTiles(i) {
-      if (vm.zoomOptions[i].tilesNeed.length === 0 && vm.zoomOptions[i].tilesHave.length === 0) {
+      if (vm.checkedZooms[i]) {
+        vm.zoomOptions[i].tilesNeed = [];
+        vm.zoomOptions[i].tilesHave = [];
         $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Calculating Tiles...'});
         var promises = [];
         var currentZoomTileArray = SlippyTileNamesFactory.getTileIds(mapExtent.topRight, mapExtent.bottomLeft,
