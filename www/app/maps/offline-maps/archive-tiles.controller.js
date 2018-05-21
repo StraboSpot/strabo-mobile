@@ -16,6 +16,7 @@
 
     vm.checkedZooms = [];
     vm.downloading = false;
+    vm.map = {};
     vm.maps = [];
     vm.outerZoomMax = 0;
     vm.outerZoomsAll = {'tilesNeed': [], 'tilesHave': []};
@@ -53,7 +54,7 @@
           return gotMap.id === mapLayer.get('id');
         })));
         _.extend(vm.map, {
-          'currentZoom': mapExtent.zoom,
+          'currentZoom': Math.round(mapExtent.zoom),
           'percentDownload': -1,
           'progress': {},
           'status': '',
@@ -63,10 +64,10 @@
           }
         });
 
-        vm.outerZoomMax = mapExtent.zoom - 1;
-        var zoomLevels = vm.map.maxZoom ? Math.min(vm.map.maxZoom - Math.round(vm.map.currentZoom) + 1, 5) : 5;
+        vm.outerZoomMax = vm.map.currentZoom - 1;
+        var zoomLevels = vm.map.maxZoom ? Math.min(vm.map.maxZoom - vm.map.currentZoom + 1, 5) : 5;
         _.times(zoomLevels, function (n) {
-          var zoom = Math.round(vm.map.currentZoom) + n;
+          var zoom = vm.map.currentZoom + n;
           vm.zoomOptions.push({
             'zoom': zoom,
             'tilesNeed': [],
