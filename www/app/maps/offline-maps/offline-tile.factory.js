@@ -124,7 +124,12 @@
         });
         deferred.reject();
       }
-      else deferred.resolve();
+      // If the map name doesn't exist yet, create it with a size 0
+      else {
+        writeMap(map, 0).then(function () {
+          deferred.resolve();
+        });
+      }
       return deferred.promise;
     }
 
