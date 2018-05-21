@@ -92,7 +92,6 @@
 
     function continueDownload() {
       OfflineTilesFactory.checkValidMapName(vm.map).then(function () {
-        $ionicLoading.show({'template': '<ion-spinner></ion-spinner>'});
         vm.submitBtnText = 'Saving map . . . please wait.';
         vm.downloading = true;
         saveMap(vm.map).then(function (statusMsg) {

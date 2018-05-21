@@ -5,10 +5,10 @@
     .module('app')
     .factory('OfflineTilesFactory', OfflineTilesFactory);
 
-  OfflineTilesFactory.$inject = ['$http', '$ionicPopup', '$log', '$q', 'LocalStorageFactory'];
+  OfflineTilesFactory.$inject = ['$http', '$ionicLoading', '$ionicPopup', '$log', '$q', 'LocalStorageFactory'];
 
   // used to determine what the map provider is before we archive a tileset
-  function OfflineTilesFactory($http, $ionicPopup, $log, $q, LocalStorageFactory) {
+  function OfflineTilesFactory($http, $ionicLoading, $ionicPopup, $log, $q, LocalStorageFactory) {
     var downloadErrors = 0;
     var offlineMaps = [];
 
