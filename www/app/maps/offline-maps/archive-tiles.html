@@ -43,19 +43,5 @@
     </button>
     * Offline Maps are loaded automatically when offline.<br>
     * Edit and delete options for Saved Maps will be available under the Offline Maps menu item.
-
-    <div ng-show='vm.map.percentDownload >= 0 || vm.map.saveStatus'>
-      <br>
-      <hr>
-    </div>
-
-    <div ng-show='vm.map.percentDownload >= 0'>
-      <br>
-      Attempting to download and save basemap tiles:
-      <progress ng-value='vm.map.percentDownload' max='100'></progress>
-      Number of tiles successful: {{ vm.map.progress.success }} / {{ vm.map.progress.total }}
-      <br>
-      Number of tiles failed: {{ vm.map.progress.failed }} / {{ vm.map.progress.total }}
-    </div>
   </ion-content>
 </ion-view>

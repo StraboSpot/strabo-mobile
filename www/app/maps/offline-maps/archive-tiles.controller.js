@@ -5,17 +5,19 @@
     .module('app')
     .controller('ArchiveTilesController', ArchiveTilesController);
 
-  ArchiveTilesController.$inject = ['$ionicLoading', '$ionicPopup', '$log', '$q', '$state', 'LocalStorageFactory',
-    'MapFactory', 'MapLayerFactory', 'MapViewFactory', 'OfflineTilesFactory', 'SlippyTileNamesFactory'];
+  ArchiveTilesController.$inject = ['$ionicLoading', '$ionicModal', '$ionicPopup', '$log', '$q', '$scope', '$state',
+    'LocalStorageFactory', 'MapFactory', 'MapLayerFactory', 'MapViewFactory', 'OfflineTilesFactory', 'SlippyTileNamesFactory'];
 
-  function ArchiveTilesController($ionicLoading, $ionicPopup, $log, $q, $state, LocalStorageFactory, MapFactory,
-                                  MapLayerFactory, MapViewFactory, OfflineTilesFactory, SlippyTileNamesFactory) {
+  function ArchiveTilesController($ionicLoading, $ionicModal, $ionicPopup, $log, $q, $scope, $state,
+                                  LocalStorageFactory, MapFactory, MapLayerFactory, MapViewFactory, OfflineTilesFactory,
+                                  SlippyTileNamesFactory) {
     var vm = this;
     var mapExtent;
     var mapLayer;
 
     vm.checkedZooms = [];
     vm.downloading = false;
+    vm.downloadingModal = {};
     vm.map = {};
     vm.maps = [];
     vm.outerZoomMax = 0;
@@ -77,6 +79,15 @@
         loadSavedMaps();
         countOuterZooms();
       }
+
+      $ionicModal.fromTemplateUrl('app/maps/offline-maps/downloading-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false,
+        'hardwareBackButtonClose': false
+      }).then(function (modal) {
+        vm.downloadingModal = modal;
+      });
     }
 
     function checkForSavedTile(tileId) {
@@ -92,6 +103,7 @@
 
     function continueDownload() {
       OfflineTilesFactory.checkValidMapName(vm.map).then(function () {
+        vm.downloadingModal.show();
         vm.submitBtnText = 'Saving map . . . please wait.';
         vm.downloading = true;
         saveMap(vm.map).then(function (statusMsg) {
