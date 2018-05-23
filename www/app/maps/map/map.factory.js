@@ -52,12 +52,7 @@
           'imageType': 'png',
           'mime': 'image/png',
           'tilePath': '/{z}/{x}/{y}.png',
-          'url': [
-            'http://a.tiles.mapbox.com/v4/',
-            'http://b.tiles.mapbox.com/v4/',
-            'http://c.tiles.mapbox.com/v4/',
-            'http://d.tiles.mapbox.com/v4/'
-          ]
+          'url': ['http://api.mapbox.com/v4/']
         },
         'mapbox_styles': {
           'attributions': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
