@@ -47,17 +47,13 @@
       var mapProviders = {
         'mapbox_classic': {
           'attributions': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
-          'apiUrl': 'http://api.mapbox.com/v4/',
-          'basePath': 'http://api.tiles.mapbox.com/v4/',
           'imageType': 'png',
           'mime': 'image/png',
           'tilePath': '/{z}/{x}/{y}.png',
-          'url': ['http://api.mapbox.com/v4/']
+          'url': ['https://api.mapbox.com/v4/']
         },
         'mapbox_styles': {
           'attributions': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
-          'apiUrl': 'https://api.mapbox.com/styles/v1/',
-          'basePath': 'https://api.mapbox.com/styles/v1/',
           'mime': 'image/png',
           'tilePath': '/tiles/256/{z}/{x}/{y}',
           'url': ['https://api.mapbox.com/styles/v1/']
@@ -67,15 +63,13 @@
           'imageType': 'png',
           'mime': 'image/png',
           'url': [
-            'http://a.tile.openstreetmap.org/',
-            'http://b.tile.openstreetmap.org/',
-            'http://c.tile.openstreetmap.org/'
+            'https://a.tile.openstreetmap.org/',
+            'https://b.tile.openstreetmap.org/',
+            'https://c.tile.openstreetmap.org/'
           ]
         },
         'map_warper': {
           'attributions': '© <a href="http://mapwarper.net/home/about">Map Warper</a>',
-          'apiUrl': 'http://mapwarper.net/maps/tile/',
-          'basePath': 'http://mapwarper.net/maps/tile/',
           'imageType': 'png',
           'mime': 'image/png',
           'tilePath': '/{z}/{x}/{y}.png',
@@ -83,8 +77,6 @@
         },
         'strabo_spot_mapbox': {
           'attributions': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
-          'apiUrl': 'http://tiles.strabospot.org/v4/',
-          'basePath': 'http://tiles.strabospot.org/v4/',
           'imageType': 'png',
           'mime': 'image/png',
           'tilePath': '/{z}/{x}/{y}.png',

@@ -205,14 +205,15 @@
       else if (isEdit || isNewMapId()) {
         var mapProvider = MapFactory.getMapProviderInfo(vm.data.source);
         var testUrl;
+        var url = _.sample(mapProvider.url);
         switch (vm.data.source) {
           case 'mapbox_classic':
-            testUrl = mapProvider.apiUrl + vm.data.id + '.json?access_token=' + vm.data.key;
+            testUrl = url + vm.data.id + '.json?access_token=' + vm.data.key;
             break;
           case 'mapbox_styles':
             var idArray = vm.data.id.split('/');
             vm.data.id = idArray[idArray.length - 2] + '/' + idArray[idArray.length - 1];
-            testUrl = mapProvider.apiUrl + vm.data.id + '?access_token=' + vm.data.key;
+            testUrl = url + vm.data.id + '?access_token=' + vm.data.key;
             break;
           case 'map_warper':
             testUrl = 'https://strabospot.org/map_warper_check/' + vm.data.id;

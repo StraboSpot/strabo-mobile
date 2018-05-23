@@ -337,15 +337,16 @@
     }
 
     function setOnlineSource(layer) {
+      var url = _.sample(layer.url);
       switch (layer.source) {
         case 'osm':
           return new ol.source.OSM({'layer': 'osm'});
         case 'strabo_spot_mapbox':  
         case 'mapbox_classic':
         case 'mapbox_styles':
-          return new ol.source.XYZ({'url': layer.basePath + layer.id + layer.tilePath + '?access_token=' + layer.key});
+          return new ol.source.XYZ({'url': url + layer.id + layer.tilePath + '?access_token=' + layer.key});
         case 'map_warper':
-          return new ol.source.XYZ({'url': layer.basePath + layer.id + layer.tilePath});
+          return new ol.source.XYZ({'url': url + layer.id + layer.tilePath});
         default:
           return new ol.source.XYZ({'url': ''});  // No basemap layer
       }
