@@ -25,11 +25,11 @@
       return [{
         'title': 'Mapbox Topo',
         'id': 'mapbox.outdoors',
-        'source': 'mapbox_classic'
+        'source': 'strabo_spot_mapbox'
       }, {
         'title': 'Mapbox Satellite',
         'id': 'mapbox.satellite',
-        'source': 'mapbox_classic',
+        'source': 'strabo_spot_mapbox',
         'maxZoom': 19                   // https://www.mapbox.com/help/define-mapbox-satellite/
       }, {
         'title': 'OSM Streets',
@@ -49,8 +49,8 @@
           'attributions': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
           'apiUrl': 'http://api.mapbox.com/v4/',
           'basePath': 'http://api.tiles.mapbox.com/v4/',
-          'imageType': 'jpg',
-          'mime': 'image/jpeg',
+          'imageType': 'png',
+          'mime': 'image/png',
           'tilePath': '/{z}/{x}/{y}.png',
           'url': [
             'http://a.tiles.mapbox.com/v4/',
@@ -63,7 +63,7 @@
           'attributions': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
           'apiUrl': 'https://api.mapbox.com/styles/v1/',
           'basePath': 'https://api.mapbox.com/styles/v1/',
-          'mime': 'image/jpeg',
+          'mime': 'image/png',
           'tilePath': '/tiles/256/{z}/{x}/{y}',
           'url': ['https://api.mapbox.com/styles/v1/']
         },
@@ -85,6 +85,15 @@
           'mime': 'image/png',
           'tilePath': '/{z}/{x}/{y}.png',
           'url': ['https://www.strabospot.org/mwproxy/']
+        },
+        'strabo_spot_mapbox': {
+          'attributions': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
+          'apiUrl': 'http://tiles.strabospot.org/v4/',
+          'basePath': 'http://tiles.strabospot.org/v4/',
+          'imageType': 'png',
+          'mime': 'image/png',
+          'tilePath': '/{z}/{x}/{y}.png',
+          'url': ['http://tiles.strabospot.org/v4/']
         }
       };
       return mapProviders[mapSource];
@@ -99,7 +108,7 @@
       maps = angular.fromJson(angular.toJson(getDefaultMaps()));
       _.each(maps, function (map, i) {
         maps[i] = _.extend(maps[i], getMapProviderInfo(map.source));
-        if (map.source === 'mapbox_classic' || 'mapbox_styles') maps[i].key = defaultMapboxKey;
+        if (map.source === 'strabo_spot_mapbox') maps[i].key = defaultMapboxKey;
       });
 
       // Load Other Maps
