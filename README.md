@@ -52,41 +52,37 @@ Generate Resources (icons and splash screens):
     ionic cordova resources
     
 ### Tested Environment - Plugins    
-    cordova-plugin-camera 2.4.1 "Camera"
-    cordova-plugin-compat 1.1.0 "Compat"
-    cordova-plugin-console 1.0.2 "Console"
-    cordova-plugin-device 1.1.1 "Device"
-    cordova-plugin-device-motion 1.2.1 "Device Motion"
-    cordova-plugin-device-orientation 1.0.3 "Device Orientation"
-    cordova-plugin-file 4.1.1 "File"
+    cordova-plugin-camera 4.0.3 "Camera"
+    cordova-plugin-device 2.0.2 "Device"
+    cordova-plugin-device-motion 1.2.5 "Device Motion"
+    cordova-plugin-device-orientation 2.0.1 "Device Orientation"
+    cordova-plugin-file 4.3.3 "File"
     cordova-plugin-filepath 1.0.2 "FilePath"
-    cordova-plugin-geolocation 2.4.1 "Geolocation"
-    cordova-plugin-inappbrowser 1.5.0 "InAppBrowser"
-    cordova-plugin-network-information 1.2.0 "Network Information"
-    cordova-plugin-splashscreen 3.2.1 "Splashscreen"
-    cordova-plugin-statusbar 2.1.3 "StatusBar"
-    cordova-plugin-whitelist 1.2.1 "Whitelist"
+    cordova-plugin-geolocation 2.4.3 "Geolocation"
+    cordova-plugin-inappbrowser 1.7.2 "InAppBrowser"
+    cordova-plugin-ionic-keyboard 2.1.2 "cordova-plugin-ionic-keyboard"
+    cordova-plugin-ionic-webview 1.2.1 "cordova-plugin-ionic-webview"
+    cordova-plugin-network-information 2.0.1 "Network Information"
+    cordova-plugin-splashscreen 5.0.2 "Splashscreen"
+    cordova-plugin-statusbar 2.4.2 "StatusBar"
+    cordova-plugin-whitelist 1.3.3 "Whitelist"
     cordova-sqlite-storage 0.7.14 "Cordova sqlite storage plugin"
     io.phasr.cordova.plugin.itunesfilesharing 0.0.1 "cordova-plugin-itunesfilesharing"
-    ionic-plugin-deploy 0.6.5 "IonicDeploy"
-    ionic-plugin-keyboard 2.0.1 "Keyboard"
+    org.strabospot.clipboard 0.1.0 "Clipboard"
 
 *Notes:*
 - This list can be generated with `ionic cordova plugin list`.
 - `cordova-plugin-filepath`: Added due to Cordova bug with Android and content schema
 - `cordova-sqlite-storage@0.7.14`: Added for the localForage dependencies
 - `cordova-plugin-itunesfilesharing`: Added to `config.ionic.xml` for Ionic build. PhoneGap build uses
-  `<gap:config-file platform="ios" parent="UIFileSharingEnabled" mode="replace">
-    <true/>
-  </gap:config-file>`
-
+  
 ### Tested Environment - Other Packages/Libraries
 
     ionic library: 1.3.3
-    ionic cli : 2.2.1
-    cordova: 6.5.0
-    nodejs: 6.9.5
-    npm: 3.10.10
+    ionic cli : 3.2.0
+    cordova: 8.0.0
+    nodejs: 10.1.0
+    npm: 5.6.0
     bower: 1.8.0
     ng-cordova: 0.1.27-alpha
     openlayers: 4.5.0

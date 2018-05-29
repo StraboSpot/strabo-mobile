@@ -1,7 +1,15 @@
 <?xml version='1.0' encoding='utf-8'?>
--<widget id="org.strabospot.strabo" version="1.2.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:gap="http://phonegap.com/ns/1.0">
-    <name>StraboSpot</name>
-    <description>
+
+<!-- Config for Ionic Build -->
+
+<widget 
+    id="org.strabospot.strabo" 
+    version="1.2.0"
+    xmlns="http://www.w3.org/ns/widgets" 
+    xmlns:cdv="http://cordova.apache.org/ns/1.0" 
+    xmlns:gap="http://phonegap.com/ns/1.0">
+  <name>StraboSpot</name>
+  <description>
     StraboSpot is a cross-platform app for geologic field data acquisition.
   </description>
     <author email="strabospot@gmail.com" href="http://strabospot.org/">
@@ -59,32 +67,25 @@
         <splash height="960" src="resources/ios/splash/Default@2x~iphone.png" width="640" />
         <splash height="480" src="resources/ios/splash/Default~iphone.png" width="320" />
     </platform>
-    <platform name="wp8">
-        <icon height="99" src="resources\wp8\icon\ApplicationIcon.png" width="99" />
-        <icon height="159" src="resources\wp8\icon\Background.png" width="159" />
-        <splash height="1280" src="resources\wp8\splash\SplashScreenImage.png" width="768" />
-    </platform>
     <engine name="android" spec="~6.2.3" />
     <engine name="ios" spec="^4.4.0" />
-    <plugin name="cordova-plugin-camera" spec="^3.0.0" />
+    <plugin name="cordova-plugin-camera" spec="^4.0.3" />
     <plugin name="org.strabospot.clipboard" spec="https://github.com/StraboSpot/clipboard_plugin" />
-    <plugin name="cordova-plugin-console" spec="^1.0.2" />
-    <plugin name="cordova-plugin-device" spec="^1.1.1" />
-    <plugin name="cordova-plugin-device-motion" spec="^1.2.1" />
-    <plugin name="cordova-plugin-device-orientation" spec="^1.0.3" />
-    <plugin name="cordova-plugin-file" spec="^4.1.1" />
+    <plugin name="cordova-plugin-device" spec="^2.0.2" />
+    <plugin name="cordova-plugin-device-motion" spec="^1.2.5" />
+    <plugin name="cordova-plugin-device-orientation" spec="^2.0.1" />
+    <plugin name="cordova-plugin-file" spec="^4.3.3" />
     <plugin name="cordova-plugin-filepath" spec="^1.0.2" />
-    <plugin name="cordova-plugin-geolocation" spec="^2.4.1">
-        <variable name="GEOLOCATION_USAGE_DESCRIPTION" value=" " />
-    </plugin>
-    <plugin name="cordova-plugin-inappbrowser" spec="^1.5.0" />
-    <plugin name="cordova-plugin-network-information" spec="^1.2.0" />
-    <plugin name="cordova-plugin-splashscreen" spec="^3.2.1" />
-    <plugin name="cordova-plugin-statusbar" spec="^2.1.3" />
-    <plugin name="cordova-plugin-whitelist" spec="^1.2.1" />
-    <plugin name="cordova-sqlite-storage" spec="^0.7.14" />
+    <plugin name="cordova-plugin-geolocation" spec="^2.4.3" />
+    <plugin name="cordova-plugin-ionic-keyboard" spec="^2.1.2" />
+    <plugin name="cordova-plugin ionic-webview" spec="^1.2.1" />
     <plugin name="cordova-plugin-itunesfilesharing" spec="^0.0.1" />
-    <plugin name="ionic-plugin-keyboard" spec="^2.0.1" />
+    <plugin name="cordova-plugin-inappbrowser" spec="^1.7.2" />
+    <plugin name="cordova-plugin-network-information" spec="^2.0.1" />
+    <plugin name="cordova-plugin-splashscreen" spec="^5.0.2" />
+    <plugin name="cordova-plugin-statusbar" spec="^2.4.2" />
+    <plugin name="cordova-plugin-whitelist" spec="^1.3.3" />
+    <plugin name="cordova-sqlite-storage" spec="^0.7.14" />
     <edit-config target="NSCameraUsageDescription" file="*-Info.plist" mode="merge">
         <string>The strabospot app uses the camera to add images to field-collected sample data.</string>
     </edit-config>
