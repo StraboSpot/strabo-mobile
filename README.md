@@ -43,13 +43,13 @@ StraboSpot is an application for Structural Geology and Tectonics (SG&T) data ac
 
 Restore the Plugins and Platforms from `package.json`:
 
-    ionic state restore
+    cordova prepare
 
-*Note: These plugins were originally added with the command `ionic plugin add` which adds the plugin to `package.json` whereas `cordova plugin add` does not.*
+*Note: These plugins were originally added with the command `ionic cordova plugin add` which adds the plugin to `package.json` whereas `cordova plugin add` does not.*
     
 Generate Resources (icons and splash screens):
     
-    ionic resources
+    ionic cordova resources
     
 ### Tested Environment - Plugins    
     cordova-plugin-camera 2.4.1 "Camera"
@@ -72,7 +72,7 @@ Generate Resources (icons and splash screens):
     ionic-plugin-keyboard 2.0.1 "Keyboard"
 
 *Notes:*
-- This list can be generated with `ionic plugin list`.
+- This list can be generated with `ionic cordova plugin list`.
 - `cordova-plugin-filepath`: Added due to Cordova bug with Android and content schema
 - `cordova-sqlite-storage@0.7.14`: Added for the localForage dependencies
 - `cordova-plugin-itunesfilesharing`: Added to `config.ionic.xml` for Ionic build. PhoneGap build uses
@@ -94,7 +94,7 @@ Generate Resources (icons and splash screens):
     jsts: 1.3.0
     underscore: 1.8.3
 
-*Note: When updates to the app are made, edit the version number of the app in `www/app/about/about.html`, `www/app/login/login.html`, `config.xml`, and `package.json`.*
+*Note: When updates to the app are made, edit the version number of the app in `www/app/about/about-directive.html`, `www/app/login/login.html`, `config.xml`, `config.ionic.xml`, and `package.json`.*
 
 ## Running/Testing the Standalone App
 
@@ -151,8 +151,10 @@ To test as a native app see the Ionic [guide](http://ionicframework.com/docs/gui
 
 For a USB connected Android device first copy `config.xml` from `strabo-moble/www` into the `strabo-mobile` root. Then:
 
-    ionic platform add android
-    ionic run android
+    ionic cordova platform add android
+    ionic cordova run android
+
+Note: use `ionic cordova run android --livereload` tag to debug
 
 ## Running/Testing the Web App
 
