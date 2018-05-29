@@ -5,11 +5,11 @@
     .module('app')
     .factory('MapFeaturesFactory', MapFeatures);
 
-  MapFeatures.$inject = ['$document', '$log', '$q', 'DataModelsFactory', 'HelpersFactory', 'ImageFactory',
+  MapFeatures.$inject = ['$document', '$log', '$state', '$q', 'DataModelsFactory', 'HelpersFactory', 'ImageFactory',
     'MapEmogeosFactory', 'MapLayerFactory', 'MapSetupFactory', 'ProjectFactory', 'SpotFactory',
     'SymbologyFactory', 'IS_WEB'];
 
-  function MapFeatures($document, $log, $q, DataModelsFactory, HelpersFactory, ImageFactory, MapEmogeosFactory,
+  function MapFeatures($document, $log, $state, $q, DataModelsFactory, HelpersFactory, ImageFactory, MapEmogeosFactory,
                        MapLayerFactory, MapSetupFactory, ProjectFactory, SpotFactory, SymbologyFactory, IS_WEB) {
     var mappableSpots = {};
     var selectedHighlightLayer = {};
@@ -74,11 +74,13 @@
       // setup the popup position
       popup.show(evt.coordinate, el);
 
-      // Set event on popup close
-      var closer = $document[0].getElementsByClassName('ol-popup-closer')[0];
-      closer.addEventListener('click', function (evt) {
-        MapEmogeosFactory.resetAllEmogeoButtons();
-      });
+      // Set event on popup close (Emogeos only used on strat section page currently)
+      if ($state.current.name === 'app.strat-section') {
+        var closer = $document[0].getElementsByClassName('ol-popup-closer')[0];
+        closer.addEventListener('click', function (evt) {
+          MapEmogeosFactory.resetAllEmogeoButtons();
+        });
+      }
     }
 
     // Get the first image in a Spot for display in the popup
