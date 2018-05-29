@@ -30,12 +30,10 @@
         'title': 'Mapbox Satellite',
         'id': 'mapbox.satellite',
         'source': 'strabo_spot_mapbox',
-        'maxZoom': 19                   // https://www.mapbox.com/help/define-mapbox-satellite/
       }, {
         'title': 'OSM Streets',
         'id': 'osm',
-        'source': 'osm',
-        'maxZoom': 16                  // http://wiki.openstreetmap.org/wiki/Zoom_levels
+        'source': 'osm'
       }];
     }
 
@@ -56,7 +54,8 @@
           'attributions': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
           'mime': 'image/png',
           'tilePath': '/tiles/256/{z}/{x}/{y}',
-          'url': ['https://api.mapbox.com/styles/v1/']
+          'url': ['https://api.mapbox.com/styles/v1/'],
+          'maxZoom': 20
         },
         'osm': {
           'attributions': '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
@@ -66,7 +65,8 @@
             'https://a.tile.openstreetmap.org/',
             'https://b.tile.openstreetmap.org/',
             'https://c.tile.openstreetmap.org/'
-          ]
+          ],
+          'maxZoom': 16                  // http://wiki.openstreetmap.org/wiki/Zoom_levels
         },
         'map_warper': {
           'attributions': '© <a href="http://mapwarper.net/home/about">Map Warper</a>',
@@ -80,7 +80,8 @@
           'imageType': 'png',
           'mime': 'image/png',
           'tilePath': '/{z}/{x}/{y}.png',
-          'url': ['http://tiles.strabospot.org/v4/']
+          'url': ['http://tiles.strabospot.org/v4/'],
+          'maxZoom': 19                   // https://www.mapbox.com/help/define-mapbox-satellite/
         }
       };
       return mapProviders[mapSource];
