@@ -2,10 +2,10 @@
 
 <!-- Config for PhoneGap Build -->
 
-<widget 
-    id="gov.az.azgs.strabomobile" 
-    version="1.2.0" 
-    xmlns="http://www.w3.org/ns/widgets" 
+<widget
+    id="gov.az.azgs.strabomobile"
+    version="1.2.0"
+    xmlns="http://www.w3.org/ns/widgets"
     xmlns:gap="http://phonegap.com/ns/1.0">
     <name>Strabo Mobile</name>
     <description>
@@ -22,21 +22,19 @@
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
-    <allow-navigation href="http://192.168.1.148:8100" />
     <preference name="phonegap-version" value="cli-7.0.1" />
     <preference name="webviewbounce" value="false" />
     <preference name="UIWebViewBounce" value="false" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="BackupWebStorage" value="none" />
-    <preference name="android-minSdkVersion" value="14" />
-    <preference name="android-targetSdkVersion" value="22" />
+    <preference name="android-minSdkVersion" value="19" />
+    <preference name="android-targetSdkVersion" value="26" />
     <preference name="AndroidPersistentFileLocation" value="Internal" />
     <preference name="iosPersistentFileLocation" value="Library" />
     <preference name="AutoHideSplashScreen" value="false" />
     <preference name="SplashScreenDelay" value="2000" />
     <preference name="SplashScreen" value="screen" />
     <preference name="UIFileSharingEnabled" value="true" />
-    <preference name="SplashShowOnlyFirstTime" value="false" />
     <edit-config file="*-Info.plist" mode="merge" target="NSCameraUsageDescription">
         <string>The strabospot app uses the camera to add images to field-collected sample data.</string>
     </edit-config>
@@ -53,20 +51,21 @@
     <plugin name="cordova-plugin-device" spec="^2.0.2" />
     <plugin name="cordova-plugin-device-motion" spec="^1.2.5" />
     <plugin name="cordova-plugin-device-orientation" spec="^2.0.1" />
-    <plugin name="cordova-plugin-file" spec="^4.3.3" />
+    <plugin name="cordova-plugin-file" spec="^6.0.1" />
     <plugin name="cordova-plugin-filepath" spec="^1.0.2" />
-    <plugin name="cordova-plugin-geolocation" spec="^2.4.3" />
-    <plugin name="cordova-plugin-inappbrowser" spec="^1.7.2" />
+    <plugin name="cordova-plugin-geolocation" spec="^4.0.1" />
+    <plugin name="cordova-plugin-inappbrowser" spec="^3.0.0" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.1.2" />
-    <plugin name="cordova-plugin-ionic-webview" spec="~1.2.1" />
+    <plugin name="cordova-plugin-ionic-webview" spec="^1.2.1" />
     <plugin name="cordova-plugin-itunesfilesharing" spec="^0.0.1" />
     <plugin name="cordova-plugin-network-information" spec="^2.0.1" />
     <plugin name="cordova-plugin-splashscreen" spec="^5.0.2" />
     <plugin name="cordova-plugin-statusbar" spec="^2.4.2" />
     <plugin name="cordova-plugin-whitelist" spec="^1.3.3" />
-    <plugin name="cordova-sqlite-storage" spec="0.7.14" />
+    <plugin name="cordova-sqlite-storage" spec="^2.3.2" />
     <plugin name="org.strabospot.clipboard" spec="https://github.com/StraboSpot/clipboard_plugin" />
-    <engine name="ios" spec="~4.4.0" />
+    <engine name="android" spec="~7.0.0" />
+    <engine name="ios" spec="~4.5.4" />
     <platform name="ios">
         <icon height="29" src="www/res/icons/ios/icon-small.png" width="29" />
         <icon height="58" src="www/res/icons/ios/icon-small-2x.png" width="58" />
@@ -91,7 +90,6 @@
         <splash height="1024" src="www/res/screens/ios/screen-ipad-portrait.png" width="768" />
         <splash height="2048" src="www/res/screens/ios/screen-ipad-portrait-2x.png" width="1536" />
     </platform>
-
     <platform name="android">
         <icon qualifier="ldpi" src="www/res/icons/android/icon-36-ldpi.png" />
         <icon qualifier="mdpi" src="www/res/icons/android/icon-48-mdpi.png" />

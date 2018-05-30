@@ -41,9 +41,20 @@ StraboSpot is an application for Structural Geology and Tectonics (SG&T) data ac
     git clone https://github.com/StraboSpot/strabo-mobile.git
     cd strabo-mobile
 
+
+### Ionic Cordova Commands
+
 Restore the Plugins and Platforms from `package.json`:
 
-    cordova prepare
+    ionic cordova prepare
+
+Other commands for plugins and platforms:
+
+    ionic cordova platform save   | save existing installed platforms to config.xml
+    ionic cordova plugin save     | save existing installed plugins to config.xml
+    ionic cordova platform --help | view help page for managing Cordova platforms
+    ionic cordova plugin --help   | view help page for managing Cordova plugins
+    ionic cordova prepare         | install platforms and plugins listed in config.xml
 
 *Note: These plugins were originally added with the command `ionic cordova plugin add` which adds the plugin to `package.json` whereas `cordova plugin add` does not.*
     
@@ -73,7 +84,7 @@ Generate Resources (icons and splash screens):
 *Notes:*
 - This list can be generated with `ionic cordova plugin list`.
 - `cordova-plugin-filepath`: Added due to Cordova bug with Android and content schema
-- `cordova-sqlite-storage@0.7.14`: Added for the localForage dependencies
+- `cordova-sqlite-storage`: Added for the localForage dependencies
 - `cordova-plugin-itunesfilesharing`: Added to `config.ionic.xml` for Ionic build. PhoneGap build uses
   
 ### Tested Environment - Other Packages/Libraries
@@ -82,15 +93,37 @@ Generate Resources (icons and splash screens):
     ionic cli : 3.2.0
     cordova: 8.0.0
     nodejs: 10.1.0
-    npm: 5.6.0
+    npm: 6.1.0
     bower: 1.8.0
     ng-cordova: 0.1.27-alpha
     openlayers: 4.5.0
     turfjs: 4.6.1
     jsts: 1.3.0
     underscore: 1.8.3
+    localforage: 1.7.1
+    localforage-cordovasqlitedriver: 1.7.0
+    
 
-*Note: When updates to the app are made, edit the version number of the app in `www/app/about/about-directive.html`, `www/app/login/login.html`, `config.xml`, `config.ionic.xml`, and `package.json`.*
+### Tested Environment - Platforms
+
+    android 7.0.0
+    browser ~5.0.1
+    ios ~4.5.4
+    osx ~4.0.1
+    windows ~5.0.0
+    www ^3.12.0
+
+*Notes:*
+- This list can be generated with `ionic cordova platform list`.
+
+### Versioning
+
+When updates to the app are made, edit the version number of the app in the following 5 files: 
+- `www/app/about/about-directive.html`
+- `www/app/login/login.html`
+- `config.xml`
+- `config.ionic.xml`
+- `package.json`
 
 ## Running/Testing the Standalone App
 
