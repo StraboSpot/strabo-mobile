@@ -62,7 +62,8 @@
     <plugin name="cordova-plugin-splashscreen" spec="^5.0.2" />
     <plugin name="cordova-plugin-statusbar" spec="^2.4.2" />
     <plugin name="cordova-plugin-whitelist" spec="^1.3.3" />
-    <plugin name="cordova-sqlite-storage" spec="^2.3.2" />
+    <plugin name="cordova-sqlite-evcore-extbuild-free" spec="^0.9.7" />
+    <!--<plugin name="cordova-sqlite-storage" spec="^2.3.2" /> CANNOT USE WITH PHONEGAP BUILD -->
     <plugin name="org.strabospot.clipboard" spec="https://github.com/StraboSpot/clipboard_plugin" />
     <engine name="android" spec="~7.0.0" />
     <engine name="ios" spec="~4.5.4" />
