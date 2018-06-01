@@ -210,7 +210,7 @@
       // the actual geojson object that was drawn
       var geojsonObj;
       if (map.getView().getProjection().getUnits() === 'pixels') {
-        geojsonObj = geojson.writeFeatureObject(e.feature, {'decimals': 4});
+        geojsonObj = geojson.writeFeatureObject(e.feature, {'decimals': 6});
         if (!_.isEmpty(belongsTo)) geojsonObj.properties = belongsTo;     // Image Basemap or Strat Section
 
         if (_.find(_.flatten(geojsonObj.geometry.coordinates),
@@ -229,7 +229,7 @@
         // Drawing on regular map
         geojsonObj = geojson.writeFeatureObject(e.feature, {
           'featureProjection': map.getView().getProjection(),  // 'EPSG:3857'
-          'decimals': 4
+          'decimals': 6
         });
       }
 
