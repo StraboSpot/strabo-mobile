@@ -101,7 +101,7 @@ Generate Resources (icons and splash screens):
     bower: 1.8.0
     ng-cordova: 0.1.27-alpha
     openlayers: 4.5.6
-    turfjs: 4.6.1
+    turfjs: 5.1.6
     jsts: 1.3.0
     underscore: 1.8.3
     localforage: 1.7.1
