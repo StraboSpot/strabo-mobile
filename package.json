@@ -1,6 +1,6 @@
 {
     "name": "StraboSpot",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "description": "StraboSpot is a cross-platform app for geologic field data acquisition.",
     "dependencies": {
         "cordova-android": "7.0.0",
