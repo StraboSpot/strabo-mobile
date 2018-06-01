@@ -19,7 +19,7 @@ StraboSpot is an application for Structural Geology and Tectonics (SG&T) data ac
 - Linting Utility: [ESLint](http://eslint.org/)
 
 **Additional Libraries/Plugins for Web Version:**
-- [JQuery 3.1.1](https://jquery.com)
+- [JQuery 3.3.1](https://jquery.com)
 - [Bootstrap 3.3.7](http://getbootstrap.com/)
 - [Boot Side Menu jQuery Plugin](http://www.jqueryscript.net/menu/Sliding-Side-Menu-Panel-with-jQuery-Bootstrap-BootSideMenu.html)
 - [Golden Layout 1.5.9](https://www.golden-layout.com/)
