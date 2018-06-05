@@ -122,7 +122,7 @@
       // Buffer the polygon so Spots are included within the polygon, not just as vertices
       if (!_.has(activeNest[0].properties, 'image_basemap')) {
         var unit = 'meters';
-        newSpot = turf.buffer(newSpot, 5, unit);
+        newSpot = turf.buffer(newSpot, 5, {'units': 'meters'});
       }
       else {
         // Need to JSTS to buffer if pixel geometry

@@ -273,14 +273,14 @@
           });
         }
         _.each(mappedSpots, function (spot) {
-          // if the spot is a point, we test using turf.inside
+          // if the spot is a point, we test using turf.booleanWithin
           // if the spot is a polygon or line, we test using turf.intersect
 
           var spotType = spot.geometry.type;
 
           if (spotType === 'Point') {
             // is the point inside the drawn polygon?
-            if (turf.inside(spot, geojsonObj)) {
+            if (turf.booleanWithin(spot, geojsonObj)) {
               //check here whether it is on map
               lassoedSpots.push(spot);
             }

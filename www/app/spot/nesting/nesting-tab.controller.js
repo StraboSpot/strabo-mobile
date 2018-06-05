@@ -9,7 +9,7 @@
     'HelpersFactory', 'SpotFactory', 'IS_WEB'];
 
   function NestingTabController($ionicModal, $ionicPopup, $log, $rootScope, $scope, $state, FormFactory, HelpersFactory,
-                                SpotFactory, IS_WEB) {
+    SpotFactory, IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.nestTab = vm;
@@ -46,8 +46,8 @@
           vmParent.saveSpot().finally(function () {
             vmParent.spotChanged = false;
             loadTab({
-              'current': {'name': 'app.spotTab.' + thisTabName},
-              'params': {'spotId': args.spotId}
+              'current': { 'name': 'app.spotTab.' + thisTabName },
+              'params': { 'spotId': args.spotId }
             });
           });
         }
@@ -108,23 +108,9 @@
             if ((!thisSpot.properties.image_basemap && !spot.properties.image_basemap) ||
               (thisSpot.properties.image_basemap && spot.properties.image_basemap &&
                 thisSpot.properties.image_basemap === spot.properties.image_basemap)) {
-              // If Spot is a point and is inside thisSpot then Spot is a child
-              if (_.propertyOf(spot.geometry)('type') === 'Point' &&
-                (_.propertyOf(thisSpot.geometry)('type') === 'Polygon' ||
-                  _.propertyOf(thisSpot.geometry)('type') === 'MutiPolygon')) {
-                if (turf.inside(spot, thisSpot)) childrenSpots.push(spot);
-              }
-              // If Spot is not a point and all of its points are inside thisSpot then Spot is a child
-              else if (_.propertyOf(thisSpot.geometry)('type') === 'Polygon' || _.propertyOf(thisSpot.geometry)(
-                  'type') === 'MutiPolygon') {
-                var points = turf.explode(spot);
-                if (points.features) {
-                  var pointsInside = [];
-                  _.each(points.features, function (point) {
-                    if (turf.inside(point, thisSpot)) pointsInside.push(point);
-                  });
-                  if (points.features.length === pointsInside.length) childrenSpots.push(spot);
-                }
+              if (_.propertyOf(thisSpot.geometry)('type') && (_.propertyOf(thisSpot.geometry)('type') === 'Polygon' || _.propertyOf(thisSpot.geometry)(
+                'type') === 'MutiPolygon')) {
+                if (turf.booleanWithin(spot, thisSpot)) childrenSpots.push(spot);
               }
             }
           });
@@ -159,29 +145,9 @@
         if ((!thisSpot.properties.image_basemap && !spot.properties.image_basemap) ||
           (thisSpot.properties.image_basemap && spot.properties.image_basemap &&
             thisSpot.properties.image_basemap === spot.properties.image_basemap)) {
-          if (_.propertyOf(thisSpot.geometry)('type')) {
-            if (_.propertyOf(thisSpot.geometry)('type') === 'Point') {
-              // If thisSpot is a point and the point is inside a polygon Spot then that polygon Spot is a parent
-              if (_.propertyOf(spot.geometry)('type') === 'Polygon' || _.propertyOf(spot.geometry)(
-                  'type') === 'MutiPolygon') {
-                if (turf.inside(thisSpot, spot)) parentSpots.push(spot);
-              }
-            }
-            else {
-              // If thisSpot is a line or polygon and all of its points are inside a feature then
-              // that feature is a parent of this Spot
-              var points = turf.explode(thisSpot);
-              if (points.features) {
-                if (_.propertyOf(spot.geometry)('type') === 'Polygon' || _.propertyOf(spot.geometry)(
-                    'type') === 'MutiPolygon') {
-                  var pointsInside = [];
-                  _.each(points.features, function (point) {
-                    if (turf.inside(point, spot)) pointsInside.push(point);
-                  });
-                  if (points.features.length === pointsInside.length) parentSpots.push(spot);
-                }
-              }
-            }
+          if (_.propertyOf(spot.geometry)('type') && (_.propertyOf(spot.geometry)('type') === 'Polygon' || _.propertyOf(spot.geometry)(
+            'type') === 'MutiPolygon')) {
+            if (turf.booleanWithin(thisSpot, spot)) parentSpots.push(spot);
           }
         }
       });
