@@ -66,7 +66,7 @@
       });
 
       $rootScope.$on('updatedImages', function () {
-        getImageSources();
+        activate();
       });
     }
 
@@ -210,10 +210,7 @@
         ImageFactory.setCurrentSpot(vmParent.spot);
         ImageFactory.setCurrentImage(newImageData);
         if (IS_WEB) document.getElementById('file').click();
-        else {
-          ImageFactory.getImageFromGallery();
-        }
-        getImageSources();
+        else ImageFactory.getImageFromGallery();
       });
     }
 
@@ -306,7 +303,6 @@
           ImageFactory.setCurrentSpot(vmParent.spot);
           ImageFactory.setCurrentImage(vmParent.data);
           ImageFactory.getImageFromGallery();
-          getImageSources();
         }
       });
     }
@@ -327,7 +323,6 @@
       ImageFactory.setCurrentSpot(vmParent.spot);
       ImageFactory.setCurrentImage({'image_type': 'photo'});
       ImageFactory.takePicture();
-      getImageSources();
     }
 
     function toggleImageBasemap(image) {
