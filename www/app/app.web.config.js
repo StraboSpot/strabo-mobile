@@ -46,6 +46,9 @@
       {'state': 'strat-section', 'url': 'strat-sections/:stratSectionId', 'template': 'maps/strat-section/strat-section', 'controller': 'StratSection', 'view': 'menuContent'},
       //{'state': 'strat-sections.strat-section', 'url': ':stratSectionId', 'template': 'maps/strat-section/strat-section', 'controller': 'StratSection', 'view': 'strat-section-view'},
       {'state': 'strat-sections', 'url': 'strat-sections', 'template': 'maps/strat-sections/strat-sections', 'controller': 'StratSections', 'view': 'menuContent'},
+      {'state': 'thin-section', 'url': 'thin-sections/:thinSectionId', 'template': 'maps/thin-section/thin-section', 'controller': 'ThinSection', 'view': 'menuContent'},
+      //{'state': 'thin-sections.thin-section', 'url': ':thinSectionId', 'template': 'maps/thin-section/thin-section', 'controller': 'StratSection', 'view': 'thin-section-view'},
+      {'state': 'thin-sections', 'url': 'thin-sections', 'template': 'maps/thin-sections/thin-sections', 'controller': 'ThinSections', 'view': 'menuContent'},
       {'state': 'tags.tag', 'url': ':tag_id', 'template': 'tag/tag', 'controller': 'Tag', 'view': 'tag-view@app.tags'},
       {'state': 'tags', 'url': 'tags', 'template': 'tags/tags', 'controller': 'Tags', 'view': 'menuContent'},
       {'state': 'tools', 'url': 'tools', 'template': 'project/tools/tools', 'controller': 'Tools', 'view': 'menuContent'},
@@ -105,6 +108,7 @@
       {'state': 'sed-lithologies', 'template': 'sed/lithologies/lithologies-tab', 'controller': 'SedLithologies'},
       {'state': 'sed-structures', 'template': 'sed/structures/structures-tab', 'controller': 'SedStructures'},
       {'state': 'strat-section', 'template': 'sed/strat-section/strat-section-tab', 'controller': 'StratSection'},
+      {'state': 'thin-section', 'template': 'micro/thin-section/thin-section-tab', 'controller': 'ThinSection'},
       {'state': 'tags', 'template': 'tags/tags-tab', 'controller': 'Tags'}
     ];
     _.each(spotTabStates, function (spotTabState) {

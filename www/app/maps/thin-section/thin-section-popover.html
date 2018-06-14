@@ -1,0 +1,27 @@
+<ion-popover-view class='fit'>
+  <ion-content scroll='false'>
+    <ion-list>
+      <ion-item ng-click='vm.goToSpot(vm.thisSpotWithStratSection.properties.id, "thin-section")'>
+        <i class="icon ion-gear-b"></i> Strat Section Settings
+      </ion-item>
+      <ion-item ng-click='vm.zoomToSpotsExtent()'>
+        <i class="icon ion-map"></i> Zoom to Extent of Spots
+      </ion-item>
+      <!--<ion-item ng-click='vm.groupSpots()'>
+        <i class="icon ion-pricetags"></i> Add Tag(s) to Spot(s)
+      </ion-item>
+      <ion-item ng-show='vm.isiOS()' ng-click='vm.stereonetSpots()'>
+        <i class="icon ion-disc"></i> Lasso Spots for Stereonet
+      </ion-item>
+      <ion-item ng-show='vm.isNesting' ng-click='vm.toggleNesting()'>
+        <i class="icon ion-disc"></i> End Continous Nesting
+      </ion-item>
+      <ion-item ng-show='!vm.isNesting' ng-click='vm.toggleNesting()'>
+        <i class="icon ion-disc"></i> Begin Continuous Nesting
+      </ion-item>
+      <ion-item ng-show='vm.hasLinkedImages()' ng-click='vm.unlinkImages()'>
+        <i class="icon ion-link"></i> Unlink Images
+      </ion-item>-->
+    </ion-list>
+  </ion-content>
+</ion-popover-view>

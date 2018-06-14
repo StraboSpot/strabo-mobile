@@ -34,7 +34,8 @@
       {'value': 'strat_section', 'label': 'Strat Section', 'path': 'strat-section'},
       {'value': 'sed_lithologies', 'label': 'Sed Lithologies', 'path': 'sed-lithologies'},
       {'value': 'sed_structures', 'label': 'Sed Structures', 'path': 'sed-structures'},
-      {'value': 'sed_interpretations', 'label': 'Sed Interpretations', 'path': 'sed-interpretations'}];
+      {'value': 'sed_interpretations', 'label': 'Sed Interpretations', 'path': 'sed-interpretations'},
+      {'value': 'thin_section', 'label': 'Thin Section', 'path': 'thin-section'}];
     var visibleDatasets = [];
 
     return {

@@ -20,7 +20,7 @@
     vm.dbUrl = undefined;
     vm.isTestingMode = false;
     vm.msg = undefined;
-    vm.pointsToGenerate = undefined;
+    vm.pointsToGenerate = 10;
     vm.spotDataModel = {};
     vm.spotModelModal = {};
 
@@ -210,6 +210,7 @@
         preferences.sed_interpretations = false;
         preferences.strat_mode = false;
         preferences.minerals = false;
+        preferences.thin_section_mode = false;
         ProjectFactory.saveProjectItem('preferences', preferences);
       }
     }

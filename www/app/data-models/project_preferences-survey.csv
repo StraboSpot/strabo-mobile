@@ -19,6 +19,7 @@ acknowledge,sed_interpretations,Interpretations (Testing Only),,false,,,
 end_group,,,,,,,
 begin_group,group_other_modes,Modes,,,,,
 acknowledge,strat_mode,Strat Mode (Testing Only),,false,,,
+acknowledge,thin_section_mode,Thin Section Mode (Testing Only),,false,,,
 end_group,,,,,,,
 begin_group,group_ep4pr46,Naming Conventions,,,,,
 text,spot_prefix,SPOT Prefix Label,Label prefix based on location or other,false,,,
@@ -29,4 +30,4 @@ end_group,,,,,,,
 begin_group,group_vw6ff56,Privacy Control,,,,,
 acknowledge,public,Public?,,false,,,
 end_group,,,,,,,
-calculate,__version__,,,,,,'vuqY2LF5daBR8mL6ggqdbZ'
+calculate,__version__,,,,,,'v6a7NjT49D4Dx62EbMNm5P'

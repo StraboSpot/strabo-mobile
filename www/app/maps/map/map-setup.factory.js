@@ -181,9 +181,9 @@
       map.addLayer(MapLayerFactory.getDrawLayer());
     }
 
-    function setMap() {
+    function setMap(id) {
       map = new ol.Map({
-        'target': 'mapdiv',
+        'target': id ? id : 'mapdiv',
         'view': MapViewFactory.getInitialMapView(),
         // turn off ability to rotate map via keyboard+mouse and using fingers on a mobile device
         'controls': ol.control.defaults({

@@ -1,0 +1,11 @@
+<div>
+  <div class='padding' ng-if='!vm.spotsWithThinSections.length'>
+    No Thin Sections within the active datasets. Add a new Thin Section from within a Spot on the Thin Section tab.
+  </div>
+  <ion-list>
+    <ion-item ng-repeat='spotWithThinSection in vm.spotsWithThinSections track by spotWithThinSection.properties.id'
+              ng-click='vm.goToThinSection(spotWithThinSection)'>
+      {{ spotWithThinSection.properties.micro.thin_section.thin_section_name || 'Unnamed' }}
+    </ion-item>
+  </ion-list>
+</div>

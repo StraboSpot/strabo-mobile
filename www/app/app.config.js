@@ -50,6 +50,8 @@
       {'state': 'spots', 'url': 'spots', 'template': 'spots/spots', 'controller': 'Spots'},
       {'state': 'strat-section', 'url': 'strat-sections/:stratSectionId', 'template': 'maps/strat-section/strat-section', 'controller': 'StratSection'},
       {'state': 'strat-sections', 'url': 'strat-sections', 'template': 'maps/strat-sections/strat-sections', 'controller': 'StratSections'},
+      {'state': 'thin-section', 'url': 'thin-sections/:thinSectionId', 'template': 'maps/thin-section/thin-section', 'controller': 'ThinSection'},
+      {'state': 'thin-sections', 'url': 'thin-sections', 'template': 'maps/thin-sections/thin-sections', 'controller': 'ThinSections'},
       {'state': 'tag', 'url': 'tags/:tag_id', 'template': 'tag/tag', 'controller': 'Tag'},
       {'state': 'tags', 'url': 'tags', 'template': 'tags/tags', 'controller': 'Tags'},
       {'state': 'tools', 'url': 'tools', 'template': 'project/tools/tools', 'controller': 'Tools'},
@@ -95,6 +97,7 @@
       {'state': 'sed-lithologies', 'template': 'sed/lithologies/lithologies-tab', 'controller': 'SedLithologies'},
       {'state': 'sed-structures', 'template': 'sed/structures/structures-tab', 'controller': 'SedStructures'},
       {'state': 'strat-section', 'template': 'sed/strat-section/strat-section-tab', 'controller': 'StratSection'},
+      {'state': 'thin-section', 'template': 'micro/thin-section/thin-section-tab', 'controller': 'ThinSection'},
       {'state': 'tags', 'template': 'tags/tags-tab', 'controller': 'Tags'}
       ];
     _.each(spotTabStates, function (spotTabState) {

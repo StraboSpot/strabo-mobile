@@ -1,0 +1,33 @@
+<ion-view>
+  <ion-nav-title>{{ vm.thisSpotWithThinSection.properties.micro.thin_section.thin_section_name }}</ion-nav-title>
+  <ion-nav-buttons side='left'>
+    <button ng-click='vm.goBack();' class='button button-icon icon ion-arrow-left-c'></button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side='right'>
+    <div ng-show='vm.isNesting' class='nesting-notification'>Nesting<br>On</div>
+    <button ng-show='vm.mapView' ng-click='vm.switchView()' class='button button-icon icon ion-document-text'></button>
+    <button ng-show='!vm.mapView' ng-click='vm.switchView()'
+            class='button button-icon icon ion-disc'></button>
+    <button ng-click='vm.popover.show($event)' class='button button-icon icon ion-more rotate-90'></button>
+  </ion-nav-buttons>
+  <ion-pane data-tap-disabled='true' ng-show='vm.mapView' scroll="false">
+    <ion-content class='has-header'>
+      <div class="side-images-scroll">
+        <ion-list>
+          <ion-item ng-repeat='image in vm.images | orderBy:"name" track by image.id'
+                    ng-click='vm.toggleImageSelected(image)'>
+            <ion-label>{{ image.name || 'Untitled' }}</ion-label>
+            <a><img ng-src='{{ vm.getImageSrc(image.id) }}' id='{{ image.id }}' width='200' height='200'></a>
+          </ion-item>
+        </ion-list>
+      </div>
+      <div id='maps' class="thin-section-maps">
+      </div>
+    </ion-content>
+  </ion-pane>
+  <ion-pane ng-show='!vm.mapView'>
+    <ion-content class='has-header'>
+      <spots-this-thin-section-map-directive></spots-this-thin-section-map-directive>
+    </ion-content>
+  </ion-pane>
+</ion-view>

@@ -41,6 +41,14 @@
         'choices': {},
         'choices_file': 'app/data-models/image_properties-choices.csv'
       },
+      'micro': {
+        'thin_section': {
+          'survey': {},
+          'survey_file': 'app/data-models/micro/thin-section-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/micro/thin-section-choices.csv'
+        }
+      },
       'minerals': {
         'igneous': {
           'survey': {},
@@ -565,7 +573,8 @@
 
       $log.log('Loading data models ...');
       _.each(dataModels, function (dataModel, key) {
-        if (key === 'orientation_data' || key === '_3d_structures' || key === 'sed' || key === 'minerals') {
+        if (key === 'orientation_data' || key === '_3d_structures' || key === 'sed' || key === 'minerals' ||
+          key === 'micro') {
           _.each(dataModel, function (childDataModel, childKey) {
             //$log.log('Loading', key, childKey, ' ...');
             promises.push(loadDataModel(childDataModel));

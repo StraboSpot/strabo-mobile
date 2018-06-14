@@ -1,0 +1,23 @@
+<ion-modal-view>
+  <ion-header-bar class='bar-stable nav-title-slide-ios7' align-title='center'>
+    <button class='button button-positive'
+            ng-click='vm.saveInterval()'>Save
+    </button>
+    <h1 class='title'>Add Strat Interval</h1>
+    <button class='button icon ion-close-round close-modal-button'
+            ng-click='vm.addIntervalModal.remove()'>
+    </button>
+  </ion-header-bar>
+  <ion-content class='has-header strabo-form'>
+    <form name='straboForm' novalidate=''>
+      <auto-fields/>
+    </form>
+    <br>
+    <div align="right">
+      <button ng-click='vm.addMoreDetail()' class='button button-clear button-positive'>
+        <i class='icon ion-plus-circled'></i>
+        <span class='button-text-big'>Add More Detail</span>
+      </button>
+    </div>
+  </ion-content>
+</ion-modal-view>
