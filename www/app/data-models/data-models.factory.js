@@ -44,23 +44,41 @@
       'minerals': {
         'igneous': {
           'survey': {},
-          'survey_file': 'app/data-models/minerals-igneous-survey.csv',
+          'survey_file': 'app/data-models/minerals-igneous-all-survey.csv',
           'choices': {},
-          'choices_file': 'app/data-models/minerals-igneous-choices.csv'
+          'choices_file': 'app/data-models/minerals-igneous-all-choices.csv'
        },
+       'igneous_most_common': {
+        'survey': {},
+        'survey_file': 'app/data-models/minerals-igneous-most-common-survey.csv',
+        'choices': {},
+        'choices_file': 'app/data-models/minerals-igneous-most-common-choices.csv'
+     },
         'metamorphic': {
           'survey': {},
-          'survey_file': 'app/data-models/minerals-metamorphic-survey.csv',
+          'survey_file': 'app/data-models/minerals-metamorphic-all-survey.csv',
           'choices': {},
-          'choices_file': 'app/data-models/minerals-metamorphic-choices.csv'
+          'choices_file': 'app/data-models/minerals-metamorphic-all-choices.csv'
         },
+        'metamorphic_most_common': {
+          'survey': {},
+          'survey_file': 'app/data-models/minerals-metamorphic-most-common-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/minerals-metamorphic-most-common-choices.csv'
+        },  
         'sedimentary': {
           'survey':{},
-          'survey_file': 'app/data-models/minerals-sedimentary-survey.csv',
+          'survey_file': 'app/data-models/minerals-sedimentary-all-survey.csv',
           'choices': {},
-          'choices_file': 'app/data-models/minerals-sedimentary-choices.csv'
+          'choices_file': 'app/data-models/minerals-sedimentary-all-choices.csv'
+        }, 
+        'sedimentary_most_common': {
+          'survey':{},
+          'survey_file': 'app/data-models/minerals-sedimentary-most-common-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/minerals-sedimentary-most-common-choices.csv'
         }
-       },
+      },
       'orientation_data': {
         'linear_orientation': {
           'survey': {},
