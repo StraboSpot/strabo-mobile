@@ -11,13 +11,9 @@
 
     </ion-header-bar>
     <ion-content>
-        <div>
-            <h4 style="text-align: center; padding-top: 10px;">Select between Most Common and All minerals below.</h4>
-            <br>
-        </div>
         <div class='button-bar'>
-            <button class='button' ng-click='vmChild.switchMineralsForm("sedimentary_most_common")'>Most Common</button>
-            <button class='button' ng-click='vmChild.switchMineralsForm("sedimentary")'>All</button>
+            <button class='button button-full' ng-click='vmChild.switchMineralsForm("sedimentary_most_common")' ng-class="{'spot-tab-active': vmChild.activeState === 'most_common'}">Most Common</button>
+            <button class='button button-full' ng-click='vmChild.switchMineralsForm("sedimentary")' ng-class="{'spot-tab-active': vmChild.activeState === 'all'}">All</button>
         </div>
         <!-- <ion-list>
             <ion-item class='item-text-wrap item-button-right' ng-repeat='mineral in vm.spot.properties.minerals'>

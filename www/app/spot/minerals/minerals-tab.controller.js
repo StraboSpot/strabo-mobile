@@ -15,7 +15,8 @@
 
     var thisTabName = 'minerals';
     var selectedFromList = [];
-
+    
+    vm.activeState = "most_common";
     vm.basicFormModal = {};
     vm.collectionsModal = {};
     vm.createCollectionSelectBoxDisplay = {};
@@ -37,7 +38,6 @@
     vm.submit = submit;
     vm.switchMineralsForm = switchMineralsForm;
     vm.toggleCollectionChecked = toggleCollectionChecked;
-
     activate();
 
     /**
@@ -157,7 +157,7 @@
       }
       vmParent.data.most_common = combine;
       vmParent.data.all = combine;
-
+      vm.activeState = "most_common";
 
       if (type === 'metamorphic_most_common') {
         vm.modalTitle = 'Metamorphic Minerals';
@@ -251,10 +251,14 @@
     }
 
     function switchMineralsForm(form) {
-      if (form === 'metamorphic' || form === 'ignesous' || form === 'sedimentary') {
+      if (form === 'metamorphic' || form === 'igneous' || form === 'sedimentary') {
         vmParent.data.all = vmParent.data.most_common;
+        vm.activeState = "all";
       }
-      else vmParent.data.most_common = vmParent.data.all;
+      else {
+        vmParent.data.most_common = vmParent.data.all;
+        vm.activeState = "most_common";
+      }
       console.log(vmParent.data);
       FormFactory.setForm('minerals', form);
     }
