@@ -14,7 +14,7 @@ info.txt
 gulpfile.js
 .idea
 .editorconfig
-.vscode/
+.vscode
 
 # Ignore Mac DS_Store files
 .DS_Store
