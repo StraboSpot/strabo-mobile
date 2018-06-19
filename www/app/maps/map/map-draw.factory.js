@@ -214,10 +214,10 @@
         if (!_.isEmpty(belongsTo)) geojsonObj.properties = belongsTo;     // Image Basemap or Strat Section
 
         if (_.find(_.flatten(geojsonObj.geometry.coordinates),
-            function (num) {
-              return num < 0;
-            }
-          )) {
+          function (num) {
+            return num < 0;
+          }
+        )) {
           $ionicPopup.alert({
             'title': 'Out of Bounds',
             'template': 'Spot coordinate is off the image. Try again.'
@@ -399,7 +399,7 @@
 
       ol.control.Control.call(this, {
         'element': element//,
-       // 'target': options.target  // ToDo Not Needed
+        // 'target': options.target  // ToDo Not Needed
       });
 
       // Recognize a long press - used for deleting vertexes
