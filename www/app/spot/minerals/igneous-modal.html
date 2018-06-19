@@ -1,0 +1,34 @@
+<ion-modal-view>
+    <ion-header-bar class='bar-stable nav-title-slide-ios7' align-title='center'>
+        <button class='button button-positive' ng-click='vmChild.submit()'>Save
+        </button>
+        <h1 class='title'>{{ vmChild.modalTitle }}</h1>
+        <div class='buttons'>
+            <button class='icon ion-close-round close-modal-button' ng-click='vmChild.igneousModal.hide()'>
+            </button>
+        </div>
+    </ion-header-bar>
+    <ion-content> 
+        <div class='button-bar'>
+            <button class="button button-full"  ng-click='vmChild.switchMineralsForm("igneous_most_common")' ng-class="{'spot-tab-active': vmChild.activeState === 'most_common'}">Most Common</button>
+            <button class="button button-full"  ng-click='vmChild.switchMineralsForm("igneous")' ng-class="{'spot-tab-active': vmChild.activeState === 'all'}">All</button>
+        </div>
+        <!-- <ion-list>
+            <ion-item class='item-text-wrap item-button-right' ng-repeat='mineral in vm.spot.properties.minerals'>
+              {{  }}
+            </ion-item>
+          </ion-list> -->
+          <form name='straboForm' novalidate=''>
+            <auto-fields/>
+          </form>
+    </ion-content>
+    <!-- <ion-content class='has-header'>
+      <div class='padding orientation-reference' ng-show="vmChild.parentOrientation">
+        <b>REFERENCE ORIENTATION:</b></span>
+        {{ vmChild.parentOrientation.label }}
+      </div>
+      <form name='straboForm' novalidate=''>
+        <auto-fields/>
+      </form>
+    </ion-content> -->
+</ion-modal-view>

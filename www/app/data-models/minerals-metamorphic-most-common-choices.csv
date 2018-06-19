@@ -1,0 +1,18 @@
+list_name,name,label,order
+cs0gb99,albite,Albite,
+cs0gb99,amphibole,Amphibole,1
+cs0gb99,andalusite,Andalusite,2
+cs0gb99,biotite,Biotite,3
+cs0gb99,chlorite,Chlorite,4
+cs0gb99,diopside,Diopside,5
+cs0gb99,epidote,Epidote,6
+cs0gb99,garnet,Garnet,7
+cs0gb99,glaucophane,Glaucophane,8
+cs0gb99,kyanite,Kyanite,9
+cs0gb99,muscovite_whi,"Muscovite, White Mica",10
+cs0gb99,omphacite,Omphacite,11
+cs0gb99,plagioclase,Plagioclase,12
+cs0gb99,quartz,Quartz,13
+cs0gb99,rutile,Rutile,14
+cs0gb99,sillimanite,Sillimanite,15
+cs0gb99,staurolite,Staurolite,16

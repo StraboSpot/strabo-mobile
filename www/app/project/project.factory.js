@@ -42,8 +42,9 @@
       'getLinkedImages': getLinkedImages,
       'getLinkedImagesAll': getLinkedImagesAll,
       'getPreferences': getPreferences,
-      'getProjectName': getProjectName,
       'getProjectDescription': getProjectDescription,
+      'getProjectName': getProjectName,
+      'getProjectProperty': getProjectProperty,
       'getProjectTools': getProjectTools,
       'getOtherFeatures': getOtherFeatures,
       'getRelationship': getRelationship,
@@ -366,6 +367,11 @@
     function getProjectName() {
       if (!currentProject) return undefined;
       return currentProject.description ? currentProject.description.project_name : undefined;
+    }
+
+    function getProjectProperty(property){
+      if (!currentProject) return undefined;
+      return currentProject[property] ? currentProject[property] : [];
     }
 
     function getProjectTools() {
