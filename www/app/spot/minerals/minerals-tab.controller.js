@@ -131,8 +131,8 @@
     function setupCreateCollectionSelectBox() {
       vm.createCollectionSelectBoxDisplay = JSON.parse(JSON.stringify(vm.mineralCollections));
       vm.createCollectionSelectBoxDisplay.push({ 'name': '-- Create a New Collection --' });
-      vm.selectedCollectionToCreate = vm.createCollectionSelectBoxDisplay[0];
-      if (vm.mineralCollections.length === 0) vm.showNameField = true;
+      vm.selectedCollectionToCreate = vm.createCollectionSelectBoxDisplay[vm.createCollectionSelectBoxDisplay.length-1];
+      if (vm.mineralCollections.length === 0 || vm.selectedCollectionToCreate.name === '-- Create a New Collection --' ) vm.showNameField = true;
       else vm.showNameField = false;
       vm.newCollectionName = undefined;
     }
@@ -230,6 +230,17 @@
         vm.selectedCollectionToCreate.minerals = vmParent.spot.properties.minerals;
         vm.mineralCollections.splice(0, 0, vm.selectedCollectionToCreate);
         ProjectFactory.saveProjectItem('mineral_collections', vm.mineralCollections);
+
+        //alerting that collection is saved
+        var mineralLabels = [];
+        _.each(vm.selectedCollectionToCreate.minerals, function(mineral){
+         mineralLabels.push(DataModelsFactory.getLabel(mineral));
+        });       
+        $ionicPopup.alert({
+          'title': 'Collection Saved',
+          'template': 'Saved following minerals to favorites collection <strong>' + vm.selectedCollectionToCreate.name + '</strong>:<br><br>'  + mineralLabels.join(", ")
+        });
+
         setupCreateCollectionSelectBox();
       }
     }

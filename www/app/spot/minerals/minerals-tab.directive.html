@@ -24,13 +24,13 @@
     <span>No minerals added to this spot yet.</span>
   </div>
   <div ng-show="vm.spot.properties.minerals" class="list">
-    <div class="item item-divider">
-      Create a collection with these minerals:
+    <div class="item item-divider item-text-wrap">
+      Create or Update a favorites collection with these minerals:
     </div>
     <ion-input class='item item-input item-select item-text-wrap' 
       ng-show='vmChild.mineralCollections.length >= 1'>
       <ion-label>Select a Favorites Collection</ion-label>
-      <select ng-model='vmChild.selectedCollectionToCreate' 
+      <select ng-model='vmChild.selectedCollectionToCreate' ng-selected='vmChild.selectedCollectionToCreate'
       ng-options='mineralCollection.name for mineralCollection in vmChild.createCollectionSelectBoxDisplay'
         ng-change='vmChild.changedCollectionToCreate()'>
       </select>
@@ -40,8 +40,8 @@
       <input type='text' ng-model='vmChild.newCollectionName' autofocus>
     </ion-input>
     <button class="button button-clear button-positive" ng-click="vmChild.saveCollection()">
-      <i class='icon ion-plus-circled'></i>
-      <span class='button-text-big'>Create Collection</span>
+      <i class='icon ion-archive'></i>
+      <span class='button-text-big'>Create/Update Favorites Collection</span>
     </button>
   </div>
 </div>
