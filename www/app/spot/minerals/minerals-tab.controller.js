@@ -194,7 +194,7 @@
     }
     // checkedMinerals is mineralsCollections.minerals in added-collection-modal.html
     function toggleCollectionChecked(checkedMinerals, e) {
-      if (e.srcElement.checked) {
+      if (e.target.checked) {
         selectedFromList = _.union(checkedMinerals, selectedFromList);
         console.log(selectedFromList);
       }
@@ -238,7 +238,7 @@
         });       
         $ionicPopup.alert({
           'title': 'Collection Saved',
-          'template': 'Saved following minerals to favorites collection <strong>' + vm.selectedCollectionToCreate.name + '</strong>:<br><br>'  + mineralLabels.join(", ")
+          'template': 'Saved following minerals to favorites collection <b>' + vm.selectedCollectionToCreate.name + '</b>:<br><br>'  + mineralLabels.join(", ")
         });
 
         setupCreateCollectionSelectBox();
