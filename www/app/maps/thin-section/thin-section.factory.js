@@ -38,11 +38,11 @@
      */
 
     // X-Axis
-    function drawAxisX(ctx, pixelRatio, yAxisHeight, labels, spacing, color) {
-      var p = getPixel([-10, 0], pixelRatio);
+    function drawAxisX(ctx, pixelRatio, yAxisHeight, labels, spacing, color, mapName) {
+      var p = getPixel([-10, 0], pixelRatio, mapName);
       ctx.moveTo(p.x, p.y);
       var xAxisLength = (_.size(labels) + 1) * xInterval;
-      p = getPixel([xAxisLength, 0], pixelRatio);
+      p = getPixel([xAxisLength, 0], pixelRatio, mapName);
       ctx.lineTo(p.x, p.y);
       ctx.stroke();
 
@@ -56,15 +56,15 @@
         // Tick Mark
         ctx.beginPath();
         ctx.setLineDash([]);
-        p = getPixel([x, 0], pixelRatio);
+        p = getPixel([x, 0], pixelRatio, mapName);
         ctx.moveTo(p.x, p.y);
-        p = getPixel([x, -5], pixelRatio);
+        p = getPixel([x, -5], pixelRatio, mapName);
         ctx.lineTo(p.x, p.y);
         ctx.stroke();
 
         // Label
         ctx.save();
-        p = getPixel([x, -5], pixelRatio);
+        p = getPixel([x, -5], pixelRatio, mapName);
         ctx.translate(p.x, p.y);
         ctx.rotate(-Math.PI / 2);
         if (color) ctx.fillStyle = color;
@@ -74,21 +74,21 @@
         // Vertical Dashed Line
         ctx.beginPath();
         ctx.setLineDash([5]);
-        p = getPixel([x, 0], pixelRatio);
+        p = getPixel([x, 0], pixelRatio, mapName);
         ctx.moveTo(p.x, p.y);
-        p = getPixel([x, yAxisHeight], pixelRatio);
+        p = getPixel([x, yAxisHeight], pixelRatio, mapName);
         ctx.lineTo(p.x, p.y);
         ctx.stroke();
       });
     }
 
     // X Axis Stacked
-    function drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, spacing, y, color, profile) {
-      var p = y === 0 ? getPixel([-10, y], pixelRatio) : getPixel([0, y], pixelRatio);
+    function drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, spacing, y, color, profile, mapName) {
+      var p = y === 0 ? getPixel([-10, y], pixelRatio, mapName) : getPixel([0, y], pixelRatio, mapName);
       ctx.beginPath();
       ctx.moveTo(p.x, p.y);
       var xAxisLength = (_.size(labels) + 1) * xInterval;
-      p = getPixel([xAxisLength, y], pixelRatio);
+      p = getPixel([xAxisLength, y], pixelRatio, mapName);
       ctx.lineTo(p.x, p.y);
       ctx.strokeStyle = color;
       ctx.stroke();
@@ -99,14 +99,14 @@
 
       // Line and label for x-axis group
       ctx.beginPath();
-      p = getPixel([0, y], pixelRatio);
+      p = getPixel([0, y], pixelRatio, mapName);
       ctx.moveTo(p.x, p.y);
-      p = getPixel([0, y - 40], pixelRatio);
+      p = getPixel([0, y - 40], pixelRatio, mapName);
       ctx.lineTo(p.x, p.y);
       ctx.strokeStyle = color;
       ctx.stroke();
       ctx.save();
-      p = getPixel([-2, y - 2], pixelRatio);
+      p = getPixel([-2, y - 2], pixelRatio, mapName);
       ctx.translate(p.x, p.y);
       ctx.rotate(270 * Math.PI / 180);     // text at 270 degrees
       ctx.fillStyle = color;
@@ -120,16 +120,16 @@
         // Tick Mark
         ctx.beginPath();
         ctx.setLineDash([]);
-        p = getPixel([x, y], pixelRatio);
+        p = getPixel([x, y], pixelRatio, mapName);
         ctx.moveTo(p.x, p.y);
-        p = getPixel([x, y - 4], pixelRatio);
+        p = getPixel([x, y - 4], pixelRatio, mapName);
         ctx.lineTo(p.x, p.y);
         ctx.strokeStyle = color;
         ctx.stroke();
 
         // Label
         ctx.save();
-        p = getPixel([x, y - 5], pixelRatio);
+        p = getPixel([x, y - 5], pixelRatio, mapName);
         ctx.translate(p.x, p.y);
         ctx.rotate(30 * Math.PI / 180);     // text at 30 degrees
         ctx.fillStyle = color;
@@ -139,9 +139,9 @@
         // Vertical Dashed Line
         ctx.beginPath();
         ctx.setLineDash([5]);
-        p = getPixel([x, 0], pixelRatio);
+        p = getPixel([x, 0], pixelRatio, mapName);
         ctx.moveTo(p.x, p.y);
-        p = getPixel([x, yAxisHeight], pixelRatio);
+        p = getPixel([x, yAxisHeight], pixelRatio, mapName);
         ctx.lineTo(p.x, p.y);
         ctx.strokeStyle = 'black';
         ctx.stroke();
@@ -196,8 +196,8 @@
     }
 
     // Get pixel coordinates from map coordinates
-    function getPixel(coord, pixelRatio) {
-      var map = MapSetupFactory.getMap();
+    function getPixel(coord, pixelRatio, mapName) {
+      var map = MapSetupFactory.getMap(mapName);
       return {
         'x': map.getPixelFromCoordinate(coord)[0] * pixelRatio,
         'y': map.getPixelFromCoordinate(coord)[1] * pixelRatio
@@ -218,7 +218,7 @@
     // Get only Spots that are intervals
     function getThinIntervalSpots() {
       var intervalSpots = [];
-      var featureLayer = MapLayerFactory.getFeatureLayer();
+      var featureLayer = MapLayerFactory.getFeatureLayer(mapName);
       _.each(featureLayer.getLayers().getArray(), function (layer) {
         _.each(layer.getSource().getFeatures(), function (feature) {
           if (feature.get('surface_feature') &&
@@ -346,36 +346,36 @@
       return geojsonObj;
     }
 
-    function drawAxes(ctx, pixelRatio, thinSection) {
+    function drawAxes(ctx, pixelRatio, thinSection, mapName) {
       ctx.font = "30px Arial";
 
-      var map = MapSetupFactory.getMap();
+      var map = MapSetupFactory.getMap(mapName);
       var zoom = map.getView().getZoom();
 
       // Y Axis
-      var currentSectionHeight = getSectionHeight();
-      var yAxisHeight = currentSectionHeight + 40;
+      //var currentSectionHeight = getSectionHeight();
+      var yAxisHeight = 100 + 40;
 
       ctx.beginPath();
       ctx.setLineDash([]);
-      var p = getPixel([0, 0], pixelRatio);
+      var p = getPixel([0, 0], pixelRatio, mapName);
       ctx.moveTo(p.x, p.y);
-      p = getPixel([0, yAxisHeight], pixelRatio);
+      p = getPixel([0, yAxisHeight], pixelRatio, mapName);
       ctx.lineTo(p.x, p.y);
 
       // Tick Marks for Y Axis
       _.times(Math.floor(yAxisHeight / yMultiplier) + 1, function (i) {
         var y = i * yMultiplier;
-        p = i === 0 ? getPixel([-15, 0], pixelRatio) : getPixel([-10, y], pixelRatio);
+        p = i === 0 ? getPixel([-15, 0], pixelRatio, mapName) : getPixel([-10, y], pixelRatio, mapName);
         if (i === 0 || zoom >= 5 || (zoom < 5 && zoom > 2 && i % 5 === 0) || (zoom <= 2 && i % 10 === 0)) {
           ctx.textAlign = 'right';
           if (i === 0 && thinSection.column_y_axis_units) {
             ctx.fillText('0 ' + thinSection.column_y_axis_units, p.x, p.y);
           }
           else ctx.fillText(i, p.x, p.y);
-          p = getPixel([-5, y], pixelRatio);
+          p = getPixel([-5, y], pixelRatio, mapName);
           ctx.moveTo(p.x, p.y);
-          p = getPixel([0, y], pixelRatio);
+          p = getPixel([0, y], pixelRatio, mapName);
           ctx.lineTo(p.x, p.y);
         }
       });
@@ -383,24 +383,24 @@
 
       // Tick Marks for Intervals
       // Only show tick marks if zoom level is 6 or greater
-      if (zoom >= 6) {
+  /*    if (zoom >= 6) {
         var intervalSpots = getThinIntervalSpots();
         _.each(intervalSpots, function (intervalSpot) {
           var extent = intervalSpot.getGeometry().getExtent();
           var y = extent[3];
           var label = HelpersFactory.roundToDecimalPlaces(extent[3] / yMultiplier, 2);
           if (!Number.isInteger(label)) {
-            p = getPixel([-3, y], pixelRatio);
+            p = getPixel([-3, y], pixelRatio, mapName);
             ctx.textAlign = 'right';
             ctx.fillText(label, p.x, p.y);
-            p = getPixel([-2, y], pixelRatio);
+            p = getPixel([-2, y], pixelRatio, mapName);
             ctx.moveTo(p.x, p.y);
-            p = getPixel([0, y], pixelRatio);
+            p = getPixel([0, y], pixelRatio, mapName);
             ctx.lineTo(p.x, p.y);
           }
         });
         ctx.stroke();
-      }
+      }*/
 
       // Setup to draw X Axis
       var labels = {};
@@ -412,29 +412,29 @@
       if (thinSection.column_profile === 'clastic') {
         labels = _.pluck(grainSizeOptions.clastic, 'label');
         //drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 1);
-        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 1, y, 'black', thinSection.column_profile);
+        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 1, y, 'black', thinSection.column_profile, mapName);
         y += (a + b * x + c * x * x) * -1
       }
       else if (thinSection.column_profile === 'carbonate') {
         labels = _.pluck(grainSizeOptions.carbonate, 'label');
         //drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 2.33);
-        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 2, y, 'blue', thinSection.column_profile);
+        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 2, y, 'blue', thinSection.column_profile, mapName);
         y += (a + b * x + c * x * x) * -1
       }
       else if (thinSection.column_profile === 'mixed_clastic') {
         labels = _.pluck(grainSizeOptions.clastic, 'label');
         //drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 1);
-        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 1, y, 'black', 'clastic');
+        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 1, y, 'black', 'clastic', mapName);
         y += (a + b * x + c * x * x) * -1;
         labels = _.pluck(grainSizeOptions.carbonate, 'label');
         //drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 2.33, 'blue');
-        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 2, y, 'blue', 'carbonate');
+        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 2, y, 'blue', 'carbonate', mapName);
         y += (a + b * x + c * x * x) * -1
       }
       else if (thinSection.column_profile === 'weathering_pro') {
         labels = _.pluck(grainSizeOptions.weathering, 'label');
         //drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 1);
-        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 1, y, 'black', 'weathering');
+        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 1, y, 'black', 'weathering', mapName);
         y += (a + b * x + c * x * x) * -1
       }
       else $log.error('Incorrect profile type:', thinSection.column_profile);
@@ -443,7 +443,7 @@
         labels = _.pluck(grainSizeOptions.lithologies, 'label');
         labels = _.rest(labels, 3);
         //drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 2.66, 'green');
-        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 2, y, 'green', 'misc.');
+        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 2, y, 'green', 'misc.', mapName);
       }
     }
 

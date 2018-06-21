@@ -10,9 +10,9 @@
 
   function MapSetupFactory($log, $q, ImageFactory, MapDrawFactory, MapEmogeosFactory, MapFactory, MapLayerFactory,
                            MapViewFactory, ProjectFactory, SpotFactory, IS_WEB) {
-    var map;
     var imageBasemap;
     var initialMapView;
+    var maps = [];
     var popup;
     var stratSectionId;
 
@@ -30,10 +30,6 @@
     };
 
     /**
-     * Private Functions
-     */
-
-    /**
      * Public Functions
      */
 
@@ -41,15 +37,16 @@
       return initialMapView;
     }
 
-    function getMap() {
-      return map;
+    function getMap(mapName) {
+      return mapName ? maps[mapName] : maps['default'];
     }
 
     function getPopupOverlay() {
       return popup;
     }
 
-    function setImageBasemapLayers(im) {
+    function setImageBasemapLayers(im, mapName) {
+      var map = mapName ? maps[mapName] : maps['default'];
       imageBasemap = im;
       stratSectionId = null;
       var imageBasemaps = [im];
@@ -108,6 +105,7 @@
     }
 
     function setImageOverlays(spot) {
+      var map = maps['default'];
       stratSectionId = spot.properties.sed.strat_section.strat_section_id;
       imageBasemap = null;
       if (_.isEmpty(spot.properties.sed.strat_section.images)) return $q.when(null);
@@ -164,26 +162,32 @@
     }
 
     function setLayers() {
+      var mapName = 'default';
+      var map = maps[mapName];
       stratSectionId = null;
       imageBasemap = null;
       MapFactory.setMaps();
+      MapLayerFactory.initializeLayers(mapName);
       map.addLayer(MapLayerFactory.getBaselayers());
       map.addLayer(MapLayerFactory.getOverlays());
       map.addLayer(MapLayerFactory.getGeolocationLayer());
       map.addLayer(MapLayerFactory.getDatasetsLayer());
-      map.addLayer(MapLayerFactory.getFeatureLayer());
+      map.addLayer(MapLayerFactory.getFeatureLayer(mapName));
       map.addLayer(MapLayerFactory.getDrawLayer());
     }
 
-    function setOtherLayers() {
+    function setOtherLayers(mapName) {
+      mapName = mapName ? mapName : 'default';
+      var map = maps[mapName];
+      MapLayerFactory.initializeLayers(mapName);
       map.addLayer(MapLayerFactory.getDatasetsLayer());
-      map.addLayer(MapLayerFactory.getFeatureLayer());
+      map.addLayer(MapLayerFactory.getFeatureLayer(mapName));
       map.addLayer(MapLayerFactory.getDrawLayer());
     }
 
-    function setMap(id) {
-      map = new ol.Map({
-        'target': id ? id : 'mapdiv',
+    function setMap(mapName) {
+      var map = new ol.Map({
+        'target': mapName ? mapName : 'mapdiv',
         'view': MapViewFactory.getInitialMapView(),
         // turn off ability to rotate map via keyboard+mouse and using fingers on a mobile device
         'controls': ol.control.defaults({
@@ -194,9 +198,12 @@
           'pinchRotate': false
         })
       });
+      mapName = mapName ? mapName : 'default';
+      maps[mapName] = map;
     }
 
-    function setMapControls(switcher) {
+    function setMapControls(switcher, mapName) {
+      var map = mapName ? maps[mapName] : maps['default'];
       var drawControlProps = {
         'map': map,
         'drawLayer': MapLayerFactory.getDrawLayer()
@@ -215,7 +222,8 @@
       map.addControl(switcher);
     }
 
-    function setPopupOverlay() {
+    function setPopupOverlay(mapName) {
+      var map = mapName ? maps[mapName] : maps['default'];
       popup = new ol.Overlay.Popup();
       map.addOverlay(popup);
     }

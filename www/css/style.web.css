@@ -103,6 +103,10 @@ html, body, .container-fluid, .strabo-page-content {
   z-index: 5;             /* Added so modals would be on top of the side panel (Ionic modals have z index 10)*/
 }
 
+.toggler {                        /* Used for map side panel toggle button */
+  background-color: white;
+}
+
 .strabo-field-info-button {
   top: -1px;
 }

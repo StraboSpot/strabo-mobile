@@ -19,7 +19,8 @@
 
     var currentSpot = {};
     var datasetsLayerStates;
-    //var map;
+    var imageSources = [];
+    var imagesSelected = [];
     var maps = {};
     var spotsThisMap = [];
     var thinSection = {};
@@ -31,6 +32,7 @@
     vm.clickedFeatureId = undefined;
     vm.data = {};
     vm.grainSizeOptions = {};
+    vm.images = [];
     vm.isNesting = SpotFactory.getActiveNesting();
     vm.newNestModal = {};
     vm.newNestProperties = {};
@@ -45,6 +47,7 @@
     vm.closeModal = closeModal;
     vm.createTag = createTag;
     vm.deleteSpot = deleteSpot;
+    vm.getImageSrc = getImageSrc;
     vm.getTagNames = getTagNames;
     vm.goBack = goBack;
     vm.goToSpot = goToSpot;
@@ -56,19 +59,10 @@
     vm.saveInterval = saveInterval;
     vm.stereonetSpots = stereonetSpots;
     vm.switchView = switchView;
+    vm.toggleImageSelected = toggleImageSelected;
     vm.toggleNesting = toggleNesting;
     vm.toggleTagChecked = toggleTagChecked;
     vm.zoomToSpotsExtent = zoomToSpotsExtent;
-
-
-    // New for Thin Section
-    var imageSources = [];
-    var imagesSelected = [];
-
-    vm.images = [];
-
-    vm.getImageSrc = getImageSrc;
-    vm.toggleImageSelected = toggleImageSelected;
 
     activate();
 
@@ -86,32 +80,31 @@
       if (currentSpot) vm.clickedFeatureId = currentSpot.properties.id;
       //MapEmogeosFactory.clearSelectedSpot();
 
-      gatherSpots();
+      getSpotWithThinSection();
       createModals();
       createPopover();
+      createPageEvents();
     }
 
     function createMap(image) {
-
-
       var mapName = 'map' + image.id;
       maps[mapName] = {};
       switchers[mapName] = new ol.control.LayerSwitcher();
 
       MapViewFactory.setInitialMapView(image);
       MapSetupFactory.setMap(mapName);
-      MapSetupFactory.setImageBasemapLayers(image).then(function () {
-        MapSetupFactory.setOtherLayers();
-        MapSetupFactory.setMapControls(switchers[mapName]);
-        MapSetupFactory.setPopupOverlay();
+      MapSetupFactory.setImageBasemapLayers(image, mapName).then(function () {
+        MapSetupFactory.setOtherLayers(mapName);
+        MapSetupFactory.setMapControls(switchers[mapName], mapName);
+        MapSetupFactory.setPopupOverlay(mapName);
 
-        maps[mapName] = MapSetupFactory.getMap();
-        var spots = gatherSpots1(image.id);
+        maps[mapName] = MapSetupFactory.getMap(mapName);
+        var spots = gatherSpotsOnImage(image.id);
         $log.log('Spots on this Map:', spots);
-        MapFeaturesFactory.setMappableSpots(spots);
-        datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(maps[mapName]);
-        MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, maps[mapName]);
-        MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, maps[mapName]);
+        MapFeaturesFactory.setMappableSpots(spots, mapName);
+        datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(maps[mapName], mapName);
+        MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, maps[mapName], mapName);
+        MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, maps[mapName], mapName);
 
         // If we have a current feature set the selected symbol
         if (vm.clickedFeatureId && IS_WEB) {
@@ -124,8 +117,6 @@
         vm.currentZoom = HelpersFactory.roundToDecimalPlaces(maps[mapName].getView().getZoom(), 2);
         //updateScaleBar(maps[mapName].getView().getResolution());
         createMapInteractions(maps[mapName]);
-        createPageEvents();
-
 
         $log.log('Done Loading Image Basemap');
         $timeout(function () {
@@ -181,7 +172,7 @@
         if ($state.current.name === 'app.thin-section') {
           var ctx = event.context;
           var pixelRatio = event.frameState.pixelRatio;
-          ThinSectionFactory.drawAxes(ctx, pixelRatio, thinSection);
+          ThinSectionFactory.drawAxes(ctx, pixelRatio, thinSection, event.target.getTarget());
 
           var mapSize = map.getSize();
           var mapExtent = map.getView().calculateExtent(map.getSize());
@@ -333,7 +324,7 @@
             lyr.getLayers().forEach(function (layer) {     // Individual Datasets
               datasetsLayerStates[layer.get('datasetId')] = lyr.getVisible();
             });
-            updateFeatureLayer();
+            updateFeatureLayer(map);
             switcher.renderPanel();
           }
         });
@@ -361,21 +352,8 @@
       });
     }
 
-    function gatherSpots() {
-      // Get the Spot that has this Thin Section
-      vm.thisSpotWithThinSection = ThinSectionFactory.getSpotWithThisThinSection($state.params.thinSectionId);
-      thinSection = vm.thisSpotWithThinSection.properties.micro.thin_section;
-      gatherImages();
-      $log.log('thisSpotWithThinSection', vm.thisSpotWithThinSection);
-
-      // Get all Thin Section Spots
-      ThinSectionFactory.gatherThinSectionSpots($state.params.thinSectionId);
-      spotsThisMap = ThinSectionFactory.getThinSectionSpots();
-      $log.log('Spots on this Map:', spotsThisMap);
-    }
-
     // Get only the Spots where the image_basemap id matches the id of one of the linked images being loaded
-    function gatherSpots1(imageId) {
+    function gatherSpotsOnImage(imageId) {
       var activeSpots = SpotFactory.getActiveSpots();
       var linkedImagesIds = _.union([imageId], ProjectFactory.getLinkedImages(imageId));
       var mappableSpots =_.filter(activeSpots, function (spot) {
@@ -385,6 +363,14 @@
       return _.reject(mappableSpots, function (spot) {
         return !_.has(spot, 'geometry');
       });
+    }
+
+    function getSpotWithThinSection() {
+      // Get the Spot that has this Thin Section
+      vm.thisSpotWithThinSection = ThinSectionFactory.getSpotWithThisThinSection($state.params.thinSectionId);
+      thinSection = vm.thisSpotWithThinSection.properties.micro.thin_section;
+      gatherImages();
+      $log.log('thisSpotWithThinSection', vm.thisSpotWithThinSection);
     }
 
     function isImageSelected(imageId) {
@@ -415,14 +401,14 @@
       imageElement.style.borderStyle = 'none';
     }
 
-    function updateFeatureLayer() {
+    function updateFeatureLayer(map) {
       $log.log('Updating Thin Section Feature Layer ...');
-      gatherSpots();
-      MapFeaturesFactory.setMappableSpots(spotsThisMap);
+      var spots = gatherSpotsOnImage(image.id);
+      MapFeaturesFactory.setMappableSpots(spots);
       datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map);
       MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map);
       MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
-      MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
+      MapViewFactory.zoomToSpotsExtent(map, spots);
 
       updateSelectedSymbol();
     }
