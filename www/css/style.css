@@ -573,19 +573,20 @@ Form Select Multiple Choices Fields Style
 .strabo-choices-flex-container {
   padding-left: 16px;
   margin: 0;
-  list-style: none;
-  -ms-box-orient: horizontal;
-  display: -webkit-box;
+  /* list-style: none; */
+  /* -ms-box-orient: horizontal; */
+  /* display: -webkit-box;
   display: -moz-box;
   display: -ms-flexbox;
   display: -moz-flex;
-  display: -webkit-flex;
+  display: -webkit-flex; */
   display: flex;
 }
 .strabo-choices-flex-item {
   flex: 1 0 200px;
   margin-bottom: 1px;
-  display: table;
+  /* align-content: space-around; */
+  /* display: table; */
 }
 @media (min-width: 410px) {
   .strabo-flex-container .strabo-choices-flex-item {
