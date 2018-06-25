@@ -10,7 +10,7 @@
             class='button button-icon icon ion-disc'></button>
     <button ng-click='vm.popover.show($event)' class='button button-icon icon ion-more rotate-90'></button>
   </ion-nav-buttons>
-  <ion-pane data-tap-disabled='true' ng-show='vm.mapView' scroll="false">
+  <ion-pane data-tap-disabled='true' scroll="false">
     <ion-content class='has-header'>
       <div class="side-images-scroll">
         <ion-list>
@@ -23,11 +23,6 @@
       </div>
       <div id='maps' class="thin-section-maps">
       </div>
-    </ion-content>
-  </ion-pane>
-  <ion-pane ng-show='!vm.mapView'>
-    <ion-content class='has-header'>
-      <spots-this-thin-section-map-directive></spots-this-thin-section-map-directive>
     </ion-content>
   </ion-pane>
 </ion-view>

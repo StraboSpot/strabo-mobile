@@ -5,11 +5,9 @@
     .module('app')
     .factory('ThinSectionFactory', ThinSectionFactory);
 
-  ThinSectionFactory.$inject = ['$ionicPopup', '$log', '$q', 'DataModelsFactory', 'HelpersFactory', 'MapLayerFactory',
-    'MapSetupFactory', 'SpotFactory'];
+  ThinSectionFactory.$inject = ['$log', 'DataModelsFactory', 'MapSetupFactory', 'SpotFactory'];
 
-  function ThinSectionFactory($ionicPopup, $log, $q, DataModelsFactory, HelpersFactory, MapLayerFactory,
-                               MapSetupFactory, SpotFactory) {
+  function ThinSectionFactory($log, DataModelsFactory, MapSetupFactory, SpotFactory) {
     var grainSizeOptions = DataModelsFactory.getSedLabelsDictionary();
     var spotsWithThinSections = {};
     var thinSectionSpots = {};
@@ -17,20 +15,13 @@
     var yMultiplier = 20;  // 1 m interval thickness = 20 pixels
 
     return {
-      'changedColumnProfile': changedColumnProfile,
-      'checkForIntervalUpdates': checkForIntervalUpdates,
-      //'createInterval': createInterval,
       'drawAxes': drawAxes,
       'gatherSpotsWithThinSections': gatherSpotsWithThinSections,
       'gatherThinSectionSpots': gatherThinSectionSpots,
       'getSpotWithThisThinSection': getSpotWithThisThinSection,
       'getSpotsWithThinSections': getSpotsWithThinSections,
-      'getThinSectionIntervals': getThinSectionIntervals,
       'getThinSectionSettings': getThinSectionSettings,
-      'getThinSectionSpots': getThinSectionSpots,
-      'isInterval': isInterval,
-      'orderThinSectionIntervals': orderThinSectionIntervals,
-      //'validateNewInterval': validateNewInterval
+      'getThinSectionSpots': getThinSectionSpots
     };
 
     /**
@@ -215,136 +206,9 @@
       return sectionHeight;
     }*/
 
-    // Get only Spots that are intervals
-    /*function getThinIntervalSpots() {
-      var intervalSpots = [];
-      var featureLayer = MapLayerFactory.getFeatureLayer(mapName);
-      _.each(featureLayer.getLayers().getArray(), function (layer) {
-        _.each(layer.getSource().getFeatures(), function (feature) {
-          if (feature.get('surface_feature') &&
-            feature.get('surface_feature')['surface_feature_type'] === 'thin_interval') {
-            intervalSpots.push(feature);
-          }
-        });
-      });
-      return intervalSpots;
-    }*/
-
-    // Determine if the field should be shown or not by looking at the relevant key-value pair
-    // The 2nd param, data, is used in the eval method
-    // This copied from Form Factory and modified to use data instead of properties
-    function isRelevant(relevant, data) {
-      if (!relevant) return true;
-
-      relevant = relevant.replace(/selected\(\$/g, '_.contains(');
-      relevant = relevant.replace(/\$/g, '');
-      relevant = relevant.replace(/{/g, 'data.');
-      relevant = relevant.replace(/}/g, '');
-      relevant = relevant.replace(/''/g, 'undefined');
-      relevant = relevant.replace(/ = /g, ' == ');
-      relevant = relevant.replace(/ or /g, ' || ');
-      relevant = relevant.replace(/ and /g, ' && ');
-
-      try {
-        return eval(relevant);
-      }
-      catch (e) {
-        return false;
-      }
-    }
-
     /**
      * Public Functions
      */
-
-    // Column Profile has been changed from Grain Size to Weathering or vice versa so update interval width
-    function changedColumnProfile(thinSectionId) {
-      var thinSectionIntervals = getThinSectionIntervals(thinSectionId);
-      _.each(thinSectionIntervals, function (thinSectionInterval) {
-        var intervalWidth = getIntervalWidth(thinSectionInterval.properties.micro.lithologies, thinSectionId);
-        var extent = new ol.format.GeoJSON().readFeature(thinSectionInterval).getGeometry().getExtent();
-        var minX = 0;
-        var maxX = intervalWidth;
-        var minY = extent[1];
-        var maxY = extent[3];
-        thinSectionInterval.geometry.coordinates = [[[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY], [minX, minY]]];
-        SpotFactory.save(thinSectionInterval);
-        $log.log('Recalculated Spot geometry');
-      });
-    }
-
-    // Check for any changes we need to make to the Sed fields or geometry when a Spot that is a thin interval
-    // has fields that are changed
-    function checkForIntervalUpdates(state, spot, savedSpot) {
-      var i, extent;
-      // Current state is spot tab
-      if (state === 'app.spotTab.spot') {
-        // Calculate interval thickness if Spot has geometry and the surface feature type changed to thin interval
-        if (!savedSpot.properties.surface_feature || !savedSpot.properties.surface_feature.surface_feature_type ||
-          !savedSpot.properties.surface_feature.surface_feature_type !== 'thin_interval') {
-          if (spot.geometry) {
-            if (!spot.properties.micro) spot.properties.micro = {};
-            if (!spot.properties.micro.lithologies) spot.properties.micro.lithologies = {};
-            $log.log('Updating interval thickness ...');
-            extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
-            var thickness = (extent[3] - extent[1]) / yMultiplier; // 20 is yMultiplier
-            thickness = HelpersFactory.roundToDecimalPlaces(thickness, 2);
-            spot.properties.micro.lithologies.interval_thickness = thickness;
-            var spotWithThisThinSection = getSpotWithThisThinSection(spot.properties.thin_section_id);
-            if (spotWithThisThinSection.properties && spotWithThisThinSection.properties.micro &&
-              spotWithThisThinSection.properties.micro.thin_section) {
-              spot.properties.micro.lithologies.thickness_units =
-                spotWithThisThinSection.properties.micro.thin_section.column_y_axis_units;
-            }
-            if (!spot.properties.micro.lithologies.is_this_a_bed_or_package) {
-              spot.properties.micro.lithologies.is_this_a_bed_or_package = 'unexposed_cove';
-            }
-          }
-        }
-      }
-      // Current state is micro-lithologies tab
-      else if (state === 'app.spotTab.micro-lithologies') {
-        // Recalculate interval geometry from thickness and width, whether these particular fields changed or not
-        if (spot.geometry && spot.properties.micro && spot.properties.micro.lithologies) {
-          extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
-          var intervalHeight = spot.properties.micro.lithologies.interval_thickness * yMultiplier;
-          var intervalWidth = getIntervalWidth(spot.properties.micro.lithologies, spot.properties.thin_section_id);
-          var minX = 0;
-          var maxX = intervalWidth;
-          var minY = extent[1];
-          var maxY = minY + intervalHeight;
-          spot.geometry.coordinates = [[[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY], [minX, minY]]];
-          $log.log('Recalculated Spot geometry');
-        }
-      }
-      return spot;
-    }
-
-    /*function createInterval(thinSectionId, data) {
-      var minX = 0;
-      var minY = getSectionHeight();
-
-      var map = MapSetupFactory.getMap();
-      var mapHeight = map.getSize()[0];
-      var mapWidth = map.getSize()[1];
-      var intervalHeight = data.interval_thickness * yMultiplier;
-      var intervalWidth = getIntervalWidth(data, thinSectionId);
-
-      var maxY = minY + intervalHeight;
-      var maxX = minX + intervalWidth;
-
-      var geojsonObj = {};
-      geojsonObj.geometry = {
-        'type': 'Polygon',
-        'coordinates': [[[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY], [minX, minY]]]
-      };
-      geojsonObj.properties = {
-        'thin_section_id': thinSectionId,
-        'surface_feature': {'surface_feature_type': 'thin_interval'},
-        'micro': {'lithologies': data}
-      };
-      return geojsonObj;
-    }*/
 
     function drawAxes(ctx, pixelRatio, thinSection, mapName) {
       ctx.font = "30px Arial";
@@ -383,24 +247,24 @@
 
       // Tick Marks for Intervals
       // Only show tick marks if zoom level is 6 or greater
-  /*    if (zoom >= 6) {
-        var intervalSpots = getThinIntervalSpots();
-        _.each(intervalSpots, function (intervalSpot) {
-          var extent = intervalSpot.getGeometry().getExtent();
-          var y = extent[3];
-          var label = HelpersFactory.roundToDecimalPlaces(extent[3] / yMultiplier, 2);
-          if (!Number.isInteger(label)) {
-            p = getPixel([-3, y], pixelRatio, mapName);
-            ctx.textAlign = 'right';
-            ctx.fillText(label, p.x, p.y);
-            p = getPixel([-2, y], pixelRatio, mapName);
-            ctx.moveTo(p.x, p.y);
-            p = getPixel([0, y], pixelRatio, mapName);
-            ctx.lineTo(p.x, p.y);
-          }
-        });
-        ctx.stroke();
-      }*/
+      /*    if (zoom >= 6) {
+            var intervalSpots = getThinIntervalSpots();
+            _.each(intervalSpots, function (intervalSpot) {
+              var extent = intervalSpot.getGeometry().getExtent();
+              var y = extent[3];
+              var label = HelpersFactory.roundToDecimalPlaces(extent[3] / yMultiplier, 2);
+              if (!Number.isInteger(label)) {
+                p = getPixel([-3, y], pixelRatio, mapName);
+                ctx.textAlign = 'right';
+                ctx.fillText(label, p.x, p.y);
+                p = getPixel([-2, y], pixelRatio, mapName);
+                ctx.moveTo(p.x, p.y);
+                p = getPixel([0, y], pixelRatio, mapName);
+                ctx.lineTo(p.x, p.y);
+              }
+            });
+            ctx.stroke();
+          }*/
 
       // Setup to draw X Axis
       var labels = {};
@@ -478,16 +342,6 @@
       });
     }
 
-    function getThinSectionIntervals(thinSectionId) {
-      gatherThinSectionSpots(thinSectionId);
-      // Separate the Thin Section Spots into the Interval Spots and other Spots
-      var thinSectionSpotsPartitioned = _.partition(thinSectionSpots, function (spot) {
-        return spot.properties.surface_feature &&
-          spot.properties.surface_feature.surface_feature_type === 'thin_interval';
-      });
-      return thinSectionSpotsPartitioned[0];
-    }
-
     function getThinSectionSettings(thinSectionId) {
       var spot = getSpotWithThisThinSection(thinSectionId);
       return spot.properties.micro.thin_section;
@@ -500,67 +354,5 @@
     function getSpotsWithThinSections() {
       return spotsWithThinSections;
     }
-
-    function isInterval(spot) {
-      return _.has(spot, 'properties') && _.has(spot.properties, 'thin_section_id') &&
-        _.has(spot.properties, 'surface_feature') && _.has(spot.properties.surface_feature, 'surface_feature_type') &&
-        spot.properties.surface_feature.surface_feature_type === 'thin_interval';
-    }
-
-    function orderThinSectionIntervals(intervals) {
-      var orderedIntervals = [];
-      _.each(intervals, function (interval) {
-        var i = 0;
-        while (i <= orderedIntervals.length) {
-          if (i === orderedIntervals.length) {
-            orderedIntervals.push(interval);
-            break;
-          }
-          else {
-            var newExtent = new ol.format.GeoJSON().readFeature(interval).getGeometry().getExtent();
-            var curExtent = new ol.format.GeoJSON().readFeature(orderedIntervals[i]).getGeometry().getExtent();
-            if (newExtent[3] >= curExtent[3]) {
-              orderedIntervals.splice(i, 0, interval);
-              break;
-            }
-            var nextExtent = new ol.format.GeoJSON().readFeature(orderedIntervals[i]).getGeometry().getExtent();
-            if (newExtent[3] < curExtent[3] && newExtent[3] >= nextExtent[3]) {
-              orderedIntervals.splice(i, 0, interval);
-              break;
-            }
-          }
-          i++;
-        }
-      });
-      return orderedIntervals;
-    }
-
-    // We can't use validation in Form Factory for the Add Interval Modal because of the sidepanel in the Web
-    // version. With the side panel and the open modal there are multiple form elements with the same ID
-    // - bad HTML but this is how it is now - so we can't easily grab the proper element for validation.
-    // Below code copied from Form Factory and modified.
-   /* function validateNewInterval(data, form) {
-      if (_.isEmpty(data)) return true;
-      $log.log('Validating new interval with data:', data);
-      var errorMessages = [];
-      // If a field is visible and required but empty give the user an error message and return to the form
-      _.each(form.survey, function (field) {
-        if (field.name && isRelevant(field.relevant, data)) {
-          if (field.required === 'true' && !data[field.name]) {
-            errorMessages.push('<b>' + field.label + '</b>: Required!');
-          }
-        }
-        else delete data[field.name];
-      });
-
-      if (_.isEmpty(errorMessages)) return true;
-      else {
-        $ionicPopup.alert({
-          'title': 'Validation Error!',
-          'template': 'Fix the following errors before continuing:<br>' + errorMessages.join('<br>')
-        });
-        return false;
-      }
-    }*/
   }
 }());

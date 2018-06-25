@@ -1,4 +1,4 @@
-<div ng-show='vm.mapView'>
+<div>
   <div class="side-images-scroll">
     <ion-list>
       <ion-item ng-repeat='image in vm.images | orderBy:"name" track by image.id'
@@ -28,22 +28,4 @@
       });
     </script>
   </div>
-</div>
-<div ng-show='!vm.mapView'>
-  <div class='strabo-subheader  padding-left '>
-    <div class="strabo-subheader-text subheader-left">
-      {{ vm.thisSpotWithThinSection.properties.micro.thin_section.thin_section_name }} Related Spots
-    </div>
-    <div class="subheader-right padding-top">
-      <span ng-show='vm.isNesting' class='nesting-notification-web'>Nesting On</span>
-      <button class='button button-icon button-small ion-plus' ng-click='vm.addInterval()'></button>
-      <button ng-show='vm.mapView' ng-click='vm.switchView()'
-              class='button button-icon icon button-small ion-document-text'></button>
-      <button ng-show='!vm.mapView' ng-click='vm.switchView()'
-              class='button button-icon icon button-small ion-disc'></button>
-      <button ng-click='vm.popover.show($event)'
-              class='button button-icon icon button-small ion-more rotate-90'></button>
-    </div>
-  </div>
-  <spots-this-thin-section-map-directive></spots-this-thin-section-map-directive>
 </div>

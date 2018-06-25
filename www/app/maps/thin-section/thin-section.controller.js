@@ -5,16 +5,16 @@
     .module('app')
     .controller('ThinSectionController', ThinSectionController);
 
-  ThinSectionController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup',
+  ThinSectionController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopover', '$ionicPopup',
     '$ionicSideMenuDelegate', '$location', '$log', '$q', '$rootScope', '$scope', '$state', '$timeout', 'FormFactory',
     'HelpersFactory', 'ImageFactory', 'MapDrawFactory', 'MapEmogeosFactory', 'MapFeaturesFactory', 'MapLayerFactory',
     'MapSetupFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'ThinSectionFactory', 'IS_WEB'];
 
-  function ThinSectionController($ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup,
-                                 $ionicSideMenuDelegate, $location, $log, $q, $rootScope, $scope, $state, $timeout,
-                                 FormFactory, HelpersFactory, ImageFactory, MapDrawFactory, MapEmogeosFactory,
-                                 MapFeaturesFactory, MapLayerFactory, MapSetupFactory, MapViewFactory, ProjectFactory,
-                                 SpotFactory, ThinSectionFactory, IS_WEB) {
+  function ThinSectionController($ionicHistory, $ionicModal, $ionicPopover, $ionicPopup, $ionicSideMenuDelegate,
+                                 $location, $log, $q, $rootScope, $scope, $state, $timeout, FormFactory, HelpersFactory,
+                                 ImageFactory, MapDrawFactory, MapEmogeosFactory, MapFeaturesFactory, MapLayerFactory,
+                                 MapSetupFactory, MapViewFactory, ProjectFactory, SpotFactory, ThinSectionFactory,
+                                 IS_WEB) {
     var vm = this;
 
     var currentSpot = {};
@@ -31,34 +31,25 @@
     vm.allTags = [];
     vm.clickedFeatureId = undefined;
     vm.data = {};
-    vm.grainSizeOptions = {};
     vm.images = [];
     vm.isNesting = SpotFactory.getActiveNesting();
     vm.newNestModal = {};
     vm.newNestProperties = {};
-    vm.mapView = true;
     vm.popover = {};
     vm.saveEditsText = 'Save Edits';
     vm.showSaveEditsBtn = false;
-    vm.thinSectionIntervals = [];
     vm.thisSpotWithThinSection = {};
 
-    //vm.addMoreDetail = addMoreDetail;
     vm.closeModal = closeModal;
     vm.createTag = createTag;
-    //vm.deleteSpot = deleteSpot;
     vm.getImageSrc = getImageSrc;
-    vm.getTagNames = getTagNames;
     vm.goBack = goBack;
     vm.goToSpot = goToSpot;
     vm.groupSpots = groupSpots;
     vm.hasRelationships = hasRelationships;
-    vm.hasTags = hasTags;
     vm.isiOS = isiOS;
     vm.saveEdits = saveEdits;
-    //vm.saveInterval = saveInterval;
     vm.stereonetSpots = stereonetSpots;
-    vm.switchView = switchView;
     vm.toggleImageSelected = toggleImageSelected;
     vm.toggleNesting = toggleNesting;
     vm.toggleTagChecked = toggleTagChecked;
@@ -355,7 +346,7 @@
     function gatherSpotsOnImage(imageId) {
       var activeSpots = SpotFactory.getActiveSpots();
       var linkedImagesIds = _.union([imageId], ProjectFactory.getLinkedImages(imageId));
-      var mappableSpots =_.filter(activeSpots, function (spot) {
+      var mappableSpots = _.filter(activeSpots, function (spot) {
         return _.contains(linkedImagesIds, spot.properties.image_basemap);
       });
       // Remove spots that don't have a geometry defined
@@ -435,25 +426,6 @@
      * Public Functions
      */
 
-    /*function addMoreDetail() {
-      $log.log(vm.data);
-      if (thinSection.column_y_axis_units && vm.data.thickness_units !== thinSection.column_y_axis_units) {
-        $ionicPopup.alert({
-          'title': 'Units Mismatch',
-          'template': 'The units for the Y Axis are <b>' + thinSection.column_y_axis_units + '</b> but <b>' +
-          vm.data.thickness_units + '</b> have been designated for this interval. Please fix the units ' +
-          'for this interval.'
-        });
-      }
-      else if (ThinSectionFactory.validateNewInterval(vm.data, FormFactory.getForm())) {
-        vm.addIntervalModal.remove();
-        var newInterval = ThinSectionFactory.createInterval(thinSection.thin_section_id, vm.data);
-        SpotFactory.setNewSpot(newInterval).then(function (id) {
-          goToSpot(newInterval.properties.id, 'micro-lithologies');
-        });
-      }
-    }*/
-
     function closeModal(modal) {
       vm[modal].hide();
       if (modal === 'addTagModal') {
@@ -484,40 +456,8 @@
       $location.path('/app/tags/' + id);
     }
 
-    /*function deleteSpot(spot) {
-      if (SpotFactory.isSafeDelete(spot)) {
-        var confirmPopup = $ionicPopup.confirm({
-          'title': 'Delete Spot',
-          'template': 'Are you sure you want to delete Spot ' + spot.properties.name + '?'
-        });
-        confirmPopup.then(function (res) {
-          if (res) {
-            SpotFactory.destroy(spot.properties.id).then(function () {
-              updateFeatureLayer();
-              if (IS_WEB) {
-                vm.clickedFeatureId = undefined;
-                MapFeaturesFactory.removeSelectedSymbol(map);
-              }
-            });
-          }
-        });
-      }
-      else {
-        $ionicPopup.alert({
-          'title': 'Spot Deletion Prohibited!',
-          'template': 'This Spot has at least one image being used as an image basemap. Remove any image basemaps' +
-          ' from this Spot before deleting.'
-        });
-      }
-    }*/
-
     function getImageSrc(imageId) {
       return imageSources[imageId] || 'img/loading-image.png';
-    }
-
-    function getTagNames(spotId) {
-      var tags = ProjectFactory.getTagsBySpotId(spotId);
-      return _.pluck(tags, 'name').join(', ');
     }
 
     function goBack() {
@@ -541,10 +481,6 @@
       return !_.isEmpty(ProjectFactory.getRelationshipsBySpotId(spotId));
     }
 
-    function hasTags(spotId) {
-      return !_.isEmpty(ProjectFactory.getTagsBySpotId(spotId));
-    }
-
     function isiOS() {
       return ionic.Platform.device().platform == "iOS";
     }
@@ -554,34 +490,10 @@
       MapDrawFactory.saveEdits(vm.clickedFeatureId);
     }
 
-    /*function saveInterval() {
-      $log.log(vm.data);
-      if (thinSection.column_y_axis_units && vm.data.thickness_units !== thinSection.column_y_axis_units) {
-        $ionicPopup.alert({
-          'title': 'Units Mismatch',
-          'template': 'The units for the Y Axis are <b>' + thinSection.column_y_axis_units + '</b> but <b>' +
-          vm.data.thickness_units + '</b> have been designated for this interval. Please fix the units ' +
-          'for this interval.'
-        });
-      }
-      else if (ThinSectionFactory.validateNewInterval(vm.data, FormFactory.getForm())) {
-        vm.addIntervalModal.remove();
-        var newInterval = ThinSectionFactory.createInterval(thinSection.thin_section_id, vm.data);
-        SpotFactory.setNewSpot(newInterval).then(function (id) {
-          updateFeatureLayer();
-        });
-      }
-    }*/
-
     function stereonetSpots() {
       vm.popover.hide().then(function () {
         MapDrawFactory.stereonetSpots();
       });
-    }
-
-    // Switch between map view and list of Spots on this map
-    function switchView() {
-      vm.mapView = !vm.mapView;
     }
 
     function toggleImageSelected(image) {
