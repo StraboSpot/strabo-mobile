@@ -507,7 +507,8 @@
       });
     }
 
-    function getFeatureById(spotId) {
+    function getFeatureById(spotId, mapName) {
+      mapName = mapName ? mapName : 'default';
       var foundFeature = {};
       var featureLayer = MapLayerFactory.getFeatureLayer(mapName);
       _.each(featureLayer.getLayers().getArray(), function (layer) {

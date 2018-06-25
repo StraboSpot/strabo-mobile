@@ -19,7 +19,7 @@
     return {
       'changedColumnProfile': changedColumnProfile,
       'checkForIntervalUpdates': checkForIntervalUpdates,
-      'createInterval': createInterval,
+      //'createInterval': createInterval,
       'drawAxes': drawAxes,
       'gatherSpotsWithThinSections': gatherSpotsWithThinSections,
       'gatherThinSectionSpots': gatherThinSectionSpots,
@@ -30,7 +30,7 @@
       'getThinSectionSpots': getThinSectionSpots,
       'isInterval': isInterval,
       'orderThinSectionIntervals': orderThinSectionIntervals,
-      'validateNewInterval': validateNewInterval
+      //'validateNewInterval': validateNewInterval
     };
 
     /**
@@ -205,7 +205,7 @@
     }
 
     // Get the height (y) of the whole section
-    function getSectionHeight() {
+    /*function getSectionHeight() {
       var intervalSpots = getThinIntervalSpots();
       var sectionHeight = 0;
       _.each(intervalSpots, function (intervalSpot) {
@@ -213,10 +213,10 @@
         sectionHeight = extent[3] > sectionHeight ? extent[3] : sectionHeight;
       });
       return sectionHeight;
-    }
+    }*/
 
     // Get only Spots that are intervals
-    function getThinIntervalSpots() {
+    /*function getThinIntervalSpots() {
       var intervalSpots = [];
       var featureLayer = MapLayerFactory.getFeatureLayer(mapName);
       _.each(featureLayer.getLayers().getArray(), function (layer) {
@@ -228,7 +228,7 @@
         });
       });
       return intervalSpots;
-    }
+    }*/
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair
     // The 2nd param, data, is used in the eval method
@@ -320,7 +320,7 @@
       return spot;
     }
 
-    function createInterval(thinSectionId, data) {
+    /*function createInterval(thinSectionId, data) {
       var minX = 0;
       var minY = getSectionHeight();
 
@@ -344,7 +344,7 @@
         'micro': {'lithologies': data}
       };
       return geojsonObj;
-    }
+    }*/
 
     function drawAxes(ctx, pixelRatio, thinSection, mapName) {
       ctx.font = "30px Arial";
@@ -539,7 +539,7 @@
     // version. With the side panel and the open modal there are multiple form elements with the same ID
     // - bad HTML but this is how it is now - so we can't easily grab the proper element for validation.
     // Below code copied from Form Factory and modified.
-    function validateNewInterval(data, form) {
+   /* function validateNewInterval(data, form) {
       if (_.isEmpty(data)) return true;
       $log.log('Validating new interval with data:', data);
       var errorMessages = [];
@@ -561,6 +561,6 @@
         });
         return false;
       }
-    }
+    }*/
   }
 }());

@@ -27,7 +27,7 @@
     var tagsToAdd = [];
     var switchers = {};
 
-    vm.addIntervalModal = {};
+    //vm.addIntervalModal = {};
     vm.allTags = [];
     vm.clickedFeatureId = undefined;
     vm.data = {};
@@ -43,10 +43,10 @@
     vm.thinSectionIntervals = [];
     vm.thisSpotWithThinSection = {};
 
-    vm.addMoreDetail = addMoreDetail;
+    //vm.addMoreDetail = addMoreDetail;
     vm.closeModal = closeModal;
     vm.createTag = createTag;
-    vm.deleteSpot = deleteSpot;
+    //vm.deleteSpot = deleteSpot;
     vm.getImageSrc = getImageSrc;
     vm.getTagNames = getTagNames;
     vm.goBack = goBack;
@@ -56,7 +56,7 @@
     vm.hasTags = hasTags;
     vm.isiOS = isiOS;
     vm.saveEdits = saveEdits;
-    vm.saveInterval = saveInterval;
+    //vm.saveInterval = saveInterval;
     vm.stereonetSpots = stereonetSpots;
     vm.switchView = switchView;
     vm.toggleImageSelected = toggleImageSelected;
@@ -108,7 +108,7 @@
 
         // If we have a current feature set the selected symbol
         if (vm.clickedFeatureId && IS_WEB) {
-          var feature = MapFeaturesFactory.getFeatureById(vm.clickedFeatureId);
+          var feature = MapFeaturesFactory.getFeatureById(vm.clickedFeatureId, mapName);
           if (!_.isEmpty(feature)) MapFeaturesFactory.setSelectedSymbol(maps[mapName], feature.getGeometry());
         }
 
@@ -237,15 +237,14 @@
     function createPageEvents() {
       $rootScope.$on('updateThinSectionFeatureLayer', function () {
         $log.log('Updating Thin Section Feature Layer ...');
-        updateFeatureLayer();
+        updateFeatureLayers();
       });
 
       // Spot deleted from map side panel
       $rootScope.$on('deletedSpot', function () {
         $log.log('Handling Deleted Spot ...');
         vm.clickedFeatureId = undefined;
-        MapFeaturesFactory.removeSelectedSymbol(map);
-        updateFeatureLayer();
+        updateFeatureLayers();
       });
 
       $scope.$on('$destroy', function () {
@@ -317,7 +316,7 @@
           var lyr = e.target;
           if (lyr.get('layergroup') === 'Datasets') {     // Individual Datasets
             datasetsLayerStates[lyr.get('datasetId')] = lyr.getVisible();
-            updateFeatureLayer();
+            updateFeatureLayer(map);
             switcher.renderPanel();
           }
           else if (lyr.get('name') === 'datasetsLayer') {  // Datasets as a Group
@@ -403,30 +402,40 @@
 
     function updateFeatureLayer(map) {
       $log.log('Updating Thin Section Feature Layer ...');
-      var spots = gatherSpotsOnImage(image.id);
-      MapFeaturesFactory.setMappableSpots(spots);
-      datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map);
-      MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map);
-      MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
-      MapViewFactory.zoomToSpotsExtent(map, spots);
+      var mapName = map.getTarget();
+      var imageId = parseInt(mapName.split('map')[1]);
+      var spots = gatherSpotsOnImage(imageId);
+      MapFeaturesFactory.setMappableSpots(spots, mapName);
+      datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map, mapName);
+      MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map, mapName);
+      MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, mapName);
+      //MapViewFactory.zoomToSpotsExtent(map, spots);
 
-      updateSelectedSymbol();
+      updateSelectedSymbol(map);
+    }
+
+    function updateFeatureLayers() {
+      _.each(maps, function (map) {
+        updateFeatureLayer(map);
+      });
     }
 
     // If on WEB and we have a current feature set the selected symbol
-    function updateSelectedSymbol() {
+    function updateSelectedSymbol(map) {
+      var mapName = map.getTarget();
       if (IS_WEB && vm.clickedFeatureId) {
         MapFeaturesFactory.removeSelectedSymbol(map);
-        var feature = MapFeaturesFactory.getFeatureById(vm.clickedFeatureId);
+        var feature = MapFeaturesFactory.getFeatureById(vm.clickedFeatureId, mapName);
         if (!_.isEmpty(feature)) MapFeaturesFactory.setSelectedSymbol(map, feature.getGeometry());
       }
+      else if (IS_WEB && !vm.clickedFeatureId) MapFeaturesFactory.removeSelectedSymbol(map);
     }
 
     /**
      * Public Functions
      */
 
-    function addMoreDetail() {
+    /*function addMoreDetail() {
       $log.log(vm.data);
       if (thinSection.column_y_axis_units && vm.data.thickness_units !== thinSection.column_y_axis_units) {
         $ionicPopup.alert({
@@ -443,7 +452,7 @@
           goToSpot(newInterval.properties.id, 'micro-lithologies');
         });
       }
-    }
+    }*/
 
     function closeModal(modal) {
       vm[modal].hide();
@@ -475,7 +484,7 @@
       $location.path('/app/tags/' + id);
     }
 
-    function deleteSpot(spot) {
+    /*function deleteSpot(spot) {
       if (SpotFactory.isSafeDelete(spot)) {
         var confirmPopup = $ionicPopup.confirm({
           'title': 'Delete Spot',
@@ -500,7 +509,7 @@
           ' from this Spot before deleting.'
         });
       }
-    }
+    }*/
 
     function getImageSrc(imageId) {
       return imageSources[imageId] || 'img/loading-image.png';
@@ -545,7 +554,7 @@
       MapDrawFactory.saveEdits(vm.clickedFeatureId);
     }
 
-    function saveInterval() {
+    /*function saveInterval() {
       $log.log(vm.data);
       if (thinSection.column_y_axis_units && vm.data.thickness_units !== thinSection.column_y_axis_units) {
         $ionicPopup.alert({
@@ -562,7 +571,7 @@
           updateFeatureLayer();
         });
       }
-    }
+    }*/
 
     function stereonetSpots() {
       vm.popover.hide().then(function () {
