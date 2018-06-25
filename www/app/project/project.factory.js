@@ -376,9 +376,9 @@
     function getRelationship(id) {
       if (!currentProject.relationships) return {};
       return _.find(currentProject.relationships,
-          function (relationship) {
-            return relationship.id === id;
-          }) || {};
+        function (relationship) {
+          return relationship.id === id;
+        }) || {};
     }
 
     function getRelationships() {
@@ -426,9 +426,9 @@
     function getTag(id) {
       if (!currentProject.tags) return {};
       return _.find(currentProject.tags,
-          function (tag) {
-            return tag.id === id;
-          }) || {};
+        function (tag) {
+          return tag.id === id;
+        }) || {};
     }
 
     function getTags() {
@@ -512,7 +512,7 @@
         $log.log('Loading list of projects from server...');
         RemoteServerFactory.getMyProjects(user.encoded_login).then(function (response) {
           var remoteProjects = [];
-          if (response.status === 200 &&  response.data && response.data.projects) {
+          if (response.status === 200 && response.data && response.data.projects) {
             $log.log('Loaded list of all projects from server:', response);
             remoteProjects = response.data.projects;
           }
@@ -556,35 +556,47 @@
         promises.push(saveTag(tag));
       });
       $q.all(promises).then(function () {
-        return deferred.promise;
+        deferred.resolve();
       });
+      return deferred.promise;
     }
 
     function removeSpotFromDataset(spotId) {
       var deferred = $q.defer(); // init promise
+      var promises = [];
       _.each(spotIds, function (spotsInDataset, datasetId) {
         if (_.contains(spotsInDataset, spotId)) {
           spotIds[datasetId] = _.without(spotsInDataset, spotId);
           if (_.isEmpty(spotIds[datasetId])) spotIds[datasetId] = undefined;
-          if(IS_WEB && UserFactory.getUser()){ //are we on the desktop?
+          if (IS_WEB && UserFactory.getUser()) { //are we on the desktop?
             $log.log('Remove Spot from LiveDB here', spotId, UserFactory.getUser().encoded_login);
             RemoteServerFactory.deleteSpot(spotId, UserFactory.getUser().encoded_login);
           }
           $log.log('Removed Spot id from dataset', datasetId, 'SpotIds:', spotIds);
-          saveProjectItem('spots_' + datasetId, spotIds[datasetId]);
+          promises.push(saveProjectItem('spots_' + datasetId, spotIds[datasetId]));
         }
+      });
+      $q.all(promises).then(function () {
+        deferred.resolve();
       });
       return deferred.promise;
     }
 
     function removeSpotFromTags(spotId) {
+      var deferred = $q.defer(); // init promise
+      var promises = [];
       var tags = getTagsBySpotId(spotId);
       _.each(tags, function (tag) {
-        removeTagFromSpot(tag.id, spotId);
-        if (tag.features && tag.features[spotId]) delete tag.features[spotId];
-        if (_.isEmpty(tag.features)) delete tag.features;
-        saveTag(tag);
+        promises.push(removeTagFromSpot(tag.id, spotId).then(function () {
+          if (tag.features && tag.features[spotId]) delete tag.features[spotId];
+          if (_.isEmpty(tag.features)) delete tag.features;
+          saveTag(tag);
+        }));
       });
+      $q.all(promises).then(function () {
+        deferred.resolve();
+      });
+      return deferred.promise;
     }
 
     function removeTagFromFeature(tagId, spotId, featureId) {
@@ -694,7 +706,7 @@
     }
 
     function setModifiedTimestamp() {
-      currentProject.modified_timestamp=Date.now();
+      currentProject.modified_timestamp = Date.now();
     }
 
     function setUser(inUser) {

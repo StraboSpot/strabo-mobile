@@ -192,11 +192,13 @@
     // delete the spot
     function destroy(key) {
       var deferred = $q.defer(); // init promise
-      ProjectFactory.removeSpotFromTags(key);
-      ProjectFactory.removeSpotFromDataset(key);
-      delete spots[key];
-      LocalStorageFactory.getDb().spotsDb.removeItem(key.toString()).then(function () {
-        deferred.resolve();
+      ProjectFactory.removeSpotFromTags(key).then(function () {
+        ProjectFactory.removeSpotFromDataset(key).then(function () {
+          delete spots[key];
+          LocalStorageFactory.getDb().spotsDb.removeItem(key.toString()).then(function () {
+            deferred.resolve();
+          });
+        });
       });
       return deferred.promise;
     }
