@@ -178,8 +178,6 @@
         vmParent.spot.properties.micro = {};
         vmParent.spot.properties.micro.thin_section = {};
         vmParent.spot.properties.micro.thin_section.thin_section_id = HelpersFactory.getNewId();
-        vmParent.spot.properties.micro.thin_section.column_profile = 'clastic';
-        vmParent.spot.properties.micro.thin_section.column_y_axis_units = 'm';
         vmParent.data = vmParent.spot.properties.micro.thin_section;
       }
       if (!vm.showThinSection && !_.isEmpty(vmParent.spot.properties.micro.thin_section)) {

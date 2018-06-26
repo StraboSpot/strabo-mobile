@@ -23,7 +23,6 @@
     var imagesSelected = [];
     var maps = {};
     var spotsThisMap = [];
-    var thinSection = {};
     var tagsToAdd = [];
     var switchers = {};
 
@@ -163,7 +162,12 @@
         if ($state.current.name === 'app.thin-section') {
           var ctx = event.context;
           var pixelRatio = event.frameState.pixelRatio;
-          ThinSectionFactory.drawAxes(ctx, pixelRatio, thinSection, event.target.getTarget());
+          var mapName = event.target.getTarget();
+          var imageId = parseInt(mapName.split('map')[1]);
+          var mapImage = _.find(vm.images, function (image) {
+            return image.id === imageId;
+          });
+          ThinSectionFactory.drawAxes(ctx, pixelRatio, mapImage, mapName);
 
           var mapSize = map.getSize();
           var mapExtent = map.getView().calculateExtent(map.getSize());
@@ -358,7 +362,6 @@
     function getSpotWithThinSection() {
       // Get the Spot that has this Thin Section
       vm.thisSpotWithThinSection = ThinSectionFactory.getSpotWithThisThinSection($state.params.thinSectionId);
-      thinSection = vm.thisSpotWithThinSection.properties.micro.thin_section;
       gatherImages();
       $log.log('thisSpotWithThinSection', vm.thisSpotWithThinSection);
     }
