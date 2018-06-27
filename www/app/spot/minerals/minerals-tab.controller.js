@@ -6,9 +6,9 @@
     .controller('MineralsTabController', MineralsTabController);
 
   MineralsTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'DataModelsFactory', 'FormFactory',
-    'HelpersFactory', 'ProjectFactory'];
+    'HelpersFactory', 'MineralsFactory','ProjectFactory'];
 
-  function MineralsTabController($ionicModal, $ionicPopup, $log, $scope, $state, DataModelsFactory, FormFactory, HelpersFactory,
+  function MineralsTabController($ionicModal, $ionicPopup, $log, $scope, $state, DataModelsFactory, FormFactory, HelpersFactory, MineralsFactory,
     ProjectFactory) {
     var vm = this;
     var vmParent = $scope.vm;
@@ -16,6 +16,7 @@
     var thisTabName = 'minerals';
     var selectedFromList = [];
     
+    vm.mineralInfoState = true;
     vm.activeState = "most_common";
     vm.basicFormModal = {};
     vm.collectionsModal = {};
@@ -23,6 +24,8 @@
     vm.igneousModal = {};
     vm.metamorphicModal = {};
     vm.mineralCollections = [];
+    vm.mineralInfo = [];
+    vm.mineralsInfoModal = {};
     vm.modalTitle = '';
     vm.newCollectionName = undefined;
     vm.sedimentaryModal = {};
@@ -32,9 +35,11 @@
     vm.addMineral = addMineral;
     vm.changedCollectionToCreate = changedCollectionToCreate;
     vm.getLabel = getLabel;
+    vm.hideMineralInfo =hideMineralInfo;
     vm.loadCollection = loadCollection;
     vm.saveCollection = saveCollection;
     vm.selectFromCollection = selectFromCollection;
+    vm.showMineralInfo = showMineralInfo;
     vm.submit = submit;
     vm.switchMineralsForm = switchMineralsForm;
     vm.toggleCollectionChecked = toggleCollectionChecked;
@@ -117,6 +122,14 @@
         vm.sedimentaryModal = modal;
       });
 
+      $ionicModal.fromTemplateUrl('app/spot/minerals/minerals-info-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false
+      }).then(function (modal) {
+        vm.mineralsInfoModal = modal;
+      });
+
       // Cleanup the modal when we're done with it!
       $scope.$on('$destroy', function () {
         vm.basicFormModal.remove();
@@ -180,12 +193,18 @@
       else vm.showNameField = false;
     }
 
+    
+
     function loadCollection() {
       selectedFromList = [];
       if (vmParent.spot.properties.minerals) selectedFromList = JSON.parse(JSON.stringify(vmParent.spot.properties.minerals));
       vm.modalTitle = 'Add Minerals From Collection';
       vm.collectionsModal.show();
     }
+
+    // function mineralsInfo(){
+    //   vm.mineralInfoState = false;
+    // }
 
     function selectFromCollection() {
       vmParent.spot.properties.minerals = JSON.parse(JSON.stringify(selectedFromList)); 
@@ -243,6 +262,17 @@
 
         setupCreateCollectionSelectBox();
       }
+    }
+
+    //Displays the mineral info for each mineral
+   function showMineralInfo(name){
+      vm.mineralInfoState = false;
+      vm.mineralInfo = MineralsFactory.getMineralInfo(name);
+    }
+    
+    //Hides the mineral info and display the mineral list
+    function hideMineralInfo(){
+      vm.mineralInfoState = true;
     }
 
     function submit() {

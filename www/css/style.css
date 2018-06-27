@@ -518,10 +518,11 @@ textarea {
   border-bottom: 0px;
   padding-top: 8px;
   padding-bottom: 8px;
+  position: relative;
 }
 
-.item-checkbox .checkbox {
-  left: 0px;
+.item-checkbox {
+  left: 25px; 
 }
 
 .login-input {
@@ -551,6 +552,12 @@ textarea {
   line-height: 20px;
   top: -3px;                  /* Overwritten in web css */
   color: #387ef5;
+  position: absolute;
+  margin-left: 0px;
+  margin-top: 17px;
+}
+.item-checkbox{
+  position: relative;
 }
 
 .range input {
@@ -570,6 +577,33 @@ textarea {
 /*--------------------
 Form Select Multiple Choices Fields Style
 --------------------*/
+.minerals-modal{
+  z-index: 1009;
+}
+.ion-backdrop {
+  visibility: visible;
+  opacity: 1.5;
+  z-index: 1010;
+}
+#search-div
+{
+  position: relative;
+}
+#background-input
+{
+  position: absolute;
+  color: #999999;
+  height:25px;
+  width:250px;
+}
+#search
+{
+  position: relative;
+  background: transparent;
+  height:25px;
+  width:250px;
+  padding: 25px;
+}
 .strabo-choices-flex-container {
   padding-left: 16px;
   margin: 0;

@@ -14,6 +14,7 @@
     vm.choices = {};
     vm.field = undefined;
     vm.showFieldInfoModal = {};
+    
     vm.survey = {};
 
     vm.closeModal = closeModal;
@@ -24,6 +25,7 @@
     vm.setSelMultClass = setSelMultClass;
     vm.showField = showField;
     vm.showFieldInfo = showFieldInfo;
+   
     vm.toggleAcknowledgeChecked = toggleAcknowledgeChecked;
     vm.toggleChecked = toggleChecked;
 
@@ -45,6 +47,14 @@
       }).then(function (modal) {
         vm.fieldInfoModal = modal;
       });
+
+      // $ionicModal.fromTemplateUrl('app/spot/minerals/minerals-info-modal.html', {
+      //   'scope': $scope,
+      //   'animation': 'slide-in-up',
+      //   'backdropClickToClose': false
+      // }).then(function (modal) {
+      //   vm.mineralsInfoModal = modal;
+      // });
     }
 
     /**
@@ -110,6 +120,11 @@
       vm.fieldInfoModal.show();
     }
 
+    // function showMineralInfo(){
+    //   vm.mineralsInfoModal.show();
+    // }
+    
+
     function toggleAcknowledgeChecked(field, data) {
       if (data.trace_feature) {
         var confirmPopup = $ionicPopup.confirm({
@@ -136,6 +151,7 @@
         data[field].splice(i, 1);
         if (data[field].length === 0) delete data[field];
       }
+      
     }
   }
 }());
