@@ -11,15 +11,17 @@
   function MapDrawFactory($document, $ionicPopup, $location, $log, $q, $rootScope, HelpersFactory, SpotFactory,
                           IS_WEB) {
     var belongsTo = {};
-    var draw;               // draw is a ol3 drawing interaction
-    var drawButtonActive;   // drawButtonActive used to keep state of which selected drawing tool is active
+    var draw;                         // draw is a ol3 drawing interaction
+    var drawButtonActive;             // drawButtonActive used to keep state of which selected drawing tool is active
     var drawLayer;
     var featuresOrig = [];
     var isFreeHand;
-    var lassoMode;          // mode of current lasso (tag or stereonet)
+    var lassoMode;                    // mode of current lasso (tag or stereonet)
     var map;
     var modify;
-    var spotsEdited = [];    // array of spots edited with the edit button
+    var segmentLength = undefined;    // real length of a line segment defined by the user
+    var spotsEdited = [];             // array of spots edited with the edit button
+    var unitChoice = undefined;       // units used for the real length of a line segment defined by the user
 
     // Variables for a long press event
     var longpress = false;
@@ -34,6 +36,7 @@
       'getLassoMode': getLassoMode,
       'groupSpots': groupSpots,
       'isDrawMode': isDrawMode,
+      'measureLength': measureLength,
       'saveEdits': saveEdits,
       'setLassoMode': setLassoMode,
       'stereonetSpots': stereonetSpots
@@ -42,6 +45,42 @@
     /**
      * Private Functions
      */
+
+    // Calculate the real image width based on the actual width of a segment defined by the user
+    function calculateImageWidth(geometry, image) {
+      $log.log(geometry.getCoordinates());
+      var allPos = _.every(_.flatten(geometry.getCoordinates()), function (pt) {
+        return pt >= 0;
+      });
+      if (!allPos) $log.log('Negative Number');
+      else {
+        promptForSegmentLength().then(function (segmentReal) {
+          $log.log(segmentReal);
+          var segmentLengthPixel = geometry.getLength();
+          var imageWidthPixel = image.width;
+          var imageWidthReal = (segmentReal.length * imageWidthPixel) / segmentLengthPixel;
+          imageWidthReal = HelpersFactory.roundToDecimalPlaces(imageWidthReal, 2);
+          var unitsDisplay = segmentReal.units === '_m' ? 'um' : segmentReal.units;
+
+          var confirmPopup = $ionicPopup.confirm({
+            'title': 'Calculated Image Width',
+            'template': 'Image width calculated as ' + imageWidthReal + unitsDisplay + ' based on drawn' +
+            ' line segment. Update and save image properties?'
+          });
+          confirmPopup.then(function (res) {
+            if (res) {
+              image.width_of_image_view = imageWidthReal;
+              image.units_of_image_view = segmentReal.units;
+              var spot = SpotFactory.getSpotById(image.spotId);
+              _.each(spot.properties.images, function (img, i) {
+                if (img.id === image.id) spot.properties.images[i] = image;
+              });
+              SpotFactory.save(spot);
+            }
+          });
+        });
+      }
+    }
 
     // Remove draw interaction
     function cancelDraw() {
@@ -153,6 +192,48 @@
       });
     }
 
+    function promptForSegmentLength() {
+      var deferred = $q.defer(); // init promise
+
+      var template = '<ion-input class="item item-input">' +
+        '<input type="number" placeholder="Segment length:" ng-model="segmentLength">' +
+        '</ion-input>' +
+        '<ion-list>' +
+        '<ion-radio ng-model="unitChoice" ng-value="\'_m\'">um</ion-radio>' +
+        '<ion-radio ng-model="unitChoice" ng-value="\'m\'">mm</ion-radio>' +
+        '<ion-radio ng-model="unitChoice" ng-value="\'cm\'">cm</ion-radio>' +
+        '<ion-radio ng-model="unitChoice" ng-value="\'m\'">m</ion-radio>' +
+        '<ion-radio ng-model="unitChoice" ng-value="\'km\'">km</ion-radio>' +
+        '</ion-list>';
+
+      var segmentLengthPopup = $ionicPopup.show({
+        'title': 'Line Segment Info',
+        'template': template,
+        'scope': this,
+        'buttons': [{
+          'text': 'Cancel'
+        }, {
+          'text': '<b>OK</b>',
+          'type': 'button-positive',
+          'onTap': function (e) {
+            if (this.scope.segmentLength === undefined || this.scope.segmentLength <= 0 ||
+              this.scope.unitChoice === undefined) e.preventDefault();
+            else {
+              segmentLength = this.scope.segmentLength;
+              unitChoice = this.scope.unitChoice;
+              return e;
+            }
+          }
+        }]
+      });
+
+      segmentLengthPopup.then(function (res) {
+        if (res) deferred.resolve({'length': segmentLength, 'units': unitChoice});
+        else deferred.reject();
+      });
+      return deferred.promise;
+    }
+
     function startDraw(type, inIsFreeHand) {
       $log.log('Starting draw ...');
       isFreeHand = inIsFreeHand;
@@ -197,12 +278,28 @@
       }
     }
 
-    function doOnDrawEnd(e) {
+    function doOnDrawEnd(e, image) {
       // drawend event needs to end the drawing interaction
       map.removeInteraction(draw);
 
       // clear the drawing
       drawLayer.setSource(new ol.source.Vector());
+
+      if (lassoMode) {
+        // add the regular draw controls back
+        var drawControlProps = {
+          'map': map,
+          'drawLayer': drawLayer
+        };
+        if (!_.isEmpty(belongsTo)) drawControlProps['belongsTo'] = belongsTo;
+        map.addControl(new DrawControls(drawControlProps));
+
+        // add the layer switcher controls back
+        map.addControl(new ol.control.LayerSwitcher());
+
+        // add the dragging back in
+        map.addInteraction(new ol.interaction.DragPan());
+      }
 
       // we want a geojson object when the user finishes drawing
       var geojson = new ol.format.GeoJSON();
@@ -233,21 +330,7 @@
         });
       }
 
-      if (lassoMode) {
-        // add the regular draw controls back
-        var drawControlProps = {
-          'map': map,
-          'drawLayer': drawLayer
-        };
-        if (!_.isEmpty(belongsTo)) drawControlProps[belongsTo] = belongsTo;
-        map.addControl(new DrawControls(drawControlProps));
-
-        // add the layer switcher controls back
-        map.addControl(new ol.control.LayerSwitcher());
-
-        // add the dragging back in
-        map.addInteraction(new ol.interaction.DragPan());
-
+      if (lassoMode === 'stereonet' || lassoMode === 'tags') {
         // contains all the lassoed objects
         var lassoedSpots = [];
 
@@ -261,7 +344,7 @@
             return mappedSpot.properties.image_basemap;
           });
           mappedSpots = _.filter(spotsOnImageBasemap, function (spotOnImageBasemap) {
-            return spotOnImageBasemap.properties.image_basemap === belongsTo[image_basemap];
+            return spotOnImageBasemap.properties.image_basemap === belongsTo.image_basemap;
           });
         }
         if (!_.isEmpty(belongsTo) && belongsTo.strat_section_id) {
@@ -269,7 +352,7 @@
             return mappedSpot.properties.strat_section_id;
           });
           mappedSpots = _.filter(spotsOnStratSection, function (spotOnStratSection) {
-            return spotOnStratSection.properties.strat_section_id === belongsTo[strat_section_id];
+            return spotOnStratSection.properties.strat_section_id === belongsTo.strat_section_id;
           });
         }
         _.each(mappedSpots, function (spot) {
@@ -305,6 +388,24 @@
           SpotFactory.save(currentSpot).then(function () {
             $location.path('/app/spotTab/' + currentSpot.properties.id + '/spot');
           });
+        }
+        else if (lassoMode === 'measure') {
+          if (image) {
+            $log.log('Calculating image width ...');
+            $log.log('Measure Line:', geojsonObj, 'Image:', image);
+            var geometry = e.feature.getGeometry();
+            if (geometry.getCoordinates().length > 2) {
+              var alertPopup = $ionicPopup.alert({
+                'title': 'Multiple Line Segments',
+                'template': 'This line has multiple line segments. Using only the first line segment for the width calculation.'
+              });
+              alertPopup.then(function () {
+                geometry.setCoordinates(geometry.getCoordinates().splice(0, 2));
+                calculateImageWidth(geometry, image);
+              });
+            }
+            else calculateImageWidth(geometry, image);
+          }
         }
         else {
           SpotFactory.setNewSpot(geojsonObj).then(function (id) {
@@ -497,6 +598,26 @@
 
     function setLassoMode(lmode) {
       lassoMode = lmode;
+    }
+
+    // Prompt the user to define a line on the image which has a known length
+    function measureLength() {
+      // Remove layer switcher and drawing tools to to avoid confusion
+      // with lasso and regular drawing
+      map.getControls().forEach(function (control) {
+        if (control instanceof ol.control.LayerSwitcher ||
+          control instanceof DrawControls) {
+          map.removeControl(control);
+        }
+      });
+      var alertPopup = $ionicPopup.alert({
+        'title': 'Calculate Image Width',
+        'template': 'Draw a line on the image which has a known length.'
+      });
+      alertPopup.then(function () {
+        lassoMode = "measure";
+        startDraw('LineString', false);
+      });
     }
 
     // Lasso spots and copy to clipboard for Stereonet Output

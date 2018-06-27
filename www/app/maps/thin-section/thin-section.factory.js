@@ -48,10 +48,7 @@
         var heightReal = widthReal * heightPixels / widthPixels;
         var units = image.units_of_image_view;
         if (units === '_m') units = 'um';
-        else if (!units) {
-          units = '';
-          $log.error('Units undefined!');
-        }
+        else if (!units) units = '';
 
         // Y Axis
         var yInterval = 20;                                         // Minimum pixel spacing between tick marks
@@ -116,8 +113,8 @@
         _.times(Math.ceil(xIntervalsNum) + 1, function (i) {
           var x = i * widthPixels / xRatio;
           var label = i * xInterval;
-          if (x < 0) {
-            x = 0;
+          if (x > widthPixels) {
+            x = widthPixels;
             label = Math.round(widthReal);
           }
           ctx.textAlign = 'center';
@@ -130,7 +127,6 @@
         });
         ctx.stroke();
       }
-      else $log.error('Width undefined!');
     }
 
     // Gather all Spots Mapped on this Thin Section
