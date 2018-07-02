@@ -1,0 +1,20 @@
+<ion-modal-view class="minerals-modals">
+  <ion-header-bar class='bar-stable nav-title-slide-ios7' align-title='center'>
+    <button class='button button-positive' ng-click='vmChild.submit()'>Save
+    </button>
+    <h1 class='title'>{{ vmChild.modalTitle }}</h1>
+    <div class='buttons'>
+      <button class='icon ion-close-round close-modal-button' ng-click='vmChild.mineralsModal.hide()'>
+      </button>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+    <div class='button-bar'>
+      <button class='button button-full' ng-click='vmChild.switchMineralsForm("most_common")' ng-class="{'spot-tab-active': vmChild.activeState === 'most_common'}">Most Common</button>
+      <button class='button button-full' ng-click='vmChild.switchMineralsForm("all")' ng-class="{'spot-tab-active': vmChild.activeState === 'all'}">All</button>
+    </div>
+    <form name='straboForm' novalidate=''>
+      <strabo-minerals-choices-directive/>
+    </form>
+  </ion-content>
+</ion-modal-view>

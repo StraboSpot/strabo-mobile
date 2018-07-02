@@ -5,44 +5,35 @@
     .module('app')
     .controller('MineralsTabController', MineralsTabController);
 
-  MineralsTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'DataModelsFactory', 'FormFactory',
-    'HelpersFactory', 'MineralsFactory','ProjectFactory'];
+  MineralsTabController.$inject = ['$ionicModal', '$ionicPopup', '$ionicScrollDelegate', '$log', '$scope', '$state', 'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'ProjectFactory'];
 
-  function MineralsTabController($ionicModal, $ionicPopup, $log, $scope, $state, DataModelsFactory, FormFactory, HelpersFactory, MineralsFactory,
-    ProjectFactory) {
+  function MineralsTabController($ionicModal, $ionicPopup, $ionicScrollDelegate, $log, $scope, $state, DataModelsFactory, FormFactory, HelpersFactory, ProjectFactory) {
     var vm = this;
     var vmParent = $scope.vm;
 
     var thisTabName = 'minerals';
     var selectedFromList = [];
-    
-    vm.mineralInfoState = true;
+
     vm.activeState = "most_common";
-    vm.basicFormModal = {};
     vm.collectionsModal = {};
     vm.createCollectionSelectBoxDisplay = {};
-    vm.igneousModal = {};
-    vm.metamorphicModal = {};
     vm.mineralCollections = [];
-    vm.mineralInfo = [];
-    vm.mineralsInfoModal = {};
+    vm.mineralsModal = {};
     vm.modalTitle = '';
     vm.newCollectionName = undefined;
-    vm.sedimentaryModal = {};
     vm.selectedCollectionToCreate = {};
     vm.showNameField = false;
 
     vm.addMineral = addMineral;
     vm.changedCollectionToCreate = changedCollectionToCreate;
     vm.getLabel = getLabel;
-    vm.hideMineralInfo =hideMineralInfo;
     vm.loadCollection = loadCollection;
     vm.saveCollection = saveCollection;
     vm.selectFromCollection = selectFromCollection;
-    vm.showMineralInfo = showMineralInfo;
     vm.submit = submit;
     vm.switchMineralsForm = switchMineralsForm;
     vm.toggleCollectionChecked = toggleCollectionChecked;
+
     activate();
 
     /**
@@ -68,24 +59,7 @@
       });
     }
 
-    function loadTab(state) {
-      vmParent.loadTab(state);     // Need to load current state into parent
-      $log.log('Minerals:', vmParent.spot.properties.minerals);
-      vm.mineralCollections = ProjectFactory.getProjectProperty("mineral_collections");
-      setupCreateCollectionSelectBox();
-      createModal();
-    }
-
     function createModal() {
-      $ionicModal.fromTemplateUrl('app/spot/basic-form-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up',
-        'focusFirstInput': true,
-        'backdropClickToClose': false
-      }).then(function (modal) {
-        vm.basicFormModal = modal;
-      });
-
       $ionicModal.fromTemplateUrl('app/spot/minerals/added-collection-modal.html', {
         'scope': $scope,
         'animation': 'slide-in-up',
@@ -95,57 +69,38 @@
         vm.collectionsModal = modal;
       });
 
-      $ionicModal.fromTemplateUrl('app/spot/minerals/metamorphic-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up',
-        'focusFirstInput': true,
-        'backdropClickToClose': false
-      }).then(function (modal) {
-        vm.metamorphicModal = modal;
-      });
-
-      $ionicModal.fromTemplateUrl('app/spot/minerals/igneous-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up',
-        'focusFirstInput': true,
-        'backdropClickToClose': false
-      }).then(function (modal) {
-        vm.igneousModal = modal;
-      });
-
-      $ionicModal.fromTemplateUrl('app/spot/minerals/sedimentary-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up',
-        'focusFirstInput': true,
-        'backdropClickToClose': false
-      }).then(function (modal) {
-        vm.sedimentaryModal = modal;
-      });
-
-      $ionicModal.fromTemplateUrl('app/spot/minerals/minerals-info-modal.html', {
+      $ionicModal.fromTemplateUrl('app/spot/minerals/minerals-modal.html', {
         'scope': $scope,
         'animation': 'slide-in-up',
         'backdropClickToClose': false
       }).then(function (modal) {
-        vm.mineralsInfoModal = modal;
+        vm.mineralsModal = modal;
       });
 
       // Cleanup the modal when we're done with it!
       $scope.$on('$destroy', function () {
-        vm.basicFormModal.remove();
         vm.collectionsModal.remove();
-        vm.metamorphicModal.remove();
-        vm.igneousModal.remove();
-        vm.sedimentaryModal.remove();
+        vm.mineralsModal.remove();
       });
+    }
+
+    function loadTab(state) {
+      vmParent.loadTab(state);     // Need to load current state into parent
+      $log.log('Minerals:', vmParent.spot.properties.minerals);
+      vm.mineralCollections = ProjectFactory.getProjectProperty("mineral_collections");
+      setupCreateCollectionSelectBox();
+      createModal();
     }
 
     //displays the select box for the favorites collections
     function setupCreateCollectionSelectBox() {
       vm.createCollectionSelectBoxDisplay = JSON.parse(JSON.stringify(vm.mineralCollections));
       vm.createCollectionSelectBoxDisplay.push({ 'name': '-- Create a New Collection --' });
-      vm.selectedCollectionToCreate = vm.createCollectionSelectBoxDisplay[vm.createCollectionSelectBoxDisplay.length-1];
-      if (vm.mineralCollections.length === 0 || vm.selectedCollectionToCreate.name === '-- Create a New Collection --' ) vm.showNameField = true;
+      vm.selectedCollectionToCreate =
+        vm.createCollectionSelectBoxDisplay[vm.createCollectionSelectBoxDisplay.length - 1];
+      if (vm.mineralCollections.length === 0 || vm.selectedCollectionToCreate.name === '-- Create a New Collection --') {
+        vm.showNameField = true;
+      }
       else vm.showNameField = false;
       vm.newCollectionName = undefined;
     }
@@ -153,17 +108,9 @@
     /**
     * Public Functions
     */
-    function getLabel(label) {
-      return DataModelsFactory.getLabel(label);
-    }
 
     function addMineral(type) {
       FormFactory.setForm('minerals', type);
-      var form = FormFactory.getForm();
-      var survey = form.survey;
-      // _.each(survey, function (field) {
-      //   vmParent.data[field.name] = JSON.parse(JSON.stringify(vmParent.spot.properties.minerals)) || [];
-      // });
       var combine = [];
       if (!_.isEmpty(vmParent.spot.properties.minerals)) {
         combine = JSON.parse(JSON.stringify(vmParent.spot.properties.minerals));
@@ -172,56 +119,29 @@
       vmParent.data.all = combine;
       vm.activeState = "most_common";
 
-      if (type === 'metamorphic_most_common') {
-        vm.modalTitle = 'Metamorphic Minerals';
-        vm.metamorphicModal.show();
-      }
-      else if (type === 'igneous_most_common') {
-        vm.modalTitle = 'Igneous Minerals';
-        vm.igneousModal.show();
-      }
-      else if (type === 'sedimentary_most_common') {
-        vm.modalTitle = 'Sedimentary Minerals';
-        vm.sedimentaryModal.show();
-      }
+      if (type === 'metamorphic_most_common') vm.modalTitle = 'Metamorphic Minerals';
+      else if (type === 'igneous_most_common') vm.modalTitle = 'Igneous Minerals';
+      else if (type === 'sedimentary_most_common') vm.modalTitle = 'Sedimentary Minerals';
+
+      vm.mineralsModal.show();
     }
 
     function changedCollectionToCreate() {
-      if (vm.selectedCollectionToCreate.name === '-- Create a New Collection --') {
-        vm.showNameField = true;
-      }
+      if (vm.selectedCollectionToCreate.name === '-- Create a New Collection --') vm.showNameField = true;
       else vm.showNameField = false;
     }
 
-    
+    function getLabel(label) {
+      return DataModelsFactory.getLabel(label);
+    }
 
     function loadCollection() {
       selectedFromList = [];
-      if (vmParent.spot.properties.minerals) selectedFromList = JSON.parse(JSON.stringify(vmParent.spot.properties.minerals));
+      if (vmParent.spot.properties.minerals) {
+        selectedFromList = JSON.parse(JSON.stringify(vmParent.spot.properties.minerals));
+      }
       vm.modalTitle = 'Add Minerals From Collection';
       vm.collectionsModal.show();
-    }
-
-    // function mineralsInfo(){
-    //   vm.mineralInfoState = false;
-    // }
-
-    function selectFromCollection() {
-      vmParent.spot.properties.minerals = JSON.parse(JSON.stringify(selectedFromList)); 
-      if (_.isEmpty(vmParent.spot.properties.minerals)) delete vmParent.spot.properties.minerals;
-      vm.collectionsModal.hide();
-    }
-    // checkedMinerals is mineralsCollections.minerals in added-collection-modal.html
-    function toggleCollectionChecked(checkedMinerals, e) {
-      if (e.target.checked) {
-        selectedFromList = _.union(checkedMinerals, selectedFromList);
-        console.log(selectedFromList);
-      }
-      else {
-        selectedFromList = _.reject(selectedFromList, function (mineral) {
-          return _.contains(checkedMinerals, mineral);
-        });
-      }
     }
 
     //saves the collection of mineral on minerals page
@@ -252,27 +172,22 @@
 
         //alerting that collection is saved
         var mineralLabels = [];
-        _.each(vm.selectedCollectionToCreate.minerals, function(mineral){
-         mineralLabels.push(DataModelsFactory.getLabel(mineral));
-        });       
+        _.each(vm.selectedCollectionToCreate.minerals, function (mineral) {
+          mineralLabels.push(DataModelsFactory.getLabel(mineral));
+        });
         $ionicPopup.alert({
           'title': 'Collection Saved',
-          'template': 'Saved following minerals to favorites collection <b>' + vm.selectedCollectionToCreate.name + '</b>:<br><br>'  + mineralLabels.join(", ")
+          'template': 'Saved following minerals to favorites collection <b>' + vm.selectedCollectionToCreate.name + '</b>:<br><br>' + mineralLabels.join(", ")
         });
 
         setupCreateCollectionSelectBox();
       }
     }
 
-    //Displays the mineral info for each mineral
-   function showMineralInfo(name){
-      vm.mineralInfoState = false;
-      vm.mineralInfo = MineralsFactory.getMineralInfo(name);
-    }
-    
-    //Hides the mineral info and display the mineral list
-    function hideMineralInfo(){
-      vm.mineralInfoState = true;
+    function selectFromCollection() {
+      vmParent.spot.properties.minerals = JSON.parse(JSON.stringify(selectedFromList));
+      if (_.isEmpty(vmParent.spot.properties.minerals)) delete vmParent.spot.properties.minerals;
+      vm.collectionsModal.hide();
     }
 
     function submit() {
@@ -283,25 +198,44 @@
         if (_.isEmpty(vmParent.data.all)) delete vmParent.spot.properties.minerals;
         else vmParent.spot.properties.minerals = JSON.parse(JSON.stringify(vmParent.data.all));
         vmParent.data = {};
-        vm.metamorphicModal.hide();
-        vm.igneousModal.hide();
-        vm.sedimentaryModal.hide();
+        vm.mineralsModal.hide();
         FormFactory.clearForm();
         vmParent.saveSpot();
       }
     }
 
-    function switchMineralsForm(form) {
-      if (form === 'metamorphic' || form === 'igneous' || form === 'sedimentary') {
+    function switchMineralsForm(formType) {
+      var form;
+      if (formType === 'all') {
         vmParent.data.all = vmParent.data.most_common;
         vm.activeState = "all";
+        if (vm.modalTitle === 'Metamorphic Minerals') form = 'metamorphic';
+        else if (vm.modalTitle === 'Igneous Minerals') form = 'igneous';
+        else if (vm.modalTitle === 'Sedimentary Minerals') form = 'sedimentary';
       }
+
       else {
         vmParent.data.most_common = vmParent.data.all;
         vm.activeState = "most_common";
+        if (vm.modalTitle === 'Metamorphic Minerals') form = 'metamorphic_most_common';
+        else if (vm.modalTitle === 'Igneous Minerals') form = 'igneous_most_common';
+        else if (vm.modalTitle === 'Sedimentary Minerals') form = 'sedimentary_most_common';
       }
       console.log(vmParent.data);
       FormFactory.setForm('minerals', form);
+    }
+
+    // checkedMinerals is mineralsCollections.minerals in added-collection-modal.html
+    function toggleCollectionChecked(checkedMinerals, e) {
+      if (e.target.checked) {
+        selectedFromList = _.union(checkedMinerals, selectedFromList);
+        console.log(selectedFromList);
+      }
+      else {
+        selectedFromList = _.reject(selectedFromList, function (mineral) {
+          return _.contains(checkedMinerals, mineral);
+        });
+      }
     }
   }
 }());
