@@ -51,12 +51,13 @@
         else if (!units) units = '';
 
         // Y Axis
-        var yInterval = 20;                                         // Minimum pixel spacing between tick marks
-        var yIntervalsNum = Math.floor(heightPixels / 20);           // Num intervals with 20 pixel spacing
+        var yInterval = 100;                                         // Minimum pixel spacing between tick marks
+        var yIntervalsNum = Math.floor(heightPixels / yInterval);    // Num intervals with 20 pixel spacing
         yInterval = Math.floor(heightReal/yIntervalsNum);            // yInterval converted for real height
         var places = Math.floor(Math.log10(yInterval));
+        places = Math.max(1, places);
         var yIntervalString = '1';
-        _.times(places + 1, function () {
+        _.times(places, function () {
           yIntervalString = yIntervalString + '0';
         });
         yInterval = parseInt(yIntervalString);                      // yInterval rounded up to nearest 100, 1000, etc
@@ -71,6 +72,7 @@
         ctx.lineTo(p.x, p.y);
 
         // Tick Marks for Y Axis
+        var yTickLength = widthPixels * .02;
         _.times(Math.ceil(yIntervalsNum) + 1, function (i) {
           var y = heightPixels - (i * heightPixels / yRatio);
           var label = i * yInterval;
@@ -79,10 +81,10 @@
             label = Math.round(heightReal);
           }
           ctx.textAlign = 'right';
-          p = getPixel([-10, y], pixelRatio, mapName);
+          p = getPixel([-(yTickLength + 5), y], pixelRatio, mapName);
           if (i === 0) ctx.fillText('0' + units, p.x, p.y);
           else ctx.fillText(label.toString(), p.x, p.y);
-          p = getPixel([-5, y], pixelRatio, mapName);
+          p = getPixel([-yTickLength, y], pixelRatio, mapName);
           ctx.moveTo(p.x, p.y);
           p = getPixel([0, y], pixelRatio, mapName);
           ctx.lineTo(p.x, p.y);
@@ -90,12 +92,13 @@
         ctx.stroke();
 
         // X Axis
-        var xInterval = 20;                                         // Minimum pixel spacing between tick marks
-        var xIntervalsNum = Math.floor(widthPixels / 20);           // Num intervals with 20 pixel spacing
+        var xInterval = 100;                                         // Minimum pixel spacing between tick marks
+        var xIntervalsNum = Math.floor(widthPixels / xInterval);           // Num intervals with 20 pixel spacing
         xInterval = Math.floor(widthReal/xIntervalsNum);            // xInterval converted for real height
         places = Math.floor(Math.log10(xInterval));
+        places = Math.max(1, places);
         var xIntervalString = '1';
-        _.times(places + 1, function () {
+        _.times(places, function () {
           xIntervalString = xIntervalString + '0';
         });
         xInterval = parseInt(xIntervalString);                      // xInterval rounded up to nearest 100, 1000, etc
@@ -109,7 +112,8 @@
         p = getPixel([widthPixels, heightPixels], pixelRatio, mapName);
         ctx.lineTo(p.x, p.y);
 
-        // Tick Marks for Y Axis
+        // Tick Marks for X Axis
+        var xTickLength = heightPixels * .02;
         _.times(Math.ceil(xIntervalsNum) + 1, function (i) {
           var x = i * widthPixels / xRatio;
           var label = i * xInterval;
@@ -118,9 +122,9 @@
             label = Math.round(widthReal);
           }
           ctx.textAlign = 'center';
-          p = getPixel([x, heightPixels + 10], pixelRatio, mapName);
+          p = getPixel([x, heightPixels + xTickLength + 5], pixelRatio, mapName);
           ctx.fillText(label.toString(), p.x, p.y);
-          p = getPixel([x, heightPixels + 5], pixelRatio, mapName);
+          p = getPixel([x, heightPixels + xTickLength], pixelRatio, mapName);
           ctx.moveTo(p.x, p.y);
           p = getPixel([x, heightPixels], pixelRatio, mapName);
           ctx.lineTo(p.x, p.y);
