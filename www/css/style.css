@@ -470,7 +470,6 @@ Form Fields Style
 .strabo-form input{
   font-size: small;
   line-height: 20px;
-  height: 20px;
   padding: 0px !important;
 }
 
@@ -553,9 +552,15 @@ textarea {
   top: -3px;                  /* Overwritten in web css */
   color: #387ef5;
   position: absolute;
-  margin-left: 0px;
-  margin-top: 17px;
+  margin-left: 0px; 
+   margin-top: 17px;
 }
+
+.strabo-minerals-field-info-button {            
+  color: #387ef5;
+  position: absolute;
+}
+
 .item-checkbox{
   position: relative;
 }
@@ -577,9 +582,22 @@ textarea {
 /*--------------------
 Form Select Multiple Choices Fields Style
 --------------------*/
-.minerals-modal{
-  z-index: 1009;
+
+.item-button-right > .button {
+  z-index: 4; 
+  font-size: 12px;
 }
+
+.mineral-info-display > .row{
+  
+  margin: 0px 0px 10px 0px;
+}
+
+.mineral-title{
+  margin-right: 15px;
+  font-weight: bold;
+}
+
 .ion-backdrop {
   visibility: visible;
   opacity: 1.5;
@@ -607,13 +625,6 @@ Form Select Multiple Choices Fields Style
 .strabo-choices-flex-container {
   padding-left: 16px;
   margin: 0;
-  /* list-style: none; */
-  /* -ms-box-orient: horizontal; */
-  /* display: -webkit-box;
-  display: -moz-box;
-  display: -ms-flexbox;
-  display: -moz-flex;
-  display: -webkit-flex; */
   display: flex;
 }
 .strabo-choices-flex-item {

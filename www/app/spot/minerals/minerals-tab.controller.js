@@ -5,9 +5,9 @@
     .module('app')
     .controller('MineralsTabController', MineralsTabController);
 
-  MineralsTabController.$inject = ['$ionicModal', '$ionicPopup', '$ionicScrollDelegate', '$log', '$scope', '$state', 'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'ProjectFactory'];
+  MineralsTabController.$inject = ['$ionicModal', '$ionicPopup', '$ionicScrollDelegate', '$log', '$scope', '$state', 'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'MineralsFactory', 'ProjectFactory'];
 
-  function MineralsTabController($ionicModal, $ionicPopup, $ionicScrollDelegate, $log, $scope, $state, DataModelsFactory, FormFactory, HelpersFactory, ProjectFactory) {
+  function MineralsTabController($ionicModal, $ionicPopup, $ionicScrollDelegate, $log, $scope, $state, DataModelsFactory, FormFactory, HelpersFactory, MineralsFactory, ProjectFactory) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -18,6 +18,8 @@
     vm.collectionsModal = {};
     vm.createCollectionSelectBoxDisplay = {};
     vm.mineralCollections = [];
+    vm.mineralInfo = [];
+    vm.mineralInfoState = true;
     vm.mineralsModal = {};
     vm.modalTitle = '';
     vm.newCollectionName = undefined;
@@ -27,9 +29,11 @@
     vm.addMineral = addMineral;
     vm.changedCollectionToCreate = changedCollectionToCreate;
     vm.getLabel = getLabel;
+    vm.hideMineralInfo = hideMineralInfo;
     vm.loadCollection = loadCollection;
     vm.saveCollection = saveCollection;
     vm.selectFromCollection = selectFromCollection;
+    vm.showMineralInfo = showMineralInfo;
     vm.submit = submit;
     vm.switchMineralsForm = switchMineralsForm;
     vm.toggleCollectionChecked = toggleCollectionChecked;
@@ -135,6 +139,11 @@
       return DataModelsFactory.getLabel(label);
     }
 
+    //Hides the mineral info and display the mineral list
+    function hideMineralInfo() {
+      vm.mineralInfoState = true;
+    }
+
     function loadCollection() {
       selectedFromList = [];
       if (vmParent.spot.properties.minerals) {
@@ -188,6 +197,13 @@
       vmParent.spot.properties.minerals = JSON.parse(JSON.stringify(selectedFromList));
       if (_.isEmpty(vmParent.spot.properties.minerals)) delete vmParent.spot.properties.minerals;
       vm.collectionsModal.hide();
+    }
+
+    //Displays the mineral info for each mineral
+    function showMineralInfo(name, e) {
+      $ionicScrollDelegate.scrollTop();
+      vm.mineralInfoState = false;
+      vm.mineralInfo = MineralsFactory.getMineralInfo(name);
     }
 
     function submit() {
