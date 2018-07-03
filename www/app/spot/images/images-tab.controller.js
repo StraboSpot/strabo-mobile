@@ -66,7 +66,8 @@
       });
 
       $rootScope.$on('updatedImages', function () {
-        activate();
+        if (IS_WEB) getImageSources();
+        else activate();
       });
     }
 
@@ -99,8 +100,11 @@
     }
 
     function getFile(event) {
-      $log.log('Getting file ....');
-      ImageFactory.readFile(event.target.files[0]);
+      var file = event.target.files[0];
+      if (file) {
+        $log.log('Getting file ....');
+        ImageFactory.readFile(file);
+      }
     }
 
     function getImageSources() {
@@ -208,7 +212,7 @@
         if (imageType.image_type === 'other_image_ty') newImageData.other_image_type = imageType.other_image_type;
         ImageFactory.setIsReattachImage(false);
         ImageFactory.setCurrentSpot(vmParent.spot);
-        ImageFactory.setCurrentImage(newImageData);
+        ImageFactory.setCurrentImage(angular.fromJson(angular.toJson(newImageData)));
         if (IS_WEB) document.getElementById('file').click();
         else ImageFactory.getImageFromGallery();
       });

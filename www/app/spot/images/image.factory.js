@@ -126,7 +126,7 @@
         image.onload = function () {
           if (isReattachImage) {
             if (image.height === currentImageData.height && image.width === currentImageData.width) {
-              saveImage(currentImageData.id, image.src).then(function () {
+              saveImage(image.src).then(function () {
                 $log.log('Also save image to live db here');
                 LiveDBFactory.saveImageFile(currentImageData.id, image.src);
                 $rootScope.$broadcast('updatedImages');
@@ -150,10 +150,10 @@
               'width': image.width,
               'id': HelpersFactory.getNewId()
             });
-            saveImage(currentImageData.id, image.src);
+            saveImage(image.src);
             $log.log('Also save image to live db here');
             LiveDBFactory.saveImageFile(currentImageData.id, image.src);
-            saveImageDataToSpot(currentImageData);
+            saveImageDataToSpot();
           }
         };
         image.onerror = function () {
@@ -166,9 +166,12 @@
       reader.readAsDataURL(file);
     }
 
-    function saveImageDataToSpot(imageData) {
+    function saveImageDataToSpot() {
       if (angular.isUndefined(currentSpot.properties.images)) currentSpot.properties.images = [];
-      currentSpot.properties.images.push(imageData);
+      currentSpot.properties.images = _.reject(currentSpot.properties.images, function (image) {
+        return image.id === currentImageData.id;
+      });
+      currentSpot.properties.images.push(currentImageData);
       SpotFactory.save(currentSpot).then(function () {
         $rootScope.$broadcast('updatedImages');
         if ($state.current.name === 'app.map') $rootScope.$broadcast('updateMapFeatureLayer');
@@ -217,8 +220,8 @@
       readDataUrl(file);
     }
 
-    function saveImage(imageId, base64Image) {
-      return LocalStorageFactory.getDb().imagesDb.setItem(imageId.toString(), base64Image)
+    function saveImage(base64Image) {
+      return LocalStorageFactory.getDb().imagesDb.setItem(currentImageData.id.toString(), base64Image)
     }
 
     function setCurrentImage(inImageData) {
