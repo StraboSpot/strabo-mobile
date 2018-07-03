@@ -302,7 +302,7 @@
                 vm.initializing = true;
                 if (!IS_WEB) goBack();
                 else {
-                  if ($state.current.name === 'app.spotTab.spot') {   // Update Spots list
+                  if ($state.current.name.split('.')[1] === 'spotTab') {   // Update Spots list
                     vmParent.updateSpots();
                     vmParent.spotIdSelected = undefined;
                     $location.path('app/spotTab');
