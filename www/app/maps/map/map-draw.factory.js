@@ -390,6 +390,7 @@
           });
         }
         else if (lassoMode === 'measure') {
+          lassoMode = "";
           if (image) {
             $log.log('Calculating image width ...');
             $log.log('Measure Line:', geojsonObj, 'Image:', image);
