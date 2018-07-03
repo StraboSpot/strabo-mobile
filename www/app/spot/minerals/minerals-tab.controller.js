@@ -37,7 +37,7 @@
     vm.submit = submit;
     vm.switchMineralsForm = switchMineralsForm;
     vm.toggleCollectionChecked = toggleCollectionChecked;
-
+   
     activate();
 
     /**
@@ -113,7 +113,7 @@
     * Public Functions
     */
 
-    function addMineral(type) {
+    function addMineral(type) { 
       FormFactory.setForm('minerals', type);
       var combine = [];
       if (!_.isEmpty(vmParent.spot.properties.minerals)) {
