@@ -1,14 +1,24 @@
 <div>
   <div class="side-images-scroll">
-    <ion-list>
+    <ion-list ng-show='vm.images.length > 0'>
       <ion-item ng-repeat='image in vm.images | orderBy:"name" track by image.id'
                 ng-click='vm.toggleImageSelected(image)'>
         <ion-label>{{ image.name || 'Untitled' }}</ion-label>
         <a><img ng-src='{{ vm.getImageSrc(image.id) }}' id='{{ image.id }}' width='200' height='200'></a>
       </ion-item>
     </ion-list>
+    <div class='padding' ng-hide='vm.images.length > 0'>
+      No images in this Spot, {{ vm.thisSpotWithThinSection.properties.name }}.
+      Add images to this Spot from the Spot page for this Thin Section. See below.
+      <button ng-click='vm.goToSpot(vm.thisSpotWithThinSection.properties.id, "images")'
+              class='button'>
+        {{vm.thisSpotWithThinSection.properties.name}}</button>
+    </div>
   </div>
-  <div id='maps' class="thin-section-maps" data-tap-disabled='true'>
+  <div id='maps' class="thin-section-maps" data-tap-disabled='true' ng-show='vm.imagesSelected.length > 0'>
+  </div>
+  <div class="thin-section-maps padding"  ng-hide='vm.imagesSelected.length > 0'>
+    No images selected. Please select an image on the left to add it to the map workspace.
   </div>
 
   <!-- Side Slide Content -->

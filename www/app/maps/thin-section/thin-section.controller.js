@@ -20,7 +20,6 @@
     var currentSpot = {};
     var datasetsLayerStates;
     var imageSources = [];
-    var imagesSelected = [];
     var maps = {};
     var spotsThisMap = [];
     var tagsToAdd = [];
@@ -31,6 +30,7 @@
     vm.clickedFeatureId = undefined;
     vm.data = {};
     vm.images = [];
+    vm.imagesSelected = [];
     vm.isNesting = SpotFactory.getActiveNesting();
     vm.newNestModal = {};
     vm.newNestProperties = {};
@@ -367,7 +367,7 @@
     }
 
     function isImageSelected(imageId) {
-      return _.contains(imagesSelected, imageId);
+      return _.contains(vm.imagesSelected, imageId);
     }
 
     function removeMap(image) {
@@ -501,12 +501,12 @@
 
     function toggleImageSelected(image) {
       if (isImageSelected(image.id)) {
-        imagesSelected = _.without(imagesSelected, image.id);
+        vm.imagesSelected = _.without(vm.imagesSelected, image.id);
         setUnselectedImageStyle(image.id);
         removeMap(image);
       }
       else {
-        imagesSelected.push(image.id);
+        vm.imagesSelected.push(image.id);
         setSelectedImageStyle(image.id);
         createMapWithSelectedImage(image);
       }
