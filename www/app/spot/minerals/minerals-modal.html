@@ -1,8 +1,9 @@
 <ion-modal-view class="minerals-modals">
     <ion-header-bar class='bar-stable nav-title-slide-ios7' align-title='center'>
-      <button class='button button-positive' ng-show="vmChild.mineralInfoState" ng-click='vmChild.submit()'>Save
+      <button class='button button-positive' ng-show="vmChild.isShowMineralList" ng-click='vmChild.submit()'>Save
       </button>
-      <button class='button button-icon icon ion-arrow-left-c ' ng-hide="vmChild.mineralInfoState" ng-click='vmChild.hideMineralInfo();'>
+      <button class='button button-icon icon ion-arrow-left-c' ng-hide="vmChild.isShowInfoOnly || vmChild.isShowMineralList" 
+       ng-click='vmChild.hideMineralInfo();'>
       </button>
       <h1 class='title'>{{ vmChild.modalTitle }}</h1>
       <div class='buttons'>
@@ -11,7 +12,7 @@
       </div>
     </ion-header-bar>
     <ion-content>
-      <div ng-show="vmChild.mineralInfoState">
+      <div ng-show="vmChild.isShowMineralList">
         <div class='button-bar'>
           <button class='button button-full' ng-click='vmChild.switchMineralsForm("most_common")'
            ng-class="{'spot-tab-active': vmChild.activeState === 'most_common'}">Most Common</button>
@@ -22,7 +23,7 @@
           <strabo-minerals-choices-directive/>
         </form>
       </div>
-      <div ng-hide="vmChild.mineralInfoState" class="padding">
+      <div ng-hide="vmChild.isShowMineralList" class="padding">
         <div ng-show="vmChild.mineralInfo" class="mineral-info-display">
           <div class="row">
             <span class="mineral-title">Mineral:</span>

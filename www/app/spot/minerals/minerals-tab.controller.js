@@ -19,7 +19,8 @@
     vm.createCollectionSelectBoxDisplay = {};
     vm.mineralCollections = [];
     vm.mineralInfo = [];
-    vm.mineralInfoState = true;
+    vm.isShowMineralList = true;
+    vm.isShowInfoOnly = true;
     vm.mineralsModal = {};
     vm.modalTitle = '';
     vm.newCollectionName = undefined;
@@ -31,6 +32,7 @@
     vm.getLabel = getLabel;
     vm.hideMineralInfo = hideMineralInfo;
     vm.loadCollection = loadCollection;
+    vm.mineralInfoOnMainPage = mineralInfoOnMainPage;
     vm.saveCollection = saveCollection;
     vm.selectFromCollection = selectFromCollection;
     vm.showMineralInfo = showMineralInfo;
@@ -127,6 +129,8 @@
       else if (type === 'igneous_most_common') vm.modalTitle = 'Igneous Minerals';
       else if (type === 'sedimentary_most_common') vm.modalTitle = 'Sedimentary Minerals';
 
+      vm.isShowInfoOnly = false;
+      vm.isShowMineralList = true;
       vm.mineralsModal.show();
     }
 
@@ -141,7 +145,7 @@
 
     //Hides the mineral info and display the mineral list
     function hideMineralInfo() {
-      vm.mineralInfoState = true;
+      vm.isShowMineralList = true;
     }
 
     function loadCollection() {
@@ -199,11 +203,19 @@
       vm.collectionsModal.hide();
     }
 
-    //Displays the mineral info for each mineral
-    function showMineralInfo(name, e) {
+    //Displays the mineral chemical compound info for each mineral
+    function showMineralInfo(name) {
       $ionicScrollDelegate.scrollTop();
-      vm.mineralInfoState = false;
+      vm.isShowMineralList = false;
+      vm.mineralInfo = MineralsFactory.getMineralInfo(name); 
+    }
+
+    //displays the mineral info from info-button on the main Minerals Page
+    function mineralInfoOnMainPage(name){
       vm.mineralInfo = MineralsFactory.getMineralInfo(name);
+      vm.isShowMineralList = false;
+      vm.isShowInfoOnly = true;
+      vm.mineralsModal.show();
     }
 
     function submit() {
