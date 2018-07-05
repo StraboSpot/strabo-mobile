@@ -470,7 +470,7 @@ Form Fields Style
 .strabo-form input{
   font-size: small;
   line-height: 20px;
-  height: 20;
+  height: 20px;
   padding: 0px !important;
 }
 
@@ -521,7 +521,7 @@ textarea {
 }
 
 .item-checkbox .checkbox {
-  left: 0px; 
+  left: 0px;
 }
 
 .login-input {
