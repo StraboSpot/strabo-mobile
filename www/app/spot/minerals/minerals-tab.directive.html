@@ -19,7 +19,7 @@
     <ion-item class='item-text-wrap item-button-right' 
     ng-repeat='mineral in vm.spot.properties.minerals | orderBy:mineral track by $index'>
       {{ vmChild.getLabel(mineral) }}
-      <button id="minerals-info-button" class=" button-small button-icon button ion-information-circled strabo-minerals-field-info-button" ng-click="vmChild.mineralInfoOnMainPage(mineral)"></button>
+      <button id="minerals-info-button" class=" button-small button-icon button ion-information-circled minerals-field-info-button" ng-click="vmChild.mineralInfoOnMainPage(mineral)"></button>
     </ion-item>
   </ion-list>
   <div class="padding" ng-hide="vm.spot.properties.minerals">
