@@ -470,6 +470,7 @@ Form Fields Style
 .strabo-form input{
   font-size: small;
   line-height: 20px;
+  height: 20;
   padding: 0px !important;
 }
 
@@ -517,11 +518,10 @@ textarea {
   border-bottom: 0px;
   padding-top: 8px;
   padding-bottom: 8px;
-  position: relative;
 }
 
-.item-checkbox {
-  left: 25px; 
+.item-checkbox .checkbox {
+  left: 0px; 
 }
 
 .login-input {
@@ -551,26 +551,8 @@ textarea {
   line-height: 20px;
   top: -3px;                  /* Overwritten in web css */
   color: #387ef5;
-  position: absolute;
-  margin-left: 0px; 
-   margin-top: 17px;
 }
 
-.strabo-minerals-field-info-button {            
-  color: #387ef5;
-  position: absolute;
-}
-
-.mineral-checkbox{
-  margin-left: -40;
-}
-
-.item-checkbox{
-  position: relative;
-}
-.item{
-  display: flex;
-}
 .range input {
   height: 43px;               /* Set back to original for range */
 }
@@ -588,70 +570,22 @@ textarea {
 /*--------------------
 Form Select Multiple Choices Fields Style
 --------------------*/
-
-.item-button-right > .button {
-  z-index: 4; 
-  font-size: 12px;
-}
-#minerals-info-button{
-  float: left;
-  align-items: center;
-  position: relative;
-  top: -8px;
-  right: -13px;
-  min-width: 34px;
-  min-height: 34px;
-  font-size: 12px;
-  line-height: 32px;
-}
-
-.mineral-info-display > .row{
-  
-  margin: 0px 0px 10px 0px;
-}
-
-.mineral-title{
-  margin-right: 15px;
-  font-weight: bold;
-}
-
-.ion-backdrop {
-  visibility: visible;
-  opacity: 1.5;
-  z-index: 1010;
-}
-#search-div
-{
-  position: relative;
-}
-#background-input
-{
-  position: absolute;
-  color: #999999;
-  height:25px;
-  width:250px;
-}
-#search
-{
-  position: relative;
-  background: transparent;
-  height:25px;
-  width:250px;
-  padding: 25px;
-}
 .strabo-choices-flex-container {
-  padding-left: 0px;
+  padding-left: 16px;
   margin: 0;
-  border: none;
-  
-   display: flex;
+  list-style: none;
+  -ms-box-orient: horizontal;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -moz-flex;
+  display: -webkit-flex;
+  display: flex;
 }
 .strabo-choices-flex-item {
   flex: 1 0 200px;
   margin-bottom: 1px;
-  margin-left: 83px;
-  /* align-content: space-around; */
-  display: flex;
+  display: table;
 }
 @media (min-width: 410px) {
   .strabo-flex-container .strabo-choices-flex-item {
@@ -1009,6 +943,63 @@ Filters Modal
 .date-filter-label{
   display: initial;
   font-size: small;
+}
+
+/*--------------------
+Minerals Page
+---------------------*/
+
+.minerals-checkbox {
+  left: 25px; 
+}
+.minerals-item{
+  margin-bottom: 1px;
+  margin-left: 80px;
+}
+
+.mineral-checkbox{
+  margin-left: -40;
+  position: relative;
+}
+
+.mineral-item{
+  display: flex;
+}
+
+#minerals-info-button{
+  float: left;
+  align-items: center;
+  position: relative;
+  top: -8px;
+  right: -13px;
+  min-width: 34px;
+  min-height: 34px;
+  font-size: 12px;
+  line-height: 32px;
+  z-index: 4; 
+  font-size: 12px;
+}
+.minerals-field-info-button {
+  min-height: 20px;
+  line-height: 20px;
+  top: -3px;                  /* Overwritten in web css */
+  color: #387ef5;
+  position: absolute;
+  margin-left: 0px; 
+}
+
+.mineral-info-display > .row{ 
+  margin: 0px 0px 10px 0px;
+}
+
+.mineral-title{
+  margin-right: 15px;
+  font-weight: bold;
+}
+.minerals-form{
+  font-size: small;
+  line-height: 20px;
+  padding: 0px !important;
 }
 
 /*--------------------
