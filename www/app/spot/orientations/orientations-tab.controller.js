@@ -9,7 +9,7 @@
     '$ionicPopup', '$log', '$scope', '$state', 'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'ProjectFactory'];
 
   function OrientationsTabController($cordovaDeviceMotion, $cordovaDeviceOrientation, $ionicModal, $ionicPopup, $log,
-                                     $scope, $state, DataModelsFactory, FormFactory, HelpersFactory, ProjectFactory) {
+    $scope, $state, DataModelsFactory, FormFactory, HelpersFactory, ProjectFactory) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -18,6 +18,7 @@
     var watchDeviceAcceleration = {};
 
     vm.basicFormModal = {};
+    vm.clipboardModal = {};
     vm.compassData = {};
     vm.compassModal = {};
     vm.error = {};
@@ -31,6 +32,7 @@
     vm.addAssociatedOrientation = addAssociatedOrientation;
     vm.addOrientation = addOrientation;
     vm.calcTrendPlunge = calcTrendPlunge;
+    vm.openClipboardModal = openClipboardModal;
     vm.closeCompass = closeCompass;
     vm.copyAssociatedOrientation = copyAssociatedOrientation;
     vm.copyOrientation = copyOrientation;
@@ -41,6 +43,7 @@
     vm.getCompassInfo = getCompassInfo;
     vm.openCompass = openCompass;
     vm.pause = pause;
+    vm.stereonetClipboard = stereonetClipboard;
     vm.submit = submit;
 
     activate();
@@ -178,10 +181,19 @@
         vm.compassModal = modal;
       });
 
+      $ionicModal.fromTemplateUrl('app/spot/orientations/clipboard-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false
+      }).then(function (modal) {
+        vm.clipboardModal = modal;
+      });
+
       // Cleanup the modal when we're done with it!
       $scope.$on('$destroy', function () {
         vm.basicFormModal.remove();
         vm.compassModal.remove();
+        vm.clipboardModal.remove();
       });
     }
 
@@ -238,12 +250,12 @@
 
     function calcTrendPlunge() {
       if (_.isNull(vm.parentOrientation.strike) || _.isUndefined(vm.parentOrientation.strike) || _.isNull(
-          vm.parentOrientation.dip) || _.isUndefined(vm.parentOrientation.dip) || _.isNull(
+        vm.parentOrientation.dip) || _.isUndefined(vm.parentOrientation.dip) || _.isNull(
           vmParent.data.rake) || _.isUndefined(vmParent.data.rake)) {
         $ionicPopup.alert({
           'title': 'Calculate Trend & Plunge Error',
           'template': 'Make sure you have a strike and dip entered for an associated Planar Orientation and the' +
-          ' rake entered for this Linear Orientation.'
+            ' rake entered for this Linear Orientation.'
         });
       }
       else {
@@ -394,6 +406,44 @@
       getCompassInfo();
     }
 
+    function openClipboardModal() {
+      vm.clipboardModal.show();
+      document.getElementById('data').value = "";
+    }
+
+    //gets the data from the clipboard modal 
+    function stereonetClipboard(data) {
+
+      data = document.getElementById('data').value;
+
+      //error check for format.  Needs to be in JSON with correct fields.
+      try {
+        data = JSON.parse(data);
+        $log.log(data);
+        _.each(data.features[0].properties.orientation_data, function (orientation) {
+          vm.parentOrientation = undefined;
+
+          vmParent.data = orientation;
+          vmParent.data.id = HelpersFactory.getNewId();
+          $log.log(orientation);
+
+          vm.submit();
+        })
+        $ionicPopup.alert({
+          title: 'Data added from clipboard',
+          template: 'Data was <b>Successfully</b> imported from clipboard.'
+        }).then(function () {
+          vm.clipboardModal.hide();
+        });
+      }
+      catch (err) {
+        $ionicPopup.alert({
+          title: 'Data from clipboard',
+          template: 'Data was <b>NOT</b> imported from clipboard.<br> Check Format!'
+        });
+      }
+    }
+
     function submit() {
       vmParent.data = HelpersFactory.cleanObj(vmParent.data);
       if (FormFactory.validate(vmParent.data)) {
@@ -422,7 +472,9 @@
         vmParent.data = {};
         vm.basicFormModal.hide();
         FormFactory.clearForm();
-        vmParent.saveSpot();
+        vmParent.saveSpot().then(function () {
+          vmParent.spotChanged = false;
+        });
       }
     }
   }
