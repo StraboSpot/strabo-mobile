@@ -100,6 +100,14 @@
         });
         childrenSpots.push(stratSectionChildrenSpots);
       }
+      // Find children spots based on subsamples
+      if (thisSpot.properties.samples) {
+        var sampleChildrenSpots = [];
+          _.each(thisSpot.properties.samples, function (sample) {
+          if (sample.spot_id) sampleChildrenSpots.push(SpotFactory.getSpotById(sample.spot_id));
+        });
+        childrenSpots.push(sampleChildrenSpots);
+      }
       childrenSpots = _.flatten(childrenSpots);
       // Find children spots based on geometry
       // Only non-point features can have children
@@ -109,15 +117,12 @@
             return spot.properties.id === thisSpot.properties.id || !spot.geometry;
           });
           _.each(otherSpots, function (spot) {
-            if (_.has(spot, 'geometry')) {
-              if ((!thisSpot.properties.image_basemap && !spot.properties.image_basemap) ||
-                (thisSpot.properties.image_basemap && spot.properties.image_basemap &&
-                  thisSpot.properties.image_basemap === spot.properties.image_basemap)) {
-                if (_.propertyOf(thisSpot.geometry)('type') && (_.propertyOf(thisSpot.geometry)('type') === 'Polygon'
-                  || _.propertyOf(thisSpot.geometry)('type') === 'MutiPolygon')) {
-                  if (turf.booleanWithin(spot, thisSpot)) childrenSpots.push(spot);
-                }
-
+            if ((!thisSpot.properties.image_basemap && !spot.properties.image_basemap) ||
+              (thisSpot.properties.image_basemap && spot.properties.image_basemap &&
+                thisSpot.properties.image_basemap === spot.properties.image_basemap)) {
+              if (_.propertyOf(thisSpot.geometry)('type') && (_.propertyOf(thisSpot.geometry)('type') === 'Polygon'
+                || _.propertyOf(thisSpot.geometry)('type') === 'MutiPolygon')) {
+                if (turf.booleanWithin(spot, thisSpot)) childrenSpots.push(spot);
               }
             }
           });
@@ -147,6 +152,13 @@
         });
         parentSpots.push(parentStratSectionSpot);
       }
+      // Find parent spots based on subsamples
+      var parentSampleSpot = _.find(vmParent.spots, function (spot) {
+        return _.find(spot.properties.samples, function (sample) {
+          return sample.spot_id && sample.spot_id === thisSpot.properties.id;
+        });
+      });
+      if (parentSampleSpot) parentSpots.push(parentSampleSpot);
       parentSpots = _.flatten(parentSpots);
       // Find parent spots based on geometry
       if (_.has(thisSpot, 'geometry')) {
