@@ -5,22 +5,28 @@
     .module('app')
     .controller('SamplesTabController', SamplesTabController);
 
-  SamplesTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'FormFactory',
-    'HelpersFactory', 'ProjectFactory'];
+  SamplesTabController.$inject = ['$ionicModal', '$ionicPopup', '$location', '$log', '$scope', '$state', 'FormFactory',
+    'HelpersFactory', 'ProjectFactory', 'SpotFactory'];
 
-  function SamplesTabController($ionicModal, $ionicPopup, $log, $scope, $state, FormFactory, HelpersFactory,
-                                ProjectFactory) {
+  function SamplesTabController($ionicModal, $ionicPopup, $location, $log, $scope, $state, FormFactory, HelpersFactory,
+                                ProjectFactory, SpotFactory) {
     var vm = this;
     var vmParent = $scope.vm;
 
     var thisTabName = 'samples';
 
-    vm.addSample = addSample;
     vm.basicFormModal = {};
+    vm.modalTitle = '';
+    vm.samples = [];
+    vm.subsamples = [];
+
+    vm.addSample = addSample;
+    vm.addSubsample = addSubsample;
     vm.deleteSample = deleteSample;
     vm.editSample = editSample;
-    vm.modalTitle = '';
+    vm.goToSubsampleSpot = goToSubsampleSpot;
     vm.submit = submit;
+    vm.unlinkSubsampleSpot = unlinkSubsampleSpot;
 
     activate();
 
@@ -47,18 +53,32 @@
       });
     }
 
+    // Create a new Spot with the Subsample data
+    function createNewSpotWithSubsample() {
+      var newSpot = {'type': 'Feature'};
+      if (vmParent.spot.geometry) newSpot.geometry = vmParent.spot.geometry;
+      newSpot.properties = {
+        'name': vmParent.data.label,
+        'samples': [vmParent.data]
+      };
+      return SpotFactory.setNewSpot(newSpot);
+    }
+
     function loadTab(state) {
       vmParent.loadTab(state);     // Need to load current state into parent
       FormFactory.setForm('sample');
       $log.log('Samples:', vmParent.spot.properties.samples);
       checkProperties();
+      splitSamples();
       createModal();
     }
 
     function checkProperties() {
       _.each(vmParent.spot.properties.samples, function (sample) {
-        if (!sample.label) sample.label = createDefaultLabel(sample);
-        if (!sample.id) sample.id = HelpersFactory.getNewId();
+        if (!_.has(sample, 'spot_id')) {
+          if (!sample.label) sample.label = createDefaultLabel(sample);
+          if (!sample.id) sample.id = HelpersFactory.getNewId();
+        }
       });
     }
 
@@ -89,6 +109,21 @@
       if (!found) ProjectFactory.incrementSampleNumber();
     }
 
+    // Split the samples list into two lists based on whether the sample is an actual sample or just a link.
+    // to a Subsample Spot. Subsample Spots have the field spot_id whereas actual samples do not.
+    function splitSamples() {
+      var samplesPartitioned = _.partition(vmParent.spot.properties.samples, function (sample) {
+        return sample.spot_id;
+      });
+      vm.subsamples = samplesPartitioned[0];
+      vm.samples = samplesPartitioned[1];
+
+      _.each(vm.subsamples, function (subsample, i) {
+        var linkedSpot = SpotFactory.getSpotById(subsample.spot_id);
+        if (!_.isEmpty(linkedSpot)) vm.subsamples[i] = linkedSpot;
+      });
+    }
+
     /**
      * Public Functions
      */
@@ -115,9 +150,23 @@
             return sample.id === sampleToDelete.id;
           });
           if (vmParent.spot.properties.samples.length === 0) delete vmParent.spot.properties.samples;
-          vmParent.saveSpot();
+          vmParent.saveSpot().then(function () {
+            vmParent.spotChanged = false;
+            splitSamples();
+          });
         }
       });
+    }
+
+    function addSubsample() {
+      FormFactory.setForm('sample');
+      vmParent.data = {};
+      vmParent.data.id = HelpersFactory.getNewId();
+      var number = ProjectFactory.getSampleNumber() || '';
+      var prefix = ProjectFactory.getSamplePrefix() || '';
+      if (number !== '' || prefix !== '') vmParent.data.sample_id_name = prefix + number.toString();
+      vm.modalTitle = 'Add a Subsample Spot';
+      vm.basicFormModal.show();
     }
 
     function editSample(sampleToEdit) {
@@ -127,21 +176,62 @@
       vm.basicFormModal.show();
     }
 
+    function goToSubsampleSpot(spot) {
+      if (spot.properties && spot.properties.id) $location.path('/app/spotTab/' + spot.properties.id + '/spot');
+    }
+
     function submit() {
       vmParent.data = HelpersFactory.cleanObj(vmParent.data);
       if (FormFactory.validate(vmParent.data)) {
         if (!vmParent.data.label) vmParent.data.label = createDefaultLabel(vmParent.data);
         if (!vmParent.spot.properties.samples) vmParent.spot.properties.samples = [];
         handleSampleNumber();
-        vmParent.spot.properties.samples = _.reject(vmParent.spot.properties.samples, function (sample) {
-          return sample.id === vmParent.data.id;
-        });
-        vmParent.spot.properties.samples.push(vmParent.data);
-        vmParent.data = {};
+        if (vm.modalTitle === 'Add a Subsample Spot') {
+          createNewSpotWithSubsample().then(function (newSpotId) {
+            vmParent.spot.properties.samples.push({'spot_id': newSpotId});
+            vmParent.data = {};
+            vmParent.saveSpot().then(function () {
+              vmParent.spotChanged = false;
+              vmParent.updateSpotsList();
+              splitSamples();
+            });
+          });
+        }
+        else {
+          vmParent.spot.properties.samples = _.reject(vmParent.spot.properties.samples, function (sample) {
+            return sample.id === vmParent.data.id;
+          });
+          vmParent.spot.properties.samples.push(vmParent.data);
+          vmParent.data = {};
+          vmParent.saveSpot().then(function () {
+            vmParent.spotChanged = false;
+            splitSamples();
+          });
+        }
         vm.basicFormModal.hide();
         FormFactory.clearForm();
-        vmParent.saveSpot();
       }
+    }
+
+    // Remove link between Subsample and Subsample Spot
+    function unlinkSubsampleSpot(spot) {
+      var confirmPopup = $ionicPopup.confirm({
+        'title': 'Unlink Subsample Spot',
+        'template': 'Are you sure you want to unlink this Subsample Spot from this Spot?'
+      });
+      confirmPopup.then(function (res) {
+        if (res) {
+          vmParent.spot.properties.samples = _.reject(vmParent.spot.properties.samples, function (sample) {
+            if (sample.spot_id && spot.properties && spot.properties.id) return sample.spot_id === spot.properties.id;
+            else if (sample.spot_id) return sample.spot_id === spot.spot_id;
+          });
+          if (_.isEmpty(vmParent.spot.properties.samples)) delete vmParent.spot.properties.samples;
+          vmParent.saveSpot().then(function () {
+            vmParent.spotChanged = false;
+            splitSamples();
+          });
+        }
+      });
     }
   }
 }());

@@ -74,6 +74,7 @@
     vm.showTab = showTab;
     vm.submit = submit;
     vm.takePicture = takePicture;
+    vm.updateSpotsList = updateSpotsList;
     vm.viewMap = viewMap;
 
     activate();
@@ -124,7 +125,7 @@
         if (vm.spotChanged && fromState.name === 'app.spotTab.spot') {
           saveSpot().then(function (spots) {
             vm.spotChanged = false;
-            if (IS_WEB && $state.current.name === 'app.spotTab.spot') vmParent.updateSpots();
+            if (IS_WEB && $state.current.name === 'app.spotTab.spot') updateSpotsList();
           }, function () {
             $state.go(fromState);     // If saving failed don't change state
           });
@@ -303,7 +304,7 @@
                 if (!IS_WEB) goBack();
                 else {
                   if ($state.current.name.split('.')[1] === 'spotTab') {   // Update Spots list
-                    vmParent.updateSpots();
+                    updateSpotsList();
                     vmParent.spotIdSelected = undefined;
                     $location.path('app/spotTab');
                   }
@@ -558,6 +559,10 @@
       ProjectFactory.saveTag(tag).then(function () {
         loadTags();
       });
+    }
+
+    function updateSpotsList() {
+      if (IS_WEB) vmParent.updateSpots();
     }
 
     // View the spot on the maps

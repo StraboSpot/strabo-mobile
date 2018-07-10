@@ -59,6 +59,7 @@
       'getSpotsByDatasetId': getSpotsByDatasetId,
       'getSpotById': getSpotById,
       'getSpots': getSpots,
+      'getSubsampleSpot': getSubsampleSpot,
       'getTabs': getTabs,
       'goToSpot': goToSpot,
       'isSafeDelete': isSafeDelete,
@@ -303,6 +304,15 @@
       return spotsTemp;
     }
 
+    // Get the Spot that links to this Spot as a subsample
+    function getSubsampleSpot(spotId) {
+      return _.find(spots, function (spot) {
+        return _.find(spot.properties.samples, function (sample) {
+          return sample.spot_id && sample.spot_id === spotId;
+        });
+      });
+    }
+
     function getTabs() {
       return tabs;
     }
@@ -320,6 +330,7 @@
     }
 
     function isSafeDelete(spotToDelete) {
+      if (getSubsampleSpot(spotToDelete.properties.id)) return false;
       if (spotToDelete.properties && spotToDelete.properties.sed && spotToDelete.properties.sed.strat_section) {
         return false;
       }
