@@ -103,18 +103,21 @@
       childrenSpots = _.flatten(childrenSpots);
       // Find children spots based on geometry
       // Only non-point features can have children
-      if (_.has(spot, 'geometry') && _.propertyOf(thisSpot.geometry)('type')) {
+      if (_.propertyOf(thisSpot.geometry)('type')) {
         if (_.propertyOf(thisSpot.geometry)('type') !== 'Point') {
           var otherSpots = _.reject(vmParent.spots, function (spot) {
             return spot.properties.id === thisSpot.properties.id || !spot.geometry;
           });
           _.each(otherSpots, function (spot) {
-            if ((!thisSpot.properties.image_basemap && !spot.properties.image_basemap) ||
-              (thisSpot.properties.image_basemap && spot.properties.image_basemap &&
-                thisSpot.properties.image_basemap === spot.properties.image_basemap)) {
-              if (_.propertyOf(thisSpot.geometry)('type') && (_.propertyOf(thisSpot.geometry)('type') === 'Polygon'
-                || _.propertyOf(thisSpot.geometry)('type') === 'MutiPolygon')) {
-                if (turf.booleanWithin(spot, thisSpot)) childrenSpots.push(spot);
+            if (_.has(spot, 'geometry')) {
+              if ((!thisSpot.properties.image_basemap && !spot.properties.image_basemap) ||
+                (thisSpot.properties.image_basemap && spot.properties.image_basemap &&
+                  thisSpot.properties.image_basemap === spot.properties.image_basemap)) {
+                if (_.propertyOf(thisSpot.geometry)('type') && (_.propertyOf(thisSpot.geometry)('type') === 'Polygon'
+                  || _.propertyOf(thisSpot.geometry)('type') === 'MutiPolygon')) {
+                  if (turf.booleanWithin(spot, thisSpot)) childrenSpots.push(spot);
+                }
+
               }
             }
           });
