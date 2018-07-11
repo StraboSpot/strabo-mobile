@@ -306,6 +306,12 @@
         _.each(featureElements, function (featureElement) {
           if (spot.properties[featureElement]) {
             var featuresCopy = angular.fromJson(angular.toJson(spot.properties[featureElement]));
+            // Remove links to subsample Spots
+            if (featureElement === 'samples') {
+              featuresCopy = _.reject(featuresCopy, function (feature) {
+                return feature.spot_id;
+              });
+            }
             _.each(featuresCopy, function (featureCopy) {
               featureCopy.parentSpotId = spot.properties.id;
             });
