@@ -61,7 +61,13 @@
         'name': vmParent.data.label,
         'samples': [vmParent.data]
       };
-      return SpotFactory.setNewSpot(newSpot);
+      if (vmParent.spot.properties.image_basemap) {
+        newSpot.properties.image_basemap = vmParent.spot.properties.image_basemap;
+      }
+      if (vmParent.spot.properties.strat_section_id) {
+        newSpot.properties.strat_section_id = vmParent.spot.properties.strat_section_id;
+      }
+        return SpotFactory.setNewSpot(newSpot);
     }
 
     function loadTab(state) {
