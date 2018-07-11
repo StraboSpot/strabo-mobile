@@ -278,7 +278,7 @@
       }
     }
 
-    function doOnDrawEnd(e, image) {
+    function doOnDrawEnd(e, image, spotWithThisImage) {
       // drawend event needs to end the drawing interaction
       map.removeInteraction(draw);
 
@@ -308,7 +308,23 @@
       var geojsonObj;
       if (map.getView().getProjection().getUnits() === 'pixels') {
         geojsonObj = geojson.writeFeatureObject(e.feature, {'decimals': 6});
-        if (!_.isEmpty(belongsTo)) geojsonObj.properties = belongsTo;     // Image Basemap or Strat Section
+        if (!_.isEmpty(belongsTo)) {
+          geojsonObj.properties = belongsTo;           // Image Basemap or Strat Section
+          // Set lat and lng properties for Spot if it's being mapped on an image basemap
+          if (_.has(belongsTo, 'image_basemap') && spotWithThisImage) {
+            if (spotWithThisImage.properties.image_basemap || spotWithThisImage.properties.strat_section_id) {
+              // If parent is mapped on an image basemap or strat section grab from lat and lng properties of parent
+              if (spotWithThisImage.properties.lat) geojsonObj.properties.lat = spotWithThisImage.properties.lat;
+              if (spotWithThisImage.properties.lng) geojsonObj.properties.lng = spotWithThisImage.properties.lng;
+            }
+            else {
+              // If Spot is mapped geographically take the center of the geometry to user for lat and lng
+              var center = turf.center(spotWithThisImage);
+              geojsonObj.properties.lat = HelpersFactory.roundToDecimalPlaces(turf.getCoords(center)[1], 6);
+              geojsonObj.properties.lng = HelpersFactory.roundToDecimalPlaces(turf.getCoords(center)[0], 6);
+            }
+          }
+        }
 
         if (_.find(_.flatten(geojsonObj.geometry.coordinates),
           function (num) {

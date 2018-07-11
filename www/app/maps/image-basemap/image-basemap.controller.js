@@ -19,6 +19,7 @@
     var currentSpot = {};
     var datasetsLayerStates;
     var map;
+    var spotWithThisImage = {};
     var spotsThisMap = {};
     var tagsToAdd = [];
 
@@ -219,10 +220,9 @@
         var lmode = MapDrawFactory.getLassoMode();
         $log.log('LassoMode:', lmode);
         draw.on('drawend', function (e) {
-          MapDrawFactory.doOnDrawEnd(e, vm.imageBasemap);
+          MapDrawFactory.doOnDrawEnd(e, vm.imageBasemap, spotWithThisImage);
           var selectedSpots = SpotFactory.getSelectedSpots();
           if (!_.isEmpty(selectedSpots)) {
-
             if (lmode === "tags") {
               $log.log("tag mode enabled");
 
@@ -313,11 +313,15 @@
       return 5000;
     }
 
+    // Find the Spot that this image is in and get the properties of this image
     function setImageBasemap() {
-      _.each(SpotFactory.getActiveSpots(), function (spot) {
-        _.each(spot.properties.images, function (image) {
-          if (image.id.toString() === $state.params.imagebasemapId) vm.imageBasemap = image;
+      spotWithThisImage = _.find(SpotFactory.getActiveSpots(), function (spot) {
+        return _.find(spot.properties.images, function (image) {
+          return image.id.toString() === $state.params.imagebasemapId;
         });
+      });
+      vm.imageBasemap = _.find(spotWithThisImage.properties.images, function (image) {
+        return image.id.toString() === $state.params.imagebasemapId;
       });
     }
 
