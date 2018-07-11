@@ -145,7 +145,7 @@
       // Filter by name
       if (filterConditions.name) {
         filteredSpots = _.filter(filteredSpots, function (spot) {
-          return spot.properties.name.includes(filterConditions.name);
+          return spot.properties.name.toLowerCase().includes(filterConditions.name);
         });
       }
       // Filter by date
@@ -169,11 +169,14 @@
       // Filter by Spot Type
       if (filterConditions.spotType) {
         filteredSpots = _.filter(filteredSpots, function (spot) {
+          var match = false;
           if (!spot.properties.image_basemap && !spot.properties.strat_section_id) {
-            return _.contains(filterConditions.spotType, 'geo')
+            if (_.contains(filterConditions.spotType, 'geo')) match = true;
           }
-          if (spot.properties.image_basemap) return _.contains(filterConditions.spotType, 'image-basemap');
-          if (spot.properties.strat_section_id) return _.contains(filterConditions.spotType, 'strat-section');
+          if (spot.properties.image_basemap && _.contains(filterConditions.spotType, 'image-basemap')) match = true;
+          if (spot.properties.strat_section_id && _.contains(filterConditions.spotType, 'strat-section')) match = true;
+          if (spot.properties.samples && _.contains(filterConditions.spotType, 'samples')) match = true;
+          return match;
         });
       }
     }
