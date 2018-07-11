@@ -6,10 +6,9 @@
     .controller('OrientationsTabController', OrientationsTabController);
 
   OrientationsTabController.$inject = ['$cordovaDeviceMotion', '$cordovaDeviceOrientation', '$ionicModal',
-    '$ionicPopup', '$log', '$scope', '$state', 'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'ProjectFactory'];
+    '$ionicPopup', '$ionicScrollDelegate', '$log', '$scope', '$state', 'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'ProjectFactory'];
 
-  function OrientationsTabController($cordovaDeviceMotion, $cordovaDeviceOrientation, $ionicModal, $ionicPopup, $log,
-    $scope, $state, DataModelsFactory, FormFactory, HelpersFactory, ProjectFactory) {
+  function OrientationsTabController($cordovaDeviceMotion, $cordovaDeviceOrientation, $ionicModal, $ionicPopup, $ionicScrollDelegate, $log, $scope, $state, DataModelsFactory, FormFactory, HelpersFactory, ProjectFactory) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -407,6 +406,7 @@
     }
 
     function openClipboardModal() {
+      $ionicScrollDelegate.scrollTop();
       vm.clipboardModal.show();
       document.getElementById('data').value = "";
     }
