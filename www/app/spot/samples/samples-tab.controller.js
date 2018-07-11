@@ -281,6 +281,7 @@
       });
       if (alreadyChecked) unlinkSubsampleSpot(spot);
       else {
+        if (!vmParent.spot.properties.samples) vmParent.spot.properties.samples = [];
         vmParent.spot.properties.samples.push({'spot_id': spot.properties.id});
         vmParent.saveSpot().then(function () {
           vmParent.spotChanged = false;
