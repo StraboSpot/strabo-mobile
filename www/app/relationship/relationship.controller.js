@@ -76,7 +76,7 @@
       setTags();
 
       createPageComponents();
-      createPageEvents()
+      createPageEvents();
       setRelationshipTypes();
 
       vm.currentSpot = SpotFactory.getCurrentSpot();
@@ -334,7 +334,7 @@
     }
 
     function loadMoreSpots() {
-      var moreSpots = angular.fromJson(angular.toJson(vm.spots)).splice(vm.spotsDisplayed.length,
+      var moreSpots = angular.fromJson(angular.toJson(vm.spots)).slice(vm.spotsDisplayed.length,
         vm.spotsDisplayed.length + 20);
       vm.spotsDisplayed = _.union(vm.spotsDisplayed, moreSpots);
       $scope.$broadcast('scroll.infiniteScrollComplete');
