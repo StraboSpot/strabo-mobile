@@ -961,6 +961,63 @@ Filters Modal
 }
 
 /*--------------------
+Minerals Page
+---------------------*/
+
+.minerals-checkbox {
+  left: 25px; 
+}
+.minerals-item{
+  margin-bottom: 1px;
+  margin-left: 80px;
+}
+
+.mineral-checkbox{
+  margin-left: -40;
+  position: relative;
+}
+
+.mineral-item{
+  display: flex;
+}
+
+#minerals-info-button{
+  float: left;
+  align-items: center;
+  position: relative;
+  top: -8px;
+  right: -13px;
+  min-width: 34px;
+  min-height: 34px;
+  font-size: 12px;
+  line-height: 32px;
+  z-index: 4; 
+  font-size: 12px;
+}
+.minerals-field-info-button {
+  min-height: 20px;
+  line-height: 20px;
+  top: -3px;                  /* Overwritten in web css */
+  color: #387ef5;
+  position: absolute;
+  margin-left: 0px; 
+}
+
+.mineral-info-display > .row{ 
+  margin: 0px 0px 10px 0px;
+}
+
+.mineral-title{
+  margin-right: 15px;
+  font-weight: bold;
+}
+.minerals-form{
+  font-size: small;
+  line-height: 20px;
+  padding: 0px !important;
+}
+
+/*--------------------
 Relationships Page
 ---------------------*/
 
