@@ -6,9 +6,9 @@
     .controller('OrientationsTabController', OrientationsTabController);
 
   OrientationsTabController.$inject = ['$cordovaDeviceMotion', '$cordovaDeviceOrientation', '$ionicModal',
-    '$ionicPopup', '$ionicScrollDelegate', '$log', '$scope', '$state', 'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'ProjectFactory'];
+    '$ionicPopup', '$ionicScrollDelegate', '$log', '$scope', '$state', '$window', 'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'ProjectFactory'];
 
-  function OrientationsTabController($cordovaDeviceMotion, $cordovaDeviceOrientation, $ionicModal, $ionicPopup, $ionicScrollDelegate, $log, $scope, $state, DataModelsFactory, FormFactory, HelpersFactory, ProjectFactory) {
+  function OrientationsTabController($cordovaDeviceMotion, $cordovaDeviceOrientation, $ionicModal, $ionicPopup, $ionicScrollDelegate, $log, $scope, $state, $window, DataModelsFactory, FormFactory, HelpersFactory, ProjectFactory) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -406,6 +406,7 @@
     }
 
     function openClipboardModal() {
+
       $ionicScrollDelegate.scrollTop();
       vm.clipboardModal.show();
       document.getElementById('data').value = "";
@@ -423,7 +424,16 @@
         _.each(data.features[0].properties.orientation_data, function (orientation) {
           vm.parentOrientation = undefined;
 
-          vmParent.data = orientation;
+          //only copies in the fields that match Strabo. 
+          if (_.has(orientation, "type")) vmParent.data.type = orientation.type;
+          if (_.has(orientation, "strike")) vmParent.data.strike = orientation.strike;
+          if (_.has(orientation, "dip_direction")) vmParent.data.dip_direction = orientation.dip_direction;
+          if (_.has(orientation, "dip")) vmParent.data.dip = orientation.dip;
+          if (_.has(orientation, "trend")) vmParent.data.trend = orientation.trend;
+          if (_.has(orientation, "plunge")) vmParent.data.plunge = orientation.plunge;
+          if (_.has(orientation, "rake")) vmParent.data.rake = orientation.rake;
+          if (_.has(orientation, "notes")) vmParent.data.notes = orientation.notes;
+
           vmParent.data.id = HelpersFactory.getNewId();
           $log.log(orientation);
 
