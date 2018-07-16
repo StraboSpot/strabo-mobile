@@ -512,9 +512,6 @@
       else if (tab === 'strat_section') {
         return preferences['strat_mode'] && vm.spot && vm.spot.properties && !vm.spot.properties.strat_section_id;
       }
-      else if (tab === 'thin_section') {
-        return preferences['thin_section_mode'] && vm.spot && vm.spot.properties && !vm.spot.properties.thin_section_id;
-      }
       else return preferences[tab];
     }
 

@@ -210,6 +210,14 @@
       getImageType().then(function (imageType) {
         newImageData.image_type = imageType.image_type;
         if (imageType.image_type === 'other_image_ty') newImageData.other_image_type = imageType.other_image_type;
+        if (imageType.image_type === 'micrograph') {
+          newImageData.title = 'Micrograph';
+          newImageData.annotated = true;
+        }
+        else if (imageType.image_type === 'micrograph_ref') {
+          newImageData.title = 'Micrograph Reference';
+          newImageData.annotated = true;
+        }
         ImageFactory.setIsReattachImage(false);
         ImageFactory.setCurrentSpot(vmParent.spot);
         ImageFactory.setCurrentImage(angular.fromJson(angular.toJson(newImageData)));

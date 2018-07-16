@@ -1,11 +1,11 @@
 <div>
-  <div class='padding' ng-if='!vm.spotsWithThinSections.length'>
-    No Thin Sections within the active datasets. Add a new Thin Section from within a Spot on the Thin Section tab.
+  <div class='padding' ng-if='!vm.spotsWithMicrographs.length'>
+    No Micrograph References within the active datasets. Add a Micrograph Reference by adding an Image in a Spot and setting the Image Type to Micrograph Reference.
   </div>
   <ion-list>
-    <ion-item ng-repeat='spotWithThinSection in vm.spotsWithThinSections track by spotWithThinSection.properties.id'
-              ng-click='vm.goToThinSection(spotWithThinSection)'>
-      {{ spotWithThinSection.properties.micro.thin_section.thin_section_name || 'Unnamed' }}
+    <ion-item ng-repeat='micrographRef in vm.micrographReferences track by micrographRef.id'
+              ng-click='vm.goToThinSection(micrographRef)'>
+      {{ micrographRef.title || 'Unnamed' }}
     </ion-item>
   </ion-list>
 </div>

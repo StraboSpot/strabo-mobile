@@ -5,9 +5,10 @@
     .module('app')
     .controller('MenuController', MenuController);
 
-  MenuController.$inject = ['$ionicLoading', '$log', '$scope', '$state', 'ProjectFactory', 'UserFactory'];
+  MenuController.$inject = ['$ionicLoading', '$log', '$scope', '$state', 'ProjectFactory', 'ThinSectionFactory',
+    'UserFactory'];
 
-  function MenuController($ionicLoading, $log, $scope, $state, ProjectFactory, UserFactory) {
+  function MenuController($ionicLoading, $log, $scope, $state, ProjectFactory, ThinSectionFactory, UserFactory) {
     var vm = this;
 
     vm.projectName = '';
@@ -22,6 +23,7 @@
     vm.isActive = isActive;
     vm.projectDetail = projectDetail;
     vm.showLoadingSpinner = showLoadingSpinner;
+    vm.showMicrographWorkspace = showMicrographWorkspace;
 
     activate();
 
@@ -91,6 +93,10 @@
           'template': '<ion-spinner></ion-spinner><br>Loading Map...'
         });
       }
+    }
+
+    function showMicrographWorkspace() {
+      return !_.isEmpty(ThinSectionFactory.getSpotsWithMicrographs());
     }
   }
 }());

@@ -210,7 +210,6 @@
         preferences.sed_interpretations = false;
         preferences.strat_mode = false;
         preferences.minerals = false;
-        preferences.thin_section_mode = false;
         ProjectFactory.saveProjectItem('preferences', preferences);
       }
     }

@@ -12,7 +12,8 @@
                                    ThinSectionFactory) {
     var vm = this;
 
-    vm.spotsWithThinSections = [];
+    vm.micrographReferences = [];
+    vm.spotsWithMicrographs = [];
     vm.thinSectionIdSelected = undefined;
 
     vm.goToThinSection = goToThinSection;
@@ -20,10 +21,15 @@
     activate();
 
     function activate() {
-      ThinSectionFactory.gatherSpotsWithThinSections();
+      //ThinSectionFactory.gatherSpotsWithThinSections();
       if ($state.params && $state.params.thinSectionId) vm.thinSectionIdSelected = $state.params.thinSectionId;
-      vm.spotsWithThinSections = ThinSectionFactory.getSpotsWithThinSections();
-      $log.log('Spots with Thin Sections:', vm.spotsWithThinSections);
+      vm.spotsWithMicrographs = ThinSectionFactory.getSpotsWithMicrographs();
+      $log.log('Spots with Micrographs:', vm.spotsWithMicrographs);
+      _.each(vm.spotsWithMicrographs, function (spot) {
+        _.each(spot.properties.images, function (image) {
+          if (image.image_type === 'micrograph_ref') vm.micrographReferences.push(image);
+        });
+      });
     }
 
     /**
@@ -35,7 +41,7 @@
      */
 
     function goToThinSection(spotWithThinSection) {
-      vm.thinSectionIdSelected = spotWithThinSection.properties.micro.thin_section.thin_section_id;
+      vm.thinSectionIdSelected = spotWithThinSection.id;
       $location.path('/app/thin-sections/' + vm.thinSectionIdSelected);
     }
   }

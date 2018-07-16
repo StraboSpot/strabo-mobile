@@ -13,12 +13,13 @@
  
     return {
       'drawAxes': drawAxes,
-      'gatherSpotsWithThinSections': gatherSpotsWithThinSections,
-      'gatherThinSectionSpots': gatherThinSectionSpots,
-      'getSpotWithThisThinSection': getSpotWithThisThinSection,
-      'getSpotsWithThinSections': getSpotsWithThinSections,
-      'getThinSectionSettings': getThinSectionSettings,
-      'getThinSectionSpots': getThinSectionSpots
+      //'gatherSpotsWithThinSections': gatherSpotsWithThinSections,
+      //'gatherThinSectionSpots': gatherThinSectionSpots,
+      //'getSpotWithThisThinSection': getSpotWithThisThinSection,
+      //'getSpotsWithThinSections': getSpotsWithThinSections,
+      'getSpotsWithMicrographs': getSpotsWithMicrographs//,
+      //'getThinSectionSettings': getThinSectionSettings,
+      //'getThinSectionSpots': getThinSectionSpots
     };
 
     /**
@@ -134,7 +135,7 @@
     }
 
     // Gather all Spots Mapped on this Thin Section
-    function gatherThinSectionSpots(thinSectionId) {
+    /*function gatherThinSectionSpots(thinSectionId) {
       var activeSpots = SpotFactory.getActiveSpots();
       thinSectionSpots = _.filter(activeSpots, function (spot) {
         return spot.properties.thin_section_id == thinSectionId; // Comparing int to string so use only 2 equal signs
@@ -144,37 +145,48 @@
         if (!_.has(spot, 'geometry')) $log.error('No Geometry for Spot:', spot);
         return !_.has(spot, 'geometry');
       });
-    }
+    }*/
 
     // Gather all Spots that have Thin Sections
-    function gatherSpotsWithThinSections() {
+    /*function gatherSpotsWithThinSections() {
       var activeSpots = SpotFactory.getActiveSpots();
       spotsWithThinSections = _.filter(activeSpots, function (spot) {
-        return _.has(spot.properties, 'micro') && _.has(spot.properties.micro, 'thin_section');
+        return _.find(spot.properties.images, function (image) {
+          return image.image_type === 'micrograph_ref';
+        });
       });
-    }
+    }*/
 
     // Get the Spot that Contains a Specific Thin Section Given the Id of the Thin Section
-    function getSpotWithThisThinSection(thinSectionId) {
+    /*function getSpotWithThisThinSection(thinSectionId) {
       var activeSpots = SpotFactory.getActiveSpots();
       return _.find(activeSpots, function (spot) {
         return _.has(spot, 'properties') && _.has(spot.properties, 'micro') &&
           _.has(spot.properties.micro, 'thin_section') &&
           spot.properties.micro.thin_section.thin_section_id == thinSectionId;  // Comparing int to string so use only 2 equal signs
       });
+    }*/
+
+    function getSpotsWithMicrographs() {
+      var activeSpots = SpotFactory.getActiveSpots();
+      return _.filter(activeSpots, function (spot) {
+        return _.find(spot.properties.images, function (image) {
+          return image.image_type === 'micrograph_ref' || image.image_type === 'micrograph';
+        });
+      });
     }
 
-    function getThinSectionSettings(thinSectionId) {
+    /*function getThinSectionSettings(thinSectionId) {
       var spot = getSpotWithThisThinSection(thinSectionId);
       return spot.properties.micro.thin_section;
-    }
+    }*/
 
-    function getThinSectionSpots() {
+    /*function getThinSectionSpots() {
       return thinSectionSpots;
-    }
+    }*/
 
-    function getSpotsWithThinSections() {
+    /*function getSpotsWithThinSections() {
       return spotsWithThinSections;
-    }
+    }*/
   }
 }());

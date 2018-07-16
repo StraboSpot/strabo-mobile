@@ -5,7 +5,9 @@ cs3xd00,thin_section,thin section,2
 cs3xd00,geological_cs,geological cross section,3
 cs3xd00,geophysical_cs,geophysical cross section,4
 cs3xd00,strat_section,stratigraphic section,5
-cs3xd00,other_image_ty,other,6
+cs3xd00,micrograph,micrograph,6
+cs3xd00,micrograph_ref,micrograph reference,7
+cs3xd00,other_image_ty,other,8
 vt86z05,km,km,
 vt86z05,m,m,
 vt86z05,cm,cm,

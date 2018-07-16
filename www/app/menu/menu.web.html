@@ -35,7 +35,7 @@
             <li><a ui-sref="app.map">Main Map</a></li>
             <li><a ui-sref="app.image-basemaps">Image Basemaps</a></li>
             <li ng-show='vm.getIsMode("strat_mode")'><a ui-sref="app.strat-sections">Strat Sections</a></li>
-            <li ng-show='vm.getIsMode("thin_section_mode")'><a ui-sref="app.thin-sections">Thin Sections</a></li>
+            <li ng-show='vm.showMicrographWorkspace()'><a ui-sref="app.thin-sections">Micrographs</a></li>
             <li><a ui-sref="app.other-maps">Other Basemaps</a></li>
           </ul>
         </li>

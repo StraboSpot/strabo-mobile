@@ -340,6 +340,19 @@
           promises.push(promise);
         });
       }
+
+      var childrenSpots = SpotFactory.getChildrenSpots(vm.thisSpotWithThinSection);
+      _.each(childrenSpots, function (spot) {
+        _.each (spot.properties.images, function (image) {
+          if (image.image_type === 'micrograph_ref' || image.image_type === 'micrograph') vm.images.push(image);
+          var promise = ImageFactory.getImageById(image.id).then(function (src) {
+            if (IS_WEB) imageSources[image.id] = "https://strabospot.org/pi/" + image.id;
+            else if (src) imageSources[image.id] = src;
+            else imageSources[image.id] = 'img/image-not-found.png';
+          });
+          promises.push(promise);
+        });
+      });
       $log.log('All Images:', vm.images);
       return $q.all(promises).then(function () {
         //$log.log('Image Sources:', imageSources);
@@ -361,7 +374,8 @@
 
     function getSpotWithThinSection() {
       // Get the Spot that has this Thin Section
-      vm.thisSpotWithThinSection = ThinSectionFactory.getSpotWithThisThinSection($state.params.thinSectionId);
+      //vm.thisSpotWithThinSection = ThinSectionFactory.getSpotWithThisThinSection($state.params.thinSectionId);
+      vm.thisSpotWithThinSection = SpotFactory.getSpotWithImageId($state.params.thinSectionId);
       gatherImages();
       $log.log('thisSpotWithThinSection', vm.thisSpotWithThinSection);
     }
