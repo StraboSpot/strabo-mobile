@@ -248,7 +248,7 @@
 
     // Restore modified features and remove modify interaction
     function cancelEdits() {
-      if (modify !== null) {
+      if (!_.isEmpty(modify)) {
         // Cancel the edits (revert to original geometry)
         map.getLayers().forEach(function (layerGroup) {
           if (layerGroup.get('name') === 'featureLayer') {
