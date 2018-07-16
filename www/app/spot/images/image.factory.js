@@ -126,7 +126,7 @@
         image.onload = function () {
           if (isReattachImage) {
             if (image.height === currentImageData.height && image.width === currentImageData.width) {
-              saveImage(image.src).then(function () {
+              saveImage(currentImageData.id, image.src).then(function () {
                 $log.log('Also save image to live db here');
                 LiveDBFactory.saveImageFile(currentImageData.id, image.src);
                 $rootScope.$broadcast('updatedImages');
@@ -150,7 +150,7 @@
               'width': image.width,
               'id': HelpersFactory.getNewId()
             });
-            saveImage(image.src);
+            saveImage(currentImageData.id, image.src);
             $log.log('Also save image to live db here');
             LiveDBFactory.saveImageFile(currentImageData.id, image.src);
             saveImageDataToSpot();
@@ -220,8 +220,8 @@
       readDataUrl(file);
     }
 
-    function saveImage(base64Image) {
-      return LocalStorageFactory.getDb().imagesDb.setItem(currentImageData.id.toString(), base64Image)
+    function saveImage(imageId, base64Image) {
+      return LocalStorageFactory.getDb().imagesDb.setItem(imageId.toString(), base64Image)
     }
 
     function setCurrentImage(inImageData) {
