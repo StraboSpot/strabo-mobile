@@ -5,11 +5,11 @@
     .module('app')
     .controller('ManageProjectController', ManageProjectController);
 
-  ManageProjectController.$inject = ['$ionicModal', '$ionicLoading', '$ionicPopover', '$ionicPopup', '$log', '$scope',
+  ManageProjectController.$inject = ['$document', '$ionicModal', '$ionicLoading', '$ionicPopover', '$ionicPopup', '$log', '$scope',
     '$state', '$q', 'FormFactory', 'ImageFactory', 'LiveDBFactory', 'LocalStorageFactory', 'OtherMapsFactory',
     'ProjectFactory', 'RemoteServerFactory', 'SpotFactory', 'UserFactory', 'IS_WEB'];
 
-  function ManageProjectController($ionicModal, $ionicLoading, $ionicPopover, $ionicPopup, $log, $scope, $state, $q,
+  function ManageProjectController($document, $ionicModal, $ionicLoading, $ionicPopover, $ionicPopup, $log, $scope, $state, $q,
     FormFactory, ImageFactory, LiveDBFactory, LocalStorageFactory, OtherMapsFactory, ProjectFactory, RemoteServerFactory,SpotFactory, UserFactory, IS_WEB) {
     var vm = this;
 
@@ -1167,6 +1167,14 @@
     }
 
     function newProject() {
+      if (_.isEmpty(vm.data.project_name)) {
+        var formCtrl = angular.element(document.getElementById('straboFormCtrlId')).scope();
+        var ele = $document[0].getElementById("project_name");
+        ele.html = "Unnamed Project";
+        var formEle = formCtrl.straboForm[ele.id];
+        formEle.$valid = true;
+        vm.data.project_name = "Unnamed Project";
+      }
       var valid = FormFactory.validate(vm.data);
       if (valid) doCreateNewProject();
     }

@@ -68,14 +68,16 @@
     function createModals() {
       $ionicModal.fromTemplateUrl('app/project/description/description-modal.html', {
         'scope': $scope,
-        'animation': 'slide-in-up'
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false
       }).then(function (modal) {
         vm.descriptionModal = modal;
       });
 
       $ionicModal.fromTemplateUrl('app/project/description/daily-setup-modal.html', {
         'scope': $scope,
-        'animation': 'slide-in-up'
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false
       }).then(function (modal) {
         vm.dailySetupModal = modal;
       });
