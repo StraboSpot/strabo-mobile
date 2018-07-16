@@ -71,7 +71,7 @@
             if (res) {
               image.width_of_image_view = imageWidthReal;
               image.units_of_image_view = segmentReal.units;
-              var spot = SpotFactory.getSpotById(image.spotId);
+              var spot = SpotFactory.getSpotWithImageId(image.id);
               _.each(spot.properties.images, function (img, i) {
                 if (img.id === image.id) spot.properties.images[i] = image;
               });
