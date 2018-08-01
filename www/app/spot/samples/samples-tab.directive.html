@@ -2,17 +2,17 @@
   <button ng-click='vmChild.addSample()'
           class='button button-clear button-positive'>
     <i class='icon ion-plus-circled'></i>
-    <span class='button-text-big'>Add a Sample</span>
+    <span class='button-text-big'>Add Sample Data to this Spot</span>
   </button>
   <button ng-click='vmChild.addSubsample()'
           class='button button-clear button-positive'>
     <i class='icon ion-plus-circled'></i>
-    <span class='button-text-big'>Add a New Subsample Spot</span>
+    <span class='button-text-big'>Add a New Sample/Subsample Spot</span>
   </button>
   <button ng-click='vmChild.addExistingSubsample()'
           class='button button-clear button-positive'>
     <i class='icon ion-plus-circled'></i>
-    <span class='button-text-big'>Link to an Existing Subsample Spot</span>
+    <span class='button-text-big'>Link to an Existing Sample/Subsample Spot</span>
   </button>
   <div class="padding" ng-show="vmChild.samples.length === 0 && vmChild.subsamples.length === 0">
     There are no samples at this Spot.
@@ -36,8 +36,8 @@
       </div>
     </ion-item>
   </ion-list>
-  <div class='field-group item item-divider' ng-show='vmChild.subsamples.length > 0'>
-    Subsample Spots
+  <!--<div class='field-group item item-divider' ng-show='vmChild.subsamples.length > 0'>
+    Linked Sample/Subsample Spots
   </div>
   <ion-list>
     <ion-item class='item-text-wrap item-button-right'
@@ -49,5 +49,5 @@
         <img class='strabo-icon' align='right' src='img/link-break.png' ng-click='vmChild.unlinkSubsampleSpot(spot)'>
       </div>
     </ion-item>
-  </ion-list>
+  </ion-list>-->
 </div>
