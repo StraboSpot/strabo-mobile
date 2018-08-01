@@ -1,8 +1,7 @@
 <ion-modal-view>
   <ion-header-bar class='bar-stable nav-title-slide-ios7'>
     <div class="buttons">
-      <div class='button button-clear' ng-click='vmChild.closeModal("imagePropertiesModal")'><span
-        class='icon ion-arrow-left-c'></span></div>
+      <div class='button button-positive' ng-click='vmChild.saveImageProperties()'>Save</div>
     </div>
     <h1 class='title'>Image Properties</h1>
     <div class="buttons">
@@ -12,6 +11,9 @@
               class='button button-icon icon ion-archive'></button>
       <button ng-click='vmChild.deleteImage();'
               class='button button-icon icon ion-trash-b'></button>
+      <button class='icon ion-close-round close-modal-button'
+              ng-click='vmChild.imagePropertiesModal.hide()'>
+      </button>
     </div>
   </ion-header-bar>
   <ion-content class='has-header strabo-form'>

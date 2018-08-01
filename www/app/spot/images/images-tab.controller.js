@@ -22,6 +22,7 @@
     var thisTabName = 'images';
 
     vm.activeSlide = null;
+    vm.imagePropertiesModal = {};
     vm.imageType = undefined;
     vm.imageTypeChoices = {};
     vm.otherImageType = undefined;
@@ -36,6 +37,7 @@
     vm.isWeb = isWeb;
     vm.moreDetail = moreDetail;
     vm.reattachImage = reattachImage;
+    vm.saveImageProperties = saveImageProperties;
     vm.showImages = showImages;
     vm.takePicture = takePicture;
     vm.toggleImageBasemap = toggleImageBasemap;
@@ -66,6 +68,7 @@
       });
 
       $rootScope.$on('updatedImages', function () {
+        vmParent.spotChanged = false;
         if (IS_WEB) getImageSources();
         else activate();
       });
@@ -166,7 +169,48 @@
       });
 
       imageTypePopup.then(function (res) {
-        if (res) deferred.resolve({'image_type': vm.imageType, 'other_image_type': vm.otherImageType});
+        if (res) {
+          if (vm.imageType === 'micrograph') {
+            vm.micrographImageType = undefined;
+            var micrographImageTypeField = _.findWhere(FormFactory.getForm().survey, {'name': 'micrograph_image_type'});
+            vm.micrographImageTypeChoices = _.filter(FormFactory.getForm().choices, function (choice) {
+              return choice['list_name'] === micrographImageTypeField.type.split(" ")[1]
+            });
+            var template = '<ion-radio ng-repeat="choice in vmChild.micrographImageTypeChoices" ' +
+              'ng-value="choice.name" ng-model="vmChild.micrographImageType">{{ choice.label }}</ion-radio> ' +
+              '<div ng-show="vmChild.micrographImageType === \'other_microgra\'">' +
+              '<ion-input class="item item-input"> ' +
+              '<input type="text" placeholder="Enter Other Micrograph Image Type" ' +
+              'ng-model="vmChild.otherMicrographImageType"> ' +
+              '</ion-input></div>';
+
+            var micrographImageTypePopup = $ionicPopup.show({
+              'title': 'Select a Micrograph Type for this Image:',
+              'template': template,
+              'scope': $scope,
+              'buttons': [{
+                'text': 'Cancel'
+              }, {
+                'text': '<b>OK</b>',
+                'type': 'button-positive',
+                'onTap': function (e) {
+                  if (vm.imageType === 'other_microgra' && vm.otherMicrographImageType === undefined) e.preventDefault();
+                  else return e;
+                }
+              }]
+            });
+
+            micrographImageTypePopup.then(function (res2) {
+              if (res2) {
+                deferred.resolve({'image_type': vm.imageType, 'other_image_type': vm.otherImageType,
+                  'micrograph_image_type': vm.micrographImageType,
+                  'other_micrograph_image_type': vm.otherMicrographImageType});
+              }
+              else deferred.reject();
+            });
+          }
+          else deferred.resolve({'image_type': vm.imageType, 'other_image_type': vm.otherImageType});
+        }
         else deferred.reject();
       });
       return deferred.promise;
@@ -207,15 +251,19 @@
      */
 
     function addImage() {
-      getImageType().then(function (imageType) {
-        newImageData.image_type = imageType.image_type;
-        if (imageType.image_type === 'other_image_ty') newImageData.other_image_type = imageType.other_image_type;
-        if (imageType.image_type === 'micrograph') {
-          newImageData.title = 'Micrograph';
+      getImageType().then(function (imageProps) {
+        newImageData.image_type = imageProps.image_type;
+        if (newImageData.image_type === 'other_image_ty') newImageData.other_image_type = imageProps.other_image_type;
+        else if (imageProps.image_type === 'micrograph') {
+          newImageData.micrograph_image_type = imageProps.micrograph_image_type;
+          newImageData.title = vmParent.spot.properties.name + ' ' + newImageData.micrograph_image_type;
           newImageData.annotated = true;
+          if (newImageData.micrograph_image_type === 'other_microgra') {
+            newImageData.other_micrograph_image_type = imageProps.other_micrograph_image_type;
+          }
         }
-        else if (imageType.image_type === 'micrograph_ref') {
-          newImageData.title = 'Micrograph Reference';
+        else if (imageProps.image_type === 'micrograph_ref') {
+          newImageData.title = vmParent.spot.properties.name + ' Micrograph Reference';
           newImageData.annotated = true;
         }
         ImageFactory.setIsReattachImage(false);
@@ -300,7 +348,10 @@
     }
 
     function moreDetail(image) {
-      vmParent.data = image;
+      // Fix thin_section field from previous fields to new field added with micro
+      if (image.image_type === 'thin_section') image.image_type = 'micrograph';
+
+      vmParent.data = angular.fromJson(angular.toJson(image));
       vm.imagePropertiesModal.show();
     }
 
@@ -317,6 +368,20 @@
           ImageFactory.getImageFromGallery();
         }
       });
+    }
+
+    function saveImageProperties() {
+      if (FormFactory.validate(vmParent.data)) {
+        vm.imagePropertiesModal.hide();
+        vmParent.spot.properties.images = _.reject(vmParent.spot.properties.images, function (image) {
+          return image.id === vmParent.data.id;
+        });
+        vmParent.spot.properties.images.push(vmParent.data);
+        vmParent.saveSpot().then(function () {
+          vmParent.spotChanged = false;
+          vmParent.data = {};
+        });
+      }
     }
 
     function showImages(index) {
