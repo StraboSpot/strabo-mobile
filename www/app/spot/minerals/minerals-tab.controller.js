@@ -5,9 +5,11 @@
     .module('app')
     .controller('MineralsTabController', MineralsTabController);
 
-  MineralsTabController.$inject = ['$ionicModal', '$ionicPopup', '$ionicScrollDelegate', '$log', '$scope', '$state', 'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'MineralsFactory', 'ProjectFactory'];
+  MineralsTabController.$inject = ['$ionicModal', '$ionicPopup', '$ionicScrollDelegate', '$log', '$scope', '$state',
+   'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'MineralsFactory', 'ProjectFactory'];
 
-  function MineralsTabController($ionicModal, $ionicPopup, $ionicScrollDelegate, $log, $scope, $state, DataModelsFactory, FormFactory, HelpersFactory, MineralsFactory, ProjectFactory) {
+  function MineralsTabController($ionicModal, $ionicPopup, $ionicScrollDelegate, $log, $scope, $state, DataModelsFactory,
+    FormFactory, HelpersFactory, MineralsFactory, ProjectFactory) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -15,12 +17,13 @@
     var selectedFromList = [];
 
     vm.activeState = "most_common";
+    vm.addMineralTagModal = {};
     vm.collectionsModal = {};
     vm.createCollectionSelectBoxDisplay = {};
-    vm.mineralCollections = [];
-    vm.mineralInfo = [];
     vm.isShowMineralList = true;
     vm.isShowInfoOnly = true;
+    vm.mineralCollections = [];
+    vm.mineralInfo = [];
     vm.mineralsModal = {};
     vm.modalTitle = '';
     vm.newCollectionName = undefined;
@@ -28,6 +31,7 @@
     vm.showNameField = false;
 
     vm.addMineral = addMineral;
+    vm.addMineralTag = addMineralTag;
     vm.changedCollectionToCreate = changedCollectionToCreate;
     vm.getLabel = getLabel;
     vm.hideMineralInfo = hideMineralInfo;
@@ -36,7 +40,7 @@
     vm.saveCollection = saveCollection;
     vm.selectFromCollection = selectFromCollection;
     vm.showMineralInfo = showMineralInfo;
-    vm.submit = submit;
+    vm.submitMineral = submitMineral;
     vm.switchMineralsForm = switchMineralsForm;
     vm.toggleCollectionChecked = toggleCollectionChecked;
    
@@ -75,6 +79,14 @@
         vm.collectionsModal = modal;
       });
 
+      $ionicModal.fromTemplateUrl('app/spot/minerals/add-mineral-tag-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false
+      }).then(function (modal) {
+        vm.addMineralTagModal = modal;
+      });
+
       $ionicModal.fromTemplateUrl('app/spot/minerals/minerals-modal.html', {
         'scope': $scope,
         'animation': 'slide-in-up',
@@ -87,6 +99,7 @@
       $scope.$on('$destroy', function () {
         vm.collectionsModal.remove();
         vm.mineralsModal.remove();
+        vm.addMineralTagModal.remove();
       });
     }
 
@@ -132,6 +145,10 @@
       vm.isShowInfoOnly = false;
       vm.isShowMineralList = true;
       vm.mineralsModal.show();
+    }
+
+    function addMineralTag() {
+      vm.addMineralTagModal.show();
     }
 
     function changedCollectionToCreate() {
@@ -190,7 +207,8 @@
         });
         $ionicPopup.alert({
           'title': 'Collection Saved',
-          'template': 'Saved following minerals to favorites collection <b>' + vm.selectedCollectionToCreate.name + '</b>:<br><br>' + mineralLabels.join(", ")
+          'template': 'Saved following minerals to favorites collection <b>' + vm.selectedCollectionToCreate.name + 
+          '</b>:<br><br>' + mineralLabels.join(", ")
         });
 
         setupCreateCollectionSelectBox();
@@ -218,7 +236,7 @@
       vm.mineralsModal.show();
     }
 
-    function submit() {
+    function submitMineral() {
       vmParent.data = HelpersFactory.cleanObj(vmParent.data);
       $log.log(vmParent.data);
       if (FormFactory.validate(vmParent.data)) {

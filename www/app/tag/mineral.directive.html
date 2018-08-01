@@ -1,0 +1,24 @@
+<div>
+	<button ng-click='vm.addMineral("metamorphic_most_common")' class='button button-clear button-positive'>
+    <i class='icon ion-plus-circled'></i>
+    <span class='button-text-big'>Add/Remove Metamorphic Minerals</span>
+  </button><br>
+  <button ng-click='vm.addMineral("igneous_most_common")' class='button button-clear button-positive'>
+    <i class='icon ion-plus-circled'></i>
+    <span class='button-text-big'>Add/Remove Igneous Minerals</span>
+  </button><br>
+  <button ng-click='vm.addMineral("sedimentary_most_common")' class='button button-clear button-positive'>
+    <i class='icon ion-plus-circled'></i>
+    <span class='button-text-big'>Add/Remove Sedimentary Minerals</span>
+	</button>
+	<ion-list>
+    <ion-item class='item-text-wrap item-button-right' 
+    ng-repeat='mineral in vm.data.minerals | orderBy:mineral track by $index'>
+      {{ vm.getLabel(mineral) }}
+      <button id="minerals-info-button" class=" button-small button-icon button ion-information-circled minerals-field-info-button" ng-click="vm.mineralInfoOnMainPage(mineral)"></button>
+    </ion-item>
+  </ion-list>
+  <div class="padding" ng-hide="vm.data.minerals">
+    <span>No minerals added yet.</span>
+  </div>
+</div>

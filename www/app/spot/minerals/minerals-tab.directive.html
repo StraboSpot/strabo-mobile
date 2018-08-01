@@ -1,5 +1,5 @@
 <div>
-  <button ng-click='vmChild.addMineral("metamorphic_most_common")' class='button button-clear button-positive'>
+  <!-- <button ng-click='vmChild.addMineral("metamorphic_most_common")' class='button button-clear button-positive'>
     <i class='icon ion-plus-circled'></i>
     <span class='button-text-big'>Add/Remove Metamorphic Minerals</span>
   </button>
@@ -47,5 +47,15 @@
       <i class='icon ion-plus-circled'></i>
       <span class='button-text-big'>Create/Update Favorites Collection</span>
     </button>
-  </div>
+  </div> -->
+  <button ng-click='vmChild.addMineralTag()' class='button button-clear button-positive'>
+    <i class='icon ion-plus-circled'></i>
+    <span class='button-text-big'>Add/Remove Minerals (Tag)</span>
+  </button>
+  <ion-list>
+    <ion-item class='item-text-wrap item-button-right'
+              ng-repeat='mineral in vm.mineralDisplay | orderBy:"mineral" track by $index'>
+      <b>{{ vmChild.getLabel(mineral) }}</b>
+    </ion-item>
+  </ion-list>
 </div>
