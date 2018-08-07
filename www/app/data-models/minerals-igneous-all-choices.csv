@@ -6,51 +6,56 @@ tc1kx87,allanite,Allanite,3
 tc1kx87,amphibole,Amphibole,4
 tc1kx87,anhydrite,Anhydrite,5
 tc1kx87,apatite,Apatite,6
-tc1kx87,beryl,Beryl,7
-tc1kx87,biotite,Biotite,8
-tc1kx87,calcite,Calcite,9
-tc1kx87,chalcopyrite,Chalcopyrite,10
-tc1kx87,chlorite,Chlorite,11
-tc1kx87,chromite,Chromite,12
-tc1kx87,clay,Clay,13
-tc1kx87,clinopyroxene,"Clinopyroxene, Augite",14
-tc1kx87,cr_diopside,Cr-diopside,15
-tc1kx87,diamond,Diamond,16
-tc1kx87,epidote,Epidote,17
-tc1kx87,galena,Galena,18
-tc1kx87,garnet,Garnet,19
-tc1kx87,goethite,Goethite,20
-tc1kx87,hornblende,Hornblende,21
-tc1kx87,ilmenite,Ilmenite,22
-tc1kx87,kaersutite,Kaersutite,23
-tc1kx87,lepidolite,Lepidolite,24
-tc1kx87,leucite,Leucite,25
-tc1kx87,limonite,Limonite,26
-tc1kx87,magnetite,Magnetite,27
-tc1kx87,melilite,Melilite,28
-tc1kx87,microcline,Microcline,29
-tc1kx87,monazite,Monazite,30
-tc1kx87,muscovite,Muscovite,31
-tc1kx87,muscovite_whi,"Muscovite, White Mica",32
-tc1kx87,na_pyroxene,Na pyroxene,33
-tc1kx87,nepheline,Nepheline,34
-tc1kx87,olivine,Olivine,35
-tc1kx87,opaques,Opaques,36
-tc1kx87,orthoclase,"Orthoclase, Microcline, K-Feldspar",37
-tc1kx87,orthopyroxene,"Orthopyroxene, Hypersthene",38
-tc1kx87,perovskite,Perovskite,39
-tc1kx87,plagioclase,Plagioclase,40
-tc1kx87,pyrite,Pyrite,41
-tc1kx87,pyrrhotite,Pyrrhotite,42
-tc1kx87,quartz,Quartz,43
-tc1kx87,rutile,Rutile,44
-tc1kx87,sanidine,Sanidine,45
-tc1kx87,sphalerite,Sphalerite,46
-tc1kx87,spinel,Spinel,47
-tc1kx87,spodumene,Spodumene,48
-tc1kx87,titanite,Titanite,49
-tc1kx87,topaz,Topaz,50
-tc1kx87,tourmaline,Tourmaline,51
-tc1kx87,xenotime,Xenotime,52
-tc1kx87,zeolite,Zeolite,53
-tc1kx87,zircon,Zircon,54
+tc1kx87,azurite,Azurite,7
+tc1kx87,beryl,Beryl,8
+tc1kx87,biotite,Biotite,9
+tc1kx87,calcite,Calcite,10
+tc1kx87,chalcopyrite,Chalcopyrite,11
+tc1kx87,chlorite,Chlorite,12
+tc1kx87,chromite,Chromite,13
+tc1kx87,clay,Clay,14
+tc1kx87,clinopyroxene,"Clinopyroxene, Augite",15
+tc1kx87,cr_diopside,Cr-diopside,16
+tc1kx87,diamond,Diamond,17
+tc1kx87,epidote,Epidote,18
+tc1kx87,flourite,Flourite,19
+tc1kx87,galena,Galena,20
+tc1kx87,garnet,Garnet,21
+tc1kx87,goethite,Goethite,22
+tc1kx87,gypsum,Gypsum,23
+tc1kx87,halite,Halite,24
+tc1kx87,hornblende,Hornblende,25
+tc1kx87,ilmenite,Ilmenite,26
+tc1kx87,kaersutite,Kaersutite,27
+tc1kx87,lepidolite,Lepidolite,28
+tc1kx87,leucite,Leucite,29
+tc1kx87,limonite,Limonite,30
+tc1kx87,magnetite,Magnetite,31
+tc1kx87,malachite,Malachite,32
+tc1kx87,melilite,Melilite,33
+tc1kx87,molybdentite,Molybdentite,35
+tc1kx87,monazite,Monazite,36
+tc1kx87,muscovite,Muscovite,37
+tc1kx87,muscovite_whi,"Muscovite, White Mica",38
+tc1kx87,na_pyroxene,Na pyroxene,39
+tc1kx87,nepheline,Nepheline,40
+tc1kx87,olivine,Olivine,41
+tc1kx87,opaques,Opaques,42
+tc1kx87,orthoclase,"Orthoclase, Microcline, K-Feldspar",43
+tc1kx87,orthopyroxene,"Orthopyroxene, Hypersthene",44
+tc1kx87,perovskite,Perovskite,45
+tc1kx87,plagioclase,Plagioclase,46
+tc1kx87,pyrite,Pyrite,47
+tc1kx87,pyrrhotite,Pyrrhotite,48
+tc1kx87,quartz,Quartz,49
+tc1kx87,rutile,Rutile,50
+tc1kx87,sanidine,Sanidine,51
+tc1kx87,sphalerite,Sphalerite,52
+tc1kx87,spinel,Spinel,53
+tc1kx87,spodumene,Spodumene,54
+tc1kx87,titanite,Titanite,55
+tc1kx87,topaz,Topaz,56
+tc1kx87,tourmaline,Tourmaline,57
+tc1kx87,xenotime,Xenotime,58
+tc1kx87,zeolite,Zeolite,59
+tc1kx87,zircon,Zircon,60
