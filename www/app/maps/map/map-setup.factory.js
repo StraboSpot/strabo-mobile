@@ -12,7 +12,7 @@
                            MapViewFactory, ProjectFactory, SpotFactory, IS_WEB) {
     var imageBasemap;
     var initialMapView;
-    var maps = [];
+    var maps = {};
     var popup;
     var stratSectionId;
 
@@ -208,8 +208,6 @@
         'map': map,
         'drawLayer': MapLayerFactory.getDrawLayer()
       };
-      if (imageBasemap) drawControlProps['belongsTo'] = {'image_basemap': imageBasemap.id};
-      if (stratSectionId) drawControlProps['belongsTo'] = {'strat_section_id': stratSectionId};
 
       if (map.getView().getProjection().getUnits() !== 'pixels') map.addControl(new ol.control.ScaleLine());
 

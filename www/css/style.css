@@ -185,6 +185,18 @@ Map Controls Style
   border-radius: 8px;
   border: 1px solid lightgray;
 }
+
+.saveEditsMultMaps {
+  position: absolute;
+  font-size: 0.9em;
+  background-color: white;
+  padding: 8px;
+  font-weight: bold;
+  border-radius: 8px;
+  border: 1px solid lightgray;
+  z-index: 999;
+}
+
 .ol-zoom {
   top: 60px;
   left: .5em

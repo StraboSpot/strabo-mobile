@@ -251,7 +251,7 @@
         var lmode = MapDrawFactory.getLassoMode();
         $log.log('LassoMode:', lmode);
         draw.on('drawend', function (e) {
-          MapDrawFactory.doOnDrawEnd(e);
+          MapDrawFactory.doOnDrawEnd(e, stratSection, vm.thisSpotWithStratSection);
           var selectedSpots = SpotFactory.getSelectedSpots();
           if (!_.isEmpty(selectedSpots)) {
 

@@ -5,16 +5,16 @@
     .module('app')
     .controller('ThinSectionController', ThinSectionController);
 
-  ThinSectionController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopover', '$ionicPopup',
+  ThinSectionController.$inject = ['$compile', '$ionicHistory', '$ionicModal', '$ionicPopover', '$ionicPopup',
     '$ionicSideMenuDelegate', '$location', '$log', '$q', '$rootScope', '$scope', '$state', '$timeout', 'FormFactory',
     'HelpersFactory', 'ImageFactory', 'MapDrawFactory', 'MapEmogeosFactory', 'MapFeaturesFactory', 'MapLayerFactory',
     'MapSetupFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'ThinSectionFactory', 'IS_WEB'];
 
-  function ThinSectionController($ionicHistory, $ionicModal, $ionicPopover, $ionicPopup, $ionicSideMenuDelegate,
-                                 $location, $log, $q, $rootScope, $scope, $state, $timeout, FormFactory, HelpersFactory,
-                                 ImageFactory, MapDrawFactory, MapEmogeosFactory, MapFeaturesFactory, MapLayerFactory,
-                                 MapSetupFactory, MapViewFactory, ProjectFactory, SpotFactory, ThinSectionFactory,
-                                 IS_WEB) {
+  function ThinSectionController($compile, $ionicHistory, $ionicModal, $ionicPopover, $ionicPopup,
+                                 $ionicSideMenuDelegate, $location, $log, $q, $rootScope, $scope, $state, $timeout,
+                                 FormFactory, HelpersFactory, ImageFactory, MapDrawFactory, MapEmogeosFactory,
+                                 MapFeaturesFactory, MapLayerFactory, MapSetupFactory, MapViewFactory, ProjectFactory,
+                                 SpotFactory, ThinSectionFactory, IS_WEB) {
     var vm = this;
 
     var currentSpot = {};
@@ -36,7 +36,7 @@
     vm.newNestProperties = {};
     vm.popover = {};
     vm.saveEditsText = 'Save Edits';
-    vm.showSaveEditsBtn = false;
+    vm.showSaveEditsBtns = {};
     vm.thisSpotWithThinSection = {};
 
     vm.closeModal = closeModal;
@@ -133,11 +133,14 @@
       // display popup on click
       map.on('click', function (evt) {
         //$log.log('map clicked at pixel:', evt.pixel, 'mapcoords:', map.getCoordinateFromPixel(evt.pixel));
-        MapFeaturesFactory.removeSelectedSymbol(map);
+        _.each(maps, function (m) {
+          MapFeaturesFactory.removeSelectedSymbol(m);
+        });
         //MapEmogeosFactory.clearSelectedSpot();
 
         // are we in draw mode?  If so we dont want to display any popovers during draw mode
-        if (!MapDrawFactory.isDrawMode()) {
+        var mapName = map.getProperties().target;
+        if (!MapDrawFactory.isDrawMode(mapName)) {
           var feature = MapFeaturesFactory.getClickedFeature(map, evt);
           var layer = MapFeaturesFactory.getClickedLayer(map, evt);
           if (feature && feature.get('id') && layer && layer.get('name') !== 'geolocationLayer') {
@@ -202,10 +205,23 @@
     }
 
     function createMapWithSelectedImage(image) {
+      // Create div element for the a single image basemap
       var newMapDiv = document.createElement('div');
-      newMapDiv.setAttribute('id', 'map' + image.id);
+      var mapName = 'map' + image.id;
+      newMapDiv.setAttribute('id', mapName);
       newMapDiv.classList.add('thin-section-map');
       document.getElementById('maps').appendChild(newMapDiv);
+
+      // Create div element for the Save Edits button
+      vm.showSaveEditsBtns[mapName] = false;
+      var click = "vm.saveEdits('" + mapName + "')";
+      var showSaveEditsBtn = "vm.showSaveEditsBtns['" + mapName + "']";
+      var saveEditsDiv = $compile(
+        "<div ng-show=" + showSaveEditsBtn + " ng-click=" + click + "></div>")($scope)[0];
+      saveEditsDiv.classList.add('saveEditsMultMaps');
+      saveEditsDiv.innerHTML = vm.saveEditsText;
+      newMapDiv.appendChild(saveEditsDiv);
+
       createMap(image);
     }
 
@@ -244,27 +260,38 @@
 
       $scope.$on('$destroy', function () {
         $log.log('Destroying Thin Section Page ...');
-        MapDrawFactory.cancelEdits();    // Cancel any edits
-        vm.popover.remove();            // Remove the popover
+
+        // Cancel edits for all maps
+        _.each(maps, function (m) {
+          MapDrawFactory.cancelEdits(m.getProperties().target);
+        });
+
+        vm.popover.remove();                       // Remove the popover
         vm.addTagModal.remove();
       });
 
-      $scope.$on('enableSaveEdits', function (e, data) {
+      $scope.$on('enableSaveEdits', function (e, data, mapName) {
         $log.log('Enabling Save Edits ...');
-        vm.showSaveEditsBtn = data;
+        vm.showSaveEditsBtns[mapName] = data;
         vm.saveEditsText = 'Save Edits';
         _.defer(function () {
           $scope.$apply();
         });
       });
 
-      $scope.$on('changedDrawMode', function () {
+      $scope.$on('changedDrawMode', function (junk, mapName) {
         $log.log('Changing Draw Mode ...');
-        var draw = MapDrawFactory.getDrawMode();
+        var draw = MapDrawFactory.getDrawMode(mapName);
         var lmode = MapDrawFactory.getLassoMode();
         $log.log('LassoMode:', lmode);
         draw.on('drawend', function (e) {
-          MapDrawFactory.doOnDrawEnd(e);
+          var map = e.target.getMap();
+          var mapName = map.getProperties().target;
+          var imageId = mapName.split('map')[1];
+          var image = _.find(vm.images, function (image) {
+            return image.id.toString() === imageId;
+          });
+          MapDrawFactory.doOnDrawEnd(e, image, vm.thisSpotWithThinSection, mapName);
           var selectedSpots = SpotFactory.getSelectedSpots();
           if (!_.isEmpty(selectedSpots)) {
 
@@ -343,7 +370,7 @@
 
       var childrenSpots = SpotFactory.getChildrenSpots(vm.thisSpotWithThinSection);
       _.each(childrenSpots, function (spot) {
-        _.each (spot.properties.images, function (image) {
+        _.each(spot.properties.images, function (image) {
           if (image.image_type === 'micrograph_ref' || image.image_type === 'micrograph') vm.images.push(image);
           var promise = ImageFactory.getImageById(image.id).then(function (src) {
             if (IS_WEB) imageSources[image.id] = "https://strabospot.org/pi/" + image.id;
@@ -502,9 +529,9 @@
       return ionic.Platform.device().platform == "iOS";
     }
 
-    function saveEdits() {
+    function saveEdits(mapName) {
       vm.saveEditsText = 'Saved Edits';
-      MapDrawFactory.saveEdits(vm.clickedFeatureId);
+      MapDrawFactory.saveEdits(vm.clickedFeatureId, mapName);
     }
 
     function stereonetSpots() {

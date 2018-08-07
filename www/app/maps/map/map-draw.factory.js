@@ -10,14 +10,13 @@
 
   function MapDrawFactory($document, $ionicPopup, $location, $log, $q, $rootScope, HelpersFactory, SpotFactory,
                           IS_WEB) {
-    var belongsTo = {};
-    var draw;                         // draw is a ol3 drawing interaction
+    var drawCtrls = {};               // ol3 drawing interactions
     var drawButtonActive;             // drawButtonActive used to keep state of which selected drawing tool is active
     var drawLayer;
     var featuresOrig = [];
     var isFreeHand;
     var lassoMode;                    // mode of current lasso (tag or stereonet)
-    var map;
+    var maps = {};
     var modify;
     var segmentLength = undefined;    // real length of a line segment defined by the user
     var spotsEdited = [];             // array of spots edited with the edit button
@@ -65,7 +64,7 @@
           var confirmPopup = $ionicPopup.confirm({
             'title': 'Calculated Image Width',
             'template': 'Image width calculated as ' + imageWidthReal + unitsDisplay + ' based on drawn' +
-            ' line segment. Update and save image properties?'
+              ' line segment. Update and save image properties?'
           });
           confirmPopup.then(function (res) {
             if (res) {
@@ -83,17 +82,22 @@
     }
 
     // Remove draw interaction
-    function cancelDraw() {
+    function cancelDraw(mapName) {
+      mapName = mapName ? mapName : 'default';
+      var draw = drawCtrls[mapName];
+      var map = maps[mapName];
       if (draw !== null) {
         $log.log('Canceling draw ...');
         map.removeInteraction(draw);
-        draw = null;
+        drawCtrls[mapName] = null;
         drawButtonActive = null;
       }
-      cancelEdits();
+      cancelEdits(mapName);
     }
 
-    function enableDrawMode(inIsFreeHand, type) {
+    function enableDrawMode(inIsFreeHand, type, mapName) {
+      mapName = mapName ? mapName : 'default';
+      var map = maps[mapName];
       isFreeHand = inIsFreeHand;
       if (isFreeHand) {
         // yes -- then disable the map drag pan
@@ -103,7 +107,7 @@
             map.getInteractions().remove(interaction);
           }
         });
-        draw = new ol.interaction.Draw({
+        drawCtrls[mapName] = new ol.interaction.Draw({
           'source': drawLayer.getSource(),
           'type': type,
           'condition': ol.events.condition.singleClick,
@@ -112,16 +116,19 @@
         });
       }
       else {
-        draw = new ol.interaction.Draw({
+        drawCtrls[mapName] = new ol.interaction.Draw({
           'source': drawLayer.getSource(),
           'type': type
         });
       }
+      var draw = drawCtrls[mapName];
       map.addInteraction(draw);
-      $rootScope.$broadcast('changedDrawMode');
+      $rootScope.$broadcast('changedDrawMode', mapName);
     }
 
-    function enableEditMode() {
+    function enableEditMode(mapName) {
+      mapName = mapName ? mapName : 'default';
+      var map = maps[mapName];
       var features = [];
       featuresOrig = [];
       map.getLayers().forEach(function (layerGroup) {
@@ -142,7 +149,7 @@
         }
       });
       map.addInteraction(modify);
-      $rootScope.$broadcast('enableSaveEdits', true);
+      $rootScope.$broadcast('enableSaveEdits', true, mapName);
 
       // Create a trigger for a change in any of the features
       features.forEach(function (feature) {
@@ -234,12 +241,12 @@
       return deferred.promise;
     }
 
-    function startDraw(type, inIsFreeHand) {
+    function startDraw(type, inIsFreeHand, mapName) {
       $log.log('Starting draw ...');
       isFreeHand = inIsFreeHand;
       drawButtonActive = type;
-      if (type === 'Edit') enableEditMode();
-      else enableDrawMode(isFreeHand, type);
+      if (type === 'Edit') enableEditMode(mapName);
+      else enableDrawMode(isFreeHand, type, mapName);
     }
 
     /**
@@ -247,7 +254,9 @@
      */
 
     // Restore modified features and remove modify interaction
-    function cancelEdits() {
+    function cancelEdits(mapName) {
+      mapName = mapName ? mapName : 'default';
+      var map = maps[mapName];
       if (!_.isEmpty(modify)) {
         // Cancel the edits (revert to original geometry)
         map.getLayers().forEach(function (layerGroup) {
@@ -274,11 +283,19 @@
         drawButtonActive = null;
         var editBtn = $document[0].getElementById('drawEditControl');
         editBtn.style.backgroundColor = '';
-        $rootScope.$broadcast('enableSaveEdits', false);
+        $rootScope.$broadcast('enableSaveEdits', false, mapName);
       }
     }
 
-    function doOnDrawEnd(e, image, spotWithThisImage) {
+    function doOnDrawEnd(e, image, spotWithThisImage, mapName) {
+      mapName = mapName ? mapName : 'default';
+      var draw = drawCtrls[mapName];
+      var map = maps[mapName];
+
+      var belongsTo = {};
+      if (!_.isEmpty(image) && image.id) belongsTo = {'image_basemap': image.id};
+      else if (!_.isEmpty(image) && image.strat_section_id) belongsTo = {'strat_section_id': image.strat_section_id};
+
       // drawend event needs to end the drawing interaction
       map.removeInteraction(draw);
 
@@ -291,7 +308,7 @@
           'map': map,
           'drawLayer': drawLayer
         };
-        if (!_.isEmpty(belongsTo)) drawControlProps['belongsTo'] = belongsTo;
+
         map.addControl(new DrawControls(drawControlProps));
 
         // add the layer switcher controls back
@@ -308,21 +325,19 @@
       var geojsonObj;
       if (map.getView().getProjection().getUnits() === 'pixels') {
         geojsonObj = geojson.writeFeatureObject(e.feature, {'decimals': 6});
-        if (!_.isEmpty(belongsTo)) {
+        if (!_.isEmpty(belongsTo) && spotWithThisImage) {
           geojsonObj.properties = belongsTo;           // Image Basemap or Strat Section
-          // Set lat and lng properties for Spot if it's being mapped on an image basemap
-          if (_.has(belongsTo, 'image_basemap') && spotWithThisImage) {
-            if (spotWithThisImage.properties.image_basemap || spotWithThisImage.properties.strat_section_id) {
-              // If parent is mapped on an image basemap or strat section grab from lat and lng properties of parent
-              if (spotWithThisImage.properties.lat) geojsonObj.properties.lat = spotWithThisImage.properties.lat;
-              if (spotWithThisImage.properties.lng) geojsonObj.properties.lng = spotWithThisImage.properties.lng;
-            }
-            else {
-              // If Spot is mapped geographically take the center of the geometry to user for lat and lng
-              var center = turf.center(spotWithThisImage);
-              geojsonObj.properties.lat = HelpersFactory.roundToDecimalPlaces(turf.getCoords(center)[1], 6);
-              geojsonObj.properties.lng = HelpersFactory.roundToDecimalPlaces(turf.getCoords(center)[0], 6);
-            }
+          // Set lat and lng properties for Spot if it's being mapped on an image basemap or strat section
+          if (spotWithThisImage.properties.image_basemap || spotWithThisImage.properties.strat_section_id) {
+            // If parent is mapped on an image basemap or strat section grab from lat and lng properties of parent
+            if (spotWithThisImage.properties.lat) geojsonObj.properties.lat = spotWithThisImage.properties.lat;
+            if (spotWithThisImage.properties.lng) geojsonObj.properties.lng = spotWithThisImage.properties.lng;
+          }
+          else {
+            // If parent Spot is mapped geographically take the center of the geometry to user for lat and lng
+            var center = turf.center(spotWithThisImage);
+            geojsonObj.properties.lat = HelpersFactory.roundToDecimalPlaces(turf.getCoords(center)[1], 6);
+            geojsonObj.properties.lng = HelpersFactory.roundToDecimalPlaces(turf.getCoords(center)[0], 6);
           }
         }
 
@@ -433,12 +448,11 @@
     }
 
     function DrawControls(opt_options) {
-      var options = opt_options || {};
-      map = opt_options.map;
+      var map = opt_options.map;
+      var mapName = map.getTarget() === 'mapdiv' ? 'default' : map.getTarget();
+      maps[mapName] = map;
       drawLayer = opt_options.drawLayer;
-      if (opt_options.belongsTo) belongsTo = opt_options.belongsTo;
-      else belongsTo = {};
-      draw = null;
+      drawCtrls[mapName] = null;
       drawButtonActive = null;
       modify = null;
 
@@ -460,13 +474,13 @@
 
       function handleClick(e) {
         longpress = false;
-        handleDraw(e);
+        handleDraw(e, mapName);
       }
 
       function handleDoubleClick(e) {
         $log.log('double');
         longpress = true;
-        handleDraw(e);
+        handleDraw(e, mapName);
       }
 
       function handleTouchStart() {
@@ -477,11 +491,11 @@
       function handleTouchEnd(e) {
         endTime = new Date().getTime();
         longpress = endTime - startTime >= 500;
-        handleDraw(e);
+        handleDraw(e, mapName);
       }
 
-      function handleDraw(e) {
-        cancelDraw();
+      function handleDraw(e, mapName) {
+        cancelDraw(mapName);
 
         // Set clicked control to gray and all others to transparent
         _.each(drawControls, function (value, key) {
@@ -508,11 +522,11 @@
         }
 
         // Cancel draw if button transparent otherwise start draw with or without freehand based on class
-        if (e.target.style.backgroundColor === 'transparent') cancelDraw();
+        if (e.target.style.backgroundColor === 'transparent') cancelDraw(mapName);
         else if (e.target.className === 'LineStringFreehand' || e.target.className === 'PolygonFreehand') {
-          startDraw(control, true);
+          startDraw(control, true, mapName);
         }
-        else startDraw(control, false);
+        else startDraw(control, false, mapName);
       }
 
       ol.control.Control.call(this, {
@@ -532,8 +546,9 @@
       });
     }
 
-    function getDrawMode() {
-      return draw;
+    function getDrawMode(mapName) {
+      mapName = mapName ? mapName : 'default';
+      return drawCtrls[mapName];
     }
 
     function getLassoMode() {
@@ -542,6 +557,7 @@
 
     // Create a group of spots by drawing a polygon on the map
     function groupSpots() {
+      var map = maps['default'];
       // Remove layer switcher and drawing tools to to avoid confusion
       // with lasso and regular drawing
       map.getControls().forEach(function (control) {
@@ -562,11 +578,15 @@
       });
     }
 
-    function isDrawMode() {
-      return draw !== null || modify !== null;
+    function isDrawMode(mapName) {
+      mapName = mapName ? mapName : 'default';
+      var draw = drawCtrls[mapName];
+      return !_.isEmpty(draw) || !_.isEmpty(modify);
     }
 
-    function saveEdits(clickedFeatureId) {
+    function saveEdits(clickedFeatureId, mapName) {
+      mapName = mapName ? mapName : 'default';
+      var map = maps[mapName];
       $log.log('Saving edited spots ...', spotsEdited);
       var promises = [];
       _.each(spotsEdited, function (editedSpot) {
@@ -609,7 +629,7 @@
       $q.all(promises).then(function () {
         featuresOrig = [];
         spotsEdited = [];
-        cancelEdits();
+        cancelEdits(mapName);
       });
     }
 
@@ -619,6 +639,7 @@
 
     // Prompt the user to define a line on the image which has a known length
     function measureLength() {
+      var map = maps['default'];
       // Remove layer switcher and drawing tools to to avoid confusion
       // with lasso and regular drawing
       map.getControls().forEach(function (control) {
@@ -639,6 +660,7 @@
 
     // Lasso spots and copy to clipboard for Stereonet Output
     function stereonetSpots() {
+      var map = maps['default'];
       // Remove layer switcher and drawing tools to to avoid confusion
       // with lasso and regular drawing
       map.getControls().forEach(function (control) {
