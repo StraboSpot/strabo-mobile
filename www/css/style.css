@@ -946,6 +946,17 @@ Spots Page
   font-style: oblique;
 }
 
+.mineral-list{
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  font-size: large;
+  margin-bottom: 10px;
+}
+.web-icon {
+  font-size: 1.4rem;
+  margin-left: 10px;
+
+}
 /*--------------------
 Filters Modal
 ---------------------*/
@@ -977,7 +988,7 @@ Minerals Page
 }
 
 .mineral-checkbox{
-  margin-left: -40;
+  margin-left: -15;
   position: relative;
 }
 
@@ -985,7 +996,7 @@ Minerals Page
   display: flex;
 }
 
-#minerals-info-button{
+#minerals-info-button-modal{
   float: left;
   align-items: center;
   position: relative;
@@ -998,6 +1009,21 @@ Minerals Page
   z-index: 4; 
   font-size: 12px;
 }
+
+#minerals-info-button-main{
+  float: left;
+  align-items: center;
+  position: relative;
+  top: -8px;
+  right: 0%;
+  min-width: 34px;
+  min-height: 34px;
+  font-size: 12px;
+  line-height: 32px;
+  z-index: 4; 
+  font-size: 12px;
+}
+
 .minerals-field-info-button {
   min-height: 20px;
   line-height: 20px;
@@ -1009,6 +1035,11 @@ Minerals Page
 
 .mineral-info-display > .row{ 
   margin: 0px 0px 10px 0px;
+}
+
+#mineral-link{
+  text-decoration: none;
+  /* margin-left: 10%; */
 }
 
 .mineral-title{

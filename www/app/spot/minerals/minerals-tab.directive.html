@@ -1,51 +1,15 @@
 <div>
-  <button ng-click='vmChild.addMineral("metamorphic_most_common")' class='button button-clear button-positive'>
+  <button ng-click='vmChild.addMineralTag()' class='button button-clear button-positive'>
     <i class='icon ion-plus-circled'></i>
-    <span class='button-text-big'>Add/Remove Metamorphic Minerals</span>
-  </button>
-  <button ng-click='vmChild.addMineral("igneous_most_common")' class='button button-clear button-positive'>
-    <i class='icon ion-plus-circled'></i>
-    <span class='button-text-big'>Add/Remove Igneous Minerals</span>
-  </button>
-  <button ng-click='vmChild.addMineral("sedimentary_most_common")' class='button button-clear button-positive'>
-    <i class='icon ion-plus-circled'></i>
-    <span class='button-text-big'>Add/Remove Sedimentary Minerals</span>
-  </button>
-  <button ng-click='vmChild.loadCollection("saveCollection")' class='button button-clear button-positive'>
-    <i class='icon ion-plus-circled'></i>
-    <span class='button-text-big'>Add From Saved Favorites Collection</span>
+    <span class='button-text-big'>Add/Remove Minerals (Tag)</span>
   </button>
   <ion-list>
-    <ion-item class='item-text-wrap item-button-right' 
-    ng-repeat='mineral in vm.spot.properties.minerals | orderBy:mineral track by $index'>
-      {{ vmChild.getLabel(mineral) }}
-      <button id="minerals-info-button" class=" button-small button-icon button ion-information-circled minerals-field-info-button" ng-click="vmChild.mineralInfoOnMainPage(mineral)"></button>
+    <ion-item class='item-text-wrap item-button-right'
+              ng-repeat='mineral in vm.mineralDisplay | orderBy:"mineral" track by $index'>
+      <b>{{ vmChild.getLabel(mineral) }}</b>
+      <button id="minerals-info-button-main"
+      class=" button-small button-icon button ion-information-circled minerals-field-info-button"
+      ng-click="vmChild.mineralInfoOnMainPage(mineral)"></button>
     </ion-item>
   </ion-list>
-  <div class="padding" ng-hide="vm.spot.properties.minerals">
-    <span>No minerals added to this spot yet.</span>
-  </div>
-  <div ng-show="vm.spot.properties.minerals" class="list">
-    <div class="item item-divider item-text-wrap">
-      Create or Update a favorites collection:
-    </div>
-    <div class="padding">
-      Selected minerals from above can be saved to a new or existing collection below.
-    </div>
-    <ion-input class='item item-input item-select item-text-wrap' ng-show='vmChild.mineralCollections.length >= 1'>
-      <ion-label>Select a Favorites Collection</ion-label>
-      <select ng-model='vmChild.selectedCollectionToCreate' ng-selected='vmChild.selectedCollectionToCreate' 
-      ng-options='mineralCollection.name for mineralCollection in vmChild.createCollectionSelectBoxDisplay'
-        ng-change='vmChild.changedCollectionToCreate()'>
-      </select>
-    </ion-input>
-    <ion-input ng-show='vmChild.showNameField' class='item item-input item-stacked-label item-text-wrap'>
-      <ion-label>New Collection Name:</ion-label>
-      <input type='text' ng-model='vmChild.newCollectionName' autofocus>
-    </ion-input>
-    <button class="button button-clear button-positive" ng-click="vmChild.saveCollection()">
-      <i class='icon ion-plus-circled'></i>
-      <span class='button-text-big'>Create/Update Favorites Collection</span>
-    </button>
-  </div>
 </div>
