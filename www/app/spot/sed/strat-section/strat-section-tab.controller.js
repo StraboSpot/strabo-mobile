@@ -104,7 +104,7 @@
         var confirmPopup = $ionicPopup.confirm({
           'title': 'Column Profile Change Warning!',
           'template': 'Changing the column profile will redraw all intervals as rectangles so any drawing edits to ' +
-          'current interval shapes will be lost. Continue anyway?'
+            'current interval shapes will be lost. Continue anyway?'
         });
         confirmPopup.then(function (res) {
           if (res) {
@@ -125,7 +125,7 @@
         $ionicPopup.alert({
           'title': 'Units Change Error!',
           'template': 'Units for this Section have already been set at ' + oldUnits + '. Please start a new' +
-          ' Section and set your desired units before adding intervals or delete the intervals in this Section.'
+            ' Section and set your desired units before adding intervals or delete the intervals in this Section.'
         });
         vmParent.spot.properties.sed.strat_section.column_y_axis_units = oldUnits;
       }
@@ -176,7 +176,7 @@
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Remove Overlay',
         'template': 'Are you sure you want to remove this image as an overlay on this Strat Section? ' +
-        'This will not delete the image itself.'
+          'This will not delete the image itself.'
       });
       confirmPopup.then(function (res) {
         if (res) {
@@ -234,20 +234,23 @@
           $ionicPopup.alert({
             'title': 'Image Used Already!',
             'template': 'This image has already been used as an overlay in this Strat Section. ' +
-            'Select another image or modify the existing overlay with this image.'
+              'Select another image or modify the existing overlay with this image.'
           });
           return 0;
         }
         if (!vmParent.spot.properties.sed.strat_section.images) vmParent.spot.properties.sed.strat_section.images = [];
         else {
-          vmParent.spot.properties.sed.strat_section.images = _.reject(vmParent.spot.properties.sed.strat_section.images,
+          vmParent.spot.properties.sed.strat_section.images = _.reject(
+            vmParent.spot.properties.sed.strat_section.images,
             function (image) {
               return vm.data.id === image.id;
             });
         }
         vmParent.spot.properties.sed.strat_section.images.push(vm.data);
         vm.data = {};
-        vmParent.saveSpot();
+        vmParent.saveSpot().then(function () {
+          vmParent.spotChanged = false;
+        });
       }
       vm.addOverlayImageModal.hide();
     }
@@ -262,15 +265,37 @@
         vmParent.data = vmParent.spot.properties.sed.strat_section;
       }
       if (!vm.showStratSection && !_.isEmpty(vmParent.spot.properties.sed.strat_section)) {
-        // ToDo: Do a check here if there are any Spots mapped on the Strat Section - if so can't delete
-        var confirmPopup = $ionicPopup.confirm({
-          'title': 'Delete Strat Section?',
-          'template': 'By toggling off the Strat Section option you will be deleting assoicated Spots. Continue?'
+        // Check if there are any Spots mapped on this Strat Section. If so, don't allow toggle off.
+        var numSpotsMappedOnThisStratSection = 0;
+        _.each(SpotFactory.getSpots(), function (spot) {
+          if (spot.properties.strat_section_id === vmParent.spot.properties.sed.strat_section.strat_section_id) {
+            numSpotsMappedOnThisStratSection++;
+          }
         });
-        confirmPopup.then(function (res) {
-          if (res) delete vmParent.spot.properties.sed;
-          else vm.showStratSection = !vm.showStratSection;
-        });
+        if (numSpotsMappedOnThisStratSection > 0) {
+          $ionicPopup.alert({
+            'title': 'Strat Section In Use!',
+            'template': 'There are ' + numSpotsMappedOnThisStratSection + ' Spot(s) mapped on this Spot. Delete these' +
+              ' Spots before removing the strat section.'
+          }).then(function () {
+            vm.showStratSection = !vm.showStratSection;
+          });
+        }
+        else {
+          var confirmPopup = $ionicPopup.confirm({
+            'title': 'Delete Strat Section?',
+            'template': 'Are you sure you want to delete this strat section?'
+          });
+          confirmPopup.then(function (res) {
+            if (res) {
+              delete vmParent.spot.properties.sed;
+              vmParent.saveSpot().then(function () {
+                vmParent.spotChanged = false;
+              });
+            }
+            else vm.showStratSection = !vm.showStratSection;
+          });
+        }
       }
     }
 
