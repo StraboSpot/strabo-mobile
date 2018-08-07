@@ -9,7 +9,7 @@
     <span class='toggle-left-label item-text-wrap'>{{ vm.tagText }} <br>
       <small class="toggle-left-label">(Spot Level Only)</small></span>
   </ion-toggle>
-  <strabo-tags-filter-directive></strabo-tags-filter-directive>
+  <strabo-tags-filter-with-minerals-directive></strabo-tags-filter-with-minerals-directive>
   <ion-list>
     <ion-item class='item-text-wrap item-button-right'
         ng-repeat='tag in vm.allTagsToDisplay | orderBy:"name" track by tag.id'>

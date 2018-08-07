@@ -13,6 +13,22 @@
         <option value='other'>Other</option>
       </select>
     </ion-input>
+    <div ng-show="vm.selectedType === 'mineral'">
+      <div class="item item-divider">Filter By Minerals</div>     
+        <ion-item class="item item-text-wrap strabo-choices-flex-container strabo-wrap">
+          <ion-checkbox class='strabo-choices-flex-item item item-checkbox' 
+            ng-checked='vm.isAllMineralsChecked' 
+            ng-click='vm.toggleAllMineralsChecked($event)'>
+            <b>All minerals</b>
+          </ion-checkbox>
+          <ion-checkbox class='strabo-choices-flex-item item item-checkbox' 
+            ng-repeat='mineral in vm.mineralDisplay | orderBy:"mineral" track by $index' 
+            ng-checked="vm.isMineralChecked(mineral)" 
+            ng-click="vm.toggleMineralsChecked(mineral, $event)">
+            <b>{{ vm.getLabel(mineral) }}</b>
+          </ion-checkbox>
+        </ion-item>
+    </div>
   </div>
   <div class="item item-divider">Tags</div>
   <div class='padding' ng-show='vm.allTags.length === 0'>
