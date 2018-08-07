@@ -1,14 +1,17 @@
 {
   "name": "StraboSpot",
-  "app_id": "53a3aee8",
-  "type": "ionic1",
   "integrations": {
     "cordova": {}
   },
+  "type": "ionic1",
   "watchPatterns": [
     "scss/**/*",
     "www/**/*",
     "!www/lib/**/*",
     "!www/**/*.map"
-  ]
+  ],
+  "pro_id": "53a3aee8",
+  "gulp": {
+    "enabled": true
+  }
 }

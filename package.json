@@ -3,6 +3,7 @@
     "version": "1.4.1",
     "description": "StraboSpot is a cross-platform app for geologic field data acquisition.",
     "dependencies": {
+        "@ionic/v1-toolkit": "^1.0.0",
         "cordova-android": "7.0.0",
         "cordova-ios": "~4.5.4",
         "cordova-plugin-camera": "^4.0.3",
