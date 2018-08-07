@@ -52,6 +52,13 @@
           <div class="row">
             <span class="mineral-title"> Associated Minerals:</span>
             {{ vmChild.mineralInfo['Associated Minerals'] }}
+          </div><br>
+          <div class="row">
+            <!-- <div class=" mineral-title"><i name="icon ion-globe"></i></div>          -->
+            <a class="" id="mineral-link" ng-href="{{vm.mineralInfo['mindat.org link']}}" target="blank">
+              <i class="web-icon icon ion-android-globe"></i>
+              Click here for more mineral info from Mindat.org
+            </a>
           </div>
         </div>
         <div ng-hide="vmChild.mineralInfo">
