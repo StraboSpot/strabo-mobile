@@ -220,8 +220,9 @@
       readDataUrl(file);
     }
 
-    function saveImage(base64Image) {
-      return LocalStorageFactory.getDb().imagesDb.setItem(currentImageData.id.toString(), base64Image)
+    function saveImage(base64Image, imageId) {
+      if (!imageId) imageId = currentImageData.id;
+      return LocalStorageFactory.getDb().imagesDb.setItem(imageId.toString(), base64Image)
     }
 
     function setCurrentImage(inImageData) {
