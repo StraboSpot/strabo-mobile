@@ -5,13 +5,13 @@
     .module('app')
     .controller('TagController', TagController);
 
-  TagController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopup', '$location', '$log', '$q', '$rootScope', 
-  '$scope', '$state', '$timeout', 'DataModelsFactory', 'HelpersFactory', 'FormFactory', 'LiveDBFactory',
-  'ProjectFactory', 'SpotFactory', 'SpotsFactory', 'TagFactory', 'IS_WEB'];
+  TagController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopup', '$ionicScrollDelegate', '$location', '$log', 
+  '$q', '$rootScope', '$scope', '$state', '$timeout', 'DataModelsFactory', 'HelpersFactory', 'FormFactory',
+  'LiveDBFactory', 'MineralsFactory', 'ProjectFactory', 'SpotFactory', 'SpotsFactory', 'TagFactory', 'IS_WEB'];
 
-  function TagController($ionicHistory, $ionicModal, $ionicPopup, $location, $log, $q, $rootScope, $scope, $state,
-    $timeout, DataModelsFactory, HelpersFactory, FormFactory, LiveDBFactory, ProjectFactory, SpotFactory, SpotsFactory, 
-    TagFactory, IS_WEB) {
+  function TagController($ionicHistory, $ionicModal, $ionicPopup, $ionicScrollDelegate, $location, $log, $q,
+   $rootScope, $scope, $state, $timeout, DataModelsFactory, HelpersFactory, FormFactory, LiveDBFactory,
+   MineralsFactory,ProjectFactory, SpotFactory, SpotsFactory, TagFactory, IS_WEB) {
     var vmParent = $scope.vm;
     var vm = this;
 
@@ -29,6 +29,7 @@
     vm.isShowInfoOnly = true;
     vm.isShowMineralList = true;
     vm.isShowMore = false;
+    vm.mineralInfo = [];
     vm.mineralsModal = {};
     vm.modalData = {};
     vm.modalTitle = "";
@@ -53,20 +54,24 @@
     vm.getSpotName = getSpotName;
     vm.getTagName = getTagName;
     vm.go = go;
+    vm.goBack = goBack;
     vm.goToSpot = goToSpot;
     vm.goToTag = goToTag;
+    vm.hideMineralInfo = hideMineralInfo;
     vm.isFilterConditionChecked = isFilterConditionChecked;
     vm.isOptionChecked = isOptionChecked;
     vm.isShowItem = isShowItem;
     vm.isTypeChecked = isTypeChecked;
     vm.keyToId = keyToId;
     vm.loadMoreSpots = loadMoreSpots;
+    vm.mineralInfoOnMainPage = mineralInfoOnMainPage;
     vm.moreSpotsCanBeLoaded = moreSpotsCanBeLoaded;
     vm.openColorPicker = openColorPicker;
     vm.resetFilters = resetFilters;
     vm.selectItem = selectItem;
     vm.selectTypes = selectTypes;
     vm.setColor = setColor;
+    vm.showMineralInfo =showMineralInfo;
     vm.submitMineral = submitMineral;
     vm.submitTag = submitTag;
     vm.switchMineralsForm = switchMineralsForm;
@@ -457,12 +462,21 @@
           });
         }
 
+    function goBack(){
+      $location.path("app/tags");
+    }    
+
     function goToSpot(spotId) {
       SpotFactory.goToSpot(spotId);
     }
 
     function goToTag(id) {
       $location.path('/app/tags/' + id);
+    }
+
+    //Hides the mineral info and display the mineral list
+    function hideMineralInfo() {
+      vm.isShowMineralList = true;
     }
 
     function keyToId(key) {
@@ -500,6 +514,14 @@
       $scope.$broadcast('scroll.infiniteScrollComplete');
     }
 
+    //displays the mineral info from info-button on the main Minerals Page
+    function mineralInfoOnMainPage(name){
+      vm.mineralInfo = MineralsFactory.getMineralInfo(name);
+      vm.isShowMineralList = false;
+      vm.isShowInfoOnly = true;
+      vm.mineralsModal.show();
+    }
+
     function moreSpotsCanBeLoaded() {
       return vm.spotsDisplayed.length !== vm.spots.length;
     }
@@ -527,6 +549,13 @@
       vm.colorPickerModal.hide();
       vm.data.color = color;
       vm.color = color;
+    }
+
+    //Displays the mineral chemical compound info for each mineral
+    function showMineralInfo(name) {
+      $ionicScrollDelegate.scrollTop();
+      vm.isShowMineralList = false;
+      vm.mineralInfo = MineralsFactory.getMineralInfo(name); 
     }
 
     function submitMineral() {
