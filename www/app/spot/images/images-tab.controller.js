@@ -340,7 +340,18 @@
 
     function goToImageBasemap(image) {
       SpotFactory.clearCurrentSpot();
-      vmParent.submit('/app/image-basemaps/' + image.id);
+      if (image.image_type === 'micrograph_ref') {
+        vmParent.submit('/app/thin-sections/' + image.id);
+      }
+      else if (image.image_type === 'micrograph') {
+        var micrographRefId = null;
+        _.each(vmParent.spot.properties.images, function (image) {
+          if (image.image_type === 'micrograph_ref') micrographRefId = image.id;
+        });
+        if (micrographRefId)  vmParent.submit('/app/thin-sections/' + micrographRefId);
+        else vmParent.submit('/app/image-basemaps/' + image.id);
+      }
+      else vmParent.submit('/app/image-basemaps/' + image.id);
     }
 
     function isWeb() {
