@@ -5,12 +5,10 @@
     .module('app')
     .controller('ManageProjectController', ManageProjectController);
 
-  ManageProjectController.$inject = ['$document', '$ionicModal', '$ionicLoading', '$ionicPopover', '$ionicPopup', '$log', '$scope',
-    '$state', '$q', 'FormFactory', 'ImageFactory', 'LiveDBFactory', 'LocalStorageFactory', 'OtherMapsFactory',
+  ManageProjectController.$inject = ['$document', '$ionicModal', '$ionicLoading', '$ionicPopover', '$ionicPopup', '$log', '$scope', '$state', '$q', 'FormFactory', 'ImageFactory', 'LiveDBFactory', 'LocalStorageFactory', 'OtherMapsFactory',
     'ProjectFactory', 'RemoteServerFactory', 'SpotFactory', 'UserFactory', 'IS_WEB'];
 
-  function ManageProjectController($document, $ionicModal, $ionicLoading, $ionicPopover, $ionicPopup, $log, $scope, $state, $q,
-    FormFactory, ImageFactory, LiveDBFactory, LocalStorageFactory, OtherMapsFactory, ProjectFactory, RemoteServerFactory,SpotFactory, UserFactory, IS_WEB) {
+  function ManageProjectController($document, $ionicModal, $ionicLoading, $ionicPopover, $ionicPopup, $log, $scope, $state, $q, FormFactory, ImageFactory, LiveDBFactory, LocalStorageFactory, OtherMapsFactory, ProjectFactory, RemoteServerFactory,SpotFactory, UserFactory, IS_WEB) {
     var vm = this;
 
     var downloadErrors = false;
@@ -25,7 +23,7 @@
     vm.exportItems = {};
     vm.fileBrowserModal = {};
     vm.importItem = undefined;
-    vm.mineralCollections = [];
+    // vm.mineralCollections = [];
     vm.newDatasetName = '';
     vm.newProjectModal = {};
     vm.otherFeatureTypes = [];
@@ -41,7 +39,7 @@
     vm.titleText = 'Manage Projects';
 
     vm.areDatasetsOn = areDatasetsOn;
-    vm.deleteCollection = deleteCollection;
+    // vm.deleteCollection = deleteCollection;
     vm.deleteDataset = deleteDataset;
     vm.deleteProject = deleteProject;
     vm.deleteType = deleteType;
@@ -473,7 +471,7 @@
       vm.activeDatasets = ProjectFactory.getActiveDatasets();
       vm.spotsDataset = ProjectFactory.getSpotsDataset();
       vm.otherFeatureTypes = ProjectFactory.getOtherFeatures();
-      vm.mineralCollections = ProjectFactory.getProjectProperty('mineral_collections');
+      // vm.mineralCollections = ProjectFactory.getProjectProperty('mineral_collections');
 
       if (areDatasetsOn() && _.isEmpty(vm.spotsDataset)) {
         ProjectFactory.saveSpotsDataset(vm.activeDatasets[0]);
@@ -826,12 +824,12 @@
       });
     }
 
-    function deleteCollection(indexToDelete) {
-      vm.mineralCollections = _.reject(vm.mineralCollections, function (mineralCollection, i) {
-        return indexToDelete === i;
-      });
-      ProjectFactory.saveProjectItem('mineral_collections', vm.mineralCollections);
-    }
+    // function deleteCollection(indexToDelete) {
+    //   vm.mineralCollections = _.reject(vm.mineralCollections, function (mineralCollection, i) {
+    //     return indexToDelete === i;
+    //   });
+    //   ProjectFactory.saveProjectItem('mineral_collections', vm.mineralCollections);
+    // }
 
     function deleteType(i) {
       var customTypes = _.reject(vm.otherFeatureTypes, function (type) {
