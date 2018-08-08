@@ -57,6 +57,7 @@
       'getImagePropertiesById': getImagePropertiesById,
       'getKeepSpotSelected': getKeepSpotSelected,
       'getNameFromId': getNameFromId,
+      'getParentSpots': getParentSpots,
       'getSelectedSpots': getSelectedSpots,
       'getSpotsByDatasetId': getSpotsByDatasetId,
       'getSpotById': getSpotById,
@@ -250,6 +251,7 @@
       };
     }
 
+    // Get all the children spots of thisSpot, based on image basemaps, strat sections and geometry
     function getChildrenSpots(thisSpot) {
       var childrenSpots = [];
       // Find children spots based on image basemap
@@ -333,6 +335,55 @@
       var spotCur = spots[id];
       if (spotCur) return spotCur.properties.name;
       return 'Spot Not Found (Id: ' + id + ')';
+    }
+
+    // Get all the parent spots of thisSpot, based on image basemaps, strat sections and geometry
+    function getParentSpots(thisSpot) {
+      var parentSpots = [];
+      // Find parent spots based on image basemap
+      if (thisSpot.properties.image_basemap) {
+        var parentImageBasemapSpot = _.find(spots, function (spot) {
+          return _.find(spot.properties.images, function (image) {
+            return image.id === thisSpot.properties.image_basemap;
+          });
+        });
+        parentSpots.push(parentImageBasemapSpot);
+      }
+      // Find parent spots based on strat section
+      if (thisSpot.properties.strat_section_id) {
+        var parentStratSectionSpot = _.find(spots, function (spot) {
+          return _.find(spot.properties.sed, function (sed) {
+            return sed.strat_section_id === thisSpot.properties.strat_section_id;
+          });
+        });
+        parentSpots.push(parentStratSectionSpot);
+      }
+      // Find parent spots based on subsamples
+      var parentSampleSpot = _.find(spots, function (spot) {
+        return _.find(spot.properties.samples, function (sample) {
+          return sample.spot_id && sample.spot_id === thisSpot.properties.id;
+        });
+      });
+      if (parentSampleSpot) parentSpots.push(parentSampleSpot);
+      parentSpots = _.flatten(parentSpots);
+      // Find parent spots based on geometry
+      if (_.has(thisSpot, 'geometry')) {
+        var otherSpots = _.reject(spots, function (spot) {
+          return spot.properties.id === thisSpot.properties.id || !spot.geometry;
+        });
+        _.each(otherSpots, function (spot) {
+          if ((!thisSpot.properties.image_basemap && !spot.properties.image_basemap) ||
+            (thisSpot.properties.image_basemap && spot.properties.image_basemap &&
+              thisSpot.properties.image_basemap === spot.properties.image_basemap)) {
+            if (_.propertyOf(spot.geometry)('type') && (_.propertyOf(spot.geometry)(
+              'type') === 'Polygon' || _.propertyOf(spot.geometry)(
+              'type') === 'MutiPolygon')) {
+              if (turf.booleanWithin(thisSpot, spot)) parentSpots.push(spot);
+            }
+          }
+        });
+      }
+      return parentSpots;
     }
 
     function getSelectedSpots() {
