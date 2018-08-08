@@ -1062,10 +1062,12 @@ Thin Section
 }
 
 .thin-section-map {
-  margin: 4px;
-  width: calc(50% - 8px);   /* Take margins in to consideration */
-  height: 50%;
+  height: 100%;
   border-style: solid;
   border-width: 2px;
-  float: left;
+}
+
+.thin-section-layout-row{
+  margin-right: 0;
+  margin-left: 0;
 }

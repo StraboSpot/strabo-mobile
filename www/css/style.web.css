@@ -141,7 +141,7 @@ Thin Section
 
 .thin-section-maps {
   top: 50px;  /* Take into account top menu bar */
-  height: calc(100% - 50px - 15px); /* Full-height minus top menu bar minus a little extra for the bottom */
+  height: calc(100% - 50px); /* Full-height minus top menu bar minus a little extra for the bottom */
   left: 250px;
   width: calc(100% - 250px);  /* Full-width minus side images scroll */
 }

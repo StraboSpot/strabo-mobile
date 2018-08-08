@@ -204,13 +204,44 @@
       }, false);
     }
 
-    function createMapWithSelectedImage(image) {
+    function createMapsLayout() {
+      // Remove child nodes of maps element
+      var mapsEle = document.getElementById('maps');
+      _.times(mapsEle.childNodes.length, function () {
+        mapsEle.removeChild(mapsEle.childNodes[0]);
+      });
+
+      // Calc height % for rows based on at most 2 image basemaps per row
+      var numImages = vm.imagesSelected.length;
+      var heightPercent = 100 / Math.ceil(numImages/2);
+
+      // Create row and columns for image basemaps then create the maps
+      var newRowEle = {};
+      var selectedImages = _.filter(vm.images, function (image) {
+        return _.contains(vm.imagesSelected, image.id);
+      });
+      _.each(selectedImages, function (image, i) {
+        if (i % 2 === 0) {
+          newRowEle = document.createElement('div');
+          newRowEle.classList.add('row');
+          newRowEle.classList.add('thin-section-layout-row');
+          newRowEle.style.height = heightPercent + '%';
+          mapsEle.appendChild(newRowEle);
+        }
+        var newColEle = document.createElement('div');
+        newColEle.classList.add('col');
+        newRowEle.appendChild(newColEle);
+        createMapWithSelectedImage(image, newColEle);
+      });
+    }
+
+    function createMapWithSelectedImage(image, colEle) {
       // Create div element for the a single image basemap
       var newMapDiv = document.createElement('div');
       var mapName = 'map' + image.id;
       newMapDiv.setAttribute('id', mapName);
       newMapDiv.classList.add('thin-section-map');
-      document.getElementById('maps').appendChild(newMapDiv);
+      colEle.appendChild(newMapDiv);
 
       // Create div element for the Save Edits button
       vm.showSaveEditsBtns[mapName] = false;
@@ -411,12 +442,6 @@
       return _.contains(vm.imagesSelected, imageId);
     }
 
-    function removeMap(image) {
-      delete maps['map' + image.id];
-      var element = document.getElementById('map' + image.id);
-      element.parentNode.removeChild(element);
-    }
-
     function setSelectedImageStyle(imageId) {
       var imageElement = document.getElementById(imageId);
       imageElement.style.height = '150px';
@@ -544,12 +569,13 @@
       if (isImageSelected(image.id)) {
         vm.imagesSelected = _.without(vm.imagesSelected, image.id);
         setUnselectedImageStyle(image.id);
-        removeMap(image);
+        delete maps['map' + image.id];
+        createMapsLayout();
       }
       else {
         vm.imagesSelected.push(image.id);
         setSelectedImageStyle(image.id);
-        createMapWithSelectedImage(image);
+        createMapsLayout();
       }
     }
 

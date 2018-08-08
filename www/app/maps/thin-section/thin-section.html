@@ -5,10 +5,6 @@
   </ion-nav-buttons>
   <ion-nav-buttons side='right'>
     <div ng-show='vm.isNesting' class='nesting-notification'>Nesting<br>On</div>
-    <button ng-show='vm.mapView' ng-click='vm.switchView()' class='button button-icon icon ion-document-text'></button>
-    <button ng-show='!vm.mapView' ng-click='vm.switchView()'
-            class='button button-icon icon ion-disc'></button>
-    <button ng-click='vm.popover.show($event)' class='button button-icon icon ion-more rotate-90'></button>
   </ion-nav-buttons>
   <ion-pane data-tap-disabled='true' scroll="false">
     <ion-content class='has-header'>
