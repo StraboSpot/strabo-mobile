@@ -31,6 +31,7 @@
       {'value': 'other_features', 'label': 'Other Features', 'path': 'other-features'},
       {'value': 'relationships', 'label': 'Relationships', 'path': 'relationships'},
       {'value': 'tags', 'label': 'Tags', 'path': 'tags'},
+      {'value': 'data', 'label': 'Data', 'path': 'data'},
       {'value': 'strat_section', 'label': 'Strat Section', 'path': 'strat-section'},
       {'value': 'sed_lithologies', 'label': 'Sed Lithologies', 'path': 'sed-lithologies'},
       {'value': 'sed_structures', 'label': 'Sed Structures', 'path': 'sed-structures'},

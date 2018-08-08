@@ -85,6 +85,7 @@
     // Declare Spot Tab Childview States
     var spotTabStates = [
       {'state': '_3dstructures', 'template': '3d-structures/3dstructures-tab', 'controller': '_3DStructures'},
+      {'state': 'data', 'template': 'data/data-tab', 'controller': 'Data'},
       {'state': 'images', 'template': 'images/images-tab', 'controller': 'Images'},
       {'state': 'minerals', 'template': 'minerals/minerals-tab', 'controller': 'Minerals'}, 
       {'state': 'nesting', 'template': 'nesting/nesting-tab', 'controller': 'Nesting'},
