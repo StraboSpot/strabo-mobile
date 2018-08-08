@@ -225,7 +225,7 @@
           newRowEle = document.createElement('div');
           newRowEle.classList.add('row');
           newRowEle.classList.add('thin-section-layout-row');
-          newRowEle.style.height = heightPercent + '%';
+          newRowEle.style.height = 'calc(' + heightPercent + '% - 15px)';  // 15px less because of title
           mapsEle.appendChild(newRowEle);
         }
         var newColEle = document.createElement('div');
@@ -236,6 +236,13 @@
     }
 
     function createMapWithSelectedImage(image, colEle) {
+      // Show titles above maps
+      var newMapPlusLabelDiv = document.createElement('div');
+      var spot = SpotFactory.getSpotWithImageId(image.id);
+      var imageTitle = image.title || 'Untitled';
+      newMapPlusLabelDiv.innerText = imageTitle + ' in Spot: ' + spot.properties.name;
+      colEle.appendChild(newMapPlusLabelDiv);
+
       // Create div element for the a single image basemap
       var newMapDiv = document.createElement('div');
       var mapName = 'map' + image.id;
