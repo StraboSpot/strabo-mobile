@@ -387,7 +387,7 @@
         vmParent.spot.properties.images = _.reject(vmParent.spot.properties.images, function (image) {
           return image.id === vmParent.data.id;
         });
-        vmParent.spot.properties.images.push(vmParent.data);
+        vmParent.spot.properties.images.push(angular.fromJson(angular.toJson(vmParent.data)));
         vmParent.saveSpot().then(function () {
           vmParent.spotChanged = false;
           vmParent.data = {};
