@@ -1072,3 +1072,13 @@ Thin Section
   margin-left: 0;
   margin-bottom: 15px;
 }
+
+/*--------------------
+Nesting
+---------------------*/
+
+.nest-block{
+  border: solid;
+  border-width: 1px;
+  padding: 4px;
+}
