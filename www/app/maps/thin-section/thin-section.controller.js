@@ -225,6 +225,20 @@
       var selectedImages = _.filter(vm.images, function (image) {
         return _.contains(vm.imagesSelected, image.id);
       });
+      var micrographRef = _.find(selectedImages, function (image) {
+        return image.image_type === 'micrograph_ref';
+      });
+      $log.log('reffffff', micrographRef);
+
+      // If a micrograph reference image has been selected move that image to the
+      // beginning of the array so that map is created first
+      if (!angular.isUndefined(micrographRef)) {
+        selectedImages = _.reject(selectedImages, function (image) {
+          return image.id === micrographRef.id;
+        });
+        selectedImages.splice(0, 0, micrographRef);
+      }
+
       _.each(selectedImages, function (image, i) {
         if (i % 2 === 0) {
           newRowEle = document.createElement('div');
