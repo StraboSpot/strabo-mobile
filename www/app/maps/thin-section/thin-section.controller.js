@@ -25,8 +25,8 @@
     var tagsToAdd = [];
     var switchers = {};
 
-    //vm.addIntervalModal = {};
     vm.allTags = [];
+    vm.childGenerations = [];
     vm.clickedFeatureId = undefined;
     vm.data = {};
     vm.images = [];
@@ -34,6 +34,7 @@
     vm.isNesting = SpotFactory.getActiveNesting();
     vm.newNestModal = {};
     vm.newNestProperties = {};
+    vm.parentGenerations = [];
     vm.popover = {};
     vm.saveEditsText = 'Save Edits';
     vm.showSaveEditsBtns = {};
@@ -41,6 +42,7 @@
 
     vm.closeModal = closeModal;
     vm.createTag = createTag;
+    vm.getImages = getImages;
     vm.getImageSrc = getImageSrc;
     vm.goBack = goBack;
     vm.goToSpot = goToSpot;
@@ -71,6 +73,9 @@
       //MapEmogeosFactory.clearSelectedSpot();
 
       getSpotWithThinSection();
+      gatherSpotGenerations();
+      gatherImages();
+
       createModals();
       createPopover();
       createPageEvents();
@@ -406,22 +411,73 @@
         });
       }
 
-      var childrenSpots = SpotFactory.getChildrenSpots(vm.thisSpotWithThinSection);
-      _.each(childrenSpots, function (spot) {
-        _.each(spot.properties.images, function (image) {
-          if (image.image_type === 'micrograph_ref' || image.image_type === 'micrograph') vm.images.push(image);
-          var promise = ImageFactory.getImageById(image.id).then(function (src) {
-            if (IS_WEB) imageSources[image.id] = "https://strabospot.org/pi/" + image.id;
-            else if (src) imageSources[image.id] = src;
-            else imageSources[image.id] = 'img/image-not-found.png';
+      _.each(vm.childGenerations, function (childGeneration) {
+        _.each(childGeneration, function (spot) {
+          _.each(spot.properties.images, function (image) {
+            vm.images.push(image);
+            var promise = ImageFactory.getImageById(image.id).then(function (src) {
+              if (IS_WEB) imageSources[image.id] = "https://strabospot.org/pi/" + image.id;
+              else if (src) imageSources[image.id] = src;
+              else imageSources[image.id] = 'img/image-not-found.png';
+            });
+            promises.push(promise);
           });
-          promises.push(promise);
         });
       });
+
+      _.each(vm.parentGenerations, function (parentGeneration) {
+        _.each(parentGeneration, function (spot) {
+          _.each(spot.properties.images, function (image) {
+            vm.images.push(image);
+            var promise = ImageFactory.getImageById(image.id).then(function (src) {
+              if (IS_WEB) imageSources[image.id] = "https://strabospot.org/pi/" + image.id;
+              else if (src) imageSources[image.id] = src;
+              else imageSources[image.id] = 'img/image-not-found.png';
+            });
+            promises.push(promise);
+          });
+        });
+      });
+
       $log.log('All Images:', vm.images);
       return $q.all(promises).then(function () {
         //$log.log('Image Sources:', imageSources);
       });
+    }
+
+    // Gather 5 generations up and down from current Spot with Micrograph Reference
+    function gatherSpotGenerations() {
+      function getChildren(spots) {
+        var allChildrenSpots = [];
+        _.each(spots, function (spot) {
+          var childrenSpots = SpotFactory.getChildrenSpots(spot);
+          if (!_.isEmpty(childrenSpots)) allChildrenSpots.push(childrenSpots);
+        });
+        return _.flatten(allChildrenSpots);
+      }
+
+      function getParents(spots) {
+        var allParentSpots = [];
+        _.each(spots, function (spot) {
+          var parentSpots = SpotFactory.getParentSpots(spot);
+          if (!_.isEmpty(parentSpots)) allParentSpots.push(parentSpots);
+        });
+        return _.flatten(allParentSpots);
+      }
+
+      var parentSpots = [vm.thisSpotWithThinSection];
+      _.times(5, function (i) {
+        parentSpots = getParents(parentSpots);
+        if (!_.isEmpty(parentSpots)) vm.parentGenerations.push(parentSpots);
+      });
+      $log.log('parentGenerations', vm.parentGenerations);
+
+      var childSpots = [vm.thisSpotWithThinSection];
+      _.times(5, function (i) {
+        childSpots = getChildren(childSpots);
+        if (!_.isEmpty(childSpots)) vm.childGenerations.push(childSpots);
+      });
+      $log.log('childGenerations', vm.childGenerations);
     }
 
     // Get only the Spots where the image_basemap id matches the id of one of the linked images being loaded
@@ -441,7 +497,6 @@
       // Get the Spot that has this Thin Section
       //vm.thisSpotWithThinSection = ThinSectionFactory.getSpotWithThisThinSection($state.params.thinSectionId);
       vm.thisSpotWithThinSection = SpotFactory.getSpotWithImageId($state.params.thinSectionId);
-      gatherImages();
       $log.log('thisSpotWithThinSection', vm.thisSpotWithThinSection);
     }
 
@@ -530,6 +585,11 @@
       vm.addTagModal.hide();
       var id = HelpersFactory.getNewId();
       $location.path('/app/tags/' + id);
+    }
+
+    function getImages(spot) {
+      if (!_.isEmpty(spot.properties.images)) return spot.properties.images;
+      return [];
     }
 
     function getImageSrc(imageId) {

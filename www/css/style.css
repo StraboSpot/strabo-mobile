@@ -1067,10 +1067,14 @@ Thin Section
   border-width: 2px;
 }
 
-.thin-section-layout-row{
+.thin-section-layout-row {
   margin-right: 0;
   margin-left: 0;
   margin-bottom: 15px;
+}
+
+.micrograph-nest-image-label {
+  width: 100%;
 }
 
 /*--------------------

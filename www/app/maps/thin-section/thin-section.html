@@ -8,27 +8,7 @@
   </ion-nav-buttons>
   <ion-pane data-tap-disabled='true' scroll="false">
     <ion-content class='has-header'>
-      <div class="side-images-scroll">
-        <ion-list ng-show='vm.images.length > 0'>
-          <ion-item ng-repeat='image in vm.images | orderBy:"name" track by image.id'
-                    ng-click='vm.toggleImageSelected(image)'>
-            <ion-label>{{ image.title || 'Untitled' }}</ion-label>
-            <a><img ng-src='{{ vm.getImageSrc(image.id) }}' id='{{ image.id }}' width='200' height='200'></a>
-          </ion-item>
-        </ion-list>
-        <div class='padding' ng-hide='vm.images.length > 0'>
-          No images in this Spot, {{ vm.thisSpotWithThinSection.properties.name }}.
-          Add images to this Spot from the Spot page for this Thin Section. See below.
-          <button ng-click='vm.goToSpot(vm.thisSpotWithThinSection.properties.id, "images")'
-                  class='button'>
-            {{vm.thisSpotWithThinSection.properties.name}}</button>
-        </div>
-      </div>
-      <div id='maps' class="thin-section-maps" ng-show='vm.imagesSelected.length > 0'>
-      </div>
-      <div class="thin-section-maps padding" ng-hide='vm.imagesSelected.length > 0'>
-        No images selected. Please select an image on the left to add it to the map workspace.
-      </div>
+      <strabo-micrograph-directive></strabo-micrograph-directive>
     </ion-content>
   </ion-pane>
 </ion-view>
