@@ -1,3 +1,27 @@
 <div>
-Links
+	<div class="item item-divider">Links To External Data</div>
+
+	<div class="item item-input-inset">
+		<label class="item item-input-wrapper ">
+			<input type="url" placeholder="http://" ng-model="vmChild.url">
+		</label>
+		<button class="button button-positive" type="submit" ng-click="vmChild.urlLinkSubmit()">Add Link</button>
+	</div>
+	<div class="padding" ng-hide="vm.spot.properties.data || vm.spot.properties.data.links">
+		There are no external links
+	</div>
+	<ion-list ng-show="vm.spot.properties.data && vm.spot.properties.data.links">
+		<ion-item class='item-text-wrap item-button-right' ng-repeat="url in vm.spot.properties.data.links track by $index">
+			<i class="web-icon icon ion-android-globe"></i> &nbsp Website: &nbsp
+			<a ng-href="{{ url }}" target="blank">{{ url }}</a>
+			<div class="buttons">
+				<button class='button button-clear button-dark' ng-click='vmChild.editLink(url)'>
+					<i class='icon ion-edit'></i>
+				</button>
+				<button class='button button-clear button-assertive' ng-click='vmChild.deleteLink(url)'>
+					<i class='icon ion-minus-circled'></i>
+				</button>
+			</div>
+		</ion-item>
+	</ion-list>
 </div>
