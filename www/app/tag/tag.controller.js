@@ -11,7 +11,7 @@
 
   function TagController($ionicHistory, $ionicModal, $ionicPopup, $ionicScrollDelegate, $location, $log, $q,
    $rootScope, $scope, $state, $timeout, DataModelsFactory, HelpersFactory, FormFactory, LiveDBFactory,
-   MineralsFactory,ProjectFactory, SpotFactory, SpotsFactory, TagFactory, IS_WEB) {
+   MineralsFactory, ProjectFactory, SpotFactory, SpotsFactory, TagFactory, IS_WEB) {
     var vmParent = $scope.vm;
     var vm = this;
 
