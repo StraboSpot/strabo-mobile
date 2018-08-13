@@ -275,7 +275,7 @@
       if (thisSpot.properties.samples) {
         var sampleChildrenSpots = [];
         _.each(thisSpot.properties.samples, function (sample) {
-          if (sample.spot_id) sampleChildrenSpots.push(SpotFactory.getSpotById(sample.spot_id));
+          if (sample.spot_id) sampleChildrenSpots.push(getSpotById(sample.spot_id));
         });
         childrenSpots.push(sampleChildrenSpots);
       }
