@@ -529,6 +529,7 @@
     function submit(toPath) {
       saveSpot().then(function (spots) {
         vm.spotChanged = false;
+        vm.spotTitle = vm.spot.properties.name;
         if (IS_WEB && $state.current.name === 'app.spotTab.spot') vmParent.updateSpots();
         else if (IS_WEB && $state.current.name === 'app.map') $rootScope.$broadcast('updateMapFeatureLayer');
         else if (IS_WEB && $state.current.name === 'app.image-basemaps.image-basemap') {
