@@ -68,7 +68,9 @@
     vm.fieldChanged = fieldChanged;
     vm.goBack = goBack;
     vm.goToBackHistoryUrl = goToBackHistoryUrl;
+    vm.goToSpot = goToSpot;
     vm.goToTag = goToTag;
+    vm.isState = isState;
     vm.loadTab = loadTab;
     vm.saveSpot = saveSpot;
     vm.showTab = showTab;
@@ -410,8 +412,16 @@
       vm.backHistoriesPopover.hide();
     }
 
+    function goToSpot() {
+      $location.path('app/spotTab/' + vm.spot.properties.id + '/spot');
+    }
+
     function goToTag(id) {
       submit('/app/tags/' + id);
+    }
+
+    function isState(stateName) {
+      return stateName === $state.current.name;
     }
 
     function isTagChecked(tag) {

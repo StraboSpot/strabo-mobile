@@ -7,6 +7,9 @@
       <ion-item ng-click='vm.copyThisSpot()'>
         <i class="icon ion-ios-copy"></i> Copy this Spot
       </ion-item>
+      <ion-item ng-hide='vm.isState("app.spotTab.spot")' ng-click='vm.goToSpot()'>
+        <i class="icon ion-document-text"></i> Go To this Spot Page
+      </ion-item>
     </ion-list>
   </ion-content>
 </ion-popover-view>
