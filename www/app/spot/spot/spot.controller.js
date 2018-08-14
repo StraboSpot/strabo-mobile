@@ -29,6 +29,7 @@
     vm.featureLevelTags = [];
     vm.featureLevelTagsToDisplay = [];
     vm.mineralTags = [];
+    vm.minerals = false;
     vm.selectedType = 'all';
     vm.spotLevelTags = [];
     vm.spotLevelTagsToDisplay = [];
@@ -286,6 +287,8 @@
     function createTag() {
       vm.addTagModal.hide();
       var id = HelpersFactory.getNewId();
+      $log.log($state.current.name);
+      if ($state.current.name === 'app.spotTab.minerals') TagFactory.setIsMineralsTag(true);
       vm.submit('/app/tags/' + id);
     }
 

@@ -320,7 +320,11 @@
       var id = $state.params.tag_id;
       vm.data = ProjectFactory.getTag(id);
       vm.data.id = id;  // Just in case vm.tag is undefined
-
+      var isMineralsTag = TagFactory.getIsMineralsTag();
+      if (isMineralsTag) {
+        vm.data.type = 'mineral';
+        TagFactory.setIsMineralsTag(false);
+      }
       if (vm.data.color) vm.color = vm.data.color;
 
       if (vm.data.type === 'geologic_unit') FormFactory.setForm('rock_unit');
