@@ -35,7 +35,9 @@
       {'value': 'strat_section', 'label': 'Strat Section', 'path': 'strat-section'},
       {'value': 'sed_lithologies', 'label': 'Sed Lithologies', 'path': 'sed-lithologies'},
       {'value': 'sed_structures', 'label': 'Sed Structures', 'path': 'sed-structures'},
-      {'value': 'sed_interpretations', 'label': 'Sed Interpretations', 'path': 'sed-interpretations'}/*,
+      {'value': 'sed_interpretations', 'label': 'Sed Interpretations', 'path': 'sed-interpretations'},
+      {'value': 'experimental_set_up', 'label': 'Experimental Set Up', 'path': 'experimental-set-up'},
+      {'value': 'experimental_results', 'label': 'Experimental Results', 'path': 'experimental-results'}/*,
       {'value': 'thin_section', 'label': 'Thin Section', 'path': 'thin-section'}*/];
     var visibleDatasets = [];
 

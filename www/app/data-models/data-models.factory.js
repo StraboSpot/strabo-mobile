@@ -42,6 +42,18 @@
         'choices_file': 'app/data-models/image_properties-choices.csv'
       },
       'micro': {
+        'experimental_results': {
+          'survey': {},
+          'survey_file': 'app/data-models/micro/experimental-results-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/micro/experimental-results-choices.csv'
+        },
+        'experimental_set_up': {
+          'survey': {},
+          'survey_file': 'app/data-models/micro/experimental-set-up-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/micro/experimental-set-up-choices.csv'
+        },
         'thin_section': {
           'survey': {},
           'survey_file': 'app/data-models/micro/thin-section-survey.csv',

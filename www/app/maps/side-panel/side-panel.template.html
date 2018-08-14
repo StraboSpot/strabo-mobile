@@ -86,6 +86,12 @@
         <div ng-show='sidePanel.isActiveTab("sed-interpretations")' ng-controller='SedInterpretationsTabController as vmChild'>
           <strabo-sed-interpretations-tab-directive></strabo-sed-interpretations-tab-directive>
         </div>
+        <div ng-show='sidePanel.isActiveTab("experimental-set-up")' ng-controller='ExperimentalSetUpTabController as vmChild'>
+          <strabo-experimental-set-up-tab-directive></strabo-experimental-set-up-tab-directive>
+        </div>
+        <div ng-show='sidePanel.isActiveTab("experimental-results")' ng-controller='ExperimentalResultsTabController as vmChild'>
+          <strabo-experimental-results-tab-directive></strabo-experimental-results-tab-directive>
+        </div>
       </div>
     </div>
   </div>

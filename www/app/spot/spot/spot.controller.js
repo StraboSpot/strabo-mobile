@@ -493,6 +493,16 @@
             if (!vm.spot.properties.sed.interpretations) vm.spot.properties.sed.interpretations = {};
             vm.spot.properties.sed.interpretations = vm.data;
           }
+          else if (vm.stateName === 'app.spotTab.experimental-set-up' && !_.isEmpty(vm.data)) {
+            if (!vm.spot.properties.micro) vm.spot.properties.micro = {};
+            if (!vm.spot.properties.micro.experimental_set_up) vm.spot.properties.micro.experimental_set_up = {};
+            vm.spot.properties.micro.experimental_set_up = vm.data;
+          }
+          else if (vm.stateName === 'app.spotTab.experimental-results' && !_.isEmpty(vm.data)) {
+            if (!vm.spot.properties.micro) vm.spot.properties.micro = {};
+            if (!vm.spot.properties.micro.experimental_results) vm.spot.properties.micro.experimental_results = {};
+            vm.spot.properties.micro.experimental_results = vm.data;
+          }
           var isEqual = _.isEqual(vm.spot, savedSpot);
           if (isEqual) return $q.resolve(vm.spot);
           else {
