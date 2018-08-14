@@ -4,11 +4,15 @@ cs3xd00,sketch,sketch,1
 cs3xd00,geological_cs,geological cross section,2
 cs3xd00,geophysical_cs,geophysical cross section,3
 cs3xd00,strat_section,stratigraphic section,4
-cs3xd00,micrograph,micrograph,5
-cs3xd00,micrograph_ref,micrograph reference,6
+cs3xd00,micrograph_ref,micrograph reference,5
+cs3xd00,micrograph,micrograph,6
 cs3xd00,sample,sample,7
 cs3xd00,subsample,subsample,8
-cs3xd00,other_image_ty,other,9
+cs3xd00,undef_sample,undeformed sample,9
+cs3xd00,exp_setup,experimental setup,10
+cs3xd00,def_sample,deformed sample,11
+cs3xd00,exp_apparatus,experimental apparatus,12
+cs3xd00,other_image_ty,other,13
 fx9ay49,light,Light,
 fx9ay49,bse,BSE,
 fx9ay49,se,SE,
