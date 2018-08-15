@@ -345,8 +345,15 @@
       }
       else if (image.image_type === 'micrograph') {
         var micrographRefId = null;
-        _.each(vmParent.spot.properties.images, function (image) {
-          if (image.image_type === 'micrograph_ref') micrographRefId = image.id;
+        var parentGenerationsSpots = SpotFactory.getParentGenerationsSpots(vmParent.spot, 10);
+        var thisAndParentGenerationsSpots = [[vmParent.spot]].concat(parentGenerationsSpots);
+        _.find(thisAndParentGenerationsSpots, function (thisAndParentGenerationSpots) {
+          return _.find(thisAndParentGenerationSpots, function (spot) {
+            return _.find(spot.properties.images, function (image) {
+              if (image.image_type === 'micrograph_ref') micrographRefId = image.id;
+              return image.image_type === 'micrograph_ref';
+            });
+          });
         });
         if (micrographRefId)  vmParent.submit('/app/thin-sections/' + micrographRefId);
         else vmParent.submit('/app/image-basemaps/' + image.id);
