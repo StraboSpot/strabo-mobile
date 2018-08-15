@@ -19,6 +19,11 @@
         <span ng-if='vmChild.parentGenerations.length - $index - 1 === 2'>3rd</span>
         <span ng-if='vmChild.parentGenerations.length - $index - 1 === 3'>4th</span>
         <span ng-if='vmChild.parentGenerations.length - $index - 1 === 4'>5th</span>
+        <span ng-if='vmChild.parentGenerations.length - $index - 1 === 5'>6th</span>
+        <span ng-if='vmChild.parentGenerations.length - $index - 1 === 6'>7th</span>
+        <span ng-if='vmChild.parentGenerations.length - $index - 1 === 7'>8th</span>
+        <span ng-if='vmChild.parentGenerations.length - $index - 1 === 8'>9th</span>
+        <span ng-if='vmChild.parentGenerations.length - $index - 1 === 9'>10th</span>
         <span>Generation Parents</span>
         <div class='nest-block'>
           <div ng-repeat='spot in generation'>
@@ -54,6 +59,11 @@
         <span ng-if='$index === 2'>3rd</span>
         <span ng-if='$index === 3'>4th</span>
         <span ng-if='$index === 4'>5th</span>
+        <span ng-if='$index === 5'>6th</span>
+        <span ng-if='$index === 6'>7th</span>
+        <span ng-if='$index === 7'>8th</span>
+        <span ng-if='$index === 8'>9th</span>
+        <span ng-if='$index === 9'>10th</span>
         <span>Generation Children</span>
         <div class='nest-block'>
           <div ng-repeat='spot in generation'>

@@ -461,36 +461,10 @@
 
     // Gather 5 generations up and down from current Spot with Micrograph Reference
     function gatherSpotGenerations() {
-      function getChildren(spots) {
-        var allChildrenSpots = [];
-        _.each(spots, function (spot) {
-          var childrenSpots = SpotFactory.getChildrenSpots(spot);
-          if (!_.isEmpty(childrenSpots)) allChildrenSpots.push(childrenSpots);
-        });
-        return _.flatten(allChildrenSpots);
-      }
-
-      function getParents(spots) {
-        var allParentSpots = [];
-        _.each(spots, function (spot) {
-          var parentSpots = SpotFactory.getParentSpots(spot);
-          if (!_.isEmpty(parentSpots)) allParentSpots.push(parentSpots);
-        });
-        return _.flatten(allParentSpots);
-      }
-
-      var parentSpots = [vm.thisSpotWithThinSection];
-      _.times(5, function (i) {
-        parentSpots = getParents(parentSpots);
-        if (!_.isEmpty(parentSpots)) vm.parentGenerations.push(parentSpots);
-      });
+      vm.parentGenerations = SpotFactory.getParentGenerationsSpots(vm.thisSpotWithThinSection, 10);
       $log.log('parentGenerations', vm.parentGenerations);
 
-      var childSpots = [vm.thisSpotWithThinSection];
-      _.times(5, function (i) {
-        childSpots = getChildren(childSpots);
-        if (!_.isEmpty(childSpots)) vm.childGenerations.push(childSpots);
-      });
+      vm.childGenerations = SpotFactory.getChildrenGenerationsSpots(vm.thisSpotWithThinSection, 10);
       $log.log('childGenerations', vm.childGenerations);
     }
 
