@@ -124,7 +124,8 @@
           }
           ctx.textAlign = 'center';
           p = getPixel([x, heightPixels + xTickLength + 5], pixelRatio, mapName);
-          ctx.fillText(label.toString(), p.x, p.y);
+          if (i === 0) ctx.fillText('0' + units, p.x, p.y);
+          else ctx.fillText(label.toString(), p.x, p.y);
           p = getPixel([x, heightPixels + xTickLength], pixelRatio, mapName);
           ctx.moveTo(p.x, p.y);
           p = getPixel([x, heightPixels], pixelRatio, mapName);
