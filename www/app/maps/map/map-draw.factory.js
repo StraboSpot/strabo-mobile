@@ -207,7 +207,7 @@
         '</ion-input>' +
         '<ion-list>' +
         '<ion-radio ng-model="unitChoice" ng-value="\'_m\'">um</ion-radio>' +
-        '<ion-radio ng-model="unitChoice" ng-value="\'m\'">mm</ion-radio>' +
+        '<ion-radio ng-model="unitChoice" ng-value="\'mm\'">mm</ion-radio>' +
         '<ion-radio ng-model="unitChoice" ng-value="\'cm\'">cm</ion-radio>' +
         '<ion-radio ng-model="unitChoice" ng-value="\'m\'">m</ion-radio>' +
         '<ion-radio ng-model="unitChoice" ng-value="\'km\'">km</ion-radio>' +
