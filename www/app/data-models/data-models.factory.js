@@ -42,6 +42,12 @@
         'choices_file': 'app/data-models/image_properties-choices.csv'
       },
       'micro': {
+        'experimental_apparatus': {
+          'survey': {},
+          'survey_file': 'app/data-models/micro/experimental-apparatus-tag-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/micro/experimental-apparatus-tag-choices.csv'
+        },
         'experimental_results': {
           'survey': {},
           'survey_file': 'app/data-models/micro/experimental-results-survey.csv',

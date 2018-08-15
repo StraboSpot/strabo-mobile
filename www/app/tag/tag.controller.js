@@ -281,6 +281,7 @@
       if (vm.data.color) vm.color = vm.data.color;
 
       if (vm.data.type === 'geologic_unit') FormFactory.setForm('rock_unit');
+      else if (vm.data.type === 'experimental_apparatus') FormFactory.setForm('micro', 'experimental_apparatus');
 
       fixOldData();
 
@@ -546,7 +547,7 @@
     }
 
     function toggleFilter(filter, emptyType) {
-      if (vm.filterConditions[filter]) delete vm.filterConditions[filter]
+      if (vm.filterConditions[filter]) delete vm.filterConditions[filter];
       else vm.filterConditions[filter] = emptyType || undefined;
     }
 
@@ -565,6 +566,7 @@
       FormFactory.clearForm();
 
       if (vm.data.type === 'geologic_unit') FormFactory.setForm('rock_unit');
+      else if (vm.data.type === 'experimental_apparatus') FormFactory.setForm('micro', 'experimental_apparatus');
     }
   }
 }());

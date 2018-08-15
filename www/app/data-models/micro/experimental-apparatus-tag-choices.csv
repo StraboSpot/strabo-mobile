@@ -1,0 +1,13 @@
+list_name,name,label
+ee8xd16,gas,Gas
+ee8xd16,solid,Solid
+ee8xd16,liquid,Liquid
+ee8xd16,other,Other
+hc9iu03,strain_gauge,Strain Gauge
+hc9iu03,piezoelectric,Piezoelectric
+hc9iu03,lvdt,LVDT
+hc9iu03,dcdt,DCDT
+hc9iu03,temperature,Temperature
+hc9iu03,force_gauge,Force Gauge
+hc9iu03,pressure_trans,Pressure Transducer
+hc9iu03,other,Other
