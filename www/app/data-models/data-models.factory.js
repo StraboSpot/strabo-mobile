@@ -48,6 +48,12 @@
           'choices': {},
           'choices_file': 'app/data-models/micro/experimental-results-choices.csv'
         },
+        'experimental_sample': {
+          'survey': {},
+          'survey_file': 'app/data-models/micro/experimental-sample-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/micro/experimental-sample-choices.csv'
+        },
         'experimental_set_up': {
           'survey': {},
           'survey_file': 'app/data-models/micro/experimental-set-up-survey.csv',

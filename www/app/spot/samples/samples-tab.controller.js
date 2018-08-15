@@ -29,6 +29,7 @@
     vm.addSubsample = addSubsample;
     vm.deleteSample = deleteSample;
     vm.editSample = editSample;
+    vm.getIsWeb = getIsWeb;
     vm.goToSubsampleSpot = goToSubsampleSpot;
     vm.isOptionChecked = isOptionChecked;
     vm.loadMoreSpots = loadMoreSpots;
@@ -76,7 +77,7 @@
       if (vmParent.spot.properties.strat_section_id) {
         newSpot.properties.strat_section_id = vmParent.spot.properties.strat_section_id;
       }
-        return SpotFactory.setNewSpot(newSpot);
+      return SpotFactory.setNewSpot(newSpot);
     }
 
     function loadTab(state) {
@@ -169,14 +170,22 @@
      * Public Functions
      */
 
-    function addSample() {
-      FormFactory.setForm('sample');
+    function addSample(type) {
       vmParent.data = {};
+      if (type === 'field') {
+        FormFactory.setForm('sample');
+        vmParent.data.sample_type = 'field';
+        vm.modalTitle = 'Add a Field Sample';
+      }
+      else {
+        FormFactory.setForm('micro', 'experimental_sample');
+        vmParent.data.sample_type = 'experimental';
+        vm.modalTitle = 'Add an Experimental Sample';
+      }
       vmParent.data.id = HelpersFactory.getNewId();
       var number = ProjectFactory.getSampleNumber() || '';
       var prefix = ProjectFactory.getSamplePrefix() || '';
       if (number !== '' || prefix !== '') vmParent.data.sample_id_name = prefix + number.toString();
-      vm.modalTitle = 'Add a Sample';
       vm.basicFormModal.show();
     }
 
@@ -184,14 +193,22 @@
       vm.selectSpotModal.show();
     }
 
-    function addSubsample() {
-      FormFactory.setForm('sample');
+    function addSubsample(type) {
       vmParent.data = {};
+      if (type === 'field') {
+        FormFactory.setForm('sample');
+        vmParent.data.sample_type = 'field';
+        vm.modalTitle = 'Add a Field Sample/Subsample Spot';
+      }
+      else {
+        FormFactory.setForm('micro', 'experimental_sample');
+        vmParent.data.sample_type = 'experimental';
+        vm.modalTitle = 'Add an Experimental Sample/Subsample Spot';
+      }
       vmParent.data.id = HelpersFactory.getNewId();
       var number = ProjectFactory.getSampleNumber() || '';
       var prefix = ProjectFactory.getSamplePrefix() || '';
       if (number !== '' || prefix !== '') vmParent.data.sample_id_name = prefix + number.toString();
-      vm.modalTitle = 'Add a Subsample Spot';
       vm.basicFormModal.show();
     }
 
@@ -216,9 +233,19 @@
 
     function editSample(sampleToEdit) {
       vmParent.data = angular.fromJson(angular.toJson(sampleToEdit));  // Copy value, not reference
-      FormFactory.setForm('sample');
-      vm.modalTitle = 'Edit Sample';
+      if (vmParent.data.sample_type === 'experimental') {
+        FormFactory.setForm('micro', 'experimental_sample');
+        vm.modalTitle = 'Edit Experimental Sample';
+      }
+      else {
+        FormFactory.setForm('sample');
+        vm.modalTitle = 'Edit Field Sample';
+      }
       vm.basicFormModal.show();
+    }
+
+    function getIsWeb() {
+      return IS_WEB;
     }
 
     function goToSubsampleSpot(spot) {
