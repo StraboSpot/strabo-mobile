@@ -275,7 +275,8 @@
         if (!vmParent.data.label) vmParent.data.label = createDefaultLabel(vmParent.data);
         if (!vmParent.spot.properties.samples) vmParent.spot.properties.samples = [];
         handleSampleNumber();
-        if (vm.modalTitle === 'Add a Subsample Spot') {
+        if (vm.modalTitle === 'Add a Field Sample/Subsample Spot' ||
+          vm.modalTitle === 'Add an Experimental Sample/Subsample Spot') {
           createNewSpotWithSubsample().then(function (newSpotId) {
             vmParent.spot.properties.samples.push({'spot_id': newSpotId});
             vmParent.data = {};
