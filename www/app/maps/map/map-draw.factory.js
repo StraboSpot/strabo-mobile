@@ -333,7 +333,7 @@
             if (spotWithThisImage.properties.lat) geojsonObj.properties.lat = spotWithThisImage.properties.lat;
             if (spotWithThisImage.properties.lng) geojsonObj.properties.lng = spotWithThisImage.properties.lng;
           }
-          else {
+          else if (!_.isEmpty(spotWithThisImage.geometry)) {
             // If parent Spot is mapped geographically take the center of the geometry to user for lat and lng
             var center = turf.center(spotWithThisImage);
             geojsonObj.properties.lat = HelpersFactory.roundToDecimalPlaces(turf.getCoords(center)[1], 6);
