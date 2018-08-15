@@ -151,7 +151,7 @@
       if (type === 'metamorphic_most_common') vm.modalTitle = 'Metamorphic Minerals';
       else if (type === 'igneous_most_common') vm.modalTitle = 'Igneous Minerals';
       else if (type === 'sedimentary_most_common') vm.modalTitle = 'Sedimentary Minerals';
-
+      else if (type === 'heavy_most_common') vm.modalTitle = 'Heavy Minerals';
       vm.isShowInfoOnly = false;
       vm.isShowMineralList = true;
       vm.mineralsModal.show();
@@ -623,6 +623,7 @@
         if (vm.modalTitle === 'Metamorphic Minerals') form = 'metamorphic';
         else if (vm.modalTitle === 'Igneous Minerals') form = 'igneous';
         else if (vm.modalTitle === 'Sedimentary Minerals') form = 'sedimentary';
+        else if (vm.modalTitle === 'Heavy Minerals') form = 'heavy';
       }
 
       else {
@@ -631,6 +632,8 @@
         if (vm.modalTitle === 'Metamorphic Minerals') form = 'metamorphic_most_common';
         else if (vm.modalTitle === 'Igneous Minerals') form = 'igneous_most_common';
         else if (vm.modalTitle === 'Sedimentary Minerals') form = 'sedimentary_most_common';
+        else if (vm.modalTitle === 'Heavy Minerals') form = 'heavy_most_common';
+
       }
       $log.log(vm.modalData);
       FormFactory.setForm('minerals', form);
