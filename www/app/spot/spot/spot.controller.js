@@ -293,7 +293,8 @@
     // Delete the spot
     function deleteSpot() {
       vm.popover.hide().then(function () {
-        if (SpotFactory.isSafeDelete(vm.spot)) {
+        var deleteMsg = SpotFactory.isSafeDelete(vm.spot);
+        if (!deleteMsg) {
           var confirmPopup = $ionicPopup.confirm({
             'title': 'Delete Spot',
             'template': 'Are you sure you want to delete this spot?'
@@ -319,7 +320,7 @@
         else {
           $ionicPopup.alert({
             'title': 'Spot Deletion Prohibited!',
-            'template': 'This Spot has dependencies that need to be removed before it can be deleted.'
+            'template': deleteMsg
           });
         }
       });

@@ -437,7 +437,8 @@
     }
 
     function deleteSpot(spot) {
-      if (SpotFactory.isSafeDelete(spot)) {
+      var deleteMsg = SpotFactory.isSafeDelete(spot);
+      if (!deleteMsg) {
         var confirmPopup = $ionicPopup.confirm({
           'title': 'Delete Spot',
           'template': 'Are you sure you want to delete Spot ' + spot.properties.name + '?'
@@ -457,8 +458,7 @@
       else {
         $ionicPopup.alert({
           'title': 'Spot Deletion Prohibited!',
-          'template': 'This Spot has at least one image being used as an image basemap. Remove any image basemaps' +
-          ' from this Spot before deleting.'
+          'template': deleteMsg
         });
       }
     }

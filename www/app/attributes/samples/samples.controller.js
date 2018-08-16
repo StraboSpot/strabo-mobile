@@ -35,10 +35,8 @@
       _.each(spots, function (spot) {
         if (spot.properties.samples) {
           _.each(spot.properties.samples, function (sample) {
-            if (!sample.spot_id) {
-              sample.spotId = spot.properties.id;
-              vm.samples.push(sample);
-            }
+            sample.spotId = spot.properties.id;
+            vm.samples.push(sample);
           });
         }
       });

@@ -16,27 +16,25 @@
     var thisTabName = 'samples';
 
     vm.basicFormModal = {};
-    vm.isFilterOn = false;
     vm.modalTitle = '';
-    vm.samples = [];
-    vm.selectSpotModal = {};
+    vm.selectSampleSpotModal = {};
     vm.spots = {};
     vm.spotsDisplayed = [];
-    vm.subsamples = [];
+    vm.nestedSamplesSpots = [];
 
     vm.addSample = addSample;
     vm.addExistingSubsample = addExistingSubsample;
-    vm.addSubsample = addSubsample;
+    vm.addNewSampleSpot = addNewSampleSpot;
     vm.deleteSample = deleteSample;
     vm.editSample = editSample;
     vm.getIsWeb = getIsWeb;
-    vm.goToSubsampleSpot = goToSubsampleSpot;
+    vm.goToNestedSpot = goToNestedSpot;
     vm.isOptionChecked = isOptionChecked;
     vm.loadMoreSpots = loadMoreSpots;
     vm.moreSpotsCanBeLoaded = moreSpotsCanBeLoaded;
     vm.submit = submit;
     vm.toggleChecked = toggleChecked;
-    vm.unlinkSubsampleSpot = unlinkSubsampleSpot;
+    vm.unlinkNestedSpot = unlinkNestedSpot;
 
     activate();
 
@@ -63,8 +61,8 @@
       });
     }
 
-    // Create a new Spot with the Subsample data
-    function createNewSpotWithSubsample() {
+    // Create a new Spot with the sample data
+    function createNewSampleSpot() {
       var newSpot = {'type': 'Feature'};
       if (vmParent.spot.geometry) newSpot.geometry = vmParent.spot.geometry;
       newSpot.properties = {
@@ -84,8 +82,15 @@
       vmParent.loadTab(state);     // Need to load current state into parent
       FormFactory.setForm('sample');
       $log.log('Samples:', vmParent.spot.properties.samples);
+
+      /* Remove samples without ids - holdover form temporarily adding a nested spot id in properties.samples */
+      vmParent.spot.properties.samples = _.filter(vmParent.spot.properties.samples, function (sample) {
+        return _.has(sample, 'id');
+      });
+      if (_.isEmpty(vmParent.spot.properties.samples)) delete vmParent.spot.properties.samples;
+
       checkProperties();
-      splitSamples();
+      gatherNestedSampleSpots();
       setDisplayedSpots();
       createModal();
     }
@@ -113,17 +118,24 @@
         vm.basicFormModal = modal;
       });
 
-      $ionicModal.fromTemplateUrl('app/shared/select-spot-modal.html', {
+      $ionicModal.fromTemplateUrl('app/spot/samples/select-sample-spot-modal.html', {
         'scope': $scope,
         'animation': 'slide-in-up'
       }).then(function (modal) {
-        vm.selectSpotModal = modal;
+        vm.selectSampleSpotModal = modal;
       });
 
       // Cleanup the modal when we're done with it!
       $scope.$on('$destroy', function () {
         vm.basicFormModal.remove();
-        vm.selectSpotModal.remove();
+        vm.selectSampleSpotModal.remove();
+      });
+    }
+
+    function gatherNestedSampleSpots() {
+      var childSpots = SpotFactory.getChildrenGenerationsSpots(vmParent.spot, 1);
+      vm.nestedSamplesSpots = _.filter(childSpots[0], function (childSpot) {
+        return !_.isEmpty(childSpot.properties.samples);
       });
     }
 
@@ -135,35 +147,13 @@
     }
 
     function setDisplayedSpots() {
-      if (_.isEmpty(SpotsFactory.getFilterConditions())) {
-        vm.spots = _.values(SpotsFactory.getActiveSpots());
-        vm.isFilterOn = false;
-      }
-      else {
-        vm.spots = _.values(SpotsFactory.getFilteredSpots());
-        vm.isFilterOn = true;
-      }
+      vm.spots = _.values(SpotsFactory.getActiveSpots());
       vm.spots = _.reject(vm.spots, function (spot) {
-        return spot.properties.id === vmParent.spot.properties.id;
+        return spot.properties.id === vmParent.spot.properties.id || _.isEmpty(spot.properties.samples);
       });
       vm.spots = SpotsFactory.sortSpots(vm.spots);
       if (!IS_WEB) vm.spotsDisplayed = vm.spots.slice(0, 25);
       else vm.spotsDisplayed = vm.spots;
-    }
-
-    // Split the samples list into two lists based on whether the sample is an actual sample or just a link.
-    // to a Subsample Spot. Subsample Spots have the field spot_id whereas actual samples do not.
-    function splitSamples() {
-      var samplesPartitioned = _.partition(vmParent.spot.properties.samples, function (sample) {
-        return sample.spot_id;
-      });
-      vm.subsamples = samplesPartitioned[0];
-      vm.samples = samplesPartitioned[1];
-
-      _.each(vm.subsamples, function (subsample, i) {
-        var linkedSpot = SpotFactory.getSpotById(subsample.spot_id);
-        if (!_.isEmpty(linkedSpot)) vm.subsamples[i] = linkedSpot;
-      });
     }
 
     /**
@@ -190,10 +180,10 @@
     }
 
     function addExistingSubsample() {
-      vm.selectSpotModal.show();
+      vm.selectSampleSpotModal.show();
     }
 
-    function addSubsample(type) {
+    function addNewSampleSpot(type) {
       vmParent.data = {};
       if (type === 'field') {
         FormFactory.setForm('sample');
@@ -225,7 +215,7 @@
           if (vmParent.spot.properties.samples.length === 0) delete vmParent.spot.properties.samples;
           vmParent.saveSpot().then(function () {
             vmParent.spotChanged = false;
-            splitSamples();
+            vmParent.updateSpotsList();
           });
         }
       });
@@ -248,13 +238,13 @@
       return IS_WEB;
     }
 
-    function goToSubsampleSpot(spot) {
+    function goToNestedSpot(spot) {
       if (spot.properties && spot.properties.id) $location.path('/app/spotTab/' + spot.properties.id + '/spot');
     }
 
     function isOptionChecked(spotId) {
-      return _.find(vm.subsamples, function (subsampleSpot) {
-        return subsampleSpot.properties.id === spotId;
+      return _.find(vm.nestedSamplesSpots, function (nestedSamplesSpot) {
+        return nestedSamplesSpot.properties.id === spotId;
       });
     }
 
@@ -277,13 +267,14 @@
         handleSampleNumber();
         if (vm.modalTitle === 'Add a Field Sample/Subsample Spot' ||
           vm.modalTitle === 'Add an Experimental Sample/Subsample Spot') {
-          createNewSpotWithSubsample().then(function (newSpotId) {
-            vmParent.spot.properties.samples.push({'spot_id': newSpotId});
+          createNewSampleSpot().then(function (newSpotId) {
+            if (!vmParent.spot.properties.nesting) vmParent.spot.properties.nesting = [];
+            vmParent.spot.properties.nesting.push(newSpotId);
             vmParent.data = {};
             vmParent.saveSpot().then(function () {
               vmParent.spotChanged = false;
               vmParent.updateSpotsList();
-              splitSamples();
+              gatherNestedSampleSpots();
             });
           });
         }
@@ -295,7 +286,7 @@
           vmParent.data = {};
           vmParent.saveSpot().then(function () {
             vmParent.spotChanged = false;
-            splitSamples();
+            vmParent.updateSpotsList();
           });
         }
         vm.basicFormModal.hide();
@@ -304,37 +295,49 @@
     }
 
     function toggleChecked(spot) {
-      var alreadyChecked = _.find(vm.subsamples, function (subsampleSpot) {
-        return subsampleSpot.properties.id === spot.properties.id;
+      var alreadyChecked = _.find(vm.nestedSamplesSpots, function (nestedSamplesSpot) {
+        return nestedSamplesSpot.properties.id === spot.properties.id;
       });
-      if (alreadyChecked) unlinkSubsampleSpot(spot);
-      else {
-        if (!vmParent.spot.properties.samples) vmParent.spot.properties.samples = [];
-        vmParent.spot.properties.samples.push({'spot_id': spot.properties.id});
+      if (alreadyChecked) {
+        vmParent.spot.properties.nesting = _.without(vmParent.spot.properties.nesting, spot.properties.id);
+        if (_.isEmpty(vmParent.spot.properties.nesting)) delete vmParent.spot.properties.nesting;
         vmParent.saveSpot().then(function () {
           vmParent.spotChanged = false;
-          splitSamples();
+          gatherNestedSampleSpots();
+        });
+      }
+      else {
+        if (!vmParent.spot.properties.nesting) vmParent.spot.properties.nesting = [];
+        vmParent.spot.properties.nesting = _.union(vmParent.spot.properties.nesting, [spot.properties.id]);
+        vmParent.saveSpot().then(function () {
+          vmParent.spotChanged = false;
+          gatherNestedSampleSpots();
         });
       }
     }
 
-    // Remove link between Subsample and Subsample Spot
-    function unlinkSubsampleSpot(spot) {
+    // Remove link to Nested Spot
+    function unlinkNestedSpot(spot) {
       var confirmPopup = $ionicPopup.confirm({
-        'title': 'Unlink Subsample Spot',
-        'template': 'Are you sure you want to unlink this Subsample Spot from this Spot?'
+        'title': 'Unlink Nested Spot',
+        'template': 'Are you sure you want to unlink this Nested Spot?'
       });
       confirmPopup.then(function (res) {
         if (res) {
-          vmParent.spot.properties.samples = _.reject(vmParent.spot.properties.samples, function (sample) {
-            if (sample.spot_id && spot.properties && spot.properties.id) return sample.spot_id === spot.properties.id;
-            else if (sample.spot_id) return sample.spot_id === spot.spot_id;
-          });
-          if (_.isEmpty(vmParent.spot.properties.samples)) delete vmParent.spot.properties.samples;
-          vmParent.saveSpot().then(function () {
-            vmParent.spotChanged = false;
-            splitSamples();
-          });
+          if (_.contains(vmParent.spot.properties.nesting, spot.properties.id)) {
+            vmParent.spot.properties.nesting = _.without(vmParent.spot.properties.nesting, spot.properties.id);
+            if (_.isEmpty(vmParent.spot.properties.nesting)) delete vmParent.spot.properties.nesting;
+            vmParent.saveSpot().then(function () {
+              vmParent.spotChanged = false;
+              gatherNestedSampleSpots();
+            });
+          }
+          else {
+            $ionicPopup.alert({
+              'title': 'Unable to Unlink Spot!',
+              'template': 'This Spot is nested through map geometry or an image basemap and must be modified there.'
+            });
+          }
         }
       });
     }

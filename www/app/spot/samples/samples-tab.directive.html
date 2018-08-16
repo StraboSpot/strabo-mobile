@@ -11,13 +11,13 @@
     <span class='button-text-big'
           ng-style='!vmChild.getIsWeb() && {"font-size": "x-small"}'>Add Experimental Sample Data to this Spot</span>
   </button>
-  <button ng-click='vmChild.addSubsample("field")'
+  <button ng-click='vmChild.addNewSampleSpot("field")'
           class='button button-clear button-positive'>
     <i class='icon ion-plus-circled'></i>
     <span class='button-text-big'
           ng-style='!vmChild.getIsWeb() && {"font-size": "x-small"}'>Add a New Sample/Subsample Spot</span>
   </button>
-  <button ng-click='vmChild.addSubsample("experimental")'
+  <button ng-click='vmChild.addNewSampleSpot("experimental")'
           class='button button-clear button-positive'>
     <i class='icon ion-plus-circled'></i>
     <span class='button-text-big'
@@ -27,14 +27,14 @@
           class='button button-clear button-positive'>
     <i class='icon ion-plus-circled'></i>
     <span class='button-text-big'
-          ng-style='!vmChild.getIsWeb() && {"font-size": "x-small"}'>Link to an Existing Sample/Subsample Spot</span>
+          ng-style='!vmChild.getIsWeb() && {"font-size": "x-small"}'>Nest an Existing Sample/Subsample Spot</span>
   </button>
-  <div class="padding" ng-show="vmChild.samples.length === 0 && vmChild.subsamples.length === 0">
+  <div class="padding" ng-show="!vm.spot.properties.samples">
     There are no samples at this Spot.
   </div>
   <ion-list>
     <ion-item class='item-text-wrap item-button-right'
-              ng-repeat='sample in vmChild.samples | orderBy: "label" track by sample.id'>
+              ng-repeat='sample in vm.spot.properties.samples | orderBy: "label" track by sample.id'>
       <div ng-click='vmChild.editSample(sample)'>
         <b>{{ sample.label }}</b>
         <span ng-show='vm.getTagNames(sample)' class='list-sub'>
@@ -51,18 +51,18 @@
       </div>
     </ion-item>
   </ion-list>
-  <!--<div class='field-group item item-divider' ng-show='vmChild.subsamples.length > 0'>
-    Linked Sample/Subsample Spots
+  <div class='field-group item item-divider' ng-show='vmChild.nestedSamplesSpots.length > 0'>
+    Nested Sample/Subsample Spots
   </div>
   <ion-list>
     <ion-item class='item-text-wrap item-button-right'
-              ng-repeat='spot in vmChild.subsamples | orderBy: "label" track by spot.properties.id'>
-      <div ng-click='vmChild.goToSubsampleSpot(spot)'>
-        <b>{{ spot.properties.name || 'Subsample Spot not found!'}}</b>
+              ng-repeat='spot in vmChild.nestedSamplesSpots | orderBy: "label" track by spot.properties.id'>
+      <div ng-click='vmChild.goToNestedSpot(spot)'>
+        <strabo-spots-list-directive></strabo-spots-list-directive>
       </div>
       <div class='buttons'>
-        <img class='strabo-icon' align='right' src='img/link-break.png' ng-click='vmChild.unlinkSubsampleSpot(spot)'>
+        <img class='strabo-icon' align='right' src='img/link-break.png' ng-click='vmChild.unlinkNestedSpot(spot)'>
       </div>
     </ion-item>
-  </ion-list>-->
+  </ion-list>
 </div>

@@ -65,7 +65,6 @@
       'getSpotById': getSpotById,
       'getSpotWithImageId': getSpotWithImageId,
       'getSpots': getSpots,
-      'getSubsampleSpot': getSubsampleSpot,
       'getTabs': getTabs,
       'goToSpot': goToSpot,
       'isSafeDelete': isSafeDelete,
@@ -95,7 +94,8 @@
       return _.flatten(allChildrenSpots);
     }
 
-    // Get all the children spots of thisSpot, based on image basemaps, strat sections and geometry
+    // Get all the children Spots of thisSpot, based on image basemaps, strat sections and geometry
+    // & also Spots stored in spot.properties.nesting not nested through geometry
     function getChildrenSpots(thisSpot) {
       var childrenSpots = [];
       // Find children spots based on image basemap
@@ -115,13 +115,17 @@
         });
         childrenSpots.push(stratSectionChildrenSpots);
       }
-      // Find children spots based on subsamples
-      if (thisSpot.properties.samples) {
-        var sampleChildrenSpots = [];
-        _.each(thisSpot.properties.samples, function (sample) {
-          if (sample.spot_id) sampleChildrenSpots.push(getSpotById(sample.spot_id));
+      // Find children spots not nested through geometry - nested directly in spot.properties.nesting
+      if (thisSpot.properties.nesting) {
+        var nonGeomChildrenSpots = [];
+        _.each(thisSpot.properties.nesting, function (spotId) {
+          if (getSpotById(spotId)) nonGeomChildrenSpots.push(getSpotById(spotId));
+          else {
+            thisSpot.properties.nesting = _.without(thisSpot.properties.nesting, spotId);
+            if (_.isEmpty(thisSpot.properties.nesting)) delete thisSpot.properties.nesting;
+          }
         });
-        childrenSpots.push(sampleChildrenSpots);
+        childrenSpots.push(nonGeomChildrenSpots);
       }
       childrenSpots = _.flatten(childrenSpots);
       // Find children spots based on geometry
@@ -156,7 +160,8 @@
       return _.flatten(allParentSpots);
     }
 
-    // Get all the parent spots of thisSpot, based on image basemaps, strat sections and geometry
+    // Get all the parent Spots of thisSpot, based on image basemaps, strat sections and geometry
+    // & also Spots stored in spot.properties.nesting not nested through geometry
     function getParentSpots(thisSpot) {
       var parentSpots = [];
       // Find parent spots based on image basemap
@@ -177,13 +182,11 @@
         });
         parentSpots.push(parentStratSectionSpot);
       }
-      // Find parent spots based on subsamples
-      var parentSampleSpot = _.find(spots, function (spot) {
-        return _.find(spot.properties.samples, function (sample) {
-          return sample.spot_id && sample.spot_id === thisSpot.properties.id;
-        });
+      // Find parent Spots not nested through geometry - nested directly in spot.properties.nesting
+      var parentNonGeomSpot = _.find(spots, function (spot) {
+        return _.contains(spot.properties.nesting, thisSpot.properties.id);
       });
-      if (parentSampleSpot) parentSpots.push(parentSampleSpot);
+      if (parentNonGeomSpot) parentSpots.push(parentNonGeomSpot);
       parentSpots = _.flatten(parentSpots);
       // Find parent spots based on geometry
       if (_.has(thisSpot, 'geometry')) {
@@ -203,6 +206,13 @@
         });
       }
       return parentSpots;
+    }
+
+    // Get the the first Spot that has this Spot nested manually in spot.properties.nesting
+    function isManuallyNested(spotId) {
+      return _.find(spots, function (spot) {
+        return spot.properties.nesting && _.contains(spot.properties.nesting, spotId);
+      });
     }
 
     /**
@@ -439,6 +449,7 @@
     }
 
     function getSpotById(id) {
+      if (!spots[id]) $log.error('Looking for nonexistent Spot:', id);
       return spots[id];
     }
 
@@ -464,15 +475,6 @@
       });
     }
 
-    // Get the Spot that links to this Spot as a subsample
-    function getSubsampleSpot(spotId) {
-      return _.find(spots, function (spot) {
-        return _.find(spot.properties.samples, function (sample) {
-          return sample.spot_id && sample.spot_id === spotId;
-        });
-      });
-    }
-
     function getTabs() {
       return tabs;
     }
@@ -490,14 +492,19 @@
     }
 
     function isSafeDelete(spotToDelete) {
-      if (getSubsampleSpot(spotToDelete.properties.id)) return false;
-      if (spotToDelete.properties && spotToDelete.properties.sed && spotToDelete.properties.sed.strat_section) {
-        return false;
+      var spotWithManualNest = isManuallyNested(spotToDelete.properties.id);
+      if (spotWithManualNest) {
+        return "Remove the link to this Spot from the Samples page in Spot " + spotWithManualNest.properties.name +
+          " before deleting.";
       }
-      if (!spotToDelete.properties.images) return true;
-      return !_.find(spotToDelete.properties.images, function (image) {
-        return image.annotated === true;
-      });
+      if (!_.isEmpty(getChildrenGenerationsSpots(spotToDelete, 1)[0])) {
+        return "Delete the nested Spots for this Spot before deleting.";
+      }
+      if (spotToDelete.properties && spotToDelete.properties.sed && spotToDelete.properties.sed.strat_section) {
+        return "Remove the strat section from this Spot before deleting.";
+      }
+      if (!_.isEmpty(spotToDelete.properties.images)) return "Remove all images from this Spot before deleting.";
+      return null;
     }
 
     function loadSpots() {
