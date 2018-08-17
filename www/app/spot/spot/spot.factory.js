@@ -12,7 +12,7 @@
                        LocalStorageFactory, ProjectFactory, IS_WEB) {
     var activeNest = [];
     var activeSpots;  // Only Spots in the active datasets
-    var currentSpotId = undefined;
+    var currentSpotId;
     var isActiveNesting = false;
     var isKeepSpotSelected = false;
     var moveSpot = false;
@@ -36,10 +36,10 @@
       {'value': 'sed_lithologies', 'label': 'Sed Lithologies', 'path': 'sed-lithologies'},
       {'value': 'sed_structures', 'label': 'Sed Structures', 'path': 'sed-structures'},
       {'value': 'sed_interpretations', 'label': 'Sed Interpretations', 'path': 'sed-interpretations'},
+      {'value': 'experimental', 'label': 'Experimental', 'path': 'experimental'},
       {'value': 'experimental_set_up', 'label': 'Experimental Set Up', 'path': 'experimental-set-up'},
       {'value': 'experimental_results', 'label': 'Experimental Results', 'path': 'experimental-results'}/*,
       {'value': 'thin_section', 'label': 'Thin Section', 'path': 'thin-section'}*/];
-    var visibleDatasets = [];
 
     return {
       'addSpotToActiveNest': addSpotToActiveNest,

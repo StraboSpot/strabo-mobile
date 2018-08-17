@@ -494,6 +494,11 @@
             if (!vm.spot.properties.sed.interpretations) vm.spot.properties.sed.interpretations = {};
             vm.spot.properties.sed.interpretations = vm.data;
           }
+          else if (vm.stateName === 'app.spotTab.experimental' && !_.isEmpty(vm.data)) {
+            if (!vm.spot.properties.micro) vm.spot.properties.micro = {};
+            if (!vm.spot.properties.micro.experimental) vm.spot.properties.micro.experimental = {};
+            vm.spot.properties.micro.experimental = vm.data;
+          }
           else if (vm.stateName === 'app.spotTab.experimental-set-up' && !_.isEmpty(vm.data)) {
             if (!vm.spot.properties.micro) vm.spot.properties.micro = {};
             if (!vm.spot.properties.micro.experimental_set_up) vm.spot.properties.micro.experimental_set_up = {};

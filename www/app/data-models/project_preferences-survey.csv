@@ -21,6 +21,7 @@ end_group,,,,,,,
 begin_group,group_experimental_tab_control,Experimental Spot Page Control,,,,,
 acknowledge,experimental_set_up,Experimental Set Up (Testing Only),,false,,,
 acknowledge,experimental_results,Experimental Results (Testing Only),,false,,,
+acknowledge,experimental,Experimental (Testing Only),,false,,,
 end_group,,,,,,,
 begin_group,group_other_modes,Modes,,,,,
 acknowledge,strat_mode,Strat Mode (Testing Only),,false,,,
@@ -34,4 +35,4 @@ end_group,,,,,,,
 begin_group,group_vw6ff56,Privacy Control,,,,,
 acknowledge,public,Public?,,false,,,
 end_group,,,,,,,
-calculate,__version__,,,,,,'vC26SFy3JNwcV3bM6E9T3r'
+calculate,__version__,,,,,,'vpE3fhXU58xvVVR9E7jw8C'

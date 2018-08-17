@@ -86,6 +86,7 @@
     var spotTabStates = [
       {'state': '_3dstructures', 'template': '3d-structures/3dstructures-tab', 'controller': '_3DStructures'},
       {'state': 'data', 'template': 'data/data-tab', 'controller': 'Data'},
+      {'state': 'experimental', 'template': 'micro/experimental/experimental-tab', 'controller': 'Experimental'},
       {'state': 'experimental-results', 'template': 'micro/experimental-results/experimental-results-tab', 'controller': 'ExperimentalResults'},
       {'state': 'experimental-set-up', 'template': 'micro/experimental-set-up/experimental-set-up-tab', 'controller': 'ExperimentalSetUp'},
       {'state': 'images', 'template': 'images/images-tab', 'controller': 'Images'},
