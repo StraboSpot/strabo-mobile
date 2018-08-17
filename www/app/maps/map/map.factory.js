@@ -82,6 +82,14 @@
           'tilePath': '/{z}/{x}/{y}.png',
           'url': ['http://tiles.strabospot.org/v4/'],
           'maxZoom': 19                   // https://www.mapbox.com/help/define-mapbox-satellite/
+        },
+        'strabospot_mymaps': {
+          'attributions': '<a href="https://www.strabospot.org">StraboSpot Contributed</a>',
+          'imageType': 'png',
+          'mime': 'image/png',
+          'tilePath': '/{z}/{x}/{y}.png',
+          'url': ['https://strabospot.org/geotiff/tiles/'],
+          'maxZoom': 25
         }
       };
       return mapProviders[mapSource];

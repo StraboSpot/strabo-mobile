@@ -341,12 +341,14 @@
       switch (layer.source) {
         case 'osm':
           return new ol.source.OSM({'layer': 'osm'});
-        case 'strabo_spot_mapbox':  
+        case 'strabo_spot_mapbox':
         case 'mapbox_classic':
         case 'mapbox_styles':
           return new ol.source.XYZ({'url': url + layer.id + layer.tilePath + '?access_token=' + layer.key});
-        case 'map_warper':
-          return new ol.source.XYZ({'url': url + layer.id + layer.tilePath});
+          case 'map_warper':
+            return new ol.source.XYZ({'url': url + layer.id + layer.tilePath});
+          case 'strabospot_mymaps':
+            return new ol.source.XYZ({'url': url + layer.id + layer.tilePath});
         default:
           return new ol.source.XYZ({'url': ''});  // No basemap layer
       }
