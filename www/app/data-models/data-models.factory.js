@@ -48,6 +48,52 @@
           'choices': {},
           'choices_file': 'app/data-models/micro/experimental-apparatus-tag-choices.csv'
         },
+        'experimental_assembly': {
+          'survey': {},
+          'survey_file': 'app/data-models/micro/experimental-assembly-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/micro/experimental-assembly-choices.csv'
+        },
+        'experimental_general': {
+          'survey': {},
+          'survey_file': 'app/data-models/micro/experimental-general-survey.csv'
+        },
+        'experimental_griggs_conditions': {
+          'survey': {},
+          'survey_file': 'app/data-models/micro/experimental-griggs-conditions-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/micro/experimental-griggs-conditions-choices.csv'
+        },
+        'experimental_griggs_results': {
+          'survey': {},
+          'survey_file': 'app/data-models/micro/experimental-griggs-results-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/micro/experimental-griggs-results-choices.csv'
+        },
+        'experimental_heard_conditions': {
+          'survey': {},
+          'survey_file': 'app/data-models/micro/experimental-heard-conditions-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/micro/experimental-heard-conditions-choices.csv'
+        },
+        'experimental_heard_results': {
+          'survey': {},
+          'survey_file': 'app/data-models/micro/experimental-heard-results-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/micro/experimental-heard-results-choices.csv'
+        },
+        'experimental_paterson_conditions': {
+          'survey': {},
+          'survey_file': 'app/data-models/micro/experimental-paterson-conditions-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/micro/experimental-paterson-conditions-choices.csv'
+        },
+        'experimental_paterson_results': {
+          'survey': {},
+          'survey_file': 'app/data-models/micro/experimental-paterson-results-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/micro/experimental-paterson-results-choices.csv'
+        },
         'experimental_results': {
           'survey': {},
           'survey_file': 'app/data-models/micro/experimental-results-survey.csv',

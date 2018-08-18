@@ -1,0 +1,10 @@
+type,name,label,required,appearance,calculation
+start,start,,,,
+end,end,,,,
+text,name_of_experiment,Name Of Experiment,true,,
+date,date_of_experiment,Date of Experiment,true,,
+text,operator_name,Operator Name,true,,
+text,experiment_purpose,Experiment Purpose,true,multiline,
+text,experiment_procedure,Experiment Procedure,true,multiline,
+text,attach_apparatus_tag,Attach Apparatus Tag,false,,
+calculate,__version__,,,,'vNtZeGm5wnAXCPqqwsnWAc'

@@ -1,0 +1,23 @@
+list_name,name,label
+ji0rg23,confined__2_3,Confined ?2=?3
+jk9hb34,compressive_st,Compressive Strength
+jk9hb34,yield_strength,Yield Strength
+jk9hb34,flow_strength,Flow Strength
+jk9hb34,fracture_stren,Fracture Strength
+ec7he07,pa,Pa
+ec7he07,kpa,kPa
+ec7he07,mpa,MPa
+ec7he07,gpa,GPa
+ec7he07,n_m_2,N/m^2
+ec7he07,kn_mm_2,kN/mm^2
+fj8co57,steady_state,Steady State
+ej9uh22,melting,Melting
+ej9uh22,dehydration,Dehydration
+cj9wh19,brittle,Brittle
+cj9wh19,ductile,Ductile
+cj9wh19,brittle_ductil,Brittle-Ductile
+cj9wh19,cataclastic,Cataclastic
+cj9wh19,brittle_plasti,Brittle-Plastic
+cj9wh19,brittle_viscou,Brittle-Viscous
+cj9wh19,plastic,Plastic
+cj9wh19,deformation_ba,Deformation Bands

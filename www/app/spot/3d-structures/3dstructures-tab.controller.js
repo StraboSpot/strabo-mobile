@@ -105,8 +105,10 @@
             function (_3dStructure) {
               return _3dStructureToDelete.id === _3dStructure.id;
             });
-          if (vmParent.spot.properties._3d_structures === 0) delete vmParent.spot.properties._3d_structures;
-          vmParent.saveSpot();
+          if (vmParent.spot.properties._3d_structures.length === 0) delete vmParent.spot.properties._3d_structures;
+          vmParent.saveSpot().then(function () {
+            vmParent.spotChanged = false;
+          });
         }
       });
     }
@@ -131,7 +133,9 @@
         vmParent.data = {};
         vm.basicFormModal.hide();
         FormFactory.clearForm();
-        vmParent.saveSpot();
+        vmParent.saveSpot().then(function () {
+          vmParent.spotChanged = false;
+        });
       }
     }
   }

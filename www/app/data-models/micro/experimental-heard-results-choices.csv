@@ -1,0 +1,30 @@
+list_name,name,label
+ji0rg23,confined__2_3,Confined ?2=?3
+ec7he07,pa,Pa
+ec7he07,kpa,kPa
+ec7he07,mpa,MPa
+ec7he07,gpa,GPa
+ec7he07,n_m_2,N/m^2
+ec7he07,kn_mm_2,kN/mm^2
+fj8co57,steady_state,Steady State
+fj8co57,transient,Transient
+vr46o50,imposed_slip,Imposed Slip
+vr46o50,imposed_stress,Imposed Stress
+mc4rf85,rate_state,Rate-State
+mc4rf85,initial,Initial
+mc4rf85,peak,Peak
+mc4rf85,kinetic,Kinetic
+mc4rf85,static,Static
+mc4rf85,steady_state,Steady-State
+cf0su32,bulk_modulus,Bulk Modulus
+cf0su32,young_s_modulus,Young's Modulus
+ej9uh22,melting,Melting
+cj9wh19,_micro_crack_f,(micro)Crack/Fracture
+cj9wh19,brittle,Brittle
+cj9wh19,ductile,Ductile
+cj9wh19,brittle_ductil,Brittle-Ductile
+cj9wh19,cataclastic,Cataclastic
+cj9wh19,brittle_plasti,Brittle-Plastic
+cj9wh19,brittle_viscou,Brittle-Viscous
+cj9wh19,plastic,Plastic
+cj9wh19,deformation_ba,Deformation Bands
