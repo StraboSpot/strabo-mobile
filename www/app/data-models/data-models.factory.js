@@ -111,12 +111,6 @@
           'survey_file': 'app/data-models/micro/experimental-set-up-survey.csv',
           'choices': {},
           'choices_file': 'app/data-models/micro/experimental-set-up-choices.csv'
-        },
-        'thin_section': {
-          'survey': {},
-          'survey_file': 'app/data-models/micro/thin-section-survey.csv',
-          'choices': {},
-          'choices_file': 'app/data-models/micro/thin-section-choices.csv'
         }
       },
       'minerals': {

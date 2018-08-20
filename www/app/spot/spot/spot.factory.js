@@ -38,8 +38,7 @@
       {'value': 'sed_interpretations', 'label': 'Sed Interpretations', 'path': 'sed-interpretations'},
       {'value': 'experimental', 'label': 'Experimental', 'path': 'experimental'},
       {'value': 'experimental_set_up', 'label': 'Experimental Set Up', 'path': 'experimental-set-up'},
-      {'value': 'experimental_results', 'label': 'Experimental Results', 'path': 'experimental-results'}/*,
-      {'value': 'thin_section', 'label': 'Thin Section', 'path': 'thin-section'}*/];
+      {'value': 'experimental_results', 'label': 'Experimental Results', 'path': 'experimental-results'}];
 
     return {
       'addSpotToActiveNest': addSpotToActiveNest,
