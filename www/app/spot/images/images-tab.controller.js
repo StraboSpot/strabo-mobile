@@ -5,15 +5,15 @@
     .module('app')
     .controller('ImagesTabController', ImagesTabController);
 
-  ImagesTabController.$inject = ['$document', '$http', '$ionicModal', '$ionicPopup', '$ionicScrollDelegate',
-    '$ionicSlideBoxDelegate', '$log', '$q', '$rootScope', '$scope', '$state', '$window', 'FormFactory',
-    'HelpersFactory', 'ImageFactory', 'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'RemoteServerFactory',
-    'SpotFactory', 'UserFactory', 'IS_WEB'];
+  ImagesTabController.$inject = ['$document', '$http', '$ionicLoading', '$ionicModal', '$ionicPopup',
+    '$ionicScrollDelegate', '$ionicSlideBoxDelegate', '$log', '$q', '$rootScope', '$scope', '$state', '$window',
+    'FormFactory', 'HelpersFactory', 'ImageFactory', 'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory',
+    'RemoteServerFactory', 'SpotFactory', 'UserFactory', 'IS_WEB'];
 
-  function ImagesTabController($document, $http, $ionicModal, $ionicPopup, $ionicScrollDelegate, $ionicSlideBoxDelegate,
-                               $log, $q, $rootScope, $scope, $state, $window, FormFactory, HelpersFactory, ImageFactory,
-                               LiveDBFactory, LocalStorageFactory, ProjectFactory, RemoteServerFactory, SpotFactory,
-                               UserFactory, IS_WEB) {
+  function ImagesTabController($document, $http, $ionicLoading, $ionicModal, $ionicPopup, $ionicScrollDelegate,
+                               $ionicSlideBoxDelegate, $log, $q, $rootScope, $scope, $state, $window, FormFactory,
+                               HelpersFactory, ImageFactory, LiveDBFactory, LocalStorageFactory, ProjectFactory,
+                               RemoteServerFactory, SpotFactory, UserFactory, IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -106,6 +106,9 @@
       var file = event.target.files[0];
       if (file) {
         $log.log('Getting file ....');
+        $ionicLoading.show({
+          'template': '<ion-spinner></ion-spinner><br>Getting Image...'
+        });
         ImageFactory.readFile(file);
       }
     }
@@ -136,6 +139,7 @@
       });
       return $q.all(promises).then(function () {
         $log.log('Image Sources:', imageSources);
+        $ionicLoading.hide();
       });
     }
 
