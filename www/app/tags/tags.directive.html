@@ -19,6 +19,10 @@
         </span>
         <b>{{tag.name}}</b>
         <strabo-tags-list-properties-directive></strabo-tags-list-properties-directive>
+        <span ng-if='tag.minerals.length > 0'>
+        (<span ng-repeat="mineral in tag.minerals | orderBy: mineral track by $index">{{vm.getLabel(mineral) }}<span
+          ng-hide="$last">, </span></span>)
+      </span>
       </div>
       <button class='button button-clear button-assertive'
          ng-click='vm.deleteTag(tag)'>

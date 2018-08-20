@@ -6,15 +6,15 @@
     .controller('SpotController', SpotController);
 
   SpotController.$inject = ['$document', '$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover',
-    '$ionicPopup', '$location', '$log', '$q', '$rootScope', '$scope', '$state', '$timeout', 'FormFactory',
-    'HelpersFactory', 'ImageFactory', 'MapEmogeosFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory',
-    'StratSectionFactory', 'TagFactory', 'IS_WEB'];
+    '$ionicPopup', '$location', '$log', '$q', '$rootScope', '$scope', '$state', '$timeout', 'DataModelsFactory',
+    'FormFactory', 'HelpersFactory', 'ImageFactory', 'MapEmogeosFactory', 'MapViewFactory', 'ProjectFactory',
+    'SpotFactory', 'StratSectionFactory', 'TagFactory', 'IS_WEB'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
   function SpotController($document, $ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup, $location,
-                          $log, $q, $rootScope, $scope, $state, $timeout, FormFactory, HelpersFactory, ImageFactory,
-                          MapEmogeosFactory, MapViewFactory, ProjectFactory, SpotFactory, StratSectionFactory,
-                          TagFactory, IS_WEB) {
+                          $log, $q, $rootScope, $scope, $state, $timeout, DataModelsFactory, FormFactory,
+                          HelpersFactory, ImageFactory, MapEmogeosFactory, MapViewFactory, ProjectFactory, SpotFactory,
+                          StratSectionFactory, TagFactory, IS_WEB) {
     var vmParent = $scope.vm;
     var vm = this;
 
@@ -28,6 +28,7 @@
     vm.featureId = undefined;
     vm.featureLevelTags = [];
     vm.featureLevelTagsToDisplay = [];
+    vm.mineralDisplay = {};
     vm.mineralTags = [];
     vm.minerals = false;
     vm.selectedType = 'all';
@@ -69,6 +70,7 @@
     vm.copyThisSpot = copyThisSpot;
     vm.deleteSpot = deleteSpot;
     vm.fieldChanged = fieldChanged;
+    vm.getLabel = getLabel;
     vm.goBack = goBack;
     vm.goToBackHistoryUrl = goToBackHistoryUrl;
     vm.goToSpot = goToSpot;
@@ -387,6 +389,10 @@
       }
     }
 
+    function getLabel(label) {
+      return DataModelsFactory.getLabel(label);
+    }
+
     function getNumTaggedFeatures(tag) {
       return TagFactory.getNumTaggedFeatures(tag);
     }
@@ -433,7 +439,7 @@
     function isTagChecked(tag) {
       if (vm.spot) {
         if (vm.stateName === 'app.spotTab.tags' || vm.stateName === 'app.spotTab.spot' ||
-         vm.stateName === 'app.spotTab.minerals') {
+          vm.stateName === 'app.spotTab.minerals') {
           if (tag.spots) return tag.spots.indexOf(vm.spot.properties.id) !== -1;
         }
         else {
@@ -466,11 +472,11 @@
       vm.featureLevelTags = _.filter(tags, function (tag) {
         return tag.features && tag.features[vm.spot.properties.id];
       });
-      vm.allMineralTags = _.filter(vm.allTags, function(tag){
+      vm.allMineralTags = _.filter(vm.allTags, function (tag) {
         return tag.type === "mineral";
       });
-      vm.mineralTags = _.filter(tags, function(tag){
-         return tag.type === "mineral";
+      vm.mineralTags = _.filter(tags, function (tag) {
+        return tag.type === "mineral";
       });
       //combines arrays in mineralTags and takes out duplicates
       vm.mineralDisplay = _.chain(vm.mineralTags).pluck('minerals').flatten().uniq().compact().value();
@@ -579,8 +585,8 @@
 
     function toggleTagChecked(tag) {
       // Tags and Spot tabs use the Spot level tags, all other tabs have feature level tags
-      if (vm.stateName === 'app.spotTab.tags' || vm.stateName === 'app.spotTab.spot' || 
-      vm.stateName === 'app.spotTab.minerals') {
+      if (vm.stateName === 'app.spotTab.tags' || vm.stateName === 'app.spotTab.spot' ||
+        vm.stateName === 'app.spotTab.minerals') {
         if (!tag.spots) tag.spots = [];
         var i = tag.spots.indexOf(vm.spot.properties.id);
         if (i === -1) tag.spots.push(vm.spot.properties.id);

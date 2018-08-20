@@ -56,7 +56,7 @@
   <ion-list>
     <ion-item class='item-text-wrap item-button-right'
               ng-repeat='mineral in vm.mineralDisplay | orderBy:"mineral" track by $index'>
-      <b>{{ vmChild.getLabel(mineral) }}</b>
+      <b>{{ vm.getLabel(mineral) }}</b>
       <button id="minerals-info-button-main"
       class=" button-small button-icon button ion-information-circled minerals-field-info-button"
       ng-click="vmChild.mineralInfoOnMainPage(mineral)"></button>

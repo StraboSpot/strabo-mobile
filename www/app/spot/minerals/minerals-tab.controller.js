@@ -37,7 +37,6 @@
     // vm.addMineral = addMineral;
     vm.addMineralTag = addMineralTag;
     // vm.changedCollectionToCreate = changedCollectionToCreate;
-    vm.getLabel = getLabel;
     // vm.hideMineralInfo = hideMineralInfo;
     // vm.loadCollection = loadCollection;
     vm.mineralInfoOnMainPage = mineralInfoOnMainPage;
@@ -159,10 +158,6 @@
     //   if (vm.selectedCollectionToCreate.name === '-- Create a New Collection --') vm.showNameField = true;
     //   else vm.showNameField = false;
     // }
-
-    function getLabel(label) {
-      return DataModelsFactory.getLabel(label);
-    }
 
     // //Hides the mineral info and display the mineral list
     // function hideMineralInfo() {

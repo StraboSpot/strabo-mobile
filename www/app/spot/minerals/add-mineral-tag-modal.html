@@ -14,7 +14,7 @@
                   ng-click='vm.toggleTagChecked(tag)'>
       <b>{{ tag.name }}</b>
       <strabo-tags-list-properties-directive></strabo-tags-list-properties-directive><br>
-      (<span ng-repeat="mineral in tag.minerals | orderBy: mineral track by $index">{{vmChild.getLabel(mineral) }}<span 
+      (<span ng-repeat="mineral in tag.minerals | orderBy: mineral track by $index">{{vm.getLabel(mineral) }}<span
         ng-hide="$last">, </span></span>)
     </ion-checkbox>
   </ion-content>
