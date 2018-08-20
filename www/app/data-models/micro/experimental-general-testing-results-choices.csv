@@ -1,0 +1,94 @@
+list_name,name,label
+ji0rg23,unconfined,Unconfined
+ji0rg23,confined_s2_s3,Confined s2=s3
+ji0rg23,confined_s1_s2,Confined s1=s2
+ji0rg23,confined_s2ns3,Confined s2 not = s3
+sy4hs36,pa,Pa
+sy4hs36,kpa,kPa
+sy4hs36,mpa,MPa
+sy4hs36,n_m_2,N/m^2
+sy4hs36,kn_mm_2,kN/mm^2
+jk9hb34,ultimate_tensi,Ultimate Tensile Strength
+jk9hb34,tensile_yield_,Tensile Yield Stress
+jk9hb34,ultimate_shear,Ultimate Shear Strength
+jk9hb34,shear_yield_st,Shear Yield Stress
+jk9hb34,true_tension_s,True Tension Strength
+jk9hb34,true_triaxial_,True Triaxial Strength
+jk9hb34,compressive_st,Compressive Strength
+jk9hb34,tensional_stre,Tensional Strength
+jk9hb34,torsion_streng,Torsion Strength
+jk9hb34,yield_strength,Yield Strength
+jk9hb34,flow_strength,Flow Strength
+jk9hb34,fracture_stren,Fracture Strength
+ec7he07,pa,Pa
+ec7he07,kpa,kPa
+ec7he07,mpa,MPa
+ec7he07,gpa,GPa
+ec7he07,n_m_2,N/m^2
+ec7he07,kn_mm_2,kN/mm^2
+fj8co57,steady_state,Steady State
+fj8co57,transient,Transient
+ru9au47,pa_m_1_2,Pa.m^1/2
+ru9au47,kpa_m_1_2,kPa.m^1/2
+ru9au47,mpa_m_1_2,MPa.m^1/2
+ru9au47,n_m_3_2,N.m^3/2
+ru9au47,kn_m_3_2,kN/m^3/2
+ru9au47,mn_m_3_2,MN.m^3/2
+vr46o50,imposed_slip,Imposed Slip
+vr46o50,imposed_stress,Imposed Stress
+mc4rf85,rate_state,Rate-State
+mc4rf85,initial,Initial
+mc4rf85,peak,Peak
+mc4rf85,dynamic,Dynamic
+mc4rf85,kinetic,Kinetic
+mc4rf85,static,Static
+mc4rf85,steady_state,Steady-State
+se3ad34,cm_2,cm^2
+se3ad34,m_2,m^2
+se3ad34,dm,dm
+se3ad34,md,md
+se3ad34,nd,nd
+cr7gu09,kg_m_3,kg/m^3
+cr7gu09,g_cm_3,g/cm^3
+is7kv27,pa_s,Pa.s
+is7kv27,m_2_s,m^2/s
+wk5rq20,root_mean_squa,Root Mean Square
+wk5rq20,mean_height_di,Mean Height Difference
+wk5rq20,power_spectral,Power Spectral Density
+cf0su32,bulk_modulus,Bulk Modulus
+cf0su32,shear_modulus,Shear Modulus
+cf0su32,young_s_modulu,Young's Modulus
+cf0su32,indentation_mo,Indentation Modulus
+cf0su32,poisson_ratio,Poisson Ratio
+zb8av05,m_s,m/s
+zb8av05,km_s,km/s
+oc2zk63,vp,Vp
+oc2zk63,vs,Vs
+oc2zk63,vp_vs,Vp/Vs
+kz3ia12,m_s,m/s
+kz3ia12,km_s,km/s
+lb7aq95,elastic_anisot,Elastic Anisotropy
+lb7aq95,seismic_anisot,Seismic Anisotropy
+tm5dx41,j_k_1,J.K^-1
+tm5dx41,kg_m_2_k_1_s_2,kg.m^2.k^-1.s^-2
+ej9uh22,melting,Melting
+ej9uh22,freezing,Freezing
+ej9uh22,vaporization,Vaporization
+ej9uh22,condensation,Condensation
+ej9uh22,deposition,Deposition
+ej9uh22,recombination,Recombination
+ej9uh22,sublimation,Sublimation
+ej9uh22,ionization,Ionization
+ej9uh22,deionization,Deionization
+ej9uh22,dehydration,Dehydration
+cj9wh19,_micro_crack_f,(micro)Crack/Fracture
+cj9wh19,brittle,Brittle
+cj9wh19,ductile,Ductile
+cj9wh19,brittle_ductil,Brittle-Ductile
+cj9wh19,cataclastic,Cataclastic
+cj9wh19,brittle_plasti,Brittle-Plastic
+cj9wh19,brittle_viscou,Brittle-Viscous
+cj9wh19,plastic,Plastic
+cj9wh19,deformation_ba,Deformation Bands
+cj9wh19,pressure_disso,Pressure Dissolutions
+cj9wh19,stress_corrosi,Stress Corrosion

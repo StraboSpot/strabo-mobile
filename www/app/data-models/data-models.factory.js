@@ -58,6 +58,18 @@
           'survey': {},
           'survey_file': 'app/data-models/micro/experimental-general-survey.csv'
         },
+        'experimental_general_results': {
+          'survey': {},
+          'survey_file': 'app/data-models/micro/experimental-general-testing-results-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/micro/experimental-general-testing-results-choices.csv'
+        },
+        'experimental_general_conditions': {
+          'survey': {},
+          'survey_file': 'app/data-models/micro/experimental-general-testing-conditions-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/micro/experimental-general-testing-conditions-choices.csv'
+        },
         'experimental_griggs_conditions': {
           'survey': {},
           'survey_file': 'app/data-models/micro/experimental-griggs-conditions-survey.csv',
