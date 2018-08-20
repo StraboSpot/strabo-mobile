@@ -48,7 +48,8 @@
         'marker_layer': 'Marker Layer',
         'other': 'Other',
         'concept': 'Concept',
-        'rosetta': 'Rosetta'
+        'rosetta': 'Rosetta',
+        'experimental_apparatus': 'Experimental Apparatus'
       };
     }
 

@@ -1,13 +1,48 @@
 list_name,name,label,order
-cs3xd00,photo,photo,0
+cs3xd00,photo,photo,
 cs3xd00,sketch,sketch,1
-cs3xd00,thin_section,thin section,2
-cs3xd00,geological_cs,geological cross section,3
-cs3xd00,geophysical_cs,geophysical cross section,4
-cs3xd00,strat_section,stratigraphic section,5
-cs3xd00,other_image_ty,other,6
+cs3xd00,geological_cs,geological cross section,2
+cs3xd00,geophysical_cs,geophysical cross section,3
+cs3xd00,strat_section,stratigraphic section,4
+cs3xd00,micrograph_ref,micrograph reference,5
+cs3xd00,micrograph,micrograph,6
+cs3xd00,sample,sample,7
+cs3xd00,subsample,subsample,8
+cs3xd00,undef_sample,undeformed sample,9
+cs3xd00,exp_setup,experimental setup,10
+cs3xd00,def_sample,deformed sample,11
+cs3xd00,exp_apparatus,experimental apparatus,12
+cs3xd00,other_image_ty,other,13
+fx9ay49,light,Light,
+fx9ay49,bse,BSE,
+fx9ay49,se,SE,
+fx9ay49,eds,EDS,
+fx9ay49,ebsd,EBSD,
+fx9ay49,xrf,XRF,
+fx9ay49,cl,CL,
+fx9ay49,fib,FIB,
+fx9ay49,sims,SIMS,
+fx9ay49,confocal,Confocal,
+fx9ay49,tem,TEM,
+fx9ay49,synchotron,Synchotron,
+fx9ay49,micro_ct,Micro CT,
+fx9ay49,sct,sCT,
+fx9ay49,other_microgra,Other,
+oc3xw76,reflected,Reflected,
+oc3xw76,transmitted,Transmitted,
+gx5mp47,plane_polarize,Plane Polarized,
+gx5mp47,cross_polarize,Cross Polarized,
+gx5mp47,partial_polari,Partial Polarized,
+xc4hd43,none,None,
+xc4hd43,quartz,Quartz,
+xc4hd43,gypsum,Gypsum,
 vt86z05,km,km,
 vt86z05,m,m,
 vt86z05,cm,cm,
 vt86z05,mm,mm,
 vt86z05,_m,um,
+bn1hn18,field,field,
+bn1hn18,sample,sample,
+bn1hn18,subsample,subsample,
+bn1hn18,micrograph,micrograph,
+bn1hn18,other,other,

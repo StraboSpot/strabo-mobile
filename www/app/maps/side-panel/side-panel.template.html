@@ -9,7 +9,7 @@
         <div class="strabo-subheader">
           <div class="subheader-left">
             <button ng-click='vm.submit()' class='button button-icon icon'
-                    ng-class='{"ion-alert-circled": vm.spotChanged, "ion-checkmark-circled": !vm.spotChanged }'>
+             ng-class='{"ion-alert-circled": vm.spotChanged, "ion-checkmark-circled": !vm.spotChanged }'>
               <span ng-show='vm.spotChanged' class="positive"> Unsaved Changes</span>
               <span ng-show='!vm.spotChanged'> Spot Saved</span></button>
           </div>
@@ -21,19 +21,19 @@
 
         <span ng-show='vm.showTab(tab.value)' ng-repeat='tab in vm.tabs track by $index'>
           <a class='button button-clear spot-tab-inactive'
-             ng-class='{ "spot-tab-active": sidePanel.isActiveTab(tab.path) }'
-             ng-click='sidePanel.setActiveTab(tab.path)'>
+           ng-class='{ "spot-tab-active": sidePanel.isActiveTab(tab.path) }'
+            ng-click='sidePanel.setActiveTab(tab.path)'>
             {{ tab.label }}</a>
         </span>
         <span>
           <a class='button button-clear spot-tab-inactive'
-             ng-click='vm.submit("/app/preferences");'>
+           ng-click='vm.submit("/app/preferences");'>
             More
           </a>
         </span>
 
         <div ng-show='sidePanel.isActiveTab("spot")' ng-controller='SpotTabController as vmChild'
-             ng-init='sidePanel.onload("spot")'>
+         ng-init='sidePanel.onload("spot")'>
           <form name='straboForm' novalidate='' class='strabo-form'>
             <strabo-spot-tab-directive></strabo-spot-tab-directive>
           </form>
@@ -46,7 +46,7 @@
         </div>
         <div ng-show='sidePanel.isActiveTab("images")' ng-controller='ImagesTabController as vmChild'>
           <button ng-click="vmChild.addImage()"
-                  class='button button-clear button-positive'>
+           class='button button-clear button-positive'>
             <i class='icon ion-camera'></i>
             <span class='button-text-big'>Add Image From File</span>
           </button>
@@ -71,6 +71,9 @@
         <div ng-show='sidePanel.isActiveTab("tags")' ng-controller='TagsTabController as vmChild'>
           <strabo-tags-tab-directive></strabo-tags-tab-directive>
         </div>
+        <div ng-show='sidePanel.isActiveTab("data")' ng-controller='DataTabController as vmChild'>
+          <strabo-data-tab-directive></strabo-data-tab-directive>
+        </div>
         <div ng-show='sidePanel.isActiveTab("strat-section")' ng-controller='StratSectionTabController as vmChild'>
           <strabo-strat-section-tab-directive></strabo-strat-section-tab-directive>
         </div>
@@ -82,6 +85,15 @@
         </div>
         <div ng-show='sidePanel.isActiveTab("sed-interpretations")' ng-controller='SedInterpretationsTabController as vmChild'>
           <strabo-sed-interpretations-tab-directive></strabo-sed-interpretations-tab-directive>
+        </div>
+        <div ng-show='sidePanel.isActiveTab("experimental")' ng-controller='ExperimentalTabController as vmChild'>
+          <strabo-experimental-tab-directive></strabo-experimental-tab-directive>
+        </div>
+        <div ng-show='sidePanel.isActiveTab("experimental-set-up")' ng-controller='ExperimentalSetUpTabController as vmChild'>
+          <strabo-experimental-set-up-tab-directive></strabo-experimental-set-up-tab-directive>
+        </div>
+        <div ng-show='sidePanel.isActiveTab("experimental-results")' ng-controller='ExperimentalResultsTabController as vmChild'>
+          <strabo-experimental-results-tab-directive></strabo-experimental-results-tab-directive>
         </div>
       </div>
     </div>

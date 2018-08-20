@@ -29,7 +29,7 @@
       }, {
         'title': 'Mapbox Satellite',
         'id': 'mapbox.satellite',
-        'source': 'strabo_spot_mapbox',
+        'source': 'strabo_spot_mapbox'
       }, {
         'title': 'OSM Streets',
         'id': 'osm',

@@ -76,7 +76,7 @@
       setTags();
 
       createPageComponents();
-      createPageEvents()
+      createPageEvents();
       setRelationshipTypes();
 
       vm.currentSpot = SpotFactory.getCurrentSpot();
@@ -334,7 +334,7 @@
     }
 
     function loadMoreSpots() {
-      var moreSpots = angular.fromJson(angular.toJson(vm.spots)).splice(vm.spotsDisplayed.length,
+      var moreSpots = angular.fromJson(angular.toJson(vm.spots)).slice(vm.spotsDisplayed.length,
         vm.spotsDisplayed.length + 20);
       vm.spotsDisplayed = _.union(vm.spotsDisplayed, moreSpots);
       $scope.$broadcast('scroll.infiniteScrollComplete');
@@ -369,6 +369,12 @@
         _.each(featureElements, function (featureElement) {
           if (spot.properties[featureElement]) {
             var featuresCopy = angular.fromJson(angular.toJson(spot.properties[featureElement]));
+            // Remove links to subsample Spots
+            if (featureElement === 'samples') {
+              featuresCopy = _.reject(featuresCopy, function (feature) {
+                return feature.spot_id;
+              });
+            }
             _.each(featuresCopy, function (featureCopy) {
               featureCopy.parentSpotId = spot.properties.id;
             });

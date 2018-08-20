@@ -71,12 +71,15 @@
     vm.fieldChanged = fieldChanged;
     vm.goBack = goBack;
     vm.goToBackHistoryUrl = goToBackHistoryUrl;
+    vm.goToSpot = goToSpot;
     vm.goToTag = goToTag;
+    vm.isState = isState;
     vm.loadTab = loadTab;
     vm.saveSpot = saveSpot;
     vm.showTab = showTab;
     vm.submit = submit;
     vm.takePicture = takePicture;
+    vm.updateSpotsList = updateSpotsList;
     vm.viewMap = viewMap;
 
     activate();
@@ -127,7 +130,7 @@
         if (vm.spotChanged && fromState.name === 'app.spotTab.spot') {
           saveSpot().then(function (spots) {
             vm.spotChanged = false;
-            if (IS_WEB && $state.current.name === 'app.spotTab.spot') vmParent.updateSpots();
+            if (IS_WEB && $state.current.name === 'app.spotTab.spot') updateSpotsList();
           }, function () {
             $state.go(fromState);     // If saving failed don't change state
           });
@@ -295,7 +298,8 @@
     // Delete the spot
     function deleteSpot() {
       vm.popover.hide().then(function () {
-        if (SpotFactory.isSafeDelete(vm.spot)) {
+        var deleteMsg = SpotFactory.isSafeDelete(vm.spot);
+        if (!deleteMsg) {
           var confirmPopup = $ionicPopup.confirm({
             'title': 'Delete Spot',
             'template': 'Are you sure you want to delete this spot?'
@@ -308,7 +312,7 @@
                 if (!IS_WEB) goBack();
                 else {
                   if ($state.current.name.split('.')[1] === 'spotTab') {   // Update Spots list
-                    vmParent.updateSpots();
+                    updateSpotsList();
                     vmParent.spotIdSelected = undefined;
                     $location.path('app/spotTab');
                   }
@@ -321,7 +325,7 @@
         else {
           $ionicPopup.alert({
             'title': 'Spot Deletion Prohibited!',
-            'template': 'This Spot has dependencies that need to be removed before it can be deleted.'
+            'template': deleteMsg
           });
         }
       });
@@ -414,8 +418,16 @@
       vm.backHistoriesPopover.hide();
     }
 
+    function goToSpot() {
+      $location.path('app/spotTab/' + vm.spot.properties.id + '/spot');
+    }
+
     function goToTag(id) {
       submit('/app/tags/' + id);
+    }
+
+    function isState(stateName) {
+      return stateName === $state.current.name;
     }
 
     function isTagChecked(tag) {
@@ -496,6 +508,21 @@
             if (!vm.spot.properties.sed.interpretations) vm.spot.properties.sed.interpretations = {};
             vm.spot.properties.sed.interpretations = vm.data;
           }
+          else if (vm.stateName === 'app.spotTab.experimental' && !_.isEmpty(vm.data)) {
+            if (!vm.spot.properties.micro) vm.spot.properties.micro = {};
+            if (!vm.spot.properties.micro.experimental) vm.spot.properties.micro.experimental = {};
+            vm.spot.properties.micro.experimental = vm.data;
+          }
+          else if (vm.stateName === 'app.spotTab.experimental-set-up' && !_.isEmpty(vm.data)) {
+            if (!vm.spot.properties.micro) vm.spot.properties.micro = {};
+            if (!vm.spot.properties.micro.experimental_set_up) vm.spot.properties.micro.experimental_set_up = {};
+            vm.spot.properties.micro.experimental_set_up = vm.data;
+          }
+          else if (vm.stateName === 'app.spotTab.experimental-results' && !_.isEmpty(vm.data)) {
+            if (!vm.spot.properties.micro) vm.spot.properties.micro = {};
+            if (!vm.spot.properties.micro.experimental_results) vm.spot.properties.micro.experimental_results = {};
+            vm.spot.properties.micro.experimental_results = vm.data;
+          }
           var isEqual = _.isEqual(vm.spot, savedSpot);
           if (isEqual) return $q.resolve(vm.spot);
           else {
@@ -532,6 +559,7 @@
     function submit(toPath) {
       saveSpot().then(function (spots) {
         vm.spotChanged = false;
+        vm.spotTitle = vm.spot.properties.name;
         if (IS_WEB && $state.current.name === 'app.spotTab.spot') vmParent.updateSpots();
         else if (IS_WEB && $state.current.name === 'app.map') $rootScope.$broadcast('updateMapFeatureLayer');
         else if (IS_WEB && $state.current.name === 'app.image-basemaps.image-basemap') {
@@ -572,6 +600,10 @@
       });
     }
 
+    function updateSpotsList() {
+      if (IS_WEB) vmParent.updateSpots();
+    }
+
     // View the spot on the maps
     function viewMap() {
       SpotFactory.setKeepSpotSelected(true);
@@ -580,6 +612,9 @@
       }
       else if (_.has(vm.spot.properties, 'strat_section_id')) {
         vm.submit('/app/strat-sections/' + vm.spot.properties.strat_section_id);
+      }
+      else if (_.has(vm.spot.properties, 'thin_section_id')) {
+        vm.submit('/app/thin-sections/' + vm.spot.properties.thin_section_id);
       }
       else {
         $ionicLoading.show({

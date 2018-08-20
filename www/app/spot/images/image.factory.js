@@ -126,14 +126,15 @@
         image.onload = function () {
           if (isReattachImage) {
             if (image.height === currentImageData.height && image.width === currentImageData.width) {
-              saveImage(currentImageData.id, image.src).then(function () {
+              saveImage(image.src).then(function () {
                 $log.log('Also save image to live db here');
-                LiveDBFactory.saveImageFile(currentImageData.id, image.src);
-                $rootScope.$broadcast('updatedImages');
-                isReattachImage = false;
-                $ionicPopup.alert({
-                  'title': 'Finished Reattaching Image',
-                  'template': 'The selected image source was reattached to the selected image properties.'
+                LiveDBFactory.saveImageFile(currentImageData.id, image.src).then(function() {
+                  $rootScope.$broadcast('updatedImages');
+                  isReattachImage = false;
+                  $ionicPopup.alert({
+                    'title': 'Finished Reattaching Image',
+                    'template': 'The selected image source was reattached to the selected image properties.'
+                  });
                 });
               });
             }
@@ -150,10 +151,11 @@
               'width': image.width,
               'id': HelpersFactory.getNewId()
             });
-            saveImage(currentImageData.id, image.src);
+            saveImage(image.src);
             $log.log('Also save image to live db here');
-            LiveDBFactory.saveImageFile(currentImageData.id, image.src);
-            saveImageDataToSpot();
+            LiveDBFactory.saveImageFile(currentImageData.id, image.src).then(function () {
+              saveImageDataToSpot();
+            });
           }
         };
         image.onerror = function () {
@@ -220,7 +222,8 @@
       readDataUrl(file);
     }
 
-    function saveImage(imageId, base64Image) {
+    function saveImage(base64Image, imageId) {
+      if (!imageId) imageId = currentImageData.id;
       return LocalStorageFactory.getDb().imagesDb.setItem(imageId.toString(), base64Image)
     }
 

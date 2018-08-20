@@ -12,7 +12,7 @@
                        LocalStorageFactory, ProjectFactory, IS_WEB) {
     var activeNest = [];
     var activeSpots;  // Only Spots in the active datasets
-    var currentSpotId = undefined;
+    var currentSpotId;
     var isActiveNesting = false;
     var isKeepSpotSelected = false;
     var moveSpot = false;
@@ -31,11 +31,14 @@
       {'value': 'other_features', 'label': 'Other Features', 'path': 'other-features'},
       {'value': 'relationships', 'label': 'Relationships', 'path': 'relationships'},
       {'value': 'tags', 'label': 'Tags', 'path': 'tags'},
+      {'value': 'data', 'label': 'Data', 'path': 'data'},
       {'value': 'strat_section', 'label': 'Strat Section', 'path': 'strat-section'},
       {'value': 'sed_lithologies', 'label': 'Sed Lithologies', 'path': 'sed-lithologies'},
       {'value': 'sed_structures', 'label': 'Sed Structures', 'path': 'sed-structures'},
-      {'value': 'sed_interpretations', 'label': 'Sed Interpretations', 'path': 'sed-interpretations'}];
-    var visibleDatasets = [];
+      {'value': 'sed_interpretations', 'label': 'Sed Interpretations', 'path': 'sed-interpretations'},
+      {'value': 'experimental', 'label': 'Experimental', 'path': 'experimental'},
+      {'value': 'experimental_set_up', 'label': 'Experimental Set Up', 'path': 'experimental-set-up'},
+      {'value': 'experimental_results', 'label': 'Experimental Results', 'path': 'experimental-results'}];
 
     return {
       'addSpotToActiveNest': addSpotToActiveNest,
@@ -49,14 +52,17 @@
       'getActiveNest': getActiveNest,
       'getActiveNesting': getActiveNesting,
       'getCenter': getCenter,
+      'getChildrenGenerationsSpots': getChildrenGenerationsSpots,
       'getCurrentSpot': getCurrentSpot,
       'getFirstSpot': getFirstSpot,
       'getImagePropertiesById': getImagePropertiesById,
       'getKeepSpotSelected': getKeepSpotSelected,
       'getNameFromId': getNameFromId,
+      'getParentGenerationsSpots': getParentGenerationsSpots,
       'getSelectedSpots': getSelectedSpots,
       'getSpotsByDatasetId': getSpotsByDatasetId,
       'getSpotById': getSpotById,
+      'getSpotWithImageId': getSpotWithImageId,
       'getSpots': getSpots,
       'getTabs': getTabs,
       'goToSpot': goToSpot,
@@ -72,6 +78,141 @@
       'setNewNestProperties': setNewNestProperties,
       'setSelectedSpots': setSelectedSpots
     };
+
+    /**
+     * Private Functions
+     */
+
+    // Get the children of an array of Spots
+    function getChildrenOfSpots(spots) {
+      var allChildrenSpots = [];
+      _.each(spots, function (spot) {
+        var childrenSpots = getChildrenSpots(spot);
+        if (!_.isEmpty(childrenSpots)) allChildrenSpots.push(childrenSpots);
+      });
+      return _.flatten(allChildrenSpots);
+    }
+
+    // Get all the children Spots of thisSpot, based on image basemaps, strat sections and geometry
+    // & also Spots stored in spot.properties.nesting not nested through geometry
+    function getChildrenSpots(thisSpot) {
+      var childrenSpots = [];
+      // Find children spots based on image basemap
+      if (thisSpot.properties.images) {
+        var imageBasemaps = _.map(thisSpot.properties.images, function (image) {
+          return image.id;
+        });
+        var imageBasemapChildrenSpots = _.filter(spots, function (spot) {
+          return _.contains(imageBasemaps, spot.properties.image_basemap);
+        });
+        childrenSpots.push(imageBasemapChildrenSpots);
+      }
+      // Find children spots based on strat section
+      if (thisSpot.properties.sed && thisSpot.properties.sed.strat_section) {
+        var stratSectionChildrenSpots = _.filter(spots, function (spot) {
+          return thisSpot.properties.sed.strat_section.strat_section_id === spot.properties.strat_section_id;
+        });
+        childrenSpots.push(stratSectionChildrenSpots);
+      }
+      // Find children spots not nested through geometry - nested directly in spot.properties.nesting
+      if (thisSpot.properties.nesting) {
+        var nonGeomChildrenSpots = [];
+        _.each(thisSpot.properties.nesting, function (spotId) {
+          if (getSpotById(spotId)) nonGeomChildrenSpots.push(getSpotById(spotId));
+          else {
+            thisSpot.properties.nesting = _.without(thisSpot.properties.nesting, spotId);
+            if (_.isEmpty(thisSpot.properties.nesting)) delete thisSpot.properties.nesting;
+          }
+        });
+        childrenSpots.push(nonGeomChildrenSpots);
+      }
+      childrenSpots = _.flatten(childrenSpots);
+      // Find children spots based on geometry
+      // Only non-point features can have children
+      if (_.propertyOf(thisSpot.geometry)('type')) {
+        if (_.propertyOf(thisSpot.geometry)('type') !== 'Point') {
+          var otherSpots = _.reject(spots, function (spot) {
+            return spot.properties.id === thisSpot.properties.id || !spot.geometry;
+          });
+          _.each(otherSpots, function (spot) {
+            if ((!thisSpot.properties.image_basemap && !spot.properties.image_basemap) ||
+              (thisSpot.properties.image_basemap && spot.properties.image_basemap &&
+                thisSpot.properties.image_basemap === spot.properties.image_basemap)) {
+              if (_.propertyOf(thisSpot.geometry)('type') && (_.propertyOf(thisSpot.geometry)('type') === 'Polygon'
+                || _.propertyOf(thisSpot.geometry)('type') === 'MutiPolygon')) {
+                if (turf.booleanWithin(spot, thisSpot)) childrenSpots.push(spot);
+              }
+            }
+          });
+        }
+      }
+      return childrenSpots;
+    }
+
+    // Get the parents of an array of Spots
+    function getParentsOfSpots(spots) {
+      var allParentSpots = [];
+      _.each(spots, function (spot) {
+        var parentSpots = getParentSpots(spot);
+        if (!_.isEmpty(parentSpots)) allParentSpots.push(parentSpots);
+      });
+      return _.flatten(allParentSpots);
+    }
+
+    // Get all the parent Spots of thisSpot, based on image basemaps, strat sections and geometry
+    // & also Spots stored in spot.properties.nesting not nested through geometry
+    function getParentSpots(thisSpot) {
+      var parentSpots = [];
+      // Find parent spots based on image basemap
+      if (thisSpot.properties.image_basemap) {
+        var parentImageBasemapSpot = _.find(spots, function (spot) {
+          return _.find(spot.properties.images, function (image) {
+            return image.id === thisSpot.properties.image_basemap;
+          });
+        });
+        parentSpots.push(parentImageBasemapSpot);
+      }
+      // Find parent spots based on strat section
+      if (thisSpot.properties.strat_section_id) {
+        var parentStratSectionSpot = _.find(spots, function (spot) {
+          return _.find(spot.properties.sed, function (sed) {
+            return sed.strat_section_id === thisSpot.properties.strat_section_id;
+          });
+        });
+        parentSpots.push(parentStratSectionSpot);
+      }
+      // Find parent Spots not nested through geometry - nested directly in spot.properties.nesting
+      var parentNonGeomSpot = _.find(spots, function (spot) {
+        return _.contains(spot.properties.nesting, thisSpot.properties.id);
+      });
+      if (parentNonGeomSpot) parentSpots.push(parentNonGeomSpot);
+      parentSpots = _.flatten(parentSpots);
+      // Find parent spots based on geometry
+      if (_.has(thisSpot, 'geometry')) {
+        var otherSpots = _.reject(spots, function (spot) {
+          return spot.properties.id === thisSpot.properties.id || !spot.geometry;
+        });
+        _.each(otherSpots, function (spot) {
+          if ((!thisSpot.properties.image_basemap && !spot.properties.image_basemap) ||
+            (thisSpot.properties.image_basemap && spot.properties.image_basemap &&
+              thisSpot.properties.image_basemap === spot.properties.image_basemap)) {
+            if (_.propertyOf(spot.geometry)('type') && (_.propertyOf(spot.geometry)(
+              'type') === 'Polygon' || _.propertyOf(spot.geometry)(
+              'type') === 'MutiPolygon')) {
+              if (turf.booleanWithin(thisSpot, spot)) parentSpots.push(spot);
+            }
+          }
+        });
+      }
+      return parentSpots;
+    }
+
+    // Get the the first Spot that has this Spot nested manually in spot.properties.nesting
+    function isManuallyNested(spotId) {
+      return _.find(spots, function (spot) {
+        return spot.properties.nesting && _.contains(spot.properties.nesting, spotId);
+      });
+    }
 
     /**
      * Public Functions
@@ -191,11 +332,13 @@
     // delete the spot
     function destroy(key) {
       var deferred = $q.defer(); // init promise
-      ProjectFactory.removeSpotFromTags(key);
-      ProjectFactory.removeSpotFromDataset(key);
-      delete spots[key];
-      LocalStorageFactory.getDb().spotsDb.removeItem(key.toString()).then(function () {
-        deferred.resolve();
+      ProjectFactory.removeSpotFromTags(key).then(function () {
+        ProjectFactory.removeSpotFromDataset(key).then(function () {
+          delete spots[key];
+          LocalStorageFactory.getDb().spotsDb.removeItem(key.toString()).then(function () {
+            deferred.resolve();
+          });
+        });
       });
       return deferred.promise;
     }
@@ -243,6 +386,17 @@
       };
     }
 
+    // Get i generations of children spots for thisSpot
+    function getChildrenGenerationsSpots(thisSpot, i) {
+      var childrenGenerations = [];
+      var childSpots = [thisSpot];
+      _.times(5, function (i) {
+        childSpots = getChildrenOfSpots(childSpots);
+        if (!_.isEmpty(childSpots)) childrenGenerations.push(childSpots);
+      });
+      return childrenGenerations;
+    }
+
     function getCurrentSpot() {
       return angular.fromJson(angular.toJson(spots[currentSpotId]));
     }
@@ -278,11 +432,23 @@
       return 'Spot Not Found (Id: ' + id + ')';
     }
 
+    // Get i generations of parent spots for thisSpot
+    function getParentGenerationsSpots(thisSpot, i) {
+      var parentGenerations = [];
+      var parentSpots = [thisSpot];
+      _.times(i, function (i) {
+        parentSpots = getParentsOfSpots(parentSpots);
+        if (!_.isEmpty(parentSpots)) parentGenerations.push(parentSpots);
+      });
+      return parentGenerations;
+    }
+
     function getSelectedSpots() {
       return selectedSpots;
     }
 
     function getSpotById(id) {
+      if (!spots[id]) $log.error('Looking for nonexistent Spot:', id);
       return spots[id];
     }
 
@@ -298,6 +464,14 @@
         else ProjectFactory.removeSpotFromDataset(spotId);
       });
       return spotsTemp;
+    }
+
+    function getSpotWithImageId(imageId) {
+      return _.find(spots, function (spot) {
+        return _.find(spot.properties.images, function (image) {
+          return image.id == imageId;       // Allow for comparison between string and integer
+        });
+      });
     }
 
     function getTabs() {
@@ -317,13 +491,19 @@
     }
 
     function isSafeDelete(spotToDelete) {
-      if (spotToDelete.properties && spotToDelete.properties.sed && spotToDelete.properties.sed.strat_section) {
-        return false;
+      var spotWithManualNest = isManuallyNested(spotToDelete.properties.id);
+      if (spotWithManualNest) {
+        return "Remove the link to this Spot from the Samples page in Spot " + spotWithManualNest.properties.name +
+          " before deleting.";
       }
-      if (!spotToDelete.properties.images) return true;
-      return !_.find(spotToDelete.properties.images, function (image) {
-        return image.annotated === true;
-      });
+      if (!_.isEmpty(getChildrenGenerationsSpots(spotToDelete, 1)[0])) {
+        return "Delete the nested Spots for this Spot before deleting.";
+      }
+      if (spotToDelete.properties && spotToDelete.properties.sed && spotToDelete.properties.sed.strat_section) {
+        return "Remove the strat section from this Spot before deleting.";
+      }
+      if (!_.isEmpty(spotToDelete.properties.images)) return "Remove all images from this Spot before deleting.";
+      return null;
     }
 
     function loadSpots() {

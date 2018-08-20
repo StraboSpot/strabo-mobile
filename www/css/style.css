@@ -185,6 +185,18 @@ Map Controls Style
   border-radius: 8px;
   border: 1px solid lightgray;
 }
+
+.saveEditsMultMaps {
+  position: absolute;
+  font-size: 0.9em;
+  background-color: white;
+  padding: 8px;
+  font-weight: bold;
+  border-radius: 8px;
+  border: 1px solid lightgray;
+  z-index: 999;
+}
+
 .ol-zoom {
   top: 60px;
   left: .5em
@@ -1130,4 +1142,54 @@ Misc
 
 .circle.hollow {
   background: white;
+}
+
+/*--------------------
+Thin Section
+---------------------*/
+
+.side-images-scroll {
+  width: 240px; /* Set the width of the sidebar for the images*/
+  height: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.thin-section-maps {
+  top: 0; /* Stay at the top */
+  height: calc(100% - 15px); /* Full-height: remove this if you want "auto" height */
+  left: 240px;
+  width: calc(100% - 240px); /* Full-width minus side images scroll */
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1; /* Stay on top */
+}
+
+.thin-section-map {
+  height: 100%;
+  border-style: solid;
+  border-width: 2px;
+}
+
+.thin-section-layout-row {
+  margin-right: 0;
+  margin-left: 0;
+  margin-bottom: 15px;
+}
+
+.micrograph-nest-image-label {
+  width: 100%;
+}
+
+/*--------------------
+Nesting
+---------------------*/
+
+.nest-block{
+  border: solid;
+  border-width: 1px;
+  padding: 4px;
 }

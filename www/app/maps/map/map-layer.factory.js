@@ -10,7 +10,7 @@
   function MapLayerFactory($log, $q, $window, HelpersFactory, OfflineTilesFactory, MapFactory) {
     var baselayers = {};
     var drawLayer = {};
-    var featureLayer = {};
+    var featureLayers = [];
     var datasetsLayer = {};
     var geolocationLayer = {};
     var overlays = {};
@@ -22,8 +22,6 @@
     var geolocationAccuracyTextStyle;
     var geolocationSpeedTextStyle;
 
-    activate();
-
     return {
       'getBaselayers': getBaselayers,
       'getDatasetsLayer': getDatasetsLayer,
@@ -32,6 +30,7 @@
       'getGeolocationLayer': getGeolocationLayer,
       'getOverlays': getOverlays,
       'getVisibleLayers': getVisibleLayers,
+      'initializeLayers': initializeLayers,
       'setVisibleBaselayer': setVisibleBaselayer,
       'switchTileLayers': switchTileLayers
     };
@@ -39,22 +38,6 @@
     /**
      * Private Functions
      */
-
-    function activate() {
-      // Initialize Layers
-      setOnlineBaselayers();
-      setOnlineOverlays();
-      setDrawLayer();
-      setFeatureLayer();
-      setDatasetsLayer();
-      setGeolocationLayer();
-
-      // Initialize Geolocation Layer Styles
-      setGeolocationCenterIconStyle();
-      setGeolocationHeadingIconStyle();
-      setGeolocationAccuracyTextStyle();
-      setGeolocationSpeedTextStyle();
-    }
 
     // Check for parent tile to use to make overzoomed child tile
     function checkNextTile(mapProvider, imgElement, x, y, z, d, row, col) {
@@ -91,7 +74,7 @@
       if (!layer.overlay && isVisible) visibleLayers.baselayer = newMapLayer;
 
       newMapLayer.on('change:visible', function (event) {
-        updateLayerVisibility(event, newMapLayer)
+        updateLayerVisibility(event, newMapLayer);
       });
 
       // Set Attribution
@@ -205,8 +188,8 @@
     }
 
     // vector layer where we house all the geojson spot objects
-    function setFeatureLayer() {
-      featureLayer = new ol.layer.Group({
+    function setFeatureLayer(mapName) {
+      featureLayers[mapName] = new ol.layer.Group({
         'name': 'featureLayer',
         'title': 'Spots',
         'layers': []
@@ -449,8 +432,9 @@
       return drawLayer;
     }
 
-    function getFeatureLayer() {
-      return featureLayer;
+    function getFeatureLayer(mapName) {
+      mapName = mapName ? mapName : 'default';
+      return featureLayers[mapName];
     }
 
     function getGeolocationLayer() {
@@ -463,6 +447,22 @@
 
     function getVisibleLayers() {
       return visibleLayers;
+    }
+
+    function initializeLayers(mapName) {
+      // Initialize Layers
+      setOnlineBaselayers();
+      setOnlineOverlays();
+      setDrawLayer();
+      setFeatureLayer(mapName);
+      setDatasetsLayer();
+      setGeolocationLayer();
+
+      // Initialize Geolocation Layer Styles
+      setGeolocationCenterIconStyle();
+      setGeolocationHeadingIconStyle();
+      setGeolocationAccuracyTextStyle();
+      setGeolocationSpeedTextStyle();
     }
 
     function setVisibleBaselayer(mapId) {

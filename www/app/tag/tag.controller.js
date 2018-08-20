@@ -328,6 +328,7 @@
       if (vm.data.color) vm.color = vm.data.color;
 
       if (vm.data.type === 'geologic_unit') FormFactory.setForm('rock_unit');
+      else if (vm.data.type === 'experimental_apparatus') FormFactory.setForm('micro', 'experimental_apparatus');
 
       fixOldData();
 
@@ -353,6 +354,12 @@
         _.each(featureElements, function (featureElement) {
           if (spot.properties[featureElement]) {
             var featuresCopy = angular.fromJson(angular.toJson(spot.properties[featureElement]));
+            // Remove links to subsample Spots
+            if (featureElement === 'samples') {
+              featuresCopy = _.reject(featuresCopy, function (feature) {
+                return feature.spot_id;
+              });
+            }
             _.each(featuresCopy, function (featureCopy) {
               featureCopy.parentSpotId = spot.properties.id;
             });
@@ -512,7 +519,7 @@
     }
 
     function loadMoreSpots() {
-      var moreSpots = angular.fromJson(angular.toJson(vm.spots)).splice(vm.spotsDisplayed.length,
+      var moreSpots = angular.fromJson(angular.toJson(vm.spots)).slice(vm.spotsDisplayed.length,
         vm.spotsDisplayed.length + 20);
       vm.spotsDisplayed = _.union(vm.spotsDisplayed, moreSpots);
       $scope.$broadcast('scroll.infiniteScrollComplete');
@@ -662,7 +669,7 @@
     }
 
     function toggleFilter(filter, emptyType) {
-      if (vm.filterConditions[filter]) delete vm.filterConditions[filter]
+      if (vm.filterConditions[filter]) delete vm.filterConditions[filter];
       else vm.filterConditions[filter] = emptyType || undefined;
     }
 
@@ -681,6 +688,7 @@
       FormFactory.clearForm();
 
       if (vm.data.type === 'geologic_unit') FormFactory.setForm('rock_unit');
+      else if (vm.data.type === 'experimental_apparatus') FormFactory.setForm('micro', 'experimental_apparatus');
     }
   }
 }());

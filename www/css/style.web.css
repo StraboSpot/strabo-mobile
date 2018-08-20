@@ -103,6 +103,10 @@ html, body, .container-fluid, .strabo-page-content {
   z-index: 5;             /* Added so modals would be on top of the side panel (Ionic modals have z index 10)*/
 }
 
+.toggler {                        /* Used for map side panel toggle button */
+  background-color: white;
+}
+
 .strabo-field-info-button {
   top: -1px;
 }
@@ -124,4 +128,20 @@ strong {
 
 template {
   display: none;
+}
+
+/*--------------------
+Thin Section
+---------------------*/
+
+.side-images-scroll {
+  top: 50px; /* Take into account top menu bar */
+  width: 250px; /* Set the width of the sidebar for the images */
+}
+
+.thin-section-maps {
+  top: 50px;  /* Take into account top menu bar */
+  height: calc(100% - 50px); /* Full-height minus top menu bar minus a little extra for the bottom */
+  left: 250px;
+  width: calc(100% - 250px);  /* Full-width minus side images scroll */
 }

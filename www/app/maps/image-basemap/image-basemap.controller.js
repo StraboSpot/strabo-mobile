@@ -19,6 +19,7 @@
     var currentSpot = {};
     var datasetsLayerStates;
     var map;
+    var spotWithThisImage = {};
     var spotsThisMap = {};
     var tagsToAdd = [];
 
@@ -41,6 +42,7 @@
     vm.hasLinkedImages = hasLinkedImages;
     vm.isiOS = isiOS;
     vm.saveEdits = saveEdits;
+    vm.startCalculateImageWidth = startCalculateImageWidth;
     vm.stereonetSpots = stereonetSpots;
     vm.toggleNesting = toggleNesting;
     vm.toggleTagChecked = toggleTagChecked;
@@ -160,7 +162,7 @@
           }
           else if (action === 'more') {
             popup.hide();
-            $location.path('/app/spotTab/' +vm.clickedFeatureId + '/spot');
+            $location.path('/app/spotTab/' + vm.clickedFeatureId + '/spot');
             $scope.$apply();
           }
           e.preventDefault();
@@ -216,13 +218,12 @@
       $scope.$on('changedDrawMode', function () {
         var draw = MapDrawFactory.getDrawMode();
         var lmode = MapDrawFactory.getLassoMode();
-        $log.log('LassoMode:',lmode);
+        $log.log('LassoMode:', lmode);
         draw.on('drawend', function (e) {
-          MapDrawFactory.doOnDrawEnd(e);
+          MapDrawFactory.doOnDrawEnd(e, vm.imageBasemap, spotWithThisImage);
           var selectedSpots = SpotFactory.getSelectedSpots();
           if (!_.isEmpty(selectedSpots)) {
-
-            if(lmode=="tags"){
+            if (lmode === "tags") {
               $log.log("tag mode enabled");
 
               //cull spots to only those shown on map
@@ -233,7 +234,8 @@
               tagsToAdd = [];
               vm.addTagModal.show();
               MapDrawFactory.setLassoMode("");
-            }else if(lmode=="stereonet"){
+            }
+            else if (lmode === "stereonet") {
               $log.log("stereonet mode enabled");
 
               //use MapFeaturesFactory to get only mapped orientations
@@ -241,6 +243,10 @@
               $log.log('stereonetSpots: ', stereonetSpots);
 
               HelpersFactory.getStereonet(stereonetSpots);
+              MapDrawFactory.setLassoMode("");
+            }
+            else if (lmode === "measure") {
+              $log.log("measure mode enabled");
               MapDrawFactory.setLassoMode("");
             }
           }
@@ -282,7 +288,7 @@
     function gatherSpots() {
       var activeSpots = SpotFactory.getActiveSpots();
       var linkedImagesIds = _.union([vm.imageBasemap.id], ProjectFactory.getLinkedImages(vm.imageBasemap.id));
-      var mappableSpots =_.filter(activeSpots, function (spot) {
+      var mappableSpots = _.filter(activeSpots, function (spot) {
         return _.contains(linkedImagesIds, spot.properties.image_basemap);
       });
       // Remove spots that don't have a geometry defined
@@ -307,11 +313,15 @@
       return 5000;
     }
 
+    // Find the Spot that this image is in and get the properties of this image
     function setImageBasemap() {
-      _.each(SpotFactory.getActiveSpots(), function (spot) {
-        _.each(spot.properties.images, function (image) {
-          if (image.id.toString() === $state.params.imagebasemapId) vm.imageBasemap = image;
+      spotWithThisImage = _.find(SpotFactory.getActiveSpots(), function (spot) {
+        return _.find(spot.properties.images, function (image) {
+          return image.id.toString() === $state.params.imagebasemapId;
         });
+      });
+      vm.imageBasemap = _.find(spotWithThisImage.properties.images, function (image) {
+        return image.id.toString() === $state.params.imagebasemapId;
       });
     }
 
@@ -393,7 +403,7 @@
     }
 
     function groupSpots() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         MapDrawFactory.groupSpots();
       });
     }
@@ -405,7 +415,7 @@
     }
 
     function isiOS() {
-      return ionic.Platform.device().platform=="iOS";
+      return ionic.Platform.device().platform == "iOS";
     }
 
     function saveEdits() {
@@ -413,14 +423,20 @@
       MapDrawFactory.saveEdits(vm.clickedFeatureId);
     }
 
+    function startCalculateImageWidth() {
+      vm.popover.hide().then(function () {
+        MapDrawFactory.measureLength();
+      });
+    }
+
     function stereonetSpots() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         MapDrawFactory.stereonetSpots();
       });
     }
 
     function toggleNesting() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         vm.isNesting = !vm.isNesting;
         SpotFactory.setActiveNesting(vm.isNesting);
         if (vm.isNesting) {
@@ -457,7 +473,7 @@
     }
 
     function unlinkImages() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         var confirmPopup = $ionicPopup.confirm({
           'title': 'Unlink Images',
           'template': 'Are you sure you want to unlink <b>ALL</b> images in this set?'
@@ -479,7 +495,7 @@
     }
 
     function zoomToSpotsExtent() {
-      vm.popover.hide().then(function(){
+      vm.popover.hide().then(function () {
         MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
       });
     }

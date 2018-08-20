@@ -1,0 +1,13 @@
+<ion-view>
+  <ion-nav-buttons side='left'>
+    <button ng-click='vm.goBack();' class='button button-icon icon ion-arrow-left-c'></button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side='right'>
+    <div ng-show='vm.isNesting' class='nesting-notification'>Nesting<br>On</div>
+  </ion-nav-buttons>
+  <ion-pane data-tap-disabled='true' scroll="false">
+    <ion-content class='has-header'>
+      <strabo-micrograph-directive></strabo-micrograph-directive>
+    </ion-content>
+  </ion-pane>
+</ion-view>

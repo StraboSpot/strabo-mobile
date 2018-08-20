@@ -46,6 +46,9 @@
       {'state': 'strat-section', 'url': 'strat-sections/:stratSectionId', 'template': 'maps/strat-section/strat-section', 'controller': 'StratSection', 'view': 'menuContent'},
       //{'state': 'strat-sections.strat-section', 'url': ':stratSectionId', 'template': 'maps/strat-section/strat-section', 'controller': 'StratSection', 'view': 'strat-section-view'},
       {'state': 'strat-sections', 'url': 'strat-sections', 'template': 'maps/strat-sections/strat-sections', 'controller': 'StratSections', 'view': 'menuContent'},
+      {'state': 'thin-section', 'url': 'thin-sections/:thinSectionId', 'template': 'maps/thin-section/thin-section', 'controller': 'ThinSection', 'view': 'menuContent'},
+      //{'state': 'thin-sections.thin-section', 'url': ':thinSectionId', 'template': 'maps/thin-section/thin-section', 'controller': 'StratSection', 'view': 'thin-section-view'},
+      {'state': 'thin-sections', 'url': 'thin-sections', 'template': 'maps/thin-sections/thin-sections', 'controller': 'ThinSections', 'view': 'menuContent'},
       {'state': 'tags.tag', 'url': ':tag_id', 'template': 'tag/tag', 'controller': 'Tag', 'view': 'tag-view@app.tags'},
       {'state': 'tags', 'url': 'tags', 'template': 'tags/tags', 'controller': 'Tags', 'view': 'menuContent'},
       {'state': 'tools', 'url': 'tools', 'template': 'project/tools/tools', 'controller': 'Tools', 'view': 'menuContent'},
@@ -93,6 +96,10 @@
     // Declare Spot Tab Childview States
     var spotTabStates = [
       {'state': '_3dstructures', 'template': '3d-structures/3dstructures-tab', 'controller': '_3DStructures'},
+      {'state': 'experimental', 'template': 'micro/experimental/experimental-tab', 'controller': 'Experimental'},
+      {'state': 'experimental-results', 'template': 'micro/experimental-results/experimental-results-tab', 'controller': 'ExperimentalResults'},
+      {'state': 'experimental-set-up', 'template': 'micro/experimental-set-up/experimental-set-up-tab', 'controller': 'ExperimentalSetUp'},
+      {'state': 'data', 'template': 'data/data-tab', 'controller': 'Data'},
       {'state': 'images', 'template': 'images/images-tab', 'controller': 'Images'},
       {'state': 'minerals', 'template': 'minerals/minerals-tab', 'controller': 'Minerals'},
       {'state': 'nesting', 'template': 'nesting/nesting-tab', 'controller': 'Nesting'},

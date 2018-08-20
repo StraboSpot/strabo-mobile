@@ -1,0 +1,10 @@
+<div>
+  <button ng-click='vm.toggleShowMore()'
+          class='button button-clear button-positive'>
+    <i class='icon ion-information-circled'></i>
+    <span class='button-text-small'>Show More Experimental Apparatus</span>
+  </button>
+  <form name='straboForm' novalidate='' ng-if='vm.isShowMore'>
+    <auto-fields></auto-fields>
+  </form>
+</div>

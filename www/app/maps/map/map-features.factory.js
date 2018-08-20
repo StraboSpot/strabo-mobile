@@ -143,7 +143,7 @@
       return text;
     }
 
-    function getVisibleSpots(states) {
+    function getVisibleSpots(states, mapName) {
       // Get the spot ids of mappable spots in the visible datasets
       var allDatasetIdsToSpotIds = ProjectFactory.getSpotIds();
       var datasetIdsToSpotIds = {};
@@ -179,8 +179,8 @@
      * Public Functions
      */
 
-    function createDatasetsLayer(states, map) {
-      var visibleSpotsDatasets = getVisibleSpots(states);
+    function createDatasetsLayer(states, map, mapName) {
+      var visibleSpotsDatasets = getVisibleSpots(states, mapName);
       var datasets = ProjectFactory.getActiveDatasets();
       var datasetsLayer = MapLayerFactory.getDatasetsLayer();
       datasetsLayer.getLayers().clear();
@@ -221,7 +221,7 @@
                 visibleSpotIds.push(feature.properties.id);
               })
             }
-          })
+          });
         }
       });
 
@@ -231,12 +231,13 @@
       });
     }
 
-    function createFeatureLayer(states, map) {
+    function createFeatureLayer(states, map, mapName) {
+      mapName = mapName ? mapName : 'default';
 
       setCurrentTypeVisibility(map);
 
       // Loop through all spots and create ol vector layers
-      var visibleSpotsDatasets = getVisibleSpots(states);
+      var visibleSpotsDatasets = getVisibleSpots(states, mapName);
       var visibleSpots = [];
       _.each(visibleSpotsDatasets, function (visibleSpotsDataset) {
         if (visibleSpotsDataset.length > 0) visibleSpots.push(visibleSpotsDataset);
@@ -244,10 +245,9 @@
 
       mappableSpots = _.flatten(visibleSpots);
 
-      var featureLayer = MapLayerFactory.getFeatureLayer();
+      var featureLayer = MapLayerFactory.getFeatureLayer(mapName);
       // wipe the array because we want to avoid duplicating the feature in the ol.Collection
       featureLayer.getLayers().clear();
-
 
       // Create features to map from the mappable spots.
       // For POINT Spots with orientation data, create a copy of the entire spot
@@ -308,14 +308,14 @@
           };
 
           // Add the feature collection layer to the map
-          featureLayer.getLayers().push(geojsonToVectorLayer(spotTypeLayer, map.getView().getProjection()));
+          featureLayer.getLayers().push(geojsonToVectorLayer(spotTypeLayer, map.getView().getProjection(), mapName));
         }
       }
     }
 
     // We want to load all the geojson markers from the persistence storage onto the map
     // creates a ol vector layer for supplied geojson object
-    function geojsonToVectorLayer(geojson, projection) {
+    function geojsonToVectorLayer(geojson, projection, mapName) {
       // textStyle is a function because each point has a different text associated
       function textStyle(text) {
         return new ol.style.Text({
@@ -474,7 +474,7 @@
           'featureProjection': projection
         });
       }
-      SymbologyFactory.setFeatureLayer(MapLayerFactory.getFeatureLayer());
+      SymbologyFactory.setFeatureLayer(MapLayerFactory.getFeatureLayer(mapName));
       SymbologyFactory.setFillPatterns(features);
 
       return new ol.layer.Vector({
@@ -507,9 +507,10 @@
       });
     }
 
-    function getFeatureById(spotId) {
+    function getFeatureById(spotId, mapName) {
+      mapName = mapName ? mapName : 'default';
       var foundFeature = {};
-      var featureLayer = MapLayerFactory.getFeatureLayer();
+      var featureLayer = MapLayerFactory.getFeatureLayer(mapName);
       _.each(featureLayer.getLayers().getArray(), function (layer) {
         _.each(layer.getSource().getFeatures(), function (feature) {
           if (_.isEmpty(foundFeature) && feature.get('id') === spotId) foundFeature = feature;
@@ -518,7 +519,7 @@
       return foundFeature;
     }
 
-    function getInitialDatasetLayerStates(map) {
+    function getInitialDatasetLayerStates(map, mapName) {
       // Set the default visible states for the datasets
       var datasets = ProjectFactory.getActiveDatasets();
       var datasetsLayerStates = {};
@@ -527,7 +528,7 @@
       });
 
       var states = {};
-      var visibleSpotsDatasets = getVisibleSpots(datasetsLayerStates);
+      var visibleSpotsDatasets = getVisibleSpots(datasetsLayerStates, mapName);
       _.each(visibleSpotsDatasets, function (visibleSpotsDataset, key) {
         if (visibleSpotsDataset.length > 0) states[key] = true;
       });

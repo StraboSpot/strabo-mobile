@@ -50,6 +50,8 @@
       {'state': 'spots', 'url': 'spots', 'template': 'spots/spots', 'controller': 'Spots'},
       {'state': 'strat-section', 'url': 'strat-sections/:stratSectionId', 'template': 'maps/strat-section/strat-section', 'controller': 'StratSection'},
       {'state': 'strat-sections', 'url': 'strat-sections', 'template': 'maps/strat-sections/strat-sections', 'controller': 'StratSections'},
+      {'state': 'thin-section', 'url': 'thin-sections/:thinSectionId', 'template': 'maps/thin-section/thin-section', 'controller': 'ThinSection'},
+      {'state': 'thin-sections', 'url': 'thin-sections', 'template': 'maps/thin-sections/thin-sections', 'controller': 'ThinSections'},
       {'state': 'tag', 'url': 'tags/:tag_id', 'template': 'tag/tag', 'controller': 'Tag'},
       {'state': 'tags', 'url': 'tags', 'template': 'tags/tags', 'controller': 'Tags'},
       {'state': 'tools', 'url': 'tools', 'template': 'project/tools/tools', 'controller': 'Tools'},
@@ -83,6 +85,10 @@
     // Declare Spot Tab Childview States
     var spotTabStates = [
       {'state': '_3dstructures', 'template': '3d-structures/3dstructures-tab', 'controller': '_3DStructures'},
+      {'state': 'data', 'template': 'data/data-tab', 'controller': 'Data'},
+      {'state': 'experimental', 'template': 'micro/experimental/experimental-tab', 'controller': 'Experimental'},
+      {'state': 'experimental-results', 'template': 'micro/experimental-results/experimental-results-tab', 'controller': 'ExperimentalResults'},
+      {'state': 'experimental-set-up', 'template': 'micro/experimental-set-up/experimental-set-up-tab', 'controller': 'ExperimentalSetUp'},
       {'state': 'images', 'template': 'images/images-tab', 'controller': 'Images'},
       {'state': 'minerals', 'template': 'minerals/minerals-tab', 'controller': 'Minerals'}, 
       {'state': 'nesting', 'template': 'nesting/nesting-tab', 'controller': 'Nesting'},

@@ -14,6 +14,7 @@
         <option value='concept'>Concept</option>
         <option value='documentation'>Documentation</option>
         <option value='rosetta'>Rosetta</option>
+        <option value='experimental_apparatus'>Experimental Apparatus</option>
         <option value='other'>Other</option>
         <option value=''>-- Select Type --</option>
       </select>
@@ -32,6 +33,9 @@
     </div>
     <div ng-show='vm.data.type === "relationship"'>
       <strabo-relationship-tag-directive></strabo-relationship-tag-directive>
+    </div>
+    <div ng-show='vm.data.type === "experimental_apparatus"'>
+      <strabo-experimental-apparatus-tag-directive></strabo-experimental-apparatus-tag-directive>
     </div>
     <div ng-show='vm.data.type === "other"'>
       <strabo-other-tag-directive></strabo-other-tag-directive>

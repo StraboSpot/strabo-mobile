@@ -5,9 +5,10 @@
     .module('app')
     .controller('MenuController', MenuController);
 
-  MenuController.$inject = ['$ionicLoading', '$log', '$scope', '$state', 'ProjectFactory', 'UserFactory'];
+  MenuController.$inject = ['$ionicLoading', '$log', '$scope', '$state', 'ProjectFactory', 'ThinSectionFactory',
+    'UserFactory'];
 
-  function MenuController($ionicLoading, $log, $scope, $state, ProjectFactory, UserFactory) {
+  function MenuController($ionicLoading, $log, $scope, $state, ProjectFactory, ThinSectionFactory, UserFactory) {
     var vm = this;
 
     vm.projectName = '';
@@ -15,13 +16,14 @@
     vm.userName = null;
 
     vm.editUser = editUser;
-    vm.getIsStratMode = getIsStratMode;
+    vm.getIsMode = getIsMode;
     vm.getProjectName = getProjectName;
     vm.getUserImage = getUserImage;
     vm.getUserName = getUserName;
     vm.isActive = isActive;
     vm.projectDetail = projectDetail;
     vm.showLoadingSpinner = showLoadingSpinner;
+    vm.showMicrographWorkspace = showMicrographWorkspace;
 
     activate();
 
@@ -59,10 +61,10 @@
       $state.go('app.user');
     }
 
-    function getIsStratMode() {
+    function getIsMode(mode) {
       var preferences = ProjectFactory.getPreferences();
       var project = ProjectFactory.getCurrentProject();
-      return _.has(preferences, 'strat_mode') && project.is_testing_mode;
+      return _.has(preferences, mode) && project.is_testing_mode;
     }
 
     function getProjectName() {
@@ -91,6 +93,10 @@
           'template': '<ion-spinner></ion-spinner><br>Loading Map...'
         });
       }
+    }
+
+    function showMicrographWorkspace() {
+      return !_.isEmpty(ThinSectionFactory.getSpotsWithMicrographs());
     }
   }
 }());

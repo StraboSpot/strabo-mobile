@@ -1,0 +1,36 @@
+<div>
+		<button ng-click='vmChild.addARig("griggs")'
+						class='button button-clear button-positive'>
+			<i class='icon ion-plus-circled'></i>
+			<span class='button-text-big'>Add a Griggs Rig</span>
+		</button>
+		<button ng-click='vmChild.addARig("heard")'
+						class='button button-clear button-positive'>
+			<i class='icon ion-plus-circled'></i>
+			<span class='button-text-big'>Add a Heard Rig</span>
+		</button>
+		<button ng-click='vmChild.addARig("paterson")'
+						class='button button-clear button-positive'>
+			<i class='icon ion-plus-circled'></i>
+			<span class='button-text-big'>Add a Patterson Rig</span>
+		</button>
+		<ion-list>
+			<ion-item class='item-text-wrap item-button-right'
+								ng-repeat='rig in vm.spot.properties.micro.experimental | orderBy: "name_of_experiment" track by rig.id'>
+				<div ng-click='vmChild.editRig(rig)'>
+					<b>{{rig.name_of_experiment }}</b>
+					<span ng-show='vm.getTagNames(rig)' class='list-sub'>
+							<br>Tags: {{ vm.getTagNames(rig) }}
+						</span>
+				</div>
+				<div class='buttons'>
+					<button class='button button-clear button-dark' ng-click='vm.addTag(rig)'>
+						<i class='icon ion-pricetag'></i>
+					</button>
+					<button class='button button-clear button-assertive' ng-click='vmChild.deleteRig(rig)'>
+						<i class='icon ion-minus-circled'></i>
+					</button>
+				</div>
+			</ion-item>
+		</ion-list>
+</div>
