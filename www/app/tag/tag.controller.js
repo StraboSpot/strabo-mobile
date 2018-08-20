@@ -435,15 +435,8 @@
     function getFeatureName(spotId, featureId) {
       spotId = parseInt(spotId);
       var spot = SpotFactory.getSpotById(spotId);
-      var found;
-      _.each(spot.properties, function (property) {
-        if (!found) {
-          found = _.find(property, function (item) {
-            return item.id === featureId;
-          });
-        }
-      });
-      return (found && found.label) ? found.label : 'Unknown Name';
+      var foundFeature = HelpersFactory.deepFindById(spot.properties, featureId);
+      return foundFeature.label || foundFeature.name_of_experiment || 'Unknown Name';
     }
 
     function getLabel(label) {

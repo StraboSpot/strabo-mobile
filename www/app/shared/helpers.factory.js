@@ -17,6 +17,7 @@
       'cleanObj': cleanObj,
       'convertToLargerUnit': convertToLargerUnit,
       'convertToSmallerUnit': convertToSmallerUnit,
+      'deepFindById': deepFindById,
       'getStereonet': getStereonet,
       'getNewId': getNewId,
       'hexToRgb': hexToRgb,
@@ -88,6 +89,21 @@
       if (unit === 'mm') return {'value': width * 1000, 'unit': '_m'};
       if (unit === '_m') return {'value': width * 1000, 'unit': 'nm'};
       return {'value': width, 'unit': unit};
+    }
+
+
+    // Find a deeply nested object by id
+    function deepFindById(obj, id) {
+      //Early return
+      if( obj.id === id ) return obj;
+      var result, p;
+      for (p in obj) {
+        if( obj.hasOwnProperty(p) && typeof obj[p] === 'object' ) {
+          result = deepFindById(obj[p], id);
+          if(result) return result;
+        }
+      }
+      return result;
     }
 
     function hexToRgb(hex) {
