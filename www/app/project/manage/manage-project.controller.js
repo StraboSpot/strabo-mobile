@@ -5,13 +5,10 @@
     .module('app')
     .controller('ManageProjectController', ManageProjectController);
 
-  ManageProjectController.$inject = ['$ionicModal', '$ionicLoading', '$ionicPopover', '$ionicPopup', '$log', '$scope',
-    '$state', '$q', 'FormFactory', 'ImageFactory', 'LiveDBFactory', 'LocalStorageFactory', 'OtherMapsFactory',
+  ManageProjectController.$inject = ['$document', '$ionicModal', '$ionicLoading', '$ionicPopover', '$ionicPopup', '$log', '$scope', '$state', '$q', 'FormFactory', 'ImageFactory', 'LiveDBFactory', 'LocalStorageFactory', 'OtherMapsFactory',
     'ProjectFactory', 'RemoteServerFactory', 'SpotFactory', 'UserFactory', 'IS_WEB'];
 
-  function ManageProjectController($ionicModal, $ionicLoading, $ionicPopover, $ionicPopup, $log, $scope, $state, $q,
-                                   FormFactory, ImageFactory, LiveDBFactory, LocalStorageFactory, OtherMapsFactory,
-                                   ProjectFactory, RemoteServerFactory, SpotFactory, UserFactory, IS_WEB) {
+  function ManageProjectController($document, $ionicModal, $ionicLoading, $ionicPopover, $ionicPopup, $log, $scope, $state, $q, FormFactory, ImageFactory, LiveDBFactory, LocalStorageFactory, OtherMapsFactory, ProjectFactory, RemoteServerFactory,SpotFactory, UserFactory, IS_WEB) {
     var vm = this;
 
     var downloadErrors = false;
@@ -26,6 +23,7 @@
     vm.exportItems = {};
     vm.fileBrowserModal = {};
     vm.importItem = undefined;
+    // vm.mineralCollections = [];
     vm.newDatasetName = '';
     vm.newProjectModal = {};
     vm.otherFeatureTypes = [];
@@ -41,6 +39,7 @@
     vm.titleText = 'Manage Projects';
 
     vm.areDatasetsOn = areDatasetsOn;
+    // vm.deleteCollection = deleteCollection;
     vm.deleteDataset = deleteDataset;
     vm.deleteProject = deleteProject;
     vm.deleteType = deleteType;
@@ -472,6 +471,7 @@
       vm.activeDatasets = ProjectFactory.getActiveDatasets();
       vm.spotsDataset = ProjectFactory.getSpotsDataset();
       vm.otherFeatureTypes = ProjectFactory.getOtherFeatures();
+      // vm.mineralCollections = ProjectFactory.getProjectProperty('mineral_collections');
 
       if (areDatasetsOn() && _.isEmpty(vm.spotsDataset)) {
         ProjectFactory.saveSpotsDataset(vm.activeDatasets[0]);
@@ -601,11 +601,11 @@
           $log.log('Finished updating dataset', dataset, '. Response:', response);
           return RemoteServerFactory.addDatasetToProject(project.id, dataset.id, UserFactory.getUser().encoded_login)
             .then(function (response2) {
-                $log.log('Finished adding dataset to project', project, '. Response:', response2);
-                return uploadSpots(dataset).then(function () {
-                  deferred.resolve();
-                });
-              },
+            $log.log('Finished adding dataset to project', project, '. Response:', response2);
+            return uploadSpots(dataset).then(function () {
+              deferred.resolve();
+            });
+          },
               function (err) {
                 uploadErrors = true;
                 $log.log('Error adding dataset to project. Response:', err);
@@ -753,7 +753,7 @@
             outputMessage('Error updating Spots in dataset' + dataset.name);
             if (err && err.data && err.data.Error) $log.error(err.data.Error);
             if (err && err.statusText) outputMessage('Server Error: ' + err.statusText);
-            return $q.when(null);
+             return $q.when(null);
           });
       }
     }
@@ -823,6 +823,13 @@
         }
       });
     }
+
+    // function deleteCollection(indexToDelete) {
+    //   vm.mineralCollections = _.reject(vm.mineralCollections, function (mineralCollection, i) {
+    //     return indexToDelete === i;
+    //   });
+    //   ProjectFactory.saveProjectItem('mineral_collections', vm.mineralCollections);
+    // }
 
     function deleteType(i) {
       var customTypes = _.reject(vm.otherFeatureTypes, function (type) {
@@ -1158,6 +1165,14 @@
     }
 
     function newProject() {
+      if (_.isEmpty(vm.data.project_name)) {
+        var formCtrl = angular.element(document.getElementById('straboFormCtrlId')).scope();
+        var ele = $document[0].getElementById("project_name");
+        ele.html = "Unnamed Project";
+        var formEle = formCtrl.straboForm[ele.id];
+        formEle.$valid = true;
+        vm.data.project_name = "Unnamed Project";
+      }
       var valid = FormFactory.validate(vm.data);
       if (valid) doCreateNewProject();
     }
@@ -1260,12 +1275,12 @@
       // Toggled On - add dataset to the list of active datasets
       else {
         vm.activeDatasets.push(datasetToggled);
-        if (_.isEmpty(ProjectFactory.getSpotIds()[datasetToggled.id]) && !_.isEmpty(
-            UserFactory.getUser()) && navigator.onLine) {
+        if (_.isEmpty(ProjectFactory.getSpotIds()[datasetToggled.id]) &&
+        !_.isEmpty(UserFactory.getUser()) && navigator.onLine) {
           initializeDownloadDataset(datasetToggled);
         }
-        else if (_.isEmpty(ProjectFactory.getSpotIds()[datasetToggled.id]) && !_.isEmpty(
-            UserFactory.getUser()) && !navigator.onLine) {
+        else if (_.isEmpty(ProjectFactory.getSpotIds()[datasetToggled.id]) && 
+        !_.isEmpty(UserFactory.getUser()) && !navigator.onLine) {
           $ionicPopup.alert({
             'title': 'Cannot Update Dataset!',
             'template': 'Unable to reach the server to check if there are already Spots in this dataset to download.'

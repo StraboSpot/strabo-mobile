@@ -1,7 +1,7 @@
 list_name,name,label
-ji0rg23,confined__2_3,Confined ?2=?3
-ji0rg23,confined__1_2,Confined ?1=?2
-ji0rg23,confined__2_3_1,Confined ?2??3
+ji0rg23,confined_si2_s,Confined sigma 2 = sigma 3
+ji0rg23,confined_si1_s,Confined sigma 1 = sigma 2
+ji0rg23,confined_s2ns3,Confined sigma 2 not= sigma 3
 jk9hb34,ultimate_shear,Ultimate Shear Strength
 jk9hb34,shear_yield_st,Shear Yield Stress
 jk9hb34,true_triaxial_,True Triaxial Strength
@@ -32,7 +32,7 @@ se3ad34,md,md
 se3ad34,nd,nd
 cf0su32,bulk_modulus,Bulk Modulus
 cf0su32,shear_modulus,Shear Modulus
-cf0su32,young_s_modulus,Young's Modulus
+cf0su32,young_s_modulu,Young's Modulus
 lb7aq95,elastic_anisot,Elastic Anisotropy
 lb7aq95,seismic_anisot,Seismic Anisotropy
 ej9uh22,melting,Melting

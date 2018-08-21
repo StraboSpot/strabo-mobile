@@ -12,6 +12,7 @@
     var activeTags = [];
     var isActiveTagging = false;
     var tagTypeLabels = {};
+    var isMineralTag = false;
 
     activate();
 
@@ -23,13 +24,15 @@
       'getActiveTags': getActiveTags,
       'getAddNewActiveTag': getAddNewActiveTag,
       'getGeologicUnits': getGeologicUnits,
+      'getIsMineralsTag': getIsMineralsTag,
       'getNumTaggedFeatures': getNumTaggedFeatures,
       'getTagTypeLabel': getTagTypeLabel,
       'removeActiveTag': removeActiveTag,
       'removeActiveTagging': removeActiveTagging,
       'setActiveTagging': setActiveTagging,
       'setActiveTags': setActiveTags,
-      'setAddNewActiveTag': setAddNewActiveTag
+      'setAddNewActiveTag': setAddNewActiveTag,
+      'setIsMineralsTag': setIsMineralsTag
     };
 
     /**
@@ -97,6 +100,10 @@
       return addNewActiveTag;
     }
 
+    function getIsMineralsTag() {
+      return isMineralTag;
+    }
+
     function getNumTaggedFeatures(tag) {
       var count = 0;
       if (tag && tag.features) {
@@ -142,6 +149,10 @@
 
     function setAddNewActiveTag(inBool) {
       addNewActiveTag = inBool;
+    }
+
+    function setIsMineralsTag(inBool) {
+      isMineralTag = inBool;
     }
   }
 }());

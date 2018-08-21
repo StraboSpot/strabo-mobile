@@ -1,0 +1,98 @@
+<ion-modal-view class="minerals-modals">
+  <ion-header-bar class='bar-stable nav-title-slide-ios7' align-title='center'>
+    <button class='button button-positive' ng-show="vm.isShowMineralList" ng-click='vm.submitMineral()'>Save
+    </button>
+    <button class='button button-icon icon ion-arrow-left-c' ng-hide="vm.isShowInfoOnly || vm.isShowMineralList"
+    ng-click='vm.hideMineralInfo();'>
+    </button>
+    <h1 class='title'>{{ vm.modalTitle }}</h1>
+    <div class='buttons'>
+      <button class='icon ion-close-round close-modal-button' ng-click='vm.mineralsModal.hide()'>
+      </button>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+    <div ng-show="vm.isShowMineralList">
+      <div class='button-bar'>
+        <button class='button button-full' ng-click='vm.switchMineralsForm("most_common")'
+        ng-class="{'spot-tab-active': vm.activeState === 'most_common'}">Most Common</button>
+        <button class='button button-full' ng-click='vm.switchMineralsForm("all")'
+        ng-class="{'spot-tab-active': vm.activeState === 'all'}">All</button>
+      </div>
+      <form name='straboForm' novalidate=''>
+        <div id='straboFormCtrlId' ng-controller='FormController as form'>
+          <div ng-repeat='field in form.survey' class='minerals-form'>
+            <div id='{{ field.name }}' ng-show='form.showField(field, vm.modalData)'>
+              <ion-list class="list item-text-wrap strabo-choices-flex-container strabo-wrap"
+              ng-class='form.setSelMultClass(field, vm.modalData)'>
+                <ion-item class="item item-checkbox mineral-item minerals-checkbox item-minerals-checkbox
+                 item-button-right item-text-wrap minerals-item"
+                  ng-repeat='choice in form.choices | filter: { "list_name": field.type.split(" ")[1] }'>
+                  <ion-grid>
+                    <ion-row>
+                      <ion-col>
+                        <label class="checkbox mineral-checkbox">
+                          <input type="checkbox" ng-click="form.toggleChecked(field.name, choice.name, vm.modalData)"
+                          ng-required='{{ field.required }}'
+                            ng-checked='form.isOptionChecked(field.name, choice.name, vm.modalData)'>
+                        </label>
+                        {{ choice.label }}
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
+                  <button id="minerals-info-button-modal" class=" button-small button-icon button ion-information-circled
+                  minerals-field-info-button"
+                    ng-click="vm.showMineralInfo(choice.name, $event)">
+                  </button>
+                </ion-item>
+              </ion-list>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div ng-hide="vm.isShowMineralList" class="padding">
+      <div ng-show="vm.mineralInfo" class="mineral-info-display">
+        <div class="row">
+          <span class="mineral-title">Mineral:</span>
+          {{ vm.mineralInfo.Mineral }}
+        </div>
+        <div class="row">
+          <span class="mineral-title">Formula:</span>
+          {{ vm.mineralInfo.Formula }}
+        </div>
+        <div class="row">
+          <span class="mineral-title">Crystal System:</span>
+          {{ vm.mineralInfo["Crystal System"] }}
+        </div>
+        <div class="row">
+          <span class="mineral-title">Hardness:</span>
+          {{ vm.mineralInfo.Hardness }}
+        </div>
+        <div class="row">
+          <span class="mineral-title">Distinguishing Features:</span>
+          {{ vm.mineralInfo['Distinguishing Features'] }}
+        </div>
+        <div class="row">
+          <span class="mineral-title"> Occurrence:</span>
+          {{ vm.mineralInfo.Occurrence }}
+        </div>
+        <div class="row">
+          <span class="mineral-title"> Associated Minerals:</span>
+          {{ vm.mineralInfo['Associated Minerals'] }}
+        </div>
+        <br>
+        <div class="row">
+          <!-- <div class=" mineral-title"><i name="icon ion-globe"></i></div>          -->
+          <a class="" id="mineral-link" ng-href="{{vm.mineralInfo['mindat.org link']}}" target="blank">
+            <i class="web-icon icon ion-android-globe"></i>
+            Click here for more mineral information on {{vm.mineralInfo.Mineral}} info from Mindat.org
+          </a>
+        </div>
+      </div>
+      <div ng-hide="vm.mineralInfo">
+        There is no description given for this mineral
+      </div>
+    </div>
+  </ion-content>
+</ion-modal-view>

@@ -379,6 +379,25 @@ Orientation Tab Style
   font-size: x-small;
 }
 
+.clipboard-modal-text{
+  text-align: center;
+  font-size: small;
+  margin: auto;
+}
+
+.clipboard-data-modal{
+  display: block;
+  width: 80%;
+  height: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  border: #f8f8f8;
+  border-width: 4px;
+  border-style: solid;
+  resize: none;
+  overflow: auto;
+  font-size: 14px;
+}
 /*--------------------
 Online & Offline Notification Circles
 --------------------*/
@@ -939,6 +958,17 @@ Spots Page
   font-style: oblique;
 }
 
+.mineral-list{
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  font-size: large;
+  margin-bottom: 10px;
+}
+.web-icon {
+  font-size: 1.4rem;
+  margin-left: 10px;
+
+}
 /*--------------------
 Filters Modal
 ---------------------*/
@@ -955,6 +985,83 @@ Filters Modal
 .date-filter-label{
   display: initial;
   font-size: small;
+}
+
+/*--------------------
+Minerals Page
+---------------------*/
+
+.minerals-checkbox {
+  left: 25px; 
+}
+.minerals-item{
+  margin-bottom: 1px;
+  margin-left: 80px;
+}
+
+.mineral-checkbox{
+  margin-left: -15;
+  position: relative;
+}
+
+.mineral-item{
+  display: flex;
+}
+
+#minerals-info-button-modal{
+  float: left;
+  align-items: center;
+  position: relative;
+  top: -8px;
+  right: -13px;
+  min-width: 34px;
+  min-height: 34px;
+  font-size: 12px;
+  line-height: 32px;
+  z-index: 4; 
+  font-size: 12px;
+}
+
+#minerals-info-button-main{
+  float: left;
+  align-items: center;
+  position: relative;
+  top: -8px;
+  right: 0%;
+  min-width: 34px;
+  min-height: 34px;
+  font-size: 12px;
+  line-height: 32px;
+  z-index: 4; 
+  font-size: 12px;
+}
+
+.minerals-field-info-button {
+  min-height: 20px;
+  line-height: 20px;
+  top: -3px;                  /* Overwritten in web css */
+  color: #387ef5;
+  position: absolute;
+  margin-left: 0px; 
+}
+
+.mineral-info-display > .row{ 
+  margin: 0px 0px 10px 0px;
+}
+
+#mineral-link{
+  text-decoration: none;
+  /* margin-left: 10%; */
+}
+
+.mineral-title{
+  margin-right: 15px;
+  font-weight: bold;
+}
+.minerals-form{
+  font-size: small;
+  line-height: 20px;
+  padding: 0px !important;
 }
 
 /*--------------------

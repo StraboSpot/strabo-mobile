@@ -1,0 +1,17 @@
+list_name,name,label,order
+kl5wx08,albite,Albite,
+kl5wx08,amphibole,Amphibole,1
+kl5wx08,apatite,Apatite,2
+kl5wx08,biotite,Biotite,3
+kl5wx08,clinopyroxene,"Clinopyroxene, Augite",4
+kl5wx08,epidote,Epidote,5
+kl5wx08,hornblende,Hornblende,6
+kl5wx08,muscovite,Muscovite,9
+kl5wx08,olivine,Olivine,10
+kl5wx08,opaques,Opaques,11
+kl5wx08,orthoclase,"Orthoclase, Microcline, K-Feldspar",12
+kl5wx08,orthopyroxene,"Orthopyroxene, Hypersthene",13
+kl5wx08,plagioclase,Plagioclase,14
+kl5wx08,quartz,Quartz,15
+kl5wx08,titanite,Titanite,16
+kl5wx08,zircon,Zircon,17

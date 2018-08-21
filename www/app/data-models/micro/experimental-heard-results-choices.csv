@@ -1,5 +1,5 @@
 list_name,name,label
-ji0rg23,confined__2_3,Confined ?2=?3
+ji0rg23,confined_s2_s3,Confined s2=s3
 ec7he07,pa,Pa
 ec7he07,kpa,kPa
 ec7he07,mpa,MPa
@@ -17,7 +17,7 @@ mc4rf85,kinetic,Kinetic
 mc4rf85,static,Static
 mc4rf85,steady_state,Steady-State
 cf0su32,bulk_modulus,Bulk Modulus
-cf0su32,young_s_modulus,Young's Modulus
+cf0su32,young_s_modulu,Young's Modulus
 ej9uh22,melting,Melting
 cj9wh19,_micro_crack_f,(micro)Crack/Fracture
 cj9wh19,brittle,Brittle

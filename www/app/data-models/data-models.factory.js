@@ -58,6 +58,18 @@
           'survey': {},
           'survey_file': 'app/data-models/micro/experimental-general-survey.csv'
         },
+        'experimental_general_results': {
+          'survey': {},
+          'survey_file': 'app/data-models/micro/experimental-general-testing-results-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/micro/experimental-general-testing-results-choices.csv'
+        },
+        'experimental_general_conditions': {
+          'survey': {},
+          'survey_file': 'app/data-models/micro/experimental-general-testing-conditions-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/micro/experimental-general-testing-conditions-choices.csv'
+        },
         'experimental_griggs_conditions': {
           'survey': {},
           'survey_file': 'app/data-models/micro/experimental-griggs-conditions-survey.csv',
@@ -114,25 +126,55 @@
         }
       },
       'minerals': {
+        'heavy': {
+          'survey': {},
+          'survey_file': 'app/data-models/minerals-heavy-all-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/minerals-heavy-all-choices.csv'
+        },
+        'heavy_most_common': {
+          'survey': {},
+          'survey_file': 'app/data-models/minerals-heavy-most-common-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/minerals-heavy-most-common-choices.csv'
+        },
         'igneous': {
           'survey': {},
-          'survey_file': 'app/data-models/minerals-igneous-survey.csv',
+          'survey_file': 'app/data-models/minerals-igneous-all-survey.csv',
           'choices': {},
-          'choices_file': 'app/data-models/minerals-igneous-choices.csv'
-       },
+          'choices_file': 'app/data-models/minerals-igneous-all-choices.csv'
+        },
+        'igneous_most_common': {
+          'survey': {},
+          'survey_file': 'app/data-models/minerals-igneous-most-common-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/minerals-igneous-most-common-choices.csv'
+        },
         'metamorphic': {
           'survey': {},
-          'survey_file': 'app/data-models/minerals-metamorphic-survey.csv',
+          'survey_file': 'app/data-models/minerals-metamorphic-all-survey.csv',
           'choices': {},
-          'choices_file': 'app/data-models/minerals-metamorphic-choices.csv'
+          'choices_file': 'app/data-models/minerals-metamorphic-all-choices.csv'
+        },
+        'metamorphic_most_common': {
+          'survey': {},
+          'survey_file': 'app/data-models/minerals-metamorphic-most-common-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/minerals-metamorphic-most-common-choices.csv'
         },
         'sedimentary': {
-          'survey':{},
-          'survey_file': 'app/data-models/minerals-sedimentary-survey.csv',
+          'survey': {},
+          'survey_file': 'app/data-models/minerals-sedimentary-all-survey.csv',
           'choices': {},
-          'choices_file': 'app/data-models/minerals-sedimentary-choices.csv'
+          'choices_file': 'app/data-models/minerals-sedimentary-all-choices.csv'
+        },
+        'sedimentary_most_common': {
+          'survey': {},
+          'survey_file': 'app/data-models/minerals-sedimentary-most-common-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/minerals-sedimentary-most-common-choices.csv'
         }
-       },
+      },
       'orientation_data': {
         'linear_orientation': {
           'survey': {},
@@ -312,12 +354,12 @@
 
     function createFeatureTypesDictionary() {
       var models = [dataModels.orientation_data.linear_orientation,
-        dataModels.orientation_data.planar_orientation,
-        dataModels.orientation_data.tabular_orientation,
-        dataModels._3d_structures.fabric,
-        dataModels._3d_structures.fold,
-        dataModels._3d_structures.other,
-        dataModels._3d_structures.tensor];
+      dataModels.orientation_data.planar_orientation,
+      dataModels.orientation_data.tabular_orientation,
+      dataModels._3d_structures.fabric,
+      dataModels._3d_structures.fold,
+      dataModels._3d_structures.other,
+      dataModels._3d_structures.tensor];
 
       featureTypeLabels = gatherTypeLabels(models, 'feature_type');
       $log.log('Feature Types:', featureTypeLabels);
@@ -331,6 +373,7 @@
       var models = {
         'images': dataModels.image,
         'samples': dataModels.sample,
+        'heavy': dataModels.minerals.heavy,
         'metamorphic': dataModels.minerals.metamorphic,
         'igneous': dataModels.minerals.igneous,
         'sedimentary': dataModels.minerals.sedimentary
@@ -426,6 +469,7 @@
         'other': dataModels._3d_structures.other,
         'tensor': dataModels._3d_structures.tensor,
         'images': dataModels.image,
+        'heavy': dataModels.minerals.heavy,
         'metamorphic': dataModels.minerals.metamorphic,
         'igneous': dataModels.minerals.igneous,
         'sedimentary': dataModels.minerals.sedimentary,
@@ -451,7 +495,7 @@
         var description = {};
         _.each(model.survey, function (field) {
           if (field.type.split('_')[0] !== 'end' && field.type.split(
-              '_')[0] !== 'begin' && field.type !== 'calculate') {
+            '_')[0] !== 'begin' && field.type !== 'calculate') {
             var type = getType(field.type, model);
             var hint = field.hint ? '; Hint: ' + field.hint : '';
             var required = field.required === 'true' ? '; REQUIRED' : '';
@@ -467,7 +511,7 @@
           description = sortby(description);
           spotDataModel.properties.orientation_data.push(description);
         }
-        else if (key === 'metamorphic' || key === 'igneous' || key === 'sedimentary') {
+        else if (key === 'metamorphic' || key === 'igneous' || key === 'sedimentary' || key === 'heavy') {
           var mineralsChoices = getMineralsChoices();
           spotDataModel.properties.minerals = 'Type: select multiple [' + mineralsChoices.join(', ') + ']';
         }
@@ -532,7 +576,8 @@
       var choicesMetamorphic = _.pluck(dataModels.minerals.metamorphic.choices, 'name');
       var choicesIgneous = _.pluck(dataModels.minerals.igneous.choices, 'name');
       var choicesSedimentary = _.pluck(dataModels.minerals.sedimentary.choices, 'name');
-      return _.union(choicesMetamorphic, choicesIgneous, choicesSedimentary).sort();
+      var choicesHeavy = _.pluck(dataModels.minerals.heavy.choices, 'name');
+      return _.union(choicesMetamorphic, choicesIgneous, choicesSedimentary, choicesHeavy).sort();
     }
 
     function getType(type, model) {

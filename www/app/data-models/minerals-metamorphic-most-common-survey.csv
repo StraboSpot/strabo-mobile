@@ -1,0 +1,6 @@
+type,name,label,required,calculation,$given_name
+start,start,,,,
+end,end,,,,
+select_multiple cs0gb99,most_common,Most Common,false,,
+calculate,__version__,,false,'vHGUsTe9jazUyf79Ks6Q8q',
+calculate,_version_,,,'vDoXerAeCVUnjvuwaqJMiY',__version__

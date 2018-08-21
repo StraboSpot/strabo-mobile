@@ -1,30 +1,26 @@
 <ion-modal-view>
-  <ion-header-bar class='bar-stable nav-title-slide-ios7' align-title='center'>
-    <button class='button button-positive' ng-click='vmChild.submit()'>Save
-    </button>
-    <h1 class='title'>{{ vmChild.modalTitle }}</h1>
-    <div class='buttons'>
-      <button class='icon ion-close-round close-modal-button' ng-click='vmChild.closeExperimentalModal()'>
+    <ion-header-bar class='bar-stable nav-title-slide-ios7' align-title='center'>
+      <button class='button button-positive' ng-click='vmChild.submit()'>Save
       </button>
-    </div>
-  </ion-header-bar>
-  <ion-content>
-    <div class='button-bar'>
-      <button class='button button-full' ng-click='vmChild.switchExpForm("general")'
-              ng-class="{'spot-tab-active': vmChild.activeState === 'general'}">General
-      </button>
-      <button class='button button-full' ng-click='vmChild.switchExpForm("assembly")'
-              ng-class="{'spot-tab-active': vmChild.activeState === 'assembly'}">Assembly
-      </button>
-      <button class='button button-full' ng-click='vmChild.switchExpForm("conditions")'
-              ng-class="{'spot-tab-active': vmChild.activeState === 'conditions'}">Conditions
-      </button>
-      <button class='button button-full' ng-click='vmChild.switchExpForm("results")'
-              ng-class="{'spot-tab-active': vmChild.activeState === 'results'}">Results
-      </button>
-    </div>
-    <form name='straboForm' novalidate=''>
-      <auto-fields/>
-    </form>
-  </ion-content>
-</ion-modal-view>
+      <h1 class='title'>{{ vmChild.modalTitle }}</h1>
+      <div class='buttons'>
+        <button class='icon ion-close-round close-modal-button' ng-click='vmChild.closeExperimentalModal()'>
+        </button>
+      </div>
+    </ion-header-bar>
+    <ion-content>
+        <div class='button-bar'>
+          <button class='button button-full' ng-click='vmChild.switchExpForm("general")'
+           ng-class="{'spot-tab-active': vmChild.activeState === 'general'}">General</button>
+          <button class='button button-full' ng-click='vmChild.switchExpForm("assembly")' 
+					ng-class="{'spot-tab-active': vmChild.activeState === 'assembly'}">Assembly</button>
+					<button class='button button-full' ng-click='vmChild.switchExpForm("conditions")' 
+					ng-class="{'spot-tab-active': vmChild.activeState === 'conditions'}">Conditions</button>
+					<button class='button button-full' ng-click='vmChild.switchExpForm("results")' 
+          ng-class="{'spot-tab-active': vmChild.activeState === 'results'}">Results</button>
+        </div>
+        <form name='straboForm' novalidate=''>
+						<auto-fields/>
+        </form>
+    </ion-content>
+  </ion-modal-view>

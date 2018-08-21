@@ -1,0 +1,49 @@
+<ion-modal-view>
+    <ion-header-bar class='bar-stable nav-title-slide-ios7' align-title='center'>
+        <button class='button button-positive' ng-click='vmChild.stereonetClipboard()'>Import
+        </button>
+        <h1 class='title'>Import Data</h1>
+        <div class='buttons'>
+            <button class='icon ion-close-round close-modal-button' ng-click='vmChild.clipboardModal.hide()'>
+            </button>
+        </div>
+    </ion-header-bar>
+    <ion-content>         
+           <div class="padding clipboard-modal-text">Paste orientation data from clipboard in the box below.<br>You are able to edit the content before importing.<br> Must be in JSON format (see example):</div>
+          <textarea id="data" class="clipboard-data-modal" rows="25" placeholder='
+          ----------------- EXAMPLE ---------------
+          {        
+            "type": "FeatureCollection",    
+            "features": [         
+              {         
+                "type": "Feature",          
+                "geometry": {         
+                  "type": "Point",         
+                  "coordinates": [         
+                    -122.406417,         
+                    37.785834         
+                  ]         
+                },         
+                "properties": {         
+                  "date": "2018-06-28T20:36:09Z",         
+                  "altitude": 0.000000,         
+                  "orientation_data": [         
+                    {          
+                      "type": "linear_orientation",          
+                      "trend": 270,         
+                      "plunge": 0          
+                    },          
+                    {          
+                      "type": "planar_orientation",          
+                      "strike": 180,          
+                      "dip_direction": 270,          
+                      "dip": 0          
+                    }         
+                  ]          
+                }          
+              }          
+            ]          
+          }
+          '></textarea>     
+    </ion-content>
+</ion-modal-view>

@@ -1,0 +1,69 @@
+list_name,name,label,order
+ak3ds31,actinolite,Actinolite,
+ak3ds31,albite,Albite,1
+ak3ds31,alkali_feldspa,Alkali feldspar,2
+ak3ds31,allanite,Allanite,3
+ak3ds31,amphibole,Amphibole,4
+ak3ds31,andalusite,Andalusite,5
+ak3ds31,apatite,Apatite,6
+ak3ds31,beryl,Beryl,7
+ak3ds31,biotite,Biotite,8
+ak3ds31,brucite,Brucite,9
+ak3ds31,calcite,Calcite,10
+ak3ds31,chalcopyrite,Chalcopyrite,11
+ak3ds31,chlorite,Chlorite,12
+ak3ds31,chloritoid,Chloritoid,13
+ak3ds31,clay,Clay,14
+ak3ds31,clinoamphibole,Clinoamphibole,15
+ak3ds31,clinopyroxene,"Clinopyroxene, Augite",16
+ak3ds31,clinozoisite,Clinozoisite,17
+ak3ds31,cordierite,Cordierite,18
+ak3ds31,corundum,Corundum,19
+ak3ds31,diopside,Diopside,20
+ak3ds31,dolomite,Dolomite,21
+ak3ds31,epidote,Epidote,22
+ak3ds31,galena,Galena,23
+ak3ds31,garnet,Garnet,24
+ak3ds31,glaucophane,Glaucophane,25
+ak3ds31,goethite,Goethite,26
+ak3ds31,graphite,Graphite,27
+ak3ds31,hematite,Hematite,28
+ak3ds31,hornblende,Hornblende,29
+ak3ds31,ilmenite,Ilmenite,30
+ak3ds31,jadeite,Jadeite,31
+ak3ds31,kyanite,Kyanite,32
+ak3ds31,lawsonite,Lawsonite,33
+ak3ds31,limonite,Limonite,34
+ak3ds31,magnetite,Magnetite,35
+ak3ds31,monazite,Monazite,36
+ak3ds31,muscovite_whi,"Muscovite, White Mica",37
+ak3ds31,na_pyroxene,Na pyroxene,38
+ak3ds31,olivine,Olivine,39
+ak3ds31,omphacite,Omphacite,40
+ak3ds31,orthoamphibole,Orthoamphibole,41
+ak3ds31,orthoclase,"Orthoclase, Microcline, K-Feldspar",42
+ak3ds31,orthopyroxene,"Orthopyroxene, Hypersthene",43
+ak3ds31,piemontite,Piemontite,44
+ak3ds31,plagioclase,Plagioclase,45
+ak3ds31,pumpellyite,Pumpellyite,46
+ak3ds31,pyrite,Pyrite,47
+ak3ds31,pyrophyllite,Pyrophyllite,48
+ak3ds31,pyrrhotite,Pyrrhotite,49
+ak3ds31,quartz,Quartz,50
+ak3ds31,rutile,Rutile,51
+ak3ds31,sanidine,Sanidine,52
+ak3ds31,sapphirine,Sapphirine,53
+ak3ds31,serpentine,Serpentine,54
+ak3ds31,sillimanite,Sillimanite,55
+ak3ds31,sphalerite,Sphalerite,56
+ak3ds31,spinel,Spinel,57
+ak3ds31,staurolite,Staurolite,58
+ak3ds31,talc,Talc,59
+ak3ds31,titanite,Titanite,60
+ak3ds31,tremolite,Tremolite,61
+ak3ds31,tourmaline,Tourmaline,62
+ak3ds31,vesuvanite,Vesuvanite,63
+ak3ds31,wollastonite,Wollastonite,64
+ak3ds31,zeolite,Zeolite,65
+ak3ds31,zircon,Zircon,66
+ak3ds31,zoisite,Zoisite,67

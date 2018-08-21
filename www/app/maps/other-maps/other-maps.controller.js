@@ -26,7 +26,8 @@
     vm.mapSources = [
       {'name': 'Mapbox Classic', 'source': 'mapbox_classic', 'idLabel': 'Map Id'},
       {'name': 'Mapbox Styles', 'source': 'mapbox_styles', 'idLabel': 'Style URL'},
-      {'name': 'Map Warper', 'source': 'map_warper', 'idLabel': '5 Digit Map ID'}
+      {'name': 'Map Warper', 'source': 'map_warper', 'idLabel': '5 Digit Map ID'},
+      {'name': 'StraboSpot MyMaps', 'source': 'strabospot_mymaps', 'idLabel': 'Strabo Map ID'}
     ];
     vm.modalTitle = '';
     vm.openModal = openModal;
@@ -190,7 +191,7 @@
     }
 
     function save() {
-      if (vm.data.source === 'map_warper' && (!vm.data.title || !vm.data.id )) {
+      if (( vm.data.source === 'map_warper' || vm.data.source === 'strabospot_mymaps' ) && (!vm.data.title || !vm.data.id )) {
         $ionicPopup.alert({
           'title': 'Incomplete Map Info!',
           'template': 'Title and Map ID required fields.'
@@ -217,6 +218,9 @@
             break;
           case 'map_warper':
             testUrl = 'https://strabospot.org/map_warper_check/' + vm.data.id;
+            break;
+          case 'strabospot_mymaps':
+            testUrl = 'https://strabospot.org/strabo_mymaps_check/' + vm.data.id;
             break;
         }
         $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Testing Connection...'});
