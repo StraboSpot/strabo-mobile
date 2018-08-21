@@ -84,7 +84,7 @@
       vmParent.data = {};
       vmParent.data.type = type;
       vmParent.data.id = HelpersFactory.getNewId();
-      vm.modalTitle = 'Add a ' + vmParent.data.type + ' Rig';
+      vm.modalTitle = 'Add ' + vmParent.data.type + ' Exp';
       vm.experimentalModal.show();
     }
 
@@ -96,8 +96,8 @@
 
     function deleteRig(rigToDelete) {
       var confirmPopup = $ionicPopup.confirm({
-        'title': 'Delete Rig',
-        'template': 'Are you sure you want to delete the rig <b>' + rigToDelete.name_of_experiment + '</b>?'
+        'title': 'Delete Experiment',
+        'template': 'Are you sure you want to delete the experiment <b>' + rigToDelete.name_of_experiment + '</b>?'
       });
       confirmPopup.then(function (res) {
         if (res) {
@@ -123,7 +123,7 @@
         vmParent.data.date_of_experiment = new Date(vmParent.data.date_of_experiment);
       }
       FormFactory.setForm('micro', 'experimental_general');
-      vm.modalTitle = 'Edit ' + vmParent.data.type + ' Rig';
+      vm.modalTitle = 'Edit ' + vmParent.data.type + ' Exp';
       vm.experimentalModal.show();
     }
 
