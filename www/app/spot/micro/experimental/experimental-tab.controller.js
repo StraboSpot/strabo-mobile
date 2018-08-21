@@ -18,6 +18,7 @@
     vm.experimentalModal = {};
 
     vm.addARig = addARig;
+    vm.closeExperimentalModal = closeExperimentalModal;
     vm.deleteRig = deleteRig;
     vm.editRig = editRig;
     vm.submit = submit;
@@ -85,6 +86,12 @@
       vmParent.data.id = HelpersFactory.getNewId();
       vm.modalTitle = 'Add a ' + vmParent.data.type + ' Rig';
       vm.experimentalModal.show();
+    }
+
+    function closeExperimentalModal() {
+      vmParent.data = {};
+      FormFactory.clearForm();
+      vm.experimentalModal.hide();
     }
 
     function deleteRig(rigToDelete) {

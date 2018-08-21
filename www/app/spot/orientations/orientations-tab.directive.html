@@ -11,6 +11,10 @@
     <i class='icon ion-plus-circled'></i>
     <span class='button-text-big'>Add a Tabular Zone</span>
   </button>
+  <button id="paste" ng-click='vmChild.openClipboardModal()' class='button button-clear button-positive'>
+      <i class='icon ion-plus-circled'></i>
+      <span class='button-text-big'>Add From Clipboard</span>
+  </button>
   <ion-list>
     <ion-item class='item-text-wrap item-button-right'
               ng-repeat='orientation in vm.spot.properties.orientation_data |

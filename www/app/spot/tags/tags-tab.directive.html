@@ -15,6 +15,7 @@
       <select ng-model='vm.selectedType' ng-change='vm.filterTagType()'>
         <option value='all'>All</option>
         <option value='geologic_unit'>Geologic Unit</option>
+        <option value='mineral'>Mineral Assemblage</option>
         <option value='concept'>Concept</option>
         <option value='documentation'>Documentation</option>
         <option value='rosetta'>Rosetta</option>
@@ -41,6 +42,10 @@
                 ng-click='vm.goToTag(tag.id)'>
         <b>{{ tag.name }}</b>
         <strabo-tags-list-properties-directive></strabo-tags-list-properties-directive>
+        <span ng-if='tag.minerals.length > 0'>
+        (<span ng-repeat="mineral in tag.minerals | orderBy: mineral track by $index">{{vm.getLabel(mineral) }}<span
+          ng-hide="$last">, </span></span>)
+      </span>
       </ion-item>
     </ion-list>
     <div class='item item-divider' ng-show='vm.featureLevelTagsToDisplay.length > 0'>

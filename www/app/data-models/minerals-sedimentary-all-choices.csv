@@ -1,0 +1,17 @@
+list_name,name,label,order
+pg9zo06,calcite,Calcite,
+pg9zo06,clay,Clay,1
+pg9zo06,dolomite,Dolomite,2
+pg9zo06,quartz,Quartz,3
+pg9zo06,k_feldspar,K-feldspar,
+pg9zo06,microcline,Microcline,
+pg9zo06,plagioclase,Plagioclase,
+pg9zo06,volcanic_rock,Volcanic Rock Fragments,
+pg9zo06,sedimentary_ro,Sedimentary Rock Fragments,
+pg9zo06,metamorphic_ro,Metamorphic Rock Fragments,
+pg9zo06,mica__biotite,"Mica (Biotite, Muscovite, Chlorite)",
+pg9zo06,chert,Chert,
+pg9zo06,gypsum_anhydri,Gypsum/Anhydrite,
+pg9zo06,organic_matter,Organic  Matter,
+pg9zo06,fossils,Fossils,
+pg9zo06,halite,Halite,
