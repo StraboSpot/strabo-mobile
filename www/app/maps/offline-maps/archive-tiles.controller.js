@@ -80,6 +80,8 @@
         countOuterZooms();
       }
 
+      //here
+
       $ionicModal.fromTemplateUrl('app/maps/offline-maps/downloading-modal.html', {
         'scope': $scope,
         'animation': 'slide-in-up',
