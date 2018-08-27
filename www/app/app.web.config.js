@@ -6,7 +6,7 @@
     .config(config);
 
   function config($urlRouterProvider, $stateProvider) {
-    // Declare Login and Main Menu States and Dashboard State for WEB
+    // Declare Login and Main Menu States for WEB
     $stateProvider
       .state('app', {
         'url': '/app',
@@ -15,16 +15,6 @@
         'controller': 'MenuController as vm',
         'resolve': {
           'prepMenu': prepMenu
-        }
-      })
-      .state('app.dashboard', {
-        'cache': false,
-        'url': '/dashboard',
-        'views': {
-          'menuContent': {
-            'templateUrl': 'app/dashboard/dashboard.web.html',
-            'controller': 'DashboardController'
-          }
         }
       });
 
@@ -138,7 +128,7 @@
       $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loading Database...'});
       return LocalStorageFactory.setupLocalforage().then(function () {
         $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loaded Database<br>Loading User...'});
-        return AutoLoginFactory.autoLogin().then(function () {
+        // return AutoLoginFactory.autoLogin().then(function () {
           $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loaded Database<br>Loaded User<br>Loading Project...'});
           return UserFactory.loadUser().then(function () {
             $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Automatically logged in...'});
@@ -152,7 +142,7 @@
               });
             });
           });
-        });
+        // });
       });
     });
   }

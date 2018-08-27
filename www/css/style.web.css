@@ -112,25 +112,6 @@ html, body, .container-fluid, .strabo-page-content {
 }
 
 /*--------------------
-GoldenLayout Dashboard
----------------------*/
-
-.section {
-  color: black;
-  font: 14px Arial, sans-serif;
-  padding: 10px;
-}
-
-strong {
-  font-weight: bold;
-  color: red;
-}
-
-template {
-  display: none;
-}
-
-/*--------------------
 Thin Section
 ---------------------*/
 

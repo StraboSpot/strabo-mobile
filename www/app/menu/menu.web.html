@@ -39,8 +39,6 @@
             <li><a ui-sref="app.other-maps">Other Basemaps</a></li>
           </ul>
         </li>
-        <!--<li ng-class='{ "active": vm.isActive("app.dashboard") }'>
-          <a ui-sref="app.dashboard">Golden Layout Test</a></li>-->
       </ul>
       <!--<form class="navbar-form navbar-left">
         <div class="form-group">
@@ -74,4 +72,4 @@
   </div><!-- /.container-fluid -->
 </nav>
 
-<div ui-view='menuContent' ng-class='{ "strabo-page-content": !vm.isActive("app.dashboard") }'></div>
+<div ui-view='menuContent' class="strabo-page-content"></div>

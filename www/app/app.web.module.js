@@ -6,7 +6,6 @@
       'ionic',
       'ngCordova',
       'ngMessages',
-      'ui.router',
-      'app.DashboardModule'])
+      'ui.router'])
     .constant('IS_WEB', true);
 }());
