@@ -253,6 +253,20 @@
       }
     }
 
+    // Recalculate the geometry of an interval using spot properties
+    function recalculateIntervalGeometry(spot) {
+      var extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
+      var intervalHeight = spot.properties.sed.lithologies.interval_thickness * yMultiplier;
+      var intervalWidth = getIntervalWidth(spot.properties.sed.lithologies, spot.properties.strat_section_id);
+      var minX = 0;
+      var maxX = intervalWidth;
+      var minY = extent[1];
+      var maxY = minY + intervalHeight;
+      spot.geometry.coordinates = [[[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY], [minX, minY]]];
+      $log.log('Recalculated Spot geometry');
+      return spot;
+    }
+
     /**
      * Public Functions
      */
@@ -304,17 +318,48 @@
       }
       // Current state is sed-lithologies tab
       else if (state === 'app.spotTab.sed-lithologies') {
-        // Recalculate interval geometry from thickness and width, whether these particular fields changed or not
+        // Recalculate interval geometry from thickness and width, if the following has changed:
+        // - interval thickness
+        // - bed or package to unexposed or vice versa
+        // - lithology (siliciclastic type, grain size or dunham classification)
         if (spot.geometry && spot.properties.sed && spot.properties.sed.lithologies) {
-          extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
-          var intervalHeight = spot.properties.sed.lithologies.interval_thickness * yMultiplier;
-          var intervalWidth = getIntervalWidth(spot.properties.sed.lithologies, spot.properties.strat_section_id);
-          var minX = 0;
-          var maxX = intervalWidth;
-          var minY = extent[1];
-          var maxY = minY + intervalHeight;
-          spot.geometry.coordinates = [[[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY], [minX, minY]]];
-          $log.log('Recalculated Spot geometry');
+          var lithologies = spot.properties.sed.lithologies;
+          if (savedSpot.properties.sed && savedSpot.properties.sed.lithologies) {
+            var lithologiesSaved = savedSpot.properties.sed.lithologies;
+            if ((lithologies.interval_thickness !== lithologiesSaved.interval_thickness)) {
+              spot = recalculateIntervalGeometry(spot);
+            }
+            else if (lithologies.is_this_a_bed_or_package && lithologiesSaved.is_this_a_bed_or_package) {
+              if ((lithologies.is_this_a_bed_or_package === 'bed' ||
+                lithologies.is_this_a_bed_or_package === 'interbedded' ||
+                lithologies.is_this_a_bed_or_package === 'package_succe') &&
+                !(lithologiesSaved.is_this_a_bed_or_package === 'bed' ||
+                  lithologiesSaved.is_this_a_bed_or_package === 'interbedded' ||
+                  lithologiesSaved.is_this_a_bed_or_package === 'package_succe')) {
+                spot = recalculateIntervalGeometry(spot);
+              }
+              else if (lithologies.is_this_a_bed_or_package === 'unexposed_cove' &&
+                lithologiesSaved.is_this_a_bed_or_package !== 'unexposed_cove') {
+                spot = recalculateIntervalGeometry(spot);
+              }
+              else if (lithologies.primary_lithology !== lithologiesSaved.primary_lithology) {
+                spot = recalculateIntervalGeometry(spot);
+              }
+              else if (lithologies.primary_lithology === lithologiesSaved.primary_lithology) {
+                if (lithologies.principal_siliciclastic_type !== lithologiesSaved.principal_siliciclastic_type ||
+                  lithologies.principal_dunham_class !== lithologiesSaved.principal_dunham_class) {
+                  spot = recalculateIntervalGeometry(spot);
+                }
+                else if (lithologies.principal_siliciclastic_type === lithologiesSaved.principal_siliciclastic_type) {
+                  if (lithologies.mud_silt_principal_grain_size !== lithologiesSaved.mud_silt_principal_grain_size ||
+                    lithologies.sand_principal_grain_size !== lithologiesSaved.sand_principal_grain_size ||
+                    lithologies.congl_principal_grain_size !== lithologiesSaved.congl_principal_grain_size) {
+                    spot = recalculateIntervalGeometry(spot);
+                  }
+                }
+              }
+            }
+          }
         }
       }
       return spot;
