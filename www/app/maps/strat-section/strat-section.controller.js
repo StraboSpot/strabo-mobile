@@ -393,8 +393,8 @@
         $ionicPopup.alert({
           'title': 'Units Mismatch',
           'template': 'The units for the Y Axis are <b>' + stratSection.column_y_axis_units + '</b> but <b>' +
-          vm.data.thickness_units + '</b> have been designated for this interval. Please fix the units ' +
-          'for this interval.'
+            vm.data.thickness_units + '</b> have been designated for this interval. Please fix the units ' +
+            'for this interval.'
         });
       }
       else if (StratSectionFactory.validateNewInterval(vm.data, FormFactory.getForm())) {
@@ -475,7 +475,15 @@
 
     function goToSpot(id, page) {
       vm.clickedFeatureId = id;
-      if (page) $location.path('/app/spotTab/' + id + '/' + page);
+      // If navigating to the Sed Lithologies page make sure it is toggled on
+      if (page && page === 'sed-lithologies') {
+        var projectPreferences = ProjectFactory.getPreferences();
+        projectPreferences['sed_lithologies'] = true;
+        ProjectFactory.saveProjectItem('preferences', projectPreferences).then(function () {
+          $location.path('/app/spotTab/' + id + '/' + page);
+        });
+      }
+      else if (page) $location.path('/app/spotTab/' + id + '/' + page);
       else $location.path('/app/spotTab/' + id + '/spot');
     }
 
@@ -508,8 +516,8 @@
         $ionicPopup.alert({
           'title': 'Units Mismatch',
           'template': 'The units for the Y Axis are <b>' + stratSection.column_y_axis_units + '</b> but <b>' +
-          vm.data.thickness_units + '</b> have been designated for this interval. Please fix the units ' +
-          'for this interval.'
+            vm.data.thickness_units + '</b> have been designated for this interval. Please fix the units ' +
+            'for this interval.'
         });
       }
       else if (StratSectionFactory.validateNewInterval(vm.data, FormFactory.getForm())) {
