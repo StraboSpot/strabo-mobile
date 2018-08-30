@@ -276,8 +276,10 @@
             vm.map.progress.message = response.data.error;
             vm.map.percentDownload = 100;
           }else{
-            vm.map.progress.message = response.data.status;
-            vm.map.percentDownload = response.data.percent;
+            if(vm.map.progress.message != 'Downloading Zip File...') {
+              vm.map.progress.message = response.data.status;
+              vm.map.percentDownload = response.data.percent;
+            }
           }
 
 
@@ -300,13 +302,15 @@
         if(vm.tryCount <= 200 && vm.map.progress.message!='Zip File Ready.' && vm.map.zipError==''){
           $timeout(arguments.callee, 1000);
         }else{
+          vm.map.progress.message = 'Downloading Zip File...';
           OfflineTilesFactory.downloadZip(vm.zipUID,vm.map.mapid).then(function () {
-            $ionicPopup.alert({
-              'title': 'Testing!',
-              'template': 'Download done!'
+            LocalStorageFactory.unzipFile(vm.map.mapid).then(function (){
+              $ionicPopup.alert({
+                'title': 'Testing!',
+                'template': 'Zip File unzipped!'
+              });
             });
           });
-
         }
       }
     }

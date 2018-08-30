@@ -30,7 +30,8 @@
       'getDb': getDb,
       'importImages': importImages,
       'importProject': importProject,
-      'setupLocalforage': setupLocalforage
+      'setupLocalforage': setupLocalforage,
+      'unzipFile': unzipFile
     };
 
 
@@ -229,6 +230,16 @@
 
     function saveZip(data, fileName) {
       return exportData(zipsDirectory, data, fileName)
+    }
+
+    function unzipFile(mapid) {
+      var deferred = $q.defer(); // init promise
+      $log.log(zipsDirectory+'/'+mapid+'.zip to '+zipsDirectory+'/');
+      zip.unzip(zipsDirectory+'/'+mapid+'.zip', zipsDirectory+'/', function(returnvar){
+        deferred.resolve();
+        alert('done.'+returnvar);
+      });
+      return deferred.promise;
     }
 
     function exportImages() {
