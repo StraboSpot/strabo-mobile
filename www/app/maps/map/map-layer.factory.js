@@ -115,7 +115,7 @@
       checkNextTile(mapProvider, imgElement, x, y, z, d, row, col);
     }
 
-    // Get the tile from local storage
+    // Get the tile from local storage -- change to file storage
     function getTile(mapProvider, tileId) {
       var deferred = $q.defer(); // init promise
       //$log.log('Looking for tile:', tileId);

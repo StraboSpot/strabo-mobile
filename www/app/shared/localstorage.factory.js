@@ -18,10 +18,12 @@
     var appDirectory = 'StraboSpot';
     var dataBackupsDirectory = appDirectory + '/DataBackups';
     var imagesBackupsDirectory = appDirectory + '/ImageBackups';
+    var zipsDirectory = appDirectory + '/TileZips';
     var importImagesCount = {'need': 0, 'have': 0, 'success': 0, 'failed': 0};
 
     return {
       'exportImage': exportImage,
+      'saveZip': saveZip,
       'exportImages': exportImages,
       'exportProject': exportProject,
       'gatherLocalFiles': gatherLocalFiles,
@@ -90,6 +92,7 @@
       });
       return deferred.promise;
     }
+
 
     function getDevicePath() {
       var devicePath;
@@ -222,6 +225,10 @@
 
     function exportImage(data, fileName) {
       return exportData(imagesBackupsDirectory, data, fileName)
+    }
+
+    function saveZip(data, fileName) {
+      return exportData(zipsDirectory, data, fileName)
     }
 
     function exportImages() {

@@ -5,10 +5,10 @@
     .module('app')
     .factory('OfflineTilesFactory', OfflineTilesFactory);
 
-  OfflineTilesFactory.$inject = ['$http', '$ionicLoading', '$ionicPopup', '$log', '$q', 'LocalStorageFactory'];
+  OfflineTilesFactory.$inject = ['$http', '$ionicLoading', '$ionicPopup', '$log', '$q', '$timeout', 'LocalStorageFactory'];
 
   // used to determine what the map provider is before we archive a tileset
-  function OfflineTilesFactory($http, $ionicLoading, $ionicPopup, $log, $q, LocalStorageFactory) {
+  function OfflineTilesFactory($http, $ionicLoading, $ionicPopup, $log, $q, $timeout, LocalStorageFactory) {
     var downloadErrors = 0;
     var offlineMaps = [];
 
@@ -16,6 +16,7 @@
       'checkValidMapName': checkValidMapName,
       'clear': clear,
       'deleteMap': deleteMap,
+      'downloadZip': downloadZip,
       'getOfflineMaps': getOfflineMaps,
       'getOfflineTileCount': getOfflineTileCount,
       'read': read,
@@ -26,6 +27,13 @@
     /**
      *  Private Functions
      */
+
+
+
+
+
+
+
 
     function downloadTile(mapToSave, tile) {
       var deferred = $q.defer(); // init promise
@@ -62,12 +70,13 @@
 
     function writeMap(mapToSave, mapSize) {
       var deferred = $q.defer(); // init promise
+
       var mapNameData = {
         'source': mapToSave.source,
         'id': mapToSave.id,
         'title': mapToSave.title,
-        'tileArray': mapToSave.tiles.saved,
         'size': mapSize,
+        'mapid': mapToSave.mapid,
         'date': new Date().toLocaleString()
       };
 
@@ -112,8 +121,8 @@
         confirmPopup.then(function (res) {
           if (res) {
             $ionicLoading.show({'template': '<ion-spinner></ion-spinner>'});
-            var savedTilesUnion = _.union(map.tiles.saved, foundOfflineMap.tileArray);
-            map.tiles.saved = _.uniq(savedTilesUnion, false, 'tile');
+            //var savedTilesUnion = _.union(map.tiles.saved, foundOfflineMap.tileArray);
+            //map.tiles.saved = _.uniq(savedTilesUnion, false, 'tile');
             deferred.resolve();
           }
           else deferred.reject();
@@ -130,6 +139,8 @@
       // If the map name doesn't exist yet, create it with a size 0
       else {
         $ionicLoading.show({'template': '<ion-spinner></ion-spinner>'});
+        //create a unique id to use when storing tiles:
+        map.mapid = new Date().valueOf();
         writeMap(map, 0).then(function () {
           deferred.resolve();
         });
@@ -199,6 +210,31 @@
       return deferred.promise;
     }
 
+    function downloadZip(uid, mapid) {
+      var deferred = $q.defer(); // init promise
+
+      var url = 'http://devtiles.strabospot.org/ziptemp/'+uid+'/'+uid+'.zip';
+
+      var request = $http({
+        'method': 'get',
+        'url': url,
+        'responseType': 'arraybuffer'
+      });
+      request.then(function (response) {
+        var blob = new Blob([response.data], {
+          'type': 'application/pdf'
+        });
+        LocalStorageFactory.saveZip(blob, mapid+'.zip').then(function () {
+          deferred.resolve();
+        });
+      }, function (response) {
+        // Request Failure
+        alert('zip download failed');
+        deferred.reject(response);
+      });
+      return deferred.promise;
+    }
+
     function getOfflineMaps() {
       var deferred = $q.defer();
 
@@ -246,14 +282,19 @@
       return deferred.promise;
     }
 
+
+
+
+
+
     function saveMap(mapToSave) {
       var deferred = $q.defer(); // init promise
       downloadErrors = 0;
       var tilesDownloaded = {'success': [], 'failed': []};
       var promises = [];
 
-      if (mapToSave.tiles.need.length > 0) {
-        $log.log('Requesting to download', mapToSave.tiles.need.length, 'tiles from', mapToSave.id,
+      if (mapToSave.tileCount > 0) {
+        $log.log('Requesting to download', mapToSave.tileCount, 'tiles from', mapToSave.id,
           'for map', mapToSave.name);
         _.each(mapToSave.tiles.need, function (tile) {
           var promise = downloadTile(mapToSave, tile).then(function (size) {
