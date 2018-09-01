@@ -32,10 +32,6 @@
     vm.zoomOptions = [];
     vm.tilehost = 'http://devtiles.strabospot.org';
 
-    vm.hours = 10;
-    vm.minutes = 5;
-    vm.seconds = 24;
-
     vm.tryCount = 0;
     vm.zipUID = '';
 
@@ -45,6 +41,8 @@
     vm.maxZoomLevelChanged = maxZoomLevelChanged;
     vm.submit = submit;
     vm.serverCountTiles = serverCountTiles;
+    vm.unzipFile = unzipFile;
+    vm.unzipAgain = unzipAgain;
 
     activate();
 
@@ -78,7 +76,6 @@
           'percentDownload': 0,
           'progress': {'message':'Starting Download...'},
           'status': '',
-          'tileCount': 0,
           'zipDone': false,
           'zipError': ''
         });
@@ -98,20 +95,9 @@
         var top = mapExtent.topRight.lat;
         var left = mapExtent.bottomLeft.lng;
         var bottom = mapExtent.bottomLeft.lat;
-
-        $log.log("right: ",right);
-        $log.log("top: ",top);
-        $log.log("left: ",left);
-        $log.log("bottom: ",bottom);
-
-        $log.log("mapExtent.topRight: ",mapExtent.topRight);
-
         extentString = left+','+bottom+','+right+','+top;
 
-        $log.log('zoomOptions: ',vm.zoomOptions);
-
         loadSavedMaps();
-        //countOuterZooms();
       }
 
       $ionicModal.fromTemplateUrl('app/maps/offline-maps/downloading-modal.html', {
@@ -136,7 +122,6 @@
     }
 
     function continueDownload() {
-      $log.log("continueDownload: ",vm.map);
       OfflineTilesFactory.checkValidMapName(vm.map).then(function () {
 
         vm.downloadingModal.show().then(function () {
@@ -209,19 +194,19 @@
       });
 
       $q.all(promises).then(function () {
-        //$log.log(vm.outerZoomsAll);
         updateSelectedDownloads();
       });
     }
 
     function loadSavedMaps() {
       OfflineTilesFactory.getOfflineMaps().then(function (maps) {
-        $log.log("maps: ",maps);
+        $log.log("offline maps: ",maps);
         vm.maps = angular.fromJson(angular.toJson(maps));
         vm.selectedName = _.last(_.sortBy(vm.maps, 'date'));
         if (vm.selectedName) {
           vm.map.name = vm.selectedName.name;
           vm.map.mapid = vm.selectedName.mapid;
+          vm.map.existCount = vm.selectedName.existCount;
         }
         vm.showNameField = _.isEmpty(vm.maps);
         vm.showSelectName = !_.isEmpty(vm.maps);
@@ -239,33 +224,10 @@
       vm.checkedZooms = [];
     }
 
-    $scope.countdown = function(){
-        if(vm.minutes == 0 && vm.hours == 0){
-            alert('end!');
-            return;
-        }
-        else{
-            vm.seconds--;
-            if(vm.seconds == -1){
-              vm.seconds = 59;
-              vm.minutes --;
-            }
-            if(vm.minutes == -1){
-                vm.minutes = 59;
-                vm.hours--;
-            }
-
-            vm.map.percentDownload=vm.seconds;
-            $log.log(vm.hours+' '+vm.minutes+' '+vm.seconds);
-        }
-        $timeout(arguments.callee, 1000);
-    }
 
     $scope.checkStatus = function(){
 
       if(vm.zipUID!='') {
-        $log.log('tryCount: ', vm.tryCount);
-
         var request = $http({
           'method': 'get',
           'url': vm.tilehost+'/asyncstatus/'+vm.zipUID
@@ -281,12 +243,6 @@
               vm.map.percentDownload = response.data.percent;
             }
           }
-
-
-
-
-          $log.log(vm.map.progress.message+' - '+vm.map.percentDownload);
-
         }, function (response) {
           //request broken message
 
@@ -304,10 +260,112 @@
         }else{
           vm.map.progress.message = 'Downloading Zip File...';
           OfflineTilesFactory.downloadZip(vm.zipUID,vm.map.mapid).then(function () {
-            LocalStorageFactory.unzipFile(vm.map.mapid).then(function (){
+            vm.map.progress.message = 'Unzipping File...';
+
+            //add pause here, move to new function?
+            $timeout(unzipFile(),3000);
+
+
+          });
+        }
+      }
+    }
+
+    function unzipFile() {
+      LocalStorageFactory.unzipFile(vm.map.mapid).then(function (returnvar){ //not completing?
+        if(returnvar==-1) { //zip failed, try again
+          unzipAgain();
+        }else{
+          vm.map.progress.message = 'Done! ';
+          LocalStorageFactory.getMapStorageDetails(vm.map.mapid).then(function(existCount){
+            $log.log('returnedDetails: ',existCount);
+            vm.map.existCount = existCount;
+            //clean up page
+            OfflineTilesFactory.writeMap(vm.map, existCount).then(function(){
+              var myPopup = $ionicPopup.alert({
+                'title': 'Success!',
+                'template': 'Map Download Complete!'
+              });
+              myPopup.then(function() {
+                vm.showSubmitButton = false;
+                vm.downloadingModal.hide();
+                $log.log('close window here');
+              });
+            });
+          });
+        }
+      });
+    }
+
+    function bkupunzipFileddd() {
+      LocalStorageFactory.unzipFile(vm.map.mapid).then(function (returnvar){ //not completing?
+        if(returnvar==-1) { //zip failed, try again
+          unzipAgain();
+        }else{
+          vm.map.progress.message = 'Done! ';
+          LocalStorageFactory.getMapStorageDetails(vm.map.mapid).then(function(existCount){
+            $log.log('returnedDetails: ',existCount);
+            vm.map.existCount = existCount;
+            //clean up page
+            OfflineTilesFactory.writeMap(vm.map, existCount).then(function(){
               $ionicPopup.alert({
-                'title': 'Testing!',
-                'template': 'Zip File unzipped!'
+                'title': 'Success!',
+                'template': 'Map Download Complete!'
+              });
+            });
+          });
+        }
+      });
+    }
+
+    $scope.checkStatus09012018 = function(){
+
+      if(vm.zipUID!='') {
+        var request = $http({
+          'method': 'get',
+          'url': vm.tilehost+'/asyncstatus/'+vm.zipUID
+        });
+        request.then(function (response) {
+          if(response.data.error) {
+            vm.map.zipError = response.data.error;
+            vm.map.progress.message = response.data.error;
+            vm.map.percentDownload = 100;
+          }else{
+            if(vm.map.progress.message != 'Downloading Zip File...') {
+              vm.map.progress.message = response.data.status;
+              vm.map.percentDownload = response.data.percent;
+            }
+          }
+        }, function (response) {
+          //request broken message
+
+          $ionicPopup.alert({
+            'title': 'Network Error!',
+            'template': 'Unable to contact Strabo Server.'
+          });
+
+        });
+
+        vm.tryCount++;
+
+        if(vm.tryCount <= 200 && vm.map.progress.message!='Zip File Ready.' && vm.map.zipError==''){
+          $timeout(arguments.callee, 1000);
+        }else{
+          vm.map.progress.message = 'Downloading Zip File...';
+          OfflineTilesFactory.downloadZip(vm.zipUID,vm.map.mapid).then(function () {
+            //add pause? yes.
+            vm.map.progress.message = 'Unzipping File...';
+            LocalStorageFactory.unzipFile(vm.map.mapid).then(function (returnvar){ //not completing?
+              vm.map.progress.message = 'Done! '+returnvar;
+              LocalStorageFactory.getMapStorageDetails(vm.map.mapid).then(function(existCount){
+                $log.log('returnedDetails: ',existCount);
+                vm.map.existCount = existCount;
+                OfflineTilesFactory.writeMap(vm.map, existCount).then(function(){
+                  $ionicPopup.alert({
+                    'title': 'Success!',
+                    'template': 'Map Download Complete!'
+                  });
+                });
               });
             });
           });
@@ -315,7 +373,27 @@
       }
     }
 
-
+    function unzipAgain() {
+      LocalStorageFactory.unzipFile(vm.map.mapid).then(function (returnvar){ //not completing?
+        vm.map.progress.message = 'Done! ';
+        LocalStorageFactory.getMapStorageDetails(vm.map.mapid).then(function(existCount){
+          $log.log('returnedDetails: ',existCount);
+          vm.map.existCount = existCount;
+          //clean up page
+          OfflineTilesFactory.writeMap(vm.map, existCount).then(function(){
+            var myPopup = $ionicPopup.alert({
+              'title': 'Success!',
+              'template': 'Map Download Complete!'
+            });
+            myPopup.then(function() {
+              vm.showSubmitButton = false;
+              vm.downloadingModal.hide();
+              $log.log('close window here');
+            });
+          });
+        });
+      });
+    }
 
 
 
@@ -347,33 +425,29 @@ strabo mymaps: http://devtiles.strabospot.org/zip?layer=strabomymaps&id=5b75967d
     function saveZipMap(mapToSave) {
       var deferred = $q.defer(); // init promise
       vm.zipUID = '';
-      $log.log("maptosave: ",mapToSave);
-
       var source = mapToSave.source;
       var id = mapToSave.id;
+      var mapid = mapToSave.mapid;
       var startZipURL='';
       if(source=='strabo_spot_mapbox') {
         if(id=='mapbox.outdoors'){
-          startZipURL=vm.tilehost+'/asynczip?layer=mapbox.outdoors&extent='+extentString+'&zoom='+vm.selectedMaxZoom.zoom;
+          startZipURL=vm.tilehost+'/asynczip?mapid='+mapid+'&layer=mapbox.outdoors&extent='+extentString+'&zoom='+vm.selectedMaxZoom.zoom;
         }else if(id=='mapbox.satellite') {
-          startZipURL=vm.tilehost+'/asynczip?layer=mapbox.satellite&extent='+extentString+'&zoom='+vm.selectedMaxZoom.zoom;
+          startZipURL=vm.tilehost+'/asynczip?mapid='+mapid+'&layer=mapbox.satellite&extent='+extentString+'&zoom='+vm.selectedMaxZoom.zoom;
         }
       }else if(source=='osm') {
-        startZipURL=vm.tilehost+'/asynczip?layer=osm&extent='+extentString+'&zoom='+vm.selectedMaxZoom.zoom;
+        startZipURL=vm.tilehost+'/asynczip?mapid='+mapid+'&layer=osm&extent='+extentString+'&zoom='+vm.selectedMaxZoom.zoom;
       }else if(source=='mapbox_styles') {
         var key = mapToSave.key;
         var parts = id.split('/');
         var mapusername = parts[0];
         var mapid = parts[1];
-        $log.log(parts);
-        startZipURL=vm.tilehost+'/asynczip?layer=mapboxstyles&username='+mapusername+'&access_token='+key+'&id='+mapid+'&extent='+extentString+'&zoom='+vm.selectedMaxZoom.zoom;
+        startZipURL=vm.tilehost+'/asynczip?mapid='+mapid+'&layer=mapboxstyles&username='+mapusername+'&access_token='+key+'&id='+mapid+'&extent='+extentString+'&zoom='+vm.selectedMaxZoom.zoom;
       }else if(source=='strabospot_mymaps') {
-        startZipURL=vm.tilehost+'/asynczip?layer=strabomymaps&id='+id+'&extent='+extentString+'&zoom='+vm.selectedMaxZoom.zoom;
+        startZipURL=vm.tilehost+'/asynczip?mapid='+mapid+'&layer=strabomymaps&id='+id+'&extent='+extentString+'&zoom='+vm.selectedMaxZoom.zoom;
       }else if(source=='map_warper') {
-        startZipURL=vm.tilehost+'/asynczip?layer=mapwarper&id='+id+'&extent='+extentString+'&zoom='+vm.selectedMaxZoom.zoom;
+        startZipURL=vm.tilehost+'/asynczip?mapid='+mapid+'&layer=mapwarper&id='+id+'&extent='+extentString+'&zoom='+vm.selectedMaxZoom.zoom;
       }
-
-      $log.log('startZipURL: ',startZipURL);
 
       if(startZipURL!=''){
 
@@ -382,7 +456,6 @@ strabo mymaps: http://devtiles.strabospot.org/zip?layer=strabomymaps&id=5b75967d
           'url': startZipURL
         });
         request.then(function (response) {
-          $log.log("response: ",response);
           vm.zipUID = response.data.id;
           if(vm.zipUID!='') {
             vm.map.progress.message = 'Starting Download...';
@@ -465,8 +538,6 @@ strabo mymaps: http://devtiles.strabospot.org/zip?layer=strabomymaps&id=5b75967d
     function saveMap(mapToSave) {
       var deferred = $q.defer(); // init promise
 
-      $log.log("mapToSave: ", mapToSave);
-
       vm.map.progress.message = 'Starting Download...';
       vm.map.percentDownload = 0;
 
@@ -481,8 +552,6 @@ strabo mymaps: http://devtiles.strabospot.org/zip?layer=strabomymaps&id=5b75967d
       }, function () {
         deferred.reject('ERROR! Map not downloaded. Strabo may be unable to contact the tile host' +
           ' or unable to write to local storage.');
-      }, function (notify) {
-        $log.log('notify:',notify);
       });
 
       /*
@@ -529,14 +598,11 @@ strabo mymaps: http://devtiles.strabospot.org/zip?layer=strabomymaps&id=5b75967d
 
       var counturl = vm.tilehost+'/zipcount?extent='+extentString+'&zoom='+vm.selectedMaxZoom.zoom;
 
-      //$log.log("url: ",counturl);
-
       var request = $http({
         'method': 'get',
         'url': counturl
       });
       request.then(function (response) {
-        //$log.log("response: ",response);
         vm.map.tileCount = response.data.count;
         vm.submitBtnText='Download '+response.data.count+' Tiles';
         deferred.resolve();
@@ -567,7 +633,6 @@ strabo mymaps: http://devtiles.strabospot.org/zip?layer=strabomymaps&id=5b75967d
         });
 
         $q.all(promises).then(function () {
-            //$log.log(vm.zoomOptions);
             updateSelectedDownloads();
           }
         );
@@ -588,6 +653,7 @@ strabo mymaps: http://devtiles.strabospot.org/zip?layer=strabomymaps&id=5b75967d
         vm.showNameField = false;
         vm.map.name = vm.selectedName.name;
         vm.map.mapid = vm.selectedName.mapid;
+        vm.map.existCount = vm.selectedName.existCount;
       }
     }
 
@@ -597,7 +663,6 @@ strabo mymaps: http://devtiles.strabospot.org/zip?layer=strabomymaps&id=5b75967d
       $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Counting Tiles...'});
       vm.serverCountTiles().then(function () {
         vm.showSubmitButton = true;
-        //$log.log("maxZoom:",vm.selectedMaxZoom);
         $ionicLoading.hide();
       }, function (response) {
         $ionicLoading.hide();

@@ -1,106 +1,98 @@
 <?xml version='1.0' encoding='utf-8'?>
-
-<!-- Config for PhoneGap Build -->
-
-<widget
-    id="gov.az.azgs.strabomobile"
-    version="1.5.0"
-    xmlns="http://www.w3.org/ns/widgets"
-    xmlns:gap="http://phonegap.com/ns/1.0">
-  <name>Strabo Mobile</name>
-  <description>
+<widget id="gov.az.azgs.strabomobile" version="1.5.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+    <name>Strabo Mobile</name>
+    <description>
     Strabo Mobile is a cross-platform app for geologic field data acquisition.
   </description>
-  <author email="strabospot@gmail.com" href="http://strabospot.org/">
+    <author email="strabospot@gmail.com" href="http://strabospot.org/">
     StraboSpot Team
   </author>
-  <content src="index.html" />
-  <access origin="*" />
-  <allow-intent href="http://*/*" />
-  <allow-intent href="https://*/*" />
-  <allow-intent href="tel:*" />
-  <allow-intent href="sms:*" />
-  <allow-intent href="mailto:*" />
-  <allow-intent href="geo:*" />
-  <preference name="phonegap-version" value="cli-8.0.0" />
-  <preference name="webviewbounce" value="false" />
-  <preference name="UIWebViewBounce" value="false" />
-  <preference name="DisallowOverscroll" value="true" />
-  <preference name="BackupWebStorage" value="none" />
-  <preference name="android-minSdkVersion" value="19" />
-  <preference name="android-targetSdkVersion" value="26" />
-  <preference name="AndroidPersistentFileLocation" value="Internal" />
-  <preference name="iosPersistentFileLocation" value="Library" />
-  <preference name="AutoHideSplashScreen" value="false" />
-  <preference name="SplashScreenDelay" value="2000" />
-  <preference name="SplashScreen" value="screen" />
-  <preference name="UIFileSharingEnabled" value="true" />
-  <edit-config file="*-Info.plist" mode="merge" target="NSCameraUsageDescription">
-    <string>The strabospot app uses the camera to add images to field-collected sample data.</string>
-  </edit-config>
-  <edit-config file="*-Info.plist" mode="merge" target="NSPhotoLibraryUsageDescription">
-    <string>The strabospot app uses the photo library to add images to field-collected sample data.</string>
-  </edit-config>
-  <edit-config file="*-Info.plist" mode="merge" target="NSLocationWhenInUseUsageDescription">
-    <string>The strabospot app uses device location to find nearby sample data.</string>
-  </edit-config>
-  <edit-config file="*-Info.plist" mode="merge" target="NSPhotoLibraryAddUsageDescription">
-    <string>The strabospot app uses the photo library to add images to field-collected sample data.</string>
-  </edit-config>
-  <plugin name="cordova-plugin-camera" spec="^4.0.3" />
-  <plugin name="cordova-plugin-device" spec="^2.0.2" />
-  <plugin name="cordova-plugin-device-motion" spec="^1.2.5" />
-  <plugin name="cordova-plugin-device-orientation" spec="^2.0.1" />
-  <plugin name="cordova-plugin-file" spec="^6.0.1" />
-  <plugin name="cordova-plugin-filepath" spec="^1.0.2" />
-  <plugin name="cordova-plugin-geolocation" spec="^4.0.1" />
-  <plugin name="cordova-plugin-inappbrowser" spec="^3.0.0" />
-  <plugin name="cordova-plugin-ionic-keyboard" spec="^2.1.2" />
-  <plugin name="cordova-plugin-ionic-webview" spec="^1.2.1" />
-  <plugin name="cordova-plugin-itunesfilesharing" spec="^0.0.1" />
-  <plugin name="cordova-plugin-network-information" spec="^2.0.1" />
-  <plugin name="cordova-plugin-splashscreen" spec="^5.0.2" />
-  <plugin name="cordova-plugin-statusbar" spec="^2.4.2" />
-  <plugin name="cordova-plugin-whitelist" spec="^1.3.3" />
-  <plugin name="cordova-sqlite-evcore-extbuild-free" spec="^0.9.7" />
-  <!--<plugin name="cordova-sqlite-storage" spec="^2.3.2" /> CANNOT USE WITH PHONEGAP BUILD -->
-  <plugin name="org.strabospot.clipboard" spec="https://github.com/StraboSpot/clipboard_plugin" />
-  <engine name="android" spec="~7.0.0" />
-  <engine name="ios" spec="~4.5.4" />
-  <platform name="ios">
-    <icon height="29" src="www/res/icons/ios/icon-small.png" width="29" />
-    <icon height="58" src="www/res/icons/ios/icon-small-2x.png" width="58" />
-    <icon height="40" src="www/res/icons/ios/icon-40.png" width="40" />
-    <icon height="80" src="www/res/icons/ios/icon-40-2x.png" width="80" />
-    <icon height="50" src="www/res/icons/ios/icon-50.png" width="50" />
-    <icon height="100" src="www/res/icons/ios/icon-50-2x.png" width="100" />
-    <icon height="57" src="www/res/icons/ios/icon.png" width="57" />
-    <icon height="114" src="www/res/icons/ios/icon-2x.png" width="114" />
-    <icon height="60" src="www/res/icons/ios/icon-60.png" width="60" />
-    <icon height="120" src="www/res/icons/ios/icon-60-2x.png" width="120" />
-    <icon height="180" src="www/res/icons/ios/icon-60-3x.png" width="180" />
-    <icon height="72" src="www/res/icons/ios/icon-72.png" width="72" />
-    <icon height="144" src="www/res/icons/ios/icon-72-2x.png" width="144" />
-    <icon height="76" src="www/res/icons/ios/icon-76.png" width="76" />
-    <icon height="152" src="www/res/icons/ios/icon-76-2x.png" width="152" />
-    <splash height="480" src="www/res/screens/ios/screen-iphone-portrait.png" width="320" />
-    <splash height="960" src="www/res/screens/ios/screen-iphone-portrait-2x.png" width="640" />
-    <splash height="1136" src="www/res/screens/ios/screen-iphone-portrait-568h-2x.png" width="640" />
-    <splash height="1334" src="www/res/screens/ios/screen-iphone-portrait-667h.png" width="750" />
-    <splash height="2208" src="www/res/screens/ios/screen-iphone-portrait-736h.png" width="1242" />
-    <splash height="1024" src="www/res/screens/ios/screen-ipad-portrait.png" width="768" />
-    <splash height="2048" src="www/res/screens/ios/screen-ipad-portrait-2x.png" width="1536" />
-  </platform>
-  <platform name="android">
-    <icon qualifier="ldpi" src="www/res/icons/android/icon-36-ldpi.png" />
-    <icon qualifier="mdpi" src="www/res/icons/android/icon-48-mdpi.png" />
-    <icon qualifier="hdpi" src="www/res/icons/android/icon-72-hdpi.png" />
-    <icon qualifier="xhdpi" src="www/res/icons/android/icon-96-xhdpi.png" />
-    <icon qualifier="xxhdpi" src="www/res/icons/android/icon-144-xxhdpi.png" />
-    <icon qualifier="xxxhdpi" src="www/res/icons/android/icon-192-xxxhdpi.png" />
-    <splash qualifier="ldpi" src="www/res/screens/android/screen-ldpi-portrait.png" />
-    <splash qualifier="mdpi" src="www/res/screens/android/screen-mdpi-portrait.png" />
-    <splash qualifier="hdpi" src="www/res/screens/android/screen-hdpi-portrait.png" />
-    <splash qualifier="xhdpi" src="www/res/screens/android/screen-xhdpi-portrait.png" />
-  </platform>
+    <content src="index.html" />
+    <access origin="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
+    <preference name="phonegap-version" value="cli-8.0.0" />
+    <preference name="webviewbounce" value="false" />
+    <preference name="UIWebViewBounce" value="false" />
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="BackupWebStorage" value="none" />
+    <preference name="android-minSdkVersion" value="19" />
+    <preference name="android-targetSdkVersion" value="26" />
+    <preference name="AndroidPersistentFileLocation" value="Internal" />
+    <preference name="iosPersistentFileLocation" value="Library" />
+    <preference name="AutoHideSplashScreen" value="false" />
+    <preference name="SplashScreenDelay" value="2000" />
+    <preference name="SplashScreen" value="screen" />
+    <preference name="UIFileSharingEnabled" value="true" />
+    <edit-config file="*-Info.plist" mode="merge" target="NSCameraUsageDescription">
+        <string>The strabospot app uses the camera to add images to field-collected sample data.</string>
+    </edit-config>
+    <edit-config file="*-Info.plist" mode="merge" target="NSPhotoLibraryUsageDescription">
+        <string>The strabospot app uses the photo library to add images to field-collected sample data.</string>
+    </edit-config>
+    <edit-config file="*-Info.plist" mode="merge" target="NSLocationWhenInUseUsageDescription">
+        <string>The strabospot app uses device location to find nearby sample data.</string>
+    </edit-config>
+    <edit-config file="*-Info.plist" mode="merge" target="NSPhotoLibraryAddUsageDescription">
+        <string>The strabospot app uses the photo library to add images to field-collected sample data.</string>
+    </edit-config>
+    <plugin name="cordova-plugin-camera" spec="^4.0.3" />
+    <plugin name="cordova-plugin-device" spec="^2.0.2" />
+    <plugin name="cordova-plugin-device-motion" spec="^1.2.5" />
+    <plugin name="cordova-plugin-device-orientation" spec="^2.0.1" />
+    <plugin name="cordova-plugin-file" spec="^6.0.1" />
+    <plugin name="cordova-plugin-filepath" spec="^1.0.2" />
+    <plugin name="cordova-plugin-geolocation" spec="^4.0.1" />
+    <plugin name="cordova-plugin-inappbrowser" spec="^3.0.0" />
+    <plugin name="cordova-plugin-ionic-keyboard" spec="^2.1.2" />
+    <plugin name="cordova-plugin-ionic-webview" spec="^1.2.1" />
+    <plugin name="cordova-plugin-itunesfilesharing" spec="^0.0.1" />
+    <plugin name="cordova-plugin-network-information" spec="^2.0.1" />
+    <plugin name="cordova-plugin-splashscreen" spec="^5.0.2" />
+    <plugin name="cordova-plugin-statusbar" spec="^2.4.2" />
+    <plugin name="cordova-plugin-whitelist" spec="^1.3.3" />
+    <plugin name="cordova-sqlite-evcore-extbuild-free" spec="^0.9.7" />
+    <plugin name="org.strabospot.clipboard" spec="https://github.com/StraboSpot/clipboard_plugin" />
+    <engine name="android" spec="~7.0.0" />
+    <engine name="ios" spec="~4.5.4" />
+    <platform name="ios">
+        <icon height="29" src="www/res/icons/ios/icon-small.png" width="29" />
+        <icon height="58" src="www/res/icons/ios/icon-small-2x.png" width="58" />
+        <icon height="40" src="www/res/icons/ios/icon-40.png" width="40" />
+        <icon height="80" src="www/res/icons/ios/icon-40-2x.png" width="80" />
+        <icon height="50" src="www/res/icons/ios/icon-50.png" width="50" />
+        <icon height="100" src="www/res/icons/ios/icon-50-2x.png" width="100" />
+        <icon height="57" src="www/res/icons/ios/icon.png" width="57" />
+        <icon height="114" src="www/res/icons/ios/icon-2x.png" width="114" />
+        <icon height="60" src="www/res/icons/ios/icon-60.png" width="60" />
+        <icon height="120" src="www/res/icons/ios/icon-60-2x.png" width="120" />
+        <icon height="180" src="www/res/icons/ios/icon-60-3x.png" width="180" />
+        <icon height="72" src="www/res/icons/ios/icon-72.png" width="72" />
+        <icon height="144" src="www/res/icons/ios/icon-72-2x.png" width="144" />
+        <icon height="76" src="www/res/icons/ios/icon-76.png" width="76" />
+        <icon height="152" src="www/res/icons/ios/icon-76-2x.png" width="152" />
+        <splash height="480" src="www/res/screens/ios/screen-iphone-portrait.png" width="320" />
+        <splash height="960" src="www/res/screens/ios/screen-iphone-portrait-2x.png" width="640" />
+        <splash height="1136" src="www/res/screens/ios/screen-iphone-portrait-568h-2x.png" width="640" />
+        <splash height="1334" src="www/res/screens/ios/screen-iphone-portrait-667h.png" width="750" />
+        <splash height="2208" src="www/res/screens/ios/screen-iphone-portrait-736h.png" width="1242" />
+        <splash height="1024" src="www/res/screens/ios/screen-ipad-portrait.png" width="768" />
+        <splash height="2048" src="www/res/screens/ios/screen-ipad-portrait-2x.png" width="1536" />
+    </platform>
+    <platform name="android">
+        <icon qualifier="ldpi" src="www/res/icons/android/icon-36-ldpi.png" />
+        <icon qualifier="mdpi" src="www/res/icons/android/icon-48-mdpi.png" />
+        <icon qualifier="hdpi" src="www/res/icons/android/icon-72-hdpi.png" />
+        <icon qualifier="xhdpi" src="www/res/icons/android/icon-96-xhdpi.png" />
+        <icon qualifier="xxhdpi" src="www/res/icons/android/icon-144-xxhdpi.png" />
+        <icon qualifier="xxxhdpi" src="www/res/icons/android/icon-192-xxxhdpi.png" />
+        <splash qualifier="ldpi" src="www/res/screens/android/screen-ldpi-portrait.png" />
+        <splash qualifier="mdpi" src="www/res/screens/android/screen-mdpi-portrait.png" />
+        <splash qualifier="hdpi" src="www/res/screens/android/screen-hdpi-portrait.png" />
+        <splash qualifier="xhdpi" src="www/res/screens/android/screen-xhdpi-portrait.png" />
+    </platform>
 </widget>

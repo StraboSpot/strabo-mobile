@@ -18,8 +18,8 @@
             <b>{{ map.name }}</b>
             <small>(Source: {{ map.title }})</small>
             <br>
-            <small>{{ map.tileArray.length }} tiles,
-              {{ map.size | normalizeBytes }}<span ng-if='map.date'>, Saved: {{ map.date }}</span></small>
+            <small>{{ map.existCount }} tiles
+              <span ng-if='map.date'>, Saved: {{ map.date }}</span></small>
           </div>
           <div class='buttons'>
             <button class='button button-icon'

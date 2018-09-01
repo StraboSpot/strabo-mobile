@@ -21,7 +21,8 @@
       'getOfflineTileCount': getOfflineTileCount,
       'read': read,
       'renameMap': renameMap,
-      'saveMap': saveMap
+      'saveMap': saveMap,
+      'writeMap': writeMap
     };
 
     /**
@@ -71,14 +72,19 @@
     function writeMap(mapToSave, mapSize) {
       var deferred = $q.defer(); // init promise
 
+      $log.log('getting ready to mapsave: ',mapToSave);
+
       var mapNameData = {
         'source': mapToSave.source,
         'id': mapToSave.id,
         'title': mapToSave.title,
         'size': mapSize,
         'mapid': mapToSave.mapid,
+        'existCount': mapToSave.existCount,
         'date': new Date().toLocaleString()
       };
+
+      $log.log('mapNameData: ',mapNameData);
 
       // If there's already a maps with this name (if appending) remove maps first
       offlineMaps = _.reject(offlineMaps, function (offlineMap) {
@@ -141,6 +147,7 @@
         $ionicLoading.show({'template': '<ion-spinner></ion-spinner>'});
         //create a unique id to use when storing tiles:
         map.mapid = new Date().valueOf();
+        map.existCount = 0;
         writeMap(map, 0).then(function () {
           deferred.resolve();
         });
@@ -250,8 +257,29 @@
       return deferred.promise;
     }
 
-    // Get the number of tiles from offline storage
-    function getOfflineTileCount(callback) {
+    // Get the number of tiles from offline maps
+    function getOfflineTileCount() {
+      var deferred = $q.defer();
+      var totalcount = 0;
+      LocalStorageFactory.getDb().mapNamesDb.iterate(function (value, key) {
+
+        if(value.existCount) {
+          $log.log('key: ', key);
+          $log.log('value: ', value);
+
+          totalcount = totalcount + value.existCount;
+
+          $log.log('totalcount: ', totalcount);
+        }
+      }, function () {
+        deferred.resolve(totalcount);
+      });
+      return deferred.promise;
+    }
+
+
+    // Get the number of tiles from offline maps
+    function oldgetOfflineTileCount(callback) {
       LocalStorageFactory.getDb().mapTilesDb.length(function (err, numberOfKeys) {
         callback(err || numberOfKeys);
       });
