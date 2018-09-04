@@ -17,11 +17,12 @@
       'clear': clear,
       'deleteMap': deleteMap,
       'downloadZip': downloadZip,
+      'getMapCenter': getMapCenter,
       'getOfflineMaps': getOfflineMaps,
       'getOfflineTileCount': getOfflineTileCount,
       'read': read,
       'renameMap': renameMap,
-      'saveMap': saveMap,
+      'oldsaveMap': oldsaveMap,
       'writeMap': writeMap
     };
 
@@ -36,7 +37,7 @@
 
 
 
-    function downloadTile(mapToSave, tile) {
+    function olddownloadTile(mapToSave, tile) {
       var deferred = $q.defer(); // init promise
 
       var url = _.sample(mapToSave.url);
@@ -99,7 +100,7 @@
     }
 
     // Write tile to storage
-    function writeTile(mapToSave, tile, blob) {
+    function oldwriteTile(mapToSave, tile, blob) {
       var deferred = $q.defer(); // init promise
 
       // note that tileId is prefixed with map_id, tile itself is not
@@ -171,7 +172,7 @@
       });
     }
 
-    function deleteTile(tile) {
+    function olddeleteTile(tile) {
       var deferred = $q.defer();
       LocalStorageFactory.getDb().mapTilesDb.removeItem(tile).then(function () {
         deferred.resolve();
@@ -257,6 +258,11 @@
       return deferred.promise;
     }
 
+    // Get the center of the map based on offline tiles
+    function getMapCenter(mapid) {
+      return LocalStorageFactory.getMapCenter(mapid);
+    }
+
     // Get the number of tiles from offline maps
     function getOfflineTileCount() {
       var deferred = $q.defer();
@@ -315,7 +321,7 @@
 
 
 
-    function saveMap(mapToSave) {
+    function oldsaveMap(mapToSave) {
       var deferred = $q.defer(); // init promise
       downloadErrors = 0;
       var tilesDownloaded = {'success': [], 'failed': []};

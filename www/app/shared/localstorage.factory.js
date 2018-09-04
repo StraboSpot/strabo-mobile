@@ -29,6 +29,7 @@
       'exportProject': exportProject,
       'gatherLocalFiles': gatherLocalFiles,
       'getDb': getDb,
+      'getMapCenter': getMapCenter,
       'getMapStorageDetails': getMapStorageDetails,
       'importImages': importImages,
       'importProject': importProject,
@@ -330,6 +331,38 @@
                 console.log(err);
                 if (err.code) deferred.reject(err.code);
                 else deferred.reject('Unknown error');
+              }
+            );
+          }, function (err) {
+            console.log(err);
+            if (err.code) deferred.reject(err.code);
+            else deferred.reject('Unknown error');
+          }
+        );
+      }
+      else deferred.reject('Device not found');
+      return deferred.promise;
+    }
+
+    function getMapCenter(mapid) {
+      var deferred = $q.defer(); // init promise
+
+      var devicePath = getDevicePath();
+      if (devicePath) {
+        $window.resolveLocalFileSystemURL(devicePath + tileCacheDirectory + '/' + mapid + '/tiles',
+          function (fileSystem) {
+            var reader = fileSystem.createReader();
+            reader.readEntries(
+              function (entries) {
+
+                //loop over tiles to get center
+                //console.log(entries);
+                deferred.resolve(entries.length);
+              },
+              function (err) {
+                console.log(err);
+                if (err.code) deferred.reject(err.code);
+                else deferred.reject('Unknown error reading tiles');
               }
             );
           }, function (err) {

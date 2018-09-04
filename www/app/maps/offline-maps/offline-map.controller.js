@@ -134,6 +134,61 @@
     }
 
     function goToMap(map) {
+      /*
+      $ionicLoading.show({
+        'template': '<ion-spinner></ion-spinner>'
+      });
+      */
+
+      //fix this to work with file system.
+
+      // Check the first 30 tiles and zoom to the tile with the highest zoom
+
+      OfflineTilesFactory.getMapCenter(map.mapid).then(function (center) {
+        $log.log('gotcenter: ', center);
+      });
+
+      /*
+      if (numTilesToCheck <= 0) {
+        $ionicPopup.alert({
+          'title': 'Not Enough Tiles!',
+          'template': 'More tiles need to be added to this map before attempting to view it.'
+        });
+        $ionicLoading.hide();
+      }
+      else {
+        var x, y, z = -1; // Start zoom at -1 so a 0 zoom with meet the condition testZ > z
+        var pattern = /(\d+)\/(\d+)\/(\d+)/; // Format "15/6285/13283"
+        for (var i = 0; i < numTilesToCheck; i++) {
+          var tileNameParts = pattern.exec(map.tileArray[i].tile);
+          if (tileNameParts && tileNameParts.length === 4) {
+            var testZ = parseInt(tileNameParts[1]);
+            if (testZ > z) {
+              z = testZ;
+              x = parseInt(tileNameParts[2]);
+              y = parseInt(tileNameParts[3]);
+            }
+          }
+        }
+        if (x && y && z) {
+          var lng = SlippyTileNamesFactory.tile2long(x, z);
+          var lat = SlippyTileNamesFactory.tile2lat(y, z);
+          MapLayerFactory.setVisibleBaselayer(map.id);
+          MapViewFactory.zoomToPoint([lng, lat], z);
+          $location.path('/app/map');
+        }
+      }
+      */
+
+
+
+
+    }
+
+
+
+
+    function oldgoToMap(map) {
       $ionicLoading.show({
         'template': '<ion-spinner></ion-spinner>'
       });
@@ -173,5 +228,20 @@
         }
       }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   }
 }());
