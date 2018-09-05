@@ -241,6 +241,7 @@
         deferred.resolve();
       }, (error) => {
         alert('zip download failed');
+        $log.log('zip download error: ', error);
         deferred.reject(error);
       });
 
