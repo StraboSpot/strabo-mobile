@@ -29,6 +29,8 @@
       'exportProject': exportProject,
       'gatherLocalFiles': gatherLocalFiles,
       'getDb': getDb,
+      'getDevicePath': getDevicePath,
+      'getZipsDirectory': getZipsDirectory,
       'getMapCenterTile': getMapCenterTile,
       'getMapStorageDetails': getMapStorageDetails,
       'getTile': getTile,
@@ -280,6 +282,8 @@
       checkDir(tileCacheDirectory).then(function () {
         zip.unzip(devicePath+'/'+zipsDirectory+'/'+mapid+'.zip', devicePath+'/'+tileCacheDirectory+'/', function(returnvar){
           deferred.resolve(returnvar);
+        },function(progressEvent){
+          //$log.log(Math.round((progressEvent.loaded / progressEvent.total) * 100));
         });
       });
       return deferred.promise;
@@ -522,7 +526,9 @@
       return deferred.promise;
     }
 
-
+    function getZipsDirectory() {
+      return zipsDirectory;
+    }
 
 
 

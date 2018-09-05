@@ -5,10 +5,10 @@
     .module('app')
     .factory('OfflineTilesFactory', OfflineTilesFactory);
 
-  OfflineTilesFactory.$inject = ['$http', '$ionicLoading', '$ionicPopup', '$log', '$q', '$timeout', 'LocalStorageFactory'];
+  OfflineTilesFactory.$inject = ['$cordovaFileTransfer', '$http', '$ionicLoading', '$ionicPopup', '$log', '$q', '$timeout', 'LocalStorageFactory'];
 
   // used to determine what the map provider is before we archive a tileset
-  function OfflineTilesFactory($http, $ionicLoading, $ionicPopup, $log, $q, $timeout, LocalStorageFactory) {
+  function OfflineTilesFactory($cordovaFileTransfer, $http, $ionicLoading, $ionicPopup, $log, $q, $timeout, LocalStorageFactory) {
     var downloadErrors = 0;
     var offlineMaps = [];
 
@@ -228,6 +228,46 @@
     }
 
     function downloadZip(uid, mapid) {
+      var deferred = $q.defer(); // init promise
+
+      var url = 'http://devtiles.strabospot.org/ziptemp/'+uid+'/'+uid+'.zip';
+
+      //var ft = new FileTransfer();
+      var devicePath = LocalStorageFactory.getDevicePath();
+      var zipsDirectory = LocalStorageFactory.getZipsDirectory();
+
+      $cordovaFileTransfer.download(url, devicePath + zipsDirectory + '/' + mapid + '.zip').then((entry) => {
+        console.log('download complete: ' + entry.toURL());
+        deferred.resolve();
+      }, (error) => {
+        alert('zip download failed');
+        deferred.reject(error);
+      });
+
+      /*
+      var request = $http({
+        'method': 'get',
+        'url': url,
+        'responseType': 'arraybuffer'
+      });
+      request.then(function (response) {
+        var blob = new Blob([response.data], {
+          'type': 'application/pdf'
+        });
+        LocalStorageFactory.saveZip(blob, mapid+'.zip').then(function () {
+          deferred.resolve();
+        });
+      }, function (response) {
+        // Request Failure
+        alert('zip download failed');
+        deferred.reject(response);
+      });
+      */
+
+      return deferred.promise;
+    }
+
+    function gooddownloadZip(uid, mapid) {
       var deferred = $q.defer(); // init promise
 
       var url = 'http://devtiles.strabospot.org/ziptemp/'+uid+'/'+uid+'.zip';
