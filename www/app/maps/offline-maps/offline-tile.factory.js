@@ -239,7 +239,7 @@
 
 
 
-
+      /*
       cordova.plugins.diagnostic.requestExternalStorageAuthorization(function(){
         $cordovaFileTransfer.download(url, devicePath + zipsDirectory + '/' + mapid + '.zip').then((entry) => {
           console.log('download complete: ' + entry.toURL());
@@ -252,7 +252,7 @@
       }, function(){
         $log.log('Perssion not given');
       });
-
+      */
 
 
 
@@ -270,7 +270,7 @@
 
 
 
-      /*
+
       var request = $http({
         'method': 'get',
         'url': url,
@@ -288,7 +288,7 @@
         alert('zip download failed');
         deferred.reject(response);
       });
-      */
+      
 
       return deferred.promise;
     }

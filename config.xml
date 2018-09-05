@@ -98,5 +98,4 @@
     <plugin name="cordova-sqlite-evcore-extbuild-free" spec="^0.9.7" />
     <plugin name="io.phasr.cordova.plugin.itunesfilesharing" />
     <plugin name="org.strabospot.clipboard" spec="https://github.com/StraboSpot/clipboard_plugin" />
-    <plugin name="cordova.plugins.diagnostic" spec="^3.9.2" />
 </widget>
