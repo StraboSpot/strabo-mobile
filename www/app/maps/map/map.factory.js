@@ -102,6 +102,7 @@
     function setMaps() {
       // Load Default Maps
       maps = angular.fromJson(angular.toJson(getDefaultMaps()));
+      $log.log('maps from SetMaps: ', maps);
       _.each(maps, function (map, i) {
         maps[i] = _.extend(maps[i], getMapProviderInfo(map.source));
         if (map.source === 'strabo_spot_mapbox') maps[i].key = defaultMapboxKey;

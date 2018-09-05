@@ -59,6 +59,7 @@
 
     // Create a map baselayer or overlay
     function createTileLayer(layer, isOnline) {
+      $log.log('createTileLayer Layer: ',layer);
       var isVisible = getLayerVisibility(layer);
       var newMapLayer = new ol.layer.Tile();
       newMapLayer.setProperties({
@@ -309,7 +310,8 @@
 
     function setOfflineSource(layer) {
       if (!layer.source) return new ol.source.XYZ({'url': ''});  // No basemap layer
-      return new ol.source.OSM({'tileLoadFunction': tileLoadFunction(layer.id)});
+      return new ol.source.OSM({'tileLoadFunction': tileLoadFunction(layer.mapid)});
+      //return new ol.source.OSM({'tileLoadFunction': tileLoadFunction(layer.id)}); //jma 09042019
     }
 
     function setOnlineOverlays() {
@@ -368,6 +370,37 @@
       };
     }
 
+    // tileLoadFunction is used for offline access mode, required by OL3 for specifying how tiles are retrieved
+    function oldtileLoadFunction(mapProvider) {
+      return function (imageTile) {
+        var imgElement = imageTile.getImage();        // the tile we will be loading
+
+        /* ToDo: What is going on with get the image coords? x is returning a negative number for low zooms (0-2)
+        /*var imageCoords = imageTile.getTileCoord();   // the tile coordinates (x,y,z)
+        var y = (imageCoords[2] * -1) - 1;            // y needs to be corrected using (-y - 1)
+        var z = imageCoords[0];
+        var x = imageCoords[1];*/
+
+        // Switched to this method to get x, y, z since above method having trouble at low zooms
+        var regex = /\/(\d*)\/(\d*)\/(\d*)\.png/g;
+        var match = regex.exec(imageTile.src_);
+        var z = match[1];
+        var x = match[2];
+        var y = match[3];
+
+        var tileId = z + '/' + x + '/' + y;
+        imgElement.id = tileId;
+        //$log.log('Looking for offline tile from mapProvider', mapProvider, 'title:', tileId);
+        getTile(mapProvider, tileId).then(function (blob) {
+          //$log.log('Found original tile:', tileId, 'Loading ...');
+          loadTile(blob, imgElement);
+        }, function () {
+          //$log.log('Tile not found:', tileId, 'Attempting to create a tile ...');
+          getSubstituteTile(mapProvider, imgElement, x, y, z - 1, 2);
+        });
+      };
+    }
+
     // Update layer visibility after a layer 'change:visible' event
     function updateLayerVisibility(event, layer) {
       var layerProperties = event.target.getProperties();
@@ -391,9 +424,14 @@
     }
 
     // Make sure the visible layers are only layers that are offline layers
-    function updateVisibleLayersForOffline(mapLayers) {
+    function updateVisibleLayersForOffline(mapLayers) { //also insert mapid?
       var deferred = $q.defer(); // init promise
+
+      $log.log('updateVisibleLayersForOffline: ', mapLayers);
+
       OfflineTilesFactory.getOfflineMaps().then(function (offlineMaps) {
+
+        $log.log('offlineMaps: ', offlineMaps);
 
         // If the visible baselayer is not an offline layer set visible baselayer to empty
         if (!_.isEmpty(visibleLayers.baselayer) &&
@@ -411,6 +449,20 @@
         var offlineMapLayers = _.filter(mapLayers, function (mapLayer) {
           return _.chain(offlineMaps).pluck('id').compact().contains(mapLayer.id).value();
         });
+
+        //get mapid to pass to each offline layer
+        var returnMaps = [];
+        _.each(offlineMapLayers, function(offlineMapLayer){
+          _.each(offlineMaps, function(omap){
+            if(omap.id == offlineMapLayer.id){
+              offlineMapLayer.mapid = omap.mapid;
+              returnMaps.push(offlineMapLayer);
+            }
+          });
+        });
+
+        $log.log('returnMaps: ', returnMaps);
+        $log.log('update visible offLineMapLayers: ', offlineMapLayers);
         deferred.resolve(offlineMapLayers);
       });
       return deferred.promise;

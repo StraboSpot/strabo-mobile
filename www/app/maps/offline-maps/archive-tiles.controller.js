@@ -122,6 +122,7 @@
     }
 
     function continueDownload() {
+      $log.log('continueDownload: ', vm.map);
       OfflineTilesFactory.checkValidMapName(vm.map).then(function () {
 
         vm.downloadingModal.show().then(function () {
@@ -441,8 +442,8 @@ strabo mymaps: http://devtiles.strabospot.org/zip?layer=strabomymaps&id=5b75967d
         var key = mapToSave.key;
         var parts = id.split('/');
         var mapusername = parts[0];
-        var mapid = parts[1];
-        startZipURL=vm.tilehost+'/asynczip?mapid='+mapid+'&layer=mapboxstyles&username='+mapusername+'&access_token='+key+'&id='+mapid+'&extent='+extentString+'&zoom='+vm.selectedMaxZoom.zoom;
+        var usermapid = parts[1];
+        startZipURL=vm.tilehost+'/asynczip?mapid='+mapid+'&layer=mapboxstyles&username='+mapusername+'&access_token='+key+'&id='+usermapid+'&extent='+extentString+'&zoom='+vm.selectedMaxZoom.zoom;
       }else if(source=='strabospot_mymaps') {
         startZipURL=vm.tilehost+'/asynczip?mapid='+mapid+'&layer=strabomymaps&id='+id+'&extent='+extentString+'&zoom='+vm.selectedMaxZoom.zoom;
       }else if(source=='map_warper') {
@@ -450,6 +451,8 @@ strabo mymaps: http://devtiles.strabospot.org/zip?layer=strabomymaps&id=5b75967d
       }
 
       if(startZipURL!=''){
+
+        $log.log('startZipURL: ', startZipURL);
 
         var request = $http({
           'method': 'get',
@@ -536,6 +539,7 @@ strabo mymaps: http://devtiles.strabospot.org/zip?layer=strabomymaps&id=5b75967d
 
 
     function saveMap(mapToSave) {
+      $log.log('just inside saveMap: ', mapToSave);
       var deferred = $q.defer(); // init promise
 
       vm.map.progress.message = 'Starting Download...';

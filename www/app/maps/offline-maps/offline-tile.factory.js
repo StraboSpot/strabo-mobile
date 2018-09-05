@@ -17,7 +17,7 @@
       'clear': clear,
       'deleteMap': deleteMap,
       'downloadZip': downloadZip,
-      'getMapCenter': getMapCenter,
+      'getMapCenterTile': getMapCenterTile,
       'getOfflineMaps': getOfflineMaps,
       'getOfflineTileCount': getOfflineTileCount,
       'read': read,
@@ -182,6 +182,8 @@
 
     function deleteMap(mapToDelete) {
       var deferred = $q.defer();
+
+      /*
       var promises = [];
       var tiles = mapToDelete.tileArray;
       var tilesStillUsed = [];
@@ -203,10 +205,14 @@
         });
         if (!found) promises.push(deleteTile(mapToDelete.id + '/' + tile.tile));
       });
+      */
 
       // All tiles associated with this maps name and not used in another maps have been deleted
       // now delete the actual map name if there were actually any tiles deleted
-      $q.all(promises).then(function () {
+
+      //new localstorage function here with then
+      LocalStorageFactory.deleteMapFiles(mapToDelete).then(function() {
+      //$q.all(promises).then(function () {
         LocalStorageFactory.getDb().mapNamesDb.removeItem(mapToDelete.name).then(function () {
           // Map is deleted, and this is now fully resolved
           offlineMaps = _.reject(offlineMaps, function (offlineMap) {
@@ -214,6 +220,9 @@
           });
           deferred.resolve();
         });
+      },function(){
+        $log.log('LocalStorageFactory.deleteMapFiles faild to resolve.');
+        deferred.resolve();
       });
       return deferred.promise;
     }
@@ -259,8 +268,8 @@
     }
 
     // Get the center of the map based on offline tiles
-    function getMapCenter(mapid) {
-      return LocalStorageFactory.getMapCenter(mapid);
+    function getMapCenterTile(mapid) {
+      return LocalStorageFactory.getMapCenterTile(mapid);
     }
 
     // Get the number of tiles from offline maps
@@ -293,6 +302,20 @@
 
     // Read from storage
     function read(mapProvider, tile, callback) {
+      $log.log('MapProvider: ', mapProvider);
+      $log.log('tile: ', tile);
+      tile=tile.replace(/\//g,'_');
+      $log.log('tile: ', tile);
+      var tileId = tile + '.png';
+      $log.log('tileId: '+ tileId);
+      LocalStorageFactory.getTile(mapProvider, tileId).then(function (blob) {
+        callback(blob);
+      });
+    }
+
+    // Read from storage
+    function oldread(mapProvider, tile, callback) {
+      $log.log(mapProvider);
       var tileId = mapProvider + '/' + tile;
       LocalStorageFactory.getDb().mapTilesDb.getItem(tileId).then(function (blob) {
         callback(blob);
