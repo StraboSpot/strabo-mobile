@@ -236,6 +236,27 @@
       var devicePath = LocalStorageFactory.getDevicePath();
       var zipsDirectory = LocalStorageFactory.getZipsDirectory();
 
+
+
+
+
+      cordova.plugins.diagnostic.requestExternalStorageAuthorization(function(){
+        $cordovaFileTransfer.download(url, devicePath + zipsDirectory + '/' + mapid + '.zip').then((entry) => {
+          console.log('download complete: ' + entry.toURL());
+          deferred.resolve();
+        }, (error) => {
+          alert('zip download failed');
+          $log.log('zip download error: ', error);
+          deferred.reject(error);
+        });
+      }, function(){
+        $log.log('Perssion not given');
+      });
+
+
+
+
+      /*
       $cordovaFileTransfer.download(url, devicePath + zipsDirectory + '/' + mapid + '.zip').then((entry) => {
         console.log('download complete: ' + entry.toURL());
         deferred.resolve();
@@ -244,6 +265,10 @@
         $log.log('zip download error: ', error);
         deferred.reject(error);
       });
+      */
+
+
+
 
       /*
       var request = $http({
