@@ -11,6 +11,7 @@
         "cordova-plugin-device-motion": "^1.2.5",
         "cordova-plugin-device-orientation": "^2.0.1",
         "cordova-plugin-file": "^6.0.1",
+        "cordova-plugin-file-transfer": "^1.7.1",
         "cordova-plugin-filepath": "^1.0.2",
         "cordova-plugin-geolocation": "^4.0.1",
         "cordova-plugin-inappbrowser": "^3.0.0",
@@ -66,7 +67,9 @@
             "cordova-plugin-whitelist": {},
             "cordova-sqlite-evcore-extbuild-free": {},
             "io.phasr.cordova.plugin.itunesfilesharing": {},
-            "org.strabospot.clipboard": {}
+            "org.strabospot.clipboard": {},
+            "cordova-plugin-zip": {},
+            "cordova-plugin-file-transfer": {}
         }
     }
 }
