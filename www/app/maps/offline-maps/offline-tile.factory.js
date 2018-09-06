@@ -157,7 +157,23 @@
     }
 
     // Wipe the offline database
-    function clear(callback) {
+    function clear(maps) {
+      // deletes all offline tiles
+      var deferred = $q.defer();
+      offlineMaps = [];
+      LocalStorageFactory.clearFiles(maps).then(function(){ //clear tile zips and caches
+        // then delete all map names
+        LocalStorageFactory.getDb().mapNamesDb.clear(function (err) {
+          if (err) deferred.reject(err);
+        else deferred.resolve();
+        });
+      },function(error){
+        deferred.resolve(error);
+      });
+      return deferred.promise;
+    }
+
+    function oldclear(callback) {
       // deletes all offline tiles
       offlineMaps = [];
       LocalStorageFactory.getDb().mapTilesDb.clear(function (err) {

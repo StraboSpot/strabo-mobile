@@ -25,6 +25,7 @@
     return {
       'checkDir': checkDir,
       'checkZipsDir': checkZipsDir,
+      'clearFiles': clearFiles,
       'deleteMapFiles': deleteMapFiles,
       'exportImage': exportImage,
       'exportImages': exportImages,
@@ -240,6 +241,30 @@
     /**
      * Public Functions
      */
+
+     function clearFiles(maps) { //clears all offline map files
+       var deferred = $q.defer(); // init promise
+
+       var devicePath = getDevicePath();
+
+       $cordovaFile.removeRecursively(devicePath, zipsDirectory).then(function (success) {
+         $cordovaFile.removeRecursively(devicePath, tileCacheDirectory).then(function (success) {
+           deferred.resolve("Success!");
+         },function(failure){
+           $log.log('delete folder: ' + tileCacheDirectory + ' failed');
+           $log.log('failure: ', failure);
+           //deferred.reject();
+           deferred.resolve();
+         });
+       },function(failure){
+         $log.log('delete folder: ' + zipsDirectory + ' failed');
+         $log.log('failure: ', failure);
+         //deferred.reject();
+         deferred.resolve();
+       });
+
+       return deferred.promise;
+     }
 
     function deleteMapFiles(map) {
       var deferred = $q.defer(); // init promise

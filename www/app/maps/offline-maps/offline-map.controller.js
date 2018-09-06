@@ -59,7 +59,7 @@
      * Public Functions
      */
 
-    function clearOfflineTile() {
+    function clearOfflineTile(maps) {
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete Tiles',
         'template': 'Are you sure you want to delete <b>ALL</b> offline tiles?'
@@ -67,7 +67,7 @@
       confirmPopup.then(function (res) {
         if (res) {
           // ok, lets delete now because the user has confirmed ok
-          OfflineTilesFactory.clear(function (err) {
+          OfflineTilesFactory.clear(maps).then(function (err) {
             activate();
             $ionicPopup.alert({
               'title': 'Alert!',

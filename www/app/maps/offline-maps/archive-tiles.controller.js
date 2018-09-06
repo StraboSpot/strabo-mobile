@@ -671,6 +671,7 @@ strabo mymaps: http://devtiles.strabospot.org/zip?layer=strabomymaps&id=5b75967d
       if (vm.selectedName.name === '-- New Offline Map --') {
         vm.showNameField = true;
         vm.map.name = '';
+        vm.map.existCount = 0;
       }
       else {
         vm.showNameField = false;
