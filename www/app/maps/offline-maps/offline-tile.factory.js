@@ -257,14 +257,22 @@
 
 
 
-      $cordovaFileTransfer.download(url, devicePath + zipsDirectory + '/' + mapid + '.zip').then((entry) => {
-        console.log('download complete: ' + entry.toURL());
-        deferred.resolve();
-      }, (error) => {
-        alert('zip download failed');
-        $log.log('zip download error: ', error);
-        deferred.reject(error);
-      });
+
+
+
+
+      LocalStorageFactory.checkZipsDir().then(function(){
+        $cordovaFileTransfer.download(url, devicePath + zipsDirectory + '/' + mapid + '.zip').then((entry) => {
+          console.log('download complete: ' + entry.toURL());
+          deferred.resolve();
+        }, (error) => {
+          alert('zip download failed');
+          $log.log('zip download error: ', error);
+          deferred.reject(error);
+        });
+      })
+
+
 
 
 

@@ -23,6 +23,7 @@
     var importImagesCount = {'need': 0, 'have': 0, 'success': 0, 'failed': 0};
 
     return {
+      'checkZipsDir': checkZipsDir,
       'deleteMapFiles': deleteMapFiles,
       'exportImage': exportImage,
       'exportImages': exportImages,
@@ -269,6 +270,10 @@
 
     function exportImage(data, fileName) {
       return exportData(imagesBackupsDirectory, data, fileName)
+    }
+
+    function checkZipsDir() {
+      return exportData(zipsDirectory, 'This file is for checking permissions', 'permissionsCheck.txt')
     }
 
     function saveZip(data, fileName) {
