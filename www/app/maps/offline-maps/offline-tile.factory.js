@@ -256,7 +256,7 @@
 
 
 
-      /*
+
       $cordovaFileTransfer.download(url, devicePath + zipsDirectory + '/' + mapid + '.zip').then((entry) => {
         console.log('download complete: ' + entry.toURL());
         deferred.resolve();
@@ -265,12 +265,12 @@
         $log.log('zip download error: ', error);
         deferred.reject(error);
       });
-      */
 
 
 
 
 
+      /*
       var request = $http({
         'method': 'get',
         'url': url,
@@ -288,7 +288,7 @@
         alert('zip download failed');
         deferred.reject(response);
       });
-      
+      */
 
       return deferred.promise;
     }
