@@ -5,16 +5,17 @@
     .module('app')
     .controller('ArchiveTilesController', ArchiveTilesController);
 
-  ArchiveTilesController.$inject = ['$http', '$ionicLoading', '$ionicModal', '$ionicPopup', '$log', '$q', '$scope', '$state', '$timeout',
+  ArchiveTilesController.$inject = ['$cordovaFileTransfer', '$http', '$ionicLoading', '$ionicModal', '$ionicPopup', '$log', '$q', '$scope', '$state', '$timeout',
     'LocalStorageFactory', 'MapFactory', 'MapLayerFactory', 'MapViewFactory', 'OfflineTilesFactory', 'SlippyTileNamesFactory'];
 
-  function ArchiveTilesController($http, $ionicLoading, $ionicModal, $ionicPopup, $log, $q, $scope, $state, $timeout,
+  function ArchiveTilesController($cordovaFileTransfer, $http, $ionicLoading, $ionicModal, $ionicPopup, $log, $q, $scope, $state, $timeout,
                                   LocalStorageFactory, MapFactory, MapLayerFactory, MapViewFactory, OfflineTilesFactory,
                                   SlippyTileNamesFactory) {
     var vm = this;
     var mapExtent;
     var mapLayer;
     var extentString;
+    var percentDone;
 
     vm.checkedZooms = [];
     vm.downloading = false;
@@ -96,6 +97,7 @@
         var left = mapExtent.bottomLeft.lng;
         var bottom = mapExtent.bottomLeft.lat;
         extentString = left+','+bottom+','+right+','+top;
+        percentDone=0;
 
         loadSavedMaps();
       }
@@ -237,7 +239,7 @@
           if(response.data.error) {
             vm.map.zipError = response.data.error;
             vm.map.progress.message = response.data.error;
-            vm.map.percentDownload = 100;
+            percentDone = 100;
           }else{
             if(vm.map.progress.message != 'Downloading Zip File...') {
               vm.map.progress.message = response.data.status;
@@ -260,13 +262,15 @@
           $timeout(arguments.callee, 1000);
         }else{
           vm.map.progress.message = 'Downloading Zip File...';
-          OfflineTilesFactory.downloadZip(vm.zipUID,vm.map.mapid).then(function () {
+          downloadZip(vm.zipUID,vm.map.mapid).then(function () {
             vm.map.progress.message = 'Unzipping File...';
 
-            //add pause here, move to new function?
             $timeout(doUnzip(),3000);
 
+          },function(error){
 
+          },function(notify){
+            vm.map.percentDownload = notify;
           });
         }
       }
@@ -285,13 +289,113 @@
         },function(progressEvent){
           var percentUnzipped = Math.round((progressEvent.loaded / progressEvent.total) * 100);
           $log.log(percentUnzipped);
-          vm.map.percentDownload = percentUnzipped;
+          deferred.notify(percentUnzipped);;
         });
       });
       return deferred.promise;
     }
 
+    function downloadZip(uid, mapid) {
+      var deferred = $q.defer(); // init promise
+
+      var url = 'http://devtiles.strabospot.org/ziptemp/'+uid+'/'+uid+'.zip';
+
+      //var ft = new FileTransfer();
+      var devicePath = LocalStorageFactory.getDevicePath();
+      var zipsDirectory = LocalStorageFactory.getZipsDirectory();
+
+
+
+
+      /*
+      cordova.plugins.diagnostic.requestExternalStorageAuthorization(function(){
+        $cordovaFileTransfer.download(url, devicePath + zipsDirectory + '/' + mapid + '.zip').then((entry) => {
+          console.log('download complete: ' + entry.toURL());
+          deferred.resolve();
+        }, (error) => {
+          alert('zip download failed');
+          $log.log('zip download error: ', error);
+          deferred.reject(error);
+        });
+      }, function(){
+        $log.log('Perssion not given');
+      });
+      */
+
+
+
+
+      var fileTransfer= new FileTransfer();
+
+      fileTransfer.onprogress = function(progressEvent) {
+          var percent =  progressEvent.loaded / progressEvent.total * 100;
+          percent = Math.round(percent);
+          console.log(percent);
+          deferred.notify(percent);
+      };
+
+
+
+      LocalStorageFactory.checkZipsDir().then(function(){
+        fileTransfer.download(url, devicePath + zipsDirectory + '/' + mapid + '.zip', function(entry){
+          console.log('download complete: ' + entry.toURL());
+          deferred.resolve();
+        }, function(error){
+          alert('zip download failed');
+          $log.log('zip download error: ', error);
+          deferred.reject(error);
+        });
+      })
+
+
+
+
+
+
+
+      /*
+
+      LocalStorageFactory.checkZipsDir().then(function(){
+        $cordovaFileTransfer.download(url, devicePath + zipsDirectory + '/' + mapid + '.zip').then((entry) => {
+          console.log('download complete: ' + entry.toURL());
+          deferred.resolve();
+        }, (error) => {
+          alert('zip download failed');
+          $log.log('zip download error: ', error);
+          deferred.reject(error);
+        });
+      })
+
+
+
+
+
+
+
+      var request = $http({
+        'method': 'get',
+        'url': url,
+        'responseType': 'arraybuffer'
+      });
+      request.then(function (response) {
+        var blob = new Blob([response.data], {
+          'type': 'application/pdf'
+        });
+        LocalStorageFactory.saveZip(blob, mapid+'.zip').then(function () {
+          deferred.resolve();
+        });
+      }, function (response) {
+        // Request Failure
+        alert('zip download failed');
+        deferred.reject(response);
+      });
+      */
+
+      return deferred.promise;
+    }
+
     function doUnzip() {
+      vm.map.progress.message = 'Unzipping File...';
       unzipFile(vm.map.mapid).then(function (returnvar){ //not completing?
         if(returnvar==-1) { //zip failed, try again
           unzipAgain();
@@ -314,6 +418,10 @@
             });
           });
         }
+      }, function(error){
+
+      }, function(notify){
+        vm.map.percentDownload = notify;
       });
     }
 
@@ -412,6 +520,10 @@
             });
           });
         });
+      }, function(error){
+
+      },function(notify){
+        vm.map.percentDownload = notify;
       });
     }
 

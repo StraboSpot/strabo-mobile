@@ -16,7 +16,7 @@
       'checkValidMapName': checkValidMapName,
       'clear': clear,
       'deleteMap': deleteMap,
-      'downloadZip': downloadZip,
+      'foodownloadZip': foodownloadZip,
       'getMapCenterTile': getMapCenterTile,
       'getOfflineMaps': getOfflineMaps,
       'getOfflineTileCount': getOfflineTileCount,
@@ -243,7 +243,7 @@
       return deferred.promise;
     }
 
-    function downloadZip(uid, mapid) {
+    function foodownloadZip(uid, mapid) {
       var deferred = $q.defer(); // init promise
 
       var url = 'http://devtiles.strabospot.org/ziptemp/'+uid+'/'+uid+'.zip';
@@ -273,9 +273,34 @@
 
 
 
+      var fileTransfer= new FileTransfer();
+
+      fileTransfer.onprogress = function(progressEvent) {
+          var percent =  progressEvent.loaded / progressEvent.total * 100;
+          percent = Math.round(percent);
+          console.log(percent);
+      };
 
 
 
+      LocalStorageFactory.checkZipsDir().then(function(){
+        fileTransfer.download(url, devicePath + zipsDirectory + '/' + mapid + '.zip', function(entry){
+          console.log('download complete: ' + entry.toURL());
+          deferred.resolve();
+        }, function(error){
+          alert('zip download failed');
+          $log.log('zip download error: ', error);
+          deferred.reject(error);
+        });
+      })
+
+
+
+
+
+
+
+      /*
 
       LocalStorageFactory.checkZipsDir().then(function(){
         $cordovaFileTransfer.download(url, devicePath + zipsDirectory + '/' + mapid + '.zip').then((entry) => {
@@ -294,7 +319,6 @@
 
 
 
-      /*
       var request = $http({
         'method': 'get',
         'url': url,
