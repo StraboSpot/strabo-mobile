@@ -41,7 +41,7 @@
     vm.maxZoomLevelChanged = maxZoomLevelChanged;
     vm.submit = submit;
     vm.serverCountTiles = serverCountTiles;
-    vm.unzipFile = unzipFile;
+    vm.doUnzip = doUnzip;
     vm.unzipAgain = unzipAgain;
 
     activate();
@@ -264,7 +264,7 @@
             vm.map.progress.message = 'Unzipping File...';
 
             //add pause here, move to new function?
-            $timeout(unzipFile(),3000);
+            $timeout(doUnzip(),3000);
 
 
           });
@@ -272,8 +272,27 @@
       }
     }
 
-    function unzipFile() {
-      LocalStorageFactory.unzipFile(vm.map.mapid).then(function (returnvar){ //not completing?
+    //do unzip here so we can show progress
+    function unzipFile(mapid) {
+      var deferred = $q.defer(); // init promise
+      var devicePath = LocalStorageFactory.getDevicePath();
+      var zipsDirectory = LocalStorageFactory.getZipsDirectory();
+      var tileCacheDirectory = LocalStorageFactory.getTileCacheDirectory();
+      $log.log(devicePath+'/'+zipsDirectory+'/'+mapid+'.zip to '+devicePath+'/'+zipsDirectory+'/');
+      LocalStorageFactory.checkDir(tileCacheDirectory).then(function () {
+        zip.unzip(devicePath+'/'+zipsDirectory+'/'+mapid+'.zip', devicePath+'/'+tileCacheDirectory+'/', function(returnvar){
+          deferred.resolve(returnvar);
+        },function(progressEvent){
+          var percentUnzipped = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+          $log.log(percentUnzipped);
+          vm.map.percentDownload = percentUnzipped;
+        });
+      });
+      return deferred.promise;
+    }
+
+    function doUnzip() {
+      unzipFile(vm.map.mapid).then(function (returnvar){ //not completing?
         if(returnvar==-1) { //zip failed, try again
           unzipAgain();
         }else{
@@ -375,7 +394,7 @@
     }
 
     function unzipAgain() {
-      LocalStorageFactory.unzipFile(vm.map.mapid).then(function (returnvar){ //not completing?
+      unzipFile(vm.map.mapid).then(function (returnvar){ //not completing?
         vm.map.progress.message = 'Done! ';
         LocalStorageFactory.getMapStorageDetails(vm.map.mapid).then(function(existCount){
           $log.log('returnedDetails: ',existCount);

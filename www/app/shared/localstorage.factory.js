@@ -23,6 +23,7 @@
     var importImagesCount = {'need': 0, 'have': 0, 'success': 0, 'failed': 0};
 
     return {
+      'checkDir': checkDir,
       'checkZipsDir': checkZipsDir,
       'deleteMapFiles': deleteMapFiles,
       'exportImage': exportImage,
@@ -31,6 +32,7 @@
       'gatherLocalFiles': gatherLocalFiles,
       'getDb': getDb,
       'getDevicePath': getDevicePath,
+      'getTileCacheDirectory': getTileCacheDirectory,
       'getZipsDirectory': getZipsDirectory,
       'getMapCenterTile': getMapCenterTile,
       'getMapStorageDetails': getMapStorageDetails,
@@ -39,7 +41,7 @@
       'importProject': importProject,
       'saveZip': saveZip,
       'setupLocalforage': setupLocalforage,
-      'unzipFile': unzipFile
+      'unzipFileold': unzipFileold
     };
 
 
@@ -280,7 +282,7 @@
       return exportData(zipsDirectory, data, fileName)
     }
 
-    function unzipFile(mapid) {
+    function unzipFileold(mapid) {
       var deferred = $q.defer(); // init promise
       var devicePath = getDevicePath();
       $log.log(devicePath+'/'+zipsDirectory+'/'+mapid+'.zip to '+devicePath+'/'+zipsDirectory+'/');
@@ -533,6 +535,10 @@
 
     function getZipsDirectory() {
       return zipsDirectory;
+    }
+
+    function getTileCacheDirectory() {
+      return tileCacheDirectory;
     }
 
 
