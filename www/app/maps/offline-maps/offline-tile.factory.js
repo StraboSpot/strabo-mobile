@@ -246,7 +246,7 @@
     function foodownloadZip(uid, mapid) {
       var deferred = $q.defer(); // init promise
 
-      var url = 'http://devtiles.strabospot.org/ziptemp/'+uid+'/'+uid+'.zip';
+      var url = 'http://tiles.strabospot.org/ziptemp/'+uid+'/'+uid+'.zip';
 
       //var ft = new FileTransfer();
       var devicePath = LocalStorageFactory.getDevicePath();
@@ -344,7 +344,7 @@
     function gooddownloadZip(uid, mapid) {
       var deferred = $q.defer(); // init promise
 
-      var url = 'http://devtiles.strabospot.org/ziptemp/'+uid+'/'+uid+'.zip';
+      var url = 'http://tiles.strabospot.org/ziptemp/'+uid+'/'+uid+'.zip';
 
       var request = $http({
         'method': 'get',

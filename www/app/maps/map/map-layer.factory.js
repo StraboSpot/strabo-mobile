@@ -329,6 +329,7 @@
         case 'strabo_spot_mapbox':
         case 'mapbox_classic':
         case 'mapbox_styles':
+        case 'macrostrat':
           return new ol.source.XYZ({'url': url + layer.id + layer.tilePath + '?access_token=' + layer.key});
           case 'map_warper':
             return new ol.source.XYZ({'url': url + layer.id + layer.tilePath});

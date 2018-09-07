@@ -34,6 +34,10 @@
         'title': 'OSM Streets',
         'id': 'osm',
         'source': 'osm'
+      }, {
+        'title': 'Macrostrat',
+        'id': 'macrostrat',
+        'source': 'macrostrat'
       }];
     }
 
@@ -68,6 +72,13 @@
           ],
           'maxZoom': 16                  // http://wiki.openstreetmap.org/wiki/Zoom_levels
         },
+        'macrostrat': {
+          'attributions': '© <a href="https://macrostrat.org/#about">Macrostrat</a>',
+          'imageType': 'png',
+          'mime': 'image/png',
+          'tilePath': '/{z}/{x}/{y}.png',
+          'url': ['http://tiles.strabospot.org/v5/']
+        },
         'map_warper': {
           'attributions': '© <a href="http://mapwarper.net/home/about">Map Warper</a>',
           'imageType': 'png',
@@ -80,7 +91,7 @@
           'imageType': 'png',
           'mime': 'image/png',
           'tilePath': '/{z}/{x}/{y}.png',
-          'url': ['http://tiles.strabospot.org/v4/'],
+          'url': ['http://tiles.strabospot.org/v5/'],
           'maxZoom': 19                   // https://www.mapbox.com/help/define-mapbox-satellite/
         },
         'strabospot_mymaps': {

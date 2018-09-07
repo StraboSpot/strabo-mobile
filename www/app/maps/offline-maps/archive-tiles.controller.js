@@ -31,7 +31,7 @@
     vm.showSubmitButton = false;
     vm.submitBtnText = '0 Tiles Selected To Download';
     vm.zoomOptions = [];
-    vm.tilehost = 'http://devtiles.strabospot.org';
+    vm.tilehost = 'http://tiles.strabospot.org';
 
     vm.tryCount = 0;
     vm.zipUID = '';
@@ -298,7 +298,7 @@
     function downloadZip(uid, mapid) {
       var deferred = $q.defer(); // init promise
 
-      var url = 'http://devtiles.strabospot.org/ziptemp/'+uid+'/'+uid+'.zip';
+      var url = 'http://tiles.strabospot.org/ziptemp/'+uid+'/'+uid+'.zip';
 
       //var ft = new FileTransfer();
       var devicePath = LocalStorageFactory.getDevicePath();
@@ -536,12 +536,12 @@ $ionicPopup.alert({
   'template': 'Download and unzip file here.'
 });
 
-mapbox.satellite: http://devtiles.strabospot.org/zip?layer=mapbox.satellite&extent=-97.89028775422965,38.45640879187488,-97.47830044954215,38.77830645970107&zoom=14
-mapbox.outdoors: http://devtiles.strabospot.org/zip?layer=mapbox.outdoors&extent=-97.89028775422965,38.45640879187488,-97.47830044954215,38.77830645970107&zoom=14
-mapbox styles: http://devtiles.strabospot.org/zip?layer=mapboxstyles&username=jasonash&access_token=pk.eyJ1IjoiamFzb25hc2giLCJhIjoiY2l2dTUycmNyMDBrZjJ5bzBhaHgxaGQ1diJ9.O2UUsedIcg1U7w473A5UHA&id=cjl3xdv9h22j12tqfmyce22zq&extent=-97.89028775422965,38.45640879187488,-97.47830044954215,38.77830645970107&zoom=14
-osm: http://devtiles.strabospot.org/zipcount?layer=osm&extent=-97.89028775422965,38.45640879187488,-97.47830044954215,38.77830645970107&zoom=14
-mapwarper: http://devtiles.strabospot.org/zip?layer=mapwarper&id=32790&extent=-97.89028775422965,38.45640879187488,-97.47830044954215,38.77830645970107&zoom=14
-strabo mymaps: http://devtiles.strabospot.org/zip?layer=strabomymaps&id=5b75967d71bc0&extent=-97.89028775422965,38.45640879187488,-97.47830044954215,38.77830645970107&zoom=14
+mapbox.satellite: http://tiles.strabospot.org/zip?layer=mapbox.satellite&extent=-97.89028775422965,38.45640879187488,-97.47830044954215,38.77830645970107&zoom=14
+mapbox.outdoors: http://tiles.strabospot.org/zip?layer=mapbox.outdoors&extent=-97.89028775422965,38.45640879187488,-97.47830044954215,38.77830645970107&zoom=14
+mapbox styles: http://tiles.strabospot.org/zip?layer=mapboxstyles&username=jasonash&access_token=pk.eyJ1IjoiamFzb25hc2giLCJhIjoiY2l2dTUycmNyMDBrZjJ5bzBhaHgxaGQ1diJ9.O2UUsedIcg1U7w473A5UHA&id=cjl3xdv9h22j12tqfmyce22zq&extent=-97.89028775422965,38.45640879187488,-97.47830044954215,38.77830645970107&zoom=14
+osm: http://tiles.strabospot.org/zipcount?layer=osm&extent=-97.89028775422965,38.45640879187488,-97.47830044954215,38.77830645970107&zoom=14
+mapwarper: http://tiles.strabospot.org/zip?layer=mapwarper&id=32790&extent=-97.89028775422965,38.45640879187488,-97.47830044954215,38.77830645970107&zoom=14
+strabo mymaps: http://tiles.strabospot.org/zip?layer=strabomymaps&id=5b75967d71bc0&extent=-97.89028775422965,38.45640879187488,-97.47830044954215,38.77830645970107&zoom=14
 
 
 */
@@ -569,6 +569,8 @@ strabo mymaps: http://devtiles.strabospot.org/zip?layer=strabomymaps&id=5b75967d
         }
       }else if(source=='osm') {
         startZipURL=vm.tilehost+'/asynczip?mapid='+mapid+'&layer=osm&extent='+extentString+'&zoom='+vm.selectedMaxZoom.zoom;
+      }else if(source=='macrostrat') {
+        startZipURL=vm.tilehost+'/asynczip?mapid='+mapid+'&layer=macrostrat&extent='+extentString+'&zoom='+vm.selectedMaxZoom.zoom;
       }else if(source=='mapbox_styles') {
         var key = mapToSave.key;
         var parts = id.split('/');
