@@ -10,6 +10,7 @@
   function LocalStorageFactory($cordovaDevice, $cordovaFile, $log, $q, $window, HelpersFactory) {
     var dbs = {};
     dbs.configDb = {};        // global LocalForage for configuration and user data
+    dbs.dataFilesDB = {};          // global LocalForage for CSV data
     dbs.imagesDb = {};        // global LocalForage for images
     dbs.mapNamesDb = {};      // global LocalForage for map names
     dbs.mapTilesDb = {};      // global LocalForage for offline map tiles
@@ -260,7 +261,7 @@
       var deferred = $q.defer(); // init promise
 
       var devicePath = getDevicePath();
-      if (devicePath) {
+      if (devicePath) {    
         $window.resolveLocalFileSystemURL(devicePath + dataBackupsDirectory,
           function (fileSystem) {
             var reader = fileSystem.createReader();

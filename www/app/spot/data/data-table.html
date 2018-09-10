@@ -6,14 +6,31 @@
 	</ion-header-bar>
 	<ion-content padding>
 		<ion-scroll zooming="true" direction="xy" style="width: 100%; height: 100%">
-			<thead ng-repeat="row in vmChild.csvArr track by $index">{{row}}</thead>
-			<table class="data-table">
-				<tbody>
-					<tr ng-repeat="row in vmChild.csvArr track by $index">
-						<td class="data-td" text-center ng-repeat="item in row track by $index"><b>{{item}}</b></td>
-					</tr>
-				</tbody>
-			</table>
+			<div>
+				<div class="">
+					<table class="data-table pane-hScroll">
+						<thead>
+							<tr class="data-tr">
+								<th class="data-theader" ng-repeat="item in vmChild.csvArr[0] track by $index">
+									<b>{{item}}</b>
+								</th>
+							</tr>
+						</thead>
+					</table>
+					<div class="pane-vScroll">
+						<table class="data-table">
+							<tbody class="data-table-body">
+								<tr class="data-tr" 
+									ng-repeat="row in vmChild.csvArr | limitTo: vmChild.csvArr.length : 1 track by $index">
+									<td ng-model="vmChild.offset" class="data-td" 
+										ng-repeat="item in row track by $index"><b>{{item}}</b></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+
 		</ion-scroll>
 	</ion-content>
 </ion-modal-view>

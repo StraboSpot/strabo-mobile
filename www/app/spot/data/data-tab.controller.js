@@ -1,4 +1,4 @@
-(function() {
+(function () {
   'use strict';
 
   angular
@@ -6,10 +6,10 @@
     .controller('DataTabController', DataTabController);
 
   DataTabController.$inject = ['$document', '$ionicLoading', '$ionicModal', '$ionicPopup', '$log', '$scope', '$state',
-  'HelpersFactory', 'IS_WEB'];
+  'ExternalDataFactory', 'HelpersFactory', 'IS_WEB'];
 
-  function DataTabController($document, $ionicLoading, $ionicModal, $ionicPopup, $log, $scope, $state, HelpersFactory,
-    IS_WEB) {
+  function DataTabController($document, $ionicLoading, $ionicModal, $ionicPopup, $log, $scope, $state,
+    ExternalDataFactory, HelpersFactory, IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -17,7 +17,9 @@
 
     vm.csv = '';
     vm.csvArr = [];
+    vm.externalDataInfo = {};
     vm.importItem = undefined;
+    vm.offset = 1;
     vm.url = '';
     vm.urlArr = [];
 
@@ -82,14 +84,17 @@
           'file': csvToArr
         };
         $log.log('CSVObject', CSVObject);
-        if (!vmParent.spot.properties.data) vmParent.spot.properties.data = {};
-        if (!vmParent.spot.properties.data.csv) vmParent.spot.properties.data.csv = [];
-        vmParent.spot.properties.data.csv.push(CSVObject);
+        vm.externalDataInfo = ExternalDataFactory.saveDataFile(CSVObject).then(function () {
+          if (!vmParent.spot.properties.data) vmParent.spot.properties.data = {};
+          if (!vmParent.spot.properties.data.csv) vmParent.spot.properties.data.csv = [];
+          vmParent.spot.properties.data.csv.push(fileNameId);
+        });
       }
       else {
         var alertPopup = $ionicPopup.alert({
           'title': 'Not in CSV Format!',
-          'template': 'The filename: <br><b>' + fileName + '</b><br> is not in the correct format. <br>Please ensure that the filename ends is in .csv format.'
+          'template': 'The filename: <br><b>' + fileName +
+          '</b><br> is not in the correct format. <br>Please ensure that the filename ends is in .csv.'
         });
 
         alertPopup.then(function (res) {
@@ -126,18 +131,21 @@
      * Public Functions
      */
 
-    function deleteCSV(CSVToDelete) {
+    function deleteCSV(CSVIdToDelete) {
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete CSV File?',
-        'template': 'Are you sure you want to delete the CSV file <b>' + CSVToDelete.fileName + '</b>?'
+        'template': 'Are you sure you want to delete the CSV file <b>' + CSVIdToDelete.fileName + '</b>?'
       });
       confirmPopup.then(function (res) {
         if (res) {
-          vmParent.spot.properties.data.csv = _.without(vmParent.spot.properties.data.csv, CSVToDelete);
+          vmParent.spot.properties.data.csv = _.without(vmParent.spot.properties.data.csv, CSVIdToDelete);
           if (vmParent.spot.properties.data.csv.length === 0) delete vmParent.spot.properties.data.csv;
           if (_.isEmpty(vmParent.spot.properties.data)) delete vmParent.spot.properties.data;
           vmParent.saveSpot().then(function () {
             vmParent.spotChanged = false;
+          });
+          ExternalDataFactory.destroy(CSVIdToDelete).then(function (deletedFile) {
+            $log.log(deletedFile);
           });
         }
       });
@@ -216,11 +224,13 @@
       }
     }
 
-    function viewCSVFile(csvFile) {
-      // $log.log('csvFile', csvFile.file);
-      vm.csvArr = csvFile.file;
-      vm.currentFileTitle = csvFile.fileName;
-      vm.dataTableModal.show();
+    function viewCSVFile(csvFileId) {
+      ExternalDataFactory.getDataFileById(csvFileId).then(function (dataFile) {
+        $log.log(dataFile);
+        vm.csvArr = dataFile.file;
+        vm.currentFileTitle = dataFile.fileName;
+        vm.dataTableModal.show();
+      });
     }
   }
 }());
