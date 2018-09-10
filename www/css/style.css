@@ -1207,16 +1207,44 @@ Data-Page
 }
 
 .data-table {
-  border-collapse: collapse;
-  border: 2px black solid;
-  font: 12px sans-serif;
+  table-layout: fixed;
   overflow: auto;
   width: 100%;
-  table-layout: fixed;
+  border-collapse: collapse;
+  border: 3px solid black;
 }
 
 .data-td {
   border: 1px black solid;
-  padding: 5px;
+  padding: 20px;
+  letter-spacing: 1px;
+  white-space: normal;
+  font-family: 'Yantramanav', sans-serif;
+  text-align: center;
+  vertical-align: middle;
   width: 100%
+}
+
+.data-theader{
+  border: 1px black solid;
+  padding: 15px;
+  letter-spacing: 1px;
+  font-family: 'Yantramanav', sans-serif;
+  font-size: 20px;
+  text-align: center;
+  background-color: #1fb16d;
+  position: sticky;
+  top: 0;
+}
+
+.data-table-body tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.data-table-body tr:nth-child(even) {
+  background-color: #ece2ec;
+}
+ 
+.data-tr {
+  position: relative;
 }
