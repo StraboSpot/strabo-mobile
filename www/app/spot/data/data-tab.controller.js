@@ -1,4 +1,4 @@
-(function () {
+(function() {
   'use strict';
 
   angular
@@ -6,7 +6,7 @@
     .controller('DataTabController', DataTabController);
 
   DataTabController.$inject = ['$document', '$ionicLoading', '$ionicModal', '$ionicPopup', '$log', '$scope', '$state',
-  'ExternalDataFactory', 'HelpersFactory', 'IS_WEB'];
+    'ExternalDataFactory', 'HelpersFactory', 'IS_WEB'];
 
   function DataTabController($document, $ionicLoading, $ionicModal, $ionicPopup, $log, $scope, $state,
     ExternalDataFactory, HelpersFactory, IS_WEB) {
@@ -18,6 +18,7 @@
     vm.csv = '';
     vm.csvArr = [];
     vm.externalDataInfo = {};
+    vm.externalDataName = {};
     vm.importItem = undefined;
     vm.offset = 1;
     vm.url = '';
@@ -26,6 +27,7 @@
     vm.deleteCSV = deleteCSV;
     vm.deleteLink = deleteLink;
     vm.editLink = editLink;
+    vm.getFileName = getFileName;
     vm.importData = importData;
     vm.isWeb = isWeb;
     vm.urlLinkSubmit = urlLinkSubmit;
@@ -56,6 +58,7 @@
           });
         }
       });
+      getFileName();
     }
 
     function createModal() {
@@ -88,13 +91,14 @@
           if (!vmParent.spot.properties.data) vmParent.spot.properties.data = {};
           if (!vmParent.spot.properties.data.csv) vmParent.spot.properties.data.csv = [];
           vmParent.spot.properties.data.csv.push(fileNameId);
+          vm.externalDataName[fileNameId] = fileName;
         });
       }
       else {
         var alertPopup = $ionicPopup.alert({
           'title': 'Not in CSV Format!',
           'template': 'The filename: <br><b>' + fileName +
-          '</b><br> is not in the correct format. <br>Please ensure that the filename ends is in .csv.'
+            '</b><br> is not in the correct format. <br>Please ensure that the filename ends is in .csv.'
         });
 
         alertPopup.then(function (res) {
@@ -196,6 +200,17 @@
           });
         }
       });
+    }
+
+    // Gets the filename from the DB
+    function getFileName() {
+      if (vmParent.spot.properties.data && vmParent.spot.properties.data.csv) {
+        _.each(vmParent.spot.properties.data.csv, function (csvFileId) {
+          ExternalDataFactory.getFileByName(csvFileId).then(function (name) {
+            vm.externalDataName[csvFileId] = name;
+          });
+        });
+      }
     }
 
     function importData() {

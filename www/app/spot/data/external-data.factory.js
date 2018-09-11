@@ -1,4 +1,4 @@
-(function() {
+(function () {
 	'use strict';
 
 	angular
@@ -12,6 +12,7 @@
 		return {
 			'destroy': destroy,
 			'getDataFileById': getDataFileById,
+		  'getFileByName': getFileByName,
 			'saveDataFile': saveDataFile
 		};
 
@@ -25,7 +26,6 @@
 		function getDataFileById(fileId) {
 			var deferred = $q.defer(); // init promise
 			LocalStorageFactory.getDb().dataFilesDB.getItem(fileId.toString()).then(function (value) {
-				$log.log("Get File", value);
 				deferred.resolve(value);
 			});
 			return deferred.promise;
@@ -41,6 +41,14 @@
 				$log.log(err);
 			});
 			return deferred.promise;
+		}
+
+		function getFileByName(getFile) {
+			var deferred = $q.defer(); // init promise
+			LocalStorageFactory.getDb().dataFilesDB.getItem(getFile.toString()).then(function (value) {
+				deferred.resolve(value.fileName);
+			})
+		  return	deferred.promise;
 		}
 
 		function saveDataFile(saveFile) {

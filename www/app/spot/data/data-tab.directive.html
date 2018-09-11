@@ -35,7 +35,7 @@
 		<ion-item class='item-text-wrap item-button-right' 
 			ng-repeat="csvFileId in vm.spot.properties.data.csv | orderBy: 'fileNameId' track by $index ">
 			<div ng-click="vmChild.viewCSVFile(csvFileId)" class="list-sub">
-				<b>{{csvFileId}}</b>
+				<b>{{vmChild.externalDataName[csvFileId]}}</b>
 			</div>
 			<div class="buttons">
 				<button class='button button-clear button-assertive' ng-click='vmChild.deleteCSV(csvFileId)'>
