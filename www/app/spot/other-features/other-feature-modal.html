@@ -4,6 +4,10 @@
             ng-click='vmChild.submitFeature()'>
     </button>
     <h1 class='title'>Other Feature</h1>
+    <div class="buttons">
+      <button class='icon ion-close-round close-modal-button' ng-click='vmChild.otherFeatureModal.hide()'>
+      </button>
+    </div>
   </ion-header-bar>
   <ion-content class='has-header strabo-form' ng-controller='FormController as form'>
     <ion-input class='item item-input item-stacked-label item-text-wrap'>
