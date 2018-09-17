@@ -21,7 +21,6 @@
     vm.deleteTiles = deleteTiles;
     vm.edit = edit;
     vm.goToMap = goToMap;
-    //vm.updateOfflineTileSize = updateOfflineTileSize;
 
     activate();
 
@@ -40,9 +39,7 @@
           // update the number of offline tiles to scope
           $log.log('activate totalcount: ', count);
           vm.numOfflineTiles = count;
-          //$scope.$apply();
         });
-        //updateOfflineTileSize(vm.maps);
       }).finally(function () {
         $ionicLoading.hide();
       });
@@ -67,7 +64,11 @@
       confirmPopup.then(function (res) {
         if (res) {
           // ok, lets delete now because the user has confirmed ok
+          $ionicLoading.show({
+            'template': '<ion-spinner></ion-spinner><br>Deleting Maps'
+          });
           OfflineTilesFactory.clear(maps).then(function (err) {
+            $ionicLoading.hide();
             activate();
             $ionicPopup.alert({
               'title': 'Alert!',
@@ -90,7 +91,6 @@
             'template': '<ion-spinner></ion-spinner><br>Deleting Map'
           });
           OfflineTilesFactory.deleteMap(map).finally(function () {
-            // console.log('this map has been deleted');
             $ionicLoading.hide();
             activate();
           });
@@ -134,11 +134,9 @@
     }
 
     function goToMap(map) {
-
       $ionicLoading.show({
         'template': '<ion-spinner></ion-spinner>'
       });
-
       OfflineTilesFactory.getMapCenterTile(map.mapid).then(function (centerTile) {
         $log.log('gotcenterTile: ', centerTile);
         if(centerTile) {
@@ -154,64 +152,5 @@
         }
       });
     }
-
-
-
-
-    function oldgoToMap(map) {
-      $ionicLoading.show({
-        'template': '<ion-spinner></ion-spinner>'
-      });
-
-      //fix this to work with file system.
-
-      // Check the first 30 tiles and zoom to the tile with the highest zoom
-      var numTilesToCheck = map.tileArray.length > 30 ? 30 : map.tileArray.length - 1;
-
-      if (numTilesToCheck <= 0) {
-        $ionicPopup.alert({
-          'title': 'Not Enough Tiles!',
-          'template': 'More tiles need to be added to this map before attempting to view it.'
-        });
-        $ionicLoading.hide();
-      }
-      else {
-        var x, y, z = -1; // Start zoom at -1 so a 0 zoom with meet the condition testZ > z
-        var pattern = /(\d+)\/(\d+)\/(\d+)/; // Format "15/6285/13283"
-        for (var i = 0; i < numTilesToCheck; i++) {
-          var tileNameParts = pattern.exec(map.tileArray[i].tile);
-          if (tileNameParts && tileNameParts.length === 4) {
-            var testZ = parseInt(tileNameParts[1]);
-            if (testZ > z) {
-              z = testZ;
-              x = parseInt(tileNameParts[2]);
-              y = parseInt(tileNameParts[3]);
-            }
-          }
-        }
-        if (x && y && z) {
-          var lng = SlippyTileNamesFactory.tile2long(x, z);
-          var lat = SlippyTileNamesFactory.tile2lat(y, z);
-          MapLayerFactory.setVisibleBaselayer(map.id);
-          MapViewFactory.zoomToPoint([lng, lat], z);
-          $location.path('/app/map');
-        }
-      }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   }
 }());

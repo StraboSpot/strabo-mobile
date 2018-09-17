@@ -41,8 +41,7 @@
       'importImages': importImages,
       'importProject': importProject,
       'saveZip': saveZip,
-      'setupLocalforage': setupLocalforage,
-      'unzipFileold': unzipFileold
+      'setupLocalforage': setupLocalforage
     };
 
 
@@ -104,7 +103,6 @@
       });
       return deferred.promise;
     }
-
 
     function getDevicePath() {
       var devicePath;
@@ -264,7 +262,7 @@
        });
 
        return deferred.promise;
-     }
+    }
 
     function deleteMapFiles(map) {
       var deferred = $q.defer(); // init promise
@@ -301,24 +299,6 @@
 
     function checkZipsDir() {
       return exportData(zipsDirectory, 'This file is for checking permissions', 'permissionsCheck.txt')
-    }
-
-    function saveZip(data, fileName) {
-      return exportData(zipsDirectory, data, fileName)
-    }
-
-    function unzipFileold(mapid) {
-      var deferred = $q.defer(); // init promise
-      var devicePath = getDevicePath();
-      $log.log(devicePath+'/'+zipsDirectory+'/'+mapid+'.zip to '+devicePath+'/'+zipsDirectory+'/');
-      checkDir(tileCacheDirectory).then(function () {
-        zip.unzip(devicePath+'/'+zipsDirectory+'/'+mapid+'.zip', devicePath+'/'+tileCacheDirectory+'/', function(returnvar){
-          deferred.resolve(returnvar);
-        },function(progressEvent){
-          //$log.log(Math.round((progressEvent.loaded / progressEvent.total) * 100));
-        });
-      });
-      return deferred.promise;
     }
 
     function exportImages() {
@@ -387,7 +367,82 @@
       return dbs;
     }
 
+    function getMapCenterTile(mapid) {
+      var deferred = $q.defer(); // init promise
 
+      var devicePath = getDevicePath();
+      if (devicePath) {
+        $window.resolveLocalFileSystemURL(devicePath + tileCacheDirectory + '/' + mapid + '/tiles',
+          function (fileSystem) {
+            var reader = fileSystem.createReader();
+            reader.readEntries(
+              function (entries) {
+
+                //loop over tiles to get center tiles
+                var maxZoom = 0;
+                var xvals = [];
+                var yvals = [];
+
+                for(var i = 0; i < entries.length; i++) {
+                  var entry = entries[i];
+                  var tileName = entry.name;
+                  var tileName = tileName.replace('.png','');
+                  var parts = tileName.split('_');
+                  var z = Number(parts[0]);
+                  var x = Number(parts[1]);
+                  var y = Number(parts[2]);
+
+                  if(z > maxZoom){
+                    maxZoom = z;
+                  }
+                }
+
+                if(maxZoom > 14) {
+                  maxZoom = 14;
+                }
+
+                for(var i = 0; i < entries.length; i++) {
+                  var entry = entries[i];
+                  var tileName = entry.name;
+                  var tileName = tileName.replace('.png','');
+                  var parts = tileName.split('_');
+                  var z = Number(parts[0]);
+                  var x = Number(parts[1]);
+                  var y = Number(parts[2]);
+
+                  if(z == maxZoom) {
+                    if(xvals.indexOf(x) == -1) {
+                      xvals.push(x);
+                    }
+                    if(yvals.indexOf(y) == -1) {
+                      yvals.push(y);
+                    }
+                  }
+                }
+
+                var middleX = Math.floor(getMedian(xvals));
+                var middleY = Math.floor(getMedian(yvals));
+
+                var returnTile = maxZoom + '_' + middleX + '_' + middleY;
+
+                deferred.resolve(returnTile);
+              },
+              function (err) {
+                console.log(err);
+                if (err.code) deferred.reject(err.code);
+                else deferred.reject('Unknown error reading tiles');
+              }
+            );
+          }, function (err) {
+            console.log(err);
+            if (err.code) deferred.reject(err.code);
+            else deferred.reject('Unknown error');
+          }
+        );
+      }
+      else deferred.reject('Device not found');
+      return deferred.promise;
+    }
 
     function getMapStorageDetails(mapid) {
       var deferred = $q.defer(); // init promise
@@ -419,108 +474,12 @@
       return deferred.promise;
     }
 
-    function getMapCenterTile(mapid) {
-      var deferred = $q.defer(); // init promise
-
-      var devicePath = getDevicePath();
-      if (devicePath) {
-        $window.resolveLocalFileSystemURL(devicePath + tileCacheDirectory + '/' + mapid + '/tiles',
-          function (fileSystem) {
-            var reader = fileSystem.createReader();
-            reader.readEntries(
-              function (entries) {
-
-                //loop over tiles to get center tiles
-                var maxZoom = 0;
-                var xvals = [];
-                var yvals = [];
-                //$log.log(entries);
-                for(var i = 0; i < entries.length; i++) {
-                  var entry = entries[i];
-                  var tileName = entry.name;
-                  var tileName = tileName.replace('.png','');
-                  var parts = tileName.split('_');
-                  var z = Number(parts[0]);
-                  var x = Number(parts[1]);
-                  var y = Number(parts[2]);
-                  //$log.log('name: ', tileName);
-                  //$log.log('z: ' + z);
-                  //$log.log('x: ' + x);
-                  //$log.log('y: ' + y);
-
-                  if(z > maxZoom){
-                    maxZoom = z;
-                  }
-                }
-
-                if(maxZoom > 14) {
-                  maxZoom = 14;
-                }
-
-                //$log.log('maxZoom: ' + maxZoom);
-
-                for(var i = 0; i < entries.length; i++) {
-                  var entry = entries[i];
-                  var tileName = entry.name;
-                  var tileName = tileName.replace('.png','');
-                  var parts = tileName.split('_');
-                  var z = Number(parts[0]);
-                  var x = Number(parts[1]);
-                  var y = Number(parts[2]);
-                  //$log.log('name: ', tileName);
-                  //$log.log('z: ' + z);
-                  //$log.log('x: ' + x);
-                  //$log.log('y: ' + y);
-
-                  if(z == maxZoom) {
-                    if(xvals.indexOf(x) == -1) {
-                      xvals.push(x);
-                    }
-                    if(yvals.indexOf(y) == -1) {
-                      yvals.push(y);
-                    }
-                  }
-                }
-
-                //$log.log('xvals: ' + xvals);
-                //$log.log('yvals: ' + yvals);
-
-                var middleX = Math.floor(getMedian(xvals));
-                var middleY = Math.floor(getMedian(yvals));
-
-                //$log.log('middleX: ', middleX);
-                //$log.log('middleY: ', middleY);
-
-                var returnTile = maxZoom + '_' + middleX + '_' + middleY;
-
-                deferred.resolve(returnTile);
-              },
-              function (err) {
-                console.log(err);
-                if (err.code) deferred.reject(err.code);
-                else deferred.reject('Unknown error reading tiles');
-              }
-            );
-          }, function (err) {
-            console.log(err);
-            if (err.code) deferred.reject(err.code);
-            else deferred.reject('Unknown error');
-          }
-        );
-      }
-      else deferred.reject('Device not found');
-      return deferred.promise;
-    }
-
-
     function getTile(mapid, tileId) {
       var deferred = $q.defer(); // init promise
       var devicePath = getDevicePath();
       $cordovaFile.checkDir(devicePath, tileCacheDirectory).then(function (foundDir) {
         $cordovaFile.checkDir(devicePath, tileCacheDirectory+'/'+mapid).then(function (foundDir) {
           $cordovaFile.checkDir(devicePath, tileCacheDirectory+'/'+mapid+'/tiles').then(function (foundDir) {
-
-              $log.log('Looking for file '+tileCacheDirectory+'/'+mapid+'/tiles/'+tileId);
 
             $cordovaFile.checkFile(devicePath + '/' + tileCacheDirectory + '/' + mapid + '/tiles/', tileId).then(function (foundFile) {
 
@@ -558,91 +517,14 @@
       return deferred.promise;
     }
 
-    function getZipsDirectory() {
-      return zipsDirectory;
-    }
-
-    function getTileCacheDirectory() {
-      return tileCacheDirectory;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    function oldgetZipDetails(mapid){
-      var deferred = $q.defer(); // init promise
-
-      var devicePath = getDevicePath();
-      if (devicePath) {
-        $cordovaFile.checkDir(devicePath, tileCacheDirectory+'/'+mapid+'/'+tiles).then(function (foundDir) {
-            //$log.log(foundDir);
-
-
-            $cordovaFile.checkFile(devicePath + '/' + tileCacheDirectory + '/' + mapid + '/', 'details.json').then(function (foundFile) {
-                $cordovaFile.readAsText(devicePath + '/' + tileCacheDirectory + '/' + mapid + '/', 'details.json').then(function (data) {
-                  //$log.log(data);
-                  deferred.resolve(angular.fromJson(data));
-                }, function (noData) {
-                  $log.log('Error reading data', noData);
-                  deferred.reject('Error reading data', noData);
-                })
-              },
-            function (notFoundFile) {
-              $log.log('File not found', notFoundFile);
-              deferred.reject('File not found', notFoundFile);
-            }
-          )
-        },
-        function (notFoundDir) {
-          $log.log('Directory not found', notFoundDir);
-          deferred.reject('Directory not found', notFoundDir);
-        });
-      }
-      else deferred.reject('Device not found');
-
-      return deferred.promise;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     function getZipDetails(mapid){
       var deferred = $q.defer(); // init promise
 
       var devicePath = getDevicePath();
       if (devicePath) {
         $cordovaFile.checkDir(devicePath, tileCacheDirectory+'/'+mapid+'/'+tiles).then(function (foundDir) {
-            //$log.log(foundDir);
-
-
             $cordovaFile.checkFile(devicePath + '/' + tileCacheDirectory + '/' + mapid + '/', 'details.json').then(function (foundFile) {
                 $cordovaFile.readAsText(devicePath + '/' + tileCacheDirectory + '/' + mapid + '/', 'details.json').then(function (data) {
-                  //$log.log(data);
                   deferred.resolve(angular.fromJson(data));
                 }, function (noData) {
                   $log.log('Error reading data', noData);
@@ -663,6 +545,14 @@
       else deferred.reject('Device not found');
 
       return deferred.promise;
+    }
+
+    function getZipsDirectory() {
+      return zipsDirectory;
+    }
+
+    function getTileCacheDirectory() {
+      return tileCacheDirectory;
     }
 
     function importImages() {
@@ -702,6 +592,10 @@
       return importData(dataBackupsDirectory, name).then(function (importedData) {
         return replaceDbs(importedData);
       });
+    }
+
+    function saveZip(data, fileName) {
+      return exportData(zipsDirectory, data, fileName)
     }
 
     function setupLocalforage() {

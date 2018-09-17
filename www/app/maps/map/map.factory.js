@@ -35,7 +35,7 @@
         'id': 'osm',
         'source': 'osm'
       }, {
-        'title': 'Macrostrat',
+        'title': 'Geology from Macrostrat',
         'id': 'macrostrat',
         'source': 'macrostrat'
       }];
