@@ -20,7 +20,7 @@
     vm.dbUrl = undefined;
     vm.isTestingMode = false;
     vm.msg = undefined;
-    vm.pointsToGenerate = 10;
+    // vm.pointsToGenerate = 10;
     vm.spotDataModel = {};
     vm.spotModelModal = {};
 
@@ -28,7 +28,7 @@
     vm.getSpotDataModel = getSpotDataModel;
     vm.resetDbUrl = resetDbUrl;
     vm.save = save;
-    vm.submit = submit;
+    // vm.submit = submit;
     vm.toggleTestingMode = toggleTestingMode;
 
     activate();
@@ -108,65 +108,65 @@
       vm[modal].hide();
     }
 
-    function generateRandomGeojsonPoint(num) {
-      if (_.isEmpty(ProjectFactory.getSpotsDataset())) {
-        $ionicPopup.alert({
-          'title': 'No Default Dataset',
-          'template': 'A default dataset for new Spots has not been specified. Set this from the Manage Project page.'
-        });
-        $state.go('app.manage-project');
-      }
-      else {
-        $ionicLoading.show({
-          'template': '<ion-spinner></ion-spinner>'
-        });
-        // Bounding area for United States
-        /* var bounds = {
-         'topRight': {'lat': 58, 'lng': -76},
-         'bottomLeft': {'lat': 11, 'lng': -122}
-         };*/
+    // function generateRandomGeojsonPoint(num) {
+    //   if (_.isEmpty(ProjectFactory.getSpotsDataset())) {
+    //     $ionicPopup.alert({
+    //       'title': 'No Default Dataset',
+    //       'template': 'A default dataset for new Spots has not been specified. Set this from the Manage Project page.'
+    //     });
+    //     $state.go('app.manage-project');
+    //   }
+    //   else {
+    //     $ionicLoading.show({
+    //       'template': '<ion-spinner></ion-spinner>'
+    //     });
+    //     // Bounding area for United States
+    //     /* var bounds = {
+    //      'topRight': {'lat': 58, 'lng': -76},
+    //      'bottomLeft': {'lat': 11, 'lng': -122}
+    //      };*/
 
-        // Bounding area for downtown Tucson
-        var bounds = {
-          'topRight': {'lat': 32.226293, 'lng': -110.972307},
-          'bottomLeft': {'lat': 32.214196, 'lng': -110.985042}
-        };
+    //     // Bounding area for downtown Tucson
+    //     var bounds = {
+    //       'topRight': {'lat': 32.226293, 'lng': -110.972307},
+    //       'bottomLeft': {'lat': 32.214196, 'lng': -110.985042}
+    //     };
 
-        var feature_types = ['bedding', 'contact', 'foliation', 'fracture', 'fault', 'shear_zone_bou', 'other',
-          'vein'];
+    //     var feature_types = ['bedding', 'contact', 'foliation', 'fracture', 'fault', 'shear_zone_bou', 'other',
+    //       'vein'];
 
-        var promises = [];
-        for (var i = 0; i < num; i++) {
-          var strike = _.random(0, 180);
-          var featureType = feature_types[Math.floor(Math.random() * feature_types.length)];
-          var geojsonPoint = {
-            'geometry': {
-              'type': 'Point',
-              'coordinates': [
-                randCoords(bounds.bottomLeft.lng, bounds.topRight.lng, 0.0001),
-                randCoords(bounds.topRight.lat, bounds.bottomLeft.lat, 0.0001)
-              ]
-            },
-            'properties': {
-              'orientation_data': [{
-                'id': HelpersFactory.getNewId(),
-                'dip': _.random(0, 90),
-                'feature_type': featureType,
-                'label': featureType + strike.toString(),
-                'type': 'planar_orientation',
-                'strike': strike
-              }],
-              'name': 'x' + _.random(10, 99) + i.toString()
-            }
-          };
-          promises.push(SpotFactory.setNewSpot(geojsonPoint));
-        }
-        $q.all(promises).then(function () {
-          vm.msg = 'Finished generating Spots';
-          $ionicLoading.hide();
-        });
-      }
-    }
+    //     var promises = [];
+    //     for (var i = 0; i < num; i++) {
+    //       var strike = _.random(0, 180);
+    //       var featureType = feature_types[Math.floor(Math.random() * feature_types.length)];
+    //       var geojsonPoint = {
+    //         'geometry': {
+    //           'type': 'Point',
+    //           'coordinates': [
+    //             randCoords(bounds.bottomLeft.lng, bounds.topRight.lng, 0.0001),
+    //             randCoords(bounds.topRight.lat, bounds.bottomLeft.lat, 0.0001)
+    //           ]
+    //         },
+    //         'properties': {
+    //           'orientation_data': [{
+    //             'id': HelpersFactory.getNewId(),
+    //             'dip': _.random(0, 90),
+    //             'feature_type': featureType,
+    //             'label': featureType + strike.toString(),
+    //             'type': 'planar_orientation',
+    //             'strike': strike
+    //           }],
+    //           'name': 'x' + _.random(10, 99) + i.toString()
+    //         }
+    //       };
+    //       promises.push(SpotFactory.setNewSpot(geojsonPoint));
+    //     }
+    //     $q.all(promises).then(function () {
+    //       vm.msg = 'Finished generating Spots';
+    //       $ionicLoading.hide();
+    //     });
+    //   }
+    // }
 
     function getSpotDataModel() {
       vm.spotDataModel = DataModelsFactory.getSpotDataModel();
@@ -196,10 +196,10 @@
       vm.dataChanged = false;
     }
 
-    function submit(pointsToGenerate) {
-      $log.log('Generating ' + pointsToGenerate + ' random Spots ...');
-      generateRandomGeojsonPoint(pointsToGenerate);
-    }
+    // function submit(pointsToGenerate) {
+    //   $log.log('Generating ' + pointsToGenerate + ' random Spots ...');
+    //   generateRandomGeojsonPoint(pointsToGenerate);
+    // }
 
     function toggleTestingMode() {
       ProjectFactory.saveProjectItem('is_testing_mode', vm.isTestingMode);
