@@ -8,7 +8,7 @@
         </div>
         <div ng-switch-when='integer'>
           <ion-input class='item item-input item-stacked-label item-text-wrap'
-                     ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
+                     >
             <ion-label>
               {{ field.label }}
               <button class='button button-small button-icon ion-information-circled strabo-field-info-button'
@@ -98,9 +98,8 @@
           </ion-input>
         </div>
         <div ng-switch-when='select_one'>
-          <ion-input class='item item-input item-select item-stacked-label item-text-wrap'
-                     ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
-            <ion-label>
+          <ion-input class='item item-input item-select item-stacked-label item-text-wrap'>
+            <ion-label ng-class='{ "has-errors" : straboForm[field.name].$invalid, "no-errors" : straboForm[field.name].$valid }'>
               {{ field.label }}
               <button class='button button-small button-icon ion-information-circled strabo-field-info-button'
                       ng-show='field.hint' ng-click='form.showFieldInfo(field)'></button>

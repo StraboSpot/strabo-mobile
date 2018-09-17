@@ -7,7 +7,7 @@
   </ion-header-bar>
   <ion-content class='has-header strabo-form' ng-controller='FormController as form'>
     <ion-input class='item item-input item-stacked-label item-text-wrap'>
-      <ion-label>Label
+      <ion-label class="page-required">Label
         <button class='button button-small button-icon ion-information-circled strabo-field-info-button'
                 ng-click='form.showFieldInfo({"label": "Label", "hint": "If a label is not specified a default label will be given."})'></button>
       </ion-label>
@@ -32,7 +32,7 @@
       </ion-input>
     </div>
     <ion-input class='item item-input item-stacked-label item-text-wrap'>
-      <ion-label>
+      <ion-label class="page-required">
         Feature Name
         <button class='button button-small button-icon ion-information-circled strabo-field-info-button'
                 ng-click='form.showFieldInfo({"label": "Feature Name", "hint": "Name of this feature ..."})'></button>

@@ -480,6 +480,13 @@ Image Modal Style: used for image active-slider when choosing spot images
 /*--------------------
 Form Fields Style
 --------------------*/
+/* .asterisk{
+  text-align: center;
+} */
+.page-required::before{
+  content: "* ";
+  color: red;
+}
 
 .strabo-form .item-input {
   display: block !important;
@@ -676,13 +683,15 @@ Style fields for input errors and no-errors
   padding: 10px 16px 0;
 }
 
-.has-errors {
-  border-bottom: 3px solid #B83E2C;
+.has-errors::before {
+  /* border-bottom: 3px solid #B83E2C; */
+  content: "*";
+  color:red;
 }
 
-.no-errors {
+/* .no-errors {
   border-bottom: 3px solid green;
-}
+} */
 
 /*--------------------
 Login Page
