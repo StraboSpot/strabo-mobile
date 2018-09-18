@@ -40,8 +40,6 @@
         'date': new Date().toLocaleString()
       };
 
-      $log.log('mapNameData: ',mapNameData);
-
       // If there's already a maps with this name (if appending) remove maps first
       offlineMaps = _.reject(offlineMaps, function (offlineMap) {
         return offlineMap.name === mapToSave.name;
@@ -125,7 +123,7 @@
           deferred.resolve();
         });
       },function(){
-        $log.log('LocalStorageFactory.deleteMapFiles faild to resolve.');
+        $log.log('LocalStorageFactory.deleteMapFiles failed to resolve.');
         deferred.resolve();
       });
       return deferred.promise;
@@ -156,12 +154,9 @@
       var totalcount = 0;
       LocalStorageFactory.getDb().mapNamesDb.iterate(function (value, key) {
         if(value.existCount) {
-          $log.log('key: ', key);
-          $log.log('value: ', value);
 
           totalcount = totalcount + value.existCount;
 
-          $log.log('totalcount: ', totalcount);
         }
       }, function () {
         deferred.resolve(totalcount);
@@ -171,12 +166,8 @@
 
     // Read from storage
     function read(mapProvider, tile, callback) {
-      $log.log('MapProvider: ', mapProvider);
-      $log.log('tile: ', tile);
       tile=tile.replace(/\//g,'_');
-      $log.log('tile: ', tile);
       var tileId = tile + '.png';
-      $log.log('tileId: '+ tileId);
       LocalStorageFactory.getTile(mapProvider, tileId).then(function (blob) {
         callback(blob);
       });

@@ -116,7 +116,7 @@
       checkNextTile(mapProvider, imgElement, x, y, z, d, row, col);
     }
 
-    // Get the tile from local storage -- change to file storage
+    // Get the tile from local storage
     function getTile(mapProvider, tileId) {
       var deferred = $q.defer(); // init promise
       //$log.log('Looking for tile:', tileId);
@@ -311,7 +311,6 @@
     function setOfflineSource(layer) {
       if (!layer.source) return new ol.source.XYZ({'url': ''});  // No basemap layer
       return new ol.source.OSM({'tileLoadFunction': tileLoadFunction(layer.mapid)});
-      //return new ol.source.OSM({'tileLoadFunction': tileLoadFunction(layer.id)}); //jma 09042019
     }
 
     function setOnlineOverlays() {
@@ -394,7 +393,7 @@
     }
 
     // Make sure the visible layers are only layers that are offline layers
-    function updateVisibleLayersForOffline(mapLayers) { //also insert mapid?
+    function updateVisibleLayersForOffline(mapLayers) {
       var deferred = $q.defer(); // init promise
 
       $log.log('updateVisibleLayersForOffline: ', mapLayers);
