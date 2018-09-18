@@ -59,6 +59,7 @@
 
     // Create a map baselayer or overlay
     function createTileLayer(layer, isOnline) {
+      $log.log('createTileLayer Layer: ',layer);
       var isVisible = getLayerVisibility(layer);
       var newMapLayer = new ol.layer.Tile();
       newMapLayer.setProperties({
@@ -309,7 +310,7 @@
 
     function setOfflineSource(layer) {
       if (!layer.source) return new ol.source.XYZ({'url': ''});  // No basemap layer
-      return new ol.source.OSM({'tileLoadFunction': tileLoadFunction(layer.id)});
+      return new ol.source.OSM({'tileLoadFunction': tileLoadFunction(layer.mapid)});
     }
 
     function setOnlineOverlays() {
@@ -327,6 +328,7 @@
         case 'strabo_spot_mapbox':
         case 'mapbox_classic':
         case 'mapbox_styles':
+        case 'macrostrat':
           return new ol.source.XYZ({'url': url + layer.id + layer.tilePath + '?access_token=' + layer.key});
           case 'map_warper':
             return new ol.source.XYZ({'url': url + layer.id + layer.tilePath});
@@ -393,7 +395,12 @@
     // Make sure the visible layers are only layers that are offline layers
     function updateVisibleLayersForOffline(mapLayers) {
       var deferred = $q.defer(); // init promise
+
+      $log.log('updateVisibleLayersForOffline: ', mapLayers);
+
       OfflineTilesFactory.getOfflineMaps().then(function (offlineMaps) {
+
+        $log.log('offlineMaps: ', offlineMaps);
 
         // If the visible baselayer is not an offline layer set visible baselayer to empty
         if (!_.isEmpty(visibleLayers.baselayer) &&
@@ -411,6 +418,20 @@
         var offlineMapLayers = _.filter(mapLayers, function (mapLayer) {
           return _.chain(offlineMaps).pluck('id').compact().contains(mapLayer.id).value();
         });
+
+        //get mapid to pass to each offline layer
+        var returnMaps = [];
+        _.each(offlineMapLayers, function(offlineMapLayer){
+          _.each(offlineMaps, function(omap){
+            if(omap.id == offlineMapLayer.id){
+              offlineMapLayer.mapid = omap.mapid;
+              returnMaps.push(offlineMapLayer);
+            }
+          });
+        });
+
+        $log.log('returnMaps: ', returnMaps);
+        $log.log('update visible offLineMapLayers: ', offlineMapLayers);
         deferred.resolve(offlineMapLayers);
       });
       return deferred.promise;
