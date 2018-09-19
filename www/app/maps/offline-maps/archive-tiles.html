@@ -17,30 +17,37 @@
       <input type='text' ng-model='vm.map.name' autofocus>
     </ion-input>
 
-    <h5>Select zoom levels to download:</h5>
-    <ion-checkbox ng-checked="true" ng-disabled="true" ng-hide='vm.outerZoomMax < 1'>
-      Zooms 0-{{ vm.outerZoomMax }}: {{ vm.outerZoomsAll.tilesNeed.length }} tiles needed, {{ vm.outerZoomsAll.tilesHave.length }} already saved
-    </ion-checkbox>
-    <div ng-repeat='zoomOption in vm.zoomOptions track by $index'>
-      <ion-checkbox ng-model='vm.checkedZooms[$index]' ng-change='vm.countTiles($index)'>
-        Zoom {{ zoomOption.zoom }}:
-        <span ng-show='zoomOption.tilesNeed.length === 0 && zoomOption.tilesHave.length === 0'>
-          Check box to calculate tiles needed
-        </span>
-        <span ng-hide='zoomOption.tilesNeed.length === 0 && zoomOption.tilesHave.length === 0'>
-          {{ zoomOption.tilesNeed.length }} tiles needed, {{ zoomOption.tilesHave.length }} already saved
-        </span>
-      </ion-checkbox>
+    <div align='center' ng-show='vm.map.existCount'>
+      <b>{{ vm.map.existCount }} Tiles already on device for this map.</b>
     </div>
+
+    <h5>Select max zoom level to download:</h5>
+    <ion-input class='item item-input item-select item-text-wrap'>
+      <ion-label>Zoom Level...</ion-label>
+      <select ng-model='vm.selectedMaxZoom'
+              ng-options='z.zoom for z in vm.zoomOptions'
+              ng-change='vm.maxZoomLevelChanged()'>
+      </select>
+    </ion-input>
+
+    <br>
+    <div ng-show='vm.showSubmitButton'>
+      <b>Number of tiles to download: {{ vm.map.tileCount }} <br></b>
+
+      <button class='button button-block button-positive' ng-click='vm.submit()'
+              ng-disabled='vm.downloading'>
+       {{ vm.submitBtnText }}
+      </button>
+    </div>
+
+    <!--
+    <button class='button button-block button-positive' ng-click='vm.unzipAgain()'>
+     Unzip Again
+    </button>
+  -->
+
     * Zoom in or out on the map to show more zoom levels.<br>
     * Double check your map before downloading higher zoom levels.<br>
-    <br>
-    <b>Number of tiles to download: {{ vm.map.tiles.need.length }} <br></b>
-
-    <button class='button button-block button-positive' ng-click='vm.submit()'
-            ng-disabled='vm.downloading || vm.map.tiles.need.length === 0'>
-     {{ vm.submitBtnText }}
-    </button>
     * Offline Maps are loaded automatically when offline.<br>
     * Edit and delete options for Saved Maps will be available under the Offline Maps menu item.
   </ion-content>

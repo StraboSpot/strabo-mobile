@@ -3,7 +3,7 @@
     <button menu-toggle='left' class='button button-icon icon ion-navicon'></button>
   </ion-nav-buttons>
   <ion-nav-buttons side='right'>
-    <button ng-click='vm.clearOfflineTile();' class='button button-icon icon ion-trash-b'
+    <button ng-click='vm.clearOfflineTile(vm.maps);' class='button button-icon icon ion-trash-b'
             ng-hide='vm.maps.length === 0'></button>
   </ion-nav-buttons>
   <ion-content class='has-header'>
@@ -18,8 +18,8 @@
             <b>{{ map.name }}</b>
             <small>(Source: {{ map.title }})</small>
             <br>
-            <small>{{ map.tileArray.length }} tiles,
-              {{ map.size | normalizeBytes }}<span ng-if='map.date'>, Saved: {{ map.date }}</span></small>
+            <small>{{ map.existCount }} tiles
+              <span ng-if='map.date'>, Saved: {{ map.date }}</span></small>
           </div>
           <div class='buttons'>
             <button class='button button-icon'

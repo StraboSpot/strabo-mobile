@@ -73,20 +73,8 @@
         });
       });
 
-      // console.log('x', x);
-      // console.log('y', y);
-      // console.log(cartesianProduct);
-
       return cartesianProduct;
 
-      // cartesianProduct.forEach(function(tileId) {
-      //   OfflineTilesFactory.downloadInternetMapTile(tileId, function(blob) {
-      //     // now try to write to offline storage
-      //     OfflineTilesFactory.write(tileId, blob, function(blob) {
-      //       console.log('wrote ', tileId);
-      //     });
-      //   });
-      // });
     }
 
     // borrowed from http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
