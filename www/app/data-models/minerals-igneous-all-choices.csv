@@ -18,7 +18,7 @@ tc1kx87,clinopyroxene,"Clinopyroxene, Augite",15
 tc1kx87,cr_diopside,Cr-diopside,16
 tc1kx87,diamond,Diamond,17
 tc1kx87,epidote,Epidote,18
-tc1kx87,flourite,Flourite,19
+tc1kx87,fluorite,Fluorite,19
 tc1kx87,galena,Galena,20
 tc1kx87,garnet,Garnet,21
 tc1kx87,goethite,Goethite,22
@@ -33,29 +33,29 @@ tc1kx87,limonite,Limonite,30
 tc1kx87,magnetite,Magnetite,31
 tc1kx87,malachite,Malachite,32
 tc1kx87,melilite,Melilite,33
-tc1kx87,molybdentite,Molybdentite,35
-tc1kx87,monazite,Monazite,36
-tc1kx87,muscovite,Muscovite,37
-tc1kx87,muscovite_whi,"Muscovite, White Mica",38
-tc1kx87,na_pyroxene,Na pyroxene,39
-tc1kx87,nepheline,Nepheline,40
-tc1kx87,olivine,Olivine,41
-tc1kx87,opaques,Opaques,42
-tc1kx87,orthoclase,"Orthoclase, Microcline, K-Feldspar",43
-tc1kx87,orthopyroxene,"Orthopyroxene, Hypersthene",44
-tc1kx87,perovskite,Perovskite,45
-tc1kx87,plagioclase,Plagioclase,46
-tc1kx87,pyrite,Pyrite,47
-tc1kx87,pyrrhotite,Pyrrhotite,48
-tc1kx87,quartz,Quartz,49
-tc1kx87,rutile,Rutile,50
-tc1kx87,sanidine,Sanidine,51
-tc1kx87,sphalerite,Sphalerite,52
-tc1kx87,spinel,Spinel,53
-tc1kx87,spodumene,Spodumene,54
-tc1kx87,titanite,Titanite,55
-tc1kx87,topaz,Topaz,56
-tc1kx87,tourmaline,Tourmaline,57
-tc1kx87,xenotime,Xenotime,58
-tc1kx87,zeolite,Zeolite,59
-tc1kx87,zircon,Zircon,60
+tc1kx87,molybdenite,Molybdenite,34
+tc1kx87,monazite,Monazite,35
+tc1kx87,muscovite,Muscovite,36
+tc1kx87,muscovite_whi,"Muscovite, White Mica",37
+tc1kx87,na_pyroxene,Na pyroxene,38
+tc1kx87,nepheline,Nepheline,39
+tc1kx87,olivine,Olivine,40
+tc1kx87,opaques,Opaques,41
+tc1kx87,orthoclase,"Orthoclase, Microcline, K-Feldspar",42
+tc1kx87,orthopyroxene,"Orthopyroxene, Hypersthene",43
+tc1kx87,perovskite,Perovskite,44
+tc1kx87,plagioclase_fs,Plagioclase Feldspar,45
+tc1kx87,pyrite,Pyrite,46
+tc1kx87,pyrrhotite,Pyrrhotite,47
+tc1kx87,quartz,Quartz,48
+tc1kx87,rutile,Rutile,49
+tc1kx87,sanidine,Sanidine,50
+tc1kx87,sphalerite,Sphalerite,51
+tc1kx87,spinel,Spinel,52
+tc1kx87,spodumene,Spodumene,53
+tc1kx87,titanite,Titanite,54
+tc1kx87,topaz,Topaz,55
+tc1kx87,tourmaline,Tourmaline,56
+tc1kx87,xenotime,Xenotime,57
+tc1kx87,zeolite,Zeolite,58
+tc1kx87,zircon,Zircon,59
