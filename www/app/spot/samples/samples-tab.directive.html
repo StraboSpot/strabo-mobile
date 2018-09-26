@@ -2,9 +2,10 @@
   <button ng-click='vmChild.addSample("field")'
           class='button button-clear button-positive'>
     <i class='icon ion-plus-circled'></i>
-    <span class='button-text-big'
+    <span class='button-text-big'     
           ng-style='!vmChild.getIsWeb() && {"font-size": "x-small"}'>Add Field Sample Data to this Spot</span>
   </button>
+  <span ng-show='vmChild.isTestingMode === true'>
   <button ng-click='vmChild.addSample("experimental")'
           class='button button-clear button-positive'>
     <i class='icon ion-plus-circled'></i>
@@ -29,6 +30,7 @@
     <span class='button-text-big'
           ng-style='!vmChild.getIsWeb() && {"font-size": "x-small"}'>Nest an Existing Sample/Subsample Spot</span>
   </button>
+</span>
   <div class="padding" ng-show="!vm.spot.properties.samples">
     There are no samples at this Spot.
   </div>

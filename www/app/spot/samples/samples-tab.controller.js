@@ -17,10 +17,11 @@
 
     vm.basicFormModal = {};
     vm.modalTitle = '';
+    vm.nestedSamplesSpots = [];
     vm.selectSampleSpotModal = {};
     vm.spots = {};
     vm.spotsDisplayed = [];
-    vm.nestedSamplesSpots = [];
+    vm.isTestingMode = false;   
 
     vm.addSample = addSample;
     vm.addExistingSubsample = addExistingSubsample;
@@ -88,7 +89,7 @@
         return _.has(sample, 'id');
       });
       if (_.isEmpty(vmParent.spot.properties.samples)) delete vmParent.spot.properties.samples;
-
+      vm.isTestingMode = ProjectFactory.getProjectProperty('is_testing_mode');
       checkProperties();
       gatherNestedSampleSpots();
       setDisplayedSpots();
