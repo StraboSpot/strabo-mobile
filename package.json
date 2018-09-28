@@ -1,6 +1,6 @@
 {
     "name": "StraboSpot",
-    "version": "1.5.0",
+    "version": "1.6.0",
     "description": "StraboSpot is a cross-platform app for geologic field data acquisition.",
     "dependencies": {
         "@ionic/v1-toolkit": "^1.0.5",
