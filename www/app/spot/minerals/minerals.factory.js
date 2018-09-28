@@ -166,7 +166,7 @@
           'Name': 'chert',
           'Mineral': 'Chert',
           'Formula': 'SiO2',
-          'Crystal System': 'N/A',
+          'Crystal System': 'Hexagonal',
           'Hardness': '6.5-7',
           'Distinguishing Features': 'Fine granular microcrystalline quartz aggregates; waxy, dull luster; brittle; splintery, subconchoidal, or conchoidal fracture',
           'Occurrence': 'Common as nodules or irregular beds in limestone, silica-rich biogenic recrystallization; banded-iron formations',
@@ -595,8 +595,8 @@
           'mindat.org link': 'https://www.mindat.org/min-2750.html'
         },
         {// Meta & Ign
-          'Name': 'muscovite_whi',
-          'Mineral': 'Muscovite, White Mica',
+          'Name': 'muscovite',
+          'Mineral': 'Muscovite',
           'Formula': 'KAl3Si3O10(OH)2',
           'Crystal System': 'Monoclinic',
           'Hardness': '2-3',
@@ -659,6 +659,28 @@
           'Occurrence': 'Variable',
           'Associated Minerals': 'Variable',
           'mindat.org link': ''
+        },
+        {
+          'Name': 'orthoamph_ant',
+          'Mineral': 'Orthoamphibole (Anthophyllite)',
+          'Formula': '(Mg,Fe)2(Mg,Fe)5Si8O22(OH)2',
+          'Crystal System': 'Orthorhombic',
+          'Hardness': '5.5-6',
+          'Distinguishing Features': 'Usually brown; perfect {210} cleavage (56�/124�); {100} and {010} cleavages distinguish it from clinoamphibole; elastic fibers; brittle',
+          'Occurrence': 'Medium-high grade metamorphosed mafic rocks;',
+          'Associated Minerals': 'Cordierite, garnet, alumino-silicates, plagioclase, staurolite',
+          'mindat.org link': 'https://www.mindat.org/min-254.html'
+        },
+        {
+          'Name': 'orthoamph_ged',
+          'Mineral': 'Orthoamphibole (Gedrite)',
+          'Formula': '(Mg,Fe)2(Mg,Fe)3Al2Al2Si6O22(OH)2',
+          'Crystal System': 'Orthorhombic',
+          'Hardness': '5.5-6',
+          'Distinguishing Features': 'Usually brown; perfect {210} cleavage (56�/124�); {100} and {010} cleavages distinguish it from clinoamphibole; elastic fibers; brittle',
+          'Occurrence': 'Medium-high grade metamorphosed mafic rocks;',
+          'Associated Minerals': 'Cordierite, garnet, alumino-silicates, plagioclase, staurolite',
+          'mindat.org link': 'https://www.mindat.org/min-1665.html'
         },
         {// Meta & Ign
           'Name': 'orthoclase',
