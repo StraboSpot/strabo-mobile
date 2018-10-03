@@ -303,6 +303,9 @@
         var mapusername = parts[0];
         var usermapid = parts[1];
         startZipURL=vm.tilehost+'/asynczip?mapid='+mapid+'&layer=mapboxstyles&username='+mapusername+'&access_token='+key+'&id='+usermapid+'&extent='+extentString+'&zoom='+vm.selectedMaxZoom.zoom;
+      }else if(source=='mapbox_classic') {
+        var key = mapToSave.key;
+        startZipURL=vm.tilehost+'/asynczip?mapid='+mapid+'&layer=mapboxclassic&id='+id+'&extent='+extentString+'&zoom='+vm.selectedMaxZoom.zoom+'&access_token='+key;
       }else if(source=='strabospot_mymaps') {
         startZipURL=vm.tilehost+'/asynczip?mapid='+mapid+'&layer=strabomymaps&id='+id+'&extent='+extentString+'&zoom='+vm.selectedMaxZoom.zoom;
       }else if(source=='map_warper') {
