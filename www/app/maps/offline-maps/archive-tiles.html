@@ -4,12 +4,12 @@
   </ion-nav-buttons>
   <ion-content class='padding has-header'>
 
-    <ion-input class='item item-input item-select item-text-wrap'
-               ng-show='vm.showSelectName'>
+    <ion-input class='item item-input item-select item-text-wrap item-stacked-label' ng-show='vm.showSelectName'>
       <ion-label>Select a Map</ion-label>
-      <select ng-model='vm.selectedName'
-              ng-options='map.name for map in vm.maps | orderBy: "-date"'
+      <select ng-model='vm.selectedName' 
+              ng-options='map.name for map in vm.maps | orderBy: "-date"' 
               ng-change='vm.nameSelectChanged()'>
+        <option value=''>-- Select a Map --</option>
       </select>
     </ion-input>
     <ion-input ng-show='vm.showNameField' class='item item-input item-stacked-label item-text-wrap'>
@@ -22,11 +22,10 @@
     </div>
 
     <h5>Select max zoom level to download:</h5>
-    <ion-input class='item item-input item-select item-text-wrap'>
-      <ion-label>Zoom Level...</ion-label>
-      <select ng-model='vm.selectedMaxZoom'
-              ng-options='z.zoom for z in vm.zoomOptions'
-              ng-change='vm.maxZoomLevelChanged()'>
+    <ion-input class='item item-input item-select item-text-wrap item-stacked-label'>
+      <!-- <ion-label>-- Set Max Zoom Level --</ion-label> -->
+      <select ng-model='vm.selectedMaxZoom' ng-options='z.zoom for z in vm.zoomOptions' ng-change='vm.maxZoomLevelChanged()'>
+        <option value=''>-- Set Max Zoom Level --</option>
       </select>
     </ion-input>
 
@@ -34,9 +33,8 @@
     <div ng-show='vm.showSubmitButton'>
       <b>Number of tiles to download: {{ vm.map.tileCount }} <br></b>
 
-      <button class='button button-block button-positive' ng-click='vm.submit()'
-              ng-disabled='vm.downloading'>
-       {{ vm.submitBtnText }}
+      <button class='button button-block button-positive' ng-click='vm.submit()' ng-disabled='vm.downloading'>
+        {{ vm.submitBtnText }}
       </button>
     </div>
 
