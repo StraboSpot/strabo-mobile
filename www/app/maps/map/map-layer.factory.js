@@ -310,7 +310,9 @@
 
     function setOfflineSource(layer) {
       if (!layer.source) return new ol.source.XYZ({'url': ''});  // No basemap layer
-      return new ol.source.OSM({'tileLoadFunction': tileLoadFunction(layer.mapid)});
+      var maxZoom = 19;
+      if(layer.maxZoom) maxZoom = layer.maxZoom;
+      return new ol.source.OSM({'tileLoadFunction': tileLoadFunction(layer.mapid),'maxZoom': maxZoom});
     }
 
     function setOnlineOverlays() {
