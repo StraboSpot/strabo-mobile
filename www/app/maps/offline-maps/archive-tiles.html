@@ -4,7 +4,8 @@
   </ion-nav-buttons>
   <ion-content class='padding has-header'>
 
-    <ion-input class='item item-input item-select item-text-wrap item-stacked-label' ng-show='vm.showSelectName'>
+    <ion-input class='item item-input item-select item-text-wrap item-stacked-label' 
+               ng-show='vm.showSelectName'>
       <ion-label>Select a Map</ion-label>
       <select ng-model='vm.selectedName' 
               ng-options='map.name for map in vm.maps | orderBy: "-date"' 
@@ -23,7 +24,9 @@
 
     <h5>Select max zoom level to download:</h5>
     <ion-input class='item item-input item-select item-text-wrap item-stacked-label'>
-      <select ng-model='vm.selectedMaxZoom' ng-options='z.zoom for z in vm.zoomOptions' ng-change='vm.maxZoomLevelChanged()'>
+      <select ng-model='vm.selectedMaxZoom' 
+              ng-options='z.zoom for z in vm.zoomOptions' 
+              ng-change='vm.maxZoomLevelChanged()'>
         <option value=''>-- Set Max Zoom Level --</option>
       </select>
     </ion-input>
