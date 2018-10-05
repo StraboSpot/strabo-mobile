@@ -23,7 +23,6 @@
 
     <h5>Select max zoom level to download:</h5>
     <ion-input class='item item-input item-select item-text-wrap item-stacked-label'>
-      <!-- <ion-label>-- Set Max Zoom Level --</ion-label> -->
       <select ng-model='vm.selectedMaxZoom' ng-options='z.zoom for z in vm.zoomOptions' ng-change='vm.maxZoomLevelChanged()'>
         <option value=''>-- Set Max Zoom Level --</option>
       </select>
