@@ -136,20 +136,30 @@
     function goToMap(map) {
       $ionicLoading.show({
         'template': '<ion-spinner></ion-spinner>'
-      });
-      OfflineTilesFactory.getMapCenterTile(map.mapid).then(function (centerTile) {
-        $log.log('gotcenterTile: ', centerTile);
-        if(centerTile) {
-          var parts = centerTile.split('_');
-          var z = Number(parts[0]);
-          var x = Number(parts[1]);
-          var y = Number(parts[2]);
-          var lng = SlippyTileNamesFactory.tile2long(x, z);
-          var lat = SlippyTileNamesFactory.tile2lat(y, z);
-          MapLayerFactory.setVisibleBaselayer(map.id);
-          MapViewFactory.zoomToPoint([lng, lat], z);
-          $location.path('/app/map');
-        }
+      }).then(function(){
+        OfflineTilesFactory.getMapCenterTile(map.mapid).then(function (centerTile) {
+          $log.log('gotcenterTile: ', centerTile);
+          if(centerTile) {
+            var parts = centerTile.split('_');
+            var z = Number(parts[0]);
+            var x = Number(parts[1]);
+            var y = Number(parts[2]);
+            var lng = SlippyTileNamesFactory.tile2long(x, z);
+            var lat = SlippyTileNamesFactory.tile2lat(y, z);
+            MapLayerFactory.setVisibleBaselayer(map.id);
+            MapViewFactory.zoomToPoint([lng, lat], z);
+            $location.path('/app/map');
+          }
+        },function(err){ //map not found
+          $log.log('Found Error: ',err);
+          $ionicLoading.hide();
+          $ionicPopup.alert({
+            'title': 'Error!',
+            'template': 'Offline map not found on device.<br>(code: '+err+')'
+          }).then(function(){
+            $ionicLoading.hide();
+          });
+        });
       });
     }
   }
