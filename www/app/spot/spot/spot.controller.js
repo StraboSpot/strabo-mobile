@@ -271,7 +271,8 @@
     function copyThisSpot() {
       vm.popover.hide().then(function () {
         var newSpot = {'type': 'Feature'};
-        newSpot.properties = _.omit(vm.spot.properties,
+        newSpot.properties = angular.copy(vm.spot.properties);
+        newSpot.properties = _.omit(newSpot.properties,
           ['name', 'id', 'date', 'time', 'modified_timestamp', 'images', 'samples']);
         _.each(newSpot.properties.orientation_data, function (orientation, i) {
           newSpot.properties.orientation_data[i] = _.omit(orientation,
