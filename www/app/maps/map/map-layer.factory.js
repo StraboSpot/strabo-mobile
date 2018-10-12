@@ -41,6 +41,8 @@
 
     // Check for parent tile to use to make overzoomed child tile
     function checkNextTile(mapProvider, imgElement, x, y, z, d, row, col) {
+      //$log.log('checkNextTile',mapProvider, imgElement, x, y z, d, row, col);
+      //$log.log('checkNextTile',x,y,z,d,row,col);
       var newX = (x - row) / d;
       var newY = (y - col) / d;
       var tileId = z + '/' + newX + '/' + newY;
@@ -55,6 +57,80 @@
         });
       }
       else handleTileNotFound(mapProvider, imgElement, x, y, z, d, row, col);
+    }
+
+
+    //new function for getting next tile up JMA 10/12/2018
+    function getNextTileUp(mapProvider, imgElement, x, y, z, numcols, xcol, ycol){
+
+        if(z > 0){
+
+          if(numcols==0) numcols = 1;
+
+          numcols = numcols * 2;
+
+          var newz = z - 1;
+
+          var newx = x;
+          var oddx = 0;
+          if(newx % 2 == 1){
+            oddx = 1;
+            newx = newx -1;
+          }
+          newx = newx / 2;
+
+          var newy = y;
+          var oddy = 0;
+          if(newy % 2 == 1){
+            oddy = 1;
+            newy = newy -1;
+          }
+          newy = newy / 2;
+
+          var newxcol = 0;
+          var newycol = 0;
+
+          if(numcols == 1){
+            newxcol = oddx;
+            newycol = oddy;
+          }
+          else{
+            if(oddx == 1){
+              newxcol = (numcols/2) + xcol;
+            }
+            else{
+              newxcol = xcol;
+            }
+            if(oddy == 1){
+              newycol = (numcols/2) + ycol;
+            }
+            else{
+              newycol = ycol;
+            }
+          }
+
+          //$log.log(newz+'/'+newx+'/'+newy+' numcols: '+numcols+' xcol:'+newxcol+' ycol:'+newycol);
+
+          var tileId = newz + '/' + newx + '/' + newy;
+
+          getTile(mapProvider, tileId).then(function (blob) {
+            //$log.log('Found tile:', tileId, 'to overzoom at', row, col, ' Loading ...');
+            loadTile(blob, imgElement).then(function () {
+
+              //the following just limits the image crop
+              if(numcols > 256) numcols = 256;
+              if(xcol > 256) xcol = 256;
+              if(ycol > 256) ycol = 256;
+
+              modifyTileImg(imgElement, numcols, newxcol, newycol);
+            });
+          }, function () {
+
+            getNextTileUp(mapProvider, imgElement, newx, newy, newz, numcols, newxcol, newycol);
+          });
+
+        }
+
     }
 
     // Create a map baselayer or overlay
@@ -141,7 +217,7 @@
           row++;                // Next row
           col = 0;              // Start columns over
         }
-        checkNextTile(mapProvider, imgElement, x, y, z, d, row, col);
+        checkNextTile(mapProvider, imgElement, col, row, z, d, row, col);
       }
     }
 
@@ -154,6 +230,7 @@
 
     // Overzoom the tile at row, column
     function modifyTileImg(imgElement, d, row, col) {
+      //$log.log('modifyTileImg:', imgElement.id, d, row, col);
       var canvas = document.createElement("canvas");
       var context = canvas.getContext('2d');
       canvas.width = canvas.height = 256;
@@ -367,7 +444,8 @@
           loadTile(blob, imgElement);
         }, function () {
           //$log.log('Tile not found:', tileId, 'Attempting to create a tile ...');
-          getSubstituteTile(mapProvider, imgElement, x, y, z - 1, 2);
+          //getSubstituteTile(mapProvider, imgElement, x, y, z - 1, 2);
+          getNextTileUp(mapProvider, imgElement, x, y, z, 0, 0, 0);
         });
       };
     }
@@ -496,7 +574,7 @@
 
     // Switch layers between online and offline
     function switchTileLayers(map, isOnline) {
-      //$log.log('Switch Tile Layers, isOnline:', isOnline);
+      $log.log('Switch Tile Layers, isOnline:', isOnline);
       map.removeLayer(baselayers);
       map.removeLayer(overlays);
       if (isOnline) {

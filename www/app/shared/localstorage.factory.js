@@ -485,9 +485,9 @@
 
               $cordovaFile.readAsArrayBuffer(devicePath + '/' + tileCacheDirectory + '/' + mapid + '/tiles/', tileId).then(function (success) {
                 // success
-                console.log(success);
+                $log.log('tile '+tileId+'found!');
                 var blob = new Blob([success], {type: "image/png"});
-                console.log(blob);
+
                 deferred.resolve(blob);
               },function(){
                 //Failed
@@ -496,7 +496,7 @@
               });
             },function(){
               //Failed
-              $log.log('Error getTile : check file failed');
+              $log.log('Error getTile : check file failed ' + tileId);
               deferred.resolve(null);
             });
           },function(){
