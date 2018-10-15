@@ -40,9 +40,8 @@
      */
 
     // Check for parent tile to use to make overzoomed child tile
+    /*
     function checkNextTile(mapProvider, imgElement, x, y, z, d, row, col) {
-      //$log.log('checkNextTile',mapProvider, imgElement, x, y z, d, row, col);
-      //$log.log('checkNextTile',x,y,z,d,row,col);
       var newX = (x - row) / d;
       var newY = (y - col) / d;
       var tileId = z + '/' + newX + '/' + newY;
@@ -58,80 +57,7 @@
       }
       else handleTileNotFound(mapProvider, imgElement, x, y, z, d, row, col);
     }
-
-
-    //new function for getting next tile up JMA 10/12/2018
-    function getNextTileUp(mapProvider, imgElement, x, y, z, numcols, xcol, ycol){
-
-        if(z > 0){
-
-          if(numcols==0) numcols = 1;
-
-          numcols = numcols * 2;
-
-          var newz = z - 1;
-
-          var newx = x;
-          var oddx = 0;
-          if(newx % 2 == 1){
-            oddx = 1;
-            newx = newx -1;
-          }
-          newx = newx / 2;
-
-          var newy = y;
-          var oddy = 0;
-          if(newy % 2 == 1){
-            oddy = 1;
-            newy = newy -1;
-          }
-          newy = newy / 2;
-
-          var newxcol = 0;
-          var newycol = 0;
-
-          if(numcols == 1){
-            newxcol = oddx;
-            newycol = oddy;
-          }
-          else{
-            if(oddx == 1){
-              newxcol = (numcols/2) + xcol;
-            }
-            else{
-              newxcol = xcol;
-            }
-            if(oddy == 1){
-              newycol = (numcols/2) + ycol;
-            }
-            else{
-              newycol = ycol;
-            }
-          }
-
-          //$log.log(newz+'/'+newx+'/'+newy+' numcols: '+numcols+' xcol:'+newxcol+' ycol:'+newycol);
-
-          var tileId = newz + '/' + newx + '/' + newy;
-
-          getTile(mapProvider, tileId).then(function (blob) {
-            //$log.log('Found tile:', tileId, 'to overzoom at', row, col, ' Loading ...');
-            loadTile(blob, imgElement).then(function () {
-
-              //the following just limits the image crop
-              if(numcols > 256) numcols = 256;
-              if(xcol > 256) xcol = 256;
-              if(ycol > 256) ycol = 256;
-
-              modifyTileImg(imgElement, numcols, newxcol, newycol);
-            });
-          }, function () {
-
-            getNextTileUp(mapProvider, imgElement, newx, newy, newz, numcols, newxcol, newycol);
-          });
-
-        }
-
-    }
+    */
 
     // Create a map baselayer or overlay
     function createTileLayer(layer, isOnline) {
@@ -186,10 +112,87 @@
     }
 
     // Check if there's a parent tile to use to make overzoomed child tile
+    /*
     function getSubstituteTile(mapProvider, imgElement, x, y, z, d) {
       var row = 0;
       var col = 0;
       checkNextTile(mapProvider, imgElement, x, y, z, d, row, col);
+    }
+    */
+
+    //new function for getting next tile up JMA 10/12/2018
+    function getNextTileUp(mapProvider, imgElement, x, y, z, numcols, xcol, ycol){
+        if(z > 0){
+
+          if(numcols==0) numcols = 1;
+          numcols = numcols * 2;
+          var newz = z - 1;
+
+          var newx = x;
+          var oddx = 0;
+          if(newx % 2 == 1){
+            oddx = 1;
+            newx = newx -1;
+          }
+          newx = newx / 2;
+
+          var newy = y;
+          var oddy = 0;
+          if(newy % 2 == 1){
+            oddy = 1;
+            newy = newy -1;
+          }
+          newy = newy / 2;
+
+          var newxcol = 0;
+          var newycol = 0;
+
+          if(numcols == 1){
+            newxcol = oddx;
+            newycol = oddy;
+          }
+          else{
+            if(oddx == 1){
+              newxcol = (numcols/2) + xcol;
+            }
+            else{
+              newxcol = xcol;
+            }
+            if(oddy == 1){
+              newycol = (numcols/2) + ycol;
+            }
+            else{
+              newycol = ycol;
+            }
+          }
+
+          var tileId = newz + '/' + newx + '/' + newy;
+          getTile(mapProvider, tileId).then(function (blob) {
+            loadTile(blob, imgElement).then(function () {
+              //the following just limits the image crop
+
+              /*
+              if(numcols > 128) numcols = 128;
+              if(newxcol > 127) newxcol = 127;
+              if(newycol > 127) newycol = 127;
+              */
+
+              if(numcols > 256){
+
+                var newcolmult = Math.ceil(numcols / 256);
+
+                numcols = 256;
+
+                newxcol = Math.floor(newxcol/newcolmult);
+                newycol = Math.floor(newycol/newcolmult);
+              }
+
+              modifyTileImg(imgElement, numcols, newxcol, newycol);
+            });
+          }, function () {
+            getNextTileUp(mapProvider, imgElement, newx, newy, newz, numcols, newxcol, newycol);
+          });
+        }
     }
 
     // Get the tile from local storage
@@ -204,6 +207,7 @@
     }
 
     // Tile to overzoom not found so either check the next tile in the matrix, go out a zoom level or stop
+    /*
     function handleTileNotFound(mapProvider, imgElement, x, y, z, d, row, col) {
       // If checked all parent tiles for a tile to overzoom and no match go out another zoom level
       if (row === col && row === d - 1) {
@@ -220,6 +224,7 @@
         checkNextTile(mapProvider, imgElement, col, row, z, d, row, col);
       }
     }
+    */
 
     // Convert tile from blob to base 64 and set as image source
     function loadTile(blob, imgElement) {
@@ -230,7 +235,7 @@
 
     // Overzoom the tile at row, column
     function modifyTileImg(imgElement, d, row, col) {
-      //$log.log('modifyTileImg:', imgElement.id, d, row, col);
+      $log.log('modifyTileImg:', imgElement.id, d, row, col);
       var canvas = document.createElement("canvas");
       var context = canvas.getContext('2d');
       canvas.width = canvas.height = 256;
@@ -438,13 +443,9 @@
 
         var tileId = z + '/' + x + '/' + y;
         imgElement.id = tileId;
-        //$log.log('Looking for offline tile from mapProvider', mapProvider, 'title:', tileId);
         getTile(mapProvider, tileId).then(function (blob) {
-          //$log.log('Found original tile:', tileId, 'Loading ...');
           loadTile(blob, imgElement);
         }, function () {
-          //$log.log('Tile not found:', tileId, 'Attempting to create a tile ...');
-          //getSubstituteTile(mapProvider, imgElement, x, y, z - 1, 2);
           getNextTileUp(mapProvider, imgElement, x, y, z, 0, 0, 0);
         });
       };
