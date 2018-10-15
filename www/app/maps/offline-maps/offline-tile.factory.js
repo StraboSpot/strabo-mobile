@@ -62,17 +62,8 @@
         return offlineMap.name === map.name;
       });
       if (foundOfflineMap && map.id === foundOfflineMap.id) {
-        var confirmPopup = $ionicPopup.confirm({
-          'title': 'Append Tiles?',
-          'template': 'Append the current tiles to saved map <b>' + map.name + '</b>?'
-        });
-        confirmPopup.then(function (res) {
-          if (res) {
-            $ionicLoading.show({'template': '<ion-spinner></ion-spinner>'});
-            deferred.resolve();
-          }
-          else deferred.reject();
-        });
+        $ionicLoading.show({'template': '<ion-spinner></ion-spinner>'});
+        deferred.resolve();
       }
       else if (foundOfflineMap && map.id !== foundOfflineMap.id) {
         $ionicPopup.alert({

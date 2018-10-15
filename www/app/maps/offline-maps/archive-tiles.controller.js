@@ -62,6 +62,8 @@
           });
         }
 
+        var allmaps = MapFactory.getMaps();
+
         vm.map = angular.fromJson(angular.toJson(_.find(MapFactory.getMaps(), function (gotMap) {
           return gotMap.id === mapLayer.get('id');
         })));
@@ -239,11 +241,18 @@
       OfflineTilesFactory.getOfflineMaps().then(function (maps) {
         $log.log("offline maps: ",maps);
         vm.maps = angular.fromJson(angular.toJson(maps));
-        vm.selectedName = _.last(_.sortBy(vm.maps, 'date'));
-        if (vm.selectedName) {
-          vm.map.name = vm.selectedName.name;
-          vm.map.mapid = vm.selectedName.mapid;
-          vm.map.existCount = vm.selectedName.existCount;
+
+        vm.existingName = _.find(vm.maps, function(gotMap){ //check to see if offline map already exists
+          return gotMap.id === vm.map.id;
+        });
+
+        if (vm.existingName) {
+          vm.map.name = vm.existingName.name;
+          vm.map.mapid = vm.existingName.mapid;
+          vm.map.existCount = vm.existingName.existCount;
+        }
+        else{
+            vm.map.name = vm.map.title;
         }
         vm.showNameField = _.isEmpty(vm.maps);
         vm.showSelectName = !_.isEmpty(vm.maps);

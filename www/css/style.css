@@ -992,7 +992,7 @@ Minerals Page
 ---------------------*/
 
 .minerals-checkbox {
-  left: 25px; 
+  left: 25px;
 }
 .minerals-item{
   margin-bottom: 1px;
@@ -1018,7 +1018,7 @@ Minerals Page
   min-height: 34px;
   font-size: 12px;
   line-height: 32px;
-  z-index: 4; 
+  z-index: 4;
   font-size: 12px;
 }
 
@@ -1032,7 +1032,7 @@ Minerals Page
   min-height: 34px;
   font-size: 12px;
   line-height: 32px;
-  z-index: 4; 
+  z-index: 4;
   font-size: 12px;
 }
 
@@ -1042,10 +1042,10 @@ Minerals Page
   top: -3px;                  /* Overwritten in web css */
   color: #387ef5;
   position: absolute;
-  margin-left: 0px; 
+  margin-left: 0px;
 }
 
-.mineral-info-display > .row{ 
+.mineral-info-display > .row{
   margin: 0px 0px 10px 0px;
 }
 
@@ -1200,7 +1200,7 @@ Data-Page
 
 .csv-view-modal{
   top: 0 ;
-  bottom: 0 ; 
+  bottom: 0 ;
   left: 0 ;
   right: 0 ;
   width: 100% ;
@@ -1219,4 +1219,15 @@ Data-Page
   border: 1px black solid;
   padding: 5px;
   width: 100%
+}
+
+/*--------------------
+Offline Maps Page
+---------------------*/
+.map-name {
+  text-transform: uppercase;
+  text-align: center;
+  font-weight:bold;
+  font-size:1.3em;
+  padding-bottom: 5px;
 }

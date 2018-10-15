@@ -16,7 +16,7 @@
                   ng-repeat='map in vm.maps | orderBy: "name"'>
           <div ng-click='vm.edit(map)'>
             <b>{{ map.name }}</b>
-            <small>(Source: {{ map.title }})</small>
+            <!--<small>(Source: {{ map.title }})</small>-->
             <br>
             <small>{{ map.existCount }} tiles
               <span ng-if='map.date'>, Saved: {{ map.date }}</span></small>

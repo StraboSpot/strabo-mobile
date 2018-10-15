@@ -4,19 +4,7 @@
   </ion-nav-buttons>
   <ion-content class='padding has-header'>
 
-    <ion-input class='item item-input item-select item-text-wrap item-stacked-label' 
-               ng-show='vm.showSelectName'>
-      <ion-label>Select a Map</ion-label>
-      <select ng-model='vm.selectedName' 
-              ng-options='map.name for map in vm.maps | orderBy: "-date"' 
-              ng-change='vm.nameSelectChanged()'>
-        <option value=''>-- Select a Map --</option>
-      </select>
-    </ion-input>
-    <ion-input ng-show='vm.showNameField' class='item item-input item-stacked-label item-text-wrap'>
-      <ion-label>Map Name</ion-label>
-      <input type='text' ng-model='vm.map.name' autofocus>
-    </ion-input>
+    <div class='map-name'> {{ vm.map.title }} </div>
 
     <div align='center' ng-show='vm.map.existCount'>
       <b>{{ vm.map.existCount }} Tiles already on device for this map.</b>
@@ -24,8 +12,8 @@
 
     <h5>Select max zoom level to download:</h5>
     <ion-input class='item item-input item-select item-text-wrap item-stacked-label'>
-      <select ng-model='vm.selectedMaxZoom' 
-              ng-options='z.zoom for z in vm.zoomOptions' 
+      <select ng-model='vm.selectedMaxZoom'
+              ng-options='z.zoom for z in vm.zoomOptions'
               ng-change='vm.maxZoomLevelChanged()'>
         <option value=''>-- Set Max Zoom Level --</option>
       </select>
@@ -39,12 +27,6 @@
         {{ vm.submitBtnText }}
       </button>
     </div>
-
-    <!--
-    <button class='button button-block button-positive' ng-click='vm.unzipAgain()'>
-     Unzip Again
-    </button>
-  -->
 
     * Zoom in or out on the map to show more zoom levels.<br>
     * Double check your map before downloading higher zoom levels.<br>
