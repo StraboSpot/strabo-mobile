@@ -293,10 +293,8 @@
 
     function exportData() {
       var deferred = $q.defer(); // init promise
-      var date = new Date();
-      var dateString = date.getFullYear().toString() + (date.getMonth() + 1).toString() + date.getDate().toString() +
-        date.getHours().toString() + date.getMinutes().toString() + date.getSeconds().toString();
-      vm.exportFileName = dateString + vm.project.description.project_name.replace(/\s/g, "");
+      var dateString = ProjectFactory.getTimeStamp();
+      vm.exportFileName = dateString + '_' + vm.project.description.project_name.replace(/\s/g, '');
       var myPopup = $ionicPopup.show({
         template: '<input type="text" ng-model="vm.exportFileName">',
         title: 'Confirm or Change File Name',
@@ -309,7 +307,7 @@
             type: 'button-positive',
             onTap: function (e) {
               if (!vm.exportFileName) e.preventDefault();
-              else return vm.exportFileName = vm.exportFileName.replace(/[^\w- ]/g, "");
+              else return vm.exportFileName = vm.exportFileName.replace(/[^\w- ]/g, '');
             }
           }
         ]

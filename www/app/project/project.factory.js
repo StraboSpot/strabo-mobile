@@ -60,6 +60,7 @@
       'getTag': getTag,
       'getTags': getTags,
       'getTagsBySpotId': getTagsBySpotId,
+      'getTimeStamp': getTimeStamp,
       'incrementSampleNumber': incrementSampleNumber,
       'incrementSpotNumber': incrementSpotNumber,
       'isSyncReady': isSyncReady,
@@ -447,6 +448,23 @@
         else if (tag.features && tag.features[spotId]) return true;
         return false;
       });
+    }
+
+    function getTimeStamp() {
+      var date = new Date();
+      var day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+      var month = date.getMonth() < 9 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1);
+      var year = date.getFullYear();
+      var d = year + '-' + month + '-' + day;
+      var hours = date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
+      var minutes = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
+      var AmPm = hours >= 12 ? 'PM' : 'AM';
+      hours %= 12;
+      hours = hours ? hours : 12;
+      var t = hours + '.' + minutes + AmPm;
+      var dateString = d + '_' + t;
+
+      return dateString;
     }
 
     // Increment starting spot number by 1
