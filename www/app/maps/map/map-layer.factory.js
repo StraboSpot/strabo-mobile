@@ -39,26 +39,6 @@
      * Private Functions
      */
 
-    // Check for parent tile to use to make overzoomed child tile
-    /*
-    function checkNextTile(mapProvider, imgElement, x, y, z, d, row, col) {
-      var newX = (x - row) / d;
-      var newY = (y - col) / d;
-      var tileId = z + '/' + newX + '/' + newY;
-      if (Number.isInteger(newX) && Number.isInteger(newY)) {
-        getTile(mapProvider, tileId).then(function (blob) {
-          //$log.log('Found tile:', tileId, 'to overzoom at', row, col, ' Loading ...');
-          loadTile(blob, imgElement).then(function () {
-            modifyTileImg(imgElement, d, row, col);
-          });
-        }, function () {
-          handleTileNotFound(mapProvider, imgElement, x, y, z, d, row, col)
-        });
-      }
-      else handleTileNotFound(mapProvider, imgElement, x, y, z, d, row, col);
-    }
-    */
-
     // Create a map baselayer or overlay
     function createTileLayer(layer, isOnline) {
       $log.log('createTileLayer Layer: ',layer);
@@ -111,15 +91,6 @@
       else return layerProperties.overlay && _.contains(visibleOverlaysIds, layerProperties.id);
     }
 
-    // Check if there's a parent tile to use to make overzoomed child tile
-    /*
-    function getSubstituteTile(mapProvider, imgElement, x, y, z, d) {
-      var row = 0;
-      var col = 0;
-      checkNextTile(mapProvider, imgElement, x, y, z, d, row, col);
-    }
-    */
-
     //new function for getting next tile up JMA 10/12/2018
     function getNextTileUp(mapProvider, imgElement, x, y, z, numcols, xcol, ycol){
         if(z > 0){
@@ -170,23 +141,12 @@
           getTile(mapProvider, tileId).then(function (blob) {
             loadTile(blob, imgElement).then(function () {
               //the following just limits the image crop
-
-              /*
-              if(numcols > 128) numcols = 128;
-              if(newxcol > 127) newxcol = 127;
-              if(newycol > 127) newycol = 127;
-              */
-
               if(numcols > 256){
-
                 var newcolmult = Math.ceil(numcols / 256);
-
                 numcols = 256;
-
                 newxcol = Math.floor(newxcol/newcolmult);
                 newycol = Math.floor(newycol/newcolmult);
               }
-
               modifyTileImg(imgElement, numcols, newxcol, newycol);
             });
           }, function () {
@@ -198,33 +158,12 @@
     // Get the tile from local storage
     function getTile(mapProvider, tileId) {
       var deferred = $q.defer(); // init promise
-      //$log.log('Looking for tile:', tileId);
       OfflineTilesFactory.read(mapProvider, tileId, function (blob) {
         if (blob !== null) deferred.resolve(blob);  // Tile found in local storage
         else deferred.reject();                     // Tile not found in local storage
       });
       return deferred.promise;
     }
-
-    // Tile to overzoom not found so either check the next tile in the matrix, go out a zoom level or stop
-    /*
-    function handleTileNotFound(mapProvider, imgElement, x, y, z, d, row, col) {
-      // If checked all parent tiles for a tile to overzoom and no match go out another zoom level
-      if (row === col && row === d - 1) {
-        if (d < 32) getSubstituteTile(mapProvider, imgElement, x, y, z - 1, d * 2);
-        // Image to overzoom not found within 5 zoom levels (d = 32 = 5 zoom levels)
-        //else imgElement.src = 'img/offlineTiles/zoom' + (z + Math.log2(d)) + '.png';
-      }
-      else {
-        if (col < d - 1) col++; // Next column
-        else {
-          row++;                // Next row
-          col = 0;              // Start columns over
-        }
-        checkNextTile(mapProvider, imgElement, col, row, z, d, row, col);
-      }
-    }
-    */
 
     // Convert tile from blob to base 64 and set as image source
     function loadTile(blob, imgElement) {
@@ -428,13 +367,6 @@
       return function (imageTile) {
         var imgElement = imageTile.getImage();        // the tile we will be loading
 
-        /* ToDo: What is going on with get the image coords? x is returning a negative number for low zooms (0-2)
-        /*var imageCoords = imageTile.getTileCoord();   // the tile coordinates (x,y,z)
-        var y = (imageCoords[2] * -1) - 1;            // y needs to be corrected using (-y - 1)
-        var z = imageCoords[0];
-        var x = imageCoords[1];*/
-
-        // Switched to this method to get x, y, z since above method having trouble at low zooms
         var regex = /\/(\d*)\/(\d*)\/(\d*)\.png/g;
         var match = regex.exec(imageTile.src_);
         var z = match[1];
@@ -481,7 +413,7 @@
 
       OfflineTilesFactory.getOfflineMaps().then(function (offlineMaps) {
 
-        $log.log('offlineMaps: ', offlineMaps);
+        $log.log('offlineMaps from updateVisibleLayersForOffline: ', offlineMaps);
 
         // If the visible baselayer is not an offline layer set visible baselayer to empty
         if (!_.isEmpty(visibleLayers.baselayer) &&
@@ -496,9 +428,7 @@
           });
         }
 
-        var offlineMapLayers = _.filter(mapLayers, function (mapLayer) {
-          return _.chain(offlineMaps).pluck('id').compact().contains(mapLayer.id).value();
-        });
+        var offlineMapLayers = offlineMaps;
 
         //get mapid to pass to each offline layer
         var returnMaps = [];
