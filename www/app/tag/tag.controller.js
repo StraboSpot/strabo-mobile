@@ -139,22 +139,29 @@
     }
 
     function addMineral(type) {
-      FormFactory.setForm('minerals', type);
-      var combine = [];
-      if (!_.isEmpty(vm.data.minerals)) {
-        combine = JSON.parse(JSON.stringify(vm.data.minerals));
-      }
-      vm.modalData.most_common = combine;
-      vm.modalData.all = combine;
-      vm.activeState = "most_common";
+      $ionicModal.fromTemplateUrl('app/tag/minerals-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false
+      }).then(function (modal) {
+        vm.mineralsModal = modal;
+        FormFactory.setForm('minerals', type);
+        var combine = [];
+        if (!_.isEmpty(vm.data.minerals)) {
+          combine = JSON.parse(JSON.stringify(vm.data.minerals));
+        }
+        vm.modalData.most_common = combine;
+        vm.modalData.all = combine;
+        vm.activeState = 'most_common';
 
-      if (type === 'metamorphic_most_common') vm.modalTitle = 'Metamorphic Minerals';
+        if (type === 'metamorphic_most_common') vm.modalTitle = 'Metamorphic Minerals';
       else if (type === 'igneous_most_common') vm.modalTitle = 'Igneous Minerals';
       else if (type === 'sedimentary_most_common') vm.modalTitle = 'Sedimentary Minerals';
       else if (type === 'heavy_most_common') vm.modalTitle = 'Heavy Minerals';
-      vm.isShowInfoOnly = false;
-      vm.isShowMineralList = true;
-      vm.mineralsModal.show();
+        vm.isShowInfoOnly = false;
+        vm.isShowMineralList = true;
+        vm.mineralsModal.show();
+      });
     }
 
     function createPageComponents() {
@@ -177,14 +184,6 @@
       }).then(function (modal) {
         vm.colorPickerModal = modal;
       });
-
-      $ionicModal.fromTemplateUrl('app/tag/minerals-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up',
-        'backdropClickToClose': false
-      }).then(function (modal) {
-        vm.mineralsModal = modal;
-      });
     }
 
     function createPageEvents() {
@@ -193,7 +192,7 @@
         if (vm.selectItemModal) vm.selectItemModal.remove();
         if (vm.filterModal) vm.filterModal.remove();
         if (vm.colorPickerModal) vm.colorPickerModal.remove();
-        if (vm.mineralsModal) vm.mineralsModal.remove();
+        if (!_.isEmpty(vm.mineralsModal)) vm.mineralsModal.remove();
       });
     }
 
@@ -519,11 +518,18 @@
     }
 
     //displays the mineral info from info-button on the main Minerals Page
-    function mineralInfoOnMainPage(name){
-      vm.mineralInfo = MineralsFactory.getMineralInfo(name);
-      vm.isShowMineralList = false;
-      vm.isShowInfoOnly = true;
-      vm.mineralsModal.show();
+    function mineralInfoOnMainPage(name) {
+      $ionicModal.fromTemplateUrl('app/tag/minerals-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false
+      }).then(function (modal) {
+        vm.mineralsModal = modal;
+        vm.mineralInfo = MineralsFactory.getMineralInfo(name);
+        vm.isShowMineralList = false;
+        vm.isShowInfoOnly = true;
+        vm.mineralsModal.show();
+      });
     }
 
     function moreSpotsCanBeLoaded() {
@@ -573,6 +579,7 @@
         else delete vm.data.minerals;
         vm.modalData = {};
         vm.mineralsModal.hide();
+        vm.mineralsModal.remove();
         FormFactory.clearForm();
       }
     }
@@ -679,7 +686,6 @@
 
     function typeSelected() {
       FormFactory.clearForm();
-
       if (vm.data.type === 'geologic_unit') FormFactory.setForm('rock_unit');
       else if (vm.data.type === 'experimental_apparatus') FormFactory.setForm('micro', 'experimental_apparatus');
     }
