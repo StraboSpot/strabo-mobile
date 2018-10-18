@@ -5,9 +5,9 @@
     .module('app')
     .factory('TagFactory', TagFactory);
 
-  TagFactory.$inject = ['$log', '$q', 'ProjectFactory'];
+  TagFactory.$inject = ['$ionicModal', '$log', '$q', 'ProjectFactory'];
 
-  function TagFactory($log, $q, ProjectFactory) {
+  function TagFactory($ionicModal, $log, $q, ProjectFactory) {
     var addNewActiveTag = false;
     var activeTags = [];
     var isActiveTagging = false;
@@ -19,6 +19,7 @@
     return {
       'addToActiveTags': addToActiveTags,
       'clearActiveTags': clearActiveTags,
+      'createMineralsTagModal': createMineralsTagModal,
       'filterTagsByType': filterTagsByType,
       'getActiveTagging': getActiveTagging,
       'getActiveTags': getActiveTags,
@@ -70,6 +71,16 @@
     function clearActiveTags() {
       activeTags = [];
       $log.log('Cleared active tag:', activeTags);
+    }
+
+    function createMineralsTagModal(scope) {
+      return $ionicModal.fromTemplateUrl('app/tag/minerals-modal.html', {
+        'scope': scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false
+      }).then(function (modal) {
+        return modal;
+      });
     }
 
     function filterTagsByType(selectedType, allTags) {

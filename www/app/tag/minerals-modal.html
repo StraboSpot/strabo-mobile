@@ -7,7 +7,8 @@
     </button>
     <h1 class='title'>{{ vm.modalTitle }}</h1>
     <div class='buttons'>
-      <button class='icon ion-close-round close-modal-button' ng-click='vm.mineralsModal.hide()'>
+      <button class='icon ion-close-round close-modal-button' ng-click='vm.mineralsModal.hide(); 
+      vm.mineralsModal.remove()'>
       </button>
     </div>
   </ion-header-bar>
@@ -83,7 +84,6 @@
         </div>
         <br>
         <div class="row">
-          <!-- <div class=" mineral-title"><i name="icon ion-globe"></i></div>          -->
           <a class="" id="mineral-link" ng-href="{{vm.mineralInfo['mindat.org link']}}" target="blank">
             <i class="web-icon icon ion-android-globe"></i>
             Click here for more mineral information on {{vm.mineralInfo.Mineral}} info from Mindat.org
