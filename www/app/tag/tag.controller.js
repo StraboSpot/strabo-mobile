@@ -139,11 +139,7 @@
     }
 
     function addMineral(type) {
-      $ionicModal.fromTemplateUrl('app/tag/minerals-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up',
-        'backdropClickToClose': false
-      }).then(function (modal) {
+      TagFactory.createMineralsTagModal($scope).then(function (modal) {
         vm.mineralsModal = modal;
         FormFactory.setForm('minerals', type);
         var combine = [];
@@ -155,9 +151,9 @@
         vm.activeState = 'most_common';
 
         if (type === 'metamorphic_most_common') vm.modalTitle = 'Metamorphic Minerals';
-      else if (type === 'igneous_most_common') vm.modalTitle = 'Igneous Minerals';
-      else if (type === 'sedimentary_most_common') vm.modalTitle = 'Sedimentary Minerals';
-      else if (type === 'heavy_most_common') vm.modalTitle = 'Heavy Minerals';
+        else if (type === 'igneous_most_common') vm.modalTitle = 'Igneous Minerals';
+        else if (type === 'sedimentary_most_common') vm.modalTitle = 'Sedimentary Minerals';
+        else if (type === 'heavy_most_common') vm.modalTitle = 'Heavy Minerals';
         vm.isShowInfoOnly = false;
         vm.isShowMineralList = true;
         vm.mineralsModal.show();
@@ -461,9 +457,9 @@
         else {
           if ($ionicHistory.backView()) $ionicHistory.goBack();
           else $location.path("app/tags");
-      }
-          });
         }
+      });
+    }
 
     function goBack(){
       $location.path("app/tags");
@@ -519,13 +515,10 @@
 
     //displays the mineral info from info-button on the main Minerals Page
     function mineralInfoOnMainPage(name) {
-      $ionicModal.fromTemplateUrl('app/tag/minerals-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up',
-        'backdropClickToClose': false
-      }).then(function (modal) {
+      TagFactory.createMineralsTagModal($scope).then(function (modal) {
         vm.mineralsModal = modal;
         vm.mineralInfo = MineralsFactory.getMineralInfo(name);
+        vm.modalTitle = vm.mineralInfo.Mineral;
         vm.isShowMineralList = false;
         vm.isShowInfoOnly = true;
         vm.mineralsModal.show();
@@ -565,7 +558,7 @@
     function showMineralInfo(name) {
       $ionicScrollDelegate.scrollTop();
       vm.isShowMineralList = false;
-      vm.mineralInfo = MineralsFactory.getMineralInfo(name); 
+      vm.mineralInfo = MineralsFactory.getMineralInfo(name);
     }
 
     function submitMineral() {
