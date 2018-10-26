@@ -71,7 +71,6 @@
             "cordova-plugin-statusbar": {},
             "cordova-plugin-whitelist": {},
             "cordova-sqlite-evcore-extbuild-free": {},
-            "io.phasr.cordova.plugin.itunesfilesharing": {},
             "org.strabospot.clipboard": {},
             "cordova-plugin-zip": {},
             "cordova-plugin-file-transfer": {},
