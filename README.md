@@ -56,11 +56,11 @@ Other commands for plugins and platforms:
     ionic cordova prepare         | install platforms and plugins listed in config.xml
 
 *Note: These plugins were originally added with the command `ionic cordova plugin add` which adds the plugin to `package.json` whereas `cordova plugin add` does not.*
-    
+
 Generate Resources (icons and splash screens):
-    
+
     ionic cordova resources
-    
+
 ### Tested Environment - Plugins    
     cordova-plugin-camera 4.0.3 "Camera"
     cordova-plugin-device 2.0.2 "Device"
@@ -77,7 +77,7 @@ Generate Resources (icons and splash screens):
     cordova-plugin-statusbar 2.4.2 "StatusBar"
     cordova-plugin-whitelist 1.3.3 "Whitelist"
     cordova-sqlite-evcore-extbuild-free ^0.9.7 "Cordova sqlite storage"
-    io.phasr.cordova.plugin.itunesfilesharing 0.0.1 "cordova-plugin-itunesfilesharing"
+    cordova-plugin-itunesfilesharing 0.0.1 "cordova-plugin-itunesfilesharing"
     org.strabospot.clipboard 0.1.0 "Clipboard"
 
 *Notes:*
@@ -89,7 +89,7 @@ Generate Resources (icons and splash screens):
 - `cordova-plugin-filepath`: Added due to Cordova bug with Android and content schema
 - `cordova-sqlite-storage`: Added for the localForage dependencies
 - `cordova-plugin-itunesfilesharing`: Added to `config.ionic.xml` for Ionic build. PhoneGap build uses
-  
+
 ### Tested Environment - Other Packages/Libraries
 
     ionic library: 1.3.3
@@ -105,7 +105,7 @@ Generate Resources (icons and splash screens):
     underscore: 1.8.3
     localforage: 1.7.1
     localforage-cordovasqlitedriver: 1.7.0
-    
+
 
 ### Tested Environment - Platforms
 
@@ -121,7 +121,7 @@ Generate Resources (icons and splash screens):
 
 ### Versioning
 
-When updates to the app are made, edit the version number of the app in the following 5 files: 
+When updates to the app are made, edit the version number of the app in the following 5 files:
 - `www/app/about/about-directive.html`
 - `www/app/login/login.html`
 - `config.xml`
@@ -137,7 +137,7 @@ When updates to the app are made, edit the version number of the app in the foll
 ### For iTunes Store, App Built with Ionic
 - Packages were built in the step above with `ionic state restore`.
 - Resources built in the step above with `ionic resources`.
-- Set up an [Ionic Security Profile](http://docs.ionic.io/docs/security-profiles), named straboproduction. 
+- Set up an [Ionic Security Profile](http://docs.ionic.io/docs/security-profiles), named straboproduction.
 - Use [Ionic Package](http://docs.ionic.io/docs/package-overview) to build new packages for changes that require binary modifications.
 
 ```
@@ -155,14 +155,14 @@ Once the .ipa file has been accepted, it can be submitted via iTunes Connect.
 
 ### As a Native App, Built App with Ionic
 - Packages were built in the step above with `ionic state restore`.
-- Set up an [Ionic Security Profile](http://docs.ionic.io/docs/security-profiles), named strabodev. 
+- Set up an [Ionic Security Profile](http://docs.ionic.io/docs/security-profiles), named strabodev.
 - Use [Ionic Package](http://docs.ionic.io/docs/package-overview) to build new packages for changes that require binary modifications.
 
 ```
     ionic package build android --profile strabodev
     ionic package build ios --profile strabodev
 ```
-    
+
 - Changes to the HTML/CSS/JS/Images/Audio/Video files (basically anything inside `/www`) only need to be updated with [Ionic Deploy](http://docs.ionic.io/docs/deploy-overview).
 
 To Deploy Updates:
@@ -204,7 +204,7 @@ For example with [local-web-server](https://www.npmjs.com/package/local-web-serv
 
 1. Download latest ionic: `npm install -g ionic`
 2. In project root run: `ionic lib update`
-3. Check the version of `angular.js` that is bundled within `www/lib/ionic/js/ionic.bundle.js` and make sure that `www/lib/angular-mocks.js` and `www/lib/angular-messages.js` have the same version number. Download updates from [here](https://code.angularjs.org/) if necessary. 
+3. Check the version of `angular.js` that is bundled within `www/lib/ionic/js/ionic.bundle.js` and make sure that `www/lib/angular-mocks.js` and `www/lib/angular-messages.js` have the same version number. Download updates from [here](https://code.angularjs.org/) if necessary.
 
 
 ## Unit-Testing
@@ -215,7 +215,7 @@ Prerequisites:
     npm install karma-jasmine --save-dev
     npm install jasmine-core --save-dev
     npm install -g karma-cli
-    
+
 Add test browsers:
 
     npm install karma-chrome-launcher --save-dev
@@ -241,5 +241,5 @@ Using [ESLint](http://eslint.org/) with an AngularJS plugin based on [John Papa'
 3) Install eslint-config-angular as a dev-dependency:
 
     npm install --save-dev eslint-config-angular
-    
+
 4) Use the config file in the project root: `.eslintrc`
