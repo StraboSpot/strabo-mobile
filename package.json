@@ -27,6 +27,7 @@
         "gulp-concat": "^2.6.1",
         "gulp-minify-css": "1.2.4",
         "gulp-rename": "^1.4.0",
+        "ol": "^5.2.0",
         "org.strabospot.clipboard": "https://github.com/StraboSpot/clipboard_plugin"
     },
     "devDependencies": {
@@ -64,7 +65,9 @@
             "cordova-plugin-filepath": {},
             "cordova-plugin-geolocation": {},
             "cordova-plugin-inappbrowser": {},
-            "cordova-plugin-ionic-webview": {},
+            "cordova-plugin-ionic-webview": {
+                "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
+            },
             "cordova-plugin-itunesfilesharing": {},
             "cordova-plugin-network-information": {},
             "cordova-plugin-splashscreen": {},
@@ -75,10 +78,7 @@
             "cordova-plugin-zip": {},
             "cordova-plugin-file-transfer": {},
             "cordova-plugin-ionic-keyboard": {},
-            "cordova-sqlite-storage": {},
-            "cordova-plugin-ionic-webview": {
-                "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
-            }
+            "cordova-sqlite-storage": {}
         }
     }
 }
