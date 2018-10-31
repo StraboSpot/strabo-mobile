@@ -332,6 +332,8 @@
     function setOfflineSource(layer) {
       if (!layer.source) return new ol.source.XYZ({'url': ''});  // No basemap layer
       var maxZoom = 19;
+      if(layer.source=='strabospot_mymaps') maxZoom = 25;
+      if(layer.source=='map_warper') maxZoom = 25;
       if(layer.maxZoom) maxZoom = layer.maxZoom;
       return new ol.source.OSM({'tileLoadFunction': tileLoadFunction(layer.mapid),'maxZoom': maxZoom});
     }
