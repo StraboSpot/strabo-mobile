@@ -6,10 +6,10 @@
     .controller('MineralsTabController', MineralsTabController);
 
   MineralsTabController.$inject = ['$ionicModal', '$ionicPopup', '$ionicScrollDelegate', '$log', '$scope', '$state',
-   'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'MineralsFactory', 'ProjectFactory'];
+  'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'MineralsFactory', 'ProjectFactory', 'Raven'];
 
   function MineralsTabController($ionicModal, $ionicPopup, $ionicScrollDelegate, $log, $scope, $state, DataModelsFactory,
-    FormFactory, HelpersFactory, MineralsFactory, ProjectFactory) {
+    FormFactory, HelpersFactory, MineralsFactory, ProjectFactory, Raven) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -229,10 +229,15 @@
 
     //displays the mineral info from info-button on the main Minerals Page
     function mineralInfoOnMainPage(name){
-      vm.mineralInfo = MineralsFactory.getMineralInfo(name);
-      vm.isShowMineralList = false;
-      vm.isShowInfoOnly = true;
-      vm.mineralsModal.show();
+      try {
+        vm.mineralInfo = MineralsFactory.getMineralInfo(name);
+        vm.isShowMineralList = false;
+        vm.isShowInfoOnly = true;
+        vm.mineralsModal.show();
+      }
+      catch (e) {
+        Raven.captureException(e);
+      }
     }
 
     function submitMineral() {

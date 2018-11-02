@@ -7,12 +7,12 @@
 
   ImagesTabController.$inject = ['$document', '$http', '$ionicLoading', '$ionicModal', '$ionicPopup',
     '$ionicScrollDelegate', '$ionicSlideBoxDelegate', '$log', '$q', '$rootScope', '$scope', '$state', '$window',
-    'FormFactory', 'HelpersFactory', 'ImageFactory', 'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory',
+    'FormFactory', 'HelpersFactory', 'ImageFactory', 'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'Raven',
     'RemoteServerFactory', 'SpotFactory', 'UserFactory', 'IS_WEB'];
 
   function ImagesTabController($document, $http, $ionicLoading, $ionicModal, $ionicPopup, $ionicScrollDelegate,
                                $ionicSlideBoxDelegate, $log, $q, $rootScope, $scope, $state, $window, FormFactory,
-                               HelpersFactory, ImageFactory, LiveDBFactory, LocalStorageFactory, ProjectFactory,
+                               HelpersFactory, ImageFactory, LiveDBFactory, LocalStorageFactory, ProjectFactory, Raven,
                                RemoteServerFactory, SpotFactory, UserFactory, IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
@@ -102,7 +102,7 @@
       });
     }
 
-    function getFile(event) {
+    Raven.context(function getFile(event) {
       var file = event.target.files[0];
       if (file) {
         $log.log('Getting file ....');
@@ -111,7 +111,7 @@
         });
         ImageFactory.readFile(file);
       }
-    }
+    });
 
     function getImageSources() {
       var promises = [];
