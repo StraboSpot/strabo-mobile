@@ -261,10 +261,9 @@
      */
 
     function addImage() {
-      try {
-        getImageType().then(function (imageProps) {
-          newImageData.image_type = imageProps.image_type;
-          if (newImageData.image_type === 'other_image_ty') newImageData.other_image_type = imageProps.other_image_type;
+      getImageType().then(function (imageProps) {
+        newImageData.image_type = imageProps.image_type;
+        if (newImageData.image_type === 'other_image_ty') newImageData.other_image_type = imageProps.other_image_type;
         else if (imageProps.image_type === 'micrograph') {
           newImageData.micrograph_image_type = imageProps.micrograph_image_type;
           newImageData.title = vmParent.spot.properties.name + ' ' + newImageData.micrograph_image_type;
@@ -277,16 +276,11 @@
           newImageData.title = vmParent.spot.properties.name + ' Micrograph Reference';
           newImageData.annotated = true;
         }
-          ImageFactory.setIsReattachImage(false);
-          ImageFactory.setCurrentSpot(vmParent.spot);
-          ImageFactory.setCurrentImage(angular.fromJson(angular.toJson(newImageData)));
-          if (IS_WEB) document.getElementById('file').click()
-        });
-      }
-      catch (error) {
-        $log.log('Raven Caught', error);
-        Raven.captureException(error);
-      }
+        ImageFactory.setIsReattachImage(false);
+        ImageFactory.setCurrentSpot(vmParent.spot);
+        ImageFactory.setCurrentImage(angular.fromJson(angular.toJson(newImageData)));
+        if (IS_WEB) document.getElementById('file').click()
+      });
     }
 
     function closeModal(modal) {

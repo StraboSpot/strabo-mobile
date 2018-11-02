@@ -223,14 +223,8 @@
     }
 
     function saveImage(base64Image, imageId) {
-      try {
-        if (!imageId) imageId = currentImageData.id;
-        return LocalStorageFactory.getDb().imagesDb.setItem(imageId.toString(), base64Image);
-      }
-      catch (error) {
-        $log.log('Raven Caught', error);
-        Raven.captureException(error);
-      }
+      if (!imageId) imageId = currentImageData.id;
+      return LocalStorageFactory.getDb().imagesDb.setItem(imageId.toString(), base64Image);
     }
 
     function setCurrentImage(inImageData) {
