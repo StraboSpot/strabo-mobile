@@ -103,20 +103,14 @@
     }
 
     function getFile(event) {
-      try {
-        var file = event.target.files[0];
-        if (file) {
-          $log.log('Getting file ....');
-          $ionicLoading.show({
+      var file = event.target.files[0];
+      if (file) {
+        $log.log('Getting file ....');
+        $ionicLoading.show({
             'template': '<ion-spinner></ion-spinner><br>Getting Image...'
           });
-          ImageFactory.readFile(file);
-        }
+        ImageFactory.readFile(file);
       }
-      catch (e) {
-        Raven.captureException(e);
-      }
-      
     }
 
     function getImageSources() {
@@ -279,7 +273,8 @@
         ImageFactory.setIsReattachImage(false);
         ImageFactory.setCurrentSpot(vmParent.spot);
         ImageFactory.setCurrentImage(angular.fromJson(angular.toJson(newImageData)));
-        if (IS_WEB) document.getElementById('file').click()
+        if (IS_WEB) document.getElementById('file').click();
+        else ImageFactory.getImageFromGallery();
       });
     }
 

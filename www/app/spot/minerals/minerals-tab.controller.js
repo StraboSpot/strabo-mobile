@@ -228,16 +228,11 @@
     }
 
     //displays the mineral info from info-button on the main Minerals Page
-    function mineralInfoOnMainPage(name){
-      try {
-        vm.mineralInfo = MineralsFactory.getMineralInfo(name);
-        vm.isShowMineralList = false;
-        vm.isShowInfoOnly = true;
-        vm.mineralsModal.show();
-      }
-      catch (e) {
-        Raven.captureException(e);
-      }
+    function mineralInfoOnMainPage(name) {
+      vm.mineralInfo = MineralsFactory.getMineralInfo(name);
+      vm.isShowMineralList = false;
+      vm.isShowInfoOnly = true;
+      vm.mineralsModal.show();
     }
 
     function submitMineral() {
