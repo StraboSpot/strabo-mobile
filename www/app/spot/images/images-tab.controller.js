@@ -102,16 +102,22 @@
       });
     }
 
-    Raven.context(function getFile(event) {
-      var file = event.target.files[0];
-      if (file) {
-        $log.log('Getting file ....');
-        $ionicLoading.show({
-          'template': '<ion-spinner></ion-spinner><br>Getting Image...'
-        });
-        ImageFactory.readFile(file);
+    function getFile(event) {
+      try {
+        var file = event.target.files[0];
+        if (file) {
+          $log.log('Getting file ....');
+          $ionicLoading.show({
+            'template': '<ion-spinner></ion-spinner><br>Getting Image...'
+          });
+          ImageFactory.readFile(file);
+        }
       }
-    });
+      catch (e) {
+        Raven.captureException(e);
+      }
+      
+    }
 
     function getImageSources() {
       var promises = [];
@@ -257,7 +263,8 @@
     function addImage() {
       getImageType().then(function (imageProps) {
         newImageData.image_type = imageProps.image_type;
-        if (newImageData.image_type === 'other_image_ty') newImageData.other_image_type = imageProps.other_image_type;
+        try {
+          if (newImageData.image_type === 'other_image_ty') newImageData.other_image_type = imageProps.other_image_type;
         else if (imageProps.image_type === 'micrograph') {
           newImageData.micrograph_image_type = imageProps.micrograph_image_type;
           newImageData.title = vmParent.spot.properties.name + ' ' + newImageData.micrograph_image_type;
@@ -274,7 +281,10 @@
         ImageFactory.setCurrentSpot(vmParent.spot);
         ImageFactory.setCurrentImage(angular.fromJson(angular.toJson(newImageData)));
         if (IS_WEB) document.getElementById('file').click();
-        else ImageFactory.getImageFromGallery();
+        } catch (error) {
+          $log.log('Raven Caught', error);
+          Raven.captureException(error);
+        }
       });
     }
 

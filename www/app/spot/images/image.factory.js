@@ -6,10 +6,10 @@
     .factory('ImageFactory', ImageFactory);
 
   ImageFactory.$inject = ['$cordovaCamera', '$ionicPopup', '$log', '$rootScope', '$state', '$window', 'HelpersFactory',
-    'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'SpotFactory'];
+    'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'Raven', 'SpotFactory'];
 
   function ImageFactory($cordovaCamera, $ionicPopup, $log, $rootScope, $state, $window, HelpersFactory, LiveDBFactory,
-                        LocalStorageFactory, ProjectFactory, SpotFactory) {
+                        LocalStorageFactory, ProjectFactory, Raven, SpotFactory) {
 
     var currentImageData = {};
     var currentSpot = {};
@@ -223,8 +223,14 @@
     }
 
     function saveImage(base64Image, imageId) {
-      if (!imageId) imageId = currentImageData.id;
-      return LocalStorageFactory.getDb().imagesDb.setItem(imageId.toString(), base64Image)
+      try {
+        if (!imageId) imageId = currentImageData.id;
+        return LocalStorageFactory.getDb().imagesDb.setItem(imageId.toString(), base64Image);
+      }
+      catch (error) {
+        $log.log('Raven Caught', error);
+        Raven.captureException(error);
+      }
     }
 
     function setCurrentImage(inImageData) {
