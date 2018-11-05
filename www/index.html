@@ -11,8 +11,14 @@
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
     <script src="lib/ionic-pro/dist/ionic-pro.module.min.js"></script>
-    <script src="https://cdn.ravenjs.com/3.26.4/angular/raven.min.js" crossorigin="anonymous"></script>
-    <script>Raven.config('https://38715df894b44b088ea1a423705250bc@sentry.io/1314682').install();</script>
+    <script src="lib/raven-js/dist/raven.js"></script>
+    <script src="lib/raven-js/dist/plugins/angular.js"></script>
+    <script>
+      Raven
+        .config('https://38715df894b44b088ea1a423705250bc@sentry.io/1314682')
+        .addPlugin(Raven.Plugins.Angular, angular)
+        .install();
+    </script>
     <link href="lib/ionic/css/ionic.css" rel="stylesheet">
     <!-- underscore -->
     <script src="lib/underscore.js"></script>
