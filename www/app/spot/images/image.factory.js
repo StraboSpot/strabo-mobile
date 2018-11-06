@@ -6,11 +6,10 @@
     .factory('ImageFactory', ImageFactory);
 
   ImageFactory.$inject = ['$cordovaCamera', '$ionicPopup', '$log', '$rootScope', '$state', '$window', 'HelpersFactory',
-    'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'Raven', 'SpotFactory'];
+    'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'SpotFactory'];
 
   function ImageFactory($cordovaCamera, $ionicPopup, $log, $rootScope, $state, $window, HelpersFactory, LiveDBFactory,
-                        LocalStorageFactory, ProjectFactory, Raven, SpotFactory) {
-
+                        LocalStorageFactory, ProjectFactory, SpotFactory) {
     var currentImageData = {};
     var currentSpot = {};
     var images = [];

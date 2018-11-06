@@ -6,10 +6,10 @@
     .controller('MineralsTabController', MineralsTabController);
 
   MineralsTabController.$inject = ['$ionicModal', '$ionicPopup', '$ionicScrollDelegate', '$log', '$scope', '$state',
-  'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'MineralsFactory', 'ProjectFactory', 'Raven'];
+  'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'MineralsFactory', 'ProjectFactory'];
 
   function MineralsTabController($ionicModal, $ionicPopup, $ionicScrollDelegate, $log, $scope, $state, DataModelsFactory,
-    FormFactory, HelpersFactory, MineralsFactory, ProjectFactory, Raven) {
+    FormFactory, HelpersFactory, MineralsFactory, ProjectFactory) {
     var vm = this;
     var vmParent = $scope.vm;
 

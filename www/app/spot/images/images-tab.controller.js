@@ -7,12 +7,12 @@
 
   ImagesTabController.$inject = ['$document', '$http', '$ionicLoading', '$ionicModal', '$ionicPopup',
     '$ionicScrollDelegate', '$ionicSlideBoxDelegate', '$log', '$q', '$rootScope', '$scope', '$state', '$window',
-    'FormFactory', 'HelpersFactory', 'ImageFactory', 'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'Raven',
+    'FormFactory', 'HelpersFactory', 'ImageFactory', 'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory',
     'RemoteServerFactory', 'SpotFactory', 'UserFactory', 'IS_WEB'];
 
   function ImagesTabController($document, $http, $ionicLoading, $ionicModal, $ionicPopup, $ionicScrollDelegate,
                                $ionicSlideBoxDelegate, $log, $q, $rootScope, $scope, $state, $window, FormFactory,
-                               HelpersFactory, ImageFactory, LiveDBFactory, LocalStorageFactory, ProjectFactory, Raven,
+                               HelpersFactory, ImageFactory, LiveDBFactory, LocalStorageFactory, ProjectFactory,
                                RemoteServerFactory, SpotFactory, UserFactory, IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
@@ -107,8 +107,8 @@
       if (file) {
         $log.log('Getting file ....');
         $ionicLoading.show({
-            'template': '<ion-spinner></ion-spinner><br>Getting Image...'
-          });
+          'template': '<ion-spinner></ion-spinner><br>Getting Image...'
+        });
         ImageFactory.readFile(file);
       }
     }
