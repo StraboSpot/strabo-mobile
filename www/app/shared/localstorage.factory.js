@@ -18,12 +18,14 @@
     var appDirectory = 'StraboSpot';
     var dataBackupsDirectory = appDirectory + '/DataBackups';
     var imagesBackupsDirectory = appDirectory + '/ImageBackups';
+    var imagesDirectory = appDirectory + '/Images';
     var zipsDirectory = appDirectory + '/TileZips';
     var tileCacheDirectory = appDirectory + '/TileCache';
     var importImagesCount = {'need': 0, 'have': 0, 'success': 0, 'failed': 0};
 
     return {
       'checkDir': checkDir,
+      'checkImagesDir': checkImagesDir,
       'checkZipsDir': checkZipsDir,
       'clearFiles': clearFiles,
       'deleteMapFiles': deleteMapFiles,
@@ -33,6 +35,7 @@
       'gatherLocalFiles': gatherLocalFiles,
       'getDb': getDb,
       'getDevicePath': getDevicePath,
+      'getImageById': getImageById,
       'getTileCacheDirectory': getTileCacheDirectory,
       'getZipsDirectory': getZipsDirectory,
       'getMapCenterTile': getMapCenterTile,
@@ -40,6 +43,7 @@
       'getTile': getTile,
       'importImages': importImages,
       'importProject': importProject,
+      'saveImageToFileSystem': saveImageToFileSystem,
       'saveZip': saveZip,
       'setupLocalforage': setupLocalforage
     };
@@ -71,12 +75,21 @@
       return deferred.promise;
     }
 
+    function checkImagesDir() {
+      return verifyDirectoryOnce(imagesDirectory);
+    }
+
     function exportData(directory, data, fileName) {
       return checkDir(appDirectory).then(function () {
         return checkDir(directory).then(function (fullPath) {
+          $log.log('fullPath',fullPath);
           return writeFile(fullPath, data, fileName);
         });
       });
+    }
+
+    function exportDataWithoutCheck(fullPath, data, fileName) {
+      return writeFile(fullPath, data, fileName);
     }
 
     function gatherData() {
@@ -367,6 +380,61 @@
       return dbs;
     }
 
+    function getImageById(imageId) { //read file from file system
+      var deferred = $q.defer(); // init promise
+
+      var devicePath = getDevicePath();
+      var filePath = devicePath + imagesDirectory;
+      var fileName = imageId + '.txt';
+      $log.log('Looking for file: ',filePath,fileName);
+      $cordovaFile.checkFile(filePath + '/', fileName).then(function (checkDirSuccess) {
+        $cordovaFile.readAsText(filePath + '/', fileName).then(function(result){
+          deferred.resolve(result);
+        });
+      }, function (checkDirFailed) {
+        $log.log('Check file not found.',checkDirFailed)
+        deferred.resolve('img/image-not-found.png');
+      });
+
+      return deferred.promise;
+    }
+
+    function oldgetImageById(imageId) {
+      var deferred = $q.defer(); // init promise
+      // $log.log('inside readDataUrl');
+      var reader = new FileReader();
+      var image = new Image();
+      reader.onloadend = function (evt) {
+        // $log.log('Read as data URL');
+        // $log.log(evt.target.result);
+        image.src = evt.target.result;
+
+        image.onload = function () {
+
+          deferred.resolve(image.src);
+
+        };
+        image.onerror = function () {
+          $log.log('Image load error.')
+          deferred.resolve('img/image-not-found.png');
+        };
+      };
+
+      var devicePath = getDevicePath();
+      var filePath = devicePath + imagesDirectory;
+      var fileName = imageId + '.jpg';
+      $log.log('Looking for file: ',filePath,fileName);
+      $cordovaFile.checkFile(filePath + '/', fileName).then(function (checkDirSuccess) {
+        $cordovaFile.readAsDataURL(filePath + '/', fileName).then(function(result){
+          reader.readAsDataURL(result);
+        });
+      }, function (checkDirFailed) {
+        $log.log('Check file not found.',checkDirFailed)
+        deferred.resolve('img/image-not-found.png');
+      });
+      return deferred.promise;
+    }
+
     function getMapCenterTile(mapid) {
       var deferred = $q.defer(); // init promise
 
@@ -594,8 +662,14 @@
       });
     }
 
+    function saveImageToFileSystem(data, fileName) {
+      var devicePath = getDevicePath();
+      var imagesPath = devicePath + imagesDirectory;
+      return exportDataWithoutCheck(imagesPath, data, fileName);
+    }
+
     function saveZip(data, fileName) {
-      return exportData(zipsDirectory, data, fileName)
+      return exportData(zipsDirectory, data, fileName);
     }
 
     function setupLocalforage() {
@@ -635,6 +709,14 @@
       else deferred.resolve(true);
 
       return deferred.promise;
+    }
+
+    //$cordovaFile sporadically reports directories as non-existent,
+    //so we need an easy function to check directories once.
+    function verifyDirectoryOnce(directory) {
+      return checkDir(appDirectory).then(function () {
+        return checkDir(directory);
+      });
     }
   }
 }());

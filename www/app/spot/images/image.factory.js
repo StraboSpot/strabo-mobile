@@ -33,8 +33,16 @@
     /**
      * Private Functions
      */
+    function dataURItoBlob(dataURI) {
+      var binary = atob(dataURI.split(',')[1]);
+      var array = [];
+      for (var i = 0; i < binary.length; i++) {
+        array.push(binary.charCodeAt(i));
+      }
+      return new Blob([new Uint8Array(array)], {'type': 'image/jpeg'});
+    }
 
-    function getPicture(source) {
+    function getPicture(source) {//add promise here?
       // all plugins must be wrapped in a ready function
       document.addEventListener('deviceready', function () {
         //getGeoInfo = false;
@@ -123,11 +131,14 @@
         // $log.log('Read as data URL');
         // $log.log(evt.target.result);
         image.src = evt.target.result;
+        //var rawImageBlob = dataURItoBlob(image.src);
         image.onload = function () {
           if (isReattachImage) {
             if (image.height === currentImageData.height && image.width === currentImageData.width) {
+              //saveImage(rawImageBlob).then(function () {
               saveImage(image.src).then(function () {
                 $log.log('Also save image to live db here');
+                //save to file
                 LiveDBFactory.saveImageFile(currentImageData.id, image.src).then(function() {
                   $rootScope.$broadcast('updatedImages');
                   isReattachImage = false;
@@ -208,8 +219,9 @@
       return LocalStorageFactory.getDb().imagesDb.removeItem(imageId.toString());
     }
 
-    function getImageById(imageId) {
-      return LocalStorageFactory.getDb().imagesDb.getItem(imageId.toString());
+    function getImageById(imageId) {//return base64 encoded image //don't break this
+      //return LocalStorageFactory.getDb().imagesDb.getItem(imageId.toString());
+      return LocalStorageFactory.getImageById(imageId.toString());
     }
 
     function getImageFromGallery() {
@@ -222,9 +234,11 @@
       readDataUrl(file);
     }
 
-    function saveImage(base64Image, imageId) {
+    function saveImage(imageData, imageId) {
       if (!imageId) imageId = currentImageData.id;
-      return LocalStorageFactory.getDb().imagesDb.setItem(imageId.toString(), base64Image)
+      //change this to file system
+      //return LocalStorageFactory.getDb().imagesDb.setItem(imageId.toString(), base64Image);
+      return LocalStorageFactory.saveImageToFileSystem(imageData, imageId.toString()+'.txt')
     }
 
     function setCurrentImage(inImageData) {

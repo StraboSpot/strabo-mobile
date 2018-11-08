@@ -282,6 +282,7 @@
       return (request.then(handleSuccess, handleError));
     }
 
+
     // Get all images for a feature
     function getImages(datasetId, encodedLogin) {
       var request = $http({

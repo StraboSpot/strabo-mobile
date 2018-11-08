@@ -76,6 +76,7 @@
 
       ProjectFactory.setUser(user);
       FormFactory.setForm('project');
+      LocalStorageFactory.checkImagesDir();
 
       if (_.isEmpty(vm.project)) {
         vm.showExitProjectModal = false;
@@ -207,40 +208,47 @@
         var imagesDownloadedCount = 0;
         var imagesFailedCount = 0;
         var savedImagesCount = 0;
-        _.each(neededImagesIds, function (neededImageId) {
-          var promise = RemoteServerFactory.getImage(neededImageId, UserFactory.getUser().encoded_login)
-            .then(function (response) {
-              if (response.data) {
-                imagesDownloadedCount++;
-                notifyMessages.pop();
-                outputMessage('NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
-                  '<br>NEW Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
-                return readDataUrl(response.data).then(function (base64Image) {
-                  return ImageFactory.saveImage(base64Image, neededImageId).then(function () {
-                    savedImagesCount++;
-                    notifyMessages.pop();
-                    outputMessage(
-                      'NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
-                      '<br>NEW Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
+
+        //LocalStorageFactory.checkImagesDir().then(function(){
+          _.each(neededImagesIds, function (neededImageId) {
+            var promise = RemoteServerFactory.getImage(neededImageId, UserFactory.getUser().encoded_login)
+              .then(function (response) {
+                if (response.data) {
+                  imagesDownloadedCount++;
+                  notifyMessages.pop();
+                  outputMessage('NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
+                    '<br>NEW Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
+                  return readDataUrl(response.data).then(function (base64Image) {
+                    return ImageFactory.saveImage(base64Image, neededImageId).then(function () {
+                    //return ImageFactory.saveImage(response.data, neededImageId).then(function () {
+                      savedImagesCount++;
+                      notifyMessages.pop();
+                      outputMessage(
+                        'NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
+                        '<br>NEW Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
+                    });
                   });
-                });
-              }
-              else {
+                }
+                else {
+                  imagesFailedCount++;
+                  $log.error('Error downloading Image', neededImageId, 'Server Response:', response);
+                }
+              }, function (err) {
                 imagesFailedCount++;
-                $log.error('Error downloading Image', neededImageId, 'Server Response:', response);
-              }
-            }, function (err) {
-              imagesFailedCount++;
-              $log.error('Error downloading Image', neededImageId, 'Error:', err);
-            });
-          promises.push(promise);
-        });
-        return $q.all(promises).then(function () {
-          if (imagesFailedCount > 0) {
-            downloadErrors = true;
-            outputMessage('Image Downloads Failed: ' + imagesFailedCount);
-          }
-        });
+                $log.error('Error downloading Image', neededImageId, 'Error:', err);
+              });
+            promises.push(promise);
+          });
+          return $q.all(promises).then(function () {
+            if (imagesFailedCount > 0) {
+              downloadErrors = true;
+              outputMessage('Image Downloads Failed: ' + imagesFailedCount);
+            }
+          });
+        //}, function(){
+        //  outputMessage('Unable to save images.');
+        //});
+
       }
     }
 
@@ -362,19 +370,21 @@
         outputMessage('Determining needed images...');
         _.each(spots, function (spot) {
           if (spot.properties.images) {
-            _.each(spot.properties.images, function (image) {
-              var promise = ImageFactory.getImageById(image.id).then(function (value) {
-                if (!value && !_.contains(neededImagesIds, image.id)) neededImagesIds.push(image.id);
-              });
-              promises.push(promise);
+            _.each(spot.properties.images, function (image) { //fix this, check for file instead? Or just download all?
+              neededImagesIds.push(image.id);
+
+              //var promise = ImageFactory.getImageById(image.id).then(function (value) {
+              //  if (!value && !_.contains(neededImagesIds, image.id)) neededImagesIds.push(image.id);
+              //});
+              //promises.push(promise);
             });
           }
         });
-        return $q.all(promises).then(function () {
+        //return $q.all(promises).then(function () {
           notifyMessages.pop();
           outputMessage('NEW images to download: ' + neededImagesIds.length);
           return neededImagesIds;
-        });
+        //});
       }
     }
 
@@ -1277,7 +1287,7 @@
         !_.isEmpty(UserFactory.getUser()) && navigator.onLine) {
           initializeDownloadDataset(datasetToggled);
         }
-        else if (_.isEmpty(ProjectFactory.getSpotIds()[datasetToggled.id]) && 
+        else if (_.isEmpty(ProjectFactory.getSpotIds()[datasetToggled.id]) &&
         !_.isEmpty(UserFactory.getUser()) && !navigator.onLine) {
           $ionicPopup.alert({
             'title': 'Cannot Update Dataset!',
