@@ -28,7 +28,7 @@
     vm.featureId = undefined;
     vm.featureLevelTags = [];
     vm.featureLevelTagsToDisplay = [];
-    vm.mineralDisplay = {};
+    vm.mineralDisplay = [];
     vm.mineralTags = [];
     vm.minerals = false;
     vm.selectedType = 'all';
