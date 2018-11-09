@@ -906,7 +906,13 @@
      }
      }*/
 
-    function exportProject() {
+     function exportProject() {
+       vm.popover.hide().then(function () {
+         exportData();
+       });
+     }
+
+    function oldexportProject() {
       vm.popover.hide().then(function () {
         vm.exportItems = {};
         var template = '<ion-checkbox ng-model="vm.exportItems.text">Text Data</ion-checkbox>' +
@@ -969,7 +975,16 @@
       $ionicLoading.hide();
     }
 
+
     function importProject() {
+      vm.popover.hide().then(function () {
+        importData();
+      });
+    }
+
+
+
+    function oldimportProject() {
       vm.popover.hide().then(function () {
         vm.importItem = undefined;
         vm.text = 'text';
