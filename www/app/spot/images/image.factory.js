@@ -131,11 +131,9 @@
         // $log.log('Read as data URL');
         // $log.log(evt.target.result);
         image.src = evt.target.result;
-        //var rawImageBlob = dataURItoBlob(image.src);
         image.onload = function () {
           if (isReattachImage) {
             if (image.height === currentImageData.height && image.width === currentImageData.width) {
-              //saveImage(rawImageBlob).then(function () {
               saveImage(image.src).then(function () {
                 $log.log('Also save image to live db here');
                 //save to file
@@ -219,8 +217,7 @@
       return LocalStorageFactory.getDb().imagesDb.removeItem(imageId.toString());
     }
 
-    function getImageById(imageId) {//return base64 encoded image //don't break this
-      //return LocalStorageFactory.getDb().imagesDb.getItem(imageId.toString());
+    function getImageById(imageId) {
       return LocalStorageFactory.getImageById(imageId.toString());
     }
 
@@ -236,8 +233,6 @@
 
     function saveImage(imageData, imageId) {
       if (!imageId) imageId = currentImageData.id;
-      //change this to file system
-      //return LocalStorageFactory.getDb().imagesDb.setItem(imageId.toString(), base64Image);
       return LocalStorageFactory.saveImageToFileSystem(imageData, imageId.toString()+'.txt')
     }
 

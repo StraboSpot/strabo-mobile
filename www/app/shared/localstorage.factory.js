@@ -178,7 +178,7 @@
       return deferred.promise;
     }
 
-    function importImage(id) {
+    function importImage(id) {//fix this
       var deferred = $q.defer(); // init promise
 
       var devicePath = getDevicePath();
@@ -396,42 +396,6 @@
         deferred.resolve('img/image-not-found.png');
       });
 
-      return deferred.promise;
-    }
-
-    function oldgetImageById(imageId) {
-      var deferred = $q.defer(); // init promise
-      // $log.log('inside readDataUrl');
-      var reader = new FileReader();
-      var image = new Image();
-      reader.onloadend = function (evt) {
-        // $log.log('Read as data URL');
-        // $log.log(evt.target.result);
-        image.src = evt.target.result;
-
-        image.onload = function () {
-
-          deferred.resolve(image.src);
-
-        };
-        image.onerror = function () {
-          $log.log('Image load error.')
-          deferred.resolve('img/image-not-found.png');
-        };
-      };
-
-      var devicePath = getDevicePath();
-      var filePath = devicePath + imagesDirectory;
-      var fileName = imageId + '.jpg';
-      $log.log('Looking for file: ',filePath,fileName);
-      $cordovaFile.checkFile(filePath + '/', fileName).then(function (checkDirSuccess) {
-        $cordovaFile.readAsDataURL(filePath + '/', fileName).then(function(result){
-          reader.readAsDataURL(result);
-        });
-      }, function (checkDirFailed) {
-        $log.log('Check file not found.',checkDirFailed)
-        deferred.resolve('img/image-not-found.png');
-      });
       return deferred.promise;
     }
 
