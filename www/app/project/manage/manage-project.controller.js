@@ -217,15 +217,16 @@
                 notifyMessages.pop();
                 outputMessage('NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
                   '<br>NEW Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
-                return readDataUrl(response.data).then(function (base64Image) {
-                  return ImageFactory.saveImage(base64Image, neededImageId).then(function () {
+                //return readDataUrl(response.data).then(function (base64Image) {
+                  return ImageFactory.saveImage(response.data, neededImageId).then(function () {
+                  //return ImageFactory.saveImage(base64Image, neededImageId).then(function () {
                     savedImagesCount++;
                     notifyMessages.pop();
                     outputMessage(
                       'NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
                       '<br>NEW Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
                   });
-                });
+                //});
               }
               else {
                 imagesFailedCount++;

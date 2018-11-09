@@ -131,10 +131,12 @@
         // $log.log('Read as data URL');
         // $log.log(evt.target.result);
         image.src = evt.target.result;
+        var imgBlob = HelpersFactory.b64toBlob(image.src);
         image.onload = function () {
           if (isReattachImage) {
             if (image.height === currentImageData.height && image.width === currentImageData.width) {
-              saveImage(image.src).then(function () {
+              //saveImage(image.src).then(function () {
+              saveImage(imgBlob).then(function () {
                 $log.log('Also save image to live db here');
                 //save to file
                 LiveDBFactory.saveImageFile(currentImageData.id, image.src).then(function() {
@@ -233,7 +235,8 @@
 
     function saveImage(imageData, imageId) {
       if (!imageId) imageId = currentImageData.id;
-      return LocalStorageFactory.saveImageToFileSystem(imageData, imageId.toString()+'.txt')
+      //return LocalStorageFactory.saveImageToFileSystem(imageData, imageId.toString()+'.txt');
+      return LocalStorageFactory.saveImageToFileSystem(imageData, imageId.toString()+'.jpg');
     }
 
     function setCurrentImage(inImageData) {

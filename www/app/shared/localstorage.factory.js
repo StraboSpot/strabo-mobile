@@ -385,10 +385,11 @@
 
       var devicePath = getDevicePath();
       var filePath = devicePath + imagesDirectory;
-      var fileName = imageId + '.txt';
+      var fileName = imageId + '.jpg';
       $log.log('Looking for file: ',filePath,fileName);
       $cordovaFile.checkFile(filePath + '/', fileName).then(function (checkDirSuccess) {
-        $cordovaFile.readAsText(filePath + '/', fileName).then(function(result){
+        //$cordovaFile.readAsText(filePath + '/', fileName).then(function(result){
+        $cordovaFile.readAsDataURL(filePath + '/', fileName).then(function(result){
           deferred.resolve(result);
         });
       }, function (checkDirFailed) {
