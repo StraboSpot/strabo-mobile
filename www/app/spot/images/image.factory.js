@@ -131,7 +131,12 @@
         // $log.log('Read as data URL');
         // $log.log(evt.target.result);
         image.src = evt.target.result;
-        var imgBlob = HelpersFactory.b64toBlob(image.src);
+
+        var block = image.src.split(';');
+        var dataType = block[0].split(':')[1];    // In this case 'image/jpg'
+        var base64Data = block[1].split(',')[1];  // In this case 'iVBORw0KGg....'
+        var imgBlob = HelpersFactory.b64toBlob(base64Data, dataType);
+
         image.onload = function () {
           if (isReattachImage) {
             if (image.height === currentImageData.height && image.width === currentImageData.width) {
@@ -162,7 +167,8 @@
               'width': image.width,
               'id': HelpersFactory.getNewId()
             });
-            saveImage(image.src);
+            //saveImage(image.src);
+            saveImage(imgBlob);
             $log.log('Also save image to live db here');
             LiveDBFactory.saveImageFile(currentImageData.id, image.src).then(function () {
               saveImageDataToSpot();
