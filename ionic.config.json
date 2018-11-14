@@ -9,7 +9,5 @@
     "www/**/*",
     "!www/lib/**/*",
     "!www/**/*.map"
-  ],
-  "pro_id": "53a3aee8",
-  "app_id": ""
+  ]
 }
