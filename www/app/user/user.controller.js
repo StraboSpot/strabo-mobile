@@ -6,11 +6,11 @@
     .controller('UserController', UserController);
 
   UserController.$inject = ['$cordovaCamera', '$document', '$ionicLoading', '$ionicPopup', '$log', '$rootScope',
-    '$scope', '$timeout', '$window', 'ImageFactory', 'ProjectFactory', 'OtherMapsFactory', 'SpotFactory',
+    '$scope', '$state', '$timeout', '$window', 'ImageFactory', 'ProjectFactory', 'OtherMapsFactory', 'SpotFactory',
     'UserFactory', 'IS_WEB'];
 
-  function UserController($cordovaCamera, $document, $ionicLoading, $ionicPopup, $log, $rootScope, $scope, $timeout,
-                          $window, ImageFactory, ProjectFactory, OtherMapsFactory, SpotFactory, UserFactory, IS_WEB) {
+  function UserController($cordovaCamera, $document, $ionicLoading, $ionicPopup, $log, $rootScope, $scope, $state,
+    $timeout, $window, ImageFactory, ProjectFactory, OtherMapsFactory, SpotFactory, UserFactory, IS_WEB) {
     var vm = this;
 
     var dataOrig;
@@ -51,9 +51,8 @@
       vm.data = UserFactory.getUser();
       dataOrig = angular.fromJson(angular.toJson(vm.data));
       $log.log('User data:', vm.data);
-      if (!IS_WEB) ionic.on('change', getFile, $document[0].getElementById('file'));
-
       if (IS_WEB) {
+        ionic.on('change', getFile, $document[0].getElementById('userProfileFile'));
         $scope.$watch('vm.data', function (newValue, oldValue, scope) {
           if (!_.isEmpty(newValue)) {
             if (initializing) {
@@ -73,7 +72,6 @@
           if (vm.dataChanged && fromState.name === 'app.user') submit();
         });
       }
-
     }
 
     function cameraModal() {
@@ -107,9 +105,11 @@
     }
 
     function getFile(event) {
-      $log.log('Getting file ....');
-      var file = event.target.files[0];
-      readDataUrl(file);
+      if ($state.current.url === '/user' && !_.isEmpty(event.target.files)) {
+        $log.log('Getting Profile Image file....');
+        var file = event.target.files[0];
+        readDataUrl(file);
+      }
     }
 
     function launchCamera(source) {
@@ -231,7 +231,7 @@
      */
 
     function addImage() {
-      if (IS_WEB) ionic.trigger('click', {'target': $document[0].getElementById('file')});
+      if (IS_WEB) $document[0].getElementById('userProfileFile').click();
       else cameraModal();
     }
 
