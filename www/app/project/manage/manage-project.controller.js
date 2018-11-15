@@ -76,6 +76,7 @@
 
       ProjectFactory.setUser(user);
       FormFactory.setForm('project');
+      LocalStorageFactory.checkImagesDir();
 
       if (_.isEmpty(vm.project)) {
         vm.showExitProjectModal = false;
@@ -207,6 +208,7 @@
         var imagesDownloadedCount = 0;
         var imagesFailedCount = 0;
         var savedImagesCount = 0;
+
         _.each(neededImagesIds, function (neededImageId) {
           var promise = RemoteServerFactory.getImage(neededImageId, UserFactory.getUser().encoded_login)
             .then(function (response) {
@@ -215,15 +217,16 @@
                 notifyMessages.pop();
                 outputMessage('NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
                   '<br>NEW Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
-                return readDataUrl(response.data).then(function (base64Image) {
-                  return ImageFactory.saveImage(base64Image, neededImageId).then(function () {
+                //return readDataUrl(response.data).then(function (base64Image) {
+                  return ImageFactory.saveImage(response.data, neededImageId).then(function () {
+                  //return ImageFactory.saveImage(base64Image, neededImageId).then(function () {
                     savedImagesCount++;
                     notifyMessages.pop();
                     outputMessage(
                       'NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
                       '<br>NEW Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
                   });
-                });
+                //});
               }
               else {
                 imagesFailedCount++;
@@ -241,6 +244,7 @@
             outputMessage('Image Downloads Failed: ' + imagesFailedCount);
           }
         });
+
       }
     }
 
@@ -362,19 +366,14 @@
         outputMessage('Determining needed images...');
         _.each(spots, function (spot) {
           if (spot.properties.images) {
-            _.each(spot.properties.images, function (image) {
-              var promise = ImageFactory.getImageById(image.id).then(function (value) {
-                if (!value && !_.contains(neededImagesIds, image.id)) neededImagesIds.push(image.id);
-              });
-              promises.push(promise);
+            _.each(spot.properties.images, function (image) { //fix this, check for file instead? Or just download all?
+              neededImagesIds.push(image.id);
             });
           }
         });
-        return $q.all(promises).then(function () {
-          notifyMessages.pop();
-          outputMessage('NEW images to download: ' + neededImagesIds.length);
-          return neededImagesIds;
-        });
+        notifyMessages.pop();
+        outputMessage('NEW images to download: ' + neededImagesIds.length);
+        return neededImagesIds;
       }
     }
 
@@ -907,7 +906,13 @@
      }
      }*/
 
-    function exportProject() {
+     function exportProject() {
+       vm.popover.hide().then(function () {
+         exportData();
+       });
+     }
+
+    function oldexportProject() {
       vm.popover.hide().then(function () {
         vm.exportItems = {};
         var template = '<ion-checkbox ng-model="vm.exportItems.text">Text Data</ion-checkbox>' +
@@ -970,7 +975,16 @@
       $ionicLoading.hide();
     }
 
+
     function importProject() {
+      vm.popover.hide().then(function () {
+        importData();
+      });
+    }
+
+
+
+    function oldimportProject() {
       vm.popover.hide().then(function () {
         vm.importItem = undefined;
         vm.text = 'text';
@@ -1277,7 +1291,7 @@
         !_.isEmpty(UserFactory.getUser()) && navigator.onLine) {
           initializeDownloadDataset(datasetToggled);
         }
-        else if (_.isEmpty(ProjectFactory.getSpotIds()[datasetToggled.id]) && 
+        else if (_.isEmpty(ProjectFactory.getSpotIds()[datasetToggled.id]) &&
         !_.isEmpty(UserFactory.getUser()) && !navigator.onLine) {
           $ionicPopup.alert({
             'title': 'Cannot Update Dataset!',
