@@ -5,9 +5,9 @@
     .module('app')
     .factory('UserFactory', UserFactory);
 
-  UserFactory.$inject = ['$ionicPopup', '$log', '$q', 'LocalStorageFactory', 'RemoteServerFactory'];
+  UserFactory.$inject = ['$ionicPopup', '$log', '$q', 'LocalStorageFactory', 'Raven', 'RemoteServerFactory'];
 
-  function UserFactory($ionicPopup, $log, $q, LocalStorageFactory, RemoteServerFactory) {
+  function UserFactory($ionicPopup, $log, $q, LocalStorageFactory, Raven, RemoteServerFactory) {
     var user;
 
     return {
@@ -40,6 +40,7 @@
      */
     function clearUser() {
       user = undefined;
+      Raven.setUserContext();
       return LocalStorageFactory.getDb().configDb.removeItem('user');
     }
 
@@ -54,6 +55,9 @@
             'encoded_login': Base64.encode(login.email + ':' + login.password)
           };
           $log.log('Logged in successfully as', login.email, 'Server Response:', response);
+          Raven.setUserContext({
+            email: login.email
+          });
           updateUser().then(function () {
             deferred.resolve();
           });
@@ -83,6 +87,7 @@
       return user;
     }
 
+    // Checks to see if user when already logged in. If so then loads the user.
     function loadUser() {
       var deferred = $q.defer(); // init promise
       if (!user) {
@@ -91,8 +96,14 @@
           if (savedUser) {
             user = savedUser;
             $log.log('Loaded saved user: ', savedUser);
+            Raven.setUserContext({
+              email: savedUser.email
+            });
           }
-          else $log.log('No saved user.');
+          else {
+            $log.log('No saved user.');
+            Raven.setUserContext();
+          }
           deferred.resolve();
         });
       }
