@@ -6,7 +6,7 @@
     .controller('MineralsTabController', MineralsTabController);
 
   MineralsTabController.$inject = ['$ionicModal', '$ionicPopup', '$ionicScrollDelegate', '$log', '$scope', '$state',
-   'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'MineralsFactory', 'ProjectFactory'];
+  'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'MineralsFactory', 'ProjectFactory'];
 
   function MineralsTabController($ionicModal, $ionicPopup, $ionicScrollDelegate, $log, $scope, $state, DataModelsFactory,
     FormFactory, HelpersFactory, MineralsFactory, ProjectFactory) {
@@ -228,7 +228,7 @@
     }
 
     //displays the mineral info from info-button on the main Minerals Page
-    function mineralInfoOnMainPage(name){
+    function mineralInfoOnMainPage(name) {
       vm.mineralInfo = MineralsFactory.getMineralInfo(name);
       vm.isShowMineralList = false;
       vm.isShowInfoOnly = true;
