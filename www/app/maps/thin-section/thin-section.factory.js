@@ -5,9 +5,9 @@
     .module('app')
     .factory('ThinSectionFactory', ThinSectionFactory);
 
-  ThinSectionFactory.$inject = ['$log', 'MapSetupFactory', 'SpotFactory'];
+  ThinSectionFactory.$inject = ['$log', 'ImageFactory', 'MapSetupFactory', 'SpotFactory'];
 
-  function ThinSectionFactory($log, MapSetupFactory, SpotFactory) {
+  function ThinSectionFactory($log, ImageFactory, MapSetupFactory, SpotFactory) {
     var spotsWithThinSections = {};
     var thinSectionSpots = {};
  
@@ -171,6 +171,7 @@
     function getSpotsWithMicrographs() {
       var activeSpots = SpotFactory.getActiveSpots();
       return _.filter(activeSpots, function (spot) {
+        spot = ImageFactory.cleanImagesInSpot(spot);
         return _.find(spot.properties.images, function (image) {
           return image.image_type === 'micrograph_ref' || image.image_type === 'micrograph';
         });

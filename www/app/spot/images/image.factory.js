@@ -5,10 +5,10 @@
     .module('app')
     .factory('ImageFactory', ImageFactory);
 
-  ImageFactory.$inject = ['$cordovaCamera', '$ionicPopup', '$log', '$rootScope', '$state', '$window', 'HelpersFactory',
+  ImageFactory.$inject = ['$cordovaCamera', '$ionicLoading', '$ionicPopup', '$log', '$rootScope', '$state', '$window', 'HelpersFactory',
     'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'SpotFactory'];
 
-  function ImageFactory($cordovaCamera, $ionicPopup, $log, $rootScope, $state, $window, HelpersFactory, LiveDBFactory,
+  function ImageFactory($cordovaCamera, $ionicLoading, $ionicPopup, $log, $rootScope, $state, $window, HelpersFactory, LiveDBFactory,
                         LocalStorageFactory, ProjectFactory, SpotFactory) {
     var currentImageData = {};
     var currentSpot = {};
@@ -17,6 +17,7 @@
     var takeMorePictures = false;
 
     return {
+      'cleanImagesInSpot': cleanImagesInSpot,
       'deleteAllImages': deleteAllImages,
       'deleteImage': deleteImage,
       'getImageById': getImageById,
@@ -146,6 +147,7 @@
                 LiveDBFactory.saveImageFile(currentImageData.id, image.src).then(function() {
                   $rootScope.$broadcast('updatedImages');
                   isReattachImage = false;
+                  $ionicLoading.hide();
                   $ionicPopup.alert({
                     'title': 'Finished Reattaching Image',
                     'template': 'The selected image source was reattached to the selected image properties.'
@@ -154,6 +156,7 @@
               });
             }
             else {
+              $ionicLoading.hide();
               $ionicPopup.alert({
                 'title': 'Mismatched Image',
                 'template': 'The selected image does not have the same height and width as the original. Unable to reattach image.'
@@ -213,6 +216,20 @@
     /**
      * Public Functions
      */
+
+    // Make sure each image in Spot images array is not an empty object, has an id and has an image type
+    function cleanImagesInSpot(spot) {
+      if (spot.properties.images) {
+        if (_.isEmpty(spot.properties.images)) delete spot.properties.images;
+        else {
+          _.each(spot.properties.images, function (image, i) {
+            if (_.isEmpty(image) || !image.id) spot.properties.images.splice(i);
+            else if (!image.image_type) image.image_type = 'photo';
+          });
+        }
+      }
+      return spot;
+    }
 
     function deleteAllImages() {
       return LocalStorageFactory.getDb().imagesDb.clear().then(function () {

@@ -75,9 +75,13 @@
     }
 
     function loadTab(state) {
+      $ionicLoading.show({
+        'template': '<ion-spinner></ion-spinner><br>Loading Images...'
+      });
       vmParent.loadTab(state);  // Need to load current state into parent
       FormFactory.setForm('image');
       createModals();
+      vmParent.spot = ImageFactory.cleanImagesInSpot(vmParent.spot);
       getImageSources();
       checkImageType();     // Set default image type to 'photo' if no image type has been set
       if (IS_WEB) ionic.on('change', getFile, $document[0].getElementById('imageFile'));
@@ -116,6 +120,9 @@
     }
 
     function getImageSources() {
+      $ionicLoading.show({
+        'template': '<ion-spinner></ion-spinner><br>Loading Images...'
+      });
       var promises = [];
       imageSources = {};
       _.each(vmParent.spot.properties.images, function (image) {
@@ -386,6 +393,10 @@
       });
       confirmPopup.then(function (res) {
         if (res) {
+          vm.imagePropertiesModal.hide();
+          $ionicLoading.show({
+            'template': '<ion-spinner></ion-spinner><br>Reattaching Image...'
+          });
           ImageFactory.setIsReattachImage(true);
           ImageFactory.setCurrentSpot(vmParent.spot);
           ImageFactory.setCurrentImage(vmParent.data);
@@ -395,7 +406,7 @@
     }
 
     function saveImageProperties() {
-      if (FormFactory.validate(vmParent.data)) {
+      if (!_.isEmpty(vmParent.data) && FormFactory.validate(vmParent.data)) {
         vm.imagePropertiesModal.hide();
         vmParent.spot.properties.images = _.reject(vmParent.spot.properties.images, function (image) {
           return image.id === vmParent.data.id;
