@@ -80,7 +80,7 @@
       createModals();
       getImageSources();
       checkImageType();     // Set default image type to 'photo' if no image type has been set
-      ionic.on('change', getFile, $document[0].getElementById('file'));
+      if (IS_WEB) ionic.on('change', getFile, $document[0].getElementById('imageFile'));
     }
 
     // Set default image type to 'photo' if no image type has been set
@@ -103,13 +103,15 @@
     }
 
     function getFile(event) {
-      var file = event.target.files[0];
-      if (file) {
-        $log.log('Getting file ....');
-        $ionicLoading.show({
-          'template': '<ion-spinner></ion-spinner><br>Getting Image...'
-        });
-        ImageFactory.readFile(file);
+      if ($state.current.url === '/:spotId/images' && !_.isEmpty(event.target.files)) {
+        var file = event.target.files[0];
+        if (file) {
+          $log.log('Getting Image file ....');
+          $ionicLoading.show({
+            'template': '<ion-spinner></ion-spinner><br>Getting Image...'
+          });
+          ImageFactory.readFile(file);
+        }
       }
     }
 
@@ -273,7 +275,7 @@
         ImageFactory.setIsReattachImage(false);
         ImageFactory.setCurrentSpot(vmParent.spot);
         ImageFactory.setCurrentImage(angular.fromJson(angular.toJson(newImageData)));
-        if (IS_WEB) document.getElementById('file').click();
+        if (IS_WEB) document.getElementById('imageFile').click();
         else ImageFactory.getImageFromGallery();
       });
     }

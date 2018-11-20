@@ -64,20 +64,24 @@ Generate Resources (icons and splash screens):
 ### Tested Environment - Plugins    
     cordova-plugin-camera 4.0.3 "Camera"
     cordova-plugin-device 2.0.2 "Device"
-    cordova-plugin-device-motion 1.2.5 "Device Motion"
+    cordova-plugin-device-motion 2.0.1 "Device Motion"
     cordova-plugin-device-orientation 2.0.1 "Device Orientation"
     cordova-plugin-file 6.0.1 "File"
-    cordova-plugin-filepath 1.0.2 "FilePath"
+    cordova-plugin-file-transfer 1.7.1 "File Transfer"
+    cordova-plugin-filepath 1.4.2 "cordova-plugin-filepath"
     cordova-plugin-geolocation 4.0.1 "Geolocation"
     cordova-plugin-inappbrowser 3.0.0 "InAppBrowser"
-    cordova-plugin-ionic-keyboard 2.1.2 "cordova-plugin-ionic-keyboard"
-    cordova-plugin-ionic-webview 1.2.1 "cordova-plugin-ionic-webview"
+    cordova-plugin-ionic-keyboard 2.1.3 "cordova-plugin-ionic-keyboard"
+    cordova-plugin-ionic-webview 2.2.3 "cordova-plugin-ionic-webview"
+    cordova-plugin-itunesfilesharing 0.0.2 "cordova-plugin-itunesfilesharing"
     cordova-plugin-network-information 2.0.1 "Network Information"
     cordova-plugin-splashscreen 5.0.2 "Splashscreen"
     cordova-plugin-statusbar 2.4.2 "StatusBar"
     cordova-plugin-whitelist 1.3.3 "Whitelist"
-    cordova-sqlite-evcore-extbuild-free ^0.9.7 "Cordova sqlite storage"
-    cordova-plugin-itunesfilesharing 0.0.1 "cordova-plugin-itunesfilesharing"
+    cordova-plugin-zip 3.1.0 "cordova-plugin-zip"
+    cordova-sqlite-evcore-extbuild-free 0.9.9 "Cordova sqlite storage - free enterprise version with Android performance/memory improvements and extra features for PhoneGap Build"
+    cordova-sqlite-storage 2.5.1 "Cordova sqlite storage plugin"
+    io.phasr.cordova.plugin.itunesfilesharing 0.0.1 "cordova-plugin-itunesfilesharing"
     org.strabospot.clipboard 0.1.0 "Clipboard"
 
 *Notes:*
@@ -90,16 +94,35 @@ Generate Resources (icons and splash screens):
 - `cordova-sqlite-storage`: Added for the localForage dependencies
 - `cordova-plugin-itunesfilesharing`: Added to `config.ionic.xml` for Ionic build. PhoneGap build uses
 
+### Tested Environment
+
+    Ionic:
+
+    ionic (Ionic CLI) : 4.3.1 (C:\Users\Nathan\AppData\Roaming\npm\node_modules\ionic)
+    Ionic Framework   : ionic1 1.3.3
+    @ionic/v1-toolkit : 1.0.12
+
+    Cordova:
+
+    cordova (Cordova CLI) : 8.1.2 (cordova-lib@8.1.1)
+    Cordova Platforms     : android 7.1.2
+    Cordova Plugins       : cordova-plugin-ionic-keyboard 2.1.3, cordova-plugin-ionic-webview 2.2.3, (and 17 other plugins)
+
+    System:
+
+    Android SDK Tools : 26.1.1 (C:\Users\Nathan\AppData\Local\Android\Sdk)
+    NodeJS            : v10.13.0 (C:\Program Files\nodejs\node.exe)
+    npm               : 6.4.1
+    OS                : Windows 10
+
+*Notes:*
+- This list can be generated with `ionic info`.
+
 ### Tested Environment - Other Packages/Libraries
 
-    ionic library: 1.3.3
-    ionic cli : 3.2.0
-    cordova: 8.0.0
-    nodejs: 10.1.0
-    npm: 6.1.0
     bower: 1.8.0
     ng-cordova: 0.1.27-alpha
-    openlayers: 4.6.5
+    openlayers: 5.2.0
     turfjs: 5.1.6
     jsts: 1.3.0
     underscore: 1.8.3
@@ -109,12 +132,13 @@ Generate Resources (icons and splash screens):
 
 ### Tested Environment - Platforms
 
-    android 7.0.0
+    Installed platforms:
+    android 7.1.2
+    Available platforms:
     browser ~5.0.1
     ios ~4.5.4
     osx ~4.0.1
-    windows ~5.0.0
-    www ^3.12.0
+    windows ~6.0.0
 
 *Notes:*
 - This list can be generated with `ionic cordova platform list`.

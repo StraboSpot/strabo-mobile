@@ -37,7 +37,7 @@
 
     function activate() {
       createModal();
-      ionic.on('change', getFile, $document[0].getElementById('file'));
+      if (IS_WEB) ionic.on('change', getFile, $document[0].getElementById('dataFile'));
       $log.log('In DataTabController');
 
       // Loading tab from Spots list
@@ -64,6 +64,11 @@
         'hardwareBackButtonClose': false
       }).then(function (modal) {
         vm.dataTableModal = modal;
+      });
+
+      // Cleanup the modal when we're done with it!
+      $scope.$on('$destroy', function () {
+        vm.dataTableModal.remove();
       });
     }
 
@@ -99,11 +104,10 @@
       $ionicLoading.hide();
     }
 
-    function getFile(event, err) {
-      var file = event.target.files[0];
-      if (err) throw err;
-      else if (file) {
-        $log.log('Getting file ....');
+    function getFile(event) {
+      if ($state.current.url === '/:spotId/data' && !_.isEmpty(event.target.files)) {
+        $log.log('Getting Data file....');
+        var file = event.target.files[0];
         readDataUrl(file);
       }
     }
@@ -192,7 +196,7 @@
 
     function importData() {
       vm.fileNames = [];
-      if (IS_WEB) $document[0].getElementById('file').click();
+      if (IS_WEB) $document[0].getElementById('dataFile').click();
     }
 
     function isWeb() {

@@ -518,7 +518,7 @@
       TagFactory.createMineralsTagModal($scope).then(function (modal) {
         vm.mineralsModal = modal;
         vm.mineralInfo = MineralsFactory.getMineralInfo(name);
-        vm.modalTitle = vm.mineralInfo.Mineral;
+        vm.modalTitle = vm.mineralInfo ? vm.mineralInfo.Mineral : 'No Info';
         vm.isShowMineralList = false;
         vm.isShowInfoOnly = true;
         vm.mineralsModal.show();

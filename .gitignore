@@ -1,20 +1,45 @@
 # Specifies intentionally untracked files to ignore when using Git
 # http://git-scm.com/docs/gitignore
-android/
+
+*~
+*.sw[mnpcod]
+*.log
+*.tmp
+*.tmp.*
+log.txt
+*.sublime-project
+*.sublime-workspace
+.vscode/
+npm-debug.log*
+
+.idea/
+.ionic/
+.sourcemaps/
+.sass-cache/
+.tmp/
+.versions/
+coverage/
+dist/
 node_modules/
-hooks/
+tmp/
+temp/
 platforms/
 plugins/
+plugins/android.json
+plugins/ios.json
+$RECYCLE.BIN/
+
+.DS_Store
+Thumbs.db
+UserInterfaceState.xcuserstate
+
+# Additional files not included in boilerplate Ionic start
 resources/android
 resources/ios
 scss/
 .bowerrc
 bower.json
 info.txt
-gulpfile.js
-.idea
+hooks/
 .editorconfig
-.vscode/
-
-# Ignore Mac DS_Store files
-.DS_Store
+android/
