@@ -24,7 +24,9 @@
     <ul class='strabo-flex-container strabo-wrap' ng-show='vm.imagesToDisplay.length > 0'>
       <li class="strabo-images-flex-item" ng-repeat='image in vm.imagesToDisplay | orderBy:"name" track by image.id'
           ng-click='vm.imageClicked(image)'>
-        <a><img ng-src='{{ vm.getImageSrc(image.id) }}' id='{{ image.id }}' width='200' height='200'></a>
+        <div class="strabo-big-thumbnail">
+          <img ng-src='{{ vm.getImageSrc(image.id) }}' id='{{ image.id }}'></a>
+        </div>
         <div style='text-align: center;'>
           <span ng-show='image.title'><b>{{ image.title }}</b></span>
           <span ng-show='image.title && image.image_type'><br></span>
