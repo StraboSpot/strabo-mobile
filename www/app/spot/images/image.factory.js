@@ -5,11 +5,11 @@
     .module('app')
     .factory('ImageFactory', ImageFactory);
 
-  ImageFactory.$inject = ['$cordovaCamera', '$ionicLoading', '$ionicPopup', '$log', '$rootScope', '$state', '$window', 'HelpersFactory',
-    'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'SpotFactory'];
+  ImageFactory.$inject = ['$cordovaCamera', '$ionicLoading', '$ionicPopup', '$log', '$rootScope', '$state', '$window',
+    'HelpersFactory', 'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'SpotFactory'];
 
-  function ImageFactory($cordovaCamera, $ionicLoading, $ionicPopup, $log, $rootScope, $state, $window, HelpersFactory, LiveDBFactory,
-                        LocalStorageFactory, ProjectFactory, SpotFactory) {
+  function ImageFactory($cordovaCamera, $ionicLoading, $ionicPopup, $log, $rootScope, $state, $window, HelpersFactory,
+                        LiveDBFactory, LocalStorageFactory, ProjectFactory, SpotFactory) {
     var currentImageData = {};
     var currentSpot = {};
     var images = [];
@@ -51,8 +51,9 @@
           'quality': 100,
           'destinationType': Camera.DestinationType.FILE_URI,
           'sourceType': source,
-          'allowEdit': true,
+          'allowEdit': false,
           'encodingType': Camera.EncodingType.JPEG,
+          'correctOrientation': true,
           // 'popoverOptions': CameraPopoverOptions,
           'saveToPhotoAlbum': source === Camera.PictureSourceType.CAMERA
         };
@@ -144,7 +145,7 @@
               saveImage(imgBlob).then(function () {
                 $log.log('Also save image to live db here');
                 //save to file
-                LiveDBFactory.saveImageFile(currentImageData.id, image.src).then(function() {
+                LiveDBFactory.saveImageFile(currentImageData.id, image.src).then(function () {
                   $rootScope.$broadcast('updatedImages');
                   isReattachImage = false;
                   $ionicLoading.hide();
@@ -258,7 +259,7 @@
     function saveImage(imageData, imageId) {
       if (!imageId) imageId = currentImageData.id;
       //return LocalStorageFactory.saveImageToFileSystem(imageData, imageId.toString()+'.txt');
-      return LocalStorageFactory.saveImageToFileSystem(imageData, imageId.toString()+'.jpg');
+      return LocalStorageFactory.saveImageToFileSystem(imageData, imageId.toString() + '.jpg');
     }
 
     function setCurrentImage(inImageData) {
