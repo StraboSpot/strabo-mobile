@@ -2,7 +2,10 @@
   <div ng-hide='vm.showLinkedImagesSets === true'>
     <div ng-hide='vm.images.length === 0'>
       <ion-input class="item item-input item-select">
-        <ion-label><button class='button-icon ion-levels rotate-90'></button>Filter by Type</ion-label>
+        <ion-label>
+          <button class='button-icon ion-levels rotate-90'></button>
+          Filter by Type
+        </ion-label>
         <select ng-model='vm.selectedType' ng-change='vm.filterImagesType()'>
           <option value='all'>All</option>
           <option value='photo'>Photo</option>
@@ -24,9 +27,7 @@
     <ul class='strabo-flex-container strabo-wrap' ng-show='vm.imagesToDisplay.length > 0'>
       <li class="strabo-images-flex-item" ng-repeat='image in vm.imagesToDisplay | orderBy:"name" track by image.id'
           ng-click='vm.imageClicked(image)'>
-        <div class="strabo-big-thumbnail">
-          <img ng-src='{{ vm.getImageSrc(image.id) }}' id='{{ image.id }}'></a>
-        </div>
+        <img class="strabo-big-thumbnail" ng-src='{{ vm.getImageSrc(image.id) }}' id='{{ image.id }}'>
         <div style='text-align: center;'>
           <span ng-show='image.title'><b>{{ image.title }}</b></span>
           <span ng-show='image.title && image.image_type'><br></span>
@@ -47,9 +48,10 @@
         <img class='strabo-icon' align='right' src='img/link-break.png' ng-click='vm.unlinkImages($index)'>
       </div>
       <ul class='strabo-flex-container strabo-wrap'>
-        <li class="strabo-images-flex-item" ng-repeat='linkedImage in linkedImagesSet | orderBy:"$index" track by $index'
+        <li class="strabo-images-flex-item"
+            ng-repeat='linkedImage in linkedImagesSet | orderBy:"$index" track by $index'
             ng-click='vm.imageClicked(linkedImage)'>
-          <a><img ng-src='{{ vm.getImageSrc(linkedImage.id) }}' id='{{ linkedImage.id }}' width='200' height='200'></a>
+          <img class="strabo-big-thumbnail" ng-src='{{ vm.getImageSrc(linkedImage.id) }}' id='{{ linkedImage.id }}'>
           <div style='text-align: center;'>
             <span ng-show='linkedImage.title'><b>{{ linkedImage.title }}</b></span>
             <span ng-show='linkedImage.title && linkedImage.image_type'><br></span>

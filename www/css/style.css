@@ -847,28 +847,15 @@ Images on Images Tab
 }
 
 .strabo-small-thumbnail {
-  position: relative;
   width: 100px;
   height: 100px;
-  overflow: hidden;
+  object-fit: cover;
 }
 
 .strabo-big-thumbnail {
-  position: relative;
   width: 200px;
   height: 200px;
-  overflow: hidden;
-}
-
-.strabo-small-thumbnail img, .strabo-big-thumbnail img {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  height: 100%;
-  width: auto;
-  -webkit-transform: translate(-50%,-50%);
-  -ms-transform: translate(-50%,-50%);
-  transform: translate(-50%,-50%);
+  object-fit: cover;
 }
 
 /*--------------------

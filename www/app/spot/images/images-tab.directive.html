@@ -1,9 +1,8 @@
 <div class='strabo-image'>
   <div class='row' ng-repeat='image in vm.spot.properties.images track by image.id'>
     <div class='col image-col'>
-      <div class="strabo-small-thumbnail">
-        <img ng-src='{{ vmChild.getImageSrc(image.id) }}' ng-click='vmChild.showImages($index)'/>
-      </div>
+      <img class="strabo-small-thumbnail" ng-src='{{ vmChild.getImageSrc(image.id) }}'
+           ng-click='vmChild.showImages($index)'/>
     </div>
     <div class='col'>
       <ion-input class='item item-input'>
