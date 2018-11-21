@@ -107,28 +107,30 @@
     function loadTab(state) {
       vmParent.loadTab(state);  // Need to load current state into parent
 
-      vmParent.showTrace = false;
-      vmParent.showGeologicUnit = true;
-      vmParent.showSurfaceFeature = false;
+      if (vmParent.spot && !_.isEmpty(vmParent.spot)) {
+        vmParent.showTrace = false;
+        vmParent.showGeologicUnit = true;
+        vmParent.showSurfaceFeature = false;
 
-      if (vmParent.spot && vmParent.spot.geometry && vmParent.spot.geometry.type === 'LineString') {
-        vmParent.showTrace = true;
-        vmParent.showGeologicUnit = false;
-        if (vmParent.spot.properties.trace) vmParent.data = vmParent.spot.properties.trace;
-        FormFactory.setForm('trace');
-      }
-      if (vmParent.spot && vmParent.spot.geometry && vmParent.spot.geometry.type === 'Polygon') {
-        vmParent.showRadius = false;
-        vmParent.showSurfaceFeature = true;
-        if (vmParent.spot.properties.surface_feature) vmParent.data = vmParent.spot.properties.surface_feature;
-        FormFactory.setForm('surface_feature');
-      }
+        if (vmParent.spot && vmParent.spot.geometry && vmParent.spot.geometry.type === 'LineString') {
+          vmParent.showTrace = true;
+          vmParent.showGeologicUnit = false;
+          if (vmParent.spot.properties.trace) vmParent.data = vmParent.spot.properties.trace;
+          FormFactory.setForm('trace');
+        }
+        if (vmParent.spot && vmParent.spot.geometry && vmParent.spot.geometry.type === 'Polygon') {
+          vmParent.showRadius = false;
+          vmParent.showSurfaceFeature = true;
+          if (vmParent.spot.properties.surface_feature) vmParent.data = vmParent.spot.properties.surface_feature;
+          FormFactory.setForm('surface_feature');
+        }
 
-      // Has the spot been mapped yet?
-      if (vmParent.spot && vmParent.spot.geometry && vmParent.spot.geometry.coordinates) {
-        // If the geometry coordinates contain any null values, delete the geometry; it shouldn't be defined
-        if (_.indexOf(_.flatten(vmParent.spot.geometry.coordinates), null) !== -1) delete vmParent.spot.geometry;
-        else setDisplayedCoords();
+        // Has the spot been mapped yet?
+        if (vmParent.spot && vmParent.spot.geometry && vmParent.spot.geometry.coordinates) {
+          // If the geometry coordinates contain any null values, delete the geometry; it shouldn't be defined
+          if (_.indexOf(_.flatten(vmParent.spot.geometry.coordinates), null) !== -1) delete vmParent.spot.geometry;
+          else setDisplayedCoords();
+        }
       }
     }
 

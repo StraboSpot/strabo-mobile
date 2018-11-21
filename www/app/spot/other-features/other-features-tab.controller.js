@@ -52,16 +52,18 @@
 
     function loadTab(state) {
       vmParent.loadTab(state);  // Need to load current state into parent
-      checkProperties();
+      if (vmParent.spot && !_.isEmpty(vmParent.spot)) {
+        checkProperties();
 
-      vm.otherFeatureTypes = ProjectFactory.getOtherFeatures();
-      if (_.isEmpty(vm.otherFeatureTypes)) {
-        ProjectFactory.saveProjectItem('other_features', defaultTypes).then(function () {
-          vm.otherFeatureTypes = ProjectFactory.getOtherFeatures();
-        });
+        vm.otherFeatureTypes = ProjectFactory.getOtherFeatures();
+        if (_.isEmpty(vm.otherFeatureTypes)) {
+          ProjectFactory.saveProjectItem('other_features', defaultTypes).then(function () {
+            vm.otherFeatureTypes = ProjectFactory.getOtherFeatures();
+          });
+        }
+
+        createModal();
       }
-
-      createModal();
     }
 
     function checkProperties() {

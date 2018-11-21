@@ -114,7 +114,7 @@
 
     function loadTab(state) {
       vmParent.loadTab(state);     // Need to load current state into parent
-      $log.log('Data:', vmParent.spot.properties.data);
+      if (vmParent.spot && !_.isEmpty(vmParent.spot)) $log.log('Data:', vmParent.spot.properties.data);
     }
 
     function readDataUrl(file) {

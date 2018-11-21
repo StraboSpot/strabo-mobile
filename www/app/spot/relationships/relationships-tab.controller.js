@@ -46,7 +46,7 @@
 
     function loadTab (state) {
       vmParent.loadTab(state);  // Need to load current state into parent
-      loadRelationships();
+      if (vmParent.spot && !_.isEmpty(vmParent.spot)) loadRelationships();
     }
 
     function loadRelationships() {

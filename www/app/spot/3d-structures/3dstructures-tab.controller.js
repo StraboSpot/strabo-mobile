@@ -49,9 +49,11 @@
 
     function loadTab(state) {
       vmParent.loadTab(state);     // Need to load current state into parent
-      $log.log('3D Structures:', vmParent.spot.properties._3d_structures);
-      checkProperties();
-      createModal();
+      if (vmParent.spot && !_.isEmpty(vmParent.spot)) {
+        $log.log('3D Structures:', vmParent.spot.properties._3d_structures);
+        checkProperties();
+        createModal();
+      }
     }
 
     function checkProperties() {

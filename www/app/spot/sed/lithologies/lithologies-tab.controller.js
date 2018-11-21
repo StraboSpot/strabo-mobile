@@ -43,12 +43,14 @@
 
     function loadTab(state) {
       vmParent.loadTab(state);     // Need to load current state into parent
-      FormFactory.setForm('sed', 'interval_basics');
-      if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.lithologies) {
-        $log.log('Sed Lithologies:', vmParent.spot.properties.sed.lithologies);
-        vmParent.data = vmParent.spot.properties.sed.lithologies;
+      if (vmParent.spot && !_.isEmpty(vmParent.spot)) {
+        FormFactory.setForm('sed', 'interval_basics');
+        if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.lithologies) {
+          $log.log('Sed Lithologies:', vmParent.spot.properties.sed.lithologies);
+          vmParent.data = vmParent.spot.properties.sed.lithologies;
+        }
+        else vmParent.data = {};
       }
-      else vmParent.data = {};
     }
 
     /**

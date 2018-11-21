@@ -57,28 +57,29 @@
 
     function loadTab(state) {
       vmParent.loadTab(state);   // Need to load current state into parent
+      if (vmParent.spot && !_.isEmpty(vmParent.spot)) {
+        FormFactory.setForm('surface_feature');
 
-      FormFactory.setForm('surface_feature');
+        vm.hideContNesting = !vmParent.spot.geometry;
+        vm.isNesting = SpotFactory.getActiveNesting();
+        vm.spot = vmParent.spot;
 
-      vm.hideContNesting = !vmParent.spot.geometry;
-      vm.isNesting = SpotFactory.getActiveNesting();
-      vm.spot = vmParent.spot;
+        if (vm.isNesting && _.isEmpty(SpotFactory.getActiveNest())) {
+          vm.isNesting = false;
+          toggleNesting();
+        }
+        setNestToggleText();
+        updateNest();
 
-      if (vm.isNesting && _.isEmpty(SpotFactory.getActiveNest())) {
-        vm.isNesting = false;
-        toggleNesting();
+        $ionicModal.fromTemplateUrl('app/shared/new-nest-modal.html', {
+          'scope': $scope,
+          'animation': 'slide-in-up',
+          'backdropClickToClose': false,
+          'hardwareBackButtonClose': false
+        }).then(function (modal) {
+          vmParent.newNestModal = modal;
+        });
       }
-      setNestToggleText();
-      updateNest();
-
-      $ionicModal.fromTemplateUrl('app/shared/new-nest-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up',
-        'backdropClickToClose': false,
-        'hardwareBackButtonClose': false
-      }).then(function (modal) {
-        vmParent.newNestModal = modal;
-      });
     }
 
     function setNestToggleText() {

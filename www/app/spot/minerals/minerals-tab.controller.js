@@ -108,10 +108,12 @@
 
     function loadTab(state) {
       vmParent.loadTab(state);     // Need to load current state into parent
-      $log.log('Minerals:', vmParent.spot.properties.minerals);
-      // vm.mineralCollections = ProjectFactory.getProjectProperty("mineral_collections");
-      // setupCreateCollectionSelectBox();
-      createModal();
+      if (vmParent.spot && !_.isEmpty(vmParent.spot)) {
+        $log.log('Minerals:', vmParent.spot.properties.minerals);
+        // vm.mineralCollections = ProjectFactory.getProjectProperty("mineral_collections");
+        // setupCreateCollectionSelectBox();
+        createModal();
+      }
     }
 
     //displays the select box for the favorites collections

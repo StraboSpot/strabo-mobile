@@ -81,19 +81,21 @@
 
     function loadTab(state) {
       vmParent.loadTab(state);     // Need to load current state into parent
-      FormFactory.setForm('sample');
-      $log.log('Samples:', vmParent.spot.properties.samples);
+      if (vmParent.spot && !_.isEmpty(vmParent.spot)) {
+        FormFactory.setForm('sample');
+        $log.log('Samples:', vmParent.spot.properties.samples);
 
-      /* Remove samples without ids - holdover form temporarily adding a nested spot id in properties.samples */
-      vmParent.spot.properties.samples = _.filter(vmParent.spot.properties.samples, function (sample) {
-        return _.has(sample, 'id');
-      });
-      if (_.isEmpty(vmParent.spot.properties.samples)) delete vmParent.spot.properties.samples;
-      vm.isTestingMode = ProjectFactory.getProjectProperty('is_testing_mode');
-      checkProperties();
-      gatherNestedSampleSpots();
-      setDisplayedSpots();
-      createModal();
+        /* Remove samples without ids - holdover form temporarily adding a nested spot id in properties.samples */
+        vmParent.spot.properties.samples = _.filter(vmParent.spot.properties.samples, function (sample) {
+          return _.has(sample, 'id');
+        });
+        if (_.isEmpty(vmParent.spot.properties.samples)) delete vmParent.spot.properties.samples;
+        vm.isTestingMode = ProjectFactory.getProjectProperty('is_testing_mode');
+        checkProperties();
+        gatherNestedSampleSpots();
+        setDisplayedSpots();
+        createModal();
+      }
     }
 
     function checkProperties() {

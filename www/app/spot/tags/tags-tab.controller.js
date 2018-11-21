@@ -51,20 +51,22 @@
 
     function loadTab(state) {
       vmParent.loadTab(state);  // Need to load current state into parent
-      loadActiveTagging();
+      if (vmParent.spot && !_.isEmpty(vmParent.spot)) {
+        loadActiveTagging();
 
-      $ionicModal.fromTemplateUrl('app/spot/tags/set-active-tags-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up',
-        'backdropClickToClose': false
-      }).then(function (modal) {
-        vm.setActiveTagsModal = modal;
-      });
+        $ionicModal.fromTemplateUrl('app/spot/tags/set-active-tags-modal.html', {
+          'scope': $scope,
+          'animation': 'slide-in-up',
+          'backdropClickToClose': false
+        }).then(function (modal) {
+          vm.setActiveTagsModal = modal;
+        });
 
-      // Cleanup the modal when we're done with it!
-      $scope.$on('$destroy', function () {
-        vm.setActiveTagsModal.remove();
-      });
+        // Cleanup the modal when we're done with it!
+        $scope.$on('$destroy', function () {
+          vm.setActiveTagsModal.remove();
+        });
+      }
     }
 
     function loadActiveTagging() {

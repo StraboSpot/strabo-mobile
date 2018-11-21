@@ -75,16 +75,14 @@
     }
 
     function loadTab(state) {
-      $ionicLoading.show({
-        'template': '<ion-spinner></ion-spinner><br>Loading Images...'
-      });
       vmParent.loadTab(state);  // Need to load current state into parent
-      FormFactory.setForm('image');
-      createModals();
-      vmParent.spot = ImageFactory.cleanImagesInSpot(vmParent.spot);
-      getImageSources();
-      checkImageType();     // Set default image type to 'photo' if no image type has been set
-      if (IS_WEB) ionic.on('change', getFile, $document[0].getElementById('imageFile'));
+      if (vmParent.spot && !_.isEmpty(vmParent.spot)) {
+        FormFactory.setForm('image');
+        createModals();
+        getImageSources();
+        checkImageType();     // Set default image type to 'photo' if no image type has been set
+        if (IS_WEB) ionic.on('change', getFile, $document[0].getElementById('imageFile'));
+      }
     }
 
     // Set default image type to 'photo' if no image type has been set
@@ -125,6 +123,7 @@
       });
       var promises = [];
       imageSources = {};
+      vmParent.spot = ImageFactory.cleanImagesInSpot(vmParent.spot);
       _.each(vmParent.spot.properties.images, function (image) {
         var promise = ImageFactory.getImageById(image.id).then(function (src) {
           if (IS_WEB && UserFactory.getUser()) {
@@ -215,9 +214,11 @@
 
             micrographImageTypePopup.then(function (res2) {
               if (res2) {
-                deferred.resolve({'image_type': vm.imageType, 'other_image_type': vm.otherImageType,
+                deferred.resolve({
+                  'image_type': vm.imageType, 'other_image_type': vm.otherImageType,
                   'micrograph_image_type': vm.micrographImageType,
-                  'other_micrograph_image_type': vm.otherMicrographImageType});
+                  'other_micrograph_image_type': vm.otherMicrographImageType
+                });
               }
               else deferred.reject();
             });
@@ -368,7 +369,7 @@
             });
           });
         });
-        if (micrographRefId)  vmParent.submit('/app/thin-sections/' + micrographRefId);
+        if (micrographRefId) vmParent.submit('/app/thin-sections/' + micrographRefId);
         else vmParent.submit('/app/image-basemaps/' + image.id);
       }
       else vmParent.submit('/app/image-basemaps/' + image.id);

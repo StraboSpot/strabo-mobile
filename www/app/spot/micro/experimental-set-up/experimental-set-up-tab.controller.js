@@ -40,15 +40,17 @@
 
     function loadTab(state) {
       vmParent.loadTab(state);     // Need to load current state into parent
-      FormFactory.setForm('micro', 'experimental_set_up');
-      if (vmParent.spot.properties.micro && vmParent.spot.properties.micro.experimental_set_up) {
-        $log.log('Experimental Set Up:', vmParent.spot.properties.micro.experimental_set_up);
-        vmParent.data = vmParent.spot.properties.micro.experimental_set_up;
-        if (vmParent.data.date_of_experiment) {
-          vmParent.data.date_of_experiment = new Date(vmParent.data.date_of_experiment);
+      if (vmParent.spot && !_.isEmpty(vmParent.spot)) {
+        FormFactory.setForm('micro', 'experimental_set_up');
+        if (vmParent.spot.properties.micro && vmParent.spot.properties.micro.experimental_set_up) {
+          $log.log('Experimental Set Up:', vmParent.spot.properties.micro.experimental_set_up);
+          vmParent.data = vmParent.spot.properties.micro.experimental_set_up;
+          if (vmParent.data.date_of_experiment) {
+            vmParent.data.date_of_experiment = new Date(vmParent.data.date_of_experiment);
+          }
         }
+        else vmParent.data = {};
       }
-      else vmParent.data = {};
     }
 
     /**

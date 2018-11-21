@@ -42,12 +42,14 @@
 
     function loadTab(state) {
       vmParent.loadTab(state);     // Need to load current state into parent
-      FormFactory.setForm('sed', 'facies_and_process');
-      if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.interpretations) {
-        $log.log('Sed Interpretations:', vmParent.spot.properties.sed.interpretations);
-        vmParent.data = vmParent.spot.properties.sed.interpretations;
+      if (vmParent.spot && !_.isEmpty(vmParent.spot)) {
+        FormFactory.setForm('sed', 'facies_and_process');
+        if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.interpretations) {
+          $log.log('Sed Interpretations:', vmParent.spot.properties.sed.interpretations);
+          vmParent.data = vmParent.spot.properties.sed.interpretations;
+        }
+        else vmParent.data = {};
       }
-      else vmParent.data = {};
     }
 
     /**

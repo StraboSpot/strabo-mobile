@@ -72,9 +72,11 @@
 
     function loadTab(state) {
       vmParent.loadTab(state);  // Need to load current state into parent
-      $log.log('Orientation Data:', vmParent.spot.properties.orientation_data);
-      checkProperties();
-      createModals();
+      if (vmParent.spot && !_.isEmpty(vmParent.spot)) {
+        $log.log('Orientation Data:', vmParent.spot.properties.orientation_data);
+        checkProperties();
+        createModals();
+      }
     }
 
     function assignProperties(item) {

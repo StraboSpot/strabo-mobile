@@ -66,12 +66,14 @@
     }
 
     function loadTab(state) {
-      createModal();
       vmParent.loadTab(state);     // Need to load current state into parent
-      if (vmParent.spot.properties.micro && vmParent.spot.properties.micro.experimental) {
-        $log.log('Experimental:', vmParent.spot.properties.micro.experimental);
+      if (vmParent.spot && !_.isEmpty(vmParent.spot)) {
+        createModal();
+        if (vmParent.spot.properties.micro && vmParent.spot.properties.micro.experimental) {
+          $log.log('Experimental:', vmParent.spot.properties.micro.experimental);
+        }
+        else vmParent.data = {};
       }
-      else vmParent.data = {};
     }
 
     /**

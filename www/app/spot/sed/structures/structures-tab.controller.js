@@ -72,13 +72,15 @@
 
     function loadTab(state) {
       vmParent.loadTab(state);     // Need to load current state into parent
-      FormFactory.setForm('sed', 'physical_structures');
-      getStructuresFromLithologies();
-      if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.structures) {
-        $log.log('Sed Structures:', vmParent.spot.properties.sed.structures);
-        vmParent.data = vmParent.spot.properties.sed.structures;
+      if (vmParent.spot && !_.isEmpty(vmParent.spot)) {
+        FormFactory.setForm('sed', 'physical_structures');
+        getStructuresFromLithologies();
+        if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.structures) {
+          $log.log('Sed Structures:', vmParent.spot.properties.sed.structures);
+          vmParent.data = vmParent.spot.properties.sed.structures;
+        }
+        else vmParent.data = {};
       }
-      else vmParent.data = {};
     }
 
     /**
