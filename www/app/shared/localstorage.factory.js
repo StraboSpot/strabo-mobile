@@ -5,9 +5,9 @@
     .module('app')
     .factory('LocalStorageFactory', LocalStorageFactory);
 
-  LocalStorageFactory.$inject = ['$cordovaDevice', '$cordovaFile', '$log', '$q', '$window', 'HelpersFactory'];
+  LocalStorageFactory.$inject = ['$cordovaDevice', '$cordovaFile', '$log', '$q', '$window', 'HelpersFactory', 'IS_WEB'];
 
-  function LocalStorageFactory($cordovaDevice, $cordovaFile, $log, $q, $window, HelpersFactory) {
+  function LocalStorageFactory($cordovaDevice, $cordovaFile, $log, $q, $window, HelpersFactory, IS_WEB) {
     var dbs = {};
     dbs.configDb = {};        // global LocalForage for configuration and user data
     dbs.imagesDb = {};        // global LocalForage for images
@@ -134,7 +134,8 @@
         }
       }
       catch (err) {
-        $log.log(err);
+        //$log.log(err);
+        $log.error('Error getting device path');
       }
       return devicePath;
     }
@@ -242,7 +243,7 @@
           deferred.resolve(fullPath + fileName);
         },
         function (writeError) {
-          $log.log('Error writing file!', writeError);
+          $log.error('Error writing file!');
           deferred.reject(fullPath + fileName)
         }
       );
@@ -383,19 +384,25 @@
     function getImageById(imageId) { //read file from file system
       var deferred = $q.defer(); // init promise
 
-      var devicePath = getDevicePath();
-      var filePath = devicePath + imagesDirectory;
-      var fileName = imageId + '.jpg';
-      $log.log('Looking for file: ',filePath,fileName);
-      $cordovaFile.checkFile(filePath + '/', fileName).then(function (checkDirSuccess) {
-        //$cordovaFile.readAsText(filePath + '/', fileName).then(function(result){
-        $cordovaFile.readAsDataURL(filePath + '/', fileName).then(function(result){
-          deferred.resolve(result);
+      if ($window.cordova) {
+        var devicePath = getDevicePath();
+        var filePath = devicePath + imagesDirectory;
+        var fileName = imageId + '.jpg';
+        $log.log('Looking for file: ', filePath, fileName);
+        $cordovaFile.checkFile(filePath + '/', fileName).then(function (checkDirSuccess) {
+          //$cordovaFile.readAsText(filePath + '/', fileName).then(function(result){
+          $cordovaFile.readAsDataURL(filePath + '/', fileName).then(function (result) {
+            deferred.resolve(result);
+          });
+        }, function (checkDirFailed) {
+          $log.log('Check file not found.', checkDirFailed);
+          deferred.resolve('img/image-not-found.png');
         });
-      }, function (checkDirFailed) {
-        $log.log('Check file not found.',checkDirFailed)
+      }
+      else {
+        if (!IS_WEB) $log.warn('Not Web but no Cordova so unable to get local image source. Running for development?');
         deferred.resolve('img/image-not-found.png');
-      });
+      }
 
       return deferred.promise;
     }

@@ -5,10 +5,14 @@
     .module('app')
     .controller('ManageProjectController', ManageProjectController);
 
-  ManageProjectController.$inject = ['$document', '$ionicModal', '$ionicLoading', '$ionicPopover', '$ionicPopup', '$log', '$scope', '$state', '$q', 'FormFactory', 'ImageFactory', 'LiveDBFactory', 'LocalStorageFactory', 'OtherMapsFactory',
-    'ProjectFactory', 'RemoteServerFactory', 'SpotFactory', 'UserFactory', 'IS_WEB'];
+  ManageProjectController.$inject = ['$document', '$ionicModal', '$ionicLoading', '$ionicPopover', '$ionicPopup',
+    '$log', '$scope', '$state', '$q', '$window', 'FormFactory', 'ImageFactory', 'LiveDBFactory', 'LocalStorageFactory',
+    'OtherMapsFactory', 'ProjectFactory', 'RemoteServerFactory', 'SpotFactory', 'UserFactory', 'IS_WEB'];
 
-  function ManageProjectController($document, $ionicModal, $ionicLoading, $ionicPopover, $ionicPopup, $log, $scope, $state, $q, FormFactory, ImageFactory, LiveDBFactory, LocalStorageFactory, OtherMapsFactory, ProjectFactory, RemoteServerFactory,SpotFactory, UserFactory, IS_WEB) {
+  function ManageProjectController($document, $ionicModal, $ionicLoading, $ionicPopover, $ionicPopup, $log, $scope,
+                                   $state, $q, $window, FormFactory, ImageFactory, LiveDBFactory, LocalStorageFactory,
+                                   OtherMapsFactory, ProjectFactory, RemoteServerFactory,SpotFactory, UserFactory,
+                                   IS_WEB) {
     var vm = this;
 
     var downloadErrors = false;
@@ -76,7 +80,8 @@
 
       ProjectFactory.setUser(user);
       FormFactory.setForm('project');
-      LocalStorageFactory.checkImagesDir();
+      if (!IS_WEB && $window.cordova) LocalStorageFactory.checkImagesDir();
+      if (!IS_WEB && !$window.cordova) $log.warn('Not Web but unable get image directory. Running for development?');
 
       if (_.isEmpty(vm.project)) {
         vm.showExitProjectModal = false;
@@ -203,7 +208,7 @@
     }
 
     function downloadImages(neededImagesIds) {
-      if (!IS_WEB) {
+      if (!IS_WEB && $window.cordova) {
         var promises = [];
         var imagesDownloadedCount = 0;
         var imagesFailedCount = 0;
@@ -225,6 +230,9 @@
                     outputMessage(
                       'NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
                       '<br>NEW Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
+                  }, function () {
+                    $log.error('Unable to save image locally', neededImageId);
+                    imagesFailedCount++;
                   });
                 //});
               }
@@ -244,7 +252,10 @@
             outputMessage('Image Downloads Failed: ' + imagesFailedCount);
           }
         });
-
+      }
+      else if (!IS_WEB && !$window.cordova) {
+        $log.warn('Not Web but no Cordova so unable to get local image sources. Running for development?');
+        outputMessage('Unable to Download Images: ' + neededImagesIds.length);
       }
     }
 
@@ -449,7 +460,7 @@
           setSpotsDataset();
         }, function (err) {
           notifyMessages.splice(0, 1);
-          outputMessage('<br>Error Updating Dataset! Error:' + err);
+          outputMessage('<br>Error Updating Dataset! Error: ' + err);
         }).finally(function () {
           $ionicLoading.show({
             scope: $scope, template: notifyMessages.join('<br>') + '<br><br>' +
@@ -1078,7 +1089,7 @@
               initializeProject();
             }, function (err) {
               notifyMessages.splice(0, 1);
-              outputMessage('<br>Error Updating Project! Error:' + err);
+              outputMessage('<br>Error Updating Project! Error: ' + err);
             }).finally(function () {
               $ionicLoading.show({
                 scope: $scope, template: notifyMessages.join('<br>') + '<br><br>' +
