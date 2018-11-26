@@ -451,7 +451,6 @@
           'date': 'datetime',
           'id': 'number; timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id)',
           'images': [],
-          'minerals': [],
           'modified_timestamp': 'timestamp',
           'name': 'Type: text; REQUIRED',
           'notes': 'Type: text',
@@ -469,10 +468,6 @@
         'other': dataModels._3d_structures.other,
         'tensor': dataModels._3d_structures.tensor,
         'images': dataModels.image,
-        'heavy': dataModels.minerals.heavy,
-        'metamorphic': dataModels.minerals.metamorphic,
-        'igneous': dataModels.minerals.igneous,
-        'sedimentary': dataModels.minerals.sedimentary,
         'linear_orientation': dataModels.orientation_data.linear_orientation,
         'planar_orientation': dataModels.orientation_data.planar_orientation,
         'tabular_orientation': dataModels.orientation_data.tabular_orientation,
@@ -510,10 +505,6 @@
           description.associated_orientation = [];
           description = sortby(description);
           spotDataModel.properties.orientation_data.push(description);
-        }
-        else if (key === 'metamorphic' || key === 'igneous' || key === 'sedimentary' || key === 'heavy') {
-          var mineralsChoices = getMineralsChoices();
-          spotDataModel.properties.minerals = 'Type: select multiple [' + mineralsChoices.join(', ') + ']';
         }
         else if (key === 'fabric' || key === 'fold' || key === 'other' || key === 'tensor') {
           description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number ' +
