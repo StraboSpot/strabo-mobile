@@ -136,10 +136,10 @@
     function goToMap(map) {
       $ionicLoading.show({
         'template': '<ion-spinner></ion-spinner>'
-      }).then(function(){
+      }).then(function () {
         OfflineTilesFactory.getMapCenterTile(map.mapid).then(function (centerTile) {
           $log.log('gotcenterTile: ', centerTile);
-          if(centerTile) {
+          if (centerTile) {
             var parts = centerTile.split('_');
             var z = Number(parts[0]);
             var x = Number(parts[1]);
@@ -150,13 +150,13 @@
             MapViewFactory.zoomToPoint([lng, lat], z);
             $location.path('/app/map');
           }
-        },function(err){ //map not found
-          $log.log('Found Error: ',err);
+        }, function (err) { //map not found
+          $log.log('Found Error: ', err);
           $ionicLoading.hide();
           $ionicPopup.alert({
             'title': 'Error!',
-            'template': 'Offline map not found on device.<br>(code: '+err+')'
-          }).then(function(){
+            'template': 'Offline map not found on device.<br>(code: ' + err + ')'
+          }).then(function () {
             $ionicLoading.hide();
           });
         });

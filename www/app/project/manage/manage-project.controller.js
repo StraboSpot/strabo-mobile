@@ -11,7 +11,7 @@
 
   function ManageProjectController($document, $ionicModal, $ionicLoading, $ionicPopover, $ionicPopup, $log, $scope,
                                    $state, $q, $window, FormFactory, ImageFactory, LiveDBFactory, LocalStorageFactory,
-                                   OtherMapsFactory, ProjectFactory, RemoteServerFactory,SpotFactory, UserFactory,
+                                   OtherMapsFactory, ProjectFactory, RemoteServerFactory, SpotFactory, UserFactory,
                                    IS_WEB) {
     var vm = this;
 
@@ -223,17 +223,17 @@
                 outputMessage('NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
                   '<br>NEW Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
                 //return readDataUrl(response.data).then(function (base64Image) {
-                  return ImageFactory.saveImage(response.data, neededImageId).then(function () {
+                return ImageFactory.saveImage(response.data, neededImageId).then(function () {
                   //return ImageFactory.saveImage(base64Image, neededImageId).then(function () {
-                    savedImagesCount++;
-                    notifyMessages.pop();
-                    outputMessage(
-                      'NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
-                      '<br>NEW Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
-                  }, function () {
-                    $log.error('Unable to save image locally', neededImageId);
-                    imagesFailedCount++;
-                  });
+                  savedImagesCount++;
+                  notifyMessages.pop();
+                  outputMessage(
+                    'NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
+                    '<br>NEW Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
+                }, function () {
+                  $log.error('Unable to save image locally', neededImageId);
+                  imagesFailedCount++;
+                });
                 //});
               }
               else {
@@ -464,7 +464,7 @@
         }).finally(function () {
           $ionicLoading.show({
             scope: $scope, template: notifyMessages.join('<br>') + '<br><br>' +
-            '<a class="button button-clear button-outline button-light" ng-click="vm.hideLoading()">OK</a>'
+              '<a class="button button-clear button-outline button-light" ng-click="vm.hideLoading()">OK</a>'
           });
         });
       }, function () {
@@ -609,11 +609,11 @@
           $log.log('Finished updating dataset', dataset, '. Response:', response);
           return RemoteServerFactory.addDatasetToProject(project.id, dataset.id, UserFactory.getUser().encoded_login)
             .then(function (response2) {
-            $log.log('Finished adding dataset to project', project, '. Response:', response2);
-            return uploadSpots(dataset).then(function () {
-              deferred.resolve();
-            });
-          },
+                $log.log('Finished adding dataset to project', project, '. Response:', response2);
+                return uploadSpots(dataset).then(function () {
+                  deferred.resolve();
+                });
+              },
               function (err) {
                 uploadErrors = true;
                 $log.log('Error adding dataset to project. Response:', err);
@@ -761,7 +761,7 @@
             outputMessage('Error updating Spots in dataset' + dataset.name);
             if (err && err.data && err.data.Error) $log.error(err.data.Error);
             if (err && err.statusText) outputMessage('Server Error: ' + err.statusText);
-             return $q.when(null);
+            return $q.when(null);
           });
       }
     }
@@ -788,7 +788,7 @@
         var confirmPopup = $ionicPopup.confirm({
           'title': 'Delete Dataset Warning!',
           'template': 'Are you sure you want to <span style="color:red">DELETE</span> the Dataset' +
-          ' <b>' + dataset.name + '</b>? This will also delete the Spots in this dataset.',
+            ' <b>' + dataset.name + '</b>? This will also delete the Spots in this dataset.',
           'cssClass': 'warning-popup'
         });
         confirmPopup.then(function (res) {
@@ -808,7 +808,7 @@
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Delete Project Warning!',
         'template': 'Are you sure you want to <span style="color:red">DELETE</span> the project' +
-        ' <b>' + project.name + '</b>. This will also delete all datasets and Spots contained within the project.',
+          ' <b>' + project.name + '</b>. This will also delete all datasets and Spots contained within the project.',
         'cssClass': 'warning-popup'
       });
       confirmPopup.then(function (res) {
@@ -859,14 +859,14 @@
         $ionicPopup.alert({
           'title': 'Type in Use',
           'template': 'This type is used in the following Spot. Please remove the type from this Spot before' +
-          ' deleting this type. Spot: ' + spotNames.join(', ')
+            ' deleting this type. Spot: ' + spotNames.join(', ')
         });
       }
       else if (usedType.length > 1) {
         $ionicPopup.alert({
           'title': 'Type in Use',
           'template': 'This type is used in the following Spots. Please remove the type from these Spots before' +
-          ' deleting this type. Spots: ' + spotNames.join(', ')
+            ' deleting this type. Spots: ' + spotNames.join(', ')
         });
       }
       else {
@@ -917,11 +917,11 @@
      }
      }*/
 
-     function exportProject() {
-       vm.popover.hide().then(function () {
-         exportData();
-       });
-     }
+    function exportProject() {
+      vm.popover.hide().then(function () {
+        exportData();
+      });
+    }
 
     function oldexportProject() {
       vm.popover.hide().then(function () {
@@ -992,7 +992,6 @@
         importData();
       });
     }
-
 
 
     function oldimportProject() {
@@ -1093,7 +1092,7 @@
             }).finally(function () {
               $ionicLoading.show({
                 scope: $scope, template: notifyMessages.join('<br>') + '<br><br>' +
-                '<a class="button button-clear button-outline button-light" ng-click="vm.hideLoading()">OK</a>'
+                  '<a class="button button-clear button-outline button-light" ng-click="vm.hideLoading()">OK</a>'
               });
             });
           }
@@ -1138,7 +1137,7 @@
             }).finally(function () {
               $ionicLoading.show({
                 scope: $scope, template: notifyMessages.join('<br>') + '<br><br>' +
-                '<a class="button button-clear button-outline button-light" ng-click="vm.hideLoading()">OK</a>'
+                  '<a class="button button-clear button-outline button-light" ng-click="vm.hideLoading()">OK</a>'
               });
             });
           }
@@ -1207,9 +1206,9 @@
         var confirmPopup = $ionicPopup.confirm({
           'title': 'Delete Local Project Warning!',
           'template': 'Switching projects will <span style="color:red">DELETE</span> the local copy of the' +
-          ' current project <b>' + vm.project.description.project_name + '</b> including all datasets and Spots' +
-          ' contained within this project. Make sure you have already uploaded the project to the server if you' +
-          ' wish to preserve the data. Continue?',
+            ' current project <b>' + vm.project.description.project_name + '</b> including all datasets and Spots' +
+            ' contained within this project. Make sure you have already uploaded the project to the server if you' +
+            ' wish to preserve the data. Continue?',
           'cssClass': 'warning-popup'
         });
         confirmPopup.then(function (res) {
@@ -1299,11 +1298,11 @@
       else {
         vm.activeDatasets.push(datasetToggled);
         if (_.isEmpty(ProjectFactory.getSpotIds()[datasetToggled.id]) &&
-        !_.isEmpty(UserFactory.getUser()) && navigator.onLine) {
+          !_.isEmpty(UserFactory.getUser()) && navigator.onLine) {
           initializeDownloadDataset(datasetToggled);
         }
         else if (_.isEmpty(ProjectFactory.getSpotIds()[datasetToggled.id]) &&
-        !_.isEmpty(UserFactory.getUser()) && !navigator.onLine) {
+          !_.isEmpty(UserFactory.getUser()) && !navigator.onLine) {
           $ionicPopup.alert({
             'title': 'Cannot Update Dataset!',
             'template': 'Unable to reach the server to check if there are already Spots in this dataset to download.'
