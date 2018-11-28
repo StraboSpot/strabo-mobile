@@ -266,6 +266,7 @@
 
     function addImage() {
       getImageType().then(function (imageProps) {
+        newImageData = {};
         newImageData.image_type = imageProps.image_type;
         if (newImageData.image_type === 'other_image_ty') newImageData.other_image_type = imageProps.other_image_type;
         else if (imageProps.image_type === 'micrograph') {
