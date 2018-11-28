@@ -31,6 +31,7 @@
     vm.isWeb = IS_WEB;
     vm.newNestModal = {};
     vm.newNestProperties = {};
+    vm.popover = {};
     vm.saveEditsText = 'Save Edits';
     vm.showSaveEditsBtn = false;
 

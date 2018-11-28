@@ -5,10 +5,12 @@
     .module('app')
     .factory('OfflineTilesFactory', OfflineTilesFactory);
 
-  OfflineTilesFactory.$inject = ['$cordovaFileTransfer', '$http', '$ionicLoading', '$ionicPopup', '$log', '$q', '$timeout', 'LocalStorageFactory'];
+  OfflineTilesFactory.$inject = ['$cordovaFileTransfer', '$http', '$ionicLoading', '$ionicPopup', '$log', '$q',
+    '$timeout', 'LocalStorageFactory'];
 
   // used to determine what the map provider is before we archive a tileset
-  function OfflineTilesFactory($cordovaFileTransfer, $http, $ionicLoading, $ionicPopup, $log, $q, $timeout, LocalStorageFactory) {
+  function OfflineTilesFactory($cordovaFileTransfer, $http, $ionicLoading, $ionicPopup, $log, $q, $timeout,
+                               LocalStorageFactory) {
     var downloadErrors = 0;
     var offlineMaps = [];
 
@@ -69,7 +71,7 @@
         $ionicPopup.alert({
           'title': 'Append Error!',
           'template': 'Cannot append the selected new tiles to the saved map <b>' + map.name + '</b> since the map' +
-          ' tile provider is not the same. A new map name must be given if you wish to use a different tile provider.'
+            ' tile provider is not the same. A new map name must be given if you wish to use a different tile provider.'
         });
         deferred.reject();
       }
@@ -91,13 +93,13 @@
       // deletes all offline tiles
       var deferred = $q.defer();
       offlineMaps = [];
-      LocalStorageFactory.clearFiles(maps).then(function(){ //clear tile zips and caches
+      LocalStorageFactory.clearFiles(maps).then(function () { //clear tile zips and caches
         // then delete all map names
         LocalStorageFactory.getDb().mapNamesDb.clear(function (err) {
           if (err) deferred.reject(err);
-        else deferred.resolve();
+          else deferred.resolve();
         });
-      },function(error){
+      }, function (error) {
         deferred.resolve(error);
       });
       return deferred.promise;
@@ -105,7 +107,7 @@
 
     function deleteMap(mapToDelete) {
       var deferred = $q.defer();
-      LocalStorageFactory.deleteMapFiles(mapToDelete).then(function() {
+      LocalStorageFactory.deleteMapFiles(mapToDelete).then(function () {
         LocalStorageFactory.getDb().mapNamesDb.removeItem(mapToDelete.name).then(function () {
           // Map is deleted, and this is now fully resolved
           offlineMaps = _.reject(offlineMaps, function (offlineMap) {
@@ -113,7 +115,7 @@
           });
           deferred.resolve();
         });
-      },function(){
+      }, function () {
         $log.log('LocalStorageFactory.deleteMapFiles failed to resolve.');
         deferred.resolve();
       });
@@ -144,7 +146,7 @@
       var deferred = $q.defer();
       var totalcount = 0;
       LocalStorageFactory.getDb().mapNamesDb.iterate(function (value, key) {
-        if(value.existCount) {
+        if (value.existCount) {
 
           totalcount = totalcount + value.existCount;
 
@@ -157,7 +159,7 @@
 
     // Read from storage
     function read(mapProvider, tile, callback) {
-      tile=tile.replace(/\//g,'_');
+      tile = tile.replace(/\//g, '_');
       var tileId = tile + '.png';
       LocalStorageFactory.getTile(mapProvider, tileId).then(function (blob) {
         callback(blob);
