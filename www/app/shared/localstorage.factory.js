@@ -16,11 +16,12 @@
     dbs.projectDb = {};       // global LocalForage for project data
     dbs.spotsDb = {};         // global LocalForage for spot data
     var appDirectory = 'StraboSpot';
+    var appDirectoryTiles = 'StraboSpotTiles';
     var dataBackupsDirectory = appDirectory + '/DataBackups';
     var imagesBackupsDirectory = appDirectory + '/ImageBackups';
     var imagesDirectory = appDirectory + '/Images';
-    var zipsDirectory = appDirectory + '/TileZips';
-    var tileCacheDirectory = appDirectory + '/TileCache';
+    var zipsDirectory = appDirectoryTiles + '/TileZips';
+    var tileCacheDirectory = appDirectoryTiles + '/TileCache';
     var importImagesCount = {'need': 0, 'have': 0, 'success': 0, 'failed': 0};
 
     return {
@@ -80,7 +81,8 @@
     }
 
     function exportData(directory, data, fileName) {
-      return checkDir(appDirectory).then(function () {
+      var rootDir = directory.split("/")[0];
+      return checkDir(rootDir).then(function () {
         return checkDir(directory).then(function (fullPath) {
           $log.log('fullPath', fullPath);
           return writeFile(fullPath, data, fileName);
@@ -693,7 +695,8 @@
     //$cordovaFile sporadically reports directories as non-existent,
     //so we need an easy function to check directories once.
     function verifyDirectoryOnce(directory) {
-      return checkDir(appDirectory).then(function () {
+      var rootDir = directory.split("/")[0];
+      return checkDir(rootDir).then(function () {
         return checkDir(directory);
       });
     }
