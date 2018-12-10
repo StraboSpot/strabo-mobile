@@ -448,7 +448,7 @@
     }
 
     function getSpotById(id) {
-      if (!spots[id]) $log.error('Looking for nonexistent Spot:', id);
+      if (!spots[id]) $log.warn('Spot', id, 'not found. New Spot or missing Spot?');
       return spots[id];
     }
 

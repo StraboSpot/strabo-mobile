@@ -5,9 +5,9 @@
     .module('app')
     .factory('LocalStorageFactory', LocalStorageFactory);
 
-  LocalStorageFactory.$inject = ['$cordovaDevice', '$cordovaFile', '$log', '$q', '$window', 'HelpersFactory', 'IS_WEB'];
+  LocalStorageFactory.$inject = ['$cordovaDevice', '$cordovaFile', '$log', '$q', '$window', 'HelpersFactory'];
 
-  function LocalStorageFactory($cordovaDevice, $cordovaFile, $log, $q, $window, HelpersFactory, IS_WEB) {
+  function LocalStorageFactory($cordovaDevice, $cordovaFile, $log, $q, $window, HelpersFactory) {
     var dbs = {};
     dbs.configDb = {};        // global LocalForage for configuration and user data
     dbs.imagesDb = {};        // global LocalForage for images
@@ -29,6 +29,7 @@
       'checkImagesDir': checkImagesDir,
       'checkZipsDir': checkZipsDir,
       'clearFiles': clearFiles,
+      'copyImage': copyImage,
       'deleteMapFiles': deleteMapFiles,
       'exportImage': exportImage,
       'exportImages': exportImages,
@@ -134,10 +135,25 @@
             devicePath = cordova.file.externalRootDirectory;
             break;
         }
+      } catch (err) {
+        $log.error('Error getting device path', err);
       }
-      catch (err) {
-        //$log.log(err);
-        $log.error('Error getting device path');
+      return devicePath;
+    }
+
+    function getDevicePathTemp() {
+      var devicePath;
+      try {
+        switch ($cordovaDevice.getPlatform()) {
+          case 'Android':
+            devicePath = cordova.file.externalCacheDirectory;    // 'file:///storage/emulated/0/Android/data/gov.az.azgs.strabomobile/cache/'
+            break;
+          case 'iOS':
+            devicePath = cordova.file.tempDirectory;
+            break;
+        }
+      } catch (err) {
+        $log.error('Error getting temporary device path', err);
       }
       return devicePath;
     }
@@ -282,6 +298,29 @@
       return deferred.promise;
     }
 
+    // Copy an image from temporary directory to permanent device storage in StraboSpot/Images
+    function copyImage(imagePathTemp, imageName) {
+      return new Promise(function (resolve, reject) {
+        // Grab the file name of the photo in the temporary directory
+        var tempImageName = imagePathTemp.replace(/^.*[\\\/]/, '');
+
+        // Get temporary and permanent paths
+        var devicePathTemp = getDevicePathTemp();
+        var imagesPath = getDevicePath() + imagesDirectory;
+
+        // Copy the file to permanent storage
+        $cordovaFile.copyFile(devicePathTemp, tempImageName, imagesPath, imageName)
+          .then(function (success) {
+            $log.log('Successfully copied file to permanent storage. NativeURL:', success.nativeURL);
+            resolve(success.nativeURL);
+          })
+          .catch(function (error) {
+            $log.error('Failed copying file to permanent storage! Error Code: ' + error.code);
+            reject('Error saving image to device.');
+          });
+      });
+    }
+
     function deleteMapFiles(map) {
       var deferred = $q.defer(); // init promise
       var mapid = String(map.mapid);
@@ -386,30 +425,20 @@
       return dbs;
     }
 
-    function getImageById(imageId) { //read file from file system
-      var deferred = $q.defer(); // init promise
-
-      if ($window.cordova) {
-        var devicePath = getDevicePath();
-        var filePath = devicePath + imagesDirectory;
-        var fileName = imageId + '.jpg';
-        $log.log('Looking for file: ', filePath, fileName);
-        $cordovaFile.checkFile(filePath + '/', fileName).then(function (checkDirSuccess) {
-          //$cordovaFile.readAsText(filePath + '/', fileName).then(function(result){
-          $cordovaFile.readAsDataURL(filePath + '/', fileName).then(function (result) {
-            deferred.resolve(result);
-          });
-        }, function (checkDirFailed) {
-          $log.log('Check file not found.', checkDirFailed);
-          deferred.resolve('img/image-not-found.png');
-        });
-      }
-      else {
-        if (!IS_WEB) $log.warn('Not Web but no Cordova so unable to get local image source. Running for development?');
-        deferred.resolve('img/image-not-found.png');
-      }
-
-      return deferred.promise;
+    // Get image URI
+    function getImageById(imageId) {
+      var devicePath = getDevicePath();
+      var filePath = devicePath + imagesDirectory;
+      var fileName = imageId.toString() + '.jpg';
+      var fileURI = filePath + '/' + fileName;
+      $log.log('Looking for file:', fileURI);
+      return $cordovaFile.checkFile(filePath + '/', fileName).then(function () {
+        $log.log('Found image file:', fileURI);
+        return Promise.resolve(fileURI);
+      }, function (err) {
+        $log.log('Check file not found.', fileURI);
+        return Promise.resolve('img/image-not-found.png');
+      });
     }
 
     function getMapCenterTile(mapid) {
@@ -681,8 +710,7 @@
             $log.log(err);
             deferred.resolve(false);
           });
-        }
-        catch (e) {
+        } catch (e) {
           $log.log(e);
           deferred.resolve(false);
         }

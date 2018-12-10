@@ -66,12 +66,6 @@
           });
         }
       });
-
-      $rootScope.$on('updatedImages', function () {
-        vmParent.spotChanged = false;
-        if (IS_WEB) getImageSources();
-        else activate();
-      });
     }
 
     function loadTab(state) {
@@ -79,7 +73,13 @@
       if (vmParent.spot && !_.isEmpty(vmParent.spot)) {
         FormFactory.setForm('image');
         createModals();
-        getImageSources();
+        $ionicLoading.show({
+          'template': '<ion-spinner></ion-spinner><br>Loading Images...'
+        });
+        ImageFactory.gatherImageSources(vmParent.spot)
+          .then(function () {
+            $ionicLoading.hide();
+          });
         checkImageType();     // Set default image type to 'photo' if no image type has been set
         if (IS_WEB) ionic.on('change', getFile, $document[0].getElementById('imageFile'));
       }
@@ -104,54 +104,16 @@
       });
     }
 
+    // Get the file if it is loaded on the image tab or the map side panel
     function getFile(event) {
-      if ($state.current.url === '/:spotId/images' && !_.isEmpty(event.target.files)) {
+      if (($state.current.url === '/:spotId/images' || $state.current.url === '/map') &&
+        !_.isEmpty(event.target.files)) {
         var file = event.target.files[0];
-        if (file) {
-          $log.log('Getting Image file ....');
-          $ionicLoading.show({
-            'template': '<ion-spinner></ion-spinner><br>Getting Image...'
-          });
-          ImageFactory.readFile(file);
-        }
+        if (file) ImageFactory.addImageWeb(file);
       }
     }
 
-    function getImageSources() {
-      $ionicLoading.show({
-        'template': '<ion-spinner></ion-spinner><br>Loading Images...'
-      });
-      var promises = [];
-      imageSources = {};
-      vmParent.spot = ImageFactory.cleanImagesInSpot(vmParent.spot);
-      _.each(vmParent.spot.properties.images, function (image) {
-        var promise = ImageFactory.getImageById(image.id).then(function (src) {
-          if (IS_WEB && UserFactory.getUser()) {
-            // Check that the image exists on the server and then grab the URL for it
-            return RemoteServerFactory.verifyImageExistance(image.id, UserFactory.getUser().encoded_login).then(
-              function (response) {
-                $log.log('Image', image, 'in Spot', vmParent.spot.properties.id, vmParent.spot,
-                  'EXISTS on server. Server response', response);
-                imageSources[image.id] = "https://strabospot.org/pi/" + image.id;
-              },
-              function (response) {
-                $log.error('Image', image, 'in Spot', vmParent.spot.properties.id, vmParent.spot,
-                  'DOES NOT EXIST on server. Server response', response);
-                imageSources[image.id] = 'img/image-not-found.png';
-              });
-          }
-          else if (src) imageSources[image.id] = src;
-          else imageSources[image.id] = 'img/image-not-found.png';
-        });
-        promises.push(promise);
-      });
-      return $q.all(promises).then(function () {
-        $log.log('Image Sources:', imageSources);
-        $ionicLoading.hide();
-      });
-    }
-
-    function getImageType(imageData, image) {
+    function getImageType() {
       var deferred = $q.defer(); // init promise
       vm.imageType = undefined;
       var imageTypeField = _.findWhere(FormFactory.getForm().survey, {'name': 'image_type'});
@@ -350,7 +312,7 @@
     }
 
     function getImageSrc(imageId) {
-      return imageSources[imageId] || 'img/loading-image.png';
+      return ImageFactory.getImageSource(imageId);
     }
 
     function goToImageBasemap(image) {
@@ -396,9 +358,6 @@
       confirmPopup.then(function (res) {
         if (res) {
           vm.imagePropertiesModal.hide();
-          $ionicLoading.show({
-            'template': '<ion-spinner></ion-spinner><br>Reattaching Image...'
-          });
           ImageFactory.setIsReattachImage(true);
           ImageFactory.setCurrentSpot(vmParent.spot);
           ImageFactory.setCurrentImage(vmParent.data);
