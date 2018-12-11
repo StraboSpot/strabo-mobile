@@ -88,18 +88,18 @@
 
     function errorAlert(errorMsg) {
       $log.error(errorMsg);
-      $ionicPopup.alert({
-        'title': 'Error!',
-        'template': errorMsg
-      });
+      // Don't show an alert if error message is from $cordovaCamera when the user does not select an image
+      if (errorMsg !== 'No Image Selected') {
+        $ionicPopup.alert({
+          'title': 'Error!',
+          'template': errorMsg
+        });
+      }
     }
 
     // Get image from camera or local storage
     function getPicture(source) {
       document.addEventListener('deviceready', function () {
-        $ionicLoading.show({
-          'template': '<ion-spinner></ion-spinner><br>Adding Image...'
-        });
 
         var cameraOptions = {
           'quality': 100,
@@ -113,6 +113,7 @@
         };
 
         return $cordovaCamera.getPicture(cameraOptions)
+          .then(gotImageURI)
           .then(checkImageSize)
           .then(saveImageToDevice)
           .then(setImageSourceDevice)
@@ -124,6 +125,14 @@
             $ionicLoading.hide();
           });
       });
+    }
+
+    // Start loading spinner after we have an image
+    function gotImageURI(imageURI) {
+      $ionicLoading.show({
+        'template': '<ion-spinner></ion-spinner><br>Adding Image...'
+      });
+      return Promise.resolve(imageURI);
     }
 
     // Copy an image from temporary directory to permanent device storage in StraboSpot/Images
