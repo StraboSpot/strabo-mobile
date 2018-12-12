@@ -5,11 +5,12 @@
     .module('app')
     .factory('ImageFactory', ImageFactory);
 
-  ImageFactory.$inject = ['$cordovaCamera', '$ionicLoading', '$ionicPopup', '$log', '$rootScope', '$state', '$window',
-    'HelpersFactory', 'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
+  ImageFactory.$inject = ['$cordovaCamera', '$cordovaDevice', '$ionicLoading', '$ionicPopup', '$log', '$rootScope',
+    '$state', '$window', 'HelpersFactory', 'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'SpotFactory',
+    'IS_WEB'];
 
-  function ImageFactory($cordovaCamera, $ionicLoading, $ionicPopup, $log, $rootScope, $state, $window, HelpersFactory,
-                        LiveDBFactory, LocalStorageFactory, ProjectFactory, SpotFactory, IS_WEB) {
+  function ImageFactory($cordovaCamera, $cordovaDevice, $ionicLoading, $ionicPopup, $log, $rootScope, $state, $window,
+                        HelpersFactory, LiveDBFactory, LocalStorageFactory, ProjectFactory, SpotFactory, IS_WEB) {
     var currentImageData = {};
     var currentSpot = {};
     var images = [];
