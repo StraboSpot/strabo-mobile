@@ -77,6 +77,49 @@
       return verifyDirectoryOnce(imagesDirectory);
     }
 
+    // Copy any images in previously used ImageBackups folder to Images folder
+    function copyImageBackups() {
+      var devicePath = getDevicePath();
+      if (devicePath) {
+        return new Promise(function (resolve, reject) {
+          $cordovaFile.checkDir(devicePath, imagesBackupsDirectory).then(function (checkDirSuccess) {
+              $log.log('Found image backups folder', checkDirSuccess);
+              listDir(devicePath + imagesBackupsDirectory).then(function (fileEntries) {
+                var promises = [];
+                _.each(fileEntries, function (fileEntry) {
+                  var promise = $cordovaFile.moveFile(devicePath + imagesBackupsDirectory, fileEntry.name,
+                    devicePath + imagesDirectory, fileEntry.name)
+                    .then(function (moveFileSuccess) {
+                      $log.log('Moved file:', moveFileSuccess);
+                    }, function (moveFileError) {
+                      $log.log('Error moving file:', moveFileError);
+                    });
+                  promises.push(promise);
+                });
+                Promise.all(promises).then(function () {
+                  $log.log('Finished moving all files from Image Backups.');
+                  $cordovaFile.removeRecursively(devicePath, imagesBackupsDirectory).then(function () {
+                    $log.log('Success removing', devicePath + imagesBackupsDirectory);
+                    resolve();
+                  }, function (removeRecursivelyError) {
+                    $log.log('Error removing', devicePath + imagesBackupsDirectory, removeRecursivelyError);
+                    reject('Error getting the directory entry for ' + devicePath + imagesBackupsDirectory);
+                  });
+                });
+              }, function (listDirError) {
+                $log.log('Error getting list of files in directory', listDirError);
+                reject('Error getting list of files in directory');
+              });
+            },
+            function (checkDirError) {
+              $log.log('Image backups folder not found. No leftover image backups to copy.', checkDirError);
+              resolve();
+            });
+        });
+      }
+      else Promise.resolve();
+    }
+
     function exportData(directory, data, fileName) {
       var rootDir = directory.split("/")[0];
       return checkDir(rootDir).then(function () {
@@ -193,6 +236,30 @@
       else deferred.reject('Device not found');
 
       return deferred.promise;
+    }
+
+    // List the files in a directory
+    function listDir(path) {
+      return new Promise(function (resolve, reject) {
+        $window.resolveLocalFileSystemURL(path,
+          function (fileSystem) {
+            var reader = fileSystem.createReader();
+            reader.readEntries(
+              function (entries) {
+                $log.log('Success reading entries in directory', path, entries);
+                resolve(entries);
+              },
+              function (err) {
+                $log.log('Error listing directory', path, err);
+                reject('Error listing directory ' + path);
+              }
+            );
+          }, function (err) {
+            $log.log('Error resolving', path, err);
+            reject('Error resolving ' + path);
+          }
+        );
+      });
     }
 
     function replaceDbs(data) {
@@ -587,42 +654,11 @@
       return tileCacheDirectory;
     }
 
-    function importImages() {
-      var deferred = $q.defer(); // init promise
-      var promisesOuter = [];
-      var promises = [];
-      importImagesCount = {'need': 0, 'have': 0, 'success': 0, 'failed': 0};
-      dbs.spotsDb.iterate(function (value, key, iterationNumber) {
-        if (value.properties.images) {
-          _.each(value.properties.images, function (image) {
-            if (image.id) {
-              var promiseOuter = dbs.imagesDb.getItem(image.id.toString()).then(function (foundImage) {
-                if (foundImage) importImagesCount.have++;
-                else {
-                  importImagesCount.need++;
-                  var promise = importImage(image.id);
-                  promises.push(promise);
-                }
-              });
-              promisesOuter.push(promiseOuter);
-            }
-          });
-        }
-      }).then(function () {
-        $q.all(promisesOuter).then(function () {
-          $q.all(promises).then(function () {
-            deferred.resolve(importImagesCount);
-          }, function () {
-            deferred.reject();
-          });
-        })
-      });
-      return deferred.promise;
-    }
-
     function importProject(name) {
-      return importData(dataBackupsDirectory, name).then(function (importedData) {
-        return replaceDbs(importedData);
+      return copyImageBackups().then(function () {
+        return importData(dataBackupsDirectory, name).then(function (importedData) {
+          return replaceDbs(importedData);
+        });
       });
     }
 
