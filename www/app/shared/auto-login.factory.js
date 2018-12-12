@@ -37,7 +37,7 @@
         UserFactory.clearUser();
         ProjectFactory.destroyProject();
         SpotFactory.clearAllSpots();
-        ImageFactory.deleteAllImages();
+        //ImageFactory.deleteAllImages();
         OtherMapsFactory.destroyOtherMaps();
         $log.log('Credentials set, check for validity.');
 

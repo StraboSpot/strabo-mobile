@@ -10,7 +10,6 @@
   function LocalStorageFactory($cordovaDevice, $cordovaFile, $log, $q, $window, HelpersFactory) {
     var dbs = {};
     dbs.configDb = {};        // global LocalForage for configuration and user data
-    dbs.imagesDb = {};        // global LocalForage for images
     dbs.mapNamesDb = {};      // global LocalForage for map names
     dbs.mapTilesDb = {};      // global LocalForage for offline map tiles
     dbs.projectDb = {};       // global LocalForage for project data
@@ -22,7 +21,6 @@
     var imagesDirectory = appDirectory + '/Images';
     var zipsDirectory = appDirectoryTiles + '/TileZips';
     var tileCacheDirectory = appDirectoryTiles + '/TileCache';
-    var importImagesCount = {'need': 0, 'have': 0, 'success': 0, 'failed': 0};
 
     return {
       'checkDir': checkDir,
@@ -30,9 +28,8 @@
       'checkZipsDir': checkZipsDir,
       'clearFiles': clearFiles,
       'copyImage': copyImage,
+      'deleteImageFromFileSystem': deleteImageFromFileSystem,
       'deleteMapFiles': deleteMapFiles,
-      'exportImage': exportImage,
-      'exportImages': exportImages,
       'exportProject': exportProject,
       'gatherLocalFiles': gatherLocalFiles,
       'getDb': getDb,
@@ -43,7 +40,6 @@
       'getMapCenterTile': getMapCenterTile,
       'getMapStorageDetails': getMapStorageDetails,
       'getTile': getTile,
-      'importImages': importImages,
       'importProject': importProject,
       'saveImageToFileSystem': saveImageToFileSystem,
       'saveZip': saveZip,
@@ -102,7 +98,7 @@
       _.each(dbs, function (db) {
         //$log.log(db);
         var dbName = db.config().name;
-        if (dbName !== 'configDb' && dbName !== 'mapNamesDb' && dbName !== 'mapTilesDb' && dbName !== 'imagesDb') {
+        if (dbName !== 'configDb' && dbName !== 'mapNamesDb' && dbName !== 'mapTilesDb') {
           save[dbName] = {};
           var promise = db.iterate(function (value, key, i) {
             save[dbName][key] = value;
@@ -196,32 +192,6 @@
       }
       else deferred.reject('Device not found');
 
-      return deferred.promise;
-    }
-
-    function importImage(id) {//fix this
-      var deferred = $q.defer(); // init promise
-
-      var devicePath = getDevicePath();
-      if (devicePath) {
-        $cordovaFile.readAsDataURL(devicePath + imagesBackupsDirectory, id + '.jpg').then(function (file) {
-          dbs.imagesDb.setItem(id.toString(), file).then(function () {
-            importImagesCount.success++;
-            deferred.resolve();
-          }, function (setItemErr) {
-            importImagesCount.failed++;
-            $log.log('Error setting item in db with localforage:', setItemErr);
-            deferred.resolve();
-          }).catch(function (err) {
-            $log.log('Catch localforage error:', err);
-          });
-        }, function (readErr) {
-          importImagesCount.failed++;
-          $log.log('Error reading file:', readErr);
-          deferred.resolve();
-        });
-      }
-      else deferred.reject('Device not found');
       return deferred.promise;
     }
 
@@ -321,6 +291,19 @@
       });
     }
 
+    function deleteImageFromFileSystem(imageId) {
+      return new Promise(function (resolve, reject) {
+        var devicePath = getDevicePath();
+        $cordovaFile.removeFile(devicePath + imagesDirectory, imageId + '.jpg').then(function (success) {
+          $log.log('Deleted image', imageId, 'from', imagesDirectory);
+          resolve();
+        }, function (error) {
+          $log.log('Error deleting image', imageId, error);
+          reject();
+        });
+      });
+    }
+
     function deleteMapFiles(map) {
       var deferred = $q.defer(); // init promise
       var mapid = String(map.mapid);
@@ -351,38 +334,8 @@
       return deferred.promise;
     }
 
-    function exportImage(data, fileName) {
-      return exportData(imagesBackupsDirectory, data, fileName)
-    }
-
     function checkZipsDir() {
       return exportData(zipsDirectory, 'This file is for checking permissions', 'permissionsCheck.txt')
-    }
-
-    function exportImages() {
-      var deferred = $q.defer(); // init promise
-      var promises = [];
-      dbs.imagesDb.iterate(function (base64Image, key, i) {
-        // Process the base64 string - split the base64 string into the data and data type
-        var block = base64Image.split(';');
-        var dataType = block[0].split(':')[1];    // In this case 'image/jpg'
-        var base64Data = block[1].split(',')[1];  // In this case 'iVBORw0KGg....'
-        var dataBlob = HelpersFactory.b64toBlob(base64Data, dataType);
-        var filename = key + '.jpg';
-        var promise = exportImage(dataBlob, filename).then(function (filePath) {
-          $log.log('Image saved to ' + filePath);
-        }, function (error) {
-          $log.log('Unable to save image.' + error);
-        });
-        promises.push(promise);
-      }).then(function () {
-        $q.all(promises).then(function () {
-          deferred.resolve();
-        }, function () {
-          deferred.reject();
-        });
-      });
-      return deferred.promise;
     }
 
     function exportProject(name) {

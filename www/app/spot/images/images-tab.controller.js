@@ -31,7 +31,6 @@
     vm.addImage = addImage;
     vm.closeModal = closeModal;
     vm.deleteImage = deleteImage;
-    vm.exportImage = exportImage;
     vm.getImageSrc = getImageSrc;
     vm.goToImageBasemap = goToImageBasemap;
     vm.isWeb = isWeb;
@@ -281,36 +280,6 @@
       }
     }
 
-    function exportImage() {
-      ImageFactory.getImageById(vmParent.data.id).then(function (base64Image) {
-        if (IS_WEB) {
-          var image = new Image();
-          image.src = base64Image;
-          var win = $window.open();
-          win.document.write(image.outerHTML);
-        }
-        else {
-          // Process the base64 string - split the base64 string into the data and data type
-          var block = base64Image.split(';');
-          var dataType = block[0].split(':')[1];    // In this case 'image/jpg'
-          var base64Data = block[1].split(',')[1];  // In this case 'iVBORw0KGg....'
-          var dataBlob = HelpersFactory.b64toBlob(base64Data, dataType);
-          var filename = (vmParent.data.title || vmParent.data.id) + '.jpg';
-          LocalStorageFactory.exportImage(dataBlob, filename).then(function (filePath) {
-            $ionicPopup.alert({
-              'title': 'Success!',
-              'template': 'Image saved to ' + filePath
-            });
-          }, function (error) {
-            $ionicPopup.alert({
-              'title': 'Error!',
-              'template': 'Unable to save image.' + error
-            });
-          });
-        }
-      });
-    }
-
     function getImageSrc(imageId) {
       return ImageFactory.getImageSource(imageId);
     }
@@ -353,7 +322,8 @@
     function reattachImage() {
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Reattach Image',
-        'template': 'Select an image from your device to reattach the source to the selected image properties. Continue?'
+        'template': 'Select an image from your device to reattach the source to the selected image properties. ' +
+          'The dimensions of the selected image must match the dimensions of the original image. Continue?'
       });
       confirmPopup.then(function (res) {
         if (res) {

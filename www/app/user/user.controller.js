@@ -273,7 +273,7 @@
             $log.log('Cleared user data from local storage. Clearing project now.');
             ProjectFactory.destroyProject();
             SpotFactory.clearAllSpots();
-            ImageFactory.deleteAllImages();
+            //ImageFactory.deleteAllImages();
             OtherMapsFactory.destroyOtherMaps();
           });
           $log.log('Logged out');

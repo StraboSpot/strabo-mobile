@@ -20,7 +20,7 @@
 
     return {
       'cleanImagesInSpot': cleanImagesInSpot,
-      'deleteAllImages': deleteAllImages,
+      //'deleteAllImages': deleteAllImages,
       'deleteImage': deleteImage,
       'gatherImageSources': gatherImageSources,
       'getImageById': getImageById,
@@ -74,8 +74,9 @@
               resolve(imageURI);
             }
             else {
-              reject('The selected image does not have the same height and width as the original. ' +
-                'Unable to reattach image.');
+              reject('The selected image (' + newImage.width + ' x ' + newImage.height + ') does not have the same' +
+                ' height and width as the original image (' + currentImageData.width + ' x ' + currentImageData.height +
+                '). Unable to reattach image.');
             }
           };
           newImage.onerror = function () {
@@ -240,14 +241,14 @@
       return spot;
     }
 
-    function deleteAllImages() {
+    /*function deleteAllImages() {
       return LocalStorageFactory.getDb().imagesDb.clear().then(function () {
         $log.log('All images deleted from local storage.');
       });
-    }
+    }*/
 
     function deleteImage(imageId) {
-      return LocalStorageFactory.getDb().imagesDb.removeItem(imageId.toString());
+      return LocalStorageFactory.deleteImageFromFileSystem(imageId);
     }
 
     // Create an object with the image ids and sources

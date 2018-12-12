@@ -169,9 +169,9 @@
 
     function destroyProject() {
       return ProjectFactory.destroyProject().then(function () {
-        return SpotFactory.clearAllSpots().then(function () {
+        return SpotFactory.clearAllSpots()/*.then(function () {
           return ImageFactory.deleteAllImages();
-        });
+        })*/;
       });
     }
 
@@ -339,23 +339,6 @@
       return deferred.promise;
     }
 
-    function exportImages() {
-      $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Exporting Project Images...'});
-      LocalStorageFactory.exportImages().then(function () {
-        $ionicPopup.alert({
-          'title': 'Success!',
-          'template': 'Finished exporting images.'
-        });
-      }, function (err) {
-        $ionicPopup.alert({
-          'title': 'Error!',
-          'template': 'Error exporting images.' + err
-        });
-      }).finally(function () {
-        $ionicLoading.hide();
-      });
-    }
-
     // Determine which images aren't already on the device and need to be downloaded
     function gatherNeededImages(spots) {
       var neededImagesIds = [];
@@ -419,33 +402,6 @@
             'template': 'Error finding local files. Error code: ' + err
           });
         }
-      });
-    }
-
-    function importImages() {
-      $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Importing Project Images...'});
-      LocalStorageFactory.importImages().then(function (count) {
-        var msg = 'Images Had: ' + count.have + '<br>' +
-          'Images Needed: ' + count.need + '<br><br>' +
-          'Images Imported: ' + count.success + '<br>' +
-          'Images Failed: ' + count.failed;
-        if (count.failed > 0) {
-          msg = msg + '<br><br> Failed images may be a result of images missing from the' +
-            ' StraboSpot/ImagesBackup folder or incorrect file names. Attempting to read too many images at once' +
-            ' into the local database can also cause failed images. If the later is the case continue running the' +
-            ' image import until there are no failed images.'
-        }
-        $ionicPopup.alert({
-          'title': 'Finished Importing Images!',
-          'template': msg
-        });
-      }, function (err) {
-        $ionicPopup.alert({
-          'title': 'Error!',
-          'template': 'Error importing images.' + err
-        });
-      }).finally(function () {
-        $ionicLoading.hide();
       });
     }
 
@@ -937,7 +893,7 @@
             var promises = [];
             promises.push(ProjectFactory.destroyProject());
             promises.push(SpotFactory.clearAllSpots());
-            promises.push(ImageFactory.deleteAllImages());
+            //promises.push(ImageFactory.deleteAllImages());
 
             $q.all(promises).then(function () {
               $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Importing Project..'});
