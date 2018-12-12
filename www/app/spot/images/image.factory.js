@@ -190,7 +190,8 @@
       $log.log('Setting source for image on device ...');
       var newImage = new Image();
       newImage.src = "";         // Reset source before loading in case source was previously loaded when checking size
-      newImage.src = imageURI;
+      if ($cordovaDevice.getPlatform() === 'iOS') newImage.src = $window.Ionic.WebView.convertFileSrc(imageURI);
+      else newImage.src = imageURI;
       return Promise.resolve(newImage);
     }
 
