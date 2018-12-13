@@ -24,6 +24,7 @@
       'deleteImage': deleteImage,
       'gatherImageSources': gatherImageSources,
       'getImageById': getImageById,
+      'getImageFileURIById': getImageFileURIById,
       'getImageFromGallery': getImageFromGallery,
       'getImageSource': getImageSource,
       'addImageWeb': addImageWeb,
@@ -277,6 +278,10 @@
           'Running for development?');
         return Promise.resolve('img/image-not-found.png');
       }
+    }
+
+    function getImageFileURIById(imageId) {
+      return LocalStorageFactory.getImageFileURIById(imageId);
     }
 
     function getImageFromGallery() {

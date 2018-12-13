@@ -35,6 +35,7 @@
       'getDb': getDb,
       'getDevicePath': getDevicePath,
       'getImageById': getImageById,
+      'getImageFileURIById': getImageFileURIById,
       'getTileCacheDirectory': getTileCacheDirectory,
       'getZipsDirectory': getZipsDirectory,
       'getMapCenterTile': getMapCenterTile,
@@ -455,6 +456,22 @@
       return $cordovaFile.checkFile(filePath + '/', fileName).then(function () {
         $log.log('Found image file:', fileURI);
         if ($cordovaDevice.getPlatform() === 'iOS') fileURI = $window.Ionic.WebView.convertFileSrc(fileURI);
+        return Promise.resolve(fileURI);
+      }, function (err) {
+        $log.log('Check file not found.', fileURI);
+        return Promise.resolve('img/image-not-found.png');
+      });
+    }
+
+    // Get image URI
+    function getImageFileURIById(imageId) {
+      var devicePath = getDevicePath();
+      var filePath = devicePath + imagesDirectory;
+      var fileName = imageId.toString() + '.jpg';
+      var fileURI = filePath + '/' + fileName;
+      $log.log('Looking for file:', fileURI);
+      return $cordovaFile.checkFile(filePath + '/', fileName).then(function () {
+        $log.log('Found image file:', fileURI);
         return Promise.resolve(fileURI);
       }, function (err) {
         $log.log('Check file not found.', fileURI);
