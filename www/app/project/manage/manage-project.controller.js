@@ -628,7 +628,7 @@
               imagesToUploadCount++;
               notifyMessages.pop();
               outputMessage('Images to Upload: ' + imagesToUploadCount);
-              return ImageFactory.getImageById(image.id).then(function (src) {
+              return ImageFactory.getImageFileURIById(image.id).then(function (src) {
                 if (src !== 'img/image-not-found.png') {
                   return HelpersFactory.fileURItoBlob(src).then(function (blob) {
                     return RemoteServerFactory.uploadImage(image.id, blob, UserFactory.getUser().encoded_login).then(
