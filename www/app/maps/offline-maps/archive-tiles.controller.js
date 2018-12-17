@@ -191,7 +191,7 @@
       fileTransfer.onprogress = function (progressEvent) {
         var percent = progressEvent.loaded / progressEvent.total * 100;
         percent = Math.round(percent);
-        console.log(percent);
+        // console.log(percent);
         deferred.notify(percent);
       };
 
@@ -419,7 +419,7 @@
             deferred.resolve(returnvar);
           }, function (progressEvent) {
             var percentUnzipped = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-            $log.log(percentUnzipped);
+            // $log.log(percentUnzipped);
             deferred.notify(percentUnzipped);
           });
       });
