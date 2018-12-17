@@ -47,10 +47,10 @@
         <div ng-show='sidePanel.isActiveTab("images")' ng-controller='ImagesTabController as vmChild'>
           <button ng-click="vmChild.addImage()"
            class='button button-clear button-positive'>
-            <i class='icon ion-camera'></i>
+            <i class='icon ion-image'></i>
             <span class='button-text-big'>Add Image From File</span>
           </button>
-          <input type='file' id='file' style='display: none;'>
+          <input type='file' id='imageFile' style='display: none;'>
           <strabo-images-tab-directive></strabo-images-tab-directive>
         </div>
         <div ng-show='sidePanel.isActiveTab("minerals")' ng-controller='MineralsTabController as vmChild'>

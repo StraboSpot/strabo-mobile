@@ -5,12 +5,11 @@
     .module('app')
     .factory('LocalStorageFactory', LocalStorageFactory);
 
-  LocalStorageFactory.$inject = ['$cordovaDevice', '$cordovaFile', '$log', '$q', '$window', 'HelpersFactory', 'IS_WEB'];
+  LocalStorageFactory.$inject = ['$cordovaDevice', '$cordovaFile', '$log', '$q', '$window', 'HelpersFactory'];
 
-  function LocalStorageFactory($cordovaDevice, $cordovaFile, $log, $q, $window, HelpersFactory, IS_WEB) {
+  function LocalStorageFactory($cordovaDevice, $cordovaFile, $log, $q, $window, HelpersFactory) {
     var dbs = {};
     dbs.configDb = {};        // global LocalForage for configuration and user data
-    dbs.imagesDb = {};        // global LocalForage for images
     dbs.mapNamesDb = {};      // global LocalForage for map names
     dbs.mapTilesDb = {};      // global LocalForage for offline map tiles
     dbs.projectDb = {};       // global LocalForage for project data
@@ -22,27 +21,26 @@
     var imagesDirectory = appDirectory + '/Images';
     var zipsDirectory = appDirectoryTiles + '/TileZips';
     var tileCacheDirectory = appDirectoryTiles + '/TileCache';
-    var importImagesCount = {'need': 0, 'have': 0, 'success': 0, 'failed': 0};
 
     return {
       'checkDir': checkDir,
       'checkImagesDir': checkImagesDir,
       'checkZipsDir': checkZipsDir,
       'clearFiles': clearFiles,
+      'copyImage': copyImage,
+      'deleteImageFromFileSystem': deleteImageFromFileSystem,
       'deleteMapFiles': deleteMapFiles,
-      'exportImage': exportImage,
-      'exportImages': exportImages,
       'exportProject': exportProject,
       'gatherLocalFiles': gatherLocalFiles,
       'getDb': getDb,
       'getDevicePath': getDevicePath,
       'getImageById': getImageById,
+      'getImageFileURIById': getImageFileURIById,
       'getTileCacheDirectory': getTileCacheDirectory,
       'getZipsDirectory': getZipsDirectory,
       'getMapCenterTile': getMapCenterTile,
       'getMapStorageDetails': getMapStorageDetails,
       'getTile': getTile,
-      'importImages': importImages,
       'importProject': importProject,
       'saveImageToFileSystem': saveImageToFileSystem,
       'saveZip': saveZip,
@@ -80,6 +78,49 @@
       return verifyDirectoryOnce(imagesDirectory);
     }
 
+    // Copy any images in previously used ImageBackups folder to Images folder
+    function copyImageBackups() {
+      var devicePath = getDevicePath();
+      if (devicePath) {
+        return new Promise(function (resolve, reject) {
+          $cordovaFile.checkDir(devicePath, imagesBackupsDirectory).then(function (checkDirSuccess) {
+              $log.log('Found image backups folder', checkDirSuccess);
+              listDir(devicePath + imagesBackupsDirectory).then(function (fileEntries) {
+                var promises = [];
+                _.each(fileEntries, function (fileEntry) {
+                  var promise = $cordovaFile.moveFile(devicePath + imagesBackupsDirectory, fileEntry.name,
+                    devicePath + imagesDirectory, fileEntry.name)
+                    .then(function (moveFileSuccess) {
+                      $log.log('Moved file:', moveFileSuccess);
+                    }, function (moveFileError) {
+                      $log.log('Error moving file:', moveFileError);
+                    });
+                  promises.push(promise);
+                });
+                Promise.all(promises).then(function () {
+                  $log.log('Finished moving all files from Image Backups.');
+                  $cordovaFile.removeRecursively(devicePath, imagesBackupsDirectory).then(function () {
+                    $log.log('Success removing', devicePath + imagesBackupsDirectory);
+                    resolve();
+                  }, function (removeRecursivelyError) {
+                    $log.log('Error removing', devicePath + imagesBackupsDirectory, removeRecursivelyError);
+                    reject('Error getting the directory entry for ' + devicePath + imagesBackupsDirectory);
+                  });
+                });
+              }, function (listDirError) {
+                $log.log('Error getting list of files in directory', listDirError);
+                reject('Error getting list of files in directory');
+              });
+            },
+            function (checkDirError) {
+              $log.log('Image backups folder not found. No leftover image backups to copy.', checkDirError);
+              resolve();
+            });
+        });
+      }
+      else Promise.resolve();
+    }
+
     function exportData(directory, data, fileName) {
       var rootDir = directory.split("/")[0];
       return checkDir(rootDir).then(function () {
@@ -101,7 +142,7 @@
       _.each(dbs, function (db) {
         //$log.log(db);
         var dbName = db.config().name;
-        if (dbName !== 'configDb' && dbName !== 'mapNamesDb' && dbName !== 'mapTilesDb' && dbName !== 'imagesDb') {
+        if (dbName !== 'configDb' && dbName !== 'mapNamesDb' && dbName !== 'mapTilesDb') {
           save[dbName] = {};
           var promise = db.iterate(function (value, key, i) {
             save[dbName][key] = value;
@@ -134,10 +175,25 @@
             devicePath = cordova.file.externalRootDirectory;
             break;
         }
+      } catch (err) {
+        $log.error('Error getting device path', err);
       }
-      catch (err) {
-        //$log.log(err);
-        $log.error('Error getting device path');
+      return devicePath;
+    }
+
+    function getDevicePathTemp() {
+      var devicePath;
+      try {
+        switch ($cordovaDevice.getPlatform()) {
+          case 'Android':
+            devicePath = cordova.file.externalCacheDirectory;    // 'file:///storage/emulated/0/Android/data/gov.az.azgs.strabomobile/cache/'
+            break;
+          case 'iOS':
+            devicePath = cordova.file.tempDirectory;
+            break;
+        }
+      } catch (err) {
+        $log.error('Error getting temporary device path', err);
       }
       return devicePath;
     }
@@ -183,30 +239,28 @@
       return deferred.promise;
     }
 
-    function importImage(id) {//fix this
-      var deferred = $q.defer(); // init promise
-
-      var devicePath = getDevicePath();
-      if (devicePath) {
-        $cordovaFile.readAsDataURL(devicePath + imagesBackupsDirectory, id + '.jpg').then(function (file) {
-          dbs.imagesDb.setItem(id.toString(), file).then(function () {
-            importImagesCount.success++;
-            deferred.resolve();
-          }, function (setItemErr) {
-            importImagesCount.failed++;
-            $log.log('Error setting item in db with localforage:', setItemErr);
-            deferred.resolve();
-          }).catch(function (err) {
-            $log.log('Catch localforage error:', err);
-          });
-        }, function (readErr) {
-          importImagesCount.failed++;
-          $log.log('Error reading file:', readErr);
-          deferred.resolve();
-        });
-      }
-      else deferred.reject('Device not found');
-      return deferred.promise;
+    // List the files in a directory
+    function listDir(path) {
+      return new Promise(function (resolve, reject) {
+        $window.resolveLocalFileSystemURL(path,
+          function (fileSystem) {
+            var reader = fileSystem.createReader();
+            reader.readEntries(
+              function (entries) {
+                $log.log('Success reading entries in directory', path, entries);
+                resolve(entries);
+              },
+              function (err) {
+                $log.log('Error listing directory', path, err);
+                reject('Error listing directory ' + path);
+              }
+            );
+          }, function (err) {
+            $log.log('Error resolving', path, err);
+            reject('Error resolving ' + path);
+          }
+        );
+      });
     }
 
     function replaceDbs(data) {
@@ -282,6 +336,42 @@
       return deferred.promise;
     }
 
+    // Copy an image from temporary directory to permanent device storage in StraboSpot/Images
+    function copyImage(imagePathTemp, imageName) {
+      return new Promise(function (resolve, reject) {
+        // Grab the file name of the photo in the temporary directory
+        var tempImageName = imagePathTemp.replace(/^.*[\\\/]/, '');
+
+        // Get temporary and permanent paths
+        var devicePathTemp = getDevicePathTemp();
+        var imagesPath = getDevicePath() + imagesDirectory;
+
+        // Copy the file to permanent storage
+        $cordovaFile.copyFile(devicePathTemp, tempImageName, imagesPath, imageName)
+          .then(function (success) {
+            $log.log('Successfully copied file to permanent storage. NativeURL:', success.nativeURL);
+            resolve(success.nativeURL);
+          })
+          .catch(function (error) {
+            $log.error('Failed copying file to permanent storage! Error Code: ' + error.code);
+            reject('Error saving image to device.');
+          });
+      });
+    }
+
+    function deleteImageFromFileSystem(imageId) {
+      return new Promise(function (resolve, reject) {
+        var devicePath = getDevicePath();
+        $cordovaFile.removeFile(devicePath + imagesDirectory, imageId + '.jpg').then(function (success) {
+          $log.log('Deleted image', imageId, 'from', imagesDirectory);
+          resolve();
+        }, function (error) {
+          $log.log('Error deleting image', imageId, error);
+          reject();
+        });
+      });
+    }
+
     function deleteMapFiles(map) {
       var deferred = $q.defer(); // init promise
       var mapid = String(map.mapid);
@@ -312,38 +402,8 @@
       return deferred.promise;
     }
 
-    function exportImage(data, fileName) {
-      return exportData(imagesBackupsDirectory, data, fileName)
-    }
-
     function checkZipsDir() {
       return exportData(zipsDirectory, 'This file is for checking permissions', 'permissionsCheck.txt')
-    }
-
-    function exportImages() {
-      var deferred = $q.defer(); // init promise
-      var promises = [];
-      dbs.imagesDb.iterate(function (base64Image, key, i) {
-        // Process the base64 string - split the base64 string into the data and data type
-        var block = base64Image.split(';');
-        var dataType = block[0].split(':')[1];    // In this case 'image/jpg'
-        var base64Data = block[1].split(',')[1];  // In this case 'iVBORw0KGg....'
-        var dataBlob = HelpersFactory.b64toBlob(base64Data, dataType);
-        var filename = key + '.jpg';
-        var promise = exportImage(dataBlob, filename).then(function (filePath) {
-          $log.log('Image saved to ' + filePath);
-        }, function (error) {
-          $log.log('Unable to save image.' + error);
-        });
-        promises.push(promise);
-      }).then(function () {
-        $q.all(promises).then(function () {
-          deferred.resolve();
-        }, function () {
-          deferred.reject();
-        });
-      });
-      return deferred.promise;
     }
 
     function exportProject(name) {
@@ -386,30 +446,37 @@
       return dbs;
     }
 
-    function getImageById(imageId) { //read file from file system
-      var deferred = $q.defer(); // init promise
+    // Get image URI
+    function getImageById(imageId) {
+      var devicePath = getDevicePath();
+      var filePath = devicePath + imagesDirectory;
+      var fileName = imageId.toString() + '.jpg';
+      var fileURI = filePath + '/' + fileName;
+      $log.log('Looking for file:', fileURI);
+      return $cordovaFile.checkFile(filePath + '/', fileName).then(function () {
+        $log.log('Found image file:', fileURI);
+        if ($cordovaDevice.getPlatform() === 'iOS') fileURI = $window.Ionic.WebView.convertFileSrc(fileURI);
+        return Promise.resolve(fileURI);
+      }, function (err) {
+        $log.log('Check file not found.', fileURI);
+        return Promise.resolve('img/image-not-found.png');
+      });
+    }
 
-      if ($window.cordova) {
-        var devicePath = getDevicePath();
-        var filePath = devicePath + imagesDirectory;
-        var fileName = imageId + '.jpg';
-        $log.log('Looking for file: ', filePath, fileName);
-        $cordovaFile.checkFile(filePath + '/', fileName).then(function (checkDirSuccess) {
-          //$cordovaFile.readAsText(filePath + '/', fileName).then(function(result){
-          $cordovaFile.readAsDataURL(filePath + '/', fileName).then(function (result) {
-            deferred.resolve(result);
-          });
-        }, function (checkDirFailed) {
-          $log.log('Check file not found.', checkDirFailed);
-          deferred.resolve('img/image-not-found.png');
-        });
-      }
-      else {
-        if (!IS_WEB) $log.warn('Not Web but no Cordova so unable to get local image source. Running for development?');
-        deferred.resolve('img/image-not-found.png');
-      }
-
-      return deferred.promise;
+    // Get image URI
+    function getImageFileURIById(imageId) {
+      var devicePath = getDevicePath();
+      var filePath = devicePath + imagesDirectory;
+      var fileName = imageId.toString() + '.jpg';
+      var fileURI = filePath + '/' + fileName;
+      $log.log('Looking for file:', fileURI);
+      return $cordovaFile.checkFile(filePath + '/', fileName).then(function () {
+        $log.log('Found image file:', fileURI);
+        return Promise.resolve(fileURI);
+      }, function (err) {
+        $log.log('Check file not found.', fileURI);
+        return Promise.resolve('img/image-not-found.png');
+      });
     }
 
     function getMapCenterTile(mapid) {
@@ -604,42 +671,11 @@
       return tileCacheDirectory;
     }
 
-    function importImages() {
-      var deferred = $q.defer(); // init promise
-      var promisesOuter = [];
-      var promises = [];
-      importImagesCount = {'need': 0, 'have': 0, 'success': 0, 'failed': 0};
-      dbs.spotsDb.iterate(function (value, key, iterationNumber) {
-        if (value.properties.images) {
-          _.each(value.properties.images, function (image) {
-            if (image.id) {
-              var promiseOuter = dbs.imagesDb.getItem(image.id.toString()).then(function (foundImage) {
-                if (foundImage) importImagesCount.have++;
-                else {
-                  importImagesCount.need++;
-                  var promise = importImage(image.id);
-                  promises.push(promise);
-                }
-              });
-              promisesOuter.push(promiseOuter);
-            }
-          });
-        }
-      }).then(function () {
-        $q.all(promisesOuter).then(function () {
-          $q.all(promises).then(function () {
-            deferred.resolve(importImagesCount);
-          }, function () {
-            deferred.reject();
-          });
-        })
-      });
-      return deferred.promise;
-    }
-
     function importProject(name) {
-      return importData(dataBackupsDirectory, name).then(function (importedData) {
-        return replaceDbs(importedData);
+      return copyImageBackups().then(function () {
+        return importData(dataBackupsDirectory, name).then(function (importedData) {
+          return replaceDbs(importedData);
+        });
       });
     }
 
@@ -681,8 +717,7 @@
             $log.log(err);
             deferred.resolve(false);
           });
-        }
-        catch (e) {
+        } catch (e) {
           $log.log(e);
           deferred.resolve(false);
         }

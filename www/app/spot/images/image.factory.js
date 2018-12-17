@@ -5,25 +5,30 @@
     .module('app')
     .factory('ImageFactory', ImageFactory);
 
-  ImageFactory.$inject = ['$cordovaCamera', '$ionicLoading', '$ionicPopup', '$log', '$rootScope', '$state', '$window',
-    'HelpersFactory', 'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'SpotFactory'];
+  ImageFactory.$inject = ['$cordovaCamera', '$cordovaDevice', '$ionicLoading', '$ionicPopup', '$log', '$rootScope',
+    '$state', '$window', 'HelpersFactory', 'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'SpotFactory',
+    'IS_WEB'];
 
-  function ImageFactory($cordovaCamera, $ionicLoading, $ionicPopup, $log, $rootScope, $state, $window, HelpersFactory,
-                        LiveDBFactory, LocalStorageFactory, ProjectFactory, SpotFactory) {
+  function ImageFactory($cordovaCamera, $cordovaDevice, $ionicLoading, $ionicPopup, $log, $rootScope, $state, $window,
+                        HelpersFactory, LiveDBFactory, LocalStorageFactory, ProjectFactory, SpotFactory, IS_WEB) {
     var currentImageData = {};
     var currentSpot = {};
     var images = [];
+    var imageSources = {};
     var isReattachImage = false;
     var takeMorePictures = false;
 
     return {
       'cleanImagesInSpot': cleanImagesInSpot,
-      'deleteAllImages': deleteAllImages,
+      //'deleteAllImages': deleteAllImages,
       'deleteImage': deleteImage,
+      'gatherImageSources': gatherImageSources,
       'getImageById': getImageById,
+      'getImageFileURIById': getImageFileURIById,
       'getImageFromGallery': getImageFromGallery,
-      'readFile': readFile,
-      'saveImage': saveImage,
+      'getImageSource': getImageSource,
+      'addImageWeb': addImageWeb,
+      'saveImageBlobToDevice': saveImageBlobToDevice,
       'setCurrentImage': setCurrentImage,
       'setCurrentSpot': setCurrentSpot,
       'setIsReattachImage': setIsReattachImage,
@@ -33,185 +38,190 @@
     /**
      * Private Functions
      */
-    function dataURItoBlob(dataURI) {
-      var binary = atob(dataURI.split(',')[1]);
-      var array = [];
-      for (var i = 0; i < binary.length; i++) {
-        array.push(binary.charCodeAt(i));
-      }
-      return new Blob([new Uint8Array(array)], {'type': 'image/jpeg'});
+
+    // Add an image from file on Web
+    function addImageWeb(imageBlob) {
+      $ionicLoading.show({
+        'template': '<ion-spinner></ion-spinner><br>Adding Image...'
+      });
+      uploadImageBlob(imageBlob)
+        .then(setImageSourceWeb)
+        .then(setImageProperties)
+        .then(saveSpot)
+        .catch(errorAlert)
+        .finally(function () {
+          $ionicLoading.hide();
+        });
     }
 
-    function getPicture(source) {//add promise here?
-      // all plugins must be wrapped in a ready function
+    function checkForMoreImages() {
+      if (!isReattachImage && takeMorePictures) {
+        setCurrentImage({'image_type': 'photo'});
+        return takePicture();
+      }
+      return Promise.resolve();
+    }
+
+    // If reattaching an image make sure the image dimensions of the new image
+    // match what is already in the Spot image properties for the original image
+    function checkImageSize(imageURI) {
+      $log.log('Camera success', imageURI);
+      if (isReattachImage) {
+        return new Promise(function (resolve, reject) {
+          var newImage = new Image();
+          newImage.onload = function () {
+            if (newImage.height === currentImageData.height && newImage.width === currentImageData.width) {
+              $log.log('Reattach image dimensions match:', newImage.height, 'x', newImage.width);
+              resolve(imageURI);
+            }
+            else {
+              reject('The selected image (' + newImage.width + ' x ' + newImage.height + ') does not have the same' +
+                ' height and width as the original image (' + currentImageData.width + ' x ' + currentImageData.height +
+                '). Unable to reattach image.');
+            }
+          };
+          newImage.onerror = function () {
+            reject('Failed to load image.');
+          };
+          newImage.src = imageURI;
+        });
+      }
+      else return Promise.resolve(imageURI);
+    }
+
+    function errorAlert(errorMsg) {
+      $log.error(errorMsg);
+      // Don't show an alert if error message is from $cordovaCamera when the user does not select an image
+      if (errorMsg !== 'No Image Selected') {
+        $ionicPopup.alert({
+          'title': 'Error!',
+          'template': errorMsg
+        });
+      }
+    }
+
+    // Get image from camera or local storage
+    function getPicture(source) {
       document.addEventListener('deviceready', function () {
-        //getGeoInfo = false;
 
         var cameraOptions = {
           'quality': 100,
           'destinationType': Camera.DestinationType.FILE_URI,
           'sourceType': source,
-          'allowEdit': false,
           'encodingType': Camera.EncodingType.JPEG,
+          'mediaType': Camera.MediaType.PICTURE,
+          'allowEdit': false,
           'correctOrientation': true,
-          // 'popoverOptions': CameraPopoverOptions,
           'saveToPhotoAlbum': source === Camera.PictureSourceType.CAMERA
         };
 
-        $cordovaCamera.getPicture(cameraOptions).then(function (imageURI) {
-          /* the image has been written to the mobile device and the source is a camera type.
-           * It is written in two places:
-           *
-           * Android:
-           * 1) the local strabo-mobile cache, aka '/storage/emulated/0/Android/data/com.ionicframework.strabomobile327690/cache/filename.jpg'
-           * 2) the Photo Album folder, on Android, this is: '/sdcard/Pictures/filename.jpg'
-           *
-           * iOS:
-           * 1) in iOS, this is in the Photos Gallery???
-           *
-           *
-           * If pulling from Photo Library:
-           *
-           * Android: file:///storage/emulated/0/DCIM/Camera/file.jpg
-           * iOS: ???
-           *
-           */
+        return $cordovaCamera.getPicture(cameraOptions)
+          .then(gotImageURI)
+          .then(checkImageSize)
+          .then(saveImageToDevice)
+          .then(setImageSourceDevice)
+          .then(setImageProperties)
+          .then(saveSpot)
+          .then(checkForMoreImages)
+          .catch(errorAlert)
+          .finally(function () {
+            $ionicLoading.hide();
+          });
+      });
+    }
 
-          $log.log('original imageURI ', imageURI);
+    // Start loading spinner after we have an image
+    function gotImageURI(imageURI) {
+      $ionicLoading.show({
+        'template': '<ion-spinner></ion-spinner><br>Adding Image...'
+      });
+      return Promise.resolve(imageURI);
+    }
 
-          // are we on an android device and is the URI schema a 'content://' type?
-          if (imageURI.substring(0, 10) === 'content://') {
-            // yes, then convert it to a 'file://' yet schemaless type
-            $window.FilePath.resolveNativePath(imageURI, resolveSuccess, resolveFail);
-          }
-          else {
-            // no, so no conversion is needed
-            resolveSuccess(imageURI);
-          }
+    // Copy an image from temporary directory to permanent device storage in StraboSpot/Images
+    function saveImageToDevice(imageURI) {
+      if (angular.isUndefined(currentImageData.id)) currentImageData.id = HelpersFactory.getNewId();
+      var imagePathTemp = imageURI.split('?')[0];
+      if ($window.cordova) return LocalStorageFactory.copyImage(imagePathTemp, currentImageData.id + '.jpg');
+      else {
+        $log.warn('No Cordova so cannot save image to device. In development mode?');
+        return Promise.reject('Error saving image to device');
+      }
+    }
 
-          function resolveFail(message) {
-            //getGeoInfo = false;
-            $log.log('failed to resolve URI', message);
-          }
-
-          // now we read the image from the filesystem and save the image to the spot
-          function resolveSuccess(imageURI) {
-            // is this a real file schema?
-            if (imageURI.substring(0, 7) !== 'file://') {
-              // nope, then lets make this a real file schema
-              imageURI = 'file://' + imageURI;
-            }
-
-            $log.log('final imageURI ', imageURI);
-
-            var gotFileEntry = function (fileEntry) {
-              $log.log('inside gotFileEntry');
-              fileEntry.file(gotFile, resolveFail);
-            };
-
-            var gotFile = function (file) {
-              $log.log('inside gotFile');
-              $log.log('file is ', file);
-              readDataUrl(file);
-            };
-
-            // invoke the reading of the image file from the local filesystem
-            $window.resolveLocalFileSystemURL(imageURI, gotFileEntry, resolveFail);
-          }
-        }, function (err) {
-          $log.log('error: ', err);
+    // Save the Spot with the image properties
+    function saveSpot() {
+      return SpotFactory.save(currentSpot).then(function () {
+        $rootScope.$broadcast('spotSaved');
+        return getImageById(currentImageData.id).then(function (src) {
+          // If reattaching image need a different name for source so reload is forced and cached image not used
+          if (isReattachImage) imageSources[currentImageData.id] = src + "?" + new Date().getTime();
+          else imageSources[currentImageData.id] = src;
+          $log.log('Image Sources:', imageSources);
         });
       });
     }
 
-    function readDataUrl(file) {
-      // $log.log('inside readDataUrl');
-      var reader = new FileReader();
-      var image = new Image();
-      reader.onloadend = function (evt) {
-        // $log.log('Read as data URL');
-        // $log.log(evt.target.result);
-        image.src = evt.target.result;
-
-        var block = image.src.split(';');
-        var dataType = block[0].split(':')[1];    // In this case 'image/jpg'
-        var base64Data = block[1].split(',')[1];  // In this case 'iVBORw0KGg....'
-        var imgBlob = HelpersFactory.b64toBlob(base64Data, dataType);
-
-        image.onload = function () {
-          if (isReattachImage) {
-            if (image.height === currentImageData.height && image.width === currentImageData.width) {
-              //saveImage(image.src).then(function () {
-              saveImage(imgBlob).then(function () {
-                $log.log('Also save image to live db here');
-                //save to file
-                LiveDBFactory.saveImageFile(currentImageData.id, image.src).then(function () {
-                  $rootScope.$broadcast('updatedImages');
-                  isReattachImage = false;
-                  $ionicLoading.hide();
-                  $ionicPopup.alert({
-                    'title': 'Finished Reattaching Image',
-                    'template': 'The selected image source was reattached to the selected image properties.'
-                  });
-                });
-              });
-            }
-            else {
-              $ionicLoading.hide();
-              $ionicPopup.alert({
-                'title': 'Mismatched Image',
-                'template': 'The selected image does not have the same height and width as the original. Unable to reattach image.'
-              });
-            }
-          }
-          else {
-            _.extend(currentImageData, {
-              'height': image.height,
-              'width': image.width,
-              'id': HelpersFactory.getNewId()
+    // Set the image properties to the current Spot
+    function setImageProperties(newImage) {
+      if (!isReattachImage) {
+        $log.log('Setting image properties ...', newImage);
+        return new Promise(function (resolve, reject) {
+          newImage.onload = function () {
+            $log.log('Loaded image');
+            currentImageData.height = newImage.height;
+            currentImageData.width = newImage.width;
+            $log.log('Image properties:', currentImageData);
+            if (angular.isUndefined(currentSpot.properties.images)) currentSpot.properties.images = [];
+            currentSpot.properties.images = _.reject(currentSpot.properties.images, function (image) {
+              return image.id === currentImageData.id;
             });
-            //saveImage(image.src);
-            saveImage(imgBlob);
-            $log.log('Also save image to live db here');
-            LiveDBFactory.saveImageFile(currentImageData.id, image.src).then(function () {
-              saveImageDataToSpot();
-            });
-          }
-        };
-        image.onerror = function () {
-          $ionicPopup.alert({
-            'title': 'Error!',
-            'template': 'Invalid file type.'
-          });
-        };
-      };
-      reader.readAsDataURL(file);
+            currentSpot.properties.images.push(currentImageData);
+            resolve();
+          };
+          newImage.onerror = function () {
+            $log.error('failed image');
+            reject('Failed to load image.');
+          };
+        });
+      }
+      else return Promise.resolve();
     }
 
-    function saveImageDataToSpot() {
-      if (angular.isUndefined(currentSpot.properties.images)) currentSpot.properties.images = [];
-      currentSpot.properties.images = _.reject(currentSpot.properties.images, function (image) {
-        return image.id === currentImageData.id;
-      });
-      currentSpot.properties.images.push(currentImageData);
-      SpotFactory.save(currentSpot).then(function () {
-        $rootScope.$broadcast('updatedImages');
-        if ($state.current.name === 'app.map') $rootScope.$broadcast('updateMapFeatureLayer');
-        else if ($state.current.name === 'app.image-basemaps.image-basemap' ||
-          $state.current.name === 'app.image-basemap') {
-          $rootScope.$broadcast('updateImageBasemapFeatureLayer');
-        }
-        else if ($state.current.name === 'app.strat-sections.strat-section' ||
-          $state.current.name === 'app.strat-section') {
-          $rootScope.$broadcast('updateStratSectionFeatureLayer');
-        }
-      });
-      LiveDBFactory.save(currentSpot, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
+    // Set image source on a device
+    function setImageSourceDevice(imageURI) {
+      $log.log('Setting source for image on device ...');
+      var newImage = new Image();
+      newImage.src = "";         // Reset source before loading in case source was previously loaded when checking size
+      if ($cordovaDevice.getPlatform() === 'iOS') newImage.src = $window.Ionic.WebView.convertFileSrc(imageURI);
+      else newImage.src = imageURI;
+      return Promise.resolve(newImage);
+    }
 
-      if (takeMorePictures) {
-        setCurrentImage({'image_type': 'photo'});
-        takePicture();
-      }
+    // Set image source for the web
+    function setImageSourceWeb(imageBlob) {
+      $log.log('Setting source for image on web ...');
+      var newImage = new Image();
+      newImage.src = URL.createObjectURL(imageBlob);
+      return Promise.resolve(newImage);
+    }
+
+    // Upload an image blob to the remote database
+    function uploadImageBlob(imageBlob) {
+      return new Promise(function (resolve, reject) {
+        if (IS_WEB) {
+          currentImageData.id = HelpersFactory.getNewId();
+          LiveDBFactory.saveImageFile(currentImageData.id, imageBlob)
+            .then(function () {
+              $log.log('Finished uploading image.');
+              resolve(imageBlob);
+            })
+            .then(function () {
+              reject('Error uploading image');
+            });
+        }
+        else reject('You must be online to send an image to the server.');
+      });
     }
 
     /**
@@ -232,34 +242,66 @@
       return spot;
     }
 
-    function deleteAllImages() {
+    /*function deleteAllImages() {
       return LocalStorageFactory.getDb().imagesDb.clear().then(function () {
         $log.log('All images deleted from local storage.');
       });
-    }
+    }*/
 
     function deleteImage(imageId) {
-      return LocalStorageFactory.getDb().imagesDb.removeItem(imageId.toString());
+      return LocalStorageFactory.deleteImageFromFileSystem(imageId);
     }
 
+    // Create an object with the image ids and sources
+    function gatherImageSources(spot) {
+      var promises = [];
+      imageSources = {};
+      spot = cleanImagesInSpot(spot);
+      _.each(spot.properties.images, function (image) {
+        var promise = getImageById(image.id).then(function (src) {
+          imageSources[image.id] = src;
+        });
+        promises.push(promise);
+      });
+      return Promise.all(promises).then(function () {
+        $log.log('Image Sources:', imageSources);
+        return Promise.resolve();
+      });
+    }
+
+    // Get the image source from the device or the remote db
     function getImageById(imageId) {
-      return LocalStorageFactory.getImageById(imageId.toString());
+      if ($window.cordova) return LocalStorageFactory.getImageById(imageId);
+      else if (IS_WEB) return LiveDBFactory.getImageSourceRemote(imageId);
+      else {
+        $log.warn('Not online but no Cordova so unable to get local image source. ' +
+          'Running for development?');
+        return Promise.resolve('img/image-not-found.png');
+      }
+    }
+
+    function getImageFileURIById(imageId) {
+      return LocalStorageFactory.getImageFileURIById(imageId);
     }
 
     function getImageFromGallery() {
       takeMorePictures = false;
-      getPicture(Camera.PictureSourceType.PHOTOLIBRARY);
+      return getPicture(Camera.PictureSourceType.PHOTOLIBRARY);
     }
 
-    function readFile(file) {
-      takeMorePictures = false;
-      readDataUrl(file);
+    // Get the image source already in local memory
+    function getImageSource(imageId) {
+      return imageSources[imageId] || 'img/loading-image.png';
     }
 
-    function saveImage(imageData, imageId) {
-      if (!imageId) imageId = currentImageData.id;
-      //return LocalStorageFactory.saveImageToFileSystem(imageData, imageId.toString()+'.txt');
-      return LocalStorageFactory.saveImageToFileSystem(imageData, imageId.toString() + '.jpg');
+    // Move an image from temporary directory to permanent device storage in StraboSpot/Images
+    function saveImageBlobToDevice(imageBlob, imageId) {
+      if (angular.isUndefined(currentImageData.id)) currentImageData.id = HelpersFactory.getNewId();
+      if ($window.cordova) return LocalStorageFactory.saveImageToFileSystem(imageBlob, imageId.toString() + '.jpg');
+      else {
+        $log.warn('No Cordova so cannot save image to device. In development mode?');
+        return Promise.reject('Error saving image to device');
+      }
     }
 
     function setCurrentImage(inImageData) {
@@ -277,7 +319,7 @@
 
     function takePicture() {
       takeMorePictures = true;
-      getPicture(Camera.PictureSourceType.CAMERA);
+      return getPicture(Camera.PictureSourceType.CAMERA);
     }
   }
 }());

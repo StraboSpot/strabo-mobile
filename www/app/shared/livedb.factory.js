@@ -6,11 +6,13 @@
     .factory('LiveDBFactory', LiveDBFactory);
 
   LiveDBFactory.$inject = ['$log', '$q', 'RemoteServerFactory', 'UserFactory', 'IS_WEB'];
+
   function LiveDBFactory($log, $q, RemoteServerFactory, UserFactory, IS_WEB) {
 
     // Return public API
     return {
       'deleteImageFile': deleteImageFile,
+      'getImageSourceRemote': getImageSourceRemote,
       'save': save,
       'saveImageFile': saveImageFile
     };
@@ -40,6 +42,21 @@
       return deferred.promise;
     }
 
+    function getImageSourceRemote(imageId) {
+      if (IS_WEB && UserFactory.getUser()) {
+        return RemoteServerFactory.verifyImageExistance(imageId, UserFactory.getUser().encoded_login)
+          .then(function (response) {
+              $log.log('Image', imageId, 'EXISTS on server. Server response', response);
+              return Promise.resolve("https://strabospot.org/pi/" + imageId);
+            },
+            function (response) {
+              $log.error('Image', imageId, 'DOES NOT EXIST on server. Server response', response);
+              return Promise.resolve('img/image-not-found.png');
+            });
+      }
+      else return Promise.reject('Must be logged in to get images!');
+    }
+
     // Save spot, project, and dataset to DB
     function save(spot, project, dataset) {
       var deferred = $q.defer(); // init promise
@@ -61,20 +78,13 @@
       }
     }
 
-    // Save image to DB
-    function saveImageFile(imageId, src) {
-      var deferred = $q.defer(); // init promise
+    // Save image to remote DB
+    function saveImageFile(imageId, imageBlob) {
       if (IS_WEB && UserFactory.getUser()) { //are we on the desktop?
-        $log.log('Inside LiveDBFactory.saveImageFile sending image.');
-        RemoteServerFactory.uploadImage(imageId, src, UserFactory.getUser().encoded_login).then(function () {
-          deferred.resolve();
-        });
+        $log.log('Uploading image', imageId, 'to remote DB ...');
+        return RemoteServerFactory.uploadImage(imageId, imageBlob, UserFactory.getUser().encoded_login);
       }
-      else {
-        $log.log('Inside LiveDBFactory.saveImageFile but not in browser or logged out.');
-        deferred.resolve();
-      }
-      return deferred.promise;
+      else Promise.reject('You must be logged in to send image to remote DB.');
     }
   }
 }());

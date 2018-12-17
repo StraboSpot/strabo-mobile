@@ -144,6 +144,10 @@
         $log.log('Updated Spot by emogeo');
         vm.spot = SpotFactory.getCurrentSpot();
       });
+
+      $rootScope.$on('spotSaved', function () {
+        vm.spotChanged = false;
+      });
     }
 
     function copyTags(id) {

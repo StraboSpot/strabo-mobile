@@ -445,11 +445,8 @@
       return (request.then(handleSuccess, handleError));
     }
 
-    // Upload load an image
-    function uploadImage(imageId, src, encodedLogin) {
-      // base64 encoded string needs to be a blob type in formdata
-      var blob = dataURItoBlob(src);
-
+    // Upload load an image blob
+    function uploadImage(imageId, blob, encodedLogin) {
       var formdata = new FormData();
       formdata.append('image_file', blob, 'image.jpeg');
       formdata.append('id', imageId);

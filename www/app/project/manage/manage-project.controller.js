@@ -6,13 +6,14 @@
     .controller('ManageProjectController', ManageProjectController);
 
   ManageProjectController.$inject = ['$document', '$ionicModal', '$ionicLoading', '$ionicPopover', '$ionicPopup',
-    '$log', '$scope', '$state', '$q', '$window', 'FormFactory', 'ImageFactory', 'LiveDBFactory', 'LocalStorageFactory',
-    'OtherMapsFactory', 'ProjectFactory', 'RemoteServerFactory', 'SpotFactory', 'UserFactory', 'IS_WEB'];
+    '$log', '$scope', '$state', '$q', '$window', 'FormFactory', 'HelpersFactory', 'ImageFactory', 'LiveDBFactory',
+    'LocalStorageFactory', 'OtherMapsFactory', 'ProjectFactory', 'RemoteServerFactory', 'SpotFactory', 'UserFactory',
+    'IS_WEB'];
 
   function ManageProjectController($document, $ionicModal, $ionicLoading, $ionicPopover, $ionicPopup, $log, $scope,
-                                   $state, $q, $window, FormFactory, ImageFactory, LiveDBFactory, LocalStorageFactory,
-                                   OtherMapsFactory, ProjectFactory, RemoteServerFactory, SpotFactory, UserFactory,
-                                   IS_WEB) {
+                                   $state, $q, $window, FormFactory, HelpersFactory, ImageFactory, LiveDBFactory,
+                                   LocalStorageFactory, OtherMapsFactory, ProjectFactory, RemoteServerFactory,
+                                   SpotFactory, UserFactory, IS_WEB) {
     var vm = this;
 
     var downloadErrors = false;
@@ -27,7 +28,6 @@
     vm.exportItems = {};
     vm.fileBrowserModal = {};
     vm.importItem = undefined;
-    // vm.mineralCollections = [];
     vm.newDatasetName = '';
     vm.newProjectModal = {};
     vm.otherFeatureTypes = [];
@@ -43,11 +43,9 @@
     vm.titleText = 'Manage Projects';
 
     vm.areDatasetsOn = areDatasetsOn;
-    // vm.deleteCollection = deleteCollection;
     vm.deleteDataset = deleteDataset;
     vm.deleteProject = deleteProject;
     vm.deleteType = deleteType;
-    //vm.doSync = doSync;
     vm.exportProject = exportProject;
     vm.filterDefaultTypes = filterDefaultTypes;
     vm.getNumberOfSpots = getNumberOfSpots;
@@ -112,17 +110,6 @@
       }
     }
 
-    /* function allValidSpots(spots) {
-     var validSpots = true;
-     _.each(spots, function (spotId) {
-     if (!SpotFactory.getSpotById(spotId)) {
-     validSpots = false;
-     ProjectFactory.removeSpotFromDataset(spotId);
-     }
-     });
-     return validSpots;
-     }*/
-
     // Make sure the date and time aren't null
     // ToDo: This can be cleaned up when we no longer need date and time, just datetime
     function checkValidDateTime(spot) {
@@ -182,9 +169,9 @@
 
     function destroyProject() {
       return ProjectFactory.destroyProject().then(function () {
-        return SpotFactory.clearAllSpots().then(function () {
+        return SpotFactory.clearAllSpots()/*.then(function () {
           return ImageFactory.deleteAllImages();
-        });
+        })*/;
       });
     }
 
@@ -222,9 +209,7 @@
                 notifyMessages.pop();
                 outputMessage('NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
                   '<br>NEW Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
-                //return readDataUrl(response.data).then(function (base64Image) {
-                return ImageFactory.saveImage(response.data, neededImageId).then(function () {
-                  //return ImageFactory.saveImage(base64Image, neededImageId).then(function () {
+                return ImageFactory.saveImageBlobToDevice(response.data, neededImageId).then(function () {
                   savedImagesCount++;
                   notifyMessages.pop();
                   outputMessage(
@@ -254,8 +239,9 @@
         });
       }
       else if (!IS_WEB && !$window.cordova) {
-        $log.warn('Not Web but no Cordova so unable to get local image sources. Running for development?');
-        outputMessage('Unable to Download Images: ' + neededImagesIds.length);
+        $log.warn('No Cordova so unable to download images. Running for development?');
+        notifyMessages.pop();
+        outputMessage('Unable to Download Images');
       }
     }
 
@@ -353,38 +339,38 @@
       return deferred.promise;
     }
 
-    function exportImages() {
-      $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Exporting Project Images...'});
-      LocalStorageFactory.exportImages().then(function () {
-        $ionicPopup.alert({
-          'title': 'Success!',
-          'template': 'Finished exporting images.'
-        });
-      }, function (err) {
-        $ionicPopup.alert({
-          'title': 'Error!',
-          'template': 'Error exporting images.' + err
-        });
-      }).finally(function () {
-        $ionicLoading.hide();
-      });
-    }
-
+    // Determine which images aren't already on the device and need to be downloaded
     function gatherNeededImages(spots) {
-      if (!IS_WEB) {
-        var neededImagesIds = [];
+      var neededImagesIds = [];
+      if (!IS_WEB && $window.cordova) {
         var promises = [];
         outputMessage('Determining needed images...');
         _.each(spots, function (spot) {
           if (spot.properties.images) {
-            _.each(spot.properties.images, function (image) { //fix this, check for file instead? Or just download all?
-              neededImagesIds.push(image.id);
+            _.each(spot.properties.images, function (image) {
+              var promise = LocalStorageFactory.getImageById(image.id)
+                .then(function (src) {
+                  if (src === 'img/image-not-found.png') {
+                    $log.log('Need to download image', image.id);
+                    neededImagesIds.push(image.id);
+                  }
+                  else $log.log('Image', image.id, 'already exists on device. Not downloading.');
+                });
+              promises.push(promise);
             });
           }
         });
+        return Promise.all(promises).then(function () {
+          notifyMessages.pop();
+          outputMessage('NEW images to download: ' + neededImagesIds.length);
+          return Promise.resolve(neededImagesIds);
+        });
+      }
+      else if (!IS_WEB && !$window.cordova) {
+        $log.warn('No Cordova so unable to download images. Running for development?');
         notifyMessages.pop();
-        outputMessage('NEW images to download: ' + neededImagesIds.length);
-        return neededImagesIds;
+        outputMessage('Unable to Download Images');
+        return Promise.resolve(neededImagesIds);
       }
     }
 
@@ -416,33 +402,6 @@
             'template': 'Error finding local files. Error code: ' + err
           });
         }
-      });
-    }
-
-    function importImages() {
-      $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Importing Project Images...'});
-      LocalStorageFactory.importImages().then(function (count) {
-        var msg = 'Images Had: ' + count.have + '<br>' +
-          'Images Needed: ' + count.need + '<br><br>' +
-          'Images Imported: ' + count.success + '<br>' +
-          'Images Failed: ' + count.failed;
-        if (count.failed > 0) {
-          msg = msg + '<br><br> Failed images may be a result of images missing from the' +
-            ' StraboSpot/ImagesBackup folder or incorrect file names. Attempting to read too many images at once' +
-            ' into the local database can also cause failed images. If the later is the case continue running the' +
-            ' image import until there are no failed images.'
-        }
-        $ionicPopup.alert({
-          'title': 'Finished Importing Images!',
-          'template': msg
-        });
-      }, function (err) {
-        $ionicPopup.alert({
-          'title': 'Error!',
-          'template': 'Error importing images.' + err
-        });
-      }).finally(function () {
-        $ionicLoading.hide();
       });
     }
 
@@ -479,7 +438,6 @@
       vm.activeDatasets = ProjectFactory.getActiveDatasets();
       vm.spotsDataset = ProjectFactory.getSpotsDataset();
       vm.otherFeatureTypes = ProjectFactory.getOtherFeatures();
-      // vm.mineralCollections = ProjectFactory.getProjectProperty('mineral_collections');
 
       if (areDatasetsOn() && _.isEmpty(vm.spotsDataset)) {
         ProjectFactory.saveSpotsDataset(vm.activeDatasets[0]);
@@ -510,16 +468,6 @@
     function outputMessage(msg) {
       notifyMessages.push(msg);
       $ionicLoading.show({'template': notifyMessages.join('<br>')});
-    }
-
-    function readDataUrl(file) {
-      var deferred = $q.defer(); // init promise
-      var reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = function (evt) {
-        deferred.resolve(evt.target.result);
-      };
-      return deferred.promise;
     }
 
     function reloadProject() {
@@ -594,6 +542,7 @@
       return uploadProject()
         .then(uploadDatasets)
         .catch(function (err) {
+          $log.error('Upload errors');
           uploadErrors = true;
           throw err;
         });
@@ -607,25 +556,30 @@
       RemoteServerFactory.updateDataset(dataset, UserFactory.getUser().encoded_login)
         .then(function (response) {
           $log.log('Finished updating dataset', dataset, '. Response:', response);
-          return RemoteServerFactory.addDatasetToProject(project.id, dataset.id, UserFactory.getUser().encoded_login)
+          RemoteServerFactory.addDatasetToProject(project.id, dataset.id, UserFactory.getUser().encoded_login)
             .then(function (response2) {
                 $log.log('Finished adding dataset to project', project, '. Response:', response2);
-                return uploadSpots(dataset).then(function () {
+                uploadSpots(dataset).then(function () {
+                  $log.log('Uploaded Spots');
                   deferred.resolve();
+                }, function () {
+                  $log.log('Error uploading Spots');
+                  deferred.reject();
                 });
               },
               function (err) {
                 uploadErrors = true;
-                $log.log('Error adding dataset to project. Response:', err);
+                $log.error('Error adding dataset to project. Response:', err);
                 outputMessage('Error Updating Dataset.');
                 if (err.statusText) outputMessage('Server Error: ' + err.statusText);
-                deferred.resolve();
+                deferred.reject();
               });
         }, function (err) {
           uploadErrors = true;
+          $log.log('Error updating dataset');
           outputMessage('Error Updating Dataset.');
           if (err.statusText) outputMessage('Server Error: ' + err.statusText);
-          deferred.resolve();
+          deferred.reject();
         });
       return deferred.promise;
     }
@@ -645,6 +599,9 @@
           }
           if (currentRequest < datasets.length) makeNextRequest();
           else deferred.resolve();
+        }, function () {
+          $log.error('Error uploading dataset.');
+          deferred.reject('Error uploading dataset.');
         });
       }
 
@@ -662,33 +619,40 @@
       outputMessage('Checking Images to Upload...');
       _.each(spots, function (spot) {
         _.each(spot.properties.images, function (image) {
-          var promise = RemoteServerFactory.verifyImageExistance(image.id, UserFactory.getUser().encoded_login).then(
-            function (response) {
+          var promise = RemoteServerFactory.verifyImageExistance(image.id, UserFactory.getUser().encoded_login)
+            .then(function (response) {
               $log.log('Image', image, 'in Spot', spot.properties.id, spot, 'EXISTS on server. Server response',
                 response);
-            },
-            function () {
+            }, function () {
               imagesToUpload.push(image);
               imagesToUploadCount++;
               notifyMessages.pop();
               outputMessage('Images to Upload: ' + imagesToUploadCount);
-              return ImageFactory.getImageById(image.id).then(function (src) {
-                if (src) {
-                  return RemoteServerFactory.uploadImage(image.id, src, UserFactory.getUser().encoded_login).then(
-                    function () {
-                      imagesUploadedCount++;
-                      notifyMessages.pop();
-                      outputMessage('Images Uploaded: ' + imagesUploadedCount + ' of ' + imagesToUploadCount);
-                    }, function () {
-                      uploadErrors = true;
-                      imagesUploadFailedCount++;
-                    });
+              return ImageFactory.getImageFileURIById(image.id).then(function (src) {
+                if (src !== 'img/image-not-found.png') {
+                  return HelpersFactory.fileURItoBlob(src).then(function (blob) {
+                    return RemoteServerFactory.uploadImage(image.id, blob, UserFactory.getUser().encoded_login).then(
+                      function () {
+                        imagesUploadedCount++;
+                        notifyMessages.pop();
+                        outputMessage('Images Uploaded: ' + imagesUploadedCount + ' of ' + imagesToUploadCount);
+                        return Promise.resolve();
+                      }, function () {
+                        uploadErrors = true;
+                        imagesUploadFailedCount++;
+                        $log.error('Upload Image error');
+                        return Promise.reject();
+                      });
+                  }, function () {
+                    $log.error('Problem converting file URI to blob');
+                    return Promise.reject();
+                  });
                 }
                 else {
                   $log.log('No image source found for image', image.id, 'in Spot', spot.properties.id, spot);
                   uploadErrors = true;
                   imagesUploadFailedCount++;
-                  return $q.when(null);
+                  return Promise.reject();
                 }
               });
             });
@@ -704,6 +668,10 @@
           outputMessage('Finished Uploading Images');
           if (imagesUploadFailedCount > 0) outputMessage('Images Failed: ' + imagesUploadFailedCount);
         }
+        return Promise.resolve();
+      }, function () {
+        $log.log('Problem uploading images');
+        return Promise.reject();
       });
     }
 
@@ -750,9 +718,8 @@
           'features': _.values(spots)
         };
         outputMessage('Uploading ' + totalSpotCount + ' Spots...');
-        return RemoteServerFactory.updateDatasetSpots(dataset.id, spotCollection,
-          UserFactory.getUser().encoded_login).then(
-          function () {
+        return RemoteServerFactory.updateDatasetSpots(dataset.id, spotCollection, UserFactory.getUser().encoded_login)
+          .then(function () {
             notifyMessages.pop();
             outputMessage('Finished Uploading ' + totalSpotCount + ' Spots');
             return uploadImages(spots);
@@ -761,7 +728,7 @@
             outputMessage('Error updating Spots in dataset' + dataset.name);
             if (err && err.data && err.data.Error) $log.error(err.data.Error);
             if (err && err.statusText) outputMessage('Server Error: ' + err.statusText);
-            return $q.when(null);
+            return Promise.reject('Error updating Spots in dataset');
           });
       }
     }
@@ -832,13 +799,6 @@
       });
     }
 
-    // function deleteCollection(indexToDelete) {
-    //   vm.mineralCollections = _.reject(vm.mineralCollections, function (mineralCollection, i) {
-    //     return indexToDelete === i;
-    //   });
-    //   ProjectFactory.saveProjectItem('mineral_collections', vm.mineralCollections);
-    // }
-
     function deleteType(i) {
       var customTypes = _.reject(vm.otherFeatureTypes, function (type) {
         return _.contains(ProjectFactory.getDefaultOtherFeatureTypes(), type);
@@ -887,80 +847,9 @@
       });
     }
 
-    /*function doSync() {
-     if (isSyncReady()) {
-     vm.showOfflineWarning = false;
-     SyncFactory.downloadProject(vm.project, UserFactory.getUser().encoded_login).then(function (msg) {
-     $log.log(msg);
-     SyncFactory.doDownloadDatasets(vm.activeDatasets, UserFactory.getUser().encoded_login).then(function () {
-     $log.log('Finished sync');
-     });
-
-     //downloadProject().then(function () {
-     if (remoteProject date > local Project date) {
-     destory local project
-     save remote Project
-     download datasets
-     }
-     //vm.data = UserFactory.getUser();
-     //dataOrig = angular.copy(vm.data);
-     //$log.log('Finished sync');
-     }).finally(function () {
-     // Stop the ion-refresher from spinning
-     $scope.$broadcast('scroll.refreshComplete');
-     });
-     }
-     else {
-     vm.showOfflineWarning = true;
-     // Stop the ion-refresher from spinning
-     $scope.$broadcast('scroll.refreshComplete');
-     }
-     }*/
-
     function exportProject() {
       vm.popover.hide().then(function () {
         exportData();
-      });
-    }
-
-    function oldexportProject() {
-      vm.popover.hide().then(function () {
-        vm.exportItems = {};
-        var template = '<ion-checkbox ng-model="vm.exportItems.text">Text Data</ion-checkbox>' +
-          '<ion-checkbox ng-model="vm.exportItems.images">Images</ion-checkbox>';
-
-        var myPopup = $ionicPopup.show({
-          'title': 'Select Items to Export',
-          'template': template,
-          'scope': $scope,
-          'buttons': [{
-            'text': 'Cancel'
-          }, {
-            'text': '<b>OK</b>',
-            'type': 'button-positive',
-            'onTap': function (e) {
-              if (_.isEmpty(vm.exportItems)) e.preventDefault(); // don't allow the user to close unless a value is set
-              else return vm.exportItems;
-            }
-          }]
-        });
-
-        myPopup.then(function (res) {
-          if (res) {
-            if (vm.exportItems.text && vm.exportItems.images) {
-              exportData().then(function () {
-                $ionicPopup.alert({
-                  'title': 'Export Project Images',
-                  'template': 'Now exporting all project images ...'
-                }).then(function () {
-                  exportImages();
-                });
-              });
-            }
-            else if (vm.exportItems.text && !vm.exportItems.images) exportData();
-            else if (!vm.exportItems.text && vm.exportItems.images) exportImages();
-          }
-        });
       });
     }
 
@@ -970,12 +859,9 @@
 
     function getNumberOfSpots(dataset) {
       var spots = ProjectFactory.getSpotIds()[dataset.id];
-      // if (!allValidSpots(spots)) getNumberOfSpots(dataset);
-      //else {
       if (_.isEmpty(spots)) return '(0 Spots)';
       else if (spots.length === 1) return '(1 Spot)';
       return '(' + spots.length + ' Spots)';
-      //}
     }
 
     function goToProjectDescription() {
@@ -993,40 +879,6 @@
       });
     }
 
-
-    function oldimportProject() {
-      vm.popover.hide().then(function () {
-        vm.importItem = undefined;
-        vm.text = 'text';
-        vm.images = 'images';
-        var template = '<ion-radio ng-model="vm.importItem" ng-value="vm.text">Text Data</ion-radio>' +
-          '<ion-radio ng-model="vm.importItem" ng-value="vm.images">Images</ion-radio>';
-
-        var myPopup = $ionicPopup.show({
-          'title': 'Select Item to Import',
-          'template': template,
-          'scope': $scope,
-          'buttons': [{
-            'text': 'Cancel'
-          }, {
-            'text': '<b>OK</b>',
-            'type': 'button-positive',
-            'onTap': function (e) {
-              if (vm.importItem === undefined) e.preventDefault(); // don't allow the user to close unless a value is set
-              else return vm.importItem;
-            }
-          }]
-        });
-
-        myPopup.then(function (res) {
-          if (res) {
-            if (vm.importItem === 'text') importData();
-            else if (vm.importItem === 'images') importImages();
-          }
-        });
-      });
-    }
-
     function importSelectedFile(name) {
       vm.fileBrowserModal.hide().then(function () {
         var confirmPopup = $ionicPopup.confirm({
@@ -1041,7 +893,7 @@
             var promises = [];
             promises.push(ProjectFactory.destroyProject());
             promises.push(SpotFactory.clearAllSpots());
-            promises.push(ImageFactory.deleteAllImages());
+            //promises.push(ImageFactory.deleteAllImages());
 
             $q.all(promises).then(function () {
               $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Importing Project..'});

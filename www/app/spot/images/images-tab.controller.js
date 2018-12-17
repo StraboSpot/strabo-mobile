@@ -31,7 +31,6 @@
     vm.addImage = addImage;
     vm.closeModal = closeModal;
     vm.deleteImage = deleteImage;
-    vm.exportImage = exportImage;
     vm.getImageSrc = getImageSrc;
     vm.goToImageBasemap = goToImageBasemap;
     vm.isWeb = isWeb;
@@ -66,12 +65,6 @@
           });
         }
       });
-
-      $rootScope.$on('updatedImages', function () {
-        vmParent.spotChanged = false;
-        if (IS_WEB) getImageSources();
-        else activate();
-      });
     }
 
     function loadTab(state) {
@@ -79,7 +72,13 @@
       if (vmParent.spot && !_.isEmpty(vmParent.spot)) {
         FormFactory.setForm('image');
         createModals();
-        getImageSources();
+        $ionicLoading.show({
+          'template': '<ion-spinner></ion-spinner><br>Loading Images...'
+        });
+        ImageFactory.gatherImageSources(vmParent.spot)
+          .then(function () {
+            $ionicLoading.hide();
+          });
         checkImageType();     // Set default image type to 'photo' if no image type has been set
         if (IS_WEB) ionic.on('change', getFile, $document[0].getElementById('imageFile'));
       }
@@ -104,54 +103,16 @@
       });
     }
 
+    // Get the file if it is loaded on the image tab or the map side panel
     function getFile(event) {
-      if ($state.current.url === '/:spotId/images' && !_.isEmpty(event.target.files)) {
+      if (($state.current.url === '/:spotId/images' || $state.current.url === '/map') &&
+        !_.isEmpty(event.target.files)) {
         var file = event.target.files[0];
-        if (file) {
-          $log.log('Getting Image file ....');
-          $ionicLoading.show({
-            'template': '<ion-spinner></ion-spinner><br>Getting Image...'
-          });
-          ImageFactory.readFile(file);
-        }
+        if (file) ImageFactory.addImageWeb(file);
       }
     }
 
-    function getImageSources() {
-      $ionicLoading.show({
-        'template': '<ion-spinner></ion-spinner><br>Loading Images...'
-      });
-      var promises = [];
-      imageSources = {};
-      vmParent.spot = ImageFactory.cleanImagesInSpot(vmParent.spot);
-      _.each(vmParent.spot.properties.images, function (image) {
-        var promise = ImageFactory.getImageById(image.id).then(function (src) {
-          if (IS_WEB && UserFactory.getUser()) {
-            // Check that the image exists on the server and then grab the URL for it
-            return RemoteServerFactory.verifyImageExistance(image.id, UserFactory.getUser().encoded_login).then(
-              function (response) {
-                $log.log('Image', image, 'in Spot', vmParent.spot.properties.id, vmParent.spot,
-                  'EXISTS on server. Server response', response);
-                imageSources[image.id] = "https://strabospot.org/pi/" + image.id;
-              },
-              function (response) {
-                $log.error('Image', image, 'in Spot', vmParent.spot.properties.id, vmParent.spot,
-                  'DOES NOT EXIST on server. Server response', response);
-                imageSources[image.id] = 'img/image-not-found.png';
-              });
-          }
-          else if (src) imageSources[image.id] = src;
-          else imageSources[image.id] = 'img/image-not-found.png';
-        });
-        promises.push(promise);
-      });
-      return $q.all(promises).then(function () {
-        $log.log('Image Sources:', imageSources);
-        $ionicLoading.hide();
-      });
-    }
-
-    function getImageType(imageData, image) {
+    function getImageType() {
       var deferred = $q.defer(); // init promise
       vm.imageType = undefined;
       var imageTypeField = _.findWhere(FormFactory.getForm().survey, {'name': 'image_type'});
@@ -319,38 +280,8 @@
       }
     }
 
-    function exportImage() {
-      ImageFactory.getImageById(vmParent.data.id).then(function (base64Image) {
-        if (IS_WEB) {
-          var image = new Image();
-          image.src = base64Image;
-          var win = $window.open();
-          win.document.write(image.outerHTML);
-        }
-        else {
-          // Process the base64 string - split the base64 string into the data and data type
-          var block = base64Image.split(';');
-          var dataType = block[0].split(':')[1];    // In this case 'image/jpg'
-          var base64Data = block[1].split(',')[1];  // In this case 'iVBORw0KGg....'
-          var dataBlob = HelpersFactory.b64toBlob(base64Data, dataType);
-          var filename = (vmParent.data.title || vmParent.data.id) + '.jpg';
-          LocalStorageFactory.exportImage(dataBlob, filename).then(function (filePath) {
-            $ionicPopup.alert({
-              'title': 'Success!',
-              'template': 'Image saved to ' + filePath
-            });
-          }, function (error) {
-            $ionicPopup.alert({
-              'title': 'Error!',
-              'template': 'Unable to save image.' + error
-            });
-          });
-        }
-      });
-    }
-
     function getImageSrc(imageId) {
-      return imageSources[imageId] || 'img/loading-image.png';
+      return ImageFactory.getImageSource(imageId);
     }
 
     function goToImageBasemap(image) {
@@ -391,14 +322,12 @@
     function reattachImage() {
       var confirmPopup = $ionicPopup.confirm({
         'title': 'Reattach Image',
-        'template': 'Select an image from your device to reattach the source to the selected image properties. Continue?'
+        'template': 'Select an image from your device to reattach the source to the selected image properties. ' +
+          'The dimensions of the selected image must match the dimensions of the original image. Continue?'
       });
       confirmPopup.then(function (res) {
         if (res) {
           vm.imagePropertiesModal.hide();
-          $ionicLoading.show({
-            'template': '<ion-spinner></ion-spinner><br>Reattaching Image...'
-          });
           ImageFactory.setIsReattachImage(true);
           ImageFactory.setCurrentSpot(vmParent.spot);
           ImageFactory.setCurrentImage(vmParent.data);

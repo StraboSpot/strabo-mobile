@@ -19,6 +19,7 @@
       'convertToSmallerUnit': convertToSmallerUnit,
       'csvToArray': csvToArray,
       'deepFindById': deepFindById,
+      'fileURItoBlob': fileURItoBlob,
       'getStereonet': getStereonet,
       'getNewId': getNewId,
       'hexToRgb': hexToRgb,
@@ -172,6 +173,39 @@
         }
       }
       return result;
+    }
+
+    // Convert a File URI to an image Blob
+    function fileURItoBlob(fileURI) {
+      $log.log('Converting file URI to blob. File URI:', fileURI);
+      return new Promise(function (resolve, reject) {
+        $window.resolveLocalFileSystemURL(fileURI, function success(fileEntry) {
+          $log.log("Got file: " + fileEntry.fullPath);
+          fileEntry.file(function (file) {
+            var reader = new FileReader();
+            reader.onloadend = function (encodedFile) {
+              var base64Image = encodedFile.target.result;
+              var binary = atob(base64Image.split(',')[1]);
+              var array = [];
+              for (var i = 0; i < binary.length; i++) {
+                array.push(binary.charCodeAt(i));
+              }
+              resolve(new Blob([new Uint8Array(array)], {'type': 'image/jpeg'}));
+            };
+            reader.onerror = function (err) {
+              $log.error('Error reading file.');
+              reject('Error reading file.');
+            };
+            reader.readAsDataURL(file);
+          }, function () {
+            $log.error('Failed to get image file entry.');
+            reject('Failed to get image file entry.');
+          })
+        }, function () {
+          $log.error('Resolve File System error');
+          reject('Resolve File System error');
+        })
+      });
     }
 
     function hexToRgb(hex) {
