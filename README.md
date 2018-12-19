@@ -80,7 +80,7 @@ Generate Resources (icons and splash screens):
     cordova-plugin-whitelist 1.3.3 "Whitelist"
     cordova-plugin-zip 3.1.0 "cordova-plugin-zip"
     cordova-sqlite-evcore-extbuild-free 0.9.9 "Cordova sqlite storage - free enterprise version with Android performance/memory improvements and extra features for PhoneGap Build"
-    cordova-sqlite-storage 2.5.1 "Cordova sqlite storage plugin"
+    cordova-sqlite-storage 2.6.0 "Cordova sqlite storage plugin"
     io.phasr.cordova.plugin.itunesfilesharing 0.0.1 "cordova-plugin-itunesfilesharing"
     org.strabospot.clipboard 0.1.0 "Clipboard"
 
