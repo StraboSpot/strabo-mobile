@@ -126,7 +126,7 @@ Generate Resources (icons and splash screens):
     turfjs: 5.1.6
     jsts: 1.3.0
     underscore: 1.8.3
-    localforage: 1.7.1
+    localforage: 1.7.3
     localforage-cordovasqlitedriver: 1.7.0
 
 
