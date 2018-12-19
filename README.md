@@ -72,7 +72,7 @@ Generate Resources (icons and splash screens):
     cordova-plugin-geolocation 4.0.1 "Geolocation"
     cordova-plugin-inappbrowser 3.0.0 "InAppBrowser"
     cordova-plugin-ionic-keyboard 2.1.3 "cordova-plugin-ionic-keyboard"
-    cordova-plugin-ionic-webview 2.2.3 "cordova-plugin-ionic-webview"
+    cordova-plugin-ionic-webview 2.2.5 "cordova-plugin-ionic-webview"
     cordova-plugin-itunesfilesharing 0.0.2 "cordova-plugin-itunesfilesharing"
     cordova-plugin-network-information 2.0.1 "Network Information"
     cordova-plugin-splashscreen 5.0.2 "Splashscreen"
