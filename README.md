@@ -128,6 +128,7 @@ Generate Resources (icons and splash screens):
     underscore: 1.9.1
     localforage: 1.7.3
     localforage-cordovasqlitedriver: 1.7.0
+    ravenjs: 3.27.0
 
 
 ### Tested Environment - Platforms
