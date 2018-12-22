@@ -50,8 +50,8 @@
       {'state': 'spots', 'url': 'spots', 'template': 'spots/spots', 'controller': 'Spots'},
       {'state': 'strat-section', 'url': 'strat-sections/:stratSectionId', 'template': 'maps/strat-section/strat-section', 'controller': 'StratSection'},
       {'state': 'strat-sections', 'url': 'strat-sections', 'template': 'maps/strat-sections/strat-sections', 'controller': 'StratSections'},
-      {'state': 'thin-section', 'url': 'thin-sections/:thinSectionId', 'template': 'maps/thin-section/thin-section', 'controller': 'ThinSection'},
-      {'state': 'thin-sections', 'url': 'thin-sections', 'template': 'maps/thin-sections/thin-sections', 'controller': 'ThinSections'},
+      // {'state': 'thin-section', 'url': 'thin-sections/:thinSectionId', 'template': 'maps/thin-section/thin-section', 'controller': 'ThinSection'},
+      // {'state': 'thin-sections', 'url': 'thin-sections', 'template': 'maps/thin-sections/thin-sections', 'controller': 'ThinSections'},
       {'state': 'tag', 'url': 'tags/:tag_id', 'template': 'tag/tag', 'controller': 'Tag'},
       {'state': 'tags', 'url': 'tags', 'template': 'tags/tags', 'controller': 'Tags'},
       {'state': 'tools', 'url': 'tools', 'template': 'project/tools/tools', 'controller': 'Tools'},
@@ -126,26 +126,34 @@
     });
   }
 
-  function prepMenu($ionicLoading, LocalStorageFactory, DataModelsFactory, ProjectFactory, RemoteServerFactory, SpotFactory,
+  function prepMenu($ionicLoading, $ionicPlatform, LocalStorageFactory, DataModelsFactory, ProjectFactory, RemoteServerFactory, SpotFactory,
                     UserFactory, OtherMapsFactory) {
-    $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loading Data Models...'});
-    return DataModelsFactory.loadDataModels().then(function () {
-      $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loading Database...'});
-      return LocalStorageFactory.setupLocalforage().then(function () {
-        $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loaded Database<br>Loading User...'});
-        return UserFactory.loadUser().then(function () {
-          $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loaded Database<br>Loaded User<br>Loading Project...'});
-          return ProjectFactory.prepProject().then(function () {
-            $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loaded Database<br>Loaded User<br>Loaded Project<br>Loading Spots...'});
-            return SpotFactory.loadSpots().then(function () {
-              $ionicLoading.hide();
-              return RemoteServerFactory.loadDbUrl().then(function () {
-                return OtherMapsFactory.loadOtherMaps();
+    // $ionicPlatform.ready(function () {
+      $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loading Data Models...'});
+      return DataModelsFactory.loadDataModels().then(function () {
+        $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loading Database...'});
+        return LocalStorageFactory.setupLocalforage().then(function () {
+          // localforage.ready().then(function () {
+            $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loaded Database<br>Loading User...'});
+            return UserFactory.loadUser().then(function () {
+              $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loaded Database<br>Loaded User<br>Loading Project...'});
+              return ProjectFactory.prepProject().then(function () {
+                $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loaded Database<br>Loaded User<br>Loaded Project<br>Loading Spots...'});
+                return SpotFactory.loadSpots().then(function () {
+                  $ionicLoading.hide();
+                  return RemoteServerFactory.loadDbUrl().then(function () {
+                    return OtherMapsFactory.loadOtherMaps();
+                  });
+                });
               });
             });
-          });
+          // }).catch(function (e) {
+          //   console.log(e);
+          // });
         });
+      }).catch(function () {
+        console.log('Error Prepping Project');
       });
-    });
+    // });
   }
 }());

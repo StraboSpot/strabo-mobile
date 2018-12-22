@@ -3,7 +3,29 @@
 
   angular
     .module('app')
-    .controller('MapController', MapController);
+    .controller('MapController', MapController)
+    // .directive('mapDir', function () {
+    //   return {
+    //       restrict: 'A',
+    //       link: function ($scope) {
+    //          var OSMsource = new ol.source.OSM;
+    //          var map = new ol.Map({
+    //             target: 'map',
+    //             layers: [
+    //               new ol.layer.Tile({
+    //                 source: OSMsource
+    //               })
+                 
+    //             ],
+                  
+    //             view: new ol.View({
+    //               center: ol.proj.fromLonLat([-110.86, 32.29]),
+    //               zoom: 4
+    //             })
+    //          });
+    //       }
+    //   };
+    // });
 
   MapController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup',
     '$ionicSideMenuDelegate', '$location', '$log', '$rootScope', '$scope', '$timeout', 'FormFactory', 'HelpersFactory',
@@ -203,8 +225,8 @@
         updateFeatureLayer();
       });
 
-      $scope.$on('$destroy', function () {
-        MapViewFactory.setMapView(map);
+      $scope.$on('$stateChangeStart', function () {
+        // MapViewFactory.setMapView(map);
         MapDrawFactory.cancelEdits();    // Cancel any edits
         if (vm.addTagModal) vm.addTagModal.remove();
         if (vm.newNestModal) vm.newNestModal.remove();

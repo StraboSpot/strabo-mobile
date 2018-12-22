@@ -354,11 +354,10 @@
         case 'mapbox_classic':
         case 'mapbox_styles':
         case 'macrostrat':
-          return new ol.source.XYZ({'url': url + layer.id + layer.tilePath + '?access_token=' + layer.key});
-          case 'map_warper':
-            return new ol.source.XYZ({'url': url + layer.id + layer.tilePath});
-          case 'strabospot_mymaps':
-            return new ol.source.XYZ({'url': url + layer.id + layer.tilePath});
+          return new ol.source.XYZ({'url': url + layer.id + layer.tilePath + '?access_token=' + layer.key, 'cacheSize': 1028});
+        case 'map_warper':
+        case 'strabospot_mymaps':
+          return new ol.source.XYZ({'url': url + layer.id + layer.tilePath, 'cacheSize': 1028});
         default:
           return new ol.source.XYZ({'url': ''});  // No basemap layer
       }

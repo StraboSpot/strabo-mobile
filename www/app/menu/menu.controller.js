@@ -96,7 +96,7 @@
     }
 
     function showMicrographWorkspace() {
-      return !_.isEmpty(ThinSectionFactory.getSpotsWithMicrographs());
+      // return !_.isEmpty(ThinSectionFactory.getSpotsWithMicrographs());
     }
   }
 }());

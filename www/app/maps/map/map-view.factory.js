@@ -179,7 +179,7 @@
       }
 
       initialMapView = new ol.View({
-        'projection': projection,
+        // 'projection': projection,
         'center': center,
         'zoom': zoom,
         'minZoom': minZoom
