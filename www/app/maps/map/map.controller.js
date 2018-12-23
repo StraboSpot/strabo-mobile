@@ -3,29 +3,7 @@
 
   angular
     .module('app')
-    .controller('MapController', MapController)
-    // .directive('mapDir', function () {
-    //   return {
-    //       restrict: 'A',
-    //       link: function ($scope) {
-    //          var OSMsource = new ol.source.OSM;
-    //          var map = new ol.Map({
-    //             target: 'map',
-    //             layers: [
-    //               new ol.layer.Tile({
-    //                 source: OSMsource
-    //               })
-                 
-    //             ],
-                  
-    //             view: new ol.View({
-    //               center: ol.proj.fromLonLat([-110.86, 32.29]),
-    //               zoom: 4
-    //             })
-    //          });
-    //       }
-    //   };
-    // });
+    .controller('MapController', MapController);
 
   MapController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup',
     '$ionicSideMenuDelegate', '$location', '$log', '$rootScope', '$scope', '$timeout', 'FormFactory', 'HelpersFactory',
