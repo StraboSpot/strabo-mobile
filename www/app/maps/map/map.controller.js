@@ -204,7 +204,7 @@
       });
 
       $scope.$on('$stateChangeStart', function () {
-        // MapViewFactory.setMapView(map);
+        MapViewFactory.setMapView(map);
         MapDrawFactory.cancelEdits();    // Cancel any edits
         if (vm.addTagModal) vm.addTagModal.remove();
         if (vm.newNestModal) vm.newNestModal.remove();
