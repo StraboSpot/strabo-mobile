@@ -5,10 +5,10 @@
     .module('app')
     .controller('MenuController', MenuController);
 
-  MenuController.$inject = ['$ionicLoading', '$log', '$scope', '$state', 'ProjectFactory', 'ThinSectionFactory',
+  MenuController.$inject = ['$ionicLoading', '$log', '$scope', '$state', 'ProjectFactory', /*'ThinSectionFactory',*/
     'UserFactory'];
 
-  function MenuController($ionicLoading, $log, $scope, $state, ProjectFactory, ThinSectionFactory, UserFactory) {
+  function MenuController($ionicLoading, $log, $scope, $state, ProjectFactory, /*ThinSectionFactory,*/ UserFactory) {
     var vm = this;
 
     vm.projectName = '';
@@ -96,7 +96,7 @@
     }
 
     function showMicrographWorkspace() {
-      return !_.isEmpty(ThinSectionFactory.getSpotsWithMicrographs());
+      // return !_.isEmpty(ThinSectionFactory.getSpotsWithMicrographs());
     }
   }
 }());
