@@ -79,7 +79,7 @@ Generate Resources (icons and splash screens):
     cordova-plugin-statusbar 2.4.2 "StatusBar"
     cordova-plugin-whitelist 1.3.3 "Whitelist"
     cordova-plugin-zip 3.1.0 "cordova-plugin-zip"
-    cordova-sqlite-evcore-extbuild-free 0.9.9 "Cordova sqlite storage - free enterprise version with Android performance/memory improvements and extra features for PhoneGap Build"
+    cordova-sqlite-evcore-extbuild-free 0.9.10 "Cordova sqlite storage - free enterprise version with Android performance/memory improvements and extra features for PhoneGap Build"
     cordova-sqlite-storage 2.6.0 "Cordova sqlite storage plugin"
     io.phasr.cordova.plugin.itunesfilesharing 0.0.1 "cordova-plugin-itunesfilesharing"
     org.strabospot.clipboard 0.1.0 "Clipboard"
@@ -87,7 +87,7 @@ Generate Resources (icons and splash screens):
 *Notes:*
 - When used with PhoneGap Build the plugin `cordova-sqlite-storage` must be substituted for the following:
 
-    `cordova-sqlite-evcore-extbuild-free 0.9.7 "Cordova sqlite storage - free enterprise version with Android performance/memory improvements and extra features for PhoneGap Build`
+    `cordova-sqlite-evcore-extbuild-free 0.9.10 "Cordova sqlite storage - free enterprise version with Android performance/memory improvements and extra features for PhoneGap Build`
 
 - This list can be generated with `ionic cordova plugin list`.
 - `cordova-plugin-filepath`: Added due to Cordova bug with Android and content schema
