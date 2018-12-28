@@ -715,11 +715,11 @@
             deferred.resolve(true);
           }).catch(function (err) {
             $log.log(err);
-            deferred.resolve(false);
+            deferred.reject();
           });
         } catch (e) {
           $log.log(e);
-          deferred.resolve(false);
+          deferred.reject();
         }
       }
       else deferred.resolve(true);
