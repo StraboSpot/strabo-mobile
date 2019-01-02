@@ -697,7 +697,7 @@
       if (doInitialize) {
         try {
           localforage.defineDriver(window.cordovaSQLiteDriver).then(function () {
-            return localforage.setDriver([
+            localforage.setDriver([
               window.cordovaSQLiteDriver._driver,
               localforage.INDEXEDDB,
               localforage.WEBSQL,
