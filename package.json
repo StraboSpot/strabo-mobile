@@ -51,7 +51,10 @@
         "ionic_generate_source_map": true
     },
     "cordova": {
-        "platforms": [],
+        "platforms": [
+            "android",
+            "ios"
+        ],
         "plugins": {
             "cordova-plugin-camera": {},
             "cordova-plugin-device": {},
