@@ -203,7 +203,7 @@
         updateFeatureLayer();
       });
 
-      $scope.$on('$destroy', function () {
+      $scope.$on('$stateChangeStart', function () {
         MapViewFactory.setMapView(map);
         MapDrawFactory.cancelEdits();    // Cancel any edits
         if (vm.addTagModal) vm.addTagModal.remove();
