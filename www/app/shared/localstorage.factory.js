@@ -712,14 +712,14 @@
               });
               $log.log('Created db', key, ':', dbs[key]);
             });
-            deferred.resolve(true);
+            deferred.resolve();
           }).catch(function (err) {
             $log.log(err);
-            deferred.resolve(false);
+            deferred.reject();
           });
         } catch (e) {
           $log.log(e);
-          deferred.resolve(false);
+          deferred.reject();
         }
       }
       else deferred.resolve(true);

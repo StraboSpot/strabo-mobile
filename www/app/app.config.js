@@ -90,7 +90,7 @@
       {'state': 'experimental-results', 'template': 'micro/experimental-results/experimental-results-tab', 'controller': 'ExperimentalResults'},
       {'state': 'experimental-set-up', 'template': 'micro/experimental-set-up/experimental-set-up-tab', 'controller': 'ExperimentalSetUp'},
       {'state': 'images', 'template': 'images/images-tab', 'controller': 'Images'},
-      {'state': 'minerals', 'template': 'minerals/minerals-tab', 'controller': 'Minerals'}, 
+      {'state': 'minerals', 'template': 'minerals/minerals-tab', 'controller': 'Minerals'},
       {'state': 'nesting', 'template': 'nesting/nesting-tab', 'controller': 'Nesting'},
       {'state': 'orientations', 'template': 'orientations/orientations-tab', 'controller': 'Orientations'},
       {'state': 'other-features', 'template': 'other-features/other-features-tab', 'controller': 'OtherFeatures'},
@@ -120,14 +120,16 @@
     $urlRouterProvider.otherwise('/login');
   }
 
-  function prepLogin(LocalStorageFactory, UserFactory) {
+  function prepLogin($log, LocalStorageFactory, UserFactory) {
     return LocalStorageFactory.setupLocalforage().then(function () {
       return UserFactory.loadUser();
+    }).catch(function () {
+      $log.error('Error Prepping Login');
     });
   }
 
-  function prepMenu($ionicLoading, LocalStorageFactory, DataModelsFactory, ProjectFactory, RemoteServerFactory, SpotFactory,
-                    UserFactory, OtherMapsFactory) {
+  function prepMenu($ionicLoading, $log, LocalStorageFactory, DataModelsFactory, ProjectFactory, RemoteServerFactory,
+                    SpotFactory, UserFactory, OtherMapsFactory) {
     $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loading Data Models...'});
     return DataModelsFactory.loadDataModels().then(function () {
       $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loading Database...'});
@@ -138,7 +140,6 @@
           return ProjectFactory.prepProject().then(function () {
             $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loaded Database<br>Loaded User<br>Loaded Project<br>Loading Spots...'});
             return SpotFactory.loadSpots().then(function () {
-              $ionicLoading.hide();
               return RemoteServerFactory.loadDbUrl().then(function () {
                 return OtherMapsFactory.loadOtherMaps();
               });
@@ -146,6 +147,10 @@
           });
         });
       });
+    }).finally(function () {
+      $ionicLoading.hide();
+    }).catch(function () {
+      $log.error('Error Prepping Project');
     });
   }
 }());
