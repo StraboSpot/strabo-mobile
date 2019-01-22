@@ -21,4 +21,4 @@ select_one gy5ky31,obs_interval_bed_obs_scale,Observation Interval (average bed/
 select_one ao6ek37,how_is_section_georeferenced,How is the Section Georeferenced?,false,,,,
 text,strat_section_notes,Notes,false,,multiline,,
 calculate,__version__,,false,,,'vABoyibvTTxS8wqHZcbXuC',
-calculate,_version_,,,,,'vUfRJQs9r7qURJ5eg6WcLq',__version__
+calculate,_version_,,,,,'vRzhPoKhuaUcjdPrEoH2ue',__version__

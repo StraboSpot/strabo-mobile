@@ -101,7 +101,8 @@
       var stratSectionId = vmParent.spot.properties.sed.strat_section.strat_section_id;
       if (!newProfile) vmParent.spot.properties.sed.strat_section.column_profile = oldProfile;
       else if (((oldProfile === 'clastic' || oldProfile === 'carbonate' || oldProfile === 'mixed_clastic') &&
-        newProfile === 'weathering_pro') || (oldProfile === 'weathering_pro' &&
+        (newProfile === 'weathering_pro' || newProfile === 'basic_lithologies'))
+        || ((oldProfile === 'weathering_pro' || oldProfile === 'basic_lithologies') &&
         (newProfile === 'clastic' || newProfile === 'carbonate' || newProfile === 'mixed_clastic'))) {
         var confirmPopup = $ionicPopup.confirm({
           'title': 'Column Profile Change Warning!',

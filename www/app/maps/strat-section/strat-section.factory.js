@@ -10,6 +10,7 @@
 
   function StratSectionFactory($ionicPopup, $log, $q, DataModelsFactory, HelpersFactory, MapLayerFactory,
                                MapSetupFactory, SpotFactory) {
+    var basicLitholigiesLabels = ['other', 'coal', 'mudstone', 'sandstone', 'conglomerate/breccia', 'limestone/dolomite'];
     var grainSizeOptions = DataModelsFactory.getSedLabelsDictionary();
     var spotsWithStratSections = {};
     var stratSectionSpots = {};
@@ -164,6 +165,16 @@
           });
           intervalWidth = i === -1 ? defaultWidth : (i + 1) * xInterval;
         }
+        // Basic Lithologies Column Profile
+        else if (stratSectionSettings.column_profile === 'basic_lithologies') {
+          if (lithology.primary_lithology === 'organic_coal') i = 1;
+          else if (lithology.mud_silt_principal_grain_size) i = 2;
+          else if (lithology.sand_principal_grain_size) i = 3;
+          else if (lithology.congl_principal_grain_size || lithology.breccia_principal_grain_size) i = 4;
+          else if (lithology.principal_dunham_class) i = 5;
+          else i = 0;
+          intervalWidth = i === -1 ? defaultWidth : (i + 2) * xInterval;
+        }
         // Primary Lithology = siliciclastic
         else if (lithology.mud_silt_principal_grain_size || lithology.sand_principal_grain_size ||
           lithology.congl_principal_grain_size || lithology.breccia_principal_grain_size) {
@@ -247,8 +258,7 @@
 
       try {
         return eval(relevant);
-      }
-      catch (e) {
+      } catch (e) {
         return false;
       }
     }
@@ -474,6 +484,11 @@
         labels = _.pluck(grainSizeOptions.carbonate, 'label');
         //drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 2.33, 'blue');
         drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 2, y, 'blue', 'carbonate');
+        y += (a + b * x + c * x * x) * -1
+      }
+      else if (stratSection.column_profile === 'basic_lithologies') {
+        labels = basicLitholigiesLabels;
+        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 2, y, 'black', stratSection.column_profile);
         y += (a + b * x + c * x * x) * -1
       }
       else if (stratSection.column_profile === 'weathering_pro') {

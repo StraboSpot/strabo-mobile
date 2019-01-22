@@ -29,8 +29,9 @@ select_one jx0op03,relative_resistance_weathering,Relative resistance (weatherin
 text,fresh_color,Fresh color,false,${is_this_a_bed_or_package} = 'bed' or ${is_this_a_bed_or_package} = 'interbedded' or ${is_this_a_bed_or_package} = 'package_succe',,,
 text,weathered_color,weathered color,false,${is_this_a_bed_or_package} = 'bed' or ${is_this_a_bed_or_package} = 'interbedded' or ${is_this_a_bed_or_package} = 'package_succe',,,
 end_group,,,,,,,
+select_one mg7qf60,confidence,Confidence,false,,,,
 text,notes,Notes,false,,multiline,,
 calculate,__version__,,false,,,'vYjQCtGRV2iET3JjCTcYeg',
 calculate,_version_,,false,,,'v6yUKf53r3MWtgr8ebBTtV',__version__
 calculate,_version__001,,false,,,'v7uzUyMHWuKeW2scMssmN2',__version__
-calculate,_version__002,,,,,'vz6aLiQrCNkmKRENfMQD8H',__version__
+calculate,_version__002,,,,,'vCwxmNpzw78nn3MNfe7wZr',__version__

@@ -383,6 +383,9 @@
       else if (stratSection.column_profile && stratSection.column_profile === 'mixed_clastic') {
         vm.data.is_this_a_bed_or_package = 'bed';
       }
+      else if (stratSection.column_profile && stratSection.column_profile === 'basic_lithologies') {
+        vm.data.is_this_a_bed_or_package = 'bed';
+      }
       if (stratSection.column_y_axis_units) vm.data.thickness_units = stratSection.column_y_axis_units;
       openIntervalModal();
     }

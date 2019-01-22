@@ -1,48 +1,49 @@
-list_name,name,label
-gz3ra74,clastic,clastic
-gz3ra74,carbonate,carbonate
-gz3ra74,mixed_clastic,mixed clastic-carbonate
-gz3ra74,weathering_pro,weathering profile
-zc89y27,cm,cm
-zc89y27,m,m
-zc89y27,in,in
-zc89y27,ft,ft
-pu1qb77,outcrop,outcrop
-pu1qb77,core,core
-pu1qb77,well_log,well log
-pu1qb77,composite,composite
-io1jz71,geochronology,geochronology
-io1jz71,facies_arch,facies architecture
-io1jz71,res_char,reservoir characterization
-io1jz71,pleasure,pleasure
-io1jz71,education,education
-io1jz71,historical,historical
-io1jz71,sequence_strat,sequence stratrigraphy
-io1jz71,correlation,correlation
-io1jz71,basin_analysis,basin analysis
-io1jz71,taphonomy,taphonomy
-io1jz71,geochemical,geochemical
-io1jz71,provenance,provenance
-io1jz71,petrographic,petrographic
-io1jz71,petrophysical,petrophysical
-io1jz71,other,other
-oy67z09,local_section,local section
-oy67z09,single_outcrop,single outcrop
-oy67z09,multi_outcrop,multiple outcrop
-oy67z09,single_core,single core
-oy67z09,multiple_core,multiple core
-oy67z09,single_basin,single basin
-oy67z09,regional_study,regional study
-oy67z09,multi_basins,multiple basins
-oy67z09,other,other
-gy5ky31,mm,mm
-gy5ky31,cm,cm
-gy5ky31,dm,dm
-gy5ky31,m,m
-gy5ky31,10m,10m
-gy5ky31,100s_m,100s m
-gy5ky31,km,km
-ao6ek37,point_at_secti,point at section base
-ao6ek37,point_at_sect,point at section/core top
-ao6ek37,points_through,points throughout section (line/trace on map)
-ao6ek37,image_spot,image spot
+list_name,name,label,order
+gz3ra74,clastic,clastic,0
+gz3ra74,carbonate,carbonate,1
+gz3ra74,mixed_clastic,mixed clastic-carbonate,2
+gz3ra74,basic_lithologies,basic lithologies,3
+gz3ra74,weathering_pro,weathering profile,4
+zc89y27,cm,cm,
+zc89y27,m,m,
+zc89y27,in,in,
+zc89y27,ft,ft,
+pu1qb77,outcrop,outcrop,
+pu1qb77,core,core,
+pu1qb77,well_log,well log,
+pu1qb77,composite,composite,
+io1jz71,geochronology,geochronology,
+io1jz71,facies_arch,facies architecture,
+io1jz71,res_char,reservoir characterization,
+io1jz71,pleasure,pleasure,
+io1jz71,education,education,
+io1jz71,historical,historical,
+io1jz71,sequence_strat,sequence stratrigraphy,
+io1jz71,correlation,correlation,
+io1jz71,basin_analysis,basin analysis,
+io1jz71,taphonomy,taphonomy,
+io1jz71,geochemical,geochemical,
+io1jz71,provenance,provenance,
+io1jz71,petrographic,petrographic,
+io1jz71,petrophysical,petrophysical,
+io1jz71,other,other,
+oy67z09,local_section,local section,
+oy67z09,single_outcrop,single outcrop,
+oy67z09,multi_outcrop,multiple outcrop,
+oy67z09,single_core,single core,
+oy67z09,multiple_core,multiple core,
+oy67z09,single_basin,single basin,
+oy67z09,regional_study,regional study,
+oy67z09,multi_basins,multiple basins,
+oy67z09,other,other,
+gy5ky31,mm,mm,
+gy5ky31,cm,cm,
+gy5ky31,dm,dm,
+gy5ky31,m,m,
+gy5ky31,10m,10m,
+gy5ky31,100s_m,100s m,
+gy5ky31,km,km,
+ao6ek37,point_at_secti,point at section base,
+ao6ek37,point_at_sect,point at section/core top,
+ao6ek37,points_through,points throughout section (line/trace on map),
+ao6ek37,image_spot,image spot,
