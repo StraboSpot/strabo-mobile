@@ -88,7 +88,7 @@
       var p = y === 0 ? getPixel([-10, y], pixelRatio) : getPixel([0, y], pixelRatio);
       ctx.beginPath();
       ctx.moveTo(p.x, p.y);
-      var xAxisLength = (_.size(labels) + 1) * xInterval;
+      var xAxisLength = (_.size(labels) + spacing) * xInterval;
       p = getPixel([xAxisLength, y], pixelRatio);
       ctx.lineTo(p.x, p.y);
       ctx.strokeStyle = color;
@@ -191,7 +191,7 @@
           i = _.findIndex(grainSizeOptions.carbonate, function (grainSizeOption) {
             return grainSizeOption.value === lithology.principal_dunham_class;
           });
-          intervalWidth = i === -1 ? defaultWidth : (i + 2) * xInterval;
+          intervalWidth = i === -1 ? defaultWidth : (i + 2.33) * xInterval;
         }
         // Other Lithologies
         else {
@@ -199,7 +199,7 @@
             return grainSizeOption.value === lithology.primary_lithology;
           });
           i = i - 3; // First 3 indexes are siliciclastic, limestone & dolomite which are handled above
-          intervalWidth = i === -1 ? defaultWidth : (i + 2) * xInterval;
+          intervalWidth = i === -1 ? defaultWidth : (i + 2.66) * xInterval;
         }
       }
       else $log.error('Sed data error:', lithology);
@@ -329,14 +329,15 @@
       // Current state is sed-lithologies tab
       else if (state === 'app.spotTab.sed-lithologies') {
         // Recalculate interval geometry from thickness and width, if the following has changed:
-        // - interval thickness
+        // - interval thickness or relative resistance weathering
         // - bed or package to unexposed or vice versa
         // - lithology (siliciclastic type, grain size or dunham classification)
         if (spot.geometry && spot.properties.sed && spot.properties.sed.lithologies) {
           var lithologies = spot.properties.sed.lithologies;
           if (savedSpot.properties.sed && savedSpot.properties.sed.lithologies) {
             var lithologiesSaved = savedSpot.properties.sed.lithologies;
-            if ((lithologies.interval_thickness !== lithologiesSaved.interval_thickness)) {
+            if ((lithologies.interval_thickness !== lithologiesSaved.interval_thickness)
+              || (lithologies.relative_resistance_weathering !== lithologiesSaved.relative_resistance_weathering)) {
               spot = recalculateIntervalGeometry(spot);
             }
             else if (lithologies.is_this_a_bed_or_package && lithologiesSaved.is_this_a_bed_or_package) {
@@ -473,7 +474,7 @@
       else if (stratSection.column_profile === 'carbonate') {
         labels = _.pluck(grainSizeOptions.carbonate, 'label');
         //drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 2.33);
-        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 2, y, 'blue', stratSection.column_profile);
+        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 2.33, y, 'blue', stratSection.column_profile);
         y += (a + b * x + c * x * x) * -1
       }
       else if (stratSection.column_profile === 'mixed_clastic') {
@@ -483,7 +484,7 @@
         y += (a + b * x + c * x * x) * -1;
         labels = _.pluck(grainSizeOptions.carbonate, 'label');
         //drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 2.33, 'blue');
-        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 2, y, 'blue', 'carbonate');
+        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 2.33, y, 'blue', 'carbonate');
         y += (a + b * x + c * x * x) * -1
       }
       else if (stratSection.column_profile === 'basic_lithologies') {
@@ -503,7 +504,7 @@
         labels = _.pluck(grainSizeOptions.lithologies, 'label');
         labels = _.rest(labels, 3);
         //drawAxisX(ctx, pixelRatio, yAxisHeight, labels, 2.66, 'green');
-        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 2, y, 'green', 'misc.');
+        drawAxisXStacked(ctx, pixelRatio, yAxisHeight, labels, 2.66, y, 'green', 'misc.');
       }
     }
 

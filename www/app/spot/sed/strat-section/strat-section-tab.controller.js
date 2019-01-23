@@ -100,10 +100,8 @@
     function changeColumnProfile(newProfile, oldProfile) {
       var stratSectionId = vmParent.spot.properties.sed.strat_section.strat_section_id;
       if (!newProfile) vmParent.spot.properties.sed.strat_section.column_profile = oldProfile;
-      else if (((oldProfile === 'clastic' || oldProfile === 'carbonate' || oldProfile === 'mixed_clastic') &&
-        (newProfile === 'weathering_pro' || newProfile === 'basic_lithologies'))
-        || ((oldProfile === 'weathering_pro' || oldProfile === 'basic_lithologies') &&
-        (newProfile === 'clastic' || newProfile === 'carbonate' || newProfile === 'mixed_clastic'))) {
+      else if (oldProfile === 'weathering_pro' || oldProfile === 'basic_lithologies' ||
+        newProfile === 'weathering_pro' || newProfile === 'basic_lithologies') {
         var confirmPopup = $ionicPopup.confirm({
           'title': 'Column Profile Change Warning!',
           'template': 'Changing the column profile will redraw all intervals as rectangles so any drawing edits to ' +
