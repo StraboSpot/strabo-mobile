@@ -455,7 +455,7 @@
       $log.log('Looking for file:', fileURI);
       return $cordovaFile.checkFile(filePath + '/', fileName).then(function () {
         $log.log('Found image file:', fileURI);
-        fileURI = $window.Ionic.WebView.convertFileSrc(fileURI);
+        if ($cordovaDevice.getPlatform() === 'iOS') fileURI = $window.Ionic.WebView.convertFileSrc(fileURI);
         return Promise.resolve(fileURI);
       }, function (err) {
         $log.log('Check file not found.', fileURI);
