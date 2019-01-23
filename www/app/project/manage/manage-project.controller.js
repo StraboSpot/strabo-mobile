@@ -195,50 +195,51 @@
     }
 
     function downloadImages(neededImagesIds) {
-      if (!IS_WEB && $window.cordova) {
+      if (!IS_WEB && $window.cordova && neededImagesIds.length > 0) {
         var promises = [];
         var imagesDownloadedCount = 0;
         var imagesFailedCount = 0;
         var savedImagesCount = 0;
 
-        _.each(neededImagesIds, function (neededImageId) {
-          var promise = RemoteServerFactory.getImage(neededImageId, UserFactory.getUser().encoded_login)
-            .then(function (response) {
-              if (response.data) {
-                imagesDownloadedCount++;
-                notifyMessages.pop();
-                outputMessage('NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
-                  '<br>NEW Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
-                return ImageFactory.saveImageBlobToDevice(response.data, neededImageId).then(function () {
-                  savedImagesCount++;
+        return LocalStorageFactory.checkImagesDir().then(function () {
+          _.each(neededImagesIds, function (neededImageId) {
+            var promise = RemoteServerFactory.getImage(neededImageId, UserFactory.getUser().encoded_login)
+              .then(function (response) {
+                if (response.data) {
+                  imagesDownloadedCount++;
                   notifyMessages.pop();
-                  outputMessage(
-                    'NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
+                  outputMessage('NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
                     '<br>NEW Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
-                }, function () {
-                  $log.error('Unable to save image locally', neededImageId);
+                  return ImageFactory.saveImageBlobToDevice(response.data, neededImageId).then(function () {
+                    savedImagesCount++;
+                    notifyMessages.pop();
+                    outputMessage(
+                      'NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
+                      '<br>NEW Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
+                  }, function () {
+                    $log.error('Unable to save image locally', neededImageId);
+                    imagesFailedCount++;
+                  });
+                }
+                else {
                   imagesFailedCount++;
-                });
-                //});
-              }
-              else {
+                  $log.error('Error downloading Image', neededImageId, 'Server Response:', response);
+                }
+              }, function (err) {
                 imagesFailedCount++;
-                $log.error('Error downloading Image', neededImageId, 'Server Response:', response);
-              }
-            }, function (err) {
-              imagesFailedCount++;
-              $log.error('Error downloading Image', neededImageId, 'Error:', err);
-            });
-          promises.push(promise);
-        });
-        return $q.all(promises).then(function () {
-          if (imagesFailedCount > 0) {
-            downloadErrors = true;
-            outputMessage('Image Downloads Failed: ' + imagesFailedCount);
-          }
+                $log.error('Error downloading Image', neededImageId, 'Error:', err);
+              });
+            promises.push(promise);
+          });
+          return $q.all(promises).then(function () {
+            if (imagesFailedCount > 0) {
+              downloadErrors = true;
+              outputMessage('Image Downloads Failed: ' + imagesFailedCount);
+            }
+          });
         });
       }
-      else if (!IS_WEB && !$window.cordova) {
+      else if (!IS_WEB && !$window.cordova && neededImagesIds.length > 0) {
         $log.warn('No Cordova so unable to download images. Running for development?');
         notifyMessages.pop();
         outputMessage('Unable to Download Images');

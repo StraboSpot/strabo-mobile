@@ -356,15 +356,17 @@
         var imagesPath = getDevicePath() + imagesDirectory;
 
         // Copy the file to permanent storage
-        $cordovaFile.copyFile(devicePathTemp, tempImageName, imagesPath, imageName)
-          .then(function (success) {
-            $log.log('Successfully copied file to permanent storage. NativeURL:', success.nativeURL);
-            resolve(success.nativeURL);
-          })
-          .catch(function (error) {
-            $log.error('Failed copying file to permanent storage! Error Code: ' + error.code);
-            reject('Error saving image to device.');
-          });
+        checkImagesDir().then(function () {
+          $cordovaFile.copyFile(devicePathTemp, tempImageName, imagesPath, imageName)
+            .then(function (success) {
+              $log.log('Successfully copied file to permanent storage. NativeURL:', success.nativeURL);
+              resolve(success.nativeURL);
+            })
+            .catch(function (error) {
+              $log.error('Failed copying file to permanent storage! Error Code: ' + error.code);
+              reject('Error saving image to device.');
+            });
+        });
       });
     }
 
