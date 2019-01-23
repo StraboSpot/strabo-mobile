@@ -128,8 +128,8 @@
     });
   }
 
-  function prepMenu($ionicLoading, $log, LocalStorageFactory, DataModelsFactory, ProjectFactory, RemoteServerFactory,
-                    SpotFactory, UserFactory, OtherMapsFactory) {
+  function prepMenu($ionicLoading, $ionicPopup, $log, LocalStorageFactory, DataModelsFactory, ProjectFactory,
+                    RemoteServerFactory, SpotFactory, UserFactory, OtherMapsFactory) {
     $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loading Data Models...'});
     return DataModelsFactory.loadDataModels().then(function () {
       $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loading Database...'});
@@ -141,7 +141,20 @@
             $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loaded Database<br>Loaded User<br>Loaded Project<br>Loading Spots...'});
             return SpotFactory.loadSpots().then(function () {
               return RemoteServerFactory.loadDbUrl().then(function () {
-                return OtherMapsFactory.loadOtherMaps();
+                return OtherMapsFactory.loadOtherMaps().then(function() {
+                  LocalStorageFactory.checkFilePermissions().then(function () {
+                    $log.log('Permissions Ok');
+                  }, function () {
+                    $log.log('File permissions error!');
+                    $ionicPopup.alert({
+                      'title': 'File Permissions Error!',
+                      'template': 'Please check your permissions to give StraboSpot access to the file system. ' +
+                        'Data may not be visible if you continue without the needed permissions.'
+                    });
+                  }).catch(function (err) {
+                    $log.error('Error with permissions:', err);
+                  });
+                });
               });
             });
           });

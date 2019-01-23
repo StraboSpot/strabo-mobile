@@ -24,6 +24,7 @@
 
     return {
       'checkDir': checkDir,
+      'checkFilePermissions': checkFilePermissions,
       'checkImagesDir': checkImagesDir,
       'checkZipsDir': checkZipsDir,
       'clearFiles': clearFiles,
@@ -312,6 +313,11 @@
      * Public Functions
      */
 
+    // Write dummy file to make sure we have file permissions
+    function checkFilePermissions() {
+      return exportData(appDirectory, 'This file is for checking permissions', 'permissionsCheck.txt');
+    }
+
     function clearFiles(maps) { //clears all offline map files
       var deferred = $q.defer(); // init promise
 
@@ -403,7 +409,7 @@
     }
 
     function checkZipsDir() {
-      return exportData(zipsDirectory, 'This file is for checking permissions', 'permissionsCheck.txt')
+      return exportData(zipsDirectory, 'This file is for checking permissions', 'permissionsCheck.txt');
     }
 
     function exportProject(name) {
