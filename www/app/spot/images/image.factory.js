@@ -91,6 +91,8 @@
 
     function errorAlert(errorMsg) {
       $log.error(errorMsg);
+      if (errorMsg === 20) errorMsg = 'StraboSpot Mobile needs file access to use the camera.';
+
       // Don't show an alert if error message is from $cordovaCamera when the user does not select an image
       if (errorMsg !== 'No Image Selected') {
         $ionicPopup.alert({
@@ -193,8 +195,7 @@
       $log.log('Setting source for image on device ...');
       var newImage = new Image();
       newImage.src = "";         // Reset source before loading in case source was previously loaded when checking size
-      if ($cordovaDevice.getPlatform() === 'iOS') newImage.src = $window.Ionic.WebView.convertFileSrc(imageURI);
-      else newImage.src = imageURI;
+      newImage.src = $window.Ionic.WebView.convertFileSrc(imageURI);
       return Promise.resolve(newImage);
     }
 
