@@ -315,7 +315,10 @@
 
     // Write dummy file to make sure we have file permissions
     function checkFilePermissions() {
-      return exportData(appDirectory, 'This file is for checking permissions', 'permissionsCheck.txt');
+      if ($window.cordova) {
+        return exportData(appDirectory, 'This file is for checking permissions', 'permissionsCheck.txt');
+      }
+      else return Promise.resolve();
     }
 
     function clearFiles(maps) { //clears all offline map files
