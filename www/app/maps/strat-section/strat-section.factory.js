@@ -551,7 +551,7 @@
 
     function getStratSectionSettings(stratSectionId) {
       var spot = getSpotWithThisStratSection(stratSectionId);
-      return spot.properties.sed.strat_section;
+      return spot && spot.properties && spot.properties.sed && spot.properties.sed.strat_section ? spot.properties.sed.strat_section : undefined;
     }
 
     function getStratSectionSpots() {

@@ -340,10 +340,10 @@
     function setFillPatterns(features) {
       _.each(features, function (feature) {
         var featureProperties = feature.getProperties();
-        if (featureProperties.sed && featureProperties.sed.lithologies) {
+        if (featureProperties.sed && featureProperties.sed.lithologies && featureProperties.strat_section_id) {
           // Basic Lithologies Column Profile
           var stratSectionSettings = StratSectionFactory.getStratSectionSettings(featureProperties.strat_section_id);
-          if (stratSectionSettings.column_profile === 'basic_lithologies') {
+          if (stratSectionSettings && stratSectionSettings.column_profile === 'basic_lithologies') {
             var lithology = featureProperties.sed.lithologies;
 
             // Limestone / Dolomite / Misc. Lithologies
@@ -362,7 +362,7 @@
             else if (lithology.congl_principal_grain_size) patterns['conglomerate'] = loadPattern('basic/CongSimple');
             else if (lithology.breccia_principal_grain_size) patterns['breccia'] = loadPattern('basic/BrecSimple');
           }
-          else {
+          else if (stratSectionSettings) {
             var primaryLithology = featureProperties.sed.lithologies.primary_lithology;
             var grainSize = featureProperties.sed.lithologies.mud_silt_principal_grain_size ||
               featureProperties.sed.lithologies.sand_principal_grain_size ||
