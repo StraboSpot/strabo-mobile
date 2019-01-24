@@ -68,18 +68,17 @@ Generate Resources (icons and splash screens):
     cordova-plugin-device-orientation 2.0.1 "Device Orientation"
     cordova-plugin-file 6.0.1 "File"
     cordova-plugin-file-transfer 1.7.1 "File Transfer"
-    cordova-plugin-filepath 1.4.2 "cordova-plugin-filepath"
+    cordova-plugin-filepath 1.5.1 "cordova-plugin-filepath"
     cordova-plugin-geolocation 4.0.1 "Geolocation"
     cordova-plugin-inappbrowser 3.0.0 "InAppBrowser"
     cordova-plugin-ionic-keyboard 2.1.3 "cordova-plugin-ionic-keyboard"
-    cordova-plugin-ionic-webview 2.2.5 "cordova-plugin-ionic-webview"
+    cordova-plugin-ionic-webview 2.3.2 "cordova-plugin-ionic-webview"
     cordova-plugin-itunesfilesharing 0.0.2 "cordova-plugin-itunesfilesharing"
     cordova-plugin-network-information 2.0.1 "Network Information"
     cordova-plugin-splashscreen 5.0.2 "Splashscreen"
     cordova-plugin-statusbar 2.4.2 "StatusBar"
     cordova-plugin-whitelist 1.3.3 "Whitelist"
     cordova-plugin-zip 3.1.0 "cordova-plugin-zip"
-    cordova-sqlite-evcore-extbuild-free 0.9.10 "Cordova sqlite storage - free enterprise version with Android performance/memory improvements and extra features for PhoneGap Build"
     cordova-sqlite-storage 2.6.0 "Cordova sqlite storage plugin"
     io.phasr.cordova.plugin.itunesfilesharing 0.0.1 "cordova-plugin-itunesfilesharing"
     org.strabospot.clipboard 0.1.0 "Clipboard"
@@ -98,20 +97,20 @@ Generate Resources (icons and splash screens):
 
     Ionic:
 
-    ionic (Ionic CLI) : 4.3.1 (C:\Users\Nathan\AppData\Roaming\npm\node_modules\ionic)
+    ionic (Ionic CLI) : 4.8.0
     Ionic Framework   : ionic1 1.3.3
-    @ionic/v1-toolkit : 1.0.12
+    @ionic/v1-toolkit : 1.0.15
 
     Cordova:
 
     cordova (Cordova CLI) : 8.1.2 (cordova-lib@8.1.1)
     Cordova Platforms     : android 7.1.2
-    Cordova Plugins       : cordova-plugin-ionic-keyboard 2.1.3, cordova-plugin-ionic-webview 2.2.3, (and 17 other plugins)
+    Cordova Plugins       : cordova-plugin-ionic-keyboard 2.1.3, cordova-plugin-ionic-webview 2.3.2, (and 16 other plugins)
 
     System:
 
-    Android SDK Tools : 26.1.1 (C:\Users\Nathan\AppData\Local\Android\Sdk)
-    NodeJS            : v10.13.0 (C:\Program Files\nodejs\node.exe)
+    Android SDK Tools : 26.1.1
+    NodeJS            : v10.13.0
     npm               : 6.4.1
     OS                : Windows 10
 
