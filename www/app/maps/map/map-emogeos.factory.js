@@ -51,7 +51,13 @@
               {'value': 'massive_struct', 'icon': 'url("img/emogeos/sed/Massive.png")'},
               {'value': 'horizontal', 'icon': 'url("img/emogeos/sed/Horizontal.png")'}
             ],
-            'congl_breccia_prin_struct': [
+            'conglomerate_prin_struct': [
+              {'value': 'trough', 'icon': 'url("img/emogeos/sed/TCS.png")'},
+              {'value': 'planar_tabular', 'icon': 'url("img/emogeos/sed/PlanarTabular.png")'},
+              {'value': 'massive_struct', 'icon': 'url("img/emogeos/sed/Massive.png")'},
+              {'value': 'horizontal', 'icon': 'url("img/emogeos/sed/Horizontal.png")'}
+            ],
+            'breccia_prin_struct': [
               {'value': 'trough', 'icon': 'url("img/emogeos/sed/TCS.png")'},
               {'value': 'planar_tabular', 'icon': 'url("img/emogeos/sed/PlanarTabular.png")'},
               {'value': 'massive_struct', 'icon': 'url("img/emogeos/sed/Massive.png")'},
@@ -259,7 +265,8 @@
       // First hide ALL emogeo buttons that have conditions to being shown
       hideEmogeoButton('mud_silt_prin_struct');
       hideEmogeoButton('sandstone_prin_struct');
-      hideEmogeoButton('congl_breccia_prin_struct');
+      hideEmogeoButton('conglomerate_prin_struct');
+      hideEmogeoButton('breccia_prin_struct');
       hideEmogeoButton('limestone_dolomite_prin_struct');
 
       // Then determine which emogeo buttons with conditions should be shown
@@ -274,9 +281,11 @@
           if (spot.properties.sed.lithologies.principal_siliciclastic_type === 'sandstone') {
             showEmogeoButton('sandstone_prin_struct');
           }
-          if (spot.properties.sed.lithologies.principal_siliciclastic_type === 'conglomerate' ||
-            spot.properties.sed.lithologies.principal_siliciclastic_type === 'breccia') {
-            showEmogeoButton('congl_breccia_prin_struct');
+          if (spot.properties.sed.lithologies.principal_siliciclastic_type === 'conglomerate') {
+            showEmogeoButton('conglomerate_prin_struct');
+          }
+          if (spot.properties.sed.lithologies.principal_siliciclastic_type === 'breccia') {
+            showEmogeoButton('breccia_prin_struct');
           }
         }
         if (spot.properties.sed.lithologies.principal_dunham_class) {
