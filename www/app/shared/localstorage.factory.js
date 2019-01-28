@@ -37,6 +37,7 @@
       'getDevicePath': getDevicePath,
       'getImageById': getImageById,
       'getImageFileURIById': getImageFileURIById,
+      'getImagesDirectory': getImagesDirectory,
       'getTileCacheDirectory': getTileCacheDirectory,
       'getZipsDirectory': getZipsDirectory,
       'getMapCenterTile': getMapCenterTile,
@@ -565,6 +566,10 @@
       }
       else deferred.reject('Device not found');
       return deferred.promise;
+    }
+
+    function getImagesDirectory() {
+      return imagesDirectory;
     }
 
     function getMapStorageDetails(mapid) {

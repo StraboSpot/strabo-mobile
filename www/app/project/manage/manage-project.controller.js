@@ -194,48 +194,59 @@
       return deferred.promise;
     }
 
+
+
+
+
+
+
+
+
+
+    function downloadImage(imageId, encodedLogin) {
+      var deferred = $q.defer(); // init promise
+
+      var url = 'https://strabospot.org/pi/' + imageId;
+      var devicePath = LocalStorageFactory.getDevicePath();
+      var imagesDirectory = LocalStorageFactory.getImagesDirectory();
+      var fileTransfer = new FileTransfer();
+
+      LocalStorageFactory.checkImagesDir().then(function () {
+        fileTransfer.download(url, devicePath + imagesDirectory + '/' + imageId + '.jpg', function (entry) {
+          console.log('download complete: ' + entry.toURL());
+          deferred.resolve();
+        }, function (error) {
+          $log.log('image download error: ', error);
+          deferred.reject(error);
+        });
+      });
+
+      return deferred.promise;
+    }
+
+
+
+
     function downloadImages(neededImagesIds) {
       if (!IS_WEB && $window.cordova && neededImagesIds.length > 0) {
-        var promises = [];
         var imagesDownloadedCount = 0;
         var imagesFailedCount = 0;
         var savedImagesCount = 0;
 
         return LocalStorageFactory.checkImagesDir().then(function () {
           _.each(neededImagesIds, function (neededImageId) {
-            var promise = RemoteServerFactory.getImage(neededImageId, UserFactory.getUser().encoded_login)
-              .then(function (response) {
-                if (response.data) {
-                  imagesDownloadedCount++;
-                  notifyMessages.pop();
-                  outputMessage('NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
-                    '<br>NEW Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
-                  return ImageFactory.saveImageBlobToDevice(response.data, neededImageId).then(function () {
-                    savedImagesCount++;
-                    notifyMessages.pop();
-                    outputMessage(
-                      'NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
-                      '<br>NEW Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
-                  }, function () {
-                    $log.error('Unable to save image locally', neededImageId);
-                    imagesFailedCount++;
-                  });
-                }
-                else {
-                  imagesFailedCount++;
-                  $log.error('Error downloading Image', neededImageId, 'Server Response:', response);
-                }
+            downloadImage(neededImageId, UserFactory.getUser().encoded_login)
+              .then(function () {
+                imagesDownloadedCount++;
+                savedImagesCount++;
+                notifyMessages.pop();
+                outputMessage(
+                  'NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
+                  '<br>NEW Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
               }, function (err) {
                 imagesFailedCount++;
                 $log.error('Error downloading Image', neededImageId, 'Error:', err);
               });
-            promises.push(promise);
-          });
-          return $q.all(promises).then(function () {
-            if (imagesFailedCount > 0) {
-              downloadErrors = true;
-              outputMessage('Image Downloads Failed: ' + imagesFailedCount);
-            }
           });
         });
       }
@@ -245,6 +256,14 @@
         outputMessage('Unable to Download Images');
       }
     }
+
+
+
+
+
+
+
+
 
     function downloadProject() {
       notifyMessages = ['<ion-spinner></ion-spinner><br>Downloading Project...'];
