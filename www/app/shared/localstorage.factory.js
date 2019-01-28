@@ -37,6 +37,7 @@
       'getDevicePath': getDevicePath,
       'getImageById': getImageById,
       'getImageFileURIById': getImageFileURIById,
+      'getImagesDirectory': getImagesDirectory,
       'getTileCacheDirectory': getTileCacheDirectory,
       'getZipsDirectory': getZipsDirectory,
       'getMapCenterTile': getMapCenterTile,
@@ -488,6 +489,10 @@
         $log.log('Check file not found.', fileURI);
         return Promise.resolve('img/image-not-found.png');
       });
+    }
+
+    function getImagesDirectory() {
+      return imagesDirectory;
     }
 
     function getMapCenterTile(mapid) {
