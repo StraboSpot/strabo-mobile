@@ -34,6 +34,7 @@
     vm.newNestModal = {};
     vm.newNestProperties = {};
     vm.mapView = true;
+    vm.intervalName = '';
     vm.popover = {};
     vm.saveEditsText = 'Save Edits';
     vm.showSaveEditsBtn = false;
@@ -401,6 +402,12 @@
         vm.data.is_this_a_bed_or_package = 'bed';
       }
       if (stratSection.column_y_axis_units) vm.data.thickness_units = stratSection.column_y_axis_units;
+
+      // Set default interval name if prefix or Spot number set
+      var prefix = ProjectFactory.getSpotPrefix() ? ProjectFactory.getSpotPrefix() : '';
+      var number = ProjectFactory.getSpotNumber() ? ProjectFactory.getSpotNumber() : '';
+      vm.intervalName = prefix + number;
+
       openIntervalModal();
     }
 
@@ -417,6 +424,7 @@
       else if (StratSectionFactory.validateNewInterval(vm.data, FormFactory.getForm())) {
         vm.addIntervalModal.remove();
         var newInterval = StratSectionFactory.createInterval(stratSection.strat_section_id, vm.data);
+        if (vm.intervalName) newInterval.properties.name = vm.intervalName;
         if (vm.intervalToCopy && vm.intervalToCopy.properties && vm.intervalToCopy.properties.sed) {
           newInterval = copyRestOfInterval(newInterval);
         }
@@ -553,6 +561,7 @@
       else if (StratSectionFactory.validateNewInterval(vm.data, FormFactory.getForm())) {
         vm.addIntervalModal.remove();
         var newInterval = StratSectionFactory.createInterval(stratSection.strat_section_id, vm.data);
+        if (vm.intervalName) newInterval.properties.name = vm.intervalName;
         if (vm.intervalToCopy && vm.intervalToCopy.properties && vm.intervalToCopy.properties.sed) {
           newInterval = copyRestOfInterval(newInterval);
         }
