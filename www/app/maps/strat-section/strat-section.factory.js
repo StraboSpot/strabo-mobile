@@ -144,7 +144,7 @@
         ctx.moveTo(p.x, p.y);
         p = getPixel([x, yAxisHeight], pixelRatio);
         ctx.lineTo(p.x, p.y);
-        ctx.strokeStyle = 'black';
+        ctx.strokeStyle = 'color';
         ctx.stroke();
         ctx.setLineDash([]);
       });
