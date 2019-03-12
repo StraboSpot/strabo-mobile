@@ -10,6 +10,16 @@
   </ion-header-bar>
   <ion-content class='has-header strabo-form'>
     <form name='straboForm' novalidate=''>
+      <ion-input class='item item-input item-select item-stacked-label item-text-wrap'
+                 ng-class='{ "has-errors" : straboForm.copyIntervalData.$invalid, "no-errors": straboForm.copyIntervalData.$valid }'>
+        <ion-label>Copy Interval Data:</ion-label>
+        <select name='copyIntervalData'
+                ng-model='vm.intervalToCopy'
+                ng-options='interval as interval.properties.name for interval in vm.stratSectionIntervals track by interval.properties.id'
+                ng-change='vm.copyInterval()'>
+          <option value=''>-- None --</option>
+        </select>
+      </ion-input>
       <auto-fields/>
     </form>
     <br>

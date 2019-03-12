@@ -29,6 +29,7 @@
     vm.clickedFeatureId = undefined;
     vm.data = {};
     vm.grainSizeOptions = {};
+    vm.intervalToCopy = {};
     vm.isNesting = SpotFactory.getActiveNesting();
     vm.newNestModal = {};
     vm.newNestProperties = {};
@@ -42,6 +43,7 @@
     vm.addInterval = addInterval;
     vm.addMoreDetail = addMoreDetail;
     vm.closeModal = closeModal;
+    vm.copyInterval = copyInterval;
     vm.createTag = createTag;
     vm.deleteSpot = deleteSpot;
     vm.getTagNames = getTagNames;
@@ -81,6 +83,18 @@
       createModals();
       createPopover();
       createMap();
+    }
+
+    // Copy Sed Structures & Interpretations (Lithologies were copied when copy interval selected)
+    function copyRestOfInterval(interval) {
+      if (vm.intervalToCopy.properties.sed.structures) {
+        interval.properties.sed.structures = angular.copy(vm.intervalToCopy.properties.sed.structures);
+      }
+      if (vm.intervalToCopy.properties.sed.interpretations) {
+        interval.properties.sed.interpretations = angular.copy(vm.intervalToCopy.properties.sed.interpretations);
+      }
+      vm.intervalToCopy = {};
+      return interval;
     }
 
     function createMap() {
@@ -403,6 +417,9 @@
       else if (StratSectionFactory.validateNewInterval(vm.data, FormFactory.getForm())) {
         vm.addIntervalModal.remove();
         var newInterval = StratSectionFactory.createInterval(stratSection.strat_section_id, vm.data);
+        if (vm.intervalToCopy && vm.intervalToCopy.properties && vm.intervalToCopy.properties.sed) {
+          newInterval = copyRestOfInterval(newInterval);
+        }
         SpotFactory.setNewSpot(newInterval).then(function (id) {
           goToSpot(newInterval.properties.id, 'sed-lithologies');
         });
@@ -431,6 +448,16 @@
         vm.data = {};
       }
       SpotFactory.clearSelectedSpots();
+    }
+
+    function copyInterval() {
+      $log.log('interval', vm.intervalToCopy);
+      if (vm.intervalToCopy && vm.intervalToCopy.properties && vm.intervalToCopy.properties.sed &&
+        vm.intervalToCopy.properties.sed.lithologies) {
+        vm.data = angular.copy(vm.intervalToCopy.properties.sed.lithologies);
+      }
+      else vm.data = {};
+      delete vm.data.interval_thickness;
     }
 
     function createTag() {
@@ -526,6 +553,9 @@
       else if (StratSectionFactory.validateNewInterval(vm.data, FormFactory.getForm())) {
         vm.addIntervalModal.remove();
         var newInterval = StratSectionFactory.createInterval(stratSection.strat_section_id, vm.data);
+        if (vm.intervalToCopy && vm.intervalToCopy.properties && vm.intervalToCopy.properties.sed) {
+          newInterval = copyRestOfInterval(newInterval);
+        }
         SpotFactory.setNewSpot(newInterval).then(function (id) {
           updateFeatureLayer();
         });
