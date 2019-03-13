@@ -286,6 +286,10 @@ Map Popups Style
   padding: 5px;
 }
 
+.popup-copy-button {
+  float: left;
+}
+
 .popup-more-button {
   float: right;
 }
