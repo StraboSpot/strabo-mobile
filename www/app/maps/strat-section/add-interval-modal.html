@@ -13,7 +13,7 @@
       <ion-label>Copy Interval Data:</ion-label>
       <select ng-model='vm.intervalToCopy'
               ng-options='interval as interval.properties.name for interval in vm.stratSectionIntervals track by interval.properties.id'
-              ng-change='vm.copyInterval()'>
+              ng-change='vm.copyIntervalLithology()'>
         <option value=''>-- None --</option>
       </select>
     </ion-input>

@@ -66,6 +66,13 @@
       else content.innerHTML = detailHTML;
       el.appendChild(content);
 
+      // popup copy interval button
+      if ($state.current.name === 'app.strat-section' && feature.getProperties().surface_feature &&
+        feature.getProperties().surface_feature.surface_feature_type === 'strat_interval') {
+        var copyIntervalButton = document.createElement('div');
+        copyIntervalButton.innerHTML = '<a href="#" data-action="copyInterval" class="popup-copy-button">Copy Interval</a>';
+        el.appendChild(copyIntervalButton);
+      }
       // popup more detail button
       var moreButton = document.createElement('div');
       moreButton.innerHTML = '<a href="#" data-action="more" class="popup-more-button">See More</a>';
