@@ -12,16 +12,6 @@ eb2oc45,chert,chert,5
 eb2oc45,ironstone,ironstone,6
 eb2oc45,phosphatic,phosphatic,7
 eb2oc45,volcaniclastic,volcaniclastic,8
-js5zp52,siliciclastic,siliciclastic,
-js5zp52,limestone,limestone,1
-js5zp52,dolomite,dolomite,2
-js5zp52,organic_coal,organic/coal,3
-js5zp52,evaporite,evaporite,4
-js5zp52,chert,chert,5
-js5zp52,ironstone,ironstone,6
-js5zp52,phosphatic,phosphatic,7
-js5zp52,volcaniclastic,volcaniclastic,8
-js5zp52,other,other,9
 qf3ff03,mudstone,mudstone,
 qf3ff03,wackestone,wackestone,
 qf3ff03,packstone,packstone,
@@ -34,6 +24,28 @@ qf3ff03,rudstone,rudstone,
 qf3ff03,framestone,framestone,
 qf3ff03,bafflestone,bafflestone,
 qf3ff03,bindstone,bindstone,
+uf03r86,mudstone,mudstone,
+uf03r86,wackestone,wackestone,1
+uf03r86,packstone,packstone,2
+uf03r86,grainstone,grainstone,3
+uf03r86,floatstone,floatstone,4
+uf03r86,rudstone,rudstone,5
+uf03r86,boundstone,boundstone,6
+uf03r86,framestone,framestone,7
+uf03r86,bindstone,bindstone,8
+uf03r86,bafflestone,bafflestone,9
+uf03r86,cementstone,cementstone,10
+uf03r86,recrystallized,recrystallized,11
+js5zp52,siliciclastic,siliciclastic,
+js5zp52,limestone,limestone,1
+js5zp52,dolomite,dolomite,2
+js5zp52,organic_coal,organic/coal,3
+js5zp52,evaporite,evaporite,4
+js5zp52,chert,chert,5
+js5zp52,ironstone,ironstone,6
+js5zp52,phosphatic,phosphatic,7
+js5zp52,volcaniclastic,volcaniclastic,8
+js5zp52,other,other,9
 cv5pj14,mudstone,mudstone,
 cv5pj14,wackestone,wackestone,
 cv5pj14,packstone,packstone,
@@ -93,17 +105,19 @@ cv9qv11,rip_up_clasts,rip-up clasts,
 cv9qv11,wood,wood,
 cv9qv11,fossils,fossils,
 cv9qv11,other,other,
-kg6zo76,siliceous_muds,siliceous mudstone,
-kg6zo76,siliceous_calc,siliceous calcareous mudstone,
-kg6zo76,siliceous_volc,siliceous volcaniclastic mudstone,
-kg6zo76,calcareous_mud,calcareous mudstone,
-kg6zo76,black_shale,black shale,
-kg6zo76,red_clay,red clay,
-kg6zo76,red_mudstone,red mudstone,
-kg6zo76,variegated_mud,variegated mudstone,
-kg6zo76,marl,marl,
-kg6zo76,sarl,sarl,
-kg6zo76,argillaceous_m,argillaceous mudstone,
+kg6zo76,siliceous_muds,siliceous mudstone,0
+kg6zo76,siliceous_calc,siliceous calcareous mudstone,1
+kg6zo76,siliceous_volc,siliceous volcaniclastic mudstone,2
+kg6zo76,calcareous_mud,calcareous mudstone,3
+kg6zo76,black_shale,black shale,4
+kg6zo76,red_clay,red clay,5
+kg6zo76,red_mudstone,red mudstone,6
+kg6zo76,green_mudstone,green mudstone,7
+kg6zo76,variegated_mud,variegated mudstone,8
+kg6zo76,marl,marl,9
+kg6zo76,sarl,sarl,10
+kg6zo76,argillaceous_m,argillaceous mudstone,11
+kg6zo76,other,other,
 ih44p58,intraformation,intraformational,
 ih44p58,extraformation,extraformational,
 ih44p58,monomictic,monomictic,
@@ -128,23 +142,23 @@ uz9ix58,extraformational,extraformational,15
 uz9ix58,mono_oligomictic,mono/oligomictic,16
 uz9ix58,polymictic,polymictic,17
 uz9ix58,other,other,18
-co1jf03,intrusive_igneous,intrusive igneous,
-co1jf03,extrusive_igneous,extrusive igneous,
-co1jf03,metamorphic,metamorphic,
-co1jf03,mudstone,mudstone,
-co1jf03,siltstone,siltstone,
-co1jf03,sandstone,sandstone,
-co1jf03,conglomerate,conglomerate,
-co1jf03,limestone,limestone,
-co1jf03,dolomite,dolomite,
-co1jf03,skeletal,skeletal,
-co1jf03,wackestone,wackestone,
-co1jf03,packstone,packstone,
-co1jf03,grainstone,grainstone,
-co1jf03,boundstone,boundstone,
-co1jf03,intraformational,intraformational,
-co1jf03,extraformational,extraformational,
-co1jf03,other,other,
+co1jf03,intrusive_igneous,intrusive igneous,0
+co1jf03,extrusive_igneous,extrusive igneous,1
+co1jf03,metamorphic,metamorphic,2
+co1jf03,mudstone,mudstone,3
+co1jf03,siltstone,siltstone,4
+co1jf03,sandstone,sandstone,5
+co1jf03,conglomerate,conglomerate,6
+co1jf03,carbonate,carbonate,7
+co1jf03,other,other,8
+ng3et79,limestone,limestone,
+ng3et79,dolomite,dolomite,
+ng3et79,skeletal,skeletal,
+ng3et79,wackestone,wackestone,
+ng3et79,packstone,packstone,
+ng3et79,grainstone,grainstone,
+ng3et79,boundstone,boundstone,
+ng3et79,other,other,
 so29n97,glass,glass,
 so29n97,crystals,crystals,
 so29n97,lithic_fragments,lithic fragments,

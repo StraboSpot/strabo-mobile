@@ -24,7 +24,6 @@ vb9ph32,sandstone,sandstone,9,
 vb9ph32,conglomerate,conglomerate,12,
 vb9ph32,breccia,breccia,7,
 jm3fd49,clay,clay,4,
-jm3fd49,mud,mud,3,
 jm3fd49,silt,silt,4,
 gf7lv09,sand_very_fin,sand- very fine,13,1
 gf7lv09,sand_fine_low,sand- fine lower,13,2
@@ -50,6 +49,57 @@ ap2mh08,bindstone,bindstone,9,
 ap2mh08,bafflestone,bafflestone,11,
 ap2mh08,cementstone,cementstone,11,
 ap2mh08,recrystallized,recrystallized,14,
+eb2oc45,siliciclastic,siliciclastic,,
+eb2oc45,limestone,limestone,,1
+eb2oc45,dolomite,dolomite,,2
+eb2oc45,organic_coal,organic/coal,,3
+eb2oc45,evaporite,evaporite,,4
+eb2oc45,chert,chert,,5
+eb2oc45,ironstone,ironstone,,6
+eb2oc45,phosphatic,phosphatic,,7
+eb2oc45,volcaniclastic,volcaniclastic,,8
+md69g21,claystone,claystone,,
+md69g21,mudstone,mudstone,,
+md69g21,shale,shale,,
+md69g21,siltstone,siltstone,,
+md69g21,sandstone,sandstone,,
+md69g21,conglomerate,conglomerate,,
+md69g21,breccia,breccia,,
+en2os90,clay,clay,,
+en2os90,silt,silt,,
+he4ke66,sand_very_fin,sand- very fine,,
+he4ke66,sand_fine_low,sand- fine lower,,
+he4ke66,sand_fine_upp,sand- fine upper,,
+he4ke66,sand_medium_l,sand- medium lower,,
+he4ke66,sand_medium_u,sand- medium upper,,
+he4ke66,sand_coarse_l,sand- coarse lower,,
+he4ke66,sand_coarse_u,sand- coarse upper,,
+he4ke66,sand_very_coa,sand- very coarse,,
+te32l95,granule,granule,,
+te32l95,pebble,pebble,,
+te32l95,cobble,cobble,,
+te32l95,boulder,boulder,,
+uf03r86,mudstone,mudstone,,
+uf03r86,wackestone,wackestone,,1
+uf03r86,packstone,packstone,,2
+uf03r86,grainstone,grainstone,,3
+uf03r86,floatstone,floatstone,,4
+uf03r86,rudstone,rudstone,,5
+uf03r86,boundstone,boundstone,,6
+uf03r86,framestone,framestone,,7
+uf03r86,bindstone,bindstone,,8
+uf03r86,bafflestone,bafflestone,,9
+uf03r86,cementstone,cementstone,,10
+uf03r86,recrystallized,recrystallized,,11
+jf3we63,thin_10_cm,thin (<10 cm),,
+jf3we63,med_10_30_cm,medium (10-30 cm),,
+jf3we63,thick_30_cm,thick (>30 cm),,
+ss8kj53,increase,increase,,0
+ss8kj53,decrease,decrease,,1
+ss8kj53,no_change,no change,,2
+fz4sh15,increase,increase,,0
+fz4sh15,decrease,decrease,,1
+fz4sh15,no_change,no change,,2
 iu3km02,massive_struct,massive/structureless,14,
 iu3km02,horizontal,horizontal,14,
 iu3km02,ripple_laminat,ripple lamination,14,
@@ -94,7 +144,6 @@ oi98y12,wedge,wedge,14,3
 oi98y12,low_angle,low angle,14,4
 oi98y12,massive_struct,massive/structureless,14,5
 oi98y12,horizontal,horizontal,14,6
-oi98y12,ripple_laminat,ripple lamination,14,7
 og95s36,trough,trough,6,
 og95s36,hummocky,hummocky,8,
 og95s36,swaley,swaley,6,
@@ -123,6 +172,7 @@ gg6bk97,gyp_anhyd_prim,gypsum - anhydrite primary,14,
 gg6bk97,gyp_anhyd_dia,gypsum - anhydrite diagenetic,13,
 gg6bk97,halite_primary,halite - primary,14,
 gg6bk97,halite_diagene,halite - diagenetic,14,
+gg6bk97,other,other,,
 om8xr30,amber,amber,5,
 om8xr30,peat,peat,4,
 om8xr30,lignite,lignite,7,
@@ -130,9 +180,11 @@ om8xr30,subbituminous,subbituminous,13,
 om8xr30,bituminous,bituminous,10,
 om8xr30,coal_ball,coal ball,9,
 om8xr30,tar,tar,3,
+om8xr30,other,other,,
 mo7ce83,nodular,nodular,7,
 mo7ce83,bedded,bedded,6,
 mo7ce83,massive,massive,7,
+mo7ce83,other,other,,
 kl1cz02,lithified,lithified,9,
 kl1cz02,poorly_lithifi,poorly lithified,14,
 kl1cz02,unlithified_un,unlithified/unconsolidated,14,
@@ -142,6 +194,10 @@ jx0op03,2,2,1,
 jx0op03,3,3- moderately resistant,13,
 jx0op03,4,4,1,
 jx0op03,5,5- most resistant,13,
-mg7qf60,least_certain,low,,
-mg7qf60,option_3,medium,,
-mg7qf60,most_certain,high,,
+uh0md69,uniform,uniform,,0
+uh0md69,patchy,patchy,,1
+uh0md69,striped,striped,,2
+uh0md69,mottled,mottled,,3
+uh0md69,spotted,spotted,,4
+uh0md69,gradational,gradational,,5
+uh0md69,other,other,,

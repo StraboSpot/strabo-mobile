@@ -1,7 +1,7 @@
 list_name,name,label,order
 ve4gq38,no_bedding_or_laminae,no bedding or laminae,
-ve4gq38,strat_laminae,stratified laminae,
-ve4gq38,strat_bedding,stratified bedding,
+ve4gq38,strat_laminae,laminae present,
+ve4gq38,strat_bedding,bedding present,
 lt4wq55,v_thin,very thin (< 0.1 cm),
 lt4wq55,thin,thin (0.1-0.3 cm),
 lt4wq55,medium,medium (0.3-0.6 cm),
@@ -9,31 +9,35 @@ lt4wq55,thick,thick (0.6-1 cm),
 lt4wq55,v_thick,variable,
 lt4wq55,thin_upwards,thin upwards,
 lt4wq55,thicken_upward,thicken upwards,
-se2xd36,discontinuous,discontinuous,
-se2xd36,planar,planar,
-se2xd36,wavy,wavy,
-se2xd36,irregular,irregular,
-se2xd36,tufted,tufted,
-se2xd36,crinkly,crinkly,
-se2xd36,pustular,pustular,
-se2xd36,wedge,wedge,
-se2xd36,sand_stringers,sand stringers,
-ht51j49,v_thin,very thin (1-3 cm),
+se2xd36,weak,weak,0
+se2xd36,strong,strong,1
+se2xd36,discontinuous,discontinuous,2
+se2xd36,planar,planar,3
+se2xd36,wavy,wavy,4
+se2xd36,irregular,irregular,5
+se2xd36,tufted,tufted,6
+se2xd36,crinkly,crinkly,7
+se2xd36,pustular,pustular,8
+se2xd36,wedge,wedge,9
+se2xd36,sand_stringers,sand stringers,10
+ht51j49,v_thin,very thin (1-3 cm),0
 ht51j49,thin,thin (3-10 cm),1
 ht51j49,medium,medium (10-30 cm),2
 ht51j49,thick,thick(30-100 cm),3
 ht51j49,v_thick,very thick (>100 cm),4
 ht51j49,variable,variable,5
-ht51j49,thins_upwards,thins upwards,6
-ht51j49,thickens_upwar,thickens upwards,7
-co9mo61,tabular_parall,tabular/parallel,
-co9mo61,discontinuous,discontinuous,
-co9mo61,lenticular,lenticular,
-co9mo61,channel_like,channel-like,
-co9mo61,wedge,wedge,
-co9mo61,wavy,wavy,
-co9mo61,chaotic,chaotic,
-co9mo61,nodular,nodular,
+ht51j49,thins_upwards,thin upwards,6
+ht51j49,thickens_upwar,thicken upwards,7
+co9mo61,weak,weak,0
+co9mo61,strong,strong,1
+co9mo61,tabular_parall,tabular/parallel,2
+co9mo61,discontinuous,discontinuous,3
+co9mo61,lenticular,lenticular,4
+co9mo61,channel_like,channel-like,5
+co9mo61,wedge,wedge,6
+co9mo61,wavy,wavy,7
+co9mo61,chaotic,chaotic,8
+co9mo61,nodular,nodular,9
 wj4dz28,discontinuous,discontinuous,
 wj4dz28,tabular_parall,tabular/parallel,
 wj4dz28,lenticular,lenticular,
@@ -43,11 +47,11 @@ mb8sm92,meter_scale,meter-scale,
 mb8sm92,tens_of_meters,tens of meters,
 mb8sm92,hundreds_of_me,hundreds of meters,
 mb8sm92,kilometer_scal,kilometer-scale,
-mf0hv76,upward_thinning,upward thinning,
+mf0hv76,upward_thinning,upward thinning,0
 mf0hv76,upward_thickening,upward thickening,1
 mf0hv76,uniform_no_tre,uniform (no trend),2
-mf0hv76,other,other,3
-mf0hv76,can_t_be_deter,can't be determined,4
+mf0hv76,can_t_be_deter,can't be determined,3
+mf0hv76,other,other,4
 nt45h93,flat,flat,
 nt45h93,undulatory,undulatory,
 nt45h93,curved,curved,
@@ -56,14 +60,15 @@ nt45h93,concave_down,concave down,
 nt45h93,irregular,irregular,
 nt45h93,covered,covered,
 nt45h93,n_a,n/a,
-bq6ko94,flat,sharp,
-bq6ko94,undulatory,gradational,
-bq6ko94,curved,well-defined,
-bq6ko94,concave_up,amalgmated,
-bq6ko94,concave_down,erosional,
-bq6ko94,irregular,depositional,
-bq6ko94,covered,lag deposits/rip-up clasts,
-bq6ko94,can_t_be_deter,can't be determined,
+bq6ko94,flat,sharp,0
+bq6ko94,undulatory,gradational,1
+bq6ko94,curved,well-defined,2
+bq6ko94,concave_up,amalgmated,3
+bq6ko94,concave_down,erosional,4
+bq6ko94,irregular,depositional,5
+bq6ko94,reworked,reworked,6
+bq6ko94,covered,lag deposits/rip-up clasts,7
+bq6ko94,can_t_be_deter,can't be determined,8
 fo9ve04,flat,flat,
 fo9ve04,undulatory,undulatory,
 fo9ve04,curved,curved,
@@ -72,11 +77,20 @@ fo9ve04,concave_down,concave down,
 fo9ve04,irregular,irregular,
 fo9ve04,covered,covered,
 fo9ve04,n_a,n/a,
-rx9bj85,sharp,sharp,
-rx9bj85,gradational,gradational,
-rx9bj85,well_defined,well-defined,
-rx9bj85,amalgamated,amalgmated,
-rx9bj85,erosional,erosional,
-rx9bj85,despositional,depositional,
-rx9bj85,lag_deposits,lag deposits/rip-up clasts,
-rx9bj85,can_t_be_deter,can't be determined,
+rx9bj85,sharp,sharp,0
+rx9bj85,gradational,gradational,1
+rx9bj85,well_defined,well-defined,2
+rx9bj85,amalgamated,amalgmated,3
+rx9bj85,erosional,erosional,4
+rx9bj85,despositional,depositional,5
+rx9bj85,lag_deposits,lag deposits/rip-up clasts,7
+rx9bj85,can_t_be_deter,can't be determined,8
+jf3we63,thin_10_cm,thin (<10 cm),
+jf3we63,med_10_30_cm,medium (10-30 cm),
+jf3we63,thick_30_cm,thick (>30 cm),
+ss8kj53,increase,increase,0
+ss8kj53,decrease,decrease,1
+ss8kj53,no_change,no change,2
+fz4sh15,increase,increase,0
+fz4sh15,decrease,decrease,1
+fz4sh15,no_change,no change,2

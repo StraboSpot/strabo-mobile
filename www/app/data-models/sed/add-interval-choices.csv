@@ -24,7 +24,6 @@ md69g21,sandstone,sandstone,
 md69g21,conglomerate,conglomerate,
 md69g21,breccia,breccia,
 en2os90,clay,clay,
-en2os90,mud,mud,
 en2os90,silt,silt,
 he4ke66,sand_very_fin,sand- very fine,
 he4ke66,sand_fine_low,sand- fine lower,
@@ -50,6 +49,15 @@ uf03r86,bindstone,bindstone,8
 uf03r86,bafflestone,bafflestone,9
 uf03r86,cementstone,cementstone,10
 uf03r86,recrystallized,recrystallized,11
+jf3we63,thin_10_cm,thin (<10 cm),
+jf3we63,med_10_30_cm,medium (10-30 cm),
+jf3we63,thick_30_cm,thick (>30 cm),
+ss8kj53,increase,increase,0
+ss8kj53,decrease,decrease,1
+ss8kj53,no_change,no change,2
+fz4sh15,increase,increase,0
+fz4sh15,decrease,decrease,1
+fz4sh15,no_change,no change,2
 dt0dc27,1,1 - least resistant,
 dt0dc27,2,2,
 dt0dc27,3,3 - moderately resistant,
