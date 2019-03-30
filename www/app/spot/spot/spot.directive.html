@@ -14,13 +14,14 @@
        class='geometry-icon' src='img/line-image-basemap.png'>
   <img ng-if="spot.geometry.type === 'Polygon' && spot.properties.image_basemap"
        class='geometry-icon' src='img/polygon-image-basemap.png'>
-    <img ng-if="spot.geometry.type === 'Point' && spot.properties.strat_section_id"
-         class='geometry-icon' src='img/point-strat-section.png'>
+  <img ng-if="spot.geometry.type === 'Point' && spot.properties.strat_section_id"
+       class='geometry-icon' src='img/point-strat-section.png'>
   <img ng-if="spot.geometry.type === 'LineString' && spot.properties.strat_section_id"
        class='geometry-icon' src='img/line-strat-section.png'>
-  <img ng-if="spot.geometry.type === 'Polygon' && spot.properties.strat_section_id"
-       class='geometry-icon' src='img/polygon-strat-section.png'>
-  <img ng-if="spot.geometry.type !== 'Point' && spot.geometry.type !== 'LineString' &&
- spot.geometry.type !== 'Polygon'" class='geometry-icon' src='img/question.png'>
+  <img ng-if="(spot.geometry.type === 'Polygon' || spot.geometry.type === 'GeometryCollection') && spot.properties.strat_section_id"
+    class='geometry-icon' src='img/polygon-strat-section.png'>
+  <img ng-if="spot.geometry.type !== 'Point' && spot.geometry.type !== 'LineString' && spot.geometry.type !== 'Polygon'
+  && (spot.geometry.type !== 'GeometryCollection' && spot.properties.strat_section_id)"
+       class='geometry-icon' src='img/question.png'>
  <b>{{ spot.properties.name }}</b>
 </span>

@@ -444,7 +444,7 @@
       spotDataModel = {
         'geometry': {
           'coordinates': {},
-          'type': 'one of [Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon]'
+          'type': 'one of [Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection]'
         },
         'properties': {
           '_3d_structures': [],

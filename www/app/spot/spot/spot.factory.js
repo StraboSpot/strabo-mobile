@@ -83,6 +83,20 @@
      * Private Functions
      */
 
+    // Merge a geometry collection into a single polygon
+    function dissolveCollection(spot) {
+      var polys = [];
+      _.each(spot.geometry.geometries, function (geometry) {
+        polys.push(turf.feature(geometry));
+      });
+      var featureCollection = turf.featureCollection(polys);
+      // Not all polys dissolving together the first time so repeat dissolve a bunch of times (ToDo: Why not working first time?)
+      _.times(10, function (i) {
+        if (featureCollection.features.length > 1) featureCollection = turf.dissolve(featureCollection);
+      });
+      return featureCollection.features[0];
+    }
+
     // Get the children of an array of Spots
     function getChildrenOfSpots(spots) {
       var allChildrenSpots = [];
@@ -139,8 +153,9 @@
               (thisSpot.properties.image_basemap && spot.properties.image_basemap &&
                 thisSpot.properties.image_basemap === spot.properties.image_basemap)) {
               if (_.propertyOf(thisSpot.geometry)('type') && (_.propertyOf(thisSpot.geometry)('type') === 'Polygon'
-                || _.propertyOf(thisSpot.geometry)('type') === 'MutiPolygon')) {
-                if (turf.booleanWithin(spot, thisSpot)) childrenSpots.push(spot);
+                || _.propertyOf(thisSpot.geometry)('type') === 'MutiPolygon'
+                || _.propertyOf(thisSpot.geometry)('type') === 'GeometryCollection')) {
+                if (isWithin(spot, thisSpot)) childrenSpots.push(spot);
               }
             }
           });
@@ -196,10 +211,10 @@
           if ((!thisSpot.properties.image_basemap && !spot.properties.image_basemap) ||
             (thisSpot.properties.image_basemap && spot.properties.image_basemap &&
               thisSpot.properties.image_basemap === spot.properties.image_basemap)) {
-            if (_.propertyOf(spot.geometry)('type') && (_.propertyOf(spot.geometry)(
-              'type') === 'Polygon' || _.propertyOf(spot.geometry)(
-              'type') === 'MutiPolygon')) {
-              if (turf.booleanWithin(thisSpot, spot)) parentSpots.push(spot);
+            if (_.propertyOf(spot.geometry)('type') && (_.propertyOf(spot.geometry)('type') === 'Polygon'
+              || _.propertyOf(spot.geometry)('type') === 'MutiPolygon'
+              || _.propertyOf(spot.geometry)('type') === 'GeometryCollection')) {
+              if (isWithin(thisSpot, spot)) parentSpots.push(spot);
             }
           }
         });
@@ -212,6 +227,13 @@
       return _.find(spots, function (spot) {
         return spot.properties.nesting && _.contains(spot.properties.nesting, spotId);
       });
+    }
+
+    // Is spot 1 completely within spot 2?
+    function isWithin(spot1, spot2) {
+      if (spot1.geometry.type === 'GeometryCollection') spot1 = dissolveCollection(spot1);
+      if (spot2.geometry.type === 'GeometryCollection') spot2 = dissolveCollection(spot2);
+      return turf.booleanWithin(spot1, spot2);
     }
 
     /**
@@ -392,6 +414,12 @@
       var childSpots = [thisSpot];
       _.times(5, function (i) {
         childSpots = getChildrenOfSpots(childSpots);
+        // Remove a child Spot if already in the list of children generation Spots
+        childSpots = _.reject(childSpots, function (childSpot) {
+          return _.find(_.flatten(childrenGenerations), function (knownChildSpot) {
+            return childSpot.properties.id === knownChildSpot.properties.id;
+          });
+        });
         if (!_.isEmpty(childSpots)) childrenGenerations.push(childSpots);
       });
       return childrenGenerations;
@@ -438,6 +466,12 @@
       var parentSpots = [thisSpot];
       _.times(i, function (i) {
         parentSpots = getParentsOfSpots(parentSpots);
+        // Remove a parent Spot if already in the list of parent generation Spots
+        parentSpots = _.reject(parentSpots, function (parentSpot) {
+          return _.find(_.flatten(parentGenerations), function (knownParentSpot) {
+            return parentSpot.properties.id === knownParentSpot.properties.id;
+          });
+        });
         if (!_.isEmpty(parentSpots)) parentGenerations.push(parentSpots);
       });
       return parentGenerations;
@@ -485,7 +519,7 @@
         $ionicPopup.alert({
           'title': 'Spot Not Found!',
           'template': 'This Spot was not found in the local database. It may need to be downloaded from the server' +
-          ' or an unknown error has occurred.'
+            ' or an unknown error has occurred.'
         });
       }
     }

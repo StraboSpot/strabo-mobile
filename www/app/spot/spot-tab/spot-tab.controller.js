@@ -30,7 +30,7 @@
     vm.isMapped = isMapped;
     vm.isPixelMapping = isPixelMapping;
     vm.isPointSpot = isPointSpot;
-    vm.isStratSectionSpot= isStratSectionSpot;
+    vm.isStratSectionSpot = isStratSectionSpot;
     vm.setCurrentLocation = setCurrentLocation;
     vm.setFromMap = setFromMap;
     vm.updateDatetime = updateDatetime;
@@ -153,8 +153,8 @@
         }
       }
       else if (vmParent.spot.geometry.type === 'Point') {
-          vm.lat = vmParent.spot.geometry.coordinates[1];
-          vm.lng = vmParent.spot.geometry.coordinates[0];
+        vm.lat = vmParent.spot.geometry.coordinates[1];
+        vm.lng = vmParent.spot.geometry.coordinates[0];
       }
     }
 
@@ -222,9 +222,12 @@
     }
 
     // Get the array of coordinates as a string
-    function  getCoordArray() {
-      var coordString = JSON.stringify(vmParent.spot.geometry.coordinates);
-      return '[' + coordString.replace(/^\[+|\]+$/g,'') + ']';              // Remove extra [ and ] from start and end
+    function getCoordArray() {
+      if (vmParent.spot.geometry.coordinates) {
+        var coordString = JSON.stringify(vmParent.spot.geometry.coordinates);
+        return '[' + coordString.replace(/^\[+|\]+$/g, '') + ']';         // Remove extra [ and ] from start and end
+      }
+      else return '[multiple geometries]'
     }
 
     // Is the Spot mapped on an image basemap?
@@ -234,7 +237,7 @@
 
     // Has the Spot been mapped?
     function isMapped() {
-      return vmParent.spot && vmParent.spot.geometry && vmParent.spot.geometry.coordinates;
+      return vmParent.spot && vmParent.spot.geometry;
     }
 
     // Does the Spot have pixel coordinates

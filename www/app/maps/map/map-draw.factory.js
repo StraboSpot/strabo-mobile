@@ -154,47 +154,34 @@
       // Create a trigger for a change in any of the features
       features.forEach(function (feature) {
         featuresOrig.push(feature.clone());
+        var geojson = new ol.format.GeoJSON();
+        var editedSpot = {};
         feature.on('change', function (e) {
-          var spot = JSON.parse(JSON.stringify(SpotFactory.getSpotById(e.target.get('id'))));
-
-          var newGeom = e.target.get('geometry');
-          var newCoords = newGeom.getCoordinates();
-          if (map.getView().getProjection().getUnits() !== 'pixels') {
-            switch (newGeom.getType()) {
-              case 'Point':
-                newCoords = ol.proj.toLonLat(newCoords);
-                break;
-              case 'LineString' || 'MultiPoint':
-                newCoords = _.map(newCoords, function (coords) {
-                  return ol.proj.toLonLat(coords);
-                });
-                break;
-              case 'Polygon' || 'MultiLineString':
-                _.each(newCoords, function (coords, i) {
-                  newCoords[i] = _.map(coords, function (coord) {
-                    return ol.proj.toLonLat(coord);
-                  });
-                });
-                break;
-              case 'MultiPolygon':
-                _.each(newCoords, function (polyCoords, i) {
-                  _.each(polyCoords, function (coords, j) {
-                    polyCoords[j] = _.map(coords, function (coord) {
-                      return ol.proj.toLonLat(coord);
-                    });
-                  });
-                  newCoords[i] = polyCoords;
-                });
-                break;
-              default:
-                return;
-            }
+          var editedFeature = e.target;
+          if (map.getView().getProjection().getUnits() === 'pixels') {
+            editedSpot = geojson.writeFeatureObject(editedFeature, {'decimals': 6});
           }
-          spot.geometry.coordinates = newCoords;
+          else {
+            editedSpot = geojson.writeFeatureObject(editedFeature, {
+              'featureProjection': map.getView().getProjection(),  // 'EPSG:3857'
+              'decimals': 6
+            });
+          }
           spotsEdited = _.reject(spotsEdited, function (spotEdited) {
-            return spotEdited.properties.id === spot.properties.id;
+            return spotEdited.properties.id === editedSpot.properties.id;
           });
-          spotsEdited.push(spot);
+          spotsEdited.push(editedSpot);
+        });
+      });
+    }
+
+    // Make sure edited intervals do not have min x or min y values less than 0
+    function fixStratIntervalCoords(geometry) {
+      return _.map(geometry.coordinates, function (coords) {
+        return _.map(coords, function (coords) {
+          return _.map(coords, function (coord) {
+            return coord < 0 ? 0 : coord;
+          });
         });
       });
     }
@@ -270,7 +257,7 @@
                   var match = _.find(featuresOrig, function (spotOrig) {
                     return spotOrig.get('id') === feature.get('id');
                   });
-                  feature.getGeometry().setCoordinates(match.getGeometry().getCoordinates());
+                  feature.setGeometry(match.getGeometry());
                 }
               });
             });
@@ -593,14 +580,20 @@
         // If the edited spot was an interval in a strat section recalculate the thickness
         if (editedSpot.properties.strat_section_id && editedSpot.properties.surface_feature &&
           editedSpot.properties.surface_feature.surface_feature_type === 'strat_interval') {
-          var geometry = new ol.format.GeoJSON().readFeature(editedSpot).getGeometry();
-          // Make sure edited intervals do not have min x or min y values less than 0
-          var coords = _.map(geometry.getCoordinates()[0], function (coord) {
-            return [coord[0] > 0 ? coord[0] : 0, coord[1] > 0 ? coord[1] : 0];
-          });
-          editedSpot.geometry.coordinates = [coords];
-          geometry.setCoordinates([coords]);
-          var extent = geometry.getExtent();
+          if (editedSpot.geometry.type === 'GeometryCollection') {
+            var fixedGeoms = [];
+            _.each(editedSpot.geometry.geometries, function (geometry, i) {
+              fixedGeoms.push({'type': geometry.type, 'coordinates': fixStratIntervalCoords(geometry)});
+            });
+            editedSpot.geometry = {'type': editedSpot.geometry.type, 'geometries': fixedGeoms};
+          }
+          else {
+            var fixedCoords = fixStratIntervalCoords(editedSpot.geometry);
+            editedSpot.geometry = {'type': editedSpot.geometry.type, 'coordinates': fixedCoords};
+          }
+          var geojson = new ol.format.GeoJSON();
+          var editedFeature = geojson.readFeature(editedSpot);
+          var extent = editedFeature.getGeometry().getExtent();
           var thickness = (extent[3] - extent[1]) / 20; // 20 is yMultiplier - see StratSectionFactory
           thickness = HelpersFactory.roundToDecimalPlaces(thickness, 2);
           if (!editedSpot.properties.sed) editedSpot.properties.sed = {};
@@ -613,7 +606,7 @@
                 layer.getSource().getFeatures().forEach(function (feature) {
                   if (feature.get('id') === editedSpot.properties.id) {
                     feature.setProperties(editedSpot.properties);       // Update map feature with new thickness
-                    feature.getGeometry().setCoordinates([coords]);     // Update map feature with new geometry
+                    feature.setGeometry(editedFeature.getGeometry());   // Update map feature with new geometry
                   }
                 });
               });

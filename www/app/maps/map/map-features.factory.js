@@ -145,6 +145,24 @@
             text.push('Principal Dunham Classification: ' +
               DataModelsFactory.getSedLabel(props.sed.lithologies.principal_dunham_class));
           }
+          // Text if Interbedded
+          if (props.sed.lithologies.is_this_a_bed_or_package === 'interbedded') {
+            if (props.sed.lithologies.interbed_lithology) {
+              text.push(
+                'Interbed Lithology: ' + DataModelsFactory.getSedLabel(props.sed.lithologies.interbed_lithology));
+            }
+            if (props.sed.lithologies.mud_silt_interbed_grain_size || props.sed.lithologies.sand_interbed_grain_size ||
+              props.sed.lithologies.congl_interbed_grain_size || props.sed.lithologies.breccia_interbed_grain_size) {
+              var interbedGrainSize = props.sed.lithologies.mud_silt_interbed_grain_size ||
+                props.sed.lithologies.sand_interbed_grain_size || props.sed.lithologies.congl_interbed_grain_size ||
+                props.sed.lithologies.breccia_interbed_grain_size;
+              text.push('Interbed Grain Size: ' + DataModelsFactory.getSedLabel(interbedGrainSize));
+            }
+            if (props.sed.lithologies.interbed_dunham_class) {
+              text.push('Interbed Dunham Classification: ' +
+                DataModelsFactory.getSedLabel(props.sed.lithologies.interbed_dunham_class));
+            }
+          }
         }
       }
       return text;
@@ -292,7 +310,7 @@
           }
           else return 'no trace type';
         }
-        else if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
+        else if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon' || feature.geometry.type === 'GeometryCollection') {
           if (feature.properties.surface_feature && feature.properties.surface_feature.surface_feature_type) {
             return DataModelsFactory.getSurfaceFeatureTypeLabel(
               feature.properties.surface_feature.surface_feature_type) || 'no surface feature type';
@@ -440,38 +458,53 @@
           pointText = orientation.dip || orientation.plunge || pointText;
         }
 
-        var pointStyle = [
-          new ol.style.Style({
-            'image': getIconForFeature(feature),
-            'text': textStylePoint(pointText.toString(), rotation)
-          })
-        ];
-        var lineStyle = [
-          new ol.style.Style({
-            'stroke': getStrokeStyle(feature),
-            'text': textStyle(feature.get('name'))
-          })
-        ];
-        var polyText = feature.get('name');
-        var polyStyle = [
-          new ol.style.Style({
-            'stroke': new ol.style.Stroke({
-              'color': '#000000',
-              'width': 0.5
-            }),
-            'fill': SymbologyFactory.getPolyFill(feature, resolution),
-            'text': textStyle(polyText)
-          })
-        ];
-        var styles = [];
-        styles.Point = pointStyle;
-        styles.MultiPoint = pointStyle;
-        styles.LineString = lineStyle;
-        styles.MultiLineString = lineStyle;
-        styles.Polygon = polyStyle;
-        styles.MultiPolygon = polyStyle;
-
-        return styles[feature.getGeometry().getType()];
+       var styles = [];
+        var geomType = feature.getGeometry().getType();
+        if (geomType === 'Point' || geomType === 'MultiPoint') {
+          styles.push([
+            new ol.style.Style({
+              'image': getIconForFeature(feature),
+              'text': textStylePoint(pointText.toString(), rotation)
+            })
+          ]);
+        }
+        else if (geomType === 'LineString' || geomType === 'MultiLineString') {
+          styles.push([
+            new ol.style.Style({
+              'stroke': getStrokeStyle(feature),
+              'text': textStyle(feature.get('name'))
+            })
+          ]);
+        }
+        else if (geomType === 'Polygon' || geomType === 'MultiPolygon') {
+          styles.push(
+            new ol.style.Style({
+              'stroke': new ol.style.Stroke({
+                'color': '#000000',
+                'width': 0.5
+              }),
+              'fill': SymbologyFactory.getPolyFill(feature, resolution),
+              'text': textStyle(feature.get('name'))
+            })
+          );
+        }
+       else if (geomType === 'GeometryCollection') {
+          var geometries = feature.getGeometry().getGeometries();
+          _.each(geometries, function (geometry, i) {
+            styles.push(
+              new ol.style.Style({
+                'geometry': geometry,
+                'stroke': new ol.style.Stroke({
+                  'color': '#000000',
+                  'width': 0.5
+                }),
+                'fill': SymbologyFactory.getPolyFill(feature, resolution, i % 2 !== 0),
+                'text': textStyle(feature.get('name'))
+              })
+            );
+          });
+        }
+         return _.flatten(styles);
       }
 
       var features;
@@ -482,7 +515,6 @@
         });
       }
       SymbologyFactory.setFeatureLayer(MapLayerFactory.getFeatureLayer(mapName));
-      SymbologyFactory.setFillPatterns(features);
 
       return new ol.layer.Vector({
         'source': new ol.source.Vector({

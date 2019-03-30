@@ -12,7 +12,7 @@
   <div class='padding' ng-show='vmChild.parentGenerations.length > 0 || vmChild.childGenerations.length > 0'>
 
 
-    <div ng-repeat='generation in vmChild.parentGenerations | orderBy:"+": true track by $index'>
+    <div ng-repeat='generation in vmChild.parentGenerations | orderBy:"$index":true track by $index'>
       <div>
         <span ng-if='vmChild.parentGenerations.length - $index - 1 === 0'>1st</span>
         <span ng-if='vmChild.parentGenerations.length - $index - 1 === 1'>2nd</span>
@@ -26,7 +26,7 @@
         <span ng-if='vmChild.parentGenerations.length - $index - 1 === 9'>10th</span>
         <span>Generation Parents</span>
         <div class='nest-block'>
-          <div ng-repeat='spot in generation'>
+          <div ng-repeat='spot in generation track by spot.properties.id'>
             <strabo-spot-directive></strabo-spot-directive>
           </div>
         </div>
@@ -66,7 +66,7 @@
         <span ng-if='$index === 9'>10th</span>
         <span>Generation Children</span>
         <div class='nest-block'>
-          <div ng-repeat='spot in generation'>
+          <div ng-repeat='spot in generation track by spot.properties.id'>
             <strabo-spot-directive></strabo-spot-directive>
           </div>
         </div>

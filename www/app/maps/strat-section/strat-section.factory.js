@@ -38,6 +38,87 @@
      * Private Functions
      */
 
+    // Calculate the geometry for an interval (single bed or interbedded)
+    function calculateIntervalGeometry(stratSectionId, lithology, minY) {
+      var intervalHeight = lithology.interval_thickness * yMultiplier;
+      var intervalWidth = getIntervalWidth(lithology, stratSectionId);
+      var minX = 0;
+      var maxX = minX + intervalWidth;
+      var maxY = minY + intervalHeight;
+
+      var geometry = {};
+      if (lithology.is_this_a_bed_or_package !== 'interbedded') {
+        geometry = {
+          'type': 'Polygon',
+          'coordinates': [[[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY], [minX, minY]]]
+        };
+      }
+      // If interbedded need to create a geometry collection with polygons for each bed
+      else {
+        var y = 2;
+        if (lithology.interbed_thickness === 'med_10_30_cm') y = y + 5;
+        else if (lithology.interbed_thickness === 'thick_30_cm') y = y + 10;
+
+        var numInterbeds = Math.ceil(intervalHeight / y);
+        var numInterbeds2 = Math.ceil(numInterbeds * (lithology.interbed_proportion / 100)) || 2;
+        var numInterbeds1 = numInterbeds - numInterbeds2;
+
+        // Determine sequencing, always starting with lithology 1 (primary lithology)
+        var seq = [], d;
+        if (numInterbeds1 > numInterbeds2) {
+          d = Math.ceil(numInterbeds1 / numInterbeds2);
+          _.times(numInterbeds, function (i) {
+            if (i === 0) seq.push('a');
+            else if (i % d === 0) seq.push('b');
+            else seq.push('a');
+          });
+        }
+        else {
+          d = Math.ceil(numInterbeds2 / numInterbeds1) + 1;
+          _.times(numInterbeds, function (i) {
+            if (i === 0) seq.push('a');
+            else if (i % d === 0) seq.push('a');
+            else seq.push('b');
+          });
+        }
+        console.log('Interbed Sequence:', seq);
+
+        var interbedIntervalWidth = getIntervalWidth(lithology, stratSectionId, true);
+        var geometries = [];
+        var polyCoords = [];
+        maxY = minY + y;
+        _.times(numInterbeds, function (i) {
+          maxX = seq[i] === 'a' ? minX + intervalWidth : minX + interbedIntervalWidth;
+
+          // Merge current bed with previous if they're the same type
+          var prevInterbedMaxX = _.max(_.unzip(_.last(polyCoords))[0]);
+          if (i !== 0 && maxX === prevInterbedMaxX) {
+            minY = _.min(_.unzip(_.last(polyCoords))[1]);
+            polyCoords.pop();
+          }
+
+          var coords = [[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY], [minX, minY]];
+          polyCoords.push(coords);
+
+          minY = maxY;
+          maxY = minY + y;
+        });
+
+        _.each(polyCoords, function (polyCoord) {
+          geometries.push({
+            'type': 'Polygon',
+            'coordinates': [polyCoord]
+          });
+        });
+
+        geometry = {
+          'type': 'GeometryCollection',
+          'geometries': geometries
+        };
+      }
+      return geometry;
+    }
+
     // X-Axis
     function drawAxisX(ctx, pixelRatio, yAxisHeight, labels, spacing, color) {
       var p = getPixel([-10, 0], pixelRatio);
@@ -150,7 +231,7 @@
       });
     }
 
-    function getIntervalWidth(lithology, stratSectionId) {
+    function getIntervalWidth(lithology, stratSectionId, interbed) {
       var defaultWidth = xInterval / 4;
       var i, intervalWidth = defaultWidth;
       // Unexposed/Covered
@@ -167,17 +248,22 @@
         }
         // Basic Lithologies Column Profile
         else if (stratSectionSettings.column_profile === 'basic_lithologies') {
-          if (lithology.primary_lithology === 'organic_coal') i = 1;
-          else if (lithology.mud_silt_principal_grain_size) i = 2;
-          else if (lithology.sand_principal_grain_size) i = 3;
-          else if (lithology.congl_principal_grain_size || lithology.breccia_principal_grain_size) i = 4;
-          else if (lithology.principal_dunham_class) i = 5;
+          if (!interbed && lithology.primary_lithology === 'organic_coal') i = 1;
+          else if (!interbed && lithology.mud_silt_principal_grain_size) i = 2;
+          else if (!interbed && lithology.sand_principal_grain_size) i = 3;
+          else if (!interbed && lithology.congl_principal_grain_size || lithology.breccia_principal_grain_size) i = 4;
+          else if (!interbed && lithology.principal_dunham_class) i = 5;
+          else if (interbed && lithology.interbed_lithology === 'organic_coal') i = 1;
+          else if (interbed && lithology.mud_silt_interbed_grain_size) i = 2;
+          else if (interbed && lithology.sand_interbed_grain_size) i = 3;
+          else if (interbed && lithology.congl_interbed_grain_size || lithology.breccia_interbed_grain_size) i = 4;
+          else if (interbed && lithology.interbed_dunham_class) i = 5;
           else i = 0;
           intervalWidth = i === -1 ? defaultWidth : (i + 2) * xInterval;
         }
         // Primary Lithology = siliciclastic
-        else if (lithology.mud_silt_principal_grain_size || lithology.sand_principal_grain_size ||
-          lithology.congl_principal_grain_size || lithology.breccia_principal_grain_size) {
+        else if (!interbed && (lithology.mud_silt_principal_grain_size || lithology.sand_principal_grain_size ||
+          lithology.congl_principal_grain_size || lithology.breccia_principal_grain_size)) {
           i = _.findIndex(grainSizeOptions.clastic, function (grainSizeOption) {
             return grainSizeOption.value === lithology.mud_silt_principal_grain_size ||
               grainSizeOption.value === lithology.sand_principal_grain_size ||
@@ -186,17 +272,42 @@
           });
           intervalWidth = i === -1 ? defaultWidth : (i + 1) * xInterval;
         }
+        // Interbed Lithology = siliciclastic
+        else if (interbed && (lithology.mud_silt_interbed_grain_size || lithology.sand_interbed_grain_size ||
+          lithology.congl_interbed_grain_size || lithology.breccia_interbed_grain_size)) {
+          i = _.findIndex(grainSizeOptions.clastic, function (grainSizeOption) {
+            return grainSizeOption.value === lithology.mud_silt_interbed_grain_size ||
+              grainSizeOption.value === lithology.sand_interbed_grain_size ||
+              grainSizeOption.value === lithology.congl_interbed_grain_size ||
+              grainSizeOption.value === lithology.breccia_interbed_grain_size;
+          });
+          intervalWidth = i === -1 ? defaultWidth : (i + 1) * xInterval;
+        }
         // Primary Lithology = limestone or dolomite
-        else if (lithology.principal_dunham_class) {
+        else if (!interbed && lithology.principal_dunham_class) {
           i = _.findIndex(grainSizeOptions.carbonate, function (grainSizeOption) {
             return grainSizeOption.value === lithology.principal_dunham_class;
           });
           intervalWidth = i === -1 ? defaultWidth : (i + 2.33) * xInterval;
         }
+        // Interbed Lithology = limestone or dolomite
+        else if (interbed && lithology.interbed_dunham_class) {
+          i = _.findIndex(grainSizeOptions.carbonate, function (grainSizeOption) {
+            return grainSizeOption.value === lithology.interbed_dunham_class;
+          });
+          intervalWidth = i === -1 ? defaultWidth : (i + 2.33) * xInterval;
+        }
         // Other Lithologies
-        else {
+        else if (!interbed) {
           i = _.findIndex(grainSizeOptions.lithologies, function (grainSizeOption) {
             return grainSizeOption.value === lithology.primary_lithology;
+          });
+          i = i - 3; // First 3 indexes are siliciclastic, limestone & dolomite which are handled above
+          intervalWidth = i === -1 ? defaultWidth : (i + 2.66) * xInterval;
+        }
+        else {
+          i = _.findIndex(grainSizeOptions.lithologies, function (grainSizeOption) {
+            return grainSizeOption.value === lithology.interbed_lithology;
           });
           i = i - 3; // First 3 indexes are siliciclastic, limestone & dolomite which are handled above
           intervalWidth = i === -1 ? defaultWidth : (i + 2.66) * xInterval;
@@ -266,13 +377,8 @@
     // Recalculate the geometry of an interval using spot properties
     function recalculateIntervalGeometry(spot) {
       var extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
-      var intervalHeight = spot.properties.sed.lithologies.interval_thickness * yMultiplier;
-      var intervalWidth = getIntervalWidth(spot.properties.sed.lithologies, spot.properties.strat_section_id);
-      var minX = 0;
-      var maxX = intervalWidth;
-      var minY = extent[1];
-      var maxY = minY + intervalHeight;
-      spot.geometry.coordinates = [[[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY], [minX, minY]]];
+      spot.geometry = calculateIntervalGeometry(spot.properties.strat_section_id, spot.properties.sed.lithologies,
+        extent[1]);
       $log.log('Recalculated Spot geometry');
       return spot;
     }
@@ -285,13 +391,8 @@
     function changedColumnProfile(stratSectionId) {
       var stratSectionIntervals = getStratSectionIntervals(stratSectionId);
       _.each(stratSectionIntervals, function (stratSectionInterval) {
-        var intervalWidth = getIntervalWidth(stratSectionInterval.properties.sed.lithologies, stratSectionId);
         var extent = new ol.format.GeoJSON().readFeature(stratSectionInterval).getGeometry().getExtent();
-        var minX = 0;
-        var maxX = intervalWidth;
-        var minY = extent[1];
-        var maxY = extent[3];
-        stratSectionInterval.geometry.coordinates = [[[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY], [minX, minY]]];
+        stratSectionInterval.geometry = calculateIntervalGeometry(stratSectionId, stratSectionInterval.properties.sed.lithologies, extent[1]);
         SpotFactory.save(stratSectionInterval);
         $log.log('Recalculated Spot geometry');
       });
@@ -330,70 +431,46 @@
       else if (state === 'app.spotTab.sed-lithologies') {
         // Recalculate interval geometry from thickness and width, if the following has changed:
         // - interval thickness or relative resistance weathering
-        // - bed or package to unexposed or vice versa
-        // - lithology (siliciclastic type, grain size or dunham classification)
-        if (spot.geometry && spot.properties.sed && spot.properties.sed.lithologies) {
+        // - bed, interbedded or package to unexposed or vice versa
+        // - bed, package or unexposed to interbedded or vice versa
+        // - principal or interbedded lithology (siliciclastic type, grain size or dunham classification)
+        if (spot.geometry && spot.properties.sed && spot.properties.sed.lithologies &&
+          savedSpot.properties.sed && savedSpot.properties.sed.lithologies) {
           var lithologies = spot.properties.sed.lithologies;
-          if (savedSpot.properties.sed && savedSpot.properties.sed.lithologies) {
-            var lithologiesSaved = savedSpot.properties.sed.lithologies;
-            if ((lithologies.interval_thickness !== lithologiesSaved.interval_thickness)
-              || (lithologies.relative_resistance_weathering !== lithologiesSaved.relative_resistance_weathering)) {
-              spot = recalculateIntervalGeometry(spot);
-            }
-            else if (lithologies.is_this_a_bed_or_package && lithologiesSaved.is_this_a_bed_or_package) {
-              if ((lithologies.is_this_a_bed_or_package === 'bed' ||
-                lithologies.is_this_a_bed_or_package === 'interbedded' ||
-                lithologies.is_this_a_bed_or_package === 'package_succe') &&
-                !(lithologiesSaved.is_this_a_bed_or_package === 'bed' ||
-                  lithologiesSaved.is_this_a_bed_or_package === 'interbedded' ||
-                  lithologiesSaved.is_this_a_bed_or_package === 'package_succe')) {
-                spot = recalculateIntervalGeometry(spot);
-              }
-              else if (lithologies.is_this_a_bed_or_package === 'unexposed_cove' &&
-                lithologiesSaved.is_this_a_bed_or_package !== 'unexposed_cove') {
-                spot = recalculateIntervalGeometry(spot);
-              }
-              else if (lithologies.primary_lithology !== lithologiesSaved.primary_lithology) {
-                spot = recalculateIntervalGeometry(spot);
-              }
-              else if (lithologies.primary_lithology === lithologiesSaved.primary_lithology) {
-                if (lithologies.principal_siliciclastic_type !== lithologiesSaved.principal_siliciclastic_type ||
-                  lithologies.principal_dunham_class !== lithologiesSaved.principal_dunham_class) {
-                  spot = recalculateIntervalGeometry(spot);
-                }
-                else if (lithologies.principal_siliciclastic_type === lithologiesSaved.principal_siliciclastic_type) {
-                  if (lithologies.mud_silt_principal_grain_size !== lithologiesSaved.mud_silt_principal_grain_size ||
-                    lithologies.sand_principal_grain_size !== lithologiesSaved.sand_principal_grain_size ||
-                    lithologies.congl_principal_grain_size !== lithologiesSaved.congl_principal_grain_size) {
-                    spot = recalculateIntervalGeometry(spot);
-                  }
-                }
-              }
-            }
+          var lithologiesSaved = savedSpot.properties.sed.lithologies;
+          if (lithologies.interval_thickness !== lithologiesSaved.interval_thickness ||
+            lithologies.relative_resistance_weathering !== lithologiesSaved.relative_resistance_weathering ||
+            lithologies.interbed_proportion !== lithologiesSaved.interbed_proportion ||
+            lithologies.interbed_thickness !== lithologiesSaved.interbed_thickness ||
+            ((lithologies.is_this_a_bed_or_package === 'bed' || lithologies.is_this_a_bed_or_package === 'package_succe') &&
+              !(lithologiesSaved.is_this_a_bed_or_package === 'bed' || lithologiesSaved.is_this_a_bed_or_package === 'package_succe')) ||
+            (lithologies.is_this_a_bed_or_package === 'unexposed_cove' && lithologiesSaved.is_this_a_bed_or_package !== 'unexposed_cove') ||
+            (lithologies.is_this_a_bed_or_package === 'interbedded' && lithologiesSaved.is_this_a_bed_or_package !== 'interbedded') ||
+            lithologies.primary_lithology !== lithologiesSaved.primary_lithology ||
+            lithologies.interbed_lithology !== lithologiesSaved.interbed_lithology ||
+            lithologies.principal_siliciclastic_type !== lithologiesSaved.principal_siliciclastic_type ||
+            lithologies.principal_dunham_class !== lithologiesSaved.principal_dunham_class ||
+            lithologies.interbed_siliciclastic_type !== lithologiesSaved.interbed_siliciclastic_type ||
+            lithologies.interbed_dunham_class !== lithologiesSaved.interbed_dunham_class ||
+            lithologies.mud_silt_principal_grain_size !== lithologiesSaved.mud_silt_principal_grain_size ||
+            lithologies.sand_principal_grain_size !== lithologiesSaved.sand_principal_grain_size ||
+            lithologies.congl_principal_grain_size !== lithologiesSaved.congl_principal_grain_size ||
+            lithologies.breccia_principal_grain_size !== lithologiesSaved.breccia_principal_grain_size ||
+            lithologies.mud_silt_interbed_grain_size !== lithologiesSaved.mud_silt_interbed_grain_size ||
+            lithologies.sand_interbed_grain_size !== lithologiesSaved.sand_interbed_grain_size ||
+            lithologies.congl_interbed_grain_size !== lithologiesSaved.congl_interbed_grain_size ||
+            lithologies.breccia_interbed_grain_size !== lithologiesSaved.breccia_interbed_grain_size) {
+            spot = recalculateIntervalGeometry(spot);
           }
         }
       }
       return spot;
     }
 
+    // Create a new strat section interval
     function createInterval(stratSectionId, data) {
-      var minX = 0;
-      var minY = getSectionHeight();
-
-      var map = MapSetupFactory.getMap();
-      var mapHeight = map.getSize()[0];
-      var mapWidth = map.getSize()[1];
-      var intervalHeight = data.interval_thickness * yMultiplier;
-      var intervalWidth = getIntervalWidth(data, stratSectionId);
-
-      var maxY = minY + intervalHeight;
-      var maxX = minX + intervalWidth;
-
       var geojsonObj = {};
-      geojsonObj.geometry = {
-        'type': 'Polygon',
-        'coordinates': [[[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY], [minX, minY]]]
-      };
+      geojsonObj.geometry = calculateIntervalGeometry(stratSectionId, data, getSectionHeight());
       geojsonObj.properties = {
         'strat_section_id': stratSectionId,
         'surface_feature': {'surface_feature_type': 'strat_interval'},

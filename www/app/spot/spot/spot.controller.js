@@ -340,37 +340,28 @@
 
     // Handle changes to specific fields in form
     function fieldChanged(fieldName, newValue, oldValue) {
-      var formName = FormFactory.getFormName();
-      $log.log(fieldName, 'changed in form', formName);
-      if (formName === 'sed.interval_basics' || formName === 'sed.texture') {
-        if (fieldName === 'mud_silt_principal_grain_size') {
+      $log.log(fieldName, 'changed in form', FormFactory.getFormName());
+      switch (fieldName) {
+        // Sed grain size
+        case 'mud_silt_principal_grain_size':
+        case 'sand_principal_grain_size':
+        case 'congl_principal_grain_size':
+        case 'breccia_principal_grain_size':
+        case 'mud_silt_interbed_grain_size':
+        case 'sand_interbed_grain_size':
+        case 'congl_interbed_grain_size':
+        case 'breccia_interbed_grain_size':
           if (!vm.data.grain_size) vm.data.grain_size = [];
-          vm.data.grain_size.push(vm.data.mud_silt_principal_grain_size);
-        }
-        else if (fieldName === 'sand_principal_grain_size') {
-          if (!vm.data.grain_size) vm.data.grain_size = [];
-          vm.data.grain_size.push(vm.data.sand_principal_grain_size);
-        }
-        else if (fieldName === 'congl_principal_grain_size') {
-          if (!vm.data.grain_size) vm.data.grain_size = [];
-          vm.data.grain_size.push(vm.data.congl_principal_grain_size);
-        }
-        else if (fieldName === 'breccia_principal_grain_size') {
-          if (!vm.data.grain_size) vm.data.grain_size = [];
-          vm.data.grain_size.push(vm.data.breccia_principal_grain_size);
-        }
-      }
-      if (formName === 'sed.interval_basics' || formName === 'sed.composition') {
-        if (fieldName === 'principal_dunham_class') {
-          if (!vm.data.dunham_class) vm.data.dunham_class = [];
-          vm.data.dunham_class.push(vm.data.principal_dunham_class);
-        }
-      }
-      if (formName === 'sed.strat_section' && fieldName === 'column_y_axis_units') {
-        vm.child.changeUnits(newValue, oldValue);
-      }
-      if (formName === 'sed.strat_section' && fieldName === 'column_profile') {
-        vm.child.changeColumnProfile(newValue, oldValue);
+          vm.data.grain_size.push(newValue);
+          break;
+        // Strat Section y axis units
+        case 'column_y_axis_units':
+          vm.child.changeUnits(newValue, oldValue);
+          break;
+        // Strat Section column profile
+        case 'column_profile':
+          vm.child.changeColumnProfile(newValue, oldValue);
+          break;
       }
     }
 

@@ -18,9 +18,10 @@
        class='geometry-icon' src='img/point-strat-section.png'>
   <img ng-if="spot.geometry.type === 'LineString' && spot.properties.strat_section_id"
        class='geometry-icon' src='img/line-strat-section.png'>
-  <img ng-if="spot.geometry.type === 'Polygon' && spot.properties.strat_section_id"
+  <img ng-if="(spot.geometry.type === 'Polygon' || spot.geometry.type === 'GeometryCollection') && spot.properties.strat_section_id"
        class='geometry-icon' src='img/polygon-strat-section.png'>
   <img ng-if="spot.geometry.type !== 'Point' && spot.geometry.type !== 'LineString' &&
-           spot.geometry.type !== 'Polygon'" class='geometry-icon' src='img/question.png'>
+           spot.geometry.type !== 'Polygon' && (spot.geometry.type !== 'GeometryCollection' &&
+           spot.properties.strat_section_id)" class='geometry-icon' src='img/question.png'>
   {{spot.properties.name}}
 </span>
