@@ -145,7 +145,7 @@
       // Filter by name
       if (filterConditions.name) {
         filteredSpots = _.filter(filteredSpots, function (spot) {
-          return spot.properties.name.toLowerCase().includes(filterConditions.name);
+          return spot.properties.name.toLowerCase().includes(filterConditions.name.toLowerCase());
         });
       }
       // Filter by date
