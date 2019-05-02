@@ -211,13 +211,13 @@
     function acceptCompass() {
       isCancelOrAccept = true;
       if (vmParent.data.type === 'linear_orientation' &&
-        vm.compassData.trend && vm.compassData.plunge && vm.compassData.rake) {
+        vm.compassData.trend !== null && vm.compassData.plunge !== null && vm.compassData.rake !== null) {
         vmParent.data.trend = vm.compassData.trend;
         vmParent.data.plunge = vm.compassData.plunge;
         vmParent.data.rake = vm.compassData.rake;
         vmParent.data.rake_calculated = 'yes';
       }
-      else if (vm.compassData.strike && vm.compassData.dipdir && vm.compassData.dip) {
+      else if (vm.compassData.strike !== null && vm.compassData.dipdir !== null && vm.compassData.dip !== null) {
         vmParent.data.strike = vm.compassData.strike;
         vmParent.data.dip_direction = vm.compassData.dipdir;
         vmParent.data.dip = vm.compassData.dip;
