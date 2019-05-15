@@ -115,14 +115,20 @@
       else if (y <= 0 && x >= 0) dipdir = diry - 90 + HelpersFactory.toDegrees(b);
       else if (y <= 0 && x <= 0) dipdir = diry + 90 - HelpersFactory.toDegrees(b);
       else if (x <= 0 && y >= 0) dipdir = diry + 90 + HelpersFactory.toDegrees(b);
-      dipdir = HelpersFactory.mod(dipdir, 360);
+
+      if (z > 0) dipdir = HelpersFactory.mod(dipdir, 360);
+      else if (z < 0) dipdir = HelpersFactory.mod(dipdir - 180, 360);
+
       strike = HelpersFactory.mod(dipdir - 90, 360);
       dip = HelpersFactory.toDegrees(d);
 
       // Calculate trend, plunge and rake (in degrees)
       var trend, plunge, rake;
-      if (y > 0) trend = HelpersFactory.mod(diry + 180, 360);
-      if (y <= 0) trend = diry;
+      if (y > 0) trend = HelpersFactory.mod(diry, 360);
+      if (y <= 0) trend = HelpersFactory.mod(diry - 180, 360);
+
+      if (z > 0) trend = HelpersFactory.mod(trend - 180, 360);
+
       plunge = HelpersFactory.toDegrees(Math.asin(Math.abs(y) / g));
       rake = HelpersFactory.toDegrees(R);
 
@@ -252,7 +258,7 @@
     function calcTrendPlunge() {
       if (_.isNull(vm.parentOrientation.strike) || _.isUndefined(vm.parentOrientation.strike) || _.isNull(
         vm.parentOrientation.dip) || _.isUndefined(vm.parentOrientation.dip) || _.isNull(
-          vmParent.data.rake) || _.isUndefined(vmParent.data.rake)) {
+        vmParent.data.rake) || _.isUndefined(vmParent.data.rake)) {
         $ionicPopup.alert({
           'title': 'Calculate Trend & Plunge Error',
           'template': 'Make sure you have a strike and dip entered for an associated Planar Orientation and the' +
@@ -447,8 +453,7 @@
         }).then(function () {
           vm.clipboardModal.hide();
         });
-      }
-      catch (err) {
+      } catch (err) {
         $ionicPopup.alert({
           title: 'Data from clipboard',
           template: 'Data was <b>NOT</b> imported from clipboard.<br> Check Format!'
