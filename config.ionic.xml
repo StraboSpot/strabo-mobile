@@ -99,6 +99,9 @@
     <edit-config target="NSLocationWhenInUseUsageDescription" file="*-Info.plist" mode="merge">
         <string>The strabospot app uses device location to find nearby sample data.</string>
     </edit-config>
+    <edit-config target="NSLocationAlwaysUsageDescription" file="*-Info.plist" mode="merge">
+        <string>The strabospot app uses device location to find nearby sample data.</string>
+    </edit-config>
     <edit-config target="NSPhotoLibraryAddUsageDescription" file="*-Info.plist" mode="merge">
         <string>The strabospot app uses the photo library to add images to field-collected sample data.</string>
     </edit-config>
