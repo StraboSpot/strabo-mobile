@@ -118,7 +118,8 @@
           if (vmParent.spot.properties.trace) vmParent.data = vmParent.spot.properties.trace;
           FormFactory.setForm('trace');
         }
-        if (vmParent.spot && vmParent.spot.geometry && vmParent.spot.geometry.type === 'Polygon') {
+        if (vmParent.spot && vmParent.spot.geometry &&
+          (vmParent.spot.geometry.type === 'Polygon' || vmParent.spot.geometry.type === 'GeometryCollection')) {
           vmParent.showRadius = false;
           vmParent.showSurfaceFeature = true;
           if (vmParent.spot.properties.surface_feature) vmParent.data = vmParent.spot.properties.surface_feature;
