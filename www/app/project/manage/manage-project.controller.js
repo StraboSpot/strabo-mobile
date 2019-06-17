@@ -619,67 +619,129 @@
     }
 
     function uploadImages(spots) {
-      var imagesToUpload = [];
-      var imagesToUploadCount = 0;
-      var imagesUploadedCount = 0;
-      var imagesUploadFailedCount = 0;
-      var promises = [];
-      outputMessage('Checking Images to Upload...');
-      _.each(spots, function (spot) {
-        _.each(spot.properties.images, function (image) {
-          var promise = RemoteServerFactory.verifyImageExistance(image.id, UserFactory.getUser().encoded_login)
+      return new Promise(function (resolve, reject1) {
+        spots = _.values(spots);
+        var imagesToUploadCount = 0;
+        var imagesUploadedCount = 0;
+        var imagesUploadFailedCount = 0;
+        var iSpotLoop = 0;
+        var iImagesLoop = 0;
+
+        outputMessage('Gathering Images to Upload...');
+
+        function areMoreImages(spot) {
+          return _.has(spot, 'properties') && _.has(spot.properties,
+            'images') && iImagesLoop < spot.properties.images.length;
+        }
+
+        function areMoreSpots() {
+          return iSpotLoop + 1 < spots.length;
+        }
+
+        // Upload images synchronously
+        function makeNextSpotRequest(spot) {
+          if (areMoreImages(spot)) {
+            $log.log('Found image:', spot.properties.images[iImagesLoop].id, spot.properties.images[iImagesLoop],
+              'in Spot:', spot);
+            makeNextImageRequest(spot.properties.images[iImagesLoop]).then(function () {
+              makeNextSpotRequest(spots[iSpotLoop]);
+            });
+          }
+          else if (areMoreSpots()) {
+            iSpotLoop++;
+            iImagesLoop = 0;
+            makeNextSpotRequest(spots[iSpotLoop]);
+          }
+          else {
+            if (imagesToUploadCount === 0) {
+              notifyMessages.pop();
+              outputMessage('No NEW Images to Upload');
+            }
+            else {
+              outputMessage('Finished Uploading Images');
+              if (imagesUploadFailedCount > 0) outputMessage('Images Failed: ' + imagesUploadFailedCount);
+            }
+            resolve();
+          }
+        }
+
+        function makeNextImageRequest(image) {
+          return shouldUploadImage(image.id)
+            .then(getImageFile)
+            .then(convertImageFile)
+            .then(uploadImage)
+            .catch(function (err) {
+              if (err !== 'already exists') {
+                uploadErrors = true;
+                imagesUploadFailedCount++;
+                $log.error(err);
+              }
+            })
+            .finally(function () {
+              iImagesLoop++;
+              return Promise.resolve();
+            })
+        }
+
+        function shouldUploadImage(imageId) {
+          return RemoteServerFactory.verifyImageExistance(imageId, UserFactory.getUser().encoded_login)
             .then(function (response) {
-              $log.log('Image', image, 'in Spot', spot.properties.id, spot, 'EXISTS on server. Server response',
-                response);
+              $log.log('No need to upload image:', imageId, 'Server response:', response);
+              return Promise.reject('already exists');
             }, function () {
-              imagesToUpload.push(image);
+              $log.log('Need to upload image:', imageId);
               imagesToUploadCount++;
               notifyMessages.pop();
-              outputMessage('Images to Upload: ' + imagesToUploadCount);
-              return ImageFactory.getImageFileURIById(image.id).then(function (src) {
-                if (src !== 'img/image-not-found.png') {
-                  return HelpersFactory.fileURItoBlob(src).then(function (blob) {
-                    return RemoteServerFactory.uploadImage(image.id, blob, UserFactory.getUser().encoded_login).then(
-                      function () {
-                        imagesUploadedCount++;
-                        notifyMessages.pop();
-                        outputMessage('Images Uploaded: ' + imagesUploadedCount + ' of ' + imagesToUploadCount);
-                        return Promise.resolve();
-                      }, function () {
-                        uploadErrors = true;
-                        imagesUploadFailedCount++;
-                        $log.error('Upload Image error');
-                        return Promise.reject();
-                      });
-                  }, function () {
-                    $log.error('Problem converting file URI to blob');
-                    return Promise.reject();
-                  });
-                }
-                else {
-                  $log.log('No image source found for image', image.id, 'in Spot', spot.properties.id, spot);
-                  uploadErrors = true;
-                  imagesUploadFailedCount++;
-                  return Promise.reject();
-                }
-              });
+              return Promise.resolve(imageId);
             });
-          promises.push(promise);
-        });
-      });
-      return $q.all(promises).then(function () {
-        if (imagesToUploadCount === 0) {
+        }
+
+        function getImageFile(imageId) {
+          outputMessage('Processing image...');
+          $log.log('Getting file URI ...');
+          return ImageFactory.getImageFileURIById(imageId).then(function (src) {
+            if (src !== 'img/image-not-found.png') {
+              $log.log('Got file URI for image', imageId, src);
+              return Promise.resolve([imageId, src]);
+            }
+            else return Promise.reject('Local file not found for image', imageId);
+          }, function () {
+            return Promise.reject('Local file not found for image', imageId);
+          });
+        }
+
+        function convertImageFile(data) {
+          var imageId = data[0];
+          var src = data[1];
+          $log.log('Converting file URI to Blob...');
+          return HelpersFactory.fileURItoBlob(src).then(function (blob) {
+            $log.log('Finished converting file URI to blob for image', imageId);
+            return Promise.resolve([imageId, blob]);
+          }, function () {
+            return Promise.reject('Error converting file URI to blob for image', imageId);
+          });
+        }
+
+        function uploadImage(data) {
+          var imageId = data[0];
+          var blob = data[1];
           notifyMessages.pop();
-          outputMessage('No NEW Images to Upload');
+          var count = imagesUploadedCount + 1;
+          outputMessage('Uploading image ' + count + '...');
+          $log.log('Uploading image', imageId, 'to server...');
+          return RemoteServerFactory.uploadImage(imageId, blob, UserFactory.getUser().encoded_login).then(function () {
+            imagesUploadedCount++;
+            notifyMessages.pop();
+            outputMessage('Images Uploaded: ' + imagesUploadedCount);
+            $log.log('Finished uploading image', imageId, 'to the server');
+            return Promise.resolve();
+          }, function () {
+            return Promise.reject('Error uploading image', imageId);
+          });
         }
-        else {
-          outputMessage('Finished Uploading Images');
-          if (imagesUploadFailedCount > 0) outputMessage('Images Failed: ' + imagesUploadFailedCount);
-        }
-        return Promise.resolve();
-      }, function () {
-        $log.log('Problem uploading images');
-        return Promise.reject();
+
+        if (iSpotLoop < spots.length) makeNextSpotRequest(spots[iSpotLoop]);
+        else resolve();
       });
     }
 
