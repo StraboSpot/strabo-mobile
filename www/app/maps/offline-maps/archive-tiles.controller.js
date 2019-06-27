@@ -65,6 +65,7 @@
 
         var allmaps = MapFactory.getMaps();
 
+
         vm.map = angular.fromJson(angular.toJson(_.find(MapFactory.getMaps(), function (gotMap) {
           return gotMap.id === mapLayer.get('id');
         })));
@@ -434,7 +435,8 @@
       $state.go('app.map');
     }
 
-    function maxZoomLevelChanged() {
+    function maxZoomLevelChanged(newmaxzoom) {
+      vm.selectedMaxZoom.zoom = newmaxzoom;
       $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Counting Tiles...'});
       vm.serverCountTiles().then(function () {
         vm.showSubmitButton = true;

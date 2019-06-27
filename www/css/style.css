@@ -1247,3 +1247,15 @@ Offline Maps Page
   font-size:1.3em;
   padding-bottom: 5px;
 }
+
+.zoom-levels {
+  text-transform: uppercase;
+  text-align: center;
+  font-weight:bold;
+  font-size:1.2em;
+  margin-bottom: 10px;
+}
+
+.tile-count-label {
+  text-align: center;
+}

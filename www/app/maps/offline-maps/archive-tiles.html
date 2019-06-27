@@ -10,7 +10,18 @@
       <b>{{ vm.map.existCount }} Tiles already on device for this map.</b>
     </div>
 
+    <div class='tile-count-label' ng-show='vm.showSubmitButton'>
+      <b>Number of tiles to download: {{ vm.map.tileCount }} <br></b>
+
+      <button class='button button-block button-positive' ng-click='vm.submit()' ng-disabled='vm.downloading'>
+        {{ vm.submitBtnText }}
+      </button>
+    </div>
+
     <h5>Select max zoom level to download:</h5>
+
+
+<!--
     <ion-input class='item item-input item-select item-text-wrap item-stacked-label'>
       <select ng-model='vm.selectedMaxZoom'
               ng-options='z.zoom for z in vm.zoomOptions'
@@ -18,15 +29,19 @@
         <option value=''>-- Set Max Zoom Level --</option>
       </select>
     </ion-input>
+-->
 
-    <br>
-    <div ng-show='vm.showSubmitButton'>
-      <b>Number of tiles to download: {{ vm.map.tileCount }} <br></b>
-
-      <button class='button button-block button-positive' ng-click='vm.submit()' ng-disabled='vm.downloading'>
-        {{ vm.submitBtnText }}
-      </button>
+    <div class='zoom-levels' ng-repeat='z in vm.zoomOptions'>
+      <a ng-click='vm.maxZoomLevelChanged({{z.zoom}})'>Zoom {{z.zoom}}</a>
     </div>
+
+<!--
+    <a ng-click='vm.showCreateAccountModal()' *ngFor="zoom for z in vm.zoomOptions">
+      Create an account
+    </a>
+-->
+
+
 
     * Zoom in or out on the map to show more zoom levels.<br>
     * Double check your map before downloading higher zoom levels.<br>
