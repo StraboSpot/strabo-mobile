@@ -96,23 +96,27 @@ Generate Resources (icons and splash screens):
 ### Tested Environment
 
     Ionic:
-
-    ionic (Ionic CLI) : 4.8.0
-    Ionic Framework   : ionic1 1.3.3
-    @ionic/v1-toolkit : 1.0.15
-
+    
+       Ionic CLI         : 5.2.3
+       Ionic Framework   : ionic1 1.3.3
+       @ionic/v1-toolkit : 1.0.15
+    
     Cordova:
-
-    cordova (Cordova CLI) : 8.1.2 (cordova-lib@8.1.1)
-    Cordova Platforms     : android 7.1.2
-    Cordova Plugins       : cordova-plugin-ionic-keyboard 2.1.3, cordova-plugin-ionic-webview 2.3.2, (and 16 other plugins)
-
+    
+       Cordova CLI       : 8.1.2 (cordova-lib@8.1.1)
+       Cordova Platforms : android 7.0.0, browser 5.0.4
+       Cordova Plugins   : cordova-plugin-ionic-keyboard 2.1.3, cordova-plugin-ionic-webview 2.3.2, (and 16 other plugins)
+    
+    Utility:
+    
+       cordova-res : not installed
+       native-run  : not installed
+    
     System:
-
-    Android SDK Tools : 26.1.1
-    NodeJS            : v10.13.0
-    npm               : 6.4.1
-    OS                : Windows 10
+    
+       Android SDK Tools : 26.1.1
+       NodeJS            : v11.8.0
+       npm               : 6.9.0
 
 *Notes:*
 - This list can be generated with `ionic info`.
