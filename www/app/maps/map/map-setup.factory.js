@@ -182,6 +182,7 @@
       MapLayerFactory.initializeLayers(mapName);
       map.addLayer(MapLayerFactory.getDatasetsLayer());
       map.addLayer(MapLayerFactory.getFeatureLayer(mapName));
+      map.addLayer(MapLayerFactory.getEmogeoLayer());
       map.addLayer(MapLayerFactory.getDrawLayer());
     }
 

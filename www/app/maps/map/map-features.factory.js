@@ -90,6 +90,48 @@
       }
     }
 
+    // Get emogeo icons to display on an interval
+    function getEmogeos(mappedFeatures, mapName) {
+      function emogeosStyleFunction(feature) {
+        return new ol.style.Style({
+          'image': new ol.style.Icon({
+            'anchor': [0, 0],
+            'anchorOrigin': 'top-left',
+            'anchorXUnits': 'fraction',
+            'anchorYUnits': 'fraction',
+            'opacity': 0.75,
+            'src': MapEmogeosFactory.getEmogeoImageSrc(feature.getProperties()),
+            'scale': 1
+          })
+        });
+      }
+
+      var emogeoLayer = MapLayerFactory.getEmogeoLayer(mapName);
+      var emogeos = [];
+      var emogeoFeatures = (new ol.format.GeoJSON()).readFeatures(
+        {'type': 'FeatureCollection', 'features': mappedFeatures});
+      emogeoFeatures.forEach(function (f) {
+        if (MapEmogeosFactory.getEmogeoImageSrc(f.getProperties())) {
+          var geom = f.getGeometry();
+          var geometries = geom.getType() === 'GeometryCollection' ? geom.getGeometries() : [geom];
+          geometries.forEach(function (g) {
+            var topLeft = ol.extent.getTopLeft(g.getExtent());
+            var emogeo = new ol.Feature();
+            emogeo.setProperties(f.getProperties());
+            emogeo.setGeometry(new ol.geom.Point(topLeft));
+            emogeos.push(emogeo);
+          });
+        }
+      });
+
+      emogeoLayer.setSource(
+        new ol.source.Vector({
+          features: emogeos
+        })
+      );
+      emogeoLayer.setStyle(emogeosStyleFunction);
+    }
+
     // Get the first image in a Spot for display in the popup
     function getFirstImageSource(image) {
       var deferred = $q.defer(); // init promise
@@ -336,6 +378,8 @@
           featureLayer.getLayers().push(geojsonToVectorLayer(spotTypeLayer, map.getView().getProjection(), mapName));
         }
       }
+
+      getEmogeos(mappedFeatures, mapName);
     }
 
     // We want to load all the geojson markers from the persistence storage onto the map
@@ -458,7 +502,7 @@
           pointText = orientation.dip || orientation.plunge || pointText;
         }
 
-       var styles = [];
+        var styles = [];
         var geomType = feature.getGeometry().getType();
         if (geomType === 'Point' || geomType === 'MultiPoint') {
           styles.push([
@@ -488,7 +532,7 @@
             })
           );
         }
-       else if (geomType === 'GeometryCollection') {
+        else if (geomType === 'GeometryCollection') {
           var geometries = feature.getGeometry().getGeometries();
           _.each(geometries, function (geometry, i) {
             styles.push(
@@ -504,7 +548,7 @@
             );
           });
         }
-         return _.flatten(styles);
+        return _.flatten(styles);
       }
 
       var features;
