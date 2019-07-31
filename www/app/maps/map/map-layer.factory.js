@@ -499,7 +499,7 @@
     }
 
     function setVisibleBaselayer(mapId) {
-      baselayers.getLayersArray().forEach(function (baselayer) {
+      baselayers.getLayers().forEach(function (baselayer) {
         if (baselayer.get('id') === mapId) visibleLayers.baselayer = baselayer;
       });
     }

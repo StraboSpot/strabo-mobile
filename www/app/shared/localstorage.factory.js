@@ -16,6 +16,7 @@
     dbs.spotsDb = {};         // global LocalForage for spot data
     var appDirectory = 'StraboSpot';
     var appDirectoryTiles = 'StraboSpotTiles';
+    var appDirectoryForDistributedBackups = 'StraboSpotProjects';
     var dataBackupsDirectory = appDirectory + '/DataBackups';
     var imagesBackupsDirectory = appDirectory + '/ImageBackups';
     var imagesDirectory = appDirectory + '/Images';
@@ -32,7 +33,9 @@
       'deleteImageFromFileSystem': deleteImageFromFileSystem,
       'deleteMapFiles': deleteMapFiles,
       'exportProject': exportProject,
+      'exportProjectForDistribution': exportProjectForDistribution,
       'gatherLocalFiles': gatherLocalFiles,
+      'gatherLocalDistributionFiles': gatherLocalDistributionFiles,
       'getDb': getDb,
       'getDevicePath': getDevicePath,
       'getImageById': getImageById,
@@ -44,6 +47,7 @@
       'getMapStorageDetails': getMapStorageDetails,
       'getTile': getTile,
       'importProject': importProject,
+      'importProjectForDistribution': importProjectForDistribution,
       'saveImageToFileSystem': saveImageToFileSystem,
       'saveZip': saveZip,
       'setupLocalforage': setupLocalforage
@@ -270,7 +274,9 @@
       var promisesOuter = [];
       _.each(dbs, function (db) {
         var dbName = db.config().name;
-        if (dbName !== 'configDb' && dbName !== 'mapNamesDb' && dbName !== 'mapTilesDb') {
+        //if (dbName !== 'configDb' && dbName !== 'mapNamesDb' && dbName !== 'mapTilesDb') {
+        // let's include mapNamesDb because they are now being exported.
+        if (dbName !== 'configDb' && dbName !== 'mapTilesDb') {
           var promiseOuter = db.clear().then(function () {
             if (data[dbName]) {
               _.each(data[dbName], function (value, key) {
@@ -423,6 +429,281 @@
         return exportData(dataBackupsDirectory, angular.toJson(dataToExport), name + '.json', 'DataBackups');
       });
     }
+
+
+    function gatherDataForDistribution() {
+      var save = {};
+      var deferred = $q.defer(); // init promise
+      var promises = [];
+      _.each(dbs, function (db) {
+        //$log.log(db);
+        var dbName = db.config().name;
+        if (dbName !== 'configDb' && dbName !== 'mapTilesDb') {
+          save[dbName] = {};
+          var promise = db.iterate(function (value, key, i) {
+            save[dbName][key] = value;
+          }).then(function () {
+            $log.log(save);
+          });
+          promises.push(promise);
+        }
+
+      });
+      $q.all(promises).then(function () {
+        $log.log(save);
+        deferred.resolve(save);
+      });
+      return deferred.promise;
+    }
+
+
+    function checkDistributeDataDir() {
+      //this function checks for a 'data' directory inside the distributed backups folder and deletes and recreates as necessarily
+      //this ensures that there is an empty 'data' folder in the directory
+      var deferred = $q.defer(); // init promise
+      var devicePath = getDevicePath();
+      if (devicePath) {
+        $cordovaFile.checkDir(devicePath, appDirectoryForDistributedBackups + '/data').then(function (checkDirSuccess) {
+          //exists. delete then add
+          $log.log('data folder exists')
+          $cordovaFile.removeRecursively(devicePath, appDirectoryForDistributedBackups + '/data').then(function () {
+            $log.log('Success removing', devicePath + appDirectoryForDistributedBackups + '/data');
+            $cordovaFile.createDir(devicePath, appDirectoryForDistributedBackups + '/data', false).then(function (createDirSuccess) {
+                $log.log('Directory', appDirectoryForDistributedBackups + '/data', 'created.', createDirSuccess);
+                deferred.resolve(devicePath + createDirSuccess.fullPath);
+              },
+              function (createDirError) {
+                $log.error('Unable to create directory', dir, createDirError);
+                deferred.reject(createDirError);
+              });
+          }, function (removeRecursivelyError) {
+            $log.log('Error removing', devicePath + appDirectoryForDistributedBackups + '/data', removeRecursivelyError);
+            deferred.reject('Error removing folder ' + devicePath + appDirectoryForDistributedBackups + '/data');
+          });
+        }, function (){
+          //doesn't exist, just create
+          $log.log('data folder doesnt exist')
+          $cordovaFile.createDir(devicePath, appDirectoryForDistributedBackups + '/data', false).then(function (createDirSuccess) {
+              $log.log('Directory', appDirectoryForDistributedBackups + '/data', 'created.', createDirSuccess);
+              deferred.resolve(devicePath + createDirSuccess.fullPath);
+            },
+            function (createDirError) {
+              $log.error('Unable to create directory', dir, createDirError);
+              deferred.reject(createDirError);
+            });
+        });
+      }else{
+        deferred.reject('Device not found');
+      }
+      return deferred.promise;
+    }
+
+
+
+    //move image from images directory to distribution folder
+    function moveDistributedImage(image_id) {
+      var deferred = $q.defer(); // init promise
+      var devicePath = getDevicePath();
+
+      $cordovaFile.checkFile(devicePath + imagesDirectory + '/' , image_id + '.jpg').then(function (foundFile) {
+        $log.log('found image');
+        $cordovaFile.copyFile(devicePath + imagesDirectory, image_id + '.jpg', devicePath + appDirectoryForDistributedBackups + '/data/images', image_id + '.jpg').then(function (foundFile) {
+          deferred.resolve();
+        }, function(copyError){
+          $log.log(copyError);
+          deferred.resolve();
+        })
+      }, function(checkfileError){
+        $log.log(checkfileError);
+        deferred.resolve(); //still resolve, just didn't find image.
+      });
+
+
+      return deferred.promise;
+    }
+
+    // Copy any images in spotsDB to distribution directory
+    function gatherImagesForDistribution(data) {
+      $log.log('data: ',data);
+      return new Promise(function (resolve, reject) {
+        var promises = [];
+        if(data.spotsDb){
+          $log.log('spots exist.');
+          _.each(data.spotsDb, function(spot){
+            if(spot.properties.images){
+              _.each(spot.properties.images, function(image){
+                var promise = moveDistributedImage(image.id).then(function (moveFileSuccess) {
+                    $log.log('Moved file:', moveFileSuccess);
+                  }, function (moveFileError) {
+                    $log.log('Error moving file:', moveFileError);
+                  });
+                promises.push(promise);
+              })
+            }
+          });
+          Promise.all(promises).then(function () {
+            $log.log('Finished moving all images to distribution folder.');
+            resolve();
+          });
+        }else{
+          $log.log('Spots dont exist');
+          resolve();
+        }
+      });
+    }
+
+
+
+
+
+
+    //move image from images directory to distribution folder
+    function moveDistributedMap(map_id) {
+      var deferred = $q.defer(); // init promise
+      var devicePath = getDevicePath();
+
+      $cordovaFile.checkFile(devicePath,  zipsDirectory + '/' + map_id + '.zip').then(function (foundFile) {
+        $log.log('found map ' + map_id);
+
+        $cordovaFile.copyFile(devicePath + zipsDirectory, map_id.toString() + '.zip', devicePath + appDirectoryForDistributedBackups + '/data/maps', map_id.toString() + '.zip').then(function (foundFile) {
+          $log.log('copied map file ok');
+          deferred.resolve(map_id);
+        }, function(copyError){
+          $log.log('error copying map file: ', copyError);
+          deferred.resolve(map_id);
+        });
+      }, function(checkfileError){
+        $log.log('couldnt find map ' + devicePath + '/' + zipsDirectory, map_id + '.zip');
+        $log.log(checkfileError);
+        deferred.resolve(); //still resolve, just didn't find image.
+      });
+
+
+      return deferred.promise;
+    }
+
+    // Copy any maps in mapNamesDb to distribution directory
+    function gatherMapsForDistribution(data) {
+      $log.log('data: ',data);
+      return new Promise(function (resolve, reject) {
+        var promises = [];
+        if(data.mapNamesDb){
+          $log.log('maps exist.');
+          _.each(data.mapNamesDb, function(map){
+            var promise = moveDistributedMap(map.mapid).then(function (moveFileSuccess) {
+                $log.log('Moved map:', moveFileSuccess);
+              }, function (moveFileError) {
+                $log.log('Error moving map:', moveFileError);
+              });
+            promises.push(promise);
+          });
+          Promise.all(promises).then(function () {
+            $log.log('Finished moving all maps to distribution folder.');
+            resolve();
+          });
+        }else{
+          $log.log('Maps dont exist');
+          resolve();
+        }
+      });
+    }
+
+
+    function exportProjectForDistribution(name) {
+      var deferred = $q.defer(); // init promise
+      var devicePath = getDevicePath();
+      $log.log('name passed in: ', name);
+
+      //first, check for root folder
+      checkDir(appDirectoryForDistributedBackups).then(function (successResponse) {
+        //now delete folder if exists already
+        checkDistributeDataDir().then(function (){
+          //OK, empty data directory has been created... now move data/images/tiles in for ZIPping.
+          gatherDataForDistribution().then(function (dataToExport) {
+            exportData(appDirectoryForDistributedBackups + '/data', angular.toJson(dataToExport), 'data.json').then(function (){
+              //create images directory
+              checkDir(appDirectoryForDistributedBackups + '/data/images').then(function (successResponse) {
+                //now copy images (if any)
+                gatherImagesForDistribution(dataToExport).then(function (imagesSuccess){
+                  $log.log('gathered images ok');
+                  //now create maps Directory
+                  checkDir(appDirectoryForDistributedBackups + '/data/maps').then(function (successResponse) {
+                    $log.log('created maps directory.')
+                    //Now copy maps (if any)
+                    gatherMapsForDistribution(dataToExport).then(function (mapsSuccess){
+                      //OK, we have everything we need now. Just move the folder to its new name
+                      $cordovaFile.moveDir(devicePath, appDirectoryForDistributedBackups + '/data', devicePath, appDirectoryForDistributedBackups + '/' + name).then(function(){
+                        deferred.resolve(name);
+                      }, function(moveError){
+                        $log.log('Error moving folder: ', moveError);
+                        deferred.reject(moveError);
+                      });
+                    }, function(mapsError){
+                      $log.log('Error gathering maps. ', mapsError);
+                      deferred.reject('Error gathering maps. ', mapsError);
+                    })
+                  }, function (errorResponse){
+                    $log.log('Error creating maps directory. ', errorResponse);
+                    deferred.reject('Error creating maps directory. ', errorResponse);
+                  });
+                }, function(imagesError){
+                  $log.log('Error gathering images. ', imagesError);
+                  deferred.reject('Error gathering images. ', imagesError);
+                })
+              }, function (errorResponse){
+                $log.log('Error creating images directory. ', errorResponse);
+                deferred.reject('Error creating images directory. ', errorResponse);
+              });
+            },function(exportError){
+              $log.log('Error exporting data. ', exportError);
+              deferred.reject('Error exporting data. ', exportError);
+            })
+          }, function(gatherError){
+            $log.log('Error gathering data. ', gatherError);
+            deferred.reject('Error gathering data. ', gatherError);
+          });
+        },function (checkDirError){
+          $log.log('Error deleting/creating data dir in StraboSpotProjects. ', checkDirError);
+          deferred.reject('Error deleting/creating data dir in StraboSpotProjects. ', checkDirError);
+        })
+      },function (errorResponse){
+        $log.log("Error Creating StraboSpotProjects folder: ", errorResponse);
+        deferred.reject("Error Creating StraboSpotProjects folder: ", errorResponse);
+      });
+
+      return deferred.promise;
+    }
+
+    function gatherLocalDistributionFiles() {
+      var deferred = $q.defer(); // init promise
+
+      var devicePath = getDevicePath();
+      if (devicePath) {
+        $window.resolveLocalFileSystemURL(devicePath + appDirectoryForDistributedBackups,
+          function (fileSystem) {
+            var reader = fileSystem.createReader();
+            reader.readEntries(
+              function (entries) {
+                //console.log(entries);
+                deferred.resolve(entries);
+              },
+              function (err) {
+                console.log(err);
+                if (err.code) deferred.reject(err.code);
+                else deferred.reject('Unknown error');
+              }
+            );
+          }, function (err) {
+            console.log(err);
+            if (err.code) deferred.reject(err.code);
+            else deferred.reject('Unknown error');
+          }
+        );
+      }
+      else deferred.reject('Device not found');
+      return deferred.promise;
+    }
+
 
     function gatherLocalFiles() {
       var deferred = $q.defer(); // init promise
@@ -693,6 +974,101 @@
           return replaceDbs(importedData);
         });
       });
+    }
+
+    function importProjectForDistribution(name) {
+      // add unzip map tiles here
+      return unzipMapsForDistribution(name).then(function () {
+        return copyImagesForDistribution(name).then(function () {
+          return importData(appDirectoryForDistributedBackups + '/' + name, 'data.json').then(function (importedData) { //use this same function to import data.json
+            return replaceDbs(importedData);
+          });
+        });
+      });
+    }
+
+    function copyImagesForDistribution(name) {
+      var devicePath = getDevicePath();
+      if (devicePath) {
+        return new Promise(function (resolve, reject) {
+          $cordovaFile.checkDir(devicePath, appDirectoryForDistributedBackups + '/' + name + '/images').then(function (checkDirSuccess) {
+              $log.log('Found image backups folder', checkDirSuccess);
+              listDir(devicePath + appDirectoryForDistributedBackups + '/' + name + '/images').then(function (fileEntries) {
+                var promises = [];
+                _.each(fileEntries, function (fileEntry) {
+                  var promise = $cordovaFile.copyFile(devicePath + appDirectoryForDistributedBackups + '/' + name + '/images', fileEntry.name,
+                    devicePath + imagesDirectory, fileEntry.name)
+                    .then(function (copyFileSuccess) {
+                      $log.log('Copied file:', copyFileSuccess);
+                    }, function (copyFileError) {
+                      $log.log('Error copying file:', copyFileError);
+                    });
+                  promises.push(promise);
+                });
+                Promise.all(promises).then(function () {
+                  $log.log('Finished copying all files from backup.');
+                  resolve();
+                });
+              }, function (listDirError) {
+                $log.log('Error getting list of files in directory', listDirError);
+                reject('Error getting list of files in directory');
+              });
+            },
+            function (checkDirError) {
+              $log.log('Image backups folder not found. No images to copy.', checkDirError);
+              resolve();
+            });
+        });
+      }
+      else Promise.resolve();
+    }
+
+    function unzipMap(name, mapid) {
+      var devicePath = getDevicePath();
+      var deferred = $q.defer(); // init promise
+
+      $log.log("mapid: ",mapid);
+
+      zip.unzip(devicePath + '/' + appDirectoryForDistributedBackups + '/' + name + '/maps/' + mapid, devicePath + '/' + tileCacheDirectory + '/',
+        function (returnvar) {
+          deferred.resolve(mapid);
+        });
+
+      return deferred.promise;
+    }
+
+    function unzipMapsForDistribution(name) {
+      var devicePath = getDevicePath();
+      if (devicePath) {
+        return new Promise(function (resolve, reject) {
+          $cordovaFile.checkDir(devicePath, appDirectoryForDistributedBackups + '/' + name + '/maps').then(function (checkDirSuccess) {
+              $log.log('Found map zips folder', checkDirSuccess);
+              listDir(devicePath + appDirectoryForDistributedBackups + '/' + name + '/maps').then(function (fileEntries) {
+                var promises = [];
+                _.each(fileEntries, function (fileEntry) {
+                  var promise = unzipMap(name, fileEntry.name).then(function (unzipFileSuccess) {
+                      $log.log('Unzipped file:', unzipFileSuccess);
+                    }, function (unzipFileError) {
+                      $log.log('Error unzipping file:', unzipFileError);
+                    });
+                  promises.push(promise);
+                });
+                Promise.all(promises).then(function () {
+                  $log.log('Finished unzipping all maps from backup.');
+                  resolve();
+                });
+              }, function (listDirError) {
+                $log.log('Error getting list of files in directory', listDirError);
+                reject('Error getting list of files in directory');
+              });
+            },
+            function (checkDirError) {
+              $log.log('Image backups folder not found. No images to copy.', checkDirError);
+              resolve();
+            });
+        });
+      }
+      else Promise.resolve();
     }
 
     function saveImageToFileSystem(data, fileName) {

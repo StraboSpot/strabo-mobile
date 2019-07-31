@@ -25,6 +25,7 @@
     vm.data = {};
     vm.datasets = [];
     vm.exportFileName = undefined;
+    vm.exportForDistFileName = undefined;
     vm.exportItems = {};
     vm.fileBrowserModal = {};
     vm.importItem = undefined;
@@ -47,12 +48,15 @@
     vm.deleteProject = deleteProject;
     vm.deleteType = deleteType;
     vm.exportProject = exportProject;
+    vm.exportProjectForDistribution = exportProjectForDistribution;
     vm.filterDefaultTypes = filterDefaultTypes;
     vm.getNumberOfSpots = getNumberOfSpots;
     vm.goToProjectDescription = goToProjectDescription;
     vm.hideLoading = hideLoading;
     vm.importProject = importProject;
+    vm.importProjectForDistribution = importProjectForDistribution;
     vm.importSelectedFile = importSelectedFile;
+    vm.importSelectedFileForDistribution = importSelectedFileForDistribution;
     vm.initializeUpload = initializeUpload;
     vm.initializeDownload = initializeDownload;
     vm.isDatasetOn = isDatasetOn;
@@ -157,6 +161,15 @@
         'hardwareBackButtonClose': false
       }).then(function (modal) {
         vm.fileBrowserModal = modal;
+      });
+
+      $ionicModal.fromTemplateUrl('app/project/manage/file-for-distribution-browser-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false,
+        'hardwareBackButtonClose': false
+      }).then(function (modal) {
+        vm.fileForDistributionBrowserModal = modal;
       });
 
       // Cleanup the modal and popover when we're done with them
@@ -347,6 +360,59 @@
       return deferred.promise;
     }
 
+    function exportDataForDistribution() {
+      var deferred = $q.defer(); // init promise
+      var dateString = ProjectFactory.getTimeStamp();
+      vm.exportForDistFileName = dateString + '_' + vm.project.description.project_name.replace(/\s/g, '');
+      var myPopup = $ionicPopup.show({
+        template: '<input type="text" ng-model="vm.exportForDistFileName">',
+        title: 'Confirm or Change Folder Name',
+        subTitle: 'If you change the folder name please do not use spaces, special characters (except a dash or underscore) or add a file extension.',
+        scope: $scope,
+        buttons: [
+          {text: 'Cancel'},
+          {
+            text: '<b>Save</b>',
+            type: 'button-positive',
+            onTap: function (e) {
+              if (!vm.exportForDistFileName) e.preventDefault();
+              else return vm.exportForDistFileName = vm.exportForDistFileName.replace(/[^\w- ]/g, '');
+            }
+          }
+        ]
+      });
+
+      myPopup.then(function (res) {
+        if (res) {
+          $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Exporting Data...'});
+          LocalStorageFactory.exportProjectForDistribution(vm.exportForDistFileName).then(function (filePath) {
+            $ionicPopup.alert({
+              'title': 'Success!',
+              'template': 'Project data written to ' + filePath
+            }).then(function () {
+              deferred.resolve();
+            });
+          }, function (err) {
+            $ionicPopup.alert({
+              'title': 'Error!',
+              'template': 'Error exporting project data. ' + err + ' Ending export.'
+            }).then(function () {
+              deferred.reject();
+            });
+          }).finally(function () {
+            $ionicLoading.hide();
+          });
+        }
+      });
+      return deferred.promise;
+    }
+
+    function exportProjectForDistribution() {
+      vm.popover.hide().then(function () {
+        exportDataForDistribution();
+      });
+    }
+
     // Determine which images aren't already on the device and need to be downloaded
     function gatherNeededImages(spots) {
       var neededImagesIds = [];
@@ -391,6 +457,37 @@
           if (file.endsWith('.json')) vm.fileNames.push(file.split('.')[0]);
         });
         if (!_.isEmpty(vm.fileNames)) vm.fileBrowserModal.show();
+        else {
+          $ionicPopup.alert({
+            'title': 'Files Not Found!',
+            'template': 'No valid files to import found. Export a file first.'
+          });
+        }
+      }, function (err) {
+        if (err === 1) {
+          $ionicPopup.alert({
+            'title': 'Import Folder Not Found!',
+            'template': 'The StraboSpot folder was not found. Export a file first or create this folder and add a valid project file.'
+          });
+        }
+        else {
+          $ionicPopup.alert({
+            'title': 'Error!',
+            'template': 'Error finding local files. Error code: ' + err
+          });
+        }
+      });
+    }
+
+    function importDataForDistribution() {
+      vm.fileForDistributionNames = [];
+
+      LocalStorageFactory.gatherLocalDistributionFiles().then(function (entries) {
+        $log.log("Distributed Files: ", entries);
+        _.each(_.pluck(entries, 'name'), function (file) {
+          vm.fileForDistributionNames.push(file);
+        });
+        if (!_.isEmpty(vm.fileForDistributionNames)) vm.fileForDistributionBrowserModal.show();
         else {
           $ionicPopup.alert({
             'title': 'Files Not Found!',
@@ -949,6 +1046,12 @@
       });
     }
 
+    function importProjectForDistribution() {
+      vm.popover.hide().then(function () {
+        importDataForDistribution();
+      });
+    }
+
     function importSelectedFile(name) {
       vm.fileBrowserModal.hide().then(function () {
         var confirmPopup = $ionicPopup.confirm({
@@ -968,6 +1071,39 @@
             $q.all(promises).then(function () {
               $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Importing Project..'});
               LocalStorageFactory.importProject(name + '.json').then(function () {
+                reloadProject();
+              }, function (err) {
+                $ionicLoading.hide();
+                $ionicPopup.alert({
+                  'title': 'Error!',
+                  'template': 'Error importing project. ' + err
+                });
+              });
+            });
+          }
+        });
+      });
+    }
+
+    function importSelectedFileForDistribution(name) {
+      vm.fileForDistributionBrowserModal.hide().then(function () {
+        var confirmPopup = $ionicPopup.confirm({
+          'title': 'Warning!!!',
+          'template': 'This will <span style="color:red">OVERWRITE</span> the current open project. Do you want to continue?',
+          'cssClass': 'warning-popup'
+        });
+        confirmPopup.then(function (res) {
+          if (res) {
+            $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Destroying Current Project..'});
+            $log.log('Destroying current project ...');
+            var promises = [];
+            promises.push(ProjectFactory.destroyProject());
+            promises.push(SpotFactory.clearAllSpots());
+            //promises.push(ImageFactory.deleteAllImages());
+
+            $q.all(promises).then(function () {
+              $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Importing Project..'});
+              LocalStorageFactory.importProjectForDistribution(name).then(function () {
                 reloadProject();
               }, function (err) {
                 $ionicLoading.hide();

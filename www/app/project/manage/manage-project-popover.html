@@ -13,10 +13,18 @@
       <ion-item ng-show='vm.isSyncReady()' ng-click='vm.initializeDownload()'>
         <i class='icon ion-android-download'></i> Download Project
       </ion-item>
+      <!--
       <ion-item ng-click='vm.exportProject()'>
         <img class='strabo-icon' src='img/export-project.png'> Export Project to Device
       </ion-item>
       <ion-item ng-click='vm.importProject()'>
+        <img class='strabo-icon' src='img/import-project.png'> Import Project from Device
+      </ion-item>
+      -->
+      <ion-item ng-click='vm.exportProjectForDistribution()'>
+        <img class='strabo-icon' src='img/export-project.png'> Export Project to Device
+      </ion-item>
+      <ion-item ng-click='vm.importProjectForDistribution()'>
         <img class='strabo-icon' src='img/import-project.png'> Import Project from Device
       </ion-item>
     </ion-list>

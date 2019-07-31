@@ -1,0 +1,15 @@
+<ion-modal-view>
+  <ion-header-bar class='bar-stable nav-title-slide-ios7' align-title='center'>
+    <h1 class='title'>Select a File</h1>
+    <button class='button icon ion-close-round button-clear'
+            ng-click='vm.fileForDistributionBrowserModal.hide()'>
+    </button>
+  </ion-header-bar>
+  <ion-content>
+    <ion-list>
+      <ion-item ng-repeat="fileName in vm.fileForDistributionNames" ng-click='vm.importSelectedFileForDistribution(fileName)'>
+        {{ fileName }}
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-modal-view>
