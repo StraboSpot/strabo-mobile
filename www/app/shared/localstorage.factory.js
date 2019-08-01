@@ -1071,19 +1071,24 @@
           $cordovaFile.checkDir(devicePath, appDirectoryForDistributedBackups + '/' + name + '/images').then(function (checkDirSuccess) {
               $log.log('Found image backups folder', checkDirSuccess);
               listDir(devicePath + appDirectoryForDistributedBackups + '/' + name + '/images').then(function (fileEntries) {
-                var promises = [];
-                _.each(fileEntries, function (fileEntry) {
-                  var promise = $cordovaFile.copyFile(devicePath + appDirectoryForDistributedBackups + '/' + name + '/images', fileEntry.name,
-                    devicePath + imagesDirectory, fileEntry.name)
-                    .then(function (copyFileSuccess) {
-                      $log.log('Copied file:', copyFileSuccess);
-                    }, function (copyFileError) {
-                      $log.log('Error copying file:', copyFileError);
-                    });
-                  promises.push(promise);
-                });
-                Promise.all(promises).then(function () {
-                  $log.log('Finished copying all files from backup.');
+                checkDir(imagesDirectory).then(function(){
+                  var promises = [];
+                  _.each(fileEntries, function (fileEntry) {
+                    var promise = $cordovaFile.copyFile(devicePath + appDirectoryForDistributedBackups + '/' + name + '/images', fileEntry.name,
+                      devicePath + imagesDirectory, fileEntry.name)
+                      .then(function (copyFileSuccess) {
+                        $log.log('Copied file:', copyFileSuccess);
+                      }, function (copyFileError) {
+                        $log.log('Error copying file:', copyFileError);
+                      });
+                    promises.push(promise);
+                  });
+                  Promise.all(promises).then(function () {
+                    $log.log('Finished copying all files from backup.');
+                    resolve();
+                  });
+                }, function(){
+                  $log.log("Error checking images dir");
                   resolve();
                 });
               }, function (listDirError) {
