@@ -436,9 +436,10 @@
       var deferred = $q.defer(); // init promise
       var promises = [];
       _.each(dbs, function (db) {
-        //$log.log(db);
+        $log.log("db here:",db);
         var dbName = db.config().name;
-        if (dbName !== 'configDb' && dbName !== 'mapTilesDb') {
+        //if (dbName !== 'configDb' && dbName !== 'mapTilesDb') {
+        if (dbName !== 'configDb') {
           save[dbName] = {};
           var promise = db.iterate(function (value, key, i) {
             save[dbName][key] = value;
@@ -456,6 +457,50 @@
       return deferred.promise;
     }
 
+
+    //db.setItem(key, value).then(function (val) {
+
+    function gatherOtherMapsForDistribution() { //collect othermaps data from configdb separately because we don't want to import all of configdb
+      var save = {};
+      var deferred = $q.defer(); // init promise
+      var promises = [];
+      _.each(dbs, function (db) {
+        //$log.log("db here:",db);
+        var dbName = db.config().name;
+        //if (dbName !== 'configDb' && dbName !== 'mapTilesDb') {
+        if (dbName == 'configDb') {
+          save[dbName] = {};
+          var promise = db.iterate(function (value, key, i) {
+            save[dbName][key] = value;
+          }).then(function () {
+            $log.log(save);
+          });
+          promises.push(promise);
+        }
+
+      });
+      $q.all(promises).then(function () {
+        $log.log("CONFIG DB: ", save);
+        if(save.configDb){
+          if(save.configDb.other_maps){
+            exportData(appDirectoryForDistributedBackups + '/data', angular.toJson(save.configDb.other_maps), 'other_maps.json').then(function (){
+              $log.log('OTHER MAPS EXPORTED SUCCESSFULLY!');
+              deferred.resolve();
+            }, function(){
+              $log.log('Couldnt export other maps data');
+            });
+          }else{
+            $log.log('No save.configDB');
+            deferred.resolve();
+          }
+        }else{
+          $log.log('No save.configDB');
+          deferred.resolve();
+        }
+
+      });
+      return deferred.promise;
+    }
 
     function checkDistributeDataDir() {
       //this function checks for a 'data' directory inside the distributed backups folder and deletes and recreates as necessarily
@@ -621,38 +666,43 @@
           //OK, empty data directory has been created... now move data/images/tiles in for ZIPping.
           gatherDataForDistribution().then(function (dataToExport) {
             exportData(appDirectoryForDistributedBackups + '/data', angular.toJson(dataToExport), 'data.json').then(function (){
-              //create images directory
-              checkDir(appDirectoryForDistributedBackups + '/data/images').then(function (successResponse) {
-                //now copy images (if any)
-                gatherImagesForDistribution(dataToExport).then(function (imagesSuccess){
-                  $log.log('gathered images ok');
-                  //now create maps Directory
-                  checkDir(appDirectoryForDistributedBackups + '/data/maps').then(function (successResponse) {
-                    $log.log('created maps directory.')
-                    //Now copy maps (if any)
-                    gatherMapsForDistribution(dataToExport).then(function (mapsSuccess){
-                      //OK, we have everything we need now. Just move the folder to its new name
-                      $cordovaFile.moveDir(devicePath, appDirectoryForDistributedBackups + '/data', devicePath, appDirectoryForDistributedBackups + '/' + name).then(function(){
-                        deferred.resolve(name);
-                      }, function(moveError){
-                        $log.log('Error moving folder: ', moveError);
-                        deferred.reject(moveError);
-                      });
-                    }, function(mapsError){
-                      $log.log('Error gathering maps. ', mapsError);
-                      deferred.reject('Error gathering maps. ', mapsError);
-                    })
-                  }, function (errorResponse){
-                    $log.log('Error creating maps directory. ', errorResponse);
-                    deferred.reject('Error creating maps directory. ', errorResponse);
-                  });
-                }, function(imagesError){
-                  $log.log('Error gathering images. ', imagesError);
-                  deferred.reject('Error gathering images. ', imagesError);
-                })
+              gatherOtherMapsForDistribution().then(function () {
+                //create images directory
+                checkDir(appDirectoryForDistributedBackups + '/data/images').then(function (successResponse) {
+                  //now copy images (if any)
+                  gatherImagesForDistribution(dataToExport).then(function (imagesSuccess){
+                    $log.log('gathered images ok');
+                    //now create maps Directory
+                    checkDir(appDirectoryForDistributedBackups + '/data/maps').then(function (successResponse) {
+                      $log.log('created maps directory.')
+                      //Now copy maps (if any)
+                      gatherMapsForDistribution(dataToExport).then(function (mapsSuccess){
+                        //OK, we have everything we need now. Just move the folder to its new name
+                        $cordovaFile.moveDir(devicePath, appDirectoryForDistributedBackups + '/data', devicePath, appDirectoryForDistributedBackups + '/' + name).then(function(){
+                          deferred.resolve(name);
+                        }, function(moveError){
+                          $log.log('Error moving folder: ', moveError);
+                          deferred.reject(moveError);
+                        });
+                      }, function(mapsError){
+                        $log.log('Error gathering maps. ', mapsError);
+                        deferred.reject('Error gathering maps. ', mapsError);
+                      })
+                    }, function (errorResponse){
+                      $log.log('Error creating maps directory. ', errorResponse);
+                      deferred.reject('Error creating maps directory. ', errorResponse);
+                    });
+                  }, function(imagesError){
+                    $log.log('Error gathering images. ', imagesError);
+                    deferred.reject('Error gathering images. ', imagesError);
+                  })
+                }, function (errorResponse){
+                  $log.log('Error creating images directory. ', errorResponse);
+                  deferred.reject('Error creating images directory. ', errorResponse);
+                });
               }, function (errorResponse){
-                $log.log('Error creating images directory. ', errorResponse);
-                deferred.reject('Error creating images directory. ', errorResponse);
+                $log.log('Error getting other maps. ', errorResponse);
+                deferred.reject('Error getting other maps. ', errorResponse);
               });
             },function(exportError){
               $log.log('Error exporting data. ', exportError);
@@ -976,12 +1026,39 @@
       });
     }
 
+    function importOtherMaps(name) {
+      var deferred = $q.defer(); // init promise
+      var devicePath = getDevicePath();
+
+      $log.log("Import othermaps for name: ", name);
+
+
+      $cordovaFile.readAsText(devicePath + appDirectoryForDistributedBackups + '/' + name, 'other_maps.json').then(function (otherMapsText) {
+        $log.log("read other maps: ", otherMapsText);
+
+        var inOtherMaps = angular.fromJson(otherMapsText);
+
+        dbs.configDb.setItem('other_maps', inOtherMaps).then(function () {
+          dbs.projectDb.setItem('other_maps', inOtherMaps).then(function () {
+            deferred.resolve(otherMapsText);
+          });
+        });
+      }, function(fileError){
+        $log.log("COULDNT OPEN OTHER MAPS FILE", fileError)
+      });
+
+
+      return deferred.promise;
+    }
+
     function importProjectForDistribution(name) {
       // add unzip map tiles here
       return unzipMapsForDistribution(name).then(function () {
         return copyImagesForDistribution(name).then(function () {
           return importData(appDirectoryForDistributedBackups + '/' + name, 'data.json').then(function (importedData) { //use this same function to import data.json
-            return replaceDbs(importedData);
+            return replaceDbs(importedData).then(function (){
+              return importOtherMaps(name);
+            });
           });
         });
       });
