@@ -485,7 +485,9 @@
       LocalStorageFactory.gatherLocalDistributionFiles().then(function (entries) {
         $log.log("Distributed Files: ", entries);
         _.each(_.pluck(entries, 'name'), function (file) {
-          vm.fileForDistributionNames.push(file);
+          if(file.charAt(0)!='.'){
+            vm.fileForDistributionNames.push(file);
+          }
         });
         if (!_.isEmpty(vm.fileForDistributionNames)) vm.fileForDistributionBrowserModal.show();
         else {
