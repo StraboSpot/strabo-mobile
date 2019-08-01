@@ -1045,6 +1045,7 @@
         });
       }, function(fileError){
         $log.log("COULDNT OPEN OTHER MAPS FILE", fileError)
+        deferred.resolve();
       });
 
 
