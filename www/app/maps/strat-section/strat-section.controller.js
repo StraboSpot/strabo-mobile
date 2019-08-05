@@ -141,6 +141,7 @@
           }
           SpotFactory.setNewSpot(newInterval).then(function () {
             updateFeatureLayer();
+            MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
           });
         }
       });
@@ -177,7 +178,7 @@
           updateSelectedSymbol();
 
           createSwitcher(switcher);
-
+          MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
           vm.currentZoom = HelpersFactory.roundToDecimalPlaces(map.getView().getZoom(), 2);
           createMapInteractions();
           createPageEvents();
@@ -440,7 +441,6 @@
       datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map);
       MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map);
       MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
-      MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
 
       updateSelectedSymbol();
     }
@@ -641,6 +641,7 @@
         }
         SpotFactory.setNewSpot(newInterval).then(function (id) {
           updateFeatureLayer();
+          MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
         });
       }
     }

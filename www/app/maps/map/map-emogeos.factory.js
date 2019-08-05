@@ -25,6 +25,7 @@
     return {
       'clearSelectedSpot': clearSelectedSpot,
       'EmogeoControls': EmogeoControls,
+      'getEmogeoImageSrc': getEmogeoImageSrc,
       'resetAllEmogeoButtons': resetAllEmogeoButtons,
       'setSelectedSpot': setSelectedSpot
     };
@@ -209,6 +210,7 @@
           $rootScope.$broadcast('updated-spot', {'spotId': spot.properties.id});
           $rootScope.$broadcast('clicked-mapped-spot', {'spotId': spot.properties.id});
         }
+       $rootScope.$broadcast('updateStratSectionFeatureLayer');
       });
     }
 
@@ -347,6 +349,38 @@
         'element': emogeosControlElement
       });
       emogeosControlElement.style.display = 'none';
+    }
+
+    // Get the image source
+    function getEmogeoImageSrc(properties) {
+      var path = ['properties'];
+      var icon = undefined;
+      _.each(emogeos, function (field, key) {
+        path.push(key);
+        if (eval(path.join('.'))) {
+          _.each(field, function (field2, key2) {
+            path.push(key2);
+            if (eval(path.join('.'))) {
+              _.each(field2, function (field3, key3) {
+                path.push(key3);
+                if (eval(path.join('.'))) {
+                  var found = _.find(emogeos[key][key2][key3], function (obj) {
+                    return obj.value === eval(path.join('.'));
+                  });
+                  if (found) {
+                    found = found.icon.split("url(\"");
+                    icon = found[1].split("\")")[0];
+                  }
+                }
+                else path.pop();
+              });
+            }
+            else path.pop();
+          });
+        }
+        else path.pop();
+      });
+      return icon;
     }
 
     // Reset the background color of all emogeos so none look selelcted

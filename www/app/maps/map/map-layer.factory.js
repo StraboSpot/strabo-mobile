@@ -10,6 +10,7 @@
   function MapLayerFactory($log, $q, $window, HelpersFactory, OfflineTilesFactory, MapFactory) {
     var baselayers = {};
     var drawLayer = {};
+    var emogeoLayer = {};
     var featureLayers = [];
     var datasetsLayer = {};
     var geolocationLayer = {};
@@ -26,6 +27,7 @@
       'getBaselayers': getBaselayers,
       'getDatasetsLayer': getDatasetsLayer,
       'getDrawLayer': getDrawLayer,
+      'getEmogeoLayer': getEmogeoLayer,
       'getFeatureLayer': getFeatureLayer,
       'getGeolocationLayer': getGeolocationLayer,
       'getOverlays': getOverlays,
@@ -237,6 +239,13 @@
             })
           })
         })
+      });
+    }
+
+    function setEmogeoLayer() {
+      emogeoLayer = new ol.layer.Vector({
+        'name': 'emogeoLayer',
+        'source': new ol.source.Vector()
       });
     }
 
@@ -465,6 +474,10 @@
       return drawLayer;
     }
 
+    function getEmogeoLayer() {
+      return emogeoLayer;
+    }
+
     function getFeatureLayer(mapName) {
       mapName = mapName ? mapName : 'default';
       return featureLayers[mapName];
@@ -490,6 +503,7 @@
       setFeatureLayer(mapName);
       setDatasetsLayer();
       setGeolocationLayer();
+      setEmogeoLayer();
 
       // Initialize Geolocation Layer Styles
       setGeolocationCenterIconStyle();
