@@ -210,6 +210,7 @@
           $rootScope.$broadcast('updated-spot', {'spotId': spot.properties.id});
           $rootScope.$broadcast('clicked-mapped-spot', {'spotId': spot.properties.id});
         }
+       $rootScope.$broadcast('updateStratSectionFeatureLayer');
       });
     }
 
