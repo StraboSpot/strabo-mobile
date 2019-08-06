@@ -16,6 +16,7 @@
     dbs.spotsDb = {};         // global LocalForage for spot data
     var appDirectory = 'StraboSpot';
     var appDirectoryTiles = 'StraboSpotTiles';
+    var appDirectoryForCSVs = 'StraboSpotCSV';
     var appDirectoryForDistributedBackups = 'StraboSpotProjects';
     var dataBackupsDirectory = appDirectory + '/DataBackups';
     var imagesBackupsDirectory = appDirectory + '/ImageBackups';
@@ -33,10 +34,12 @@
       'deleteImageFromFileSystem': deleteImageFromFileSystem,
       'deleteMapFiles': deleteMapFiles,
       'exportProject': exportProject,
+      'exportProjectForAVO': exportProjectForAVO,
       'exportProjectForDistribution': exportProjectForDistribution,
       'gatherLocalFiles': gatherLocalFiles,
       'gatherLocalDistributionFiles': gatherLocalDistributionFiles,
       'getDb': getDb,
+      'getDeviceName': getDeviceName,
       'getDevicePath': getDevicePath,
       'getImageById': getImageById,
       'getImageFileURIById': getImageFileURIById,
@@ -185,6 +188,16 @@
         $log.error('Error getting device path', err);
       }
       return devicePath;
+    }
+
+    function getDeviceName() {
+      var deviceName;
+      try {
+        deviceName = $cordovaDevice.getPlatform();
+      } catch (err) {
+        $log.error('Error getting device path', err);
+      }
+      return deviceName;
     }
 
     function getDevicePathTemp() {
@@ -719,6 +732,212 @@
       },function (errorResponse){
         $log.log("Error Creating StraboSpotProjects folder: ", errorResponse);
         deferred.reject("Error Creating StraboSpotProjects folder: ", errorResponse);
+      });
+
+      return deferred.promise;
+    }
+
+    function stripString(inString){
+      if(inString){
+        return inString.replace("'","").replace('"',"").replace(",","");
+      }else{
+        return "";
+      }
+    }
+
+    function createCSVFromRawData(rawData){ //this function takes raw data and returns a CSV for the AVO group
+      var deferred = $q.defer(); // init promise
+      var promises = [];
+      var outCSV = '';
+
+      $log.log("rawData:", rawData);
+
+      var tags = rawData.projectDb.tags;
+
+      var projectId = stripString(rawData.projectDb.description.project_name);
+
+      //$log.log("projectId", projectId);
+
+      $log.log("tags:", tags);
+
+
+      _.each(rawData.spotsDb, function(spot){
+        if(spot.geometry.type=="Point"){
+          //get station id
+          var stationId = stripString(spot.properties.name);
+
+          var spotDate = stripString(spot.properties.date);
+          var locationDesc = stripString(spot.properties.notes);
+          var stationComment = locationDesc;
+
+          //get latitude/Longitude
+          if(spot.properties.image_basemap){
+            var longdd = spot.properties.lng;
+            var latdd = spot.properties.lat;
+          }else{
+            var longdd = spot.geometry.coordinates[0];
+            var latdd = spot.geometry.coordinates[1];
+          }
+
+          var datum = "wgs84";
+
+          var volcanoName = '';
+          if(tags){
+            _.each(tags, function(tag){
+              _.each(tag.spots, function(tagspot){
+                if(tagspot == spot.id){
+                  if(tag.other_type.toLowerCase=="volcano"){
+                    volcanoName = stripString(tag.name);
+                  }
+                }
+              });
+            });
+          }
+
+          if(spot.properties.samples){
+            _.each(spot.properties.samples, function(sample){
+              var row = "";
+              var sampleId = stripString(sample.sample_id_name);
+              var SampType1 = stripString(sample.material_type);
+              var SampType2 = stripString(sample.main_sampling_purpose);
+              var SampleDesc = stripString(sample.sample_notes);
+              var SampComment = stripString(sample.sample_description);
+
+              //make row here
+              //row += ",\"" +  + "\""
+              row += "\"" + "\""                              //at_num
+              row += ",\"" + stationId + "\"";                //stationId
+              row += ",\"" + sampleId + "\"";                // sampleId
+              row += ",\"" + "\"";                            //Geologist
+              row += ",\"" + projectId + "\"";                //ProjectID
+              row += ",\"" + spotDate + "\"";                 //Date
+              row += ",\"" + locationDesc + "\"";             //LocationDesc
+              row += ",\"" + latdd + "\"";                    //Latdd
+              row += ",\"" + longdd + "\"";                   //Longdd
+              row += ",\"" + "\"";                            //UTM_E
+              row += ",\"" + "\"";                            //UTM_N
+              row += ",\"" + "\"";                            //UTM_ZONE
+              row += ",\"" + datum + "\"";                    //Datum
+              row += ",\"" + "\"";                            //StnUnit
+              row += ",\"" + volcanoName + "\"";              //volcano
+              row += ",\"" + stationComment + "\"";           //StationComment
+              row += ",\"" + "\"";                            //possible_source_volcanoes
+              row += ",\"" + SampType1 + "\"";                //SampType1
+              row += ",\"" + SampType2 + "\"";                //SampType2
+              row += ",\"" + SampleDesc + "\"";               //SampleDesc
+              row += ",\"" + "\"";                            //Color
+              row += ",\"" + "\"";                            //Lith
+              row += ",\"" + "\"";                            //SampUnit
+              row += ",\"" + SampComment + "\"";              //SampComment
+              row += ",\"" + "\"\n";                          //EruptionID
+
+              outCSV += row;
+            });
+          }
+
+        }
+
+      })
+
+      if(outCSV != ""){
+        var row = "";
+        row += "\"at_num\"";
+        row += ",\"StationID\"";
+        row += ",\"SampleID\"";
+        row += ",\"Geologist\"";
+        row += ",\"ProjectID\"";
+        row += ",\"Date\"";
+        row += ",\"LocationDesc\"";
+        row += ",\"Latdd\"";
+        row += ",\"Longdd\"";
+        row += ",\"UTM_E\"";
+        row += ",\"UTM_N\"";
+        row += ",\"UTM_ZONE\"";
+        row += ",\"Datum\"";
+        row += ",\"StnUnit\"";
+        row += ",\"volcano\"";
+        row += ",\"StationComment\"";
+        row += ",\"possible_source_volcanoes\"";
+        row += ",\"SampType1\"";
+        row += ",\"SampType2\"";
+        row += ",\"SampleDesc\"";
+        row += ",\"Color\"";
+        row += ",\"Lith\"";
+        row += ",\"SampUnit\"";
+        row += ",\"SampComment\"";
+        row += ",\"EruptionID\"\n";
+
+        outCSV = row + outCSV;
+        deferred.resolve(outCSV);
+      }else{
+        deferred.reject("No Sample Data Found in Project.");
+      }
+
+      return deferred.promise;
+    }
+
+    function gatherDataForAVO() {
+      var save = {};
+      var deferred = $q.defer(); // init promise
+      var promises = [];
+      _.each(dbs, function (db) {
+        //$log.log("db here:",db);
+        var dbName = db.config().name;
+        //if (dbName !== 'configDb' && dbName !== 'mapTilesDb') {
+        if (dbName !== 'configDb' && dbName !== 'mapTilesDb' && dbName !== 'mapNamesDb') {
+          save[dbName] = {};
+          var promise = db.iterate(function (value, key, i) {
+            save[dbName][key] = value;
+          }).then(function () {
+            //$log.log(save);
+          });
+          promises.push(promise);
+        }
+
+      });
+      $q.all(promises).then(function () {
+        //create CSV file here
+        //$log.log("All Data Here: ", save);
+        createCSVFromRawData(save).then(function(csvData){
+          deferred.resolve(csvData);
+        },function(csvError){
+          $log.log("CSVError: ", csvError);
+          deferred.reject(csvError);
+        })
+      });
+      return deferred.promise;
+    }
+
+    function exportProjectForAVO(name) {
+      var deferred = $q.defer(); // init promise
+      var devicePath = getDevicePath();
+      $log.log('name passed in: ', name);
+
+      //first, check for root folder
+      checkDir(appDirectoryForCSVs).then(function (successResponse) {
+        gatherDataForAVO().then(function (csvData) {
+          exportData(appDirectoryForCSVs, csvData, name + '.csv').then(function (){
+            //also copy to clipboard here.
+            if(getDeviceName() == 'iOS'){
+              HelpersFactory.copyToClipboard(csvData).then(function(){
+                deferred.resolve(name);
+              }, function(copyError){
+                $log.log("Error Copying to Clipboard", copyError);
+                deferred.resolve(name);
+              });
+            }else{
+              deferred.resolve(name);
+            }
+          }, function(exportError){
+            deferred.reject(exportError);
+          });
+        }, function(gatherError){
+          $log.log('Error gathering data for CSV. ', gatherError);
+          deferred.reject(gatherError);
+        });
+      },function (errorResponse){
+        $log.log("Error Creating StraboSpotCSV folder: ", errorResponse);
+        deferred.reject("Error Creating StraboSpotCSV folder: ", errorResponse);
       });
 
       return deferred.promise;

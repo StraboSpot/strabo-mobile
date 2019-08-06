@@ -26,6 +26,7 @@
     vm.datasets = [];
     vm.exportFileName = undefined;
     vm.exportForDistFileName = undefined;
+    vm.exportForAVOFileName = undefined;
     vm.exportItems = {};
     vm.fileBrowserModal = {};
     vm.importItem = undefined;
@@ -47,6 +48,7 @@
     vm.deleteDataset = deleteDataset;
     vm.deleteProject = deleteProject;
     vm.deleteType = deleteType;
+    vm.exportAVOCSV = exportAVOCSV;
     vm.exportProject = exportProject;
     vm.exportProjectForDistribution = exportProjectForDistribution;
     vm.filterDefaultTypes = filterDefaultTypes;
@@ -410,6 +412,67 @@
     function exportProjectForDistribution() {
       vm.popover.hide().then(function () {
         exportDataForDistribution();
+      });
+    }
+
+    function exportDataForAVOCSV() {
+      var deferred = $q.defer(); // init promise
+      var dateString = ProjectFactory.getTimeStamp();
+      vm.exportForAVOFileName = dateString + '_' + vm.project.description.project_name.replace(/\s/g, '');
+      var myPopup = $ionicPopup.show({
+        template: '<input type="text" ng-model="vm.exportForAVOFileName">',
+        title: 'Confirm or Change CSV File Name',
+        subTitle: 'If you change the file name please do not use spaces, special characters (except a dash or underscore) or add a file extension.',
+        scope: $scope,
+        buttons: [
+          {text: 'Cancel'},
+          {
+            text: '<b>Save</b>',
+            type: 'button-positive',
+            onTap: function (e) {
+              if (!vm.exportForAVOFileName) e.preventDefault();
+              else return vm.exportForAVOFileName = vm.exportForAVOFileName.replace(/[^\w- ]/g, '');
+            }
+          }
+        ]
+      });
+
+      myPopup.then(function (res) {
+        if (res) {
+          $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Exporting Data...'});
+          LocalStorageFactory.exportProjectForAVO(vm.exportForAVOFileName).then(function (filePath) {
+
+            var templateText = "";
+            if(LocalStorageFactory.getDeviceName() == "iOS"){
+              templateText = 'AVO data has been written to /StraboCSV/' + filePath + '.csv and data has been copied to clipboard.';
+            }else{
+              templateText = 'AVO data has been written to /StraboCSV/' + filePath + '.csv';
+            }
+
+            $ionicPopup.alert({
+              'title': 'Success!',
+              'template': templateText
+            }).then(function () {
+              deferred.resolve();
+            });
+          }, function (err) {
+            $ionicPopup.alert({
+              'title': 'Error!',
+              'template': 'Error exporting CSV data. ' + err + ''
+            }).then(function () {
+              deferred.reject();
+            });
+          }).finally(function () {
+            $ionicLoading.hide();
+          });
+        }
+      });
+      return deferred.promise;
+    }
+
+    function exportAVOCSV() {
+      vm.popover.hide().then(function () {
+        exportDataForAVOCSV();
       });
     }
 

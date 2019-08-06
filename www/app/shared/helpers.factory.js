@@ -17,6 +17,7 @@
       'cleanObj': cleanObj,
       'convertToLargerUnit': convertToLargerUnit,
       'convertToSmallerUnit': convertToSmallerUnit,
+      'copyToClipboard': copyToClipboard,
       'csvToArray': csvToArray,
       'deepFindById': deepFindById,
       'fileURItoBlob': fileURItoBlob,
@@ -91,6 +92,18 @@
       if (unit === 'mm') return {'value': width * 1000, 'unit': '_m'};
       if (unit === '_m') return {'value': width * 1000, 'unit': 'nm'};
       return {'value': width, 'unit': unit};
+    }
+
+    function copyToClipboard(dataToCopy) {
+      var deferred = $q.defer(); // init promise
+
+      $cordovaClipboard.copy(dataToCopy).then(function () {
+        deferred.resolve(dataToCopy);
+      }, function(copyError){
+        deferred.reject(copyError);
+      });
+
+      return deferred.promise;
     }
 
     // Parsing CSV Strings With Javascript Exec() Regular Expression Command
