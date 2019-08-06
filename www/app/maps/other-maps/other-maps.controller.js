@@ -6,10 +6,10 @@
     .controller('OtherMapsController', OtherMapsController);
 
   OtherMapsController.$inject = ['$http', '$ionicLoading', '$ionicModal', '$ionicPopup', '$log', '$q', '$scope',
-    'MapFactory', 'OtherMapsFactory', 'UserFactory'];
+    'MapFactory', 'OtherMapsFactory', 'UserFactory', 'RemoteServerFactory'];
 
   function OtherMapsController($http, $ionicLoading, $ionicModal, $ionicPopup, $log, $q, $scope, MapFactory,
-                               OtherMapsFactory, UserFactory) {
+                               OtherMapsFactory, UserFactory, RemoteServerFactory) {
     var vm = this;
     var isEdit = false;
 
@@ -220,7 +220,12 @@
             testUrl = 'https://strabospot.org/map_warper_check/' + vm.data.id;
             break;
           case 'strabospot_mymaps':
-            testUrl = 'https://strabospot.org/strabo_mymaps_check/' + vm.data.id;
+            var serverURL = RemoteServerFactory.getDbUrl();
+            var lastOccur = serverURL.lastIndexOf("/");
+            var newUrl = serverURL.substr(0,lastOccur)+'/strabo_mymaps_check/'
+            console.log("newURL: ",newUrl);
+            testUrl = newUrl + vm.data.id;
+            //testUrl = 'https://strabospot.org/strabo_mymaps_check/' + vm.data.id;
             break;
         }
         $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Testing Connection...'});

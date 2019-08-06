@@ -5,9 +5,9 @@
     .module('app')
     .factory('MapFactory', MapFactory);
 
-  MapFactory.$inject = ['$log', 'OtherMapsFactory'];
+  MapFactory.$inject = ['$log', 'OtherMapsFactory', 'RemoteServerFactory'];
 
-  function MapFactory($log, OtherMapsFactory) {
+  function MapFactory($log, OtherMapsFactory, RemoteServerFactory) {
     var maps;
     var defaultMapboxKey = 'pk.eyJ1Ijoic3RyYWJvLWdlb2xvZ3kiLCJhIjoiY2lpYzdhbzEwMDA1ZnZhbTEzcTV3Z3ZnOSJ9.myyChr6lmmHfP8LYwhH5Sg';
 
@@ -46,6 +46,13 @@
      */
 
     function getMapProviderInfo(mapSource) {
+
+      //get new strabo mymaps url here for offline field server
+      var serverURL = RemoteServerFactory.getDbUrl();
+      var lastOccur = serverURL.lastIndexOf("/");
+      var straboMyMapsUrl = serverURL.substr(0,lastOccur)+'/geotiff/tiles/'
+      $log.log("straboMyMapsURL: ",straboMyMapsUrl);
+
       var mapProviders = {
         'mapbox_classic': {
           'attributions': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
@@ -99,7 +106,7 @@
           'imageType': 'png',
           'mime': 'image/png',
           'tilePath': '/{z}/{x}/{y}.png',
-          'url': ['https://strabospot.org/geotiff/tiles/'],
+          'url': [straboMyMapsUrl],
           'maxZoom': 25
         }
       };

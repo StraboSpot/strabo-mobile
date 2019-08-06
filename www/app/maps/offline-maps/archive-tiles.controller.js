@@ -6,11 +6,11 @@
 
   ArchiveTilesController.$inject = ['$cordovaFileTransfer', '$http', '$ionicLoading', '$ionicModal', '$ionicPopup',
     '$log', '$q', '$scope', '$state', '$timeout', 'LocalStorageFactory', 'MapFactory', 'MapLayerFactory',
-    'MapViewFactory', 'OfflineTilesFactory'];
+    'MapViewFactory', 'OfflineTilesFactory','RemoteServerFactory'];
 
   function ArchiveTilesController($cordovaFileTransfer, $http, $ionicLoading, $ionicModal, $ionicPopup, $log, $q,
                                   $scope, $state, $timeout, LocalStorageFactory, MapFactory, MapLayerFactory,
-                                  MapViewFactory, OfflineTilesFactory) {
+                                  MapViewFactory, OfflineTilesFactory, RemoteServerFactory) {
     var vm = this;
     var mapExtent;
     var mapLayer;
@@ -31,7 +31,9 @@
     vm.showSubmitButton = false;
     vm.submitBtnText = '0 Tiles Selected To Download';
     vm.zoomOptions = [];
-    vm.tilehost = 'http://tiles.strabospot.org';
+    vm.tilehost = '';
+
+
 
     vm.tryCount = 0;
     vm.zipUID = '';
@@ -64,6 +66,19 @@
         }
 
         var allmaps = MapFactory.getMaps();
+
+        //Set straboMyMapsTileHost depending on what Remote DB we are using
+        var serverURL = RemoteServerFactory.getDbUrl();
+        if(serverURL.substring(0,22)=="https://strabospot.org"){
+          //we're online, so use the normal host
+          $log.log("*********************  ONLINE  ************************");
+          vm.tilehost = 'http://tiles.strabospot.org';
+        }else{
+          //we're using an offline db, so let's use that for mymaps tiles
+          $log.log("*********************  OFFLINE  ************************")
+          var lastOccur = serverURL.lastIndexOf("/");
+          vm.tilehost = serverURL.substr(0,lastOccur)+'/strabotiles'
+        }
 
 
         vm.map = angular.fromJson(angular.toJson(_.find(MapFactory.getMaps(), function (gotMap) {
@@ -184,7 +199,7 @@
 
     function downloadZip(uid, mapid) {
       var deferred = $q.defer(); // init promise
-      var url = 'http://tiles.strabospot.org/ziptemp/' + uid + '/' + uid + '.zip';
+      var url = vm.tilehost + '/ziptemp/' + uid + '/' + uid + '.zip';
       var devicePath = LocalStorageFactory.getDevicePath();
       var zipsDirectory = LocalStorageFactory.getZipsDirectory();
       var fileTransfer = new FileTransfer();
@@ -335,6 +350,7 @@
       }
 
       if (startZipURL != '') {
+        $log.log("startZipURL: ",startZipURL);
         var request = $http({
           'method': 'get',
           'url': startZipURL
@@ -466,6 +482,7 @@
 
     function serverCountTiles() {
       var deferred = $q.defer();
+      $log.log(vm.tilehost + '/zipcount?extent=' + extentString + '&zoom=' + vm.selectedMaxZoom.zoom);
       var counturl = vm.tilehost + '/zipcount?extent=' + extentString + '&zoom=' + vm.selectedMaxZoom.zoom;
       var request = $http({
         'method': 'get',
