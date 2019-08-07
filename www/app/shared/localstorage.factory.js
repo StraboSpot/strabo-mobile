@@ -787,8 +787,10 @@
               _.each(tags, function(tag){
                 _.each(tag.spots, function(tagspot){
                   if(tagspot == spot.properties.id){
-                    if(tag.other_type.toLowerCase().substring(0,7)=="volcano"){
-                      volcanoName = stripString(tag.name);
+                    if(tag.other_type){
+                      if(tag.other_type.toLowerCase().substring(0,7)=="volcano"){
+                        volcanoName = stripString(tag.name);
+                      }
                     }
                   }
                 });
