@@ -762,81 +762,82 @@
 
 
       _.each(rawData.spotsDb, function(spot){
-        if(spot.geometry.type=="Point"){
-          //get station id
-          var stationId = stripString(spot.properties.name);
+        if(spot.geometry){
+          if(spot.geometry.type=="Point"){
+            //get station id
+            var stationId = stripString(spot.properties.name);
 
-          var spotDate = stripString(spot.properties.date);
-          var locationDesc = stripString(spot.properties.notes);
-          var stationComment = locationDesc;
+            var spotDate = stripString(spot.properties.date);
+            var locationDesc = stripString(spot.properties.notes);
+            var stationComment = locationDesc;
 
-          //get latitude/Longitude
-          if(spot.properties.image_basemap){
-            var longdd = spot.properties.lng;
-            var latdd = spot.properties.lat;
-          }else{
-            var longdd = spot.geometry.coordinates[0];
-            var latdd = spot.geometry.coordinates[1];
-          }
+            //get latitude/Longitude
+            if(spot.properties.image_basemap){
+              var longdd = spot.properties.lng;
+              var latdd = spot.properties.lat;
+            }else{
+              var longdd = spot.geometry.coordinates[0];
+              var latdd = spot.geometry.coordinates[1];
+            }
 
-          var datum = "wgs84";
+            var datum = "wgs84";
 
-          var volcanoName = '';
-          if(tags){
-            _.each(tags, function(tag){
-              _.each(tag.spots, function(tagspot){
-                if(tagspot == spot.id){
-                  if(tag.other_type.toLowerCase=="volcano"){
-                    volcanoName = stripString(tag.name);
+            var volcanoName = '';
+            if(tags){
+              _.each(tags, function(tag){
+                _.each(tag.spots, function(tagspot){
+                  if(tagspot == spot.properties.id){
+                    if(tag.other_type.toLowerCase().substring(0,7)=="volcano"){
+                      volcanoName = stripString(tag.name);
+                    }
                   }
-                }
+                });
               });
-            });
+            }
+
+            if(spot.properties.samples){
+              _.each(spot.properties.samples, function(sample){
+                var row = "";
+                var sampleId = stripString(sample.sample_id_name);
+                var SampType1 = stripString(sample.material_type);
+                var SampType2 = stripString(sample.main_sampling_purpose);
+                var SampleDesc = stripString(sample.sample_notes);
+                var SampComment = stripString(sample.sample_description);
+
+                //make row here
+                //row += ",\"" +  + "\""
+                row += "\"" + "\""                              //at_num
+                row += ",\"" + stationId + "\"";                //stationId
+                row += ",\"" + sampleId + "\"";                // sampleId
+                row += ",\"" + "\"";                            //Geologist
+                row += ",\"" + projectId + "\"";                //ProjectID
+                row += ",\"" + spotDate + "\"";                 //Date
+                row += ",\"" + locationDesc + "\"";             //LocationDesc
+                row += ",\"" + latdd + "\"";                    //Latdd
+                row += ",\"" + longdd + "\"";                   //Longdd
+                row += ",\"" + "\"";                            //UTM_E
+                row += ",\"" + "\"";                            //UTM_N
+                row += ",\"" + "\"";                            //UTM_ZONE
+                row += ",\"" + datum + "\"";                    //Datum
+                row += ",\"" + "\"";                            //StnUnit
+                row += ",\"" + volcanoName + "\"";              //volcano
+                row += ",\"" + stationComment + "\"";           //StationComment
+                row += ",\"" + "\"";                            //possible_source_volcanoes
+                row += ",\"" + SampType1 + "\"";                //SampType1
+                row += ",\"" + SampType2 + "\"";                //SampType2
+                row += ",\"" + SampleDesc + "\"";               //SampleDesc
+                row += ",\"" + "\"";                            //Color
+                row += ",\"" + "\"";                            //Lith
+                row += ",\"" + "\"";                            //SampUnit
+                row += ",\"" + SampComment + "\"";              //SampComment
+                row += ",\"" + "\"\n";                          //EruptionID
+
+                outCSV += row;
+              });
+            }
+
           }
-
-          if(spot.properties.samples){
-            _.each(spot.properties.samples, function(sample){
-              var row = "";
-              var sampleId = stripString(sample.sample_id_name);
-              var SampType1 = stripString(sample.material_type);
-              var SampType2 = stripString(sample.main_sampling_purpose);
-              var SampleDesc = stripString(sample.sample_notes);
-              var SampComment = stripString(sample.sample_description);
-
-              //make row here
-              //row += ",\"" +  + "\""
-              row += "\"" + "\""                              //at_num
-              row += ",\"" + stationId + "\"";                //stationId
-              row += ",\"" + sampleId + "\"";                // sampleId
-              row += ",\"" + "\"";                            //Geologist
-              row += ",\"" + projectId + "\"";                //ProjectID
-              row += ",\"" + spotDate + "\"";                 //Date
-              row += ",\"" + locationDesc + "\"";             //LocationDesc
-              row += ",\"" + latdd + "\"";                    //Latdd
-              row += ",\"" + longdd + "\"";                   //Longdd
-              row += ",\"" + "\"";                            //UTM_E
-              row += ",\"" + "\"";                            //UTM_N
-              row += ",\"" + "\"";                            //UTM_ZONE
-              row += ",\"" + datum + "\"";                    //Datum
-              row += ",\"" + "\"";                            //StnUnit
-              row += ",\"" + volcanoName + "\"";              //volcano
-              row += ",\"" + stationComment + "\"";           //StationComment
-              row += ",\"" + "\"";                            //possible_source_volcanoes
-              row += ",\"" + SampType1 + "\"";                //SampType1
-              row += ",\"" + SampType2 + "\"";                //SampType2
-              row += ",\"" + SampleDesc + "\"";               //SampleDesc
-              row += ",\"" + "\"";                            //Color
-              row += ",\"" + "\"";                            //Lith
-              row += ",\"" + "\"";                            //SampUnit
-              row += ",\"" + SampComment + "\"";              //SampComment
-              row += ",\"" + "\"\n";                          //EruptionID
-
-              outCSV += row;
-            });
-          }
-
         }
-
       })
 
       if(outCSV != ""){
@@ -926,6 +927,7 @@
                 deferred.resolve(name);
               });
             }else{
+              $log.log("CSV Data:", csvData);
               deferred.resolve(name);
             }
           }, function(exportError){
