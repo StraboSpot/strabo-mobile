@@ -799,16 +799,22 @@
               _.each(spot.properties.samples, function(sample){
                 var row = "";
                 var sampleId = stripString(sample.sample_id_name);
-                var SampType1 = stripString(sample.material_type);
+                var SampType1 = stripString(sample.sample_type);
                 var SampType2 = stripString(sample.main_sampling_purpose);
                 var SampleDesc = stripString(sample.sample_notes);
                 var SampComment = stripString(sample.sample_description);
+
+                var sampUnit = stripString(sample.sample_unit);
+                var color = stripString(sample.color);
+                var lith = stripString(sample.lithology);
+
+
 
                 //make row here
                 //row += ",\"" +  + "\""
                 row += "\"" + "\""                              //at_num
                 row += ",\"" + stationId + "\"";                //stationId
-                row += ",\"" + sampleId + "\"";                // sampleId
+                row += ",\"" + sampleId + "\"";                 //sampleId
                 row += ",\"" + "\"";                            //Geologist
                 row += ",\"" + projectId + "\"";                //ProjectID
                 row += ",\"" + spotDate + "\"";                 //Date
@@ -824,11 +830,11 @@
                 row += ",\"" + stationComment + "\"";           //StationComment
                 row += ",\"" + "\"";                            //possible_source_volcanoes
                 row += ",\"" + SampType1 + "\"";                //SampType1
-                row += ",\"" + SampType2 + "\"";                //SampType2
+                row += ",\"" + "\"";                            //SampType2
                 row += ",\"" + SampleDesc + "\"";               //SampleDesc
-                row += ",\"" + "\"";                            //Color
-                row += ",\"" + "\"";                            //Lith
-                row += ",\"" + "\"";                            //SampUnit
+                row += ",\"" + color + "\"";                    //Color
+                row += ",\"" + lith + "\"";                     //Lith
+                row += ",\"" + sampUnit + "\"";                 //SampUnit
                 row += ",\"" + SampComment + "\"";              //SampComment
                 row += ",\"" + "\"\n";                          //EruptionID
 
