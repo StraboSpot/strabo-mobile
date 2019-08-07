@@ -4,10 +4,11 @@ to0mv13,petrology,petrology,1
 to0mv13,geochronology,geochronology,2
 to0mv13,geochemistry,geochemistry,3
 to0mv13,other,other,4
-jq8qd30,intact_rock,intact rock,
-jq8qd30,fragmented_roc,fragmented rock,
-jq8qd30,sediment,sediment,
-jq8qd30,other,other,
+jq8qd30,intact_rock,intact rock,0
+jq8qd30,fragmented_roc,fragmented rock,1
+jq8qd30,sediment,sediment,2
+jq8qd30,tephra,tephra,3
+jq8qd30,other,other,4
 fc6dz57,5___definitely,5 - definitely in place,
 fc6dz57,4,4,
 fc6dz57,3,3,
