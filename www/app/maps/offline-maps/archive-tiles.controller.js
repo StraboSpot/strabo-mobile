@@ -67,21 +67,27 @@
 
         var allmaps = MapFactory.getMaps();
 
-        //Set straboMyMapsTileHost depending on what Remote DB we are using
-        var serverURL = RemoteServerFactory.getDbUrl();
-        if(serverURL.substring(0,22)=="https://strabospot.org"){
-          //we're online, so use the normal host
-          $log.log("*********************  ONLINE  ************************");
-          vm.tilehost = 'http://tiles.strabospot.org';
-        }else{
-          //we're using an offline db, so let's use that for mymaps tiles
-          $log.log("*********************  OFFLINE  ************************")
-          var lastOccur = serverURL.lastIndexOf("/");
-          vm.tilehost = serverURL.substr(0,lastOccur)+'/strabotiles'
-        }
 
 
         vm.map = angular.fromJson(angular.toJson(_.find(MapFactory.getMaps(), function (gotMap) {
+          //now set tilehost. If we are offline, and maptype is strabo mymaps, set tilehost to offline server
+          $log.log("CURRENT MAP: ", gotMap);
+          if(gotMap.source=="strabospot_mymaps"){
+            var serverURL = RemoteServerFactory.getDbUrl();
+            if(serverURL.substring(0,22)=="https://strabospot.org"){
+              //we're online, so use the normal host
+              $log.log("*********************  ONLINE  ************************");
+              vm.tilehost = 'http://tiles.strabospot.org';
+            }else{
+              //we're using an offline db, so let's use that for mymaps tiles
+              $log.log("*********************  OFFLINE  ************************")
+              var lastOccur = serverURL.lastIndexOf("/");
+              vm.tilehost = serverURL.substr(0,lastOccur)+'/strabotiles'
+            }
+          }else{
+            vm.tilehost = 'http://tiles.strabospot.org';
+          }
+
           return gotMap.id === mapLayer.get('id');
         })));
 
