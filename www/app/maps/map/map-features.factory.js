@@ -132,6 +132,20 @@
       emogeoLayer.setStyle(emogeosStyleFunction);
     }
 
+    // Get text for displaying a field and its value
+    function getFieldText(value, key) {
+      var label = DataModelsFactory.getLabelFromNewDictionary(key) || key;
+      var data = DataModelsFactory.getLabelFromNewDictionary(value) || value;
+      if (_.isArray(value)) {
+        var valueLabels = [];
+        _.each(value, function (val) {
+          valueLabels.push(DataModelsFactory.getLabelFromNewDictionary(val) || val);
+        });
+        data = valueLabels.join(', ');
+      }
+      return '<b>' + label + '<\/b>: ' + data;
+    }
+
     // Get the first image in a Spot for display in the popup
     function getFirstImageSource(image) {
       var deferred = $q.defer(); // init promise
@@ -167,10 +181,19 @@
         if (props.orientation.feature_type) text.push(props.orientation.feature_type);
       }
 
-      // Interval Detail
+      // Sed Strat Interval Detail
       if (props.surface_feature && props.surface_feature.surface_feature_type &&
-        props.surface_feature.surface_feature_type === 'strat_interval') {
-        if (props.sed && props.sed.lithologies) {
+        props.surface_feature.surface_feature_type === 'strat_interval' && props.sed) {
+        var pages = ['lithologies', 'structures', 'interpretations'];
+        _.each(pages, function (page) {
+          if (props.sed[page]) {
+            _.each(props.sed[page], function (value, key) {
+              text.push(getFieldText(value, key));
+            });
+          }
+        });
+
+        /*if (props.sed && props.sed.lithologies) {
           if (props.sed.lithologies.interval_thickness) text.push('Thickness: ' +
             props.sed.lithologies.interval_thickness + ' ' + props.sed.lithologies.thickness_units);
           if (props.sed.lithologies.primary_lithology) {
@@ -205,7 +228,7 @@
                 DataModelsFactory.getSedLabel(props.sed.lithologies.interbed_dunham_class));
             }
           }
-        }
+        }*/
       }
       return text;
     }

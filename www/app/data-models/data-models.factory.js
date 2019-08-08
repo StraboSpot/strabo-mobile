@@ -320,6 +320,7 @@
     };
     var featureTypeLabels = {};
     var labelsDictionary = {};
+    var labelsDictionaryNew = {};
     var sedLabelsDictionary = {};
     var spotDataModel = {};
     var surfaceFeatureTypeLabels = {};
@@ -329,6 +330,7 @@
       'getDataModel': getDataModel,
       'getFeatureTypeLabel': getFeatureTypeLabel,
       'getLabel': getLabel,
+      'getLabelFromNewDictionary': getLabelFromNewDictionary,
       'getSedLabel': getSedLabel,
       'getSedLabelsDictionary': getSedLabelsDictionary,
       'getSpotDataModel': getSpotDataModel,
@@ -342,6 +344,18 @@
      * Private Functions
      */
 
+    // Create a new dictionary for ALL values with their labels across ALL data models
+    function addFieldsToLabelsDictionary(fields) {
+      _.each(fields, function (field) {
+        // ToDo: Find duplicates that don't match and fix
+        // if (labelsDictionaryNew[field.name] && labelsDictionaryNew[field.name] !== field.label) {
+        // if (labelsDictionaryNew[field.name] && labelsDictionaryNew[field.name].toLowerCase() !== field.label.toLowerCase()) {
+        //   $log.error('Unmatched Labels!', field.name, ': ', labelsDictionaryNew[field.name], '!==', field.label);
+        // }
+        labelsDictionaryNew[field.name] = field.label;
+      });
+    }
+
     // Remove the default start, end and calculate objects
     function cleanJson(json) {
       return _.reject(json.data, function (obj) {
@@ -354,12 +368,12 @@
 
     function createFeatureTypesDictionary() {
       var models = [dataModels.orientation_data.linear_orientation,
-      dataModels.orientation_data.planar_orientation,
-      dataModels.orientation_data.tabular_orientation,
-      dataModels._3d_structures.fabric,
-      dataModels._3d_structures.fold,
-      dataModels._3d_structures.other,
-      dataModels._3d_structures.tensor];
+        dataModels.orientation_data.planar_orientation,
+        dataModels.orientation_data.tabular_orientation,
+        dataModels._3d_structures.fabric,
+        dataModels._3d_structures.fold,
+        dataModels._3d_structures.other,
+        dataModels._3d_structures.tensor];
 
       featureTypeLabels = gatherTypeLabels(models, 'feature_type');
       $log.log('Feature Types:', featureTypeLabels);
@@ -386,7 +400,7 @@
           labelsDictionary[field.name] = field.label;
         });
       });
-      $log.log('Labels Dictionary:', labelsDictionary);
+      $log.log('Original Labels Dictionary (Subset of Labels):', labelsDictionary);
     }
 
     function createSedLabelsDictionary() {
@@ -597,6 +611,7 @@
           if (surveyField.relevant) surveyField.relevant = surveyField.relevant.toLowerCase();
         });*/
         dataModel.survey = surveyFields;
+        addFieldsToLabelsDictionary(surveyFields);
         // Load the choices
         if (dataModel.choices_file) {
           readCSV(dataModel.choices_file, function (choicesFields) {
@@ -604,6 +619,7 @@
               choicesField.name = choicesField.name.toLowerCase();
             });*/
             dataModel.choices = choicesFields;
+            addFieldsToLabelsDictionary(choicesFields);
             deferred.resolve();
           });
         }
@@ -637,6 +653,10 @@
 
     function getLabel(label) {
       return labelsDictionary[label] || undefined;
+    }
+
+    function getLabelFromNewDictionary(label) {
+      return labelsDictionaryNew[label] || undefined;
     }
 
     function getSedLabel(value) {
@@ -691,6 +711,7 @@
         createFeatureTypesDictionary();
         createOtherLabelsDictionary();
         createSedLabelsDictionary();
+        $log.log('New Labels Dictionary (All Labels):', labelsDictionaryNew);
         deferred.resolve();
       });
       return deferred.promise;
