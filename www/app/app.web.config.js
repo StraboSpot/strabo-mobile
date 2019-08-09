@@ -102,6 +102,8 @@
       {'state': 'sed-lithologies', 'template': 'sed/lithologies/lithologies-tab', 'controller': 'SedLithologies'},
       {'state': 'sed-structures', 'template': 'sed/structures/structures-tab', 'controller': 'SedStructures'},
       {'state': 'strat-section', 'template': 'sed/strat-section/strat-section-tab', 'controller': 'StratSection'},
+      {'state': 'pet-basics', 'template': 'petrology/basics/basics-tab', 'controller': 'PetBasics'},
+      {'state': 'pet-minerals', 'template': 'petrology/minerals/minerals-tab', 'controller': 'PetMinerals'},
       {'state': 'tags', 'template': 'tags/tags-tab', 'controller': 'Tags'}
     ];
     _.each(spotTabStates, function (spotTabState) {

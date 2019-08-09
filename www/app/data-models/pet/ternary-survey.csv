@@ -1,0 +1,15 @@
+type,name,label,required,calculation
+start,start,,,
+end,end,,,
+begin_group,group_jw4fj02,"QAPM, CI",,
+note,note_for_programmers_this_ent,"Note for programmers: This entire section should only be displayed if ""plutonic"" or ""volcanic"" is selected for Rock Type from the Petrology Basics page.",false,
+decimal,q_quartz_value,Q (quartz) value,false,
+note,display_normalized_q_value,Display normalized Q value,false,
+decimal,a_alkali_feldspar_value,A (alkali feldspar) value,false,
+note,display_normalized_a_value,Display normalized A value,false,
+decimal,p_plagioclase_value,P (plagioclase) value,false,
+note,display_normalized_p_value,Display normalized P value,false,
+note,note_for_programmers_strabosp,"Note for programmers: StraboSpot will need to calculate normalized values from the total combined values from the Q, A, P fields. The normalized value for each should be displayed next to the entry field for each Q, A, P entry field. The normalized value for Q = Q/(Q+A+P), etc.",false,
+end_group,,,,
+calculate,_version,,false,'vz3ZQiUYMWhSKqG937DgJQ'
+calculate,__version__,,,'vs8xNUFLpCQEfTJvckBTN7'

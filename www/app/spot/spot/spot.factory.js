@@ -38,7 +38,10 @@
       {'value': 'sed_interpretations', 'label': 'Sed Interpretations', 'path': 'sed-interpretations'},
       {'value': 'experimental', 'label': 'Experimental', 'path': 'experimental'},
       {'value': 'experimental_set_up', 'label': 'Experimental Set Up', 'path': 'experimental-set-up'},
-      {'value': 'experimental_results', 'label': 'Experimental Results', 'path': 'experimental-results'}];
+      {'value': 'experimental_results', 'label': 'Experimental Results', 'path': 'experimental-results'},
+      {'value': 'pet_basics', 'label': 'Pet Basics', 'path': 'pet-basics'},
+      {'value': 'pet_minerals', 'label': 'Pet Minerals', 'path': 'pet-minerals'}
+    ];
 
     return {
       'addSpotToActiveNest': addSpotToActiveNest,

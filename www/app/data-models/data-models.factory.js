@@ -195,6 +195,32 @@
           'choices_file': 'app/data-models/tabular_zone_orientation-choices.csv'
         }
       },
+      'pet': {
+        'basics': {
+          'survey': {},
+          'survey_file': 'app/data-models/pet/basics-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/pet/basics-choices.csv'
+        },
+        'minerology': {
+          'survey': {},
+          'survey_file': 'app/data-models/pet/minerology-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/pet/minerology-choices.csv'
+        },
+        'reactions': {
+          'survey': {},
+          'survey_file': 'app/data-models/pet/reactions-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/pet/reactions-choices.csv'
+        },
+        'ternary': {
+          'survey': {},
+          'survey_file': 'app/data-models/pet/ternary-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/pet/ternary-choices.csv'
+        }
+      },
       'preferences': {
         'survey': {},
         'survey_file': 'app/data-models/project_preferences-survey.csv'
@@ -469,6 +495,7 @@
           'name': 'Type: text; REQUIRED',
           'notes': 'Type: text',
           'orientation_data': [],
+          'pet': {'basics': {}, 'minerals': {}},
           'samples': [],
           'sed': {'lithologies': {}, 'structures': {}, 'interpretations': {}},
           'time': 'datetime',
@@ -498,7 +525,11 @@
         'sed_environment': dataModels.sed.environment,
         'sed_surfaces': dataModels.sed.surfaces,
         'sed_architecture': dataModels.sed.architecture,
-        'trace': dataModels.trace
+        'trace': dataModels.trace,
+        'pet_basics': dataModels.pet.basics,
+        'pet_minerology': dataModels.pet.minerology,
+        'pet_reactions': dataModels.pet.reactions,
+        'pet_ternary': dataModels.pet.ternary
       };
       _.each(models, function (model, key) {
         var description = {};
@@ -551,6 +582,10 @@
             'appended (= 14 digit id); REQUIRED';
           description = sortby(description);
           spotDataModel.properties.images.push(description);
+        }
+        else if (key === 'pet_basics') _.extend(spotDataModel.properties.pet.basics, description);
+        else if (key === 'pet_minerology' || key === 'pet_reactions' || key === 'pet_ternary') {
+          _.extend(spotDataModel.properties.pet.minerals, description);
         }
         else spotDataModel.properties[key].push(description);
       });
@@ -694,7 +729,7 @@
       $log.log('Loading data models ...');
       _.each(dataModels, function (dataModel, key) {
         if (key === 'orientation_data' || key === '_3d_structures' || key === 'sed' || key === 'minerals' ||
-          key === 'micro') {
+          key === 'micro' || key === 'pet') {
           _.each(dataModel, function (childDataModel, childKey) {
             //$log.log('Loading', key, childKey, ' ...');
             promises.push(loadDataModel(childDataModel));
