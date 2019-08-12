@@ -525,6 +525,16 @@
             if (!vm.spot.properties.micro.experimental_results) vm.spot.properties.micro.experimental_results = {};
             vm.spot.properties.micro.experimental_results = vm.data;
           }
+          else if (vm.stateName === 'app.spotTab.pet-basics' && !_.isEmpty(vm.data)) {
+            if (!vm.spot.properties.pet) vm.spot.properties.pet = {};
+            if (!vm.spot.properties.pet.basics) vm.spot.properties.pet.basics = {};
+            vm.spot.properties.pet.basics = vm.data;
+          }
+          else if (vm.stateName === 'app.spotTab.pet-minerals' && !_.isEmpty(vm.data)) {
+            if (!vm.spot.properties.pet) vm.spot.properties.pet = {};
+            if (!vm.spot.properties.pet.minerals) vm.spot.properties.pet.minerals = {};
+            vm.spot.properties.pet.minerals = vm.data;
+          }
           var isEqual = _.isEqual(vm.spot, savedSpot);
           if (isEqual) return $q.resolve(vm.spot);
           else {
