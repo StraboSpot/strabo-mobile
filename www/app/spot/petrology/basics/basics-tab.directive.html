@@ -1,4 +1,12 @@
-<div>
+<div class='strabo-form'>
+  <ion-input class='item item-input item-select item-stacked-label item-text-wrap no-errors'>
+    <ion-label>Copy Petrology Basics Data:</ion-label>
+    <select ng-model='vmChild.petBasicsToCopy'
+            ng-options='spot as spot.properties.name for spot in vmChild.spotsWithPet track by spot.properties.id'
+            ng-change='vmChild.copyPetBasics()'>
+      <option value=''>-- None --</option>
+    </select>
+  </ion-input>
   <form name='straboForm' novalidate=''>
     <auto-fields/>
   </form>

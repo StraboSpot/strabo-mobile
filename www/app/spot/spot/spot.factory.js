@@ -67,6 +67,7 @@
       'getSpotById': getSpotById,
       'getSpotWithImageId': getSpotWithImageId,
       'getSpots': getSpots,
+      'getSpotsWithPetBasics': getSpotsWithPetBasics,
       'getTabs': getTabs,
       'goToSpot': goToSpot,
       'isSafeDelete': isSafeDelete,
@@ -491,6 +492,13 @@
 
     function getSpots() {
       return spots;
+    }
+
+    // Get all active Spots that have petrology basics data
+    function getSpotsWithPetBasics() {
+     return _.filter(activeSpots, function (spot) {
+        return _.has(spot.properties, 'pet') && _.has(spot.properties.pet, 'basics');
+      });
     }
 
     function getSpotsByDatasetId(datasetId) {

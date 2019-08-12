@@ -5,13 +5,19 @@
     .module('app')
     .controller('PetBasicsTabController', PetBasicsTabController);
 
-  PetBasicsTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'FormFactory'];
+  PetBasicsTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'FormFactory',
+    'SpotFactory'];
 
-  function PetBasicsTabController($ionicModal, $ionicPopup, $log, $scope, $state, FormFactory) {
+  function PetBasicsTabController($ionicModal, $ionicPopup, $log, $scope, $state, FormFactory, SpotFactory) {
     var vm = this;
     var vmParent = $scope.vm;
 
     var thisTabName = 'pet-basics';
+
+    vm.petBasicsToCopy = {};
+    vm.spotsWithPet = [];
+
+    vm.copyPetBasics = copyPetBasics;
 
     activate();
 
@@ -48,11 +54,31 @@
         }
         else vmParent.data = {};
       }
+
+      vm.spotsWithPet = SpotFactory.getSpotsWithPetBasics();
+      // Remove this Spot
+      vm.spotsWithPet = _.reject(vm.spotsWithPet, function (spot) {
+        return spot.properties.id === vmParent.spot.properties.id;
+      });
     }
 
     /**
      * Public Functions
      */
 
+    function copyPetBasics() {
+      $log.log('Spot to copy from:', vm.petBasicsToCopy);
+
+      if (!_.isEmpty(vmParent.data)) {
+        var confirmPopup = $ionicPopup.confirm({
+          'title': 'Existing Petrology Basics Data',
+          'template': 'Are you sure you want to overwrite the current Petrology Basics data?'
+        });
+        confirmPopup.then(function (res) {
+          if (res) vmParent.data = vm.petBasicsToCopy.properties.pet.basics;
+        });
+      }
+      else vmParent.data = vm.petBasicsToCopy.properties.pet.basics;
+    }
   }
 }());
