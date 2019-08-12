@@ -55,6 +55,56 @@
         else vmParent.data = {};
       }
 
+      getPetSpotsForCopying();
+      getDataFromRockUnitTags();
+    }
+
+    // Get Data (Rock Class & Type) from Rock Unit Tags
+    function getDataFromRockUnitTags() {
+      var geologicUnitTags = _.filter(vmParent.spotLevelTagsToDisplay, function (tag) {
+        return tag.type === 'geologic_unit';
+      });
+      $log.log(geologicUnitTags);
+
+      // Copy rock type from geologic unit tags associated with this Spot and assing rock class
+      // Only copy is there is no data already in Basics
+      // if (_.isEmpty(vmParent.data)) {
+      _.each(geologicUnitTags, function (geologicUnitTag) {
+        if (geologicUnitTag.volcanic_rock_type) {
+          if (!vmParent.data.rock_type_volcanic) vmParent.data.rock_type_volcanic = [];
+          vmParent.data.rock_type_volcanic = _.union(vmParent.data.rock_type_volcanic,
+            [geologicUnitTag.volcanic_rock_type]);
+          if (!vmParent.data.more_options_volcanic_rks) vmParent.data.more_options_volcanic_rks = [];
+          vmParent.data.more_options_volcanic_rks = _.union(vmParent.data.more_options_volcanic_rks,
+            [geologicUnitTag.volcanic_rock_type]);
+          if (!vmParent.data.rock_class) vmParent.data.rock_class = [];
+          vmParent.data.rock_class = _.union(vmParent.data.rock_class, ['volcanic']);
+        }
+        if (geologicUnitTag.plutonic_rock_types) {
+          if (!vmParent.data.rock_type_002) vmParent.data.rock_type_002 = [];
+          vmParent.data.rock_type_002 = _.union(vmParent.data.rock_type_002, [geologicUnitTag.plutonic_rock_types]);
+          if (!vmParent.data.more_options_plutonic_rk) vmParent.data.more_options_plutonic_rk = [];
+          vmParent.data.more_options_plutonic_rk = _.union(vmParent.data.more_options_plutonic_rk,
+            [geologicUnitTag.plutonic_rock_types]);
+          if (!vmParent.data.rock_class) vmParent.data.rock_class = [];
+          vmParent.data.rock_class = _.union(vmParent.data.rock_class, ['plutonic']);
+        }
+        if (geologicUnitTag.metamorphic_rock_types) {
+          if (!vmParent.data.rock_type_metamorphic) vmParent.data.rock_type_metamorphic = [];
+          vmParent.data.rock_type_metamorphic = _.union(vmParent.data.rock_type_metamorphic,
+            [geologicUnitTag.metamorphic_rock_types]);
+          if (!vmParent.data.more_options_met_rks) vmParent.data.more_options_met_rks = [];
+          vmParent.data.more_options_met_rks = _.union(vmParent.data.more_options_met_rks,
+            [geologicUnitTag.metamorphic_rock_types]);
+          if (!vmParent.data.rock_class) vmParent.data.rock_class = [];
+          vmParent.data.rock_class = _.union(vmParent.data.rock_class, ['metamorphic']);
+        }
+      });
+      //  }
+    }
+
+    // Get the Spots that Pet Basics Data can be Copied From
+    function getPetSpotsForCopying() {
       vm.spotsWithPet = SpotFactory.getSpotsWithPetBasics();
       // Remove this Spot
       vm.spotsWithPet = _.reject(vm.spotsWithPet, function (spot) {
