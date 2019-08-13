@@ -202,11 +202,11 @@
           'choices': {},
           'choices_file': 'app/data-models/pet/basics-choices.csv'
         },
-        'minerology': {
+        'mineralogy': {
           'survey': {},
-          'survey_file': 'app/data-models/pet/minerology-survey.csv',
+          'survey_file': 'app/data-models/pet/mineralogy-survey.csv',
           'choices': {},
-          'choices_file': 'app/data-models/pet/minerology-choices.csv'
+          'choices_file': 'app/data-models/pet/mineralogy-choices.csv'
         },
         'reactions': {
           'survey': {},
@@ -527,7 +527,7 @@
         'sed_architecture': dataModels.sed.architecture,
         'trace': dataModels.trace,
         'pet_basics': dataModels.pet.basics,
-        'pet_minerology': dataModels.pet.minerology,
+        'pet_mineralogy': dataModels.pet.mineralogy,
         'pet_reactions': dataModels.pet.reactions,
         'pet_ternary': dataModels.pet.ternary
       };
@@ -584,7 +584,7 @@
           spotDataModel.properties.images.push(description);
         }
         else if (key === 'pet_basics') _.extend(spotDataModel.properties.pet.basics, description);
-        else if (key === 'pet_minerology' || key === 'pet_reactions' || key === 'pet_ternary') {
+        else if (key === 'pet_mineralogy' || key === 'pet_reactions' || key === 'pet_ternary') {
           _.extend(spotDataModel.properties.pet.minerals, description);
         }
         else spotDataModel.properties[key].push(description);

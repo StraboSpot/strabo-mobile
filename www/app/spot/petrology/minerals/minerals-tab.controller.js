@@ -43,7 +43,7 @@
     function loadTab(state) {
       vmParent.loadTab(state);     // Need to load current state into parent
       if (vmParent.spot && !_.isEmpty(vmParent.spot)) {
-        FormFactory.setForm('pet', 'minerology');
+        FormFactory.setForm('pet', 'mineralogy');
         if (vmParent.spot.properties.pet && vmParent.spot.properties.pet.minerals) {
           $log.log('Pet Minerals:', vmParent.spot.properties.pet.minerals);
           vmParent.data = vmParent.spot.properties.pet.minerals;
