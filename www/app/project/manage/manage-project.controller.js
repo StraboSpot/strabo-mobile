@@ -212,7 +212,11 @@
     function downloadImage(imageId, encodedLogin) {
       var deferred = $q.defer(); // init promise
 
-      var url = 'https://strabospot.org/pi/' + imageId;
+      var serverURL = RemoteServerFactory.getDbUrl();
+      var lastOccur = serverURL.lastIndexOf("/");
+      var url = serverURL.substr(0,lastOccur)+'/pi/' + imageId;
+
+      //var url = 'https://strabospot.org/pi/' + imageId; //change this to look at db location
       var devicePath = LocalStorageFactory.getDevicePath();
       var imagesDirectory = LocalStorageFactory.getImagesDirectory();
       var fileTransfer = new FileTransfer();
