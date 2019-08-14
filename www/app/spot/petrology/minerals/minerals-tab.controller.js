@@ -142,7 +142,7 @@
         }
       });
       if (_.isEmpty(names)) {
-        var name = mineral.enter_abbreviation_or_full_min || mineral.Enter_Abbv;
+        var name = mineral.full_mineral_name || mineral.mineral_abbrev;
         names.push(DataModelsFactory.getLabelFromNewDictionary(name) || name);
       }
       return names.join(', ') || 'Unknown';
