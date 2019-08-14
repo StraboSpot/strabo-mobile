@@ -164,10 +164,11 @@
             return mineral.id === vmParent.data.id;
           });
         vmParent.spot.properties.pet.minerals[vm.attributeType].push(vmParent.data);
-        vmParent.data = {};
+        vmParent.data = vmParent.spot.properties.pet.minerals;
         vmParent.saveSpot().then(function () {
           vmParent.spotChanged = false;
           vmParent.updateSpotsList();
+          vmParent.data = vmParent.spot.properties.pet.minerals;
         });
         vm.basicFormModal.hide();
         FormFactory.clearForm();
