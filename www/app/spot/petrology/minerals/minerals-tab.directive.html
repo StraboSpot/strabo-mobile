@@ -4,32 +4,58 @@
     <button class='button' ng-click='vmChild.switchMineralsForm("reactions")'>Reactions</button>
     <button class='button' ng-click='vmChild.switchMineralsForm("ternary")'>Ternary</button>
   </div>
-  <div ng-show='vmChild.subformName === "mineralogy"'>
-    <button ng-click='vmChild.addMineral();' class='button button-clear button-positive'>
+  <div ng-show='vmChild.attributeType === "mineralogy"'>
+    <button ng-click='vmChild.addAttribute();' class='button button-clear button-positive'>
       <i class='icon ion-plus-circled'></i>
       <span class='button-text-big'>Add a Mineral</span>
     </button>
-    <div class="padding" ng-show="!vm.spot.properties.pet.minerals.mineralogies">
+    <div class="padding" ng-show="!vm.spot.properties.pet.minerals.mineralogy">
       There are no minerals at this Spot.
     </div>
     <ion-list>
       <ion-item class='item-text-wrap item-button-right'
-                ng-repeat='mineral in vm.spot.properties.pet.minerals.mineralogies track by mineral.id'>
-        <div ng-click='vmChild.editMineral(mineral)'>
+                ng-repeat='mineral in vm.spot.properties.pet.minerals.mineralogy track by mineral.id'>
+        <div ng-click='vmChild.editAttribute(mineral)'>
           <b>{{ vmChild.getMineralName(mineral) }}</b>
           <div class='padding-left' ng-repeat='(key, value) in mineral track by $index' ng-hide='key === "id"'>
             {{vmChild.getLabel(key)}}: {{vmChild.getLabel(value)}}
           </div>
         </div>
         <div class='buttons'>
-          <button class='button button-clear button-assertive' ng-click='vmChild.deleteMineral(mineral)'>
+          <button class='button button-clear button-assertive' ng-click='vmChild.deleteAttribute(mineral)'>
             <i class='icon ion-minus-circled'></i>
           </button>
         </div>
       </ion-item>
     </ion-list>
   </div>
-  <div ng-show='vmChild.subformName === "reactions" || vmChild.subformName === "ternary"'>
+  <div ng-show='vmChild.attributeType === "reactions"'>
+    <button ng-click='vmChild.addAttribute();' class='button button-clear button-positive'>
+      <i class='icon ion-plus-circled'></i>
+      <span class='button-text-big'>Add a Reaction</span>
+    </button>
+    <div class="padding" ng-show="!vm.spot.properties.pet.minerals.reactions">
+      There are no reactions at this Spot.
+    </div>
+    <ion-list>
+      <ion-item class='item-text-wrap item-button-right'
+                ng-repeat='reaction in vm.spot.properties.pet.minerals.reactions track by reaction.id'>
+        <div ng-click='vmChild.editAttribute(reaction)'>
+          <b>{{ reaction.reactions || 'Unknown'}}</b>
+          <div class='padding-left' ng-repeat='(key, value) in reaction
+          track by $index' ng-hide='key === "id" || key === "reactions"'>
+            {{vmChild.getLabel(key)}}: {{vmChild.getLabel(value)}}
+          </div>
+        </div>
+        <div class='buttons'>
+          <button class='button button-clear button-assertive' ng-click='vmChild.deleteAttribute(reaction)'>
+            <i class='icon ion-minus-circled'></i>
+          </button>
+        </div>
+      </ion-item>
+    </ion-list>
+  </div>
+  <div ng-show='vmChild.attributeType === "ternary"'>
     <form name='straboForm' novalidate=''>
       <auto-fields/>
     </form>

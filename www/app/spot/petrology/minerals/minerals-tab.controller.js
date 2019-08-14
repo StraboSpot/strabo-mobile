@@ -16,11 +16,11 @@
     var thisTabName = 'pet-minerals';
 
     vm.basicFormModal = {};
-    vm.subformName = 'mineralogy';
+    vm.attributeType = 'mineralogy';
 
-    vm.addMineral = addMineral;
-    vm.deleteMineral = deleteMineral;
-    vm.editMineral = editMineral;
+    vm.addAttribute = addAttribute;
+    vm.deleteAttribute = deleteAttribute;
+    vm.editAttribute = editAttribute;
     vm.getLabel = getLabel;
     vm.getMineralName = getMineralName;
     vm.submit = submit;
@@ -83,26 +83,30 @@
      * Public Functions
      */
 
-    function addMineral() {
+    function addAttribute() {
       vmParent.data = {};
-      FormFactory.setForm('pet', vm.subformName);
-      vm.modalTitle = 'Add a Mineral';
+      FormFactory.setForm('pet', vm.attributeType);
+      vm.modalTitle = vm.attributeType === 'mineralogy' ? 'Add a Mineral' : 'Add a Reaction';
       vmParent.data.id = HelpersFactory.getNewId();
       vm.basicFormModal.show();
     }
 
-    function deleteMineral(mineralToDelete) {
-      var confirmPopup = $ionicPopup.confirm({
+    function deleteAttribute(attributeToDelete) {
+      var confirmPopupText = vm.attributeType === 'mineralogy' ? {
         'title': 'Delete Mineral',
-        'template': 'Are you sure you want to delete the Mineral <b>' + getMineralName(mineralToDelete) + '</b>?'
-      });
+        'template': 'Are you sure you want to delete the Mineral <b>' + getMineralName(attributeToDelete) + '</b>?'
+      } : {
+        'title': 'Delete Reaction',
+        'template': 'Are you sure you want to delete the Reaction <b>' + (attributeToDelete.reactions || 'Unknown') + '</b>?'
+      };
+      var confirmPopup = $ionicPopup.confirm(confirmPopupText);
       confirmPopup.then(function (res) {
         if (res) {
-          vmParent.spot.properties.pet.minerals.mineralogies = _.reject(vmParent.spot.properties.pet.minerals.mineralogies,
-            function (mineral) {
-              return mineral.id === mineralToDelete.id;
-            });
-          if (vmParent.spot.properties.pet.minerals.mineralogies.length === 0) delete vmParent.spot.properties.pet.minerals.mineralogies;
+          vmParent.spot.properties.pet.minerals[vm.attributeType]
+            = _.reject(vmParent.spot.properties.pet.minerals[vm.attributeType], function (mineral) {
+            return mineral.id === attributeToDelete.id;
+          });
+          if (vmParent.spot.properties.pet.minerals[vm.attributeType].length === 0) delete vmParent.spot.properties.pet.minerals[vm.attributeType];
           if (_.isEmpty(vmParent.spot.properties.pet.minerals)) delete vmParent.spot.properties.pet.minerals;
           if (_.isEmpty(vmParent.spot.properties.pet)) delete vmParent.spot.properties.pet;
           vmParent.saveSpot().then(function () {
@@ -113,10 +117,10 @@
       });
     }
 
-    function editMineral(mineralToEdit) {
+    function editAttribute(mineralToEdit) {
       vmParent.data = angular.fromJson(angular.toJson(mineralToEdit));  // Copy value, not reference
-      FormFactory.setForm('pet', vm.subformName);
-      vm.modalTitle = 'Edit Mineral';
+      FormFactory.setForm('pet', vm.attributeType);
+      vm.modalTitle = vm.attributeType === 'mineralogy' ? 'Edit Mineral' : 'Edit Reaction';
       vm.basicFormModal.show();
     }
 
@@ -153,12 +157,13 @@
       if (FormFactory.validate(vmParent.data)) {
         if (!vmParent.spot.properties.pet) vmParent.spot.properties.pet = {};
         if (!vmParent.spot.properties.pet.minerals) vmParent.spot.properties.pet.minerals = {};
-        if (!vmParent.spot.properties.pet.minerals.mineralogies) vmParent.spot.properties.pet.minerals.mineralogies = [];
-        vmParent.spot.properties.pet.minerals.mineralogies = _.reject(vmParent.spot.properties.pet.minerals.mineralogies,
+        if (!vmParent.spot.properties.pet.minerals[vm.attributeType]) vmParent.spot.properties.pet.minerals[vm.attributeType] = [];
+        vmParent.spot.properties.pet.minerals[vm.attributeType] = _.reject(
+          vmParent.spot.properties.pet.minerals[vm.attributeType],
           function (mineral) {
             return mineral.id === vmParent.data.id;
           });
-        vmParent.spot.properties.pet.minerals.mineralogies.push(vmParent.data);
+        vmParent.spot.properties.pet.minerals[vm.attributeType].push(vmParent.data);
         vmParent.data = {};
         vmParent.saveSpot().then(function () {
           vmParent.spotChanged = false;
@@ -170,7 +175,7 @@
     }
 
     function switchMineralsForm(form) {
-      vm.subformName = form;
+      vm.attributeType = form;
       FormFactory.setForm('pet', form);
     }
   }
