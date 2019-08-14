@@ -584,9 +584,9 @@
           spotDataModel.properties.images.push(description);
         }
         else if (key === 'pet_basics') _.extend(spotDataModel.properties.pet.basics, description);
-        else if (key === 'pet_mineralogy' || key === 'pet_reactions' || key === 'pet_ternary') {
-          _.extend(spotDataModel.properties.pet.minerals, description);
-        }
+        else if (key === 'pet_mineralogy') spotDataModel.properties.pet.minerals.mineralogy = [description];
+        else if (key === 'pet_reactions') spotDataModel.properties.pet.minerals.reactions = [description];
+        else if (key === 'pet_ternary') _.extend(spotDataModel.properties.pet.minerals, description);
         else spotDataModel.properties[key].push(description);
       });
     }
