@@ -134,12 +134,12 @@
 
     // Get text for displaying a field and its value
     function getFieldText(value, key) {
-      var label = DataModelsFactory.getLabelFromNewDictionary(key) || key;
-      var data = DataModelsFactory.getLabelFromNewDictionary(value) || value;
+      var label = DataModelsFactory.getLabelFromNewDictionary(key, key) || key;
+      var data = DataModelsFactory.getLabelFromNewDictionary(key, value) || value;
       if (_.isArray(value)) {
         var valueLabels = [];
         _.each(value, function (val) {
-          valueLabels.push(DataModelsFactory.getLabelFromNewDictionary(val) || val);
+          valueLabels.push(DataModelsFactory.getLabelFromNewDictionary(key, val) || val);
         });
         data = valueLabels.join(', ');
       }

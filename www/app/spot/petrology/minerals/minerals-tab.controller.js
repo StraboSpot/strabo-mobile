@@ -124,15 +124,15 @@
       vm.basicFormModal.show();
     }
 
-    function getLabel(value) {
-      if (_.isObject(value)) {
+    function getLabel(key, data) {
+      if (_.isObject(data)) {
         var labelArray = [];
-        _.each(value, function (val) {
-          labelArray.push(DataModelsFactory.getLabelFromNewDictionary(val) || val);
+        _.each(data, function (d) {
+          labelArray.push(DataModelsFactory.getLabelFromNewDictionary(key, d) || d);
         });
         return labelArray.join(', ');
       }
-      return DataModelsFactory.getLabelFromNewDictionary(value) || value;
+      return DataModelsFactory.getLabelFromNewDictionary(key, data) || data;
     }
 
     function getMineralName(mineral) {
@@ -142,12 +142,14 @@
       _.each(mineralSelectFields, function (field) {
         if (mineral[field]) {
           var name = mineral[field];
-          names.push(DataModelsFactory.getLabelFromNewDictionary(name) || name);
+          names.push(DataModelsFactory.getLabelFromNewDictionary(field, name) || name);
         }
       });
       if (_.isEmpty(names)) {
         var name = mineral.full_mineral_name || mineral.mineral_abbrev;
-        names.push(DataModelsFactory.getLabelFromNewDictionary(name) || name);
+        var label = DataModelsFactory.getLabelFromNewDictionary('full_mineral_name', name)
+          || DataModelsFactory.getLabelFromNewDictionary('mineral_abbrev', name);
+        names.push(label || name);
       }
       return names.join(', ') || 'Unknown';
     }

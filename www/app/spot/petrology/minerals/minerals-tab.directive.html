@@ -18,7 +18,7 @@
         <div ng-click='vmChild.editAttribute(mineral)'>
           <b>{{ vmChild.getMineralName(mineral) }}</b>
           <div class='padding-left' ng-repeat='(key, value) in mineral track by $index' ng-hide='key === "id"'>
-            {{vmChild.getLabel(key)}}: {{vmChild.getLabel(value)}}
+            {{vmChild.getLabel(key, key)}}: {{vmChild.getLabel(key, value)}}
           </div>
         </div>
         <div class='buttons'>
