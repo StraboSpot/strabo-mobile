@@ -53,4 +53,4 @@ text,magmatic_fluid_source,Magmatic fluid source,,false,${rock_type} = 'alterati
 text,mineralized_elements,Mineralized Elements,,false,${rock_type} = 'alteration__or',,
 text,notes_ore,Notes,,false,${rock_type} = 'alteration__or',multiline,
 end_group,,,,,,,
-calculate,__version__,,,,,,'vFSoLii5aZsq47LEaedT6d'
+calculate,__version__,,,,,,'vo6vLSeCgUQQAmXMCktoUG'

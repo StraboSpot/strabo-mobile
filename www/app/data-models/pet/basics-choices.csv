@@ -19,7 +19,7 @@ vb8zj01,monzonite,monzonite,10
 vb8zj01,norite,norite,11
 vb8zj01,pegmatite,pegmatite,12
 vb8zj01,peridotite,peridotite,13
-vb8zj01,quartz_monzonite,quartz monzonite,14
+vb8zj01,quartz_monz,quartz monzonite,14
 vb8zj01,syenite,syenite,15
 vb8zj01,tonalite,tonalite,16
 vb8zj01,unclear,unclear,17
@@ -63,7 +63,7 @@ hr56r07,latite,latite,11
 hr56r07,tuff,tuff,12
 hr56r07,ash_fall_tuff,ash-fall tuff,13
 hr56r07,ash_flow_tuff,ash-flow tuff,14
-hr56r07,vitrophere,vitrophyre,15
+hr56r07,vitrophyre,vitrophyre,15
 hr56r07,tuff_breccia,tuff breccia,16
 hr56r07,lapilli_tuff,lapilli tuff,17
 hr56r07,unclear,unclear,18
@@ -118,7 +118,7 @@ zw3kc97,anatectite,anatectite,21
 zw3kc97,cordierite-ant,cordierite-anthophyllite,22
 zw3kc97,garnetite,garnetite,23
 zw3kc97,glaucophanite,glaucophanite,24
-zw3kc97,jadeitite,jadeitite,25
+zw3kc97,jadeite,jadeite,25
 zw3kc97,metaarkose,metaarkose,26
 zw3kc97,metabasite,metabasite,27
 zw3kc97,metacarbonate,metacarbonate,28
