@@ -44,7 +44,7 @@
           <b>{{ reaction.reactions || 'Unknown'}}</b>
           <div class='padding-left' ng-repeat='(key, value) in reaction
           track by $index' ng-hide='key === "id" || key === "reactions"'>
-            {{vmChild.getLabel(key)}}: {{vmChild.getLabel(value)}}
+            {{vmChild.getLabel(key, key)}}: {{vmChild.getLabel(key, value)}}
           </div>
         </div>
         <div class='buttons'>
