@@ -213,12 +213,6 @@
           'survey_file': 'app/data-models/pet/reactions-survey.csv',
           'choices': {},
           'choices_file': 'app/data-models/pet/reactions-choices.csv'
-        },
-        'ternary': {
-          'survey': {},
-          'survey_file': 'app/data-models/pet/ternary-survey.csv',
-          'choices': {},
-          'choices_file': 'app/data-models/pet/ternary-choices.csv'
         }
       },
       'preferences': {
@@ -537,9 +531,7 @@
         'trace': dataModels.trace,
         'pet_basics': dataModels.pet.basics,
         'pet_mineralogy': dataModels.pet.mineralogy,
-        'pet_reactions': dataModels.pet.reactions,
-        'pet_ternary': dataModels.pet.ternary
-      };
+        'pet_reactions': dataModels.pet.reactions};
       _.each(models, function (model, key) {
         var description = {};
         _.each(model.survey, function (field) {
@@ -595,7 +587,6 @@
         else if (key === 'pet_basics') _.extend(spotDataModel.properties.pet.basics, description);
         else if (key === 'pet_mineralogy') spotDataModel.properties.pet.minerals.mineralogy = [description];
         else if (key === 'pet_reactions') spotDataModel.properties.pet.minerals.reactions = [description];
-        else if (key === 'pet_ternary') _.extend(spotDataModel.properties.pet.minerals, description);
         else spotDataModel.properties[key].push(description);
       });
     }

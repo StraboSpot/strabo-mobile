@@ -1,8 +1,10 @@
 <div>
   <div class='button-bar'>
-    <button class='button' ng-click='vmChild.switchMineralsForm("mineralogy")'>Mineralogy</button>
-    <button class='button' ng-click='vmChild.switchMineralsForm("reactions")'>Reactions</button>
-    <button class='button' ng-click='vmChild.switchMineralsForm("ternary")'>Ternary</button>
+    <button class='button' ng-click='vmChild.switchMineralsSubtab("mineralogy")'>Mineralogy</button>
+    <button class='button' ng-click='vmChild.switchMineralsSubtab("reactions")'>Reactions</button>
+    <button class='button' ng-click='vmChild.switchMineralsSubtab("ternary")' ng-show="vmChild.shouldShowTernary()">
+      Ternary
+    </button>
   </div>
   <div ng-show='vmChild.attributeType === "mineralogy"'>
     <button ng-click='vmChild.addAttribute();' class='button button-clear button-positive'>
@@ -56,8 +58,110 @@
     </ion-list>
   </div>
   <div ng-show='vmChild.attributeType === "ternary"'>
-    <form name='straboForm' novalidate=''>
-      <auto-fields/>
-    </form>
+    <div
+      ng-show='vmChild.ternary.qap_sum > 0'>
+      <div class='item item-divider'>
+        QAP Calculations
+      </div>
+      <div class="padding">
+        Q (Quartz): {{vmChild.ternary.q}}
+        <br>
+        A (Alkali Feldspar): {{vmChild.ternary.a}}
+        <br>
+        P (Plagioclase): {{vmChild.ternary.p}}
+        <br>
+        QAP Sum = {{vmChild.ternary.qap_sum}}
+        <br>
+        Normalized Q value = {{(vmChild.ternary.q / vmChild.ternary.qap_sum) * 100}}
+        <br>
+        Normalized A value = {{(vmChild.ternary.a / vmChild.ternary.qap_sum) * 100}}
+        <br>
+        Normalized P value = {{(vmChild.ternary.p / vmChild.ternary.qap_sum) * 100}}
+      </div>
+    </div>
+    <div
+      ng-show='vmChild.ternary.apf_sum > 0'>
+      <div class='item item-divider'>
+        APF Calculations
+      </div>
+      <div class="padding">
+        A (Alkali Feldspar): {{vmChild.ternary.a}}
+        <br>
+        P (Plagioclase): {{vmChild.ternary.p}}
+        <br>
+        F (Feldspathoids): {{vmChild.ternary.f}}
+        <br>
+        APF Sum = {{vmChild.ternary.apf_sum}}
+        <br>
+        Normalized A value = {{(vmChild.ternary.a / vmChild.ternary.apf_sum) * 100}}
+        <br>
+        Normalized P value = {{(vmChild.ternary.p / vmChild.ternary.apf_sum) * 100}}
+        <br>
+        Normalized F value = {{(vmChild.ternary.f / vmChild.ternary.apf_sum) * 100}}
+      </div>
+    </div>
+    <div
+      ng-show='vmChild.ternary.ooc_sum > 0'>
+      <div class='item item-divider'>
+        Ultramafics (Ol, Opx, Cpx) Calculations
+      </div>
+      <div class="padding">
+        Ol (Olivine): {{vmChild.ternary.ol}}
+        <br>
+        Opx (Orthopyroxene): {{vmChild.ternary.opx}}
+        <br>
+        Cpx (Clinopyroxene): {{vmChild.ternary.cpx}}
+        <br>
+        OOC Sum = {{vmChild.ternary.ooc_sum}}
+        <br>
+        Normalized Ol value = {{(vmChild.ternary.ol / vmChild.ternary.ooc_sum) * 100}}
+        <br>
+        Normalized Opx value = {{(vmChild.ternary.opx / vmChild.ternary.ooc_sum) * 100}}
+        <br>
+        Normalized CPx value = {{(vmChild.ternary.cpx / vmChild.ternary.ooc_sum) * 100}}
+      </div>
+    </div>
+    <div
+      ng-show='vmChild.ternary.ocp_sum > 0'>
+      <div class='item item-divider'>
+        Ultramafics (Ol, Cpx, Plag) Calculations
+      </div>
+      <div class="padding">
+        Ol (Olivine): {{vmChild.ternary.ol}}
+        <br>
+        Opx (Clinopyroxene): {{vmChild.ternary.opx}}
+        <br>
+        Plag (Plagioclase): {{vmChild.ternary.p}}
+        <br>
+        OCP Sum = {{vmChild.ternary.ocp_sum}}
+        <br>
+        Normalized Ol value = {{(vmChild.ternary.ol / vmChild.ternary.ocp_sum) * 100}}
+        <br>
+        Normalized Cpx value = {{(vmChild.ternary.cpx / vmChild.ternary.ocp_sum) * 100}}
+        <br>
+        Normalized Plag value = {{(vmChild.ternary.p / vmChild.ternary.ocp_sum) * 100}}
+      </div>
+    </div>
+    <div
+      ng-show='vmChild.ternary.oph_sum > 0'>
+      <div class='item item-divider'>
+        Ultramafics (Ol, Pyx, Hbl) Calculations
+      </div>
+      <div class="padding">
+        Ol (Olivine): {{vmChild.ternary.ol}}
+        <br>
+        Pyx (Pyroxene): {{vmChild.ternary.pyx}}
+        <br>
+        Hbl (Hornblende): {{vmChild.ternary.hbl}}
+        <br>
+        OPH Sum = {{vmChild.ternary.oph_sum}}
+        <br>
+        Normalized Ol value = {{(vmChild.ternary.ol / vmChild.ternary.oph_sum) * 100}}
+        <br>
+        Normalized Ppx value = {{(vmChild.ternary.pyx / vmChild.ternary.oph_sum) * 100}}
+        <br>
+        Normalized Hbl value = {{(vmChild.ternary.hbl / vmChild.ternary.oph_sum) * 100}}
+      </div>
+    </div>
   </div>
 </div>

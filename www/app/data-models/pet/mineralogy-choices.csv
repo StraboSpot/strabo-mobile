@@ -63,7 +63,7 @@ ed0jl59,biotite,biotite,5
 ed0jl59,chromite,chromite,6
 ed0jl59,clinopyroxene,clinopyroxene,7
 ed0jl59,garnet,garnet,8
-ed0jl59,horblende,horblende,9
+ed0jl59,hornblende,hornblende,9
 ed0jl59,hypersthene,hypersthene,10
 ed0jl59,illmenite,illmenite,11
 ed0jl59,k_feldspar__or,"K-feldspar, orthoclase, microcline",12
@@ -216,11 +216,11 @@ qt9di73,groundmass,groundmass,
 qt9di73,vesicle,vesicle,
 qt9di73,vein,vein,
 qt9di73,other,other,
-bv8rk19,foliation_def,foliation defining,0
-bv8rk19,lineation_defi,lineation defining,1
-bv8rk19,shear_band_def,shear band defining,2
-bv8rk19,phenocryst,phenocryst,3
-bv8rk19,xenocryst,xenocryst,4
+bv8rk19,phenocryst,phenocryst,0
+bv8rk19,xenocryst,xenocryst,1
+bv8rk19,foliation_def,foliation defining,2
+bv8rk19,lineation_defi,lineation defining,3
+bv8rk19,shear_band_def,shear band defining,4
 bv8rk19,prophyoblast,prophyoblast,5
 bv8rk19,porphyroclast,porphyroclast,6
 bv8rk19,ribbons,ribbons,7

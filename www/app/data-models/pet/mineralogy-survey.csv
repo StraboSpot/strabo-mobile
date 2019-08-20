@@ -18,9 +18,8 @@ text,other_textural_igneous,Other,,false,"selected(${textural_setting_igneous}, 
 select_multiple bv8rk19,textural_setting_metamorphic,Textural Setting - Metamorphic/Structural,"If mineral is metamorphic, or displays structural significance, choose textural setting",false,,horizontal-compact,
 text,other_textural_setting_metamor,Other ,,false,"selected(${textural_setting_metamorphic}, 'other')",,
 decimal,average_grain_size_mm,Average Grain Size (mm),,false,,,
-decimal,minimum_grain_size_mm,Minimum Grain Size (mm),,false,,,
 decimal,maximum_grain_size_mm,Maximum Grain Size (mm),,false,,,
 decimal,modal,Modal %,,false,,,
 text,mineral_notes,Mineral Notes,,false,,multiline,
 calculate,_version,,,false,,,'vz3ZQiUYMWhSKqG937DgJQ'
-calculate,__version__,,,,,,'vaJK9aY6fBjtP7TuLa5Yog'
+calculate,__version__,,,,,,'v6WBHmfJd7PU36wcytrb6z'

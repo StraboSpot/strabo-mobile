@@ -15,16 +15,30 @@
 
     var thisTabName = 'pet-minerals';
 
+    var ternaryMinerals = {
+      q: ['quartz'],                                                               // Quartz
+      a: ['k_feldspar', 'k_feldspar__or', 'microcline', 'orthoclase', 'sanidine'], // Alkali feldspar, include albite?
+      p: ['plagioclase'],                                                          // Plagioclase
+      f: ['leucite', 'nepheline'],                                                 // Feldspathoids
+      ol: ['olivine'],                                                             // Olivine
+      opx: ['orthopyroxene'],                                                      // Orthopyroxene
+      cpx: ['clinopyroxene', 'augite', 'diopside', 'cr_diopside', 'spodumene'],    // Clinopyroxene
+      pyx: ['na_pyroxene'],                                                        // Pyroxene
+      hbl: ['hornblende', 'mag_hbnd']                                              // Hornblende
+    };
+
     vm.basicFormModal = {};
     vm.attributeType = 'mineralogy';
+    vm.ternary = {};
 
     vm.addAttribute = addAttribute;
     vm.deleteAttribute = deleteAttribute;
     vm.editAttribute = editAttribute;
     vm.getLabel = getLabel;
     vm.getMineralName = getMineralName;
+    vm.shouldShowTernary = shouldShowTernary;
     vm.submit = submit;
-    vm.switchMineralsForm = switchMineralsForm;
+    vm.switchMineralsSubtab = switchMineralsSubtab;
 
     activate();
 
@@ -60,6 +74,7 @@
         }
         else vmParent.data = {};
         createModal();
+        gatherTernaryValues();
       }
     }
 
@@ -77,6 +92,27 @@
       $scope.$on('$destroy', function () {
         vm.basicFormModal.remove();
       });
+    }
+
+    function gatherTernaryValues() {
+      if (vmParent.spot.properties.pet && vmParent.spot.properties.pet.minerals) {
+        _.each(ternaryMinerals, function (mineralClass, key) {
+          var foundMinerals = _.filter(vmParent.spot.properties.pet.minerals.mineralogy, function (mineral) {
+            return _.contains(mineralClass, mineral.volcanic_mineral_list)
+              || _.contains(mineralClass, mineral.metamorphic_mineral_list)
+              || _.contains(mineralClass, mineral.plutonic_mineral_list)
+              || _.contains(mineralClass, mineral.complete_minerals_list);
+          });
+          vm.ternary[key] = _.reduce(foundMinerals, function (memo, mineral) {
+            return memo + mineral.modal || 0;
+          }, 0);
+        });
+        vm.ternary.qap_sum = vm.ternary.q + vm.ternary.a + vm.ternary.p;
+        vm.ternary.apf_sum = vm.ternary.f + vm.ternary.a + vm.ternary.p;
+        vm.ternary.ooc_sum = vm.ternary.ol + vm.ternary.opx + vm.ternary.cpx;
+        vm.ternary.ocp_sum = vm.ternary.ol + vm.ternary.cpx + vm.ternary.p;
+        vm.ternary.oph_sum = vm.ternary.ol + vm.ternary.pyx + vm.ternary.hbl;
+      }
     }
 
     /**
@@ -112,6 +148,7 @@
           vmParent.saveSpot().then(function () {
             vmParent.spotChanged = false;
             vmParent.updateSpotsList();
+            gatherTernaryValues();
           });
         }
       });
@@ -154,6 +191,12 @@
       return names.join(', ') || 'Unknown';
     }
 
+    function shouldShowTernary() {
+      return vmParent.spot.properties.pet && vmParent.spot.properties.pet.basics
+        && (_.contains(vmParent.spot.properties.pet.basics.igneous_rock_class, 'plutonic')
+          || _.contains(vmParent.spot.properties.pet.basics.igneous_rock_class, 'volcanic'));
+    }
+
     function submit() {
       vmParent.data = HelpersFactory.cleanObj(vmParent.data);
       if (FormFactory.validate(vmParent.data)) {
@@ -171,15 +214,16 @@
           vmParent.spotChanged = false;
           vmParent.updateSpotsList();
           vmParent.data = vmParent.spot.properties.pet.minerals;
+          gatherTernaryValues();
         });
         vm.basicFormModal.hide();
         FormFactory.clearForm();
       }
     }
 
-    function switchMineralsForm(form) {
+    function switchMineralsSubtab(form) {
       vm.attributeType = form;
-      FormFactory.setForm('pet', form);
+      FormFactory.clearForm();
     }
   }
 }());
