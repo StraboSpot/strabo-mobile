@@ -1,10 +1,10 @@
 list_name,name,label,order
 fz3nb69,yes,yes,
-ga3ww78,igneous,igneous,
-ga3ww78,metamorphic,metamorphic,
-ga3ww78,alteration__or,"alteration, ore",
-vg8zi41,volcanic,volcanic,
-vg8zi41,plutonic,plutonic,
+hc7ju75,igneous,igneous,
+hc7ju75,metamorphic,metamorphic,
+hc7ju75,alteration_or,"alteration, ore",
+tf05s47,volcanic,volcanic,
+tf05s47,plutonic,plutonic,
 vb8zj01,granite,granite,0
 vb8zj01,granodiorite,granodiorite,1
 vb8zj01,diorite,diorite,2
@@ -34,7 +34,7 @@ cm8zx92,other,other,
 ug9ia66,fine_grained,fine-grained,0
 ug9ia66,medium_grained,medium-grained,1
 ug9ia66,coarse_grained,coarse-grained,2
-ug9ia66,porphyritic_phaneritic,porphyritic,3
+ug9ia66,porphyritic,porphyritic,3
 ug9ia66,pegmatitic,pegmatitic,4
 ug9ia66,equigranular,equigranular,5
 ug9ia66,megacrystic,megacrystic,6
@@ -76,7 +76,7 @@ ez5mj87,pyroclastic_su,pyroclastic surge,
 ez5mj87,reworked,reworked,
 ez5mj87,unclear,unclear,
 ez5mj87,other,other,
-jx1rw50,porrphyritic_aphanitic,porphyritic,
+jx1rw50,porrphyritic,porphyritic,
 jx1rw50,clastic,clastic,
 jx1rw50,glassy,glassy,
 jx1rw50,vesicular,vesicular,
@@ -87,7 +87,7 @@ jx1rw50,stony,stony,
 jx1rw50,vuggy,vuggy,
 jx1rw50,xenoliths,xenoliths,
 jx1rw50,other,other,
-kc4rs46,columnar_jointing,columnar jointed,
+kc4rs46,columnar_joint,columnar jointed,
 kc4rs46,eutaxitic,banded,
 kc4rs46,welded,welded,
 kc4rs46,layered,layered,
@@ -128,7 +128,6 @@ zw3kc97,metaigneous,metaigneous,31
 zw3kc97,metapelite,metapelite,32
 zw3kc97,metavolcanic,metavolcanic,33
 zw3kc97,pyroxenite,pyroxenite,34
-zw3kc97,serpentinite,serpentinite,35
 zw3kc97,orthogneiss,orthogneiss,36
 zw3kc97,paragneiss,paragneiss,37
 zw3kc97,calc_schist,calc schist,38
@@ -150,7 +149,7 @@ zt6bn36,conglomerate,conglomerate,9
 zt6bn36,unclear,unclear,10
 zt6bn36,other,other,11
 kt0dp56,greenschist,greenschist,0
-kt0dp56,epidote_emphibolite,epidote amphibolite,1
+kt0dp56,epidote_amphib,epidote amphibolite,1
 kt0dp56,amphibolite,amphibolite,2
 kt0dp56,granulite,granulite,3
 kt0dp56,blueschist,blueschist,4
@@ -179,14 +178,14 @@ uq4ie19,dolorite_mica_,dolorite/mica replacement,2
 uq4ie19,rhodingite,rodingite,3
 uq4ie19,carbonatite,carbonatite,4
 uq4ie19,chromite_ore,chromite ore,5
-uq4ie19,magmatic_hosted_ore,magmatic-hosted ore,6
-uq4ie19,pegmatite_hosted_ore,pegmatite-hosted ore,7
-uq4ie19,vein_hosted_ore,vein-hosted ore,8
+uq4ie19,magmatic_hoste,magmatic-hosted ore,6
+uq4ie19,pegmatite_host,pegmatite-hosted ore,7
+uq4ie19,vein_hosted_or,vein-hosted ore,8
 uq4ie19,greisen_ore,greisen ore,9
-uq4ie19,carbonate_replacement,carbonate-replacement,10
+uq4ie19,carbonate_repl,carbonate-replacement,10
 uq4ie19,bif,BIF,11
-uq4ie19,sedimentary_precipitated_ore,sedimentary precipitated ore,12
-uq4ie19,sedimentary_hosted_ore__u,sedimentary hosted ore (U),13
+uq4ie19,sedimentary_pr,sedimentary precipitated ore,12
+uq4ie19,sedimentary_ho,sedimentary hosted ore (U),13
 uq4ie19,kimberlite,kimberlite,14
 uq4ie19,komatiites,komatiites,15
 uq4ie19,placer,placer,16
@@ -196,7 +195,7 @@ xa5un89,propylitic,propylitic,
 xa5un89,albite_epidote,albite-epidote,
 xa5un89,potassic,potassic,
 xa5un89,sodic_calcic,sodic-calcic,
-xa5un89,chlorite_sericite,chlorite-sericite,
+xa5un89,chlorite_seric,chlorite-sericite,
 xa5un89,phyllitic,phyllic,
 xa5un89,argellic,argillic,
 xa5un89,other,other,
