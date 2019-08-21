@@ -13,6 +13,8 @@
 
     var thisTabName = 'sed-structures';
 
+    vm.structuresForm = 'physical_structures';
+
     vm.switchForm = switchForm;
 
     activate();
@@ -88,6 +90,7 @@
      */
 
     function switchForm(form) {
+      vm.structuresForm = form;
       FormFactory.setForm('sed', form);
     }
 

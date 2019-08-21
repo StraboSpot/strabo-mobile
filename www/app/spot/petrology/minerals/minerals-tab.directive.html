@@ -1,10 +1,11 @@
 <div>
   <div class='button-bar'>
-    <button class='button' ng-click='vmChild.switchMineralsSubtab("mineralogy")'>Mineralogy</button>
-    <button class='button' ng-click='vmChild.switchMineralsSubtab("reactions")'>Reactions</button>
-    <button class='button' ng-click='vmChild.switchMineralsSubtab("ternary")' ng-show="vmChild.shouldShowTernary()">
-      Ternary
-    </button>
+    <button class='button' ng-class="{'button-positive': vmChild.attributeType === 'mineralogy'}"
+            ng-click='vmChild.switchMineralsSubtab("mineralogy")'>Mineralogy</button>
+    <button class='button' ng-class="{'button-positive': vmChild.attributeType === 'reactions'}"
+            ng-click='vmChild.switchMineralsSubtab("reactions")'>Reactions</button>
+    <button class='button' ng-class="{'button-positive': vmChild.attributeType === 'ternary'}"
+            ng-click='vmChild.switchMineralsSubtab("ternary")' ng-show="vmChild.shouldShowTernary()">Ternary</button>
   </div>
   <div ng-show='vmChild.attributeType === "mineralogy"'>
     <button ng-click='vmChild.addAttribute();' class='button button-clear button-positive'>

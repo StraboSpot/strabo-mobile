@@ -13,6 +13,8 @@
 
     var thisTabName = 'sed-interpretations';
 
+    vm.interpretationsForm = 'facies_and_process';
+
     vm.switchForm = switchForm;
 
     activate();
@@ -57,6 +59,7 @@
      */
 
     function switchForm(form) {
+      vm.interpretationsForm = form;
       FormFactory.setForm('sed', form);
     }
   }

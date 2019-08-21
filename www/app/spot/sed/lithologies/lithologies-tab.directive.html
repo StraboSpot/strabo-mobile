@@ -1,9 +1,13 @@
 <div>
   <div class='button-bar'>
-    <button class='button' ng-click='vmChild.switchLithologyForm("interval_basics")'>Basics</button>
-    <button class='button' ng-click='vmChild.switchLithologyForm("texture")'>Texture</button>
-    <button class='button' ng-click='vmChild.switchLithologyForm("composition")'>Composition</button>
-    <button class='button' ng-click='vmChild.switchLithologyForm("stratification")'>Stratification</button>
+    <button class='button' ng-class="{'button-positive': vmChild.lithologyForm === 'interval_basics'}"
+            ng-click='vmChild.switchLithologyForm("interval_basics")'>Basics</button>
+    <button class='button' ng-class="{'button-positive': vmChild.lithologyForm === 'texture'}"
+            ng-click='vmChild.switchLithologyForm("texture")'>Texture</button>
+    <button class='button' ng-class="{'button-positive': vmChild.lithologyForm === 'composition'}"
+            ng-click='vmChild.switchLithologyForm("composition")'>Composition</button>
+    <button class='button' ng-class="{'button-positive': vmChild.lithologyForm === 'stratification'}"
+            ng-click='vmChild.switchLithologyForm("stratification")'>Stratification</button>
   </div>
   <form name='straboForm' novalidate=''>
     <auto-fields/>
