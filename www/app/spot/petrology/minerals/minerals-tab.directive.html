@@ -1,11 +1,14 @@
 <div>
   <div class='button-bar'>
     <button class='button' ng-class="{'button-positive': vmChild.attributeType === 'mineralogy'}"
-            ng-click='vmChild.switchMineralsSubtab("mineralogy")'>Mineralogy</button>
+            ng-click='vmChild.switchMineralsSubtab("mineralogy")'>Mineralogy
+    </button>
     <button class='button' ng-class="{'button-positive': vmChild.attributeType === 'reactions'}"
-            ng-click='vmChild.switchMineralsSubtab("reactions")'>Reactions</button>
+            ng-click='vmChild.switchMineralsSubtab("reactions")'>Reactions
+    </button>
     <button class='button' ng-class="{'button-positive': vmChild.attributeType === 'ternary'}"
-            ng-click='vmChild.switchMineralsSubtab("ternary")' ng-show="vmChild.shouldShowTernary()">Ternary</button>
+            ng-click='vmChild.switchMineralsSubtab("ternary")' ng-show="vmChild.shouldShowTernary()">Ternary
+    </button>
   </div>
   <div ng-show='vmChild.attributeType === "mineralogy"'>
     <button ng-click='vmChild.addAttribute();' class='button button-clear button-positive'>
@@ -59,8 +62,11 @@
     </ion-list>
   </div>
   <div ng-show='vmChild.attributeType === "ternary"'>
-    <div
-      ng-show='vmChild.ternary.qap_sum > 0'>
+    <div class="padding" ng-show='vmChild.ternary.qap_sum <= 0 && vmChild.ternary.apf_sum <= 0
+      && vmChild.ternary.ooc_sum <= 0 && vmChild.ternary.ocp_sum <= 0 && vmChild.ternary.oph_sum <= 0'>
+      No calculations to display. Add relevant minerals with modal percents to the Mineralogy.
+    </div>
+    <div ng-show='vmChild.ternary.qap_sum > 0'>
       <div class='item item-divider'>
         QAP Calculations
       </div>

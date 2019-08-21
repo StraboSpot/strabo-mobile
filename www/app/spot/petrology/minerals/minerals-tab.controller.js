@@ -16,15 +16,15 @@
     var thisTabName = 'pet-minerals';
 
     var ternaryMinerals = {
-      q: ['quartz'],                                                               // Quartz
-      a: ['k_feldspar', 'k_feldspar__or', 'microcline', 'orthoclase', 'sanidine'], // Alkali feldspar, include albite?
-      p: ['plagioclase'],                                                          // Plagioclase
-      f: ['leucite', 'nepheline'],                                                 // Feldspathoids
-      ol: ['olivine'],                                                             // Olivine
-      opx: ['orthopyroxene'],                                                      // Orthopyroxene
-      cpx: ['clinopyroxene', 'augite', 'diopside', 'cr_diopside', 'spodumene'],    // Clinopyroxene
-      pyx: ['na_pyroxene'],                                                        // Pyroxene
-      hbl: ['hornblende', 'mag_hbnd']                                              // Hornblende
+      q: ['quartz'],                                                                              // Quartz
+      a: ['k-feldspar', 'k_feldspar', 'k_feldspar__or', 'microcline', 'orthoclase', 'sanidine'],  // Alkali feldspar, include albite?
+      p: ['plagioclase'],                                                                         // Plagioclase
+      f: ['leucite', 'nepheline'],                                                                // Feldspathoids
+      ol: ['olivine'],                                                                            // Olivine
+      opx: ['orthopyroxene'],                                                                     // Orthopyroxene
+      cpx: ['clinopyroxene', 'augite', 'diopside', 'cr_diopside', 'spodumene'],                   // Clinopyroxene
+      pyx: ['na pyroxene', 'na_pyroxene'],                                                        // Pyroxene
+      hbl: ['hornblende', 'magnesio-hornblende', 'mg_hornblende']                                 // Hornblende
     };
 
     vm.basicFormModal = {};
@@ -75,6 +75,7 @@
         else vmParent.data = {};
         createModal();
         gatherTernaryValues();
+        createWatches();
       }
     }
 
@@ -94,14 +95,22 @@
       });
     }
 
+    function createWatches() {
+      // Watch for mineral abbreviation changes
+      $scope.$watch('vm.data.mineral_abbrev', function (newValue, oldValue) {
+        if (newValue && newValue !== oldValue) vmParent.data.full_mineral_name = getFullMineralNameFromAbbrev(newValue);
+      });
+    }
+
     function gatherTernaryValues() {
       if (vmParent.spot.properties.pet && vmParent.spot.properties.pet.minerals) {
         _.each(ternaryMinerals, function (mineralClass, key) {
           var foundMinerals = _.filter(vmParent.spot.properties.pet.minerals.mineralogy, function (mineral) {
-            return _.contains(mineralClass, mineral.volcanic_mineral_list)
-              || _.contains(mineralClass, mineral.metamorphic_mineral_list)
-              || _.contains(mineralClass, mineral.plutonic_mineral_list)
-              || _.contains(mineralClass, mineral.complete_minerals_list);
+            return (mineral.full_mineral_name && _.contains(mineralClass, mineral.full_mineral_name.toLowerCase()))
+              || _.contains(mineralClass, mineral.volcanic_mineral)
+              || _.contains(mineralClass, mineral.metamorphic_mineral)
+              || _.contains(mineralClass, mineral.plutonic_mineral)
+              || _.contains(mineralClass, mineral.mineral);
           });
           vm.ternary[key] = _.reduce(foundMinerals, function (memo, mineral) {
             return memo + mineral.modal || 0;
@@ -113,6 +122,101 @@
         vm.ternary.ocp_sum = vm.ternary.ol + vm.ternary.cpx + vm.ternary.p;
         vm.ternary.oph_sum = vm.ternary.ol + vm.ternary.pyx + vm.ternary.hbl;
       }
+    }
+
+    function getFullMineralNameFromAbbrev(abbrev) {
+      var abbreviations = {
+        acm: 'acmite',
+        act: 'actinolite',
+        ab: 'albite',
+        aln: 'allanite',
+        amp: 'amphibole',
+        am: 'amphibole',
+        amph: 'amphibole',
+        and: 'andalusite',
+        anh: 'anhydrite',
+        atg: 'antigorite',
+        ap: 'apatite',
+        aug: 'augite',
+        brl: 'beryl',
+        bt: 'biotite',
+        bio: 'biotite',
+        cal: 'calcite',
+        ccp: 'chalcopyrite',
+        chl: 'chlorite',
+        cld: 'chloritoid',
+        chr: 'chromite',
+        ctl: 'chrysotile',
+        cl: 'clay',
+        cpx: 'clinopyroxene',
+        crd: 'cordierite',
+        crn: 'corundum',
+        crdi: 'cr-diopside',
+        dia: 'diamond',
+        di: 'diopside',
+        dol: 'dolomite',
+        ep: 'epidote',
+        feo: 'fe oxide',
+        gn: 'galena',
+        grt: 'garnet',
+        gth: 'goethite',
+        gt: 'goethite',
+        gr: 'graphite',
+        grs: 'grossular garnet ',
+        hbl: 'hornblende',
+        hyp: 'hypersthene',
+        ilm: 'ilmenite',
+        krs: 'kaersutite',
+        kfs: 'k-feldspar',
+        kspar: 'k-feldspar',
+        kfsp: 'k-feldspar',
+        ky: 'kyanite',
+        lpd: 'lepidolite',
+        lct: 'leucite',
+        lm: 'limonite',
+        lz: 'lizardite',
+        mhb: 'magnesio-hornblende',
+        mghbl: 'magnesio-hornblende',
+        mag: 'magnetite',
+        mll: 'melilite',
+        mel: 'melilite',
+        mc: 'microcline',
+        mnz: 'monazite',
+        ms: 'muscovite',
+        npx: 'na pyroxene',
+        npyx: 'na pyroxene',
+        nph: 'nepheline',
+        ne: 'nepheline',
+        ol: 'olivine',
+        or: 'orthoclase',
+        opx: 'orthopyroxene',
+        prv: 'perovskite',
+        pl: 'plagioclase',
+        plag: 'plagioclase',
+        py: 'pyrite',
+        po: 'pyrrhotite',
+        qz: 'quartz',
+        rt: 'rutile',
+        sa: 'sanidine',
+        srp: 'serpentine',
+        sil: 'sillimanite',
+        sp: 'sphalerite',
+        spl: 'spinel',
+        spd: 'spodumene',
+        st: 'staurolite',
+        tlc: 'talc',
+        ttn: 'titanite',
+        tpz: 'topaz',
+        toz: 'topaz',
+        tur: 'tourmaline',
+        tr: 'tremolite',
+        ves: 'vesuvianite',
+        wo: 'wollastonite',
+        xtm: 'xenotime',
+        zeo: 'zeolite',
+        zrn: 'zircon'
+      };
+      return abbreviations[abbrev.toLowerCase()];
     }
 
     /**
@@ -174,8 +278,8 @@
 
     function getMineralName(mineral) {
       var names = [];
-      var mineralSelectFields = ['volcanic_mineral_list', 'metamorphic_mineral_list', 'plutonic_mineral_list',
-        'alteration_ore_minerals', 'complete_minerals_list'];
+      var mineralSelectFields = ['volcanic_mineral', 'metamorphic_mineral', 'plutonic_mineral',
+        'alteration_ore_minerals', 'mineral'];
       _.each(mineralSelectFields, function (field) {
         if (mineral[field]) {
           var name = mineral[field];
@@ -184,9 +288,7 @@
       });
       if (_.isEmpty(names)) {
         var name = mineral.full_mineral_name || mineral.mineral_abbrev;
-        var label = DataModelsFactory.getLabelFromNewDictionary('full_mineral_name', name)
-          || DataModelsFactory.getLabelFromNewDictionary('mineral_abbrev', name);
-        names.push(label || name);
+        names.push(name);
       }
       return names.join(', ') || 'Unknown';
     }
