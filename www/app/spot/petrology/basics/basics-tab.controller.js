@@ -14,10 +14,10 @@
 
     var thisTabName = 'pet-basics';
 
-    vm.petBasicsToCopy = {};
+    vm.spotWithPetToCopy = {};
     vm.spotsWithPet = [];
 
-    vm.copyPetBasics = copyPetBasics;
+    vm.copyPetData = copyPetData;
 
     activate();
 
@@ -59,6 +59,21 @@
       getDataFromRockUnitTags();
     }
 
+    // Copy Basics and Mineralogy (if present)
+    function continueCopyPet() {
+      vmParent.data = vm.spotWithPetToCopy.properties.pet.basics;
+      if (!vmParent.spot.properties.pet) vmParent.spot.properties.pet = {};
+      vmParent.spot.properties.pet.basics = vm.spotWithPetToCopy.properties.pet.basics;
+      if (!_.isEmpty(vm.spotWithPetToCopy.properties.pet.minerals.mineralogy)) {
+        if (!vmParent.spot.properties.pet.minerals) vmParent.spot.properties.pet.minerals = {};
+        vmParent.spot.properties.pet.minerals.mineralogy = vm.spotWithPetToCopy.properties.pet.minerals.mineralogy;
+        _.each(vmParent.spot.properties.pet.minerals.mineralogy, function (mineral, i) {
+          if (mineral.modal) delete vmParent.spot.properties.pet.minerals.mineralogy[i].modal;
+        });
+      }
+      SpotFactory.save(vmParent.spot);
+    }
+    
     // Get Data (Rock Class & Type) from Rock Unit Tags
     function getDataFromRockUnitTags() {
       var geologicUnitTags = _.filter(vmParent.spotLevelTagsToDisplay, function (tag) {
@@ -111,19 +126,19 @@
      * Public Functions
      */
 
-    function copyPetBasics() {
-      $log.log('Spot to copy from:', vm.petBasicsToCopy);
+    function copyPetData() {
+      $log.log('Spot to copy from:', vm.spotWithPetToCopy);
 
       if (!_.isEmpty(vmParent.data)) {
         var confirmPopup = $ionicPopup.confirm({
           'title': 'Existing Petrology Basics Data',
-          'template': 'Are you sure you want to overwrite the current Petrology Basics data?'
+          'template': 'Are you sure you want to overwrite the current Petrology Basics and Mineralogy data?'
         });
         confirmPopup.then(function (res) {
-          if (res) vmParent.data = vm.petBasicsToCopy.properties.pet.basics;
+          if (res) continueCopyPet();
         });
       }
-      else vmParent.data = vm.petBasicsToCopy.properties.pet.basics;
+      else continueCopyPet()
     }
   }
 }());

@@ -1,9 +1,9 @@
 <div class='strabo-form'>
   <ion-input class='item item-input item-select item-stacked-label item-text-wrap no-errors'>
-    <ion-label>Copy Petrology Basics Data:</ion-label>
-    <select ng-model='vmChild.petBasicsToCopy'
+    <ion-label>Copy Petrology Basics & Mineralogy Data:</ion-label>
+    <select ng-model='vmChild.spotWithPetToCopy'
             ng-options='spot as spot.properties.name for spot in vmChild.spotsWithPet track by spot.properties.id'
-            ng-change='vmChild.copyPetBasics()'>
+            ng-change='vmChild.copyPetData()'>
       <option value=''>-- None --</option>
     </select>
   </ion-input>

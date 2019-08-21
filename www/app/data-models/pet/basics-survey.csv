@@ -1,8 +1,6 @@
 type,name,label,hint,required,relevant,appearance,calculation
 start,start,,,,,,
 end,end,,,,,,
-select_multiple fz3nb69,same_as_last,Same as last?,,false,,,
-note,note_to_programmers_we_would,Note to programmers- we would like this box to fill out the petrology tab completely and the mineralogy tab partially when selected. The mineralogy tab should have the modal abundance left blank.,,false,,,
 select_multiple hc7ju75,rock_type,Rock Type,,false,,,
 select_multiple tf05s47,igneous_rock_class,Igneous Rock Class,,false,"selected(${rock_type}, 'igneous')",,
 begin_group,group_ut73c28,Plutonic,,,"selected(${igneous_rock_class}, 'plutonic')",,
@@ -53,4 +51,4 @@ text,magmatic_fluid_source,Magmatic fluid source,,false,"selected(${rock_type}, 
 text,mineralized_elements,Mineralized Elements,,false,"selected(${rock_type}, 'alteration_or')",,
 text,notes_ore,Notes,,false,"selected(${rock_type}, 'alteration_or')",multiline,
 end_group,,,,,,,
-calculate,__version__,,,,,,'vhmAFqGQhEWXgHtoJHD42e'
+calculate,__version__,,,,,,'vr4YCrqi3HmrFLLrTHfd2x'
