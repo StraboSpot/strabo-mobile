@@ -13,7 +13,9 @@
 
     var thisTabName = 'sed-lithologies';
 
+    vm.lithologyForm = 'interval_basics';
     vm.showStratInterval = false;
+
     vm.switchLithologyForm = switchLithologyForm;
 
     activate();
@@ -58,6 +60,7 @@
      */
 
     function switchLithologyForm(form) {
+      vm.lithologyForm = form;
       FormFactory.setForm('sed', form);
     }
   }

@@ -1,0 +1,177 @@
+<div>
+  <div class='button-bar'>
+    <button class='button' ng-class="{'button-positive': vmChild.attributeType === 'mineralogy'}"
+            ng-click='vmChild.switchMineralsSubtab("mineralogy")'>Mineralogy
+    </button>
+    <button class='button' ng-class="{'button-positive': vmChild.attributeType === 'reactions'}"
+            ng-click='vmChild.switchMineralsSubtab("reactions")'>Reactions
+    </button>
+    <button class='button' ng-class="{'button-positive': vmChild.attributeType === 'ternary'}"
+            ng-click='vmChild.switchMineralsSubtab("ternary")' ng-show="vmChild.shouldShowTernary()">Ternary
+    </button>
+  </div>
+  <div ng-show='vmChild.attributeType === "mineralogy"'>
+    <button ng-click='vmChild.addAttribute();' class='button button-clear button-positive'>
+      <i class='icon ion-plus-circled'></i>
+      <span class='button-text-big'>Add a Mineral</span>
+    </button>
+    <div class="padding" ng-show="!vm.spot.properties.pet.minerals.mineralogy">
+      There are no minerals at this Spot.
+    </div>
+    <ion-list>
+      <ion-item class='item-text-wrap item-button-right'
+                ng-repeat='mineral in vm.spot.properties.pet.minerals.mineralogy track by mineral.id'>
+        <div ng-click='vmChild.editAttribute(mineral)'>
+          <b>{{ vmChild.getMineralName(mineral) }}</b>
+          <div class='padding-left' ng-repeat='(key, value) in mineral track by $index' ng-hide='key === "id"'>
+            {{vmChild.getLabel(key, key)}}: {{vmChild.getLabel(key, value)}}
+          </div>
+        </div>
+        <div class='buttons'>
+          <button class='button button-clear button-assertive' ng-click='vmChild.deleteAttribute(mineral)'>
+            <i class='icon ion-minus-circled'></i>
+          </button>
+        </div>
+      </ion-item>
+    </ion-list>
+  </div>
+  <div ng-show='vmChild.attributeType === "reactions"'>
+    <button ng-click='vmChild.addAttribute();' class='button button-clear button-positive'>
+      <i class='icon ion-plus-circled'></i>
+      <span class='button-text-big'>Add a Reaction</span>
+    </button>
+    <div class="padding" ng-show="!vm.spot.properties.pet.minerals.reactions">
+      There are no reactions at this Spot.
+    </div>
+    <ion-list>
+      <ion-item class='item-text-wrap item-button-right'
+                ng-repeat='reaction in vm.spot.properties.pet.minerals.reactions track by reaction.id'>
+        <div ng-click='vmChild.editAttribute(reaction)'>
+          <b>{{ reaction.reactions || 'Unknown'}}</b>
+          <div class='padding-left' ng-repeat='(key, value) in reaction
+          track by $index' ng-hide='key === "id" || key === "reactions"'>
+            {{vmChild.getLabel(key, key)}}: {{vmChild.getLabel(key, value)}}
+          </div>
+        </div>
+        <div class='buttons'>
+          <button class='button button-clear button-assertive' ng-click='vmChild.deleteAttribute(reaction)'>
+            <i class='icon ion-minus-circled'></i>
+          </button>
+        </div>
+      </ion-item>
+    </ion-list>
+  </div>
+  <div ng-show='vmChild.attributeType === "ternary"'>
+    <div class="padding" ng-hide='(vmChild.ternary.q > 0 && vmChild.ternary.a > 0 && vmChild.ternary.p > 0)
+      || (vmChild.ternary.a > 0 && vmChild.ternary.p > 0 && vmChild.ternary.f > 0)
+      || (vmChild.ternary.ol > 0 && vmChild.ternary.opx > 0 && vmChild.ternary.cpx > 0)
+      || (vmChild.ternary.ol > 0 && vmChild.ternary.cpx > 0 && vmChild.ternary.p > 0)
+      || (vmChild.ternary.ol > 0 && vmChild.ternary.pyx > 0 && vmChild.ternary.hbl > 0)'>
+      No calculations to display. Add relevant minerals with modal percents to the Mineralogy.
+    </div>
+    <div ng-show='vmChild.ternary.q > 0 && vmChild.ternary.a > 0 && vmChild.ternary.p > 0'>
+      <div class='item item-divider'>
+        QAP Calculations
+      </div>
+      <div class="padding">
+        Q (Quartz): {{vmChild.ternary.q}}
+        <br>
+        A (Alkali Feldspar): {{vmChild.ternary.a}}
+        <br>
+        P (Plagioclase): {{vmChild.ternary.p}}
+        <br>
+        QAP Sum = {{vmChild.ternary.qap_sum}}
+        <br>
+        Normalized Q value = {{(vmChild.ternary.q / vmChild.ternary.qap_sum) * 100 | number: 0}}
+        <br>
+        Normalized A value = {{(vmChild.ternary.a / vmChild.ternary.qap_sum) * 100 | number: 0}}
+        <br>
+        Normalized P value = {{(vmChild.ternary.p / vmChild.ternary.qap_sum) * 100 | number: 0}}
+      </div>
+    </div>
+    <div
+      ng-show='vmChild.ternary.a > 0 && vmChild.ternary.p > 0 && vmChild.ternary.f > 0'>
+      <div class='item item-divider'>
+        APF Calculations
+      </div>
+      <div class="padding">
+        A (Alkali Feldspar): {{vmChild.ternary.a}}
+        <br>
+        P (Plagioclase): {{vmChild.ternary.p}}
+        <br>
+        F (Feldspathoids): {{vmChild.ternary.f}}
+        <br>
+        APF Sum = {{vmChild.ternary.apf_sum}}
+        <br>
+        Normalized A value = {{(vmChild.ternary.a / vmChild.ternary.apf_sum) * 100 | number: 0}}
+        <br>
+        Normalized P value = {{(vmChild.ternary.p / vmChild.ternary.apf_sum) * 100 | number: 0}}
+        <br>
+        Normalized F value = {{(vmChild.ternary.f / vmChild.ternary.apf_sum) * 100 | number: 0}}
+      </div>
+    </div>
+    <div
+      ng-show='vmChild.ternary.ol > 0 && vmChild.ternary.opx > 0 && vmChild.ternary.cpx > 0'>
+      <div class='item item-divider'>
+        Ultramafics (Ol, Opx, Cpx) Calculations
+      </div>
+      <div class="padding">
+        Ol (Olivine): {{vmChild.ternary.ol}}
+        <br>
+        Opx (Orthopyroxene): {{vmChild.ternary.opx}}
+        <br>
+        Cpx (Clinopyroxene): {{vmChild.ternary.cpx}}
+        <br>
+        OOC Sum = {{vmChild.ternary.ooc_sum}}
+        <br>
+        Normalized Ol value = {{(vmChild.ternary.ol / vmChild.ternary.ooc_sum) * 100 | number: 0}}
+        <br>
+        Normalized Opx value = {{(vmChild.ternary.opx / vmChild.ternary.ooc_sum) * 100 | number: 0}}
+        <br>
+        Normalized CPx value = {{(vmChild.ternary.cpx / vmChild.ternary.ooc_sum) * 100 | number: 0}}
+      </div>
+    </div>
+    <div
+      ng-show='vmChild.ternary.ol > 0 && vmChild.ternary.cpx > 0 && vmChild.ternary.p > 0'>
+      <div class='item item-divider'>
+        Ultramafics (Ol, Cpx, Plag) Calculations
+      </div>
+      <div class="padding">
+        Ol (Olivine): {{vmChild.ternary.ol}}
+        <br>
+        Cpx (Clinopyroxene): {{vmChild.ternary.cpx}}
+        <br>
+        Plag (Plagioclase): {{vmChild.ternary.p}}
+        <br>
+        OCP Sum = {{vmChild.ternary.ocp_sum}}
+        <br>
+        Normalized Ol value = {{(vmChild.ternary.ol / vmChild.ternary.ocp_sum) * 100 | number: 0}}
+        <br>
+        Normalized Cpx value = {{(vmChild.ternary.cpx / vmChild.ternary.ocp_sum) * 100 | number: 0}}
+        <br>
+        Normalized Plag value = {{(vmChild.ternary.p / vmChild.ternary.ocp_sum) * 100 | number: 0}}
+      </div>
+    </div>
+    <div
+      ng-show='vmChild.ternary.ol > 0 && vmChild.ternary.pyx > 0 && vmChild.ternary.hbl > 0'>
+      <div class='item item-divider'>
+        Ultramafics (Ol, Pyx, Hbl) Calculations
+      </div>
+      <div class="padding">
+        Ol (Olivine): {{vmChild.ternary.ol}}
+        <br>
+        Pyx (Pyroxene): {{vmChild.ternary.pyx}}
+        <br>
+        Hbl (Hornblende): {{vmChild.ternary.hbl}}
+        <br>
+        OPH Sum = {{vmChild.ternary.oph_sum}}
+        <br>
+        Normalized Ol value = {{(vmChild.ternary.ol / vmChild.ternary.oph_sum) * 100 | number: 0}}
+        <br>
+        Normalized Ppx value = {{(vmChild.ternary.pyx / vmChild.ternary.oph_sum) * 100 | number: 0}}
+        <br>
+        Normalized Hbl value = {{(vmChild.ternary.hbl / vmChild.ternary.oph_sum) * 100 | number: 0}}
+      </div>
+    </div>
+  </div>
+</div>

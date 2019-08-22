@@ -95,6 +95,12 @@
         <div ng-show='sidePanel.isActiveTab("experimental-results")' ng-controller='ExperimentalResultsTabController as vmChild'>
           <strabo-experimental-results-tab-directive></strabo-experimental-results-tab-directive>
         </div>
+        <div ng-show='sidePanel.isActiveTab("pet-basics")' ng-controller='PetBasicsTabController as vmChild'>
+          <strabo-pet-basics-tab-directive></strabo-pet-basics-tab-directive>
+        </div>
+        <div ng-show='sidePanel.isActiveTab("pet-minerals")' ng-controller='PetMineralsTabController as vmChild'>
+          <strabo-pet-minerals-tab-directive></strabo-pet-minerals-tab-directive>
+        </div>
       </div>
     </div>
   </div>

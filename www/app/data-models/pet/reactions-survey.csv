@@ -1,0 +1,11 @@
+type,name,label,required,relevant,calculation
+start,start,,,,
+end,end,,,,
+begin_group,group_cr8sh11,Reactions,,,
+text,reactions,Reactions,false,,
+select_multiple ph6ma31,based_on,Based on,false,,
+text,Other_Based_on,Other,false,"selected(${based_on}, 'other')",
+select_one eq7hj86,ranking,Ranking,false,,
+end_group,,,,,
+calculate,_version,,false,,'vz3ZQiUYMWhSKqG937DgJQ'
+calculate,__version__,,,,'v8sRiMW45tPX6iksbhDSyM'

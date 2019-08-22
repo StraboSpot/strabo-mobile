@@ -1,0 +1,200 @@
+list_name,name,label,order
+hc7ju75,igneous,igneous,
+hc7ju75,metamorphic,metamorphic,
+hc7ju75,alteration_or,"alteration, ore",
+tf05s47,volcanic,volcanic,
+tf05s47,plutonic,plutonic,
+vb8zj01,granite,granite,0
+vb8zj01,granodiorite,granodiorite,1
+vb8zj01,diorite,diorite,2
+vb8zj01,gabbro,gabbro,3
+vb8zj01,alkali_granite,alkali feldspar granite,4
+vb8zj01,anorthosite,anorthosite,5
+vb8zj01,aplite,aplite,6
+vb8zj01,diabase,diabase,7
+vb8zj01,dunite,dunite,8
+vb8zj01,harzburgite,harzburgite,9
+vb8zj01,monzonite,monzonite,10
+vb8zj01,norite,norite,11
+vb8zj01,pegmatite,pegmatite,12
+vb8zj01,peridotite,peridotite,13
+vb8zj01,quartz_monz,quartz monzonite,14
+vb8zj01,syenite,syenite,15
+vb8zj01,tonalite,tonalite,16
+vb8zj01,unclear,unclear,17
+vb8zj01,other,other,18
+nx1fj58,strabotools,StraboTools,
+nx1fj58,visual,visual,
+cm8zx92,pluton,pluton,
+cm8zx92,dike,dike,
+cm8zx92,sill,sill,
+cm8zx92,unclear,unclear,
+cm8zx92,other,other,
+ug9ia66,fine_grained,fine-grained,0
+ug9ia66,medium_grained,medium-grained,1
+ug9ia66,coarse_grained,coarse-grained,2
+ug9ia66,porphyritic,porphyritic,3
+ug9ia66,pegmatitic,pegmatitic,4
+ug9ia66,equigranular,equigranular,5
+ug9ia66,megacrystic,megacrystic,6
+ug9ia66,aplitic,aplitic,7
+ug9ia66,miarolitic,miarolitic,8
+ug9ia66,diabasic,diabasic,9
+ug9ia66,other,other,
+pt2tr54,altered,altered,
+pt2tr54,metamorphic_ov,metamorphic overprint,
+pt2tr54,shattered,shattered,
+pt2tr54,veined,veined,
+pt2tr54,faulted,faulted,
+pt2tr54,grus,grus,
+hr56r07,basalt,basalt,0
+hr56r07,rhyolite,rhyolite,1
+hr56r07,basaltic_andes,basaltic-andesite,2
+hr56r07,andesite,andesite,3
+hr56r07,dacite,dacite,4
+hr56r07,obsidian,obsidian,5
+hr56r07,tachylite,tachylite,6
+hr56r07,trachyte,trachyte,7
+hr56r07,rhyodacite,rhyodacite,8
+hr56r07,trachyandesite,trachyandesite,9
+hr56r07,trachybasalt,trachybasalt,10
+hr56r07,latite,latite,11
+hr56r07,tuff,tuff,12
+hr56r07,ash_fall_tuff,ash-fall tuff,13
+hr56r07,ash_flow_tuff,ash-flow tuff,14
+hr56r07,vitrophyre,vitrophyre,15
+hr56r07,tuff_breccia,tuff breccia,16
+hr56r07,lapilli_tuff,lapilli tuff,17
+hr56r07,unclear,unclear,18
+hr56r07,other,other,19
+ez5mj87,lava,lava,
+ez5mj87,dome,dome,
+ez5mj87,pyroclastic_fl,pyroclastic flow,
+ez5mj87,pyroclastic_fa,pyroclastic fall,
+ez5mj87,pyroclastic_su,pyroclastic surge,
+ez5mj87,reworked,reworked,
+ez5mj87,unclear,unclear,
+ez5mj87,other,other,
+jx1rw50,porrphyritic,porphyritic,
+jx1rw50,clastic,clastic,
+jx1rw50,glassy,glassy,
+jx1rw50,vesicular,vesicular,
+jx1rw50,eutaxitic,eutaxitic,
+jx1rw50,devitrified,devitrified,
+jx1rw50,aphanitic,aphanitic,
+jx1rw50,stony,stony,
+jx1rw50,vuggy,vuggy,
+jx1rw50,xenoliths,xenoliths,
+jx1rw50,other,other,
+kc4rs46,columnar_joint,columnar jointed,
+kc4rs46,eutaxitic,banded,
+kc4rs46,welded,welded,
+kc4rs46,layered,layered,
+kc4rs46,cross_bedded,cross-bedded,
+kc4rs46,other,other,
+zw3kc97,slate,slate,0
+zw3kc97,marble,marble,1
+zw3kc97,schist,schist,2
+zw3kc97,quartzite,quartzite,3
+zw3kc97,migmatite,migmatite,4
+zw3kc97,mylonite,mylonite,5
+zw3kc97,phyllite,phyllite,6
+zw3kc97,amphibolite,amphibolite,7
+zw3kc97,blueschist,blueschist,8
+zw3kc97,greenschist,greenschist,9
+zw3kc97,greenstone,greenstone,10
+zw3kc97,granulite,granulite,11
+zw3kc97,calc_silicate,calc-silicate,12
+zw3kc97,eclogite,eclogite,13
+zw3kc97,gneiss,gneiss,14
+zw3kc97,granofels,granofels,15
+zw3kc97,phyllonite,phyllonite,16
+zw3kc97,hornfels,hornfels,17
+zw3kc97,skarn,skarn,18
+zw3kc97,serpentinite,serpentinite,19
+zw3kc97,cataclasite,cataclasite,20
+zw3kc97,anatectite,anatectite,21
+zw3kc97,cordierite-ant,cordierite-anthophyllite,22
+zw3kc97,garnetite,garnetite,23
+zw3kc97,glaucophanite,glaucophanite,24
+zw3kc97,jadeite,jadeite,25
+zw3kc97,metaarkose,metaarkose,26
+zw3kc97,metabasite,metabasite,27
+zw3kc97,metacarbonate,metacarbonate,28
+zw3kc97,metagranite,metagranite,29
+zw3kc97,metagreywacke,metagreywacke,30
+zw3kc97,metaigneous,metaigneous,31
+zw3kc97,metapelite,metapelite,32
+zw3kc97,metavolcanic,metavolcanic,33
+zw3kc97,pyroxenite,pyroxenite,34
+zw3kc97,orthogneiss,orthogneiss,36
+zw3kc97,paragneiss,paragneiss,37
+zw3kc97,calc_schist,calc schist,38
+zw3kc97,metagraywak,metagraywacke,39
+zw3kc97,blackwall,blackwall,40
+zw3kc97,metasomatite,metasomatite,41
+zw3kc97,meta_ultramafi,meta-ultramafic,42
+zw3kc97,meta-iron_form,meta-iron formation,43
+zw3kc97,other,other,44
+zt6bn36,pelite,mudrock/pelite,0
+zt6bn36,carbonate,carbonate,1
+zt6bn36,marl,marl,2
+zt6bn36,sandstone,sandstone,3
+zt6bn36,semi_pelite,psammite,4
+zt6bn36,granitoid,granitoid,5
+zt6bn36,mafic,mafic,7
+zt6bn36,ultramafic,ultramafic,8
+zt6bn36,conglomerate,conglomerate,9
+zt6bn36,unclear,unclear,10
+zt6bn36,other,other,11
+kt0dp56,greenschist,greenschist,0
+kt0dp56,epidote_amphib,epidote amphibolite,1
+kt0dp56,amphibolite,amphibolite,2
+kt0dp56,granulite,granulite,3
+kt0dp56,blueschist,blueschist,4
+kt0dp56,eclogite,eclogite,5
+kt0dp56,hornfels,hornfels,6
+kt0dp56,ultra_high_pre,ultra-high pressure,7
+kt0dp56,ultra_high_tem,ultra-high temperature,8
+kt0dp56,zeolite,zeolite,9
+kt0dp56,prehnite_pumpy,prehnite-pumpyellite,10
+kt0dp56,other,other,11
+nw3zz67,chlorite,chlorite,0
+nw3zz67,biotite,biotite,1
+nw3zz67,garnet,garnet,2
+nw3zz67,garnet_corider,garnet-coriderite,3
+nw3zz67,staurolite,staurolite,4
+nw3zz67,staurolite_kya,staurolite-kyanite,5
+nw3zz67,andalusite,andalusite,6
+nw3zz67,kyanite,kyanite,7
+nw3zz67,sillimanite,sillimanite,8
+nw3zz67,sill_kspar,sillimanite-K feldspar,9
+nw3zz67,migmatite,migmatite,
+nw3zz67,other,other,
+uq4ie19,skarn,skarn,0
+uq4ie19,hornfels,hornfels,1
+uq4ie19,dolorite_mica_,dolorite/mica replacement,2
+uq4ie19,rhodingite,rodingite,3
+uq4ie19,carbonatite,carbonatite,4
+uq4ie19,chromite_ore,chromite ore,5
+uq4ie19,magmatic_hoste,magmatic-hosted ore,6
+uq4ie19,pegmatite_host,pegmatite-hosted ore,7
+uq4ie19,vein_hosted_or,vein-hosted ore,8
+uq4ie19,greisen_ore,greisen ore,9
+uq4ie19,carbonate_repl,carbonate-replacement,10
+uq4ie19,bif,BIF,11
+uq4ie19,sedimentary_pr,sedimentary precipitated ore,12
+uq4ie19,sedimentary_ho,sedimentary hosted ore (U),13
+uq4ie19,kimberlite,kimberlite,14
+uq4ie19,komatiites,komatiites,15
+uq4ie19,placer,placer,16
+uq4ie19,laterite,laterite,17
+uq4ie19,other,other,18
+xa5un89,propylitic,propylitic,
+xa5un89,albite_epidote,albite-epidote,
+xa5un89,potassic,potassic,
+xa5un89,sodic_calcic,sodic-calcic,
+xa5un89,chlorite_seric,chlorite-sericite,
+xa5un89,phyllitic,phyllic,
+xa5un89,argellic,argillic,
+xa5un89,other,other,

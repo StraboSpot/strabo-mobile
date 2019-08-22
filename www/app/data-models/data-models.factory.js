@@ -195,6 +195,26 @@
           'choices_file': 'app/data-models/tabular_zone_orientation-choices.csv'
         }
       },
+      'pet': {
+        'basics': {
+          'survey': {},
+          'survey_file': 'app/data-models/pet/basics-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/pet/basics-choices.csv'
+        },
+        'mineralogy': {
+          'survey': {},
+          'survey_file': 'app/data-models/pet/mineralogy-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/pet/mineralogy-choices.csv'
+        },
+        'reactions': {
+          'survey': {},
+          'survey_file': 'app/data-models/pet/reactions-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/pet/reactions-choices.csv'
+        }
+      },
       'preferences': {
         'survey': {},
         'survey_file': 'app/data-models/project_preferences-survey.csv'
@@ -322,6 +342,7 @@
     var labelsDictionary = {};
     var labelsDictionaryNew = {};
     var sedLabelsDictionary = {};
+    var fieldsToGetLabel = [];
     var spotDataModel = {};
     var surfaceFeatureTypeLabels = {};
     var traceTypeLabels = {};
@@ -353,6 +374,14 @@
         //   $log.error('Unmatched Labels!', field.name, ': ', labelsDictionaryNew[field.name], '!==', field.label);
         // }
         labelsDictionaryNew[field.name] = field.label;
+        // Make a list of all fields that are are select one or select multiple or are choices
+        if (!field.type) {
+          fieldsToGetLabel.push(field.name);
+        }
+        else {
+          var fieldType = field.type.split(" ")[0];
+          if (fieldType === 'select_one' || fieldType === 'select_multiple') fieldsToGetLabel.push(field.name);
+        }
       });
     }
 
@@ -469,6 +498,7 @@
           'name': 'Type: text; REQUIRED',
           'notes': 'Type: text',
           'orientation_data': [],
+          'pet': {'basics': {}, 'minerals': {}},
           'samples': [],
           'sed': {'lithologies': {}, 'structures': {}, 'interpretations': {}},
           'time': 'datetime',
@@ -498,8 +528,10 @@
         'sed_environment': dataModels.sed.environment,
         'sed_surfaces': dataModels.sed.surfaces,
         'sed_architecture': dataModels.sed.architecture,
-        'trace': dataModels.trace
-      };
+        'trace': dataModels.trace,
+        'pet_basics': dataModels.pet.basics,
+        'pet_mineralogy': dataModels.pet.mineralogy,
+        'pet_reactions': dataModels.pet.reactions};
       _.each(models, function (model, key) {
         var description = {};
         _.each(model.survey, function (field) {
@@ -552,6 +584,9 @@
           description = sortby(description);
           spotDataModel.properties.images.push(description);
         }
+        else if (key === 'pet_basics') _.extend(spotDataModel.properties.pet.basics, description);
+        else if (key === 'pet_mineralogy') spotDataModel.properties.pet.minerals.mineralogy = [description];
+        else if (key === 'pet_reactions') spotDataModel.properties.pet.minerals.reactions = [description];
         else spotDataModel.properties[key].push(description);
       });
     }
@@ -655,8 +690,10 @@
       return labelsDictionary[label] || undefined;
     }
 
-    function getLabelFromNewDictionary(label) {
-      return labelsDictionaryNew[label] || undefined;
+    // Only get labels for data that is a key or for data that came from a select field or are a choice
+    function getLabelFromNewDictionary(key, data) {
+      if (key === data || _.contains(fieldsToGetLabel, key)) return labelsDictionaryNew[data] || undefined;
+      return undefined;
     }
 
     function getSedLabel(value) {
@@ -694,7 +731,7 @@
       $log.log('Loading data models ...');
       _.each(dataModels, function (dataModel, key) {
         if (key === 'orientation_data' || key === '_3d_structures' || key === 'sed' || key === 'minerals' ||
-          key === 'micro') {
+          key === 'micro' || key === 'pet') {
           _.each(dataModel, function (childDataModel, childKey) {
             //$log.log('Loading', key, childKey, ' ...');
             promises.push(loadDataModel(childDataModel));

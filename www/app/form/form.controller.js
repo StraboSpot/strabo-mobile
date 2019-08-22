@@ -89,6 +89,8 @@
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair
     function showField(field, data) {
+      if (typeof data[field.name] !== 'boolean' && typeof data[field.name] !== 'number'
+        && _.isEmpty(data[field.name])) delete data[field.name];
       var show = FormFactory.isRelevant(field.relevant, data);
       if (show && field.default) {
         if (!data[field.name]) data[field.name] = field.default;
@@ -103,7 +105,8 @@
           field.name === 'group_other_modes' || field.name === 'strat_mode' || field.name === 'minerals' ||
           field.name === 'group_experimental_tab_control' || field.name === 'experimental' ||
           field.name === 'experimental_results' || field.name === 'experimental_set_up' ||
-          field.name === 'data') {
+          field.name === 'data' || field.name === 'group_pet_tab_control' || field.name === 'pet_basics' ||
+          field.name === 'pet_minerals') {
           show = false;
         }
       }

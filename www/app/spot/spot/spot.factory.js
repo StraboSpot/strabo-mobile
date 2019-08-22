@@ -38,7 +38,10 @@
       {'value': 'sed_interpretations', 'label': 'Sed Interpretations', 'path': 'sed-interpretations'},
       {'value': 'experimental', 'label': 'Experimental', 'path': 'experimental'},
       {'value': 'experimental_set_up', 'label': 'Experimental Set Up', 'path': 'experimental-set-up'},
-      {'value': 'experimental_results', 'label': 'Experimental Results', 'path': 'experimental-results'}];
+      {'value': 'experimental_results', 'label': 'Experimental Results', 'path': 'experimental-results'},
+      {'value': 'pet_basics', 'label': 'Pet Basics', 'path': 'pet-basics'},
+      {'value': 'pet_minerals', 'label': 'Pet Minerals', 'path': 'pet-minerals'}
+    ];
 
     return {
       'addSpotToActiveNest': addSpotToActiveNest,
@@ -64,6 +67,7 @@
       'getSpotById': getSpotById,
       'getSpotWithImageId': getSpotWithImageId,
       'getSpots': getSpots,
+      'getSpotsWithPetBasics': getSpotsWithPetBasics,
       'getTabs': getTabs,
       'goToSpot': goToSpot,
       'isSafeDelete': isSafeDelete,
@@ -488,6 +492,13 @@
 
     function getSpots() {
       return spots;
+    }
+
+    // Get all active Spots that have petrology basics data
+    function getSpotsWithPetBasics() {
+     return _.filter(activeSpots, function (spot) {
+        return _.has(spot.properties, 'pet') && _.has(spot.properties.pet, 'basics');
+      });
     }
 
     function getSpotsByDatasetId(datasetId) {

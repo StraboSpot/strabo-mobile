@@ -148,13 +148,19 @@
     function setForm(inFormName, type) {
       $log.log('Setting form to', inFormName, type);
       formName = type ? inFormName + '.' + type : inFormName;
-      if (type) {
-        form.survey = DataModelsFactory.getDataModel(inFormName)[type].survey;
-        form.choices = DataModelsFactory.getDataModel(inFormName)[type].choices;
+      try {
+        if (type) {
+          form.survey = DataModelsFactory.getDataModel(inFormName)[type].survey;
+          form.choices = DataModelsFactory.getDataModel(inFormName)[type].choices;
+        }
+        else {
+          form.survey = DataModelsFactory.getDataModel(inFormName).survey;
+          form.choices = DataModelsFactory.getDataModel(inFormName).choices;
+        }
       }
-      else {
-        form.survey = DataModelsFactory.getDataModel(inFormName).survey;
-        form.choices = DataModelsFactory.getDataModel(inFormName).choices;
+      catch (e) {
+        form.survey = {};
+        form.choices = {};
       }
       $rootScope.$broadcast('formUpdated', form);
     }
