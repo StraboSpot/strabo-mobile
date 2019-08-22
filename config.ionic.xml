@@ -4,7 +4,7 @@
 
 <widget
     id="org.strabospot.strabo"
-    version="1.8.2"
+    version="1.8.3"
     xmlns="http://www.w3.org/ns/widgets"
     xmlns:cdv="http://cordova.apache.org/ns/1.0"
     xmlns:gap="http://phonegap.com/ns/1.0">
@@ -17,6 +17,9 @@
   </author>
     <content src="index.html" />
     <access origin="*" />
+    <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application" xmlns:android="http://schemas.android.com/apk/res/android">
+      <application android:usesCleartextTraffic="true" />
+    </edit-config>
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
