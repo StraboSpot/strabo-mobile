@@ -22,8 +22,8 @@
       f: ['leucite', 'nepheline'],                                                                // Feldspathoids
       ol: ['olivine'],                                                                            // Olivine
       opx: ['orthopyroxene'],                                                                     // Orthopyroxene
-      cpx: ['clinopyroxene', 'augite', 'diopside', 'cr_diopside', 'spodumene'],                   // Clinopyroxene
-      pyx: ['na pyroxene', 'na_pyroxene'],                                                        // Pyroxene
+      cpx: ['clinopyroxene', 'augite', 'diopside', 'cr_diopside', 'cr-diopside', 'spodumene', 'na pyroxene', 'na_pyroxene'], // Clinopyroxene
+      pyx: ['na pyroxene', 'na_pyroxene', 'clinopyroxene', 'augite', 'diopside', 'cr_diopside', 'cr-diopside', 'spodumene', 'orthopyroxene'], // Pyroxene
       hbl: ['hornblende', 'magnesio-hornblende', 'mg_hornblende']                                 // Hornblende
     };
 

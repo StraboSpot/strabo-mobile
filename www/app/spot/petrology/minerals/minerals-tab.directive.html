@@ -62,11 +62,14 @@
     </ion-list>
   </div>
   <div ng-show='vmChild.attributeType === "ternary"'>
-    <div class="padding" ng-show='vmChild.ternary.qap_sum <= 0 && vmChild.ternary.apf_sum <= 0
-      && vmChild.ternary.ooc_sum <= 0 && vmChild.ternary.ocp_sum <= 0 && vmChild.ternary.oph_sum <= 0'>
+    <div class="padding" ng-hide='(vmChild.ternary.q > 0 && vmChild.ternary.a > 0 && vmChild.ternary.p > 0)
+      || (vmChild.ternary.a > 0 && vmChild.ternary.p > 0 && vmChild.ternary.f > 0)
+      || (vmChild.ternary.ol > 0 && vmChild.ternary.opx > 0 && vmChild.ternary.cpx > 0)
+      || (vmChild.ternary.ol > 0 && vmChild.ternary.cpx > 0 && vmChild.ternary.p > 0)
+      || (vmChild.ternary.ol > 0 && vmChild.ternary.pyx > 0 && vmChild.ternary.hbl > 0)'>
       No calculations to display. Add relevant minerals with modal percents to the Mineralogy.
     </div>
-    <div ng-show='vmChild.ternary.qap_sum > 0'>
+    <div ng-show='vmChild.ternary.q > 0 && vmChild.ternary.a > 0 && vmChild.ternary.p > 0'>
       <div class='item item-divider'>
         QAP Calculations
       </div>
@@ -87,7 +90,7 @@
       </div>
     </div>
     <div
-      ng-show='vmChild.ternary.apf_sum > 0'>
+      ng-show='vmChild.ternary.a > 0 && vmChild.ternary.p > 0 && vmChild.ternary.f > 0'>
       <div class='item item-divider'>
         APF Calculations
       </div>
@@ -108,7 +111,7 @@
       </div>
     </div>
     <div
-      ng-show='vmChild.ternary.ooc_sum > 0'>
+      ng-show='vmChild.ternary.ol > 0 && vmChild.ternary.opx > 0 && vmChild.ternary.cpx > 0'>
       <div class='item item-divider'>
         Ultramafics (Ol, Opx, Cpx) Calculations
       </div>
@@ -129,14 +132,14 @@
       </div>
     </div>
     <div
-      ng-show='vmChild.ternary.ocp_sum > 0'>
+      ng-show='vmChild.ternary.ol > 0 && vmChild.ternary.cpx > 0 && vmChild.ternary.p > 0'>
       <div class='item item-divider'>
         Ultramafics (Ol, Cpx, Plag) Calculations
       </div>
       <div class="padding">
         Ol (Olivine): {{vmChild.ternary.ol}}
         <br>
-        Opx (Clinopyroxene): {{vmChild.ternary.opx}}
+        Cpx (Clinopyroxene): {{vmChild.ternary.cpx}}
         <br>
         Plag (Plagioclase): {{vmChild.ternary.p}}
         <br>
@@ -150,7 +153,7 @@
       </div>
     </div>
     <div
-      ng-show='vmChild.ternary.oph_sum > 0'>
+      ng-show='vmChild.ternary.ol > 0 && vmChild.ternary.pyx > 0 && vmChild.ternary.hbl > 0'>
       <div class='item item-divider'>
         Ultramafics (Ol, Pyx, Hbl) Calculations
       </div>
