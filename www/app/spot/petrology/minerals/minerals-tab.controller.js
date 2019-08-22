@@ -279,7 +279,7 @@
     function getMineralName(mineral) {
       var names = [];
       var mineralSelectFields = ['volcanic_mineral', 'metamorphic_mineral', 'plutonic_mineral',
-        'alteration_ore_minerals', 'mineral'];
+        'alteration_ore_mineral', 'mineral'];
       _.each(mineralSelectFields, function (field) {
         if (mineral[field]) {
           var name = mineral[field];
