@@ -22,6 +22,7 @@
     var spots = {};        // All Spots
     var tabs = [
       {'value': 'spot', 'label': 'Spot', 'path': 'spot'},
+      {'value': 'notes', 'label': 'Notes', 'path': 'notes'},
       {'value': 'orientations', 'label': 'Orientations', 'path': 'orientations'},
       {'value': '_3dstructures', 'label': '3D Structures', 'path': '_3dstructures'},
       {'value': 'images', 'label': 'Images', 'path': 'images'},

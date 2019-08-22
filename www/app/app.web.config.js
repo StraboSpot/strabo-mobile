@@ -93,6 +93,7 @@
       {'state': 'images', 'template': 'images/images-tab', 'controller': 'Images'},
       {'state': 'minerals', 'template': 'minerals/minerals-tab', 'controller': 'Minerals'},
       {'state': 'nesting', 'template': 'nesting/nesting-tab', 'controller': 'Nesting'},
+      {'state': 'notes', 'template': 'notes/notes-tab', 'controller': 'Notes'},
       {'state': 'orientations', 'template': 'orientations/orientations-tab', 'controller': 'Orientations'},
       {'state': 'other-features', 'template': 'other-features/other-features-tab', 'controller': 'OtherFeatures'},
       {'state': 'relationships', 'template': 'relationships/relationships-tab', 'controller': 'Relationships'},

@@ -1259,3 +1259,20 @@ Offline Maps Page
 .tile-count-label {
   text-align: center;
 }
+
+/*--------------------
+Spot Notes Page
+---------------------*/
+.spot-notes-container {
+  height: 100%;
+}
+
+.spot-notes-container .spot-notes {
+  font-size: x-large;
+  line-height: 30px;
+  resize: none;
+  outline: none;
+  width: 100%;
+  border: none;
+  height: 100%;
+}
