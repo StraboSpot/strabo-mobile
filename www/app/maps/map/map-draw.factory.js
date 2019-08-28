@@ -357,6 +357,8 @@
         var mappedSpots = _.filter(spots, function (spot) {
           return spot.geometry;
         });
+
+        // If map is an image basemap get only those Spots mapped on that particular image basemap
         if (!_.isEmpty(belongsTo) && belongsTo.image_basemap) {
           var spotsOnImageBasemap = _.filter(mappedSpots, function (mappedSpot) {
             return mappedSpot.properties.image_basemap;
@@ -365,7 +367,8 @@
             return spotOnImageBasemap.properties.image_basemap === belongsTo.image_basemap;
           });
         }
-        if (!_.isEmpty(belongsTo) && belongsTo.strat_section_id) {
+        // If map is a strat section get only those Spots mapped on that particular strat section
+        else if (!_.isEmpty(belongsTo) && belongsTo.strat_section_id) {
           var spotsOnStratSection = _.filter(mappedSpots, function (mappedSpot) {
             return mappedSpot.properties.strat_section_id;
           });
@@ -373,28 +376,27 @@
             return spotOnStratSection.properties.strat_section_id === belongsTo.strat_section_id;
           });
         }
-        _.each(mappedSpots, function (spot) {
-          // if the spot is a point, we test using turf.booleanWithin
-          // if the spot is a polygon or line, we test using turf.intersect
+        // If map is not an image basemap or strat section removed Spots mapped on an image basemap or strat section
+        else {
+          mappedSpots = _.omit(mappedSpots, function (mappedSpot) {
+            return mappedSpot.properties.image_basemap || mappedSpot.properties.strat_section_id;
+          });
+        }
 
-          var spotType = spot.geometry.type;
-
-          if (spotType === 'Point') {
-            // is the point inside the drawn polygon?
-            if (turf.booleanWithin(spot, geojsonObj)) {
-              //check here whether it is on map
+        // Find Spots within (points) or intersecting (line or polygon) the drawn polygon
+        try {
+          _.each(mappedSpots, function (spot) {
+            var spotType = spot.geometry.type;
+            if ((spotType === 'Point' && turf.booleanWithin(spot, geojsonObj))
+              || (spotType === 'LineString'
+                && (turf.lineIntersect(spot, geojsonObj).features.length > 0 || turf.booleanContains(geojsonObj, spot)))
+              || (spotType === 'Polygon' && turf.booleanOverlap(spot, geojsonObj))) {
               lassoedSpots.push(spot);
             }
-          }
-
-          if (spotType === 'LineString' || spotType === 'Polygon') {
-            // is the line or polygon within/intersected in the drawn polygon?
-            if (turf.intersect(spot, geojsonObj)) {
-              //check here whether it is on map
-              lassoedSpots.push(spot);
-            }
-          }
-        });
+          });
+        } catch (e) {
+          $log.error(e);
+        }
         SpotFactory.setSelectedSpots(lassoedSpots);
 
       }

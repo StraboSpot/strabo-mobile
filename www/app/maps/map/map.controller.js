@@ -164,7 +164,7 @@
           }
           else if (action === 'more') {
             popup.hide();
-            $location.path('/app/spotTab/' +vm.clickedFeatureId + '/spot');
+            $location.path('/app/spotTab/' + vm.clickedFeatureId + '/spot');
             $scope.$apply();
           }
           e.preventDefault();
@@ -226,30 +226,33 @@
         draw.on('drawend', function (e) {
           MapDrawFactory.doOnDrawEnd(e);
           var selectedSpots = SpotFactory.getSelectedSpots();
-          if (!_.isEmpty(selectedSpots)) {
+          if ((lmode === "tags" || lmode === "stereonet") && _.isEmpty(selectedSpots)) {
+            $ionicPopup.alert({
+              'title': 'No Spots Selected',
+              'template': 'No Spots found within the indicated area.'
+            });
+          }
+          else if (lmode === "tags" && !_.isEmpty(selectedSpots)) {
+            $log.log("tag mode enabled");
 
-            if (lmode == "tags") {
-              $log.log("tag mode enabled");
+            //cull spots to only those shown on map
+            var visibleSpots = MapFeaturesFactory.getVisibleLassoedSpots(selectedSpots, map);
+            SpotFactory.setSelectedSpots(visibleSpots);
 
-              //cull spots to only those shown on map
-              var visibleSpots = MapFeaturesFactory.getVisibleLassoedSpots(selectedSpots, map);
-              SpotFactory.setSelectedSpots(visibleSpots);
+            vm.allTags = ProjectFactory.getTags();
+            tagsToAdd = [];
+            vm.addTagModal.show();
+            MapDrawFactory.setLassoMode("");
+          }
+          else if (lmode === "stereonet" && !_.isEmpty(selectedSpots)) {
+            $log.log("stereonet mode enabled");
 
-              vm.allTags = ProjectFactory.getTags();
-              tagsToAdd = [];
-              vm.addTagModal.show();
-              MapDrawFactory.setLassoMode("");
-            }
-            else if (lmode == "stereonet") {
-              $log.log("stereonet mode enabled");
+            //use MapFeaturesFactory to get only mapped orientations
+            var stereonetSpots = MapFeaturesFactory.getVisibleLassoedSpots(selectedSpots, map);
+            $log.log('stereonetSpots: ', stereonetSpots);
 
-              //use MapFeaturesFactory to get only mapped orientations
-              var stereonetSpots = MapFeaturesFactory.getVisibleLassoedSpots(selectedSpots, map);
-              $log.log('stereonetSpots: ', stereonetSpots);
-
-              HelpersFactory.getStereonet(stereonetSpots);
-              MapDrawFactory.setLassoMode("");
-            }
+            HelpersFactory.getStereonet(stereonetSpots);
+            MapDrawFactory.setLassoMode("");
           }
         });
       });
