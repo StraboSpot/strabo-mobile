@@ -495,7 +495,7 @@ Form Fields Style
   max-width: 100% !important;
   width: 100% !important;
   font-weight: bold;
-  text-transform: uppercase;
+  text-transform: capitalize;
   font-size: small;
   line-height: 20px;
   height: 20px;
@@ -503,14 +503,14 @@ Form Fields Style
 }
 
 .strabo-form input{
-  font-size: small;
-  line-height: 20px;
-  height: 20px;
+  font-size: large;
+  line-height: 25px;
+  height: 25px;
   padding: 0px !important;
 }
 
 textarea {
-  font-size: small;
+  font-size: large;
 }
 
 .strabo-form .toggle {
@@ -537,7 +537,8 @@ textarea {
   max-width: 100%;
   width: 100%;
   margin: 0;
-  height: 20px;
+  height: 25px;
+  font-size: large;
 }
 
 /* Select box dropdown arrow positioning */
@@ -553,6 +554,7 @@ textarea {
   border-bottom: 0px;
   padding-top: 8px;
   padding-bottom: 8px;
+  font-size: large;
 }
 
 .item-checkbox .checkbox {
