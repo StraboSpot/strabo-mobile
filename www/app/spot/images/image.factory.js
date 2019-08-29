@@ -107,7 +107,7 @@
       document.addEventListener('deviceready', function () {
 
         var cameraOptions = {
-          'quality': 100,
+          'quality': 80,
           'destinationType': Camera.DestinationType.FILE_URI,
           'sourceType': source,
           'encodingType': Camera.EncodingType.JPEG,
