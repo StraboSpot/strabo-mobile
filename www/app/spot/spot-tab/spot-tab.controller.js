@@ -5,11 +5,11 @@
     .module('app')
     .controller('SpotTabController', SpotTabController);
 
-  SpotTabController.$inject = ['$cordovaGeolocation', '$ionicModal', '$ionicPopup', '$log', '$scope', '$state',
-    'FormFactory', 'HelpersFactory', 'LiveDBFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
+  SpotTabController.$inject = ['$cordovaGeolocation', '$ionicLoading', '$ionicModal', '$ionicPopup', '$log', '$scope',
+    '$state', 'FormFactory', 'HelpersFactory', 'LiveDBFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
 
-  function SpotTabController($cordovaGeolocation, $ionicModal, $ionicPopup, $log, $scope, $state, FormFactory,
-                             HelpersFactory, LiveDBFactory, ProjectFactory, SpotFactory, IS_WEB) {
+  function SpotTabController($cordovaGeolocation, $ionicLoading, $ionicModal, $ionicPopup, $log, $scope, $state,
+                             FormFactory, HelpersFactory, LiveDBFactory, ProjectFactory, SpotFactory, IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -80,6 +80,9 @@
 
     // Get current location of the user
     function getCurrentLocation() {
+      $ionicLoading.show({
+        'template': '<ion-spinner></ion-spinner><br>Getting location...'
+      });
       $cordovaGeolocation.getCurrentPosition().then(function (position) {
         vm.lat = HelpersFactory.roundToDecimalPlaces(position.coords.latitude, 6);
         vm.lng = HelpersFactory.roundToDecimalPlaces(position.coords.longitude, 6);
@@ -101,7 +104,10 @@
           'title': 'Alert!',
           'template': 'Unable to get location: ' + err.message
         });
-      });
+      })
+        .finally(function () {
+          $ionicLoading.hide();
+        });
     }
 
     function loadTab(state) {
