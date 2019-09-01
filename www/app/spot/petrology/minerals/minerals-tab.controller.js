@@ -6,10 +6,10 @@
     .controller('PetMineralsTabController', PetMineralsTabController);
 
   PetMineralsTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'DataModelsFactory',
-    'FormFactory', 'HelpersFactory'];
+    'FormFactory', 'HelpersFactory', 'MineralFactory'];
 
   function PetMineralsTabController($ionicModal, $ionicPopup, $log, $scope, $state, DataModelsFactory, FormFactory,
-                                    HelpersFactory) {
+                                    HelpersFactory, MineralFactory) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -29,6 +29,8 @@
 
     vm.basicFormModal = {};
     vm.attributeType = 'mineralogy';
+    vm.glossary = MineralFactory.getMineralGlossary();
+    vm.glossaryModal = {};
     vm.ternary = {};
 
     vm.addAttribute = addAttribute;
@@ -89,9 +91,19 @@
         vm.basicFormModal = modal;
       });
 
+      $ionicModal.fromTemplateUrl('app/spot/petrology/minerals/minerals-glossary-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'focusFirstInput': true,
+        'backdropClickToClose': false
+      }).then(function (modal) {
+        vm.glossaryModal = modal;
+      });
+
       // Cleanup the modal when we're done with it!
       $scope.$on('$destroy', function () {
         vm.basicFormModal.remove();
+        vm.glossaryModal.remove();
       });
     }
 
