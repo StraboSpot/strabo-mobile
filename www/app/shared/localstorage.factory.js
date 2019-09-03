@@ -1282,12 +1282,13 @@
     }
 
     function importProjectForDistribution(name) {
-      // add unzip map tiles here
-      return unzipMapsForDistribution(name).then(function () {
-        return copyImagesForDistribution(name).then(function () {
-          return importData(appDirectoryForDistributedBackups + '/' + name, 'data.json').then(function (importedData) { //use this same function to import data.json
-            return replaceDbs(importedData).then(function (){
-              return importOtherMaps(name);
+      return copyZipMapsForDistribution(name).then(function () {
+        return unzipMapsForDistribution(name).then(function () {
+          return copyImagesForDistribution(name).then(function () {
+            return importData(appDirectoryForDistributedBackups + '/' + name, 'data.json').then(function (importedData) { //use this same function to import data.json
+              return replaceDbs(importedData).then(function (){
+                return importOtherMaps(name);
+              });
             });
           });
         });
@@ -1376,6 +1377,52 @@
             },
             function (checkDirError) {
               $log.log('Image backups folder not found. No images to copy.', checkDirError);
+              resolve();
+            });
+        });
+      }
+      else Promise.resolve();
+    }
+
+    function copyZipMapsForDistribution(name) {
+      var devicePath = getDevicePath();
+      if (devicePath) {
+        return new Promise(function (resolve, reject) {
+          $cordovaFile.checkDir(devicePath, appDirectoryForDistributedBackups + '/' + name + '/maps').then(function (checkDirSuccess) {
+              $log.log('Found map zips folder', checkDirSuccess);
+                //create /StraboSpotTiles/TileZips
+                checkDir(appDirectoryTiles).then(function(){
+                  checkDir(zipsDirectory).then(function(){
+                    listDir(devicePath + appDirectoryForDistributedBackups + '/' + name + '/maps').then(function (fileEntries) {
+                      var promises = [];
+                      _.each(fileEntries, function (fileEntry) {
+                        var promise = $cordovaFile.copyFile(devicePath + appDirectoryForDistributedBackups + '/' + name + '/maps', fileEntry.name, devicePath + zipsDirectory, fileEntry.name).then(function (copyFileSuccess) {
+                            $log.log('Copied file:', copyFileSuccess);
+                          }, function (copyFileError) {
+                            $log.log('Error copying file:', copyFileError);
+                          });
+                        promises.push(promise);
+                      });
+                      Promise.all(promises).then(function () {
+                        $log.log('Finished copying all maps from backup.');
+                        resolve();
+                      });
+                    }, function (listDirError) {
+                      $log.log('Error getting list of files in directory', listDirError);
+                      reject('Error getting list of files in directory');
+                    });
+
+                  }, function(checkDirError){
+                    $log.log('Error creating StraboSpotTiles/TileZips Directory', checkDirError);
+                    reject('Error creating StraboSpotTiles/TileZips Directory');
+                  });
+                }, function(checkDirError){
+                  $log.log('Error creating StraboSpotTiles Directory', checkDirError);
+                  reject('Error creating StraboSpotTiles Directory');
+                });
+            },
+            function (checkDirError) {
+              $log.log('Maps folder not found. No maps to copy.', checkDirError);
               resolve();
             });
         });
