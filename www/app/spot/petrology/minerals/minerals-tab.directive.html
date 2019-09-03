@@ -11,14 +11,22 @@
     </button>
   </div>
   <div ng-show='vmChild.attributeType === "mineralogy"'>
-    <button ng-click='vmChild.addAttribute();' class='button button-clear button-positive'>
-      <i class='icon ion-plus-circled'></i>
-      <span class='button-text-big'>Add a Mineral</span>
-    </button>
-    <button ng-click='vmChild.showMineralGlossary()' class='button button-clear button-positive'>
-      <i class='icon ion-information-circled'></i>
-      <span class='button-text-big'>View Mineral Glossary</span>
-    </button>
+    <div class="row" style="padding:0">
+      <div class="col" style="padding:0">
+        <button ng-click='vmChild.addAttribute();' class='button button-clear button-positive'>
+          <i class='icon ion-plus-circled'></i>
+          <span class='button-text-big'>Add a Mineral</span>
+        </button>
+      </div>
+      <div class="col" style="padding:0">
+        <div style="text-align:right">
+          <button ng-click='vmChild.showMineralGlossary()' class='button button-clear button-positive'>
+            <i class='icon ion-information-circled'></i>
+            <span class='button-text-big'>View Mineral Glossary</span>
+          </button>
+        </div>
+      </div>
+    </div>
     <div class="padding" ng-show="!vm.spot.properties.pet.minerals.mineralogy">
       There are no minerals at this Spot.
     </div>

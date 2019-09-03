@@ -35,6 +35,10 @@
         </div>
       </div>
       <div class="mineral-info-display" ng-hide='vmChild.isShowMineralGlossaryIndex'>
+        <button ng-click='vmChild.addThisMineral();' class='button button-clear button-positive'>
+          <i class='icon ion-plus-circled'></i>
+          <span class='button-text-big'>Add this Mineral</span>
+        </button>
         <div class="row">
           <span class="mineral-title">Mineral:</span>
           {{ vmChild.glossaryMineral.Mineral }}

@@ -36,6 +36,7 @@
     vm.ternary = {};
 
     vm.addAttribute = addAttribute;
+    vm.addThisMineral = addThisMineral;
     vm.deleteAttribute = deleteAttribute;
     vm.editAttribute = editAttribute;
     vm.getLabel = getLabel;
@@ -239,11 +240,23 @@
      * Public Functions
      */
 
+    // Add a mineral or a reaction
     function addAttribute() {
       vmParent.data = {};
       FormFactory.setForm('pet', vm.attributeType);
       vm.modalTitle = vm.attributeType === 'mineralogy' ? 'Add a Mineral' : 'Add a Reaction';
       vmParent.data.id = HelpersFactory.getNewId();
+      vm.basicFormModal.show();
+    }
+
+    // Add a mineral from the glossary
+    function addThisMineral() {
+      vm.glossaryModal.hide();
+      FormFactory.setForm('pet', 'mineralogy');
+      vm.modalTitle = vm.attributeType === 'mineralogy' ? 'Add a Mineral' : 'Add a Reaction';
+      vmParent.data = {};
+      vmParent.data.id = HelpersFactory.getNewId();
+      vmParent.data.full_mineral_name = vm.glossaryMineral.Mineral;
       vm.basicFormModal.show();
     }
 
