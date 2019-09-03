@@ -5,11 +5,11 @@
     .module('app')
     .controller('PetMineralsTabController', PetMineralsTabController);
 
-  PetMineralsTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'DataModelsFactory',
-    'FormFactory', 'HelpersFactory', 'MineralFactory'];
+  PetMineralsTabController.$inject = ['$ionicModal', '$ionicPopup', '$ionicScrollDelegate', '$log', '$scope', '$state',
+    'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'MineralFactory'];
 
-  function PetMineralsTabController($ionicModal, $ionicPopup, $log, $scope, $state, DataModelsFactory, FormFactory,
-                                    HelpersFactory, MineralFactory) {
+  function PetMineralsTabController($ionicModal, $ionicPopup, $ionicScrollDelegate, $log, $scope, $state,
+                                    DataModelsFactory, FormFactory, HelpersFactory, MineralFactory) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -31,6 +31,8 @@
     vm.attributeType = 'mineralogy';
     vm.glossary = MineralFactory.getMineralGlossary();
     vm.glossaryModal = {};
+    vm.glossaryMineral = {};
+    vm.isShowMineralGlossaryIndex = true;
     vm.ternary = {};
 
     vm.addAttribute = addAttribute;
@@ -38,7 +40,9 @@
     vm.editAttribute = editAttribute;
     vm.getLabel = getLabel;
     vm.getMineralName = getMineralName;
+    vm.setGlossaryMineral = setGlossaryMineral;
     vm.shouldShowTernary = shouldShowTernary;
+    vm.showMineralGlossary = showMineralGlossary;
     vm.submit = submit;
     vm.switchMineralsSubtab = switchMineralsSubtab;
 
@@ -305,10 +309,22 @@
       return names.join(', ') || 'Unknown';
     }
 
+    function setGlossaryMineral(mineral) {
+      $ionicScrollDelegate.scrollTop();
+      vm.glossaryMineral = mineral;
+      vm.isShowMineralGlossaryIndex = !vm.isShowMineralGlossaryIndex;
+    }
+
     function shouldShowTernary() {
       return vmParent.spot.properties.pet && vmParent.spot.properties.pet.basics
         && (_.contains(vmParent.spot.properties.pet.basics.igneous_rock_class, 'plutonic')
           || _.contains(vmParent.spot.properties.pet.basics.igneous_rock_class, 'volcanic'));
+    }
+
+    function showMineralGlossary() {
+      vm.glossaryMineral = {};
+      vm.isShowMineralGlossaryIndex = true;
+      vm.glossaryModal.show();
     }
 
     function submit() {
