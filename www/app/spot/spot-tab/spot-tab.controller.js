@@ -103,6 +103,9 @@
         if (position.coords.altitude) {
           vmParent.spot.properties.altitude = HelpersFactory.roundToDecimalPlaces(position.coords.altitude, 2);
         }
+        if (position.coords.accuracy) {
+          vmParent.spot.properties.gps_accuracy = HelpersFactory.roundToDecimalPlaces(position.coords.accuracy, 2);
+        }
       }, function (err) {
         $ionicPopup.alert({
           'title': 'Alert!',
