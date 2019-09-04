@@ -16,21 +16,21 @@
           <div class='padding-bottom'
                ng-repeat='mineral in vmChild.glossary | limitTo:31:0 | orderBy:"Name" track by $index'
                ng-click="vmChild.setGlossaryMineral(mineral)">
-            {{mineral.Mineral}}
+            {{mineral.Label}}
           </div>
         </div>
         <div class="col">
           <div class='padding-bottom'
                ng-repeat='mineral in vmChild.glossary | limitTo:30:31 | orderBy:"Name" track by $index'
                ng-click="vmChild.setGlossaryMineral(mineral)">
-            {{mineral.Mineral}}
+            {{mineral.Label}}
           </div>
         </div>
         <div class="col">
           <div class='padding-bottom'
                ng-repeat='mineral in vmChild.glossary | limitTo:35:61 | orderBy:"Name" track by $index'
                ng-click="vmChild.setGlossaryMineral(mineral)">
-            {{mineral.Mineral}}
+            {{mineral.Label}}
           </div>
         </div>
       </div>
@@ -41,7 +41,7 @@
         </button>
         <div class="row">
           <span class="mineral-title">Mineral:</span>
-          {{ vmChild.glossaryMineral.Mineral }}
+          {{ vmChild.glossaryMineral.Label }}
         </div>
         <div class="row">
           <span class="mineral-title">Formula:</span>
@@ -71,7 +71,7 @@
           <!-- <div class=" mineral-title"><i name="icon ion-globe"></i></div>          -->
           <a class="" id="mineral-link" ng-href="{{vmChild.glossaryMineral['mindat.org link']}}" target="blank">
             <i class="web-icon icon ion-android-globe"></i>
-            Click here for more mineral information on {{vmChild.glossaryMineral.Mineral}} from Mindat.org
+            Click here for more mineral information on {{vmChild.glossaryMineral.Label}} from Mindat.org
           </a>
         </div>
       </div>

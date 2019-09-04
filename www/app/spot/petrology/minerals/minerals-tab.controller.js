@@ -256,7 +256,7 @@
       vm.modalTitle = vm.attributeType === 'mineralogy' ? 'Add a Mineral' : 'Add a Reaction';
       vmParent.data = {};
       vmParent.data.id = HelpersFactory.getNewId();
-      vmParent.data.full_mineral_name = vm.glossaryMineral.Mineral;
+      vmParent.data.full_mineral_name = vm.glossaryMineral.Label;
       vm.basicFormModal.show();
     }
 
