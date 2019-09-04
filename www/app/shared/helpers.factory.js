@@ -99,7 +99,7 @@
 
       $cordovaClipboard.copy(dataToCopy).then(function () {
         deferred.resolve(dataToCopy);
-      }, function(copyError){
+      }, function (copyError) {
         deferred.reject(copyError);
       });
 
@@ -114,18 +114,18 @@
       strDelimiter = (strDelimiter || ',');
       // Create a regular expression to parse the CSV values.
       var objPattern = new RegExp(
-          (
-              // Delimiters.
-              '(\\' + strDelimiter + '|\\r?\\n|\\r|^)' +
+        (
+          // Delimiters.
+          '(\\' + strDelimiter + '|\\r?\\n|\\r|^)' +
 
-              // Quoted fields.
-              '(?:"([^"]*(?:""[^"]*)*)"|' +
+          // Quoted fields.
+          '(?:"([^"]*(?:""[^"]*)*)"|' +
 
-              // Standard fields.
-              '([^"\\' + strDelimiter + '\\r\\n]*))'
-          ),
-          'gi'
-          );
+          // Standard fields.
+          '([^"\\' + strDelimiter + '\\r\\n]*))'
+        ),
+        'gi'
+      );
       // Create an array to hold our data. Give the array
       // a default empty first row.
       var arrData = [[]];
@@ -136,38 +136,38 @@
       // until we can no longer find a match.
       while (arrMatches = objPattern.exec(strData)) {
         $log.log('arrMatches', arrMatches);
-          // Get the delimiter that was found.
+        // Get the delimiter that was found.
         var strMatchedDelimiter = arrMatches[1];
-          // Check to see if the given delimiter has a length
-          // (is not the start of string) and if it matches
-          // field delimiter. If id does not, then we know
-          // that this delimiter is a row delimiter.
+        // Check to see if the given delimiter has a length
+        // (is not the start of string) and if it matches
+        // field delimiter. If id does not, then we know
+        // that this delimiter is a row delimiter.
         if (
-              strMatchedDelimiter.length &&
-              strMatchedDelimiter !== strDelimiter
-              ) {
-              // Since we have reached a new row of data,
-              // add an empty row to our data array.
+          strMatchedDelimiter.length &&
+          strMatchedDelimiter !== strDelimiter
+        ) {
+          // Since we have reached a new row of data,
+          // add an empty row to our data array.
           arrData.push([]);
         }
         var strMatchedValue;
-          // Now that we have our delimiter out of the way,
-          // let's check to see which kind of value we
-          // captured (quoted or unquoted).
+        // Now that we have our delimiter out of the way,
+        // let's check to see which kind of value we
+        // captured (quoted or unquoted).
         if (arrMatches[2]) {
-              // We found a quoted value. When we capture
-              // this value, unescape any double quotes.
+          // We found a quoted value. When we capture
+          // this value, unescape any double quotes.
           strMatchedValue = arrMatches[2].replace(
-                  new RegExp('""', 'g'),
-                  '"'
-                  );
+            new RegExp('""', 'g'),
+            '"'
+          );
         }
         else {
-              // We found a non-quoted value.
+          // We found a non-quoted value.
           strMatchedValue = arrMatches[3];
         }
-          // Now that we have our value string, let's add
-          // it to the data array.
+        // Now that we have our value string, let's add
+        // it to the data array.
         arrData[arrData.length - 1].push(strMatchedValue);
       }
       // Return the parsed data.
@@ -177,12 +177,12 @@
     // Find a deeply nested object by id
     function deepFindById(obj, id) {
       //Early return
-      if( obj.id === id ) return obj;
+      if (obj.id === id) return obj;
       var result, p;
       for (p in obj) {
-        if( obj.hasOwnProperty(p) && typeof obj[p] === 'object' ) {
+        if (obj.hasOwnProperty(p) && typeof obj[p] === 'object') {
           result = deepFindById(obj[p], id);
-          if(result) return result;
+          if (result) return result;
         }
       }
       return result;
@@ -336,8 +336,8 @@
         else if (spot.properties.orientation_data) {
           _.each(spot.properties.orientation_data, function (od) {
             spotOrientations.push(od);
-            if(od.associated_orientation){
-              _.each(od.associated_orientation, function(ao){
+            if (od.associated_orientation) {
+              _.each(od.associated_orientation, function (ao) {
                 spotOrientations.push(ao);
               })
             }
