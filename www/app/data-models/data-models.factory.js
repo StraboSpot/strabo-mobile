@@ -125,56 +125,6 @@
           'choices_file': 'app/data-models/micro/experimental-set-up-choices.csv'
         }
       },
-      'minerals': {
-        'heavy': {
-          'survey': {},
-          'survey_file': 'app/data-models/minerals-heavy-all-survey.csv',
-          'choices': {},
-          'choices_file': 'app/data-models/minerals-heavy-all-choices.csv'
-        },
-        'heavy_most_common': {
-          'survey': {},
-          'survey_file': 'app/data-models/minerals-heavy-most-common-survey.csv',
-          'choices': {},
-          'choices_file': 'app/data-models/minerals-heavy-most-common-choices.csv'
-        },
-        'igneous': {
-          'survey': {},
-          'survey_file': 'app/data-models/minerals-igneous-all-survey.csv',
-          'choices': {},
-          'choices_file': 'app/data-models/minerals-igneous-all-choices.csv'
-        },
-        'igneous_most_common': {
-          'survey': {},
-          'survey_file': 'app/data-models/minerals-igneous-most-common-survey.csv',
-          'choices': {},
-          'choices_file': 'app/data-models/minerals-igneous-most-common-choices.csv'
-        },
-        'metamorphic': {
-          'survey': {},
-          'survey_file': 'app/data-models/minerals-metamorphic-all-survey.csv',
-          'choices': {},
-          'choices_file': 'app/data-models/minerals-metamorphic-all-choices.csv'
-        },
-        'metamorphic_most_common': {
-          'survey': {},
-          'survey_file': 'app/data-models/minerals-metamorphic-most-common-survey.csv',
-          'choices': {},
-          'choices_file': 'app/data-models/minerals-metamorphic-most-common-choices.csv'
-        },
-        'sedimentary': {
-          'survey': {},
-          'survey_file': 'app/data-models/minerals-sedimentary-all-survey.csv',
-          'choices': {},
-          'choices_file': 'app/data-models/minerals-sedimentary-all-choices.csv'
-        },
-        'sedimentary_most_common': {
-          'survey': {},
-          'survey_file': 'app/data-models/minerals-sedimentary-most-common-survey.csv',
-          'choices': {},
-          'choices_file': 'app/data-models/minerals-sedimentary-most-common-choices.csv'
-        }
-      },
       'orientation_data': {
         'linear_orientation': {
           'survey': {},
@@ -415,11 +365,7 @@
     function createOtherLabelsDictionary() {
       var models = {
         'images': dataModels.image,
-        'samples': dataModels.sample,
-        'heavy': dataModels.minerals.heavy,
-        'metamorphic': dataModels.minerals.metamorphic,
-        'igneous': dataModels.minerals.igneous,
-        'sedimentary': dataModels.minerals.sedimentary
+        'samples': dataModels.sample
       };
       _.each(models, function (model) {
         _.each(model.choices, function (field) {
@@ -614,14 +560,6 @@
       return tempTypeLabels;
     }
 
-    function getMineralsChoices() {
-      var choicesMetamorphic = _.pluck(dataModels.minerals.metamorphic.choices, 'name');
-      var choicesIgneous = _.pluck(dataModels.minerals.igneous.choices, 'name');
-      var choicesSedimentary = _.pluck(dataModels.minerals.sedimentary.choices, 'name');
-      var choicesHeavy = _.pluck(dataModels.minerals.heavy.choices, 'name');
-      return _.union(choicesMetamorphic, choicesIgneous, choicesSedimentary, choicesHeavy).sort();
-    }
-
     function getType(type, model) {
       var choices = {};
       if (type.split(' ')[0] === 'select_one') {
@@ -732,8 +670,8 @@
 
       $log.log('Loading data models ...');
       _.each(dataModels, function (dataModel, key) {
-        if (key === 'orientation_data' || key === '_3d_structures' || key === 'sed' || key === 'minerals' ||
-          key === 'micro' || key === 'pet') {
+        if (key === 'orientation_data' || key === '_3d_structures' || key === 'sed' || key === 'micro'
+          || key === 'pet') {
           _.each(dataModel, function (childDataModel, childKey) {
             //$log.log('Loading', key, childKey, ' ...');
             promises.push(loadDataModel(childDataModel));

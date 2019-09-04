@@ -9,7 +9,6 @@
     <span class='toggle-left-label item-text-wrap'>{{ vm.tagText }} <br>
       <small class="toggle-left-label">(Spot Level Only)</small></span>
   </ion-toggle>
-  <strabo-tags-filter-with-minerals-directive></strabo-tags-filter-with-minerals-directive>
   <ion-list>
     <ion-item class='item-text-wrap item-button-right'
         ng-repeat='tag in vm.allTagsToDisplay | orderBy:"name" track by tag.id'>
@@ -19,9 +18,6 @@
         </span>
         <b>{{tag.name}}</b>
         <strabo-tags-list-properties-directive></strabo-tags-list-properties-directive>
-        <span ng-if='tag.minerals.length > 0'>
-        (<span ng-repeat="mineral in tag.minerals | orderBy: mineral track by $index">{{vm.getLabel(mineral) }}<span
-          ng-hide="$last">, </span></span>)
       </span>
       </div>
       <button class='button button-clear button-assertive'
@@ -30,20 +26,4 @@
       </button>
     </ion-item>
   </ion-list>
-  <div ng-show="vm.selectedType === 'mineral'">
-    <div class="item item-divider">Spots</div>
-      <ion-list>
-        <ion-item class='item-text-wrap item-button-right' ng-repeat='spot in vm.spotDisplay | orderBy:"spot" track by $index'>
-          <div ng-click='vm.goToSpot(spot)'>
-            <b>{{vm.getSpotName(spot)}}</b>
-          </div>
-          <button class='button button-clear button-assertive' ng-click='vm.deleteTag(tag)'>
-            <i class='icon ion-minus-circled'></i>
-          </button>
-        </ion-item>
-      </ion-list>
-  </div>
-  <div class="padding" ng-show="vm.selectedType === 'mineral' && vm.spotDisplay.length === 0">
-    No Spots to Display
-  </div>
 </div>

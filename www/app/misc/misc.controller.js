@@ -209,7 +209,6 @@
         preferences.sed_structures = false;
         preferences.sed_interpretations = false;
         preferences.strat_mode = false;
-        preferences.minerals = false;
         preferences.experimental = false;
         preferences.experimental_results = false;
         preferences.experimental_set_up = false;

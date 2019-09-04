@@ -12,28 +12,24 @@
     var activeTags = [];
     var isActiveTagging = false;
     var tagTypeLabels = {};
-    var isMineralTag = false;
 
     activate();
 
     return {
       'addToActiveTags': addToActiveTags,
       'clearActiveTags': clearActiveTags,
-      'createMineralsTagModal': createMineralsTagModal,
       'filterTagsByType': filterTagsByType,
       'getActiveTagging': getActiveTagging,
       'getActiveTags': getActiveTags,
       'getAddNewActiveTag': getAddNewActiveTag,
       'getGeologicUnits': getGeologicUnits,
-      'getIsMineralsTag': getIsMineralsTag,
       'getNumTaggedFeatures': getNumTaggedFeatures,
       'getTagTypeLabel': getTagTypeLabel,
       'removeActiveTag': removeActiveTag,
       'removeActiveTagging': removeActiveTagging,
       'setActiveTagging': setActiveTagging,
       'setActiveTags': setActiveTags,
-      'setAddNewActiveTag': setAddNewActiveTag,
-      'setIsMineralsTag': setIsMineralsTag
+      'setAddNewActiveTag': setAddNewActiveTag
     };
 
     /**
@@ -73,16 +69,6 @@
       $log.log('Cleared active tag:', activeTags);
     }
 
-    function createMineralsTagModal(scope) {
-      return $ionicModal.fromTemplateUrl('app/tag/minerals-modal.html', {
-        'scope': scope,
-        'animation': 'slide-in-up',
-        'backdropClickToClose': false
-      }).then(function (modal) {
-        return modal;
-      });
-    }
-
     function filterTagsByType(selectedType, allTags) {
       if (selectedType === 'all') return allTags;
       else {
@@ -109,10 +95,6 @@
 
     function getAddNewActiveTag() {
       return addNewActiveTag;
-    }
-
-    function getIsMineralsTag() {
-      return isMineralTag;
     }
 
     function getNumTaggedFeatures(tag) {
@@ -160,10 +142,6 @@
 
     function setAddNewActiveTag(inBool) {
       addNewActiveTag = inBool;
-    }
-
-    function setIsMineralsTag(inBool) {
-      isMineralTag = inBool;
     }
   }
 }());

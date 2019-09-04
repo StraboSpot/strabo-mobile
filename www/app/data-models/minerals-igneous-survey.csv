@@ -1,7 +1,0 @@
-type,name,label,required,calculation,$given_name
-start,start,,,,
-end,end,,,,
-select_multiple kl5wx08,most_common,Most Common,false,,
-select_multiple tc1kx87,all,All,false,,
-calculate,__version__,,false,'vj2PPAunmPx8Eno3YHbhz6',
-calculate,_version_,,,'vRP6nLsZPeWmBbSXA8Pf7b',__version__

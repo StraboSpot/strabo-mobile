@@ -26,7 +26,6 @@
       {'value': 'orientations', 'label': 'Orientations', 'path': 'orientations'},
       {'value': '_3dstructures', 'label': '3D Structures', 'path': '_3dstructures'},
       {'value': 'images', 'label': 'Images', 'path': 'images'},
-      {'value': 'minerals', 'label': 'Minerals', 'path': 'minerals'},
       {'value': 'nesting', 'label': 'Nesting', 'path': 'nesting'},
       {'value': 'samples', 'label': 'Samples', 'path': 'samples'},
       {'value': 'other_features', 'label': 'Other Features', 'path': 'other-features'},

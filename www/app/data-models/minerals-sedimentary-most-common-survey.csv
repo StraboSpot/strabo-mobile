@@ -1,5 +1,0 @@
-type,name,label,required,calculation
-start,start,,,
-end,end,,,
-select_multiple bv7ep86,most_common,Most Common,false,
-calculate,__version__,,,'vnAp6KVr8t9A3BtaG2SBWz'

@@ -7,11 +7,11 @@
 
   TagController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopup', '$ionicScrollDelegate', '$location', '$log', 
   '$q', '$rootScope', '$scope', '$state', '$timeout', 'DataModelsFactory', 'HelpersFactory', 'FormFactory',
-  'LiveDBFactory', 'MineralsFactory', 'ProjectFactory', 'SpotFactory', 'SpotsFactory', 'TagFactory', 'IS_WEB'];
+  'LiveDBFactory', 'ProjectFactory', 'SpotFactory', 'SpotsFactory', 'TagFactory', 'IS_WEB'];
 
   function TagController($ionicHistory, $ionicModal, $ionicPopup, $ionicScrollDelegate, $location, $log, $q,
    $rootScope, $scope, $state, $timeout, DataModelsFactory, HelpersFactory, FormFactory, LiveDBFactory,
-   MineralsFactory, ProjectFactory, SpotFactory, SpotsFactory, TagFactory, IS_WEB) {
+   ProjectFactory, SpotFactory, SpotsFactory, TagFactory, IS_WEB) {
     var vmParent = $scope.vm;
     var vm = this;
 
@@ -27,10 +27,7 @@
     vm.filterModal = {};
     vm.isFilterOn = false;
     vm.isShowInfoOnly = true;
-    vm.isShowMineralList = true;
     vm.isShowMore = false;
-    vm.mineralInfo = [];
-    vm.mineralsModal = {};
     vm.modalData = {};
     vm.modalTitle = "";
     vm.selectItemModal = {};
@@ -42,7 +39,6 @@
     vm.tagsDisplayed = [];
 
     vm.addFilters = addFilters;
-    vm.addMineral = addMineral;
     vm.applyFilters = applyFilters;
     vm.checkedFilterCondition = checkedFilterCondition;
     vm.clearColor = clearColor;
@@ -57,24 +53,19 @@
     vm.goBack = goBack;
     vm.goToSpot = goToSpot;
     vm.goToTag = goToTag;
-    vm.hideMineralInfo = hideMineralInfo;
     vm.isFilterConditionChecked = isFilterConditionChecked;
     vm.isOptionChecked = isOptionChecked;
     vm.isShowItem = isShowItem;
     vm.isTypeChecked = isTypeChecked;
     vm.keyToId = keyToId;
     vm.loadMoreSpots = loadMoreSpots;
-    vm.mineralInfoOnMainPage = mineralInfoOnMainPage;
     vm.moreSpotsCanBeLoaded = moreSpotsCanBeLoaded;
     vm.openColorPicker = openColorPicker;
     vm.resetFilters = resetFilters;
     vm.selectItem = selectItem;
     vm.selectTypes = selectTypes;
     vm.setColor = setColor;
-    vm.showMineralInfo =showMineralInfo;
-    vm.submitMineral = submitMineral;
     vm.submitTag = submitTag;
-    vm.switchMineralsForm = switchMineralsForm;
     vm.toggleChecked = toggleChecked;
     vm.toggleFilter = toggleFilter;
     vm.toggleItem = toggleItem;
@@ -138,28 +129,6 @@
       }
     }
 
-    function addMineral(type) {
-      TagFactory.createMineralsTagModal($scope).then(function (modal) {
-        vm.mineralsModal = modal;
-        FormFactory.setForm('minerals', type);
-        var combine = [];
-        if (!_.isEmpty(vm.data.minerals)) {
-          combine = JSON.parse(JSON.stringify(vm.data.minerals));
-        }
-        vm.modalData.most_common = combine;
-        vm.modalData.all = combine;
-        vm.activeState = 'most_common';
-
-        if (type === 'metamorphic_most_common') vm.modalTitle = 'Metamorphic Minerals';
-        else if (type === 'igneous_most_common') vm.modalTitle = 'Igneous Minerals';
-        else if (type === 'sedimentary_most_common') vm.modalTitle = 'Sedimentary Minerals';
-        else if (type === 'heavy_most_common') vm.modalTitle = 'Heavy Minerals';
-        vm.isShowInfoOnly = false;
-        vm.isShowMineralList = true;
-        vm.mineralsModal.show();
-      });
-    }
-
     function createPageComponents() {
       $ionicModal.fromTemplateUrl('app/shared/select-item-modal.html', {
         'scope': $scope,
@@ -188,7 +157,6 @@
         if (vm.selectItemModal) vm.selectItemModal.remove();
         if (vm.filterModal) vm.filterModal.remove();
         if (vm.colorPickerModal) vm.colorPickerModal.remove();
-        if (!_.isEmpty(vm.mineralsModal)) vm.mineralsModal.remove();
       });
     }
 
@@ -315,11 +283,7 @@
       var id = $state.params.tag_id;
       vm.data = ProjectFactory.getTag(id);
       vm.data.id = id;  // Just in case vm.tag is undefined
-      var isMineralsTag = TagFactory.getIsMineralsTag();
-      if (isMineralsTag) {
-        vm.data.type = 'mineral';
-        TagFactory.setIsMineralsTag(false);
-      }
+
       if (vm.data.color) vm.color = vm.data.color;
 
       if (vm.data.type === 'geologic_unit') FormFactory.setForm('rock_unit');
@@ -473,11 +437,6 @@
       $location.path('/app/tags/' + id);
     }
 
-    //Hides the mineral info and display the mineral list
-    function hideMineralInfo() {
-      vm.isShowMineralList = true;
-    }
-
     function keyToId(key) {
       return parseInt(key);
     }
@@ -513,18 +472,6 @@
       $scope.$broadcast('scroll.infiniteScrollComplete');
     }
 
-    //displays the mineral info from info-button on the main Minerals Page
-    function mineralInfoOnMainPage(name) {
-      TagFactory.createMineralsTagModal($scope).then(function (modal) {
-        vm.mineralsModal = modal;
-        vm.mineralInfo = MineralsFactory.getMineralInfo(name);
-        vm.modalTitle = vm.mineralInfo ? vm.mineralInfo.Mineral : 'No Info';
-        vm.isShowMineralList = false;
-        vm.isShowInfoOnly = true;
-        vm.mineralsModal.show();
-      });
-    }
-
     function moreSpotsCanBeLoaded() {
       return vm.spotsDisplayed.length !== vm.spots.length;
     }
@@ -552,29 +499,6 @@
       vm.colorPickerModal.hide();
       vm.data.color = color;
       vm.color = color;
-    }
-
-    //Displays the mineral chemical compound info for each mineral
-    function showMineralInfo(name) {
-      $ionicScrollDelegate.scrollTop();
-      vm.isShowMineralList = false;
-      vm.mineralInfo = MineralsFactory.getMineralInfo(name);
-    }
-
-    function submitMineral() {
-      vm.modalData = HelpersFactory.cleanObj(vm.modalData);
-      $log.log(vm.modalData);
-      if (FormFactory.validate(vm.modalData)) {
-        if (!_.isEmpty(vm.modalData)) {
-          if (!vm.data.minerals) vm.data.minerals = [];
-          vm.data.minerals = JSON.parse(JSON.stringify(_.union(vm.modalData.all, vm.modalData.most_common)));
-        }
-        else delete vm.data.minerals;
-        vm.modalData = {};
-        vm.mineralsModal.hide();
-        vm.mineralsModal.remove();
-        FormFactory.clearForm();
-      }
     }
 
     function submitTag() {
@@ -613,30 +537,6 @@
         }
         else return $q.when(null);
       }
-    }
-
-    function switchMineralsForm(formType) {
-      var form;
-      if (formType === 'all') {
-        vm.modalData.all = vm.modalData.most_common;
-        vm.activeState = "all";
-        if (vm.modalTitle === 'Metamorphic Minerals') form = 'metamorphic';
-        else if (vm.modalTitle === 'Igneous Minerals') form = 'igneous';
-        else if (vm.modalTitle === 'Sedimentary Minerals') form = 'sedimentary';
-        else if (vm.modalTitle === 'Heavy Minerals') form = 'heavy';
-      }
-
-      else {
-        vm.modalData.most_common = vm.modalData.all;
-        vm.activeState = "most_common";
-        if (vm.modalTitle === 'Metamorphic Minerals') form = 'metamorphic_most_common';
-        else if (vm.modalTitle === 'Igneous Minerals') form = 'igneous_most_common';
-        else if (vm.modalTitle === 'Sedimentary Minerals') form = 'sedimentary_most_common';
-        else if (vm.modalTitle === 'Heavy Minerals') form = 'heavy_most_common';
-
-      }
-      $log.log(vm.modalData);
-      FormFactory.setForm('minerals', form);
     }
 
     function toggleChecked(item, id, parentSpotId) {

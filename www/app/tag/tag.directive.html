@@ -10,7 +10,6 @@
       <ion-label>Type</ion-label>
       <select ng-model='vm.data.type' ng-change='vm.typeSelected()'>
         <option value='geologic_unit'>Geologic Unit</option>
-        <option value='mineral'>Mineral Assemblage</option>
         <option value='concept'>Concept</option>
         <option value='documentation'>Documentation</option>
         <option value='rosetta'>Rosetta</option>
@@ -21,9 +20,6 @@
     </ion-item>
     <div ng-show='vm.data.type === "geologic_unit"'>
       <strabo-geologic-unit-tag-directive></strabo-geologic-unit-tag-directive>
-    </div>
-    <div ng-show='vm.data.type === "mineral"'>
-      <strabo-mineral-tag-directive></strabo-mineral-tag-directive>
     </div>
     <div ng-show='vm.data.type === "concept"'>
       <strabo-concept-tag-directive></strabo-concept-tag-directive>
