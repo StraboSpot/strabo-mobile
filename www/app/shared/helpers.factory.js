@@ -188,7 +188,7 @@
       return result;
     }
 
-    // Convert a File URI to an image Blob
+    // Convert a File URI to an image Blob that is resized to a max height and width of 2000 pixels
     function fileURItoBlob(fileURI) {
       $log.log('Converting file URI to blob. File URI:', fileURI);
       return new Promise(function (resolve, reject) {
@@ -197,13 +197,41 @@
           fileEntry.file(function (file) {
             var reader = new FileReader();
             reader.onloadend = function (encodedFile) {
-              var base64Image = encodedFile.target.result;
-              var binary = atob(base64Image.split(',')[1]);
-              var array = [];
-              for (var i = 0; i < binary.length; i++) {
-                array.push(binary.charCodeAt(i));
-              }
-              resolve(new Blob([new Uint8Array(array)], {'type': 'image/jpeg'}));
+              var image = new Image();
+              image.onload = function (imageEvent) {
+                // Resize the image
+                var canvas = document.createElement('canvas'),
+                  max_size = 2000,
+                  width = image.width,
+                  height = image.height;
+                if (width > height) {
+                  if (width > max_size) {
+                    height *= max_size / width;
+                    width = max_size;
+                  }
+                }
+                else {
+                  if (height > max_size) {
+                    width *= max_size / height;
+                    height = max_size;
+                  }
+                }
+                canvas.width = width;
+                canvas.height = height;
+                canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+                var dataUrl = canvas.toDataURL('image/jpeg');
+                var binary = atob(dataUrl.split(',')[1]);
+                var array = [];
+                for (var i = 0; i < binary.length; i++) {
+                  array.push(binary.charCodeAt(i));
+                }
+                resolve(new Blob([new Uint8Array(array)], {'type': 'image/jpeg'}));
+              };
+              image.onerror = function (err) {
+                $log.error('Error resizing image.');
+                reject('Error resizing image.');
+              };
+              image.src = encodedFile.target.result;
             };
             reader.onerror = function (err) {
               $log.error('Error reading file.');
