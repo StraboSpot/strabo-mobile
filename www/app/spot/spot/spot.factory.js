@@ -497,7 +497,7 @@
 
     // Get all active Spots that have petrology basics data
     function getSpotsWithPetBasics() {
-     return _.filter(activeSpots, function (spot) {
+      return _.filter(activeSpots, function (spot) {
         return _.has(spot.properties, 'pet') && _.has(spot.properties.pet, 'basics');
       });
     }
@@ -654,7 +654,11 @@
 
         // Get current location when creating a new Spot that is mapped on a strat section
         if (newSpot.properties.strat_section_id) {
-          $cordovaGeolocation.getCurrentPosition().then(function (position) {
+          $cordovaGeolocation.getCurrentPosition({
+            'maximumAge': 0,
+            'timeout': 10000,
+            'enableHighAccuracy': true
+          }).then(function (position) {
             newSpot.properties.lat = HelpersFactory.roundToDecimalPlaces(position.coords.latitude, 6);
             newSpot.properties.lng = HelpersFactory.roundToDecimalPlaces(position.coords.longitude, 6);
             if (position.coords.altitude) {

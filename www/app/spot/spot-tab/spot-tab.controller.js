@@ -83,7 +83,11 @@
       $ionicLoading.show({
         'template': '<ion-spinner></ion-spinner><br>Getting location...'
       });
-      $cordovaGeolocation.getCurrentPosition().then(function (position) {
+      $cordovaGeolocation.getCurrentPosition({
+        'maximumAge': 0,
+        'timeout': 10000,
+        'enableHighAccuracy': true
+      }).then(function (position) {
         vm.lat = HelpersFactory.roundToDecimalPlaces(position.coords.latitude, 6);
         vm.lng = HelpersFactory.roundToDecimalPlaces(position.coords.longitude, 6);
         if (isPixelMapping()) {
