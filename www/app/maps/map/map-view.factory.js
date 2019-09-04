@@ -5,10 +5,11 @@
     .module('app')
     .factory('MapViewFactory', MapViewFactory);
 
-  MapViewFactory.$inject = ['$cordovaGeolocation', '$ionicPopup', '$log', 'HelpersFactory', 'MapLayerFactory',
-    'SpotFactory'];
+  MapViewFactory.$inject = ['$cordovaGeolocation', '$ionicLoading', '$ionicPopup', '$log', 'HelpersFactory',
+    'MapLayerFactory', 'SpotFactory'];
 
-  function MapViewFactory($cordovaGeolocation, $ionicPopup, $log, HelpersFactory, MapLayerFactory, SpotFactory) {
+  function MapViewFactory($cordovaGeolocation, $ionicLoading, $ionicPopup, $log, HelpersFactory, MapLayerFactory,
+                          SpotFactory) {
     var mapView;
     var viewExtent;
     var initialMapView;
@@ -43,6 +44,9 @@
 
       if (locationOn) {
         $log.log('toggleLocation is now true');
+        $ionicLoading.show({
+          'template': '<ion-spinner></ion-spinner><br>Getting location...'
+        });
         $cordovaGeolocation.getCurrentPosition({
           'maximumAge': 0,
           'timeout': 10000,
@@ -69,6 +73,8 @@
             $ionicPopup.alert({
               'title': 'Alert!',
               'template': 'Unable to get location: ' + err.message
+            }).finally(function () {
+              $ionicLoading.hide();
             });
           });
 
@@ -81,6 +87,7 @@
         geolocationWatchId.then(
           null,
           function (err) {
+            $ionicLoading.hide();
             // Too many alerts on iOS
             /*$ionicPopup.alert({
              'title': 'Alert!',
@@ -89,6 +96,7 @@
             // TODO: what do we do here?
           },
           function (position) {
+            $ionicLoading.hide();
             // Make sure the location toggle hasn't been turned off
             if (locationOn) {
               var lat = position.coords.latitude;
