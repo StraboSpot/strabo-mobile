@@ -115,7 +115,9 @@
     function createWatches() {
       // Watch for mineral abbreviation changes
       $scope.$watch('vm.data.mineral_abbrev', function (newValue, oldValue) {
-        if (newValue && newValue !== oldValue) vmParent.data.full_mineral_name = getFullMineralNameFromAbbrev(newValue);
+        if (newValue && newValue !== oldValue) {
+          vmParent.data.full_mineral_name = MineralFactory.getFullMineralNameFromAbbrev(newValue);
+        }
       });
     }
 
@@ -139,101 +141,6 @@
         vm.ternary.ocp_sum = vm.ternary.ol + vm.ternary.cpx + vm.ternary.p;
         vm.ternary.oph_sum = vm.ternary.ol + vm.ternary.pyx + vm.ternary.hbl;
       }
-    }
-
-    function getFullMineralNameFromAbbrev(abbrev) {
-      var abbreviations = {
-        acm: 'acmite',
-        act: 'actinolite',
-        ab: 'albite',
-        aln: 'allanite',
-        amp: 'amphibole',
-        am: 'amphibole',
-        amph: 'amphibole',
-        and: 'andalusite',
-        anh: 'anhydrite',
-        atg: 'antigorite',
-        ap: 'apatite',
-        aug: 'augite',
-        brl: 'beryl',
-        bt: 'biotite',
-        bio: 'biotite',
-        cal: 'calcite',
-        ccp: 'chalcopyrite',
-        chl: 'chlorite',
-        cld: 'chloritoid',
-        chr: 'chromite',
-        ctl: 'chrysotile',
-        cl: 'clay',
-        cpx: 'clinopyroxene',
-        crd: 'cordierite',
-        crn: 'corundum',
-        crdi: 'cr-diopside',
-        dia: 'diamond',
-        di: 'diopside',
-        dol: 'dolomite',
-        ep: 'epidote',
-        feo: 'fe oxide',
-        gn: 'galena',
-        grt: 'garnet',
-        gth: 'goethite',
-        gt: 'goethite',
-        gr: 'graphite',
-        grs: 'grossular garnet ',
-        hbl: 'hornblende',
-        hyp: 'hypersthene',
-        ilm: 'ilmenite',
-        krs: 'kaersutite',
-        kfs: 'k-feldspar',
-        kspar: 'k-feldspar',
-        kfsp: 'k-feldspar',
-        ky: 'kyanite',
-        lpd: 'lepidolite',
-        lct: 'leucite',
-        lm: 'limonite',
-        lz: 'lizardite',
-        mhb: 'magnesio-hornblende',
-        mghbl: 'magnesio-hornblende',
-        mag: 'magnetite',
-        mll: 'melilite',
-        mel: 'melilite',
-        mc: 'microcline',
-        mnz: 'monazite',
-        ms: 'muscovite',
-        npx: 'na pyroxene',
-        npyx: 'na pyroxene',
-        nph: 'nepheline',
-        ne: 'nepheline',
-        ol: 'olivine',
-        or: 'orthoclase',
-        opx: 'orthopyroxene',
-        prv: 'perovskite',
-        pl: 'plagioclase',
-        plag: 'plagioclase',
-        py: 'pyrite',
-        po: 'pyrrhotite',
-        qz: 'quartz',
-        rt: 'rutile',
-        sa: 'sanidine',
-        srp: 'serpentine',
-        sil: 'sillimanite',
-        sp: 'sphalerite',
-        spl: 'spinel',
-        spd: 'spodumene',
-        st: 'staurolite',
-        tlc: 'talc',
-        ttn: 'titanite',
-        tpz: 'topaz',
-        toz: 'topaz',
-        tur: 'tourmaline',
-        tr: 'tremolite',
-        ves: 'vesuvianite',
-        wo: 'wollastonite',
-        xtm: 'xenotime',
-        zeo: 'zeolite',
-        zrn: 'zircon'
-      };
-      return abbreviations[abbrev.toLowerCase()];
     }
 
     /**
