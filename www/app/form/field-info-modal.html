@@ -7,5 +7,9 @@
   </ion-header-bar>
   <ion-content class='has-header padding'>
     {{ form.field.hint }}
+    <div ng-show='form.additionalFieldInfo'>
+      <div class='item-divider'>Additional Information</div>
+      <div class='padding-left' ng-bind-html="form.additionalFieldInfo"/>
+    </div>
   </ion-content>
 </ion-modal-view>

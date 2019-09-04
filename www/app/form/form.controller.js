@@ -6,11 +6,13 @@
     .controller('FormController', FormController);
 
   FormController.$inject = ['$document', '$ionicModal', '$ionicPopup', '$log', '$scope', 'FormFactory',
-    'ProjectFactory'];
+    'MineralFactory', 'ProjectFactory'];
 
-  function FormController($document, $ionicModal, $ionicPopup, $log, $scope, FormFactory, ProjectFactory) {
+  function FormController($document, $ionicModal, $ionicPopup, $log, $scope, FormFactory, MineralFactory,
+                          ProjectFactory) {
     var vm = this;
 
+    vm.additionalFieldInfo = undefined;
     vm.choices = {};
     vm.field = undefined;
     vm.showFieldInfoModal = {};
@@ -115,6 +117,10 @@
 
     function showFieldInfo(field) {
       vm.field = field;
+      vm.additionalFieldInfo = undefined;
+      if (vm.field.name === 'mineral_abbrev') {
+        vm.additionalFieldInfo = MineralFactory.getMineralAbbreviations().join('<br>');
+      }
       vm.fieldInfoModal.show();
     }
 
