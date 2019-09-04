@@ -108,8 +108,6 @@
 
         var cameraOptions = {
           'quality': 75,
-          'targetWidth': 2000,
-          'targetHeight': 2000,
           'destinationType': Camera.DestinationType.FILE_URI,
           'sourceType': source,
           'encodingType': Camera.EncodingType.JPEG,
