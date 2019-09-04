@@ -216,7 +216,7 @@
         canvas.height = img.height;
         var pattern = context.createPattern(img, 'repeat');
         fill.setColor(pattern);
-        featureLayer.getLayersArray()[0].getSource().changed();    // Assumes the intervals on feature layer 0 (and other Spots on layer 1)
+        if (!_.isEmpty(featureLayer)) featureLayer.getLayersArray()[0].getSource().changed();    // Assumes the intervals on feature layer 0 (and other Spots on layer 1)
       };
       return fill;
     }
