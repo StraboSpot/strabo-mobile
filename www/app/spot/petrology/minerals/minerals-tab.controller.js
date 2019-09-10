@@ -236,7 +236,8 @@
     }
 
     function shouldShowTernary() {
-      return vmParent.spot.properties.pet && vmParent.spot.properties.pet.basics
+      return vmParent.spot && vmParent.spot.properties && vmParent.spot.properties.pet
+        && vmParent.spot.properties.pet.basics
         && (_.contains(vmParent.spot.properties.pet.basics.igneous_rock_class, 'plutonic')
           || _.contains(vmParent.spot.properties.pet.basics.igneous_rock_class, 'volcanic'));
     }
