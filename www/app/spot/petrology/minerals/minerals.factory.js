@@ -10,9 +10,9 @@
     var labelsWithAbberviations = {};
     var mineralGlossaryInfo = [
       {
-        "Name": "acmite",
-        "Label": "Acmite (Aegirine)",
-        "Abbreviation": "acm",
+        "Name": "aegirine",
+        "Label": "Aegirine",
+        "Abbreviation": "aeg",
         "Formula": "NaFeSi2O6",
         "Crystal System": "Monoclinic",
         "Hardness": "6",
@@ -28,7 +28,7 @@
         "Formula": "Ca2(Mg,Fe)5Si8O22(OH)2",
         "Crystal System": "Monoclinic",
         "Hardness": "5-6",
-        "Distinguishing Features": "Good cleavage at 56o and 124o. Elongate, prismatic crystal habit, sometimes fibrous. Often compact masses of slender crystals. Gray green to bright green color due to even minor presence of Fe. White color indicates the mineral is most likely tremolite. ",
+        "Distinguishing Features": "Good cleavage at 56° and 124°. Elongate, prismatic crystal habit, sometimes fibrous. Often compact masses of slender crystals. Gray green to bright green color due to even minor presence of Fe. White color indicates the mineral is most likely tremolite. ",
         "Occurrence": "Moderately high temperature and pressure conditions in the presence of water, contact metamorphosed rocks, marbles, gneisses and schist with serpentine, granites.  Sometimes found as hair-like inclusions in quartz crystals. Common in mafic and ultramafic igneous rocks, metagraywacke, or blueschist.",
         "Associated Minerals": "Dolomite, forsterite, garnet, diopside, wollastonite. Alters to talc, chlorite, epidote, and calcite.",
         "mindat.org link": "https://www.mindat.org/min-18.html"
@@ -40,7 +40,7 @@
         "Formula": "NaAlSi3O8 ",
         "Crystal System": "Triclinic",
         "Hardness": "6-6.5",
-        "Distinguishing Features": "Good cleavage (nearly 90o), parallel striations, most commonly a gray-white color. Pearly luster.",
+        "Distinguishing Features": "Good cleavage (nearly 90°), parallel striations, most commonly a gray-white color. Pearly luster.",
         "Occurrence": "Common in pegmatites, veins, and schists. Found in some limestones. Pervasive along feldspar contacts in granites and granodiorites.",
         "Associated Minerals": "Quartz, muscovite, biotite",
         "mindat.org link": "https://www.mindat.org/min-96.html"
@@ -64,7 +64,7 @@
         "Formula": "AX2Z5Si8O22(OH.F,Cl,O)2",
         "Crystal System": "Monoclinic, orthorhombic",
         "Hardness": "5-6",
-        "Distinguishing Features": "Cleavage at 56o and 124o, usually dark green to black coloration, elongate prismatic crystal habit, characteristic hardness",
+        "Distinguishing Features": "Cleavage at 56° and 124°, usually dark green to black coloration, elongate prismatic crystal habit, characteristic hardness",
         "Occurrence": "More Si-rich rocks than pyroxene or olivine, intermediate to felsic rocks, medium to high grade metamorphic rocks",
         "Associated Minerals": "Quartz, K-feldspar, biotite, muscovite, plagioclase, orthoclase, pyroxenes",
         "mindat.org link": "https://www.mindat.org/min-207.html"
@@ -97,13 +97,13 @@
         "Name": "antigorite",
         "Label": "Antigorite",
         "Abbreviation": "atg",
-        "Formula": "",
-        "Crystal System": "",
-        "Hardness": "",
-        "Distinguishing Features": "",
-        "Occurrence": "",
-        "Associated Minerals": "",
-        "mindat.org link": ""
+        "Formula": "Mg3(Si2O5)(OH)4",
+        "Crystal System": "Monoclinic",
+        "Hardness": "2.5-3.5",
+        "Distinguishing Features": "perfect {001} cleavage, green, blue-green, softness, silky feel and luster, typically platy crystals, commonly bladed or fibrous",
+        "Occurrence": "Commonly replaces ultramafc rocks, pervasively or in crosscutting veinlets. As a replacement of siliceous dolostone along contacts with diabase sills.",
+        "Associated Minerals": "Chromite, magnetite, chrysotile, olivine, talc, calcite, brucite, chlorite",
+        "mindat.org link": "https://www.mindat.org/min-260.html"
       },
       {
         "Name": "apatite",
@@ -118,9 +118,21 @@
         "mindat.org link": "https://www.mindat.org/min-29229.html"
       },
       {
+        "Name": "augite",
+        "Label": "Augite",
+        "Abbreviation": "aug",
+        "Formula": "(CaxMgyFez)(Mgy1Fez1)Si2O6",
+        "Crystal System": "Monoclinic",
+        "Hardness": "5.5-6",
+        "Distinguishing Features": "Crystals usually stubby prisms, color ranges from pale green to black, cleavageat 87° and 93°",
+        "Occurrence": "Essential in mafc igneous rocks, basalt, gabbro; common in ultramafc rocks; in some high-grade metamorphic rocks and metamorphosed iron formations.",
+        "Associated Minerals": "Orthoclase, sanidine, labradorite, olivine, leucite, amphiboles, pyroxenes",
+        "mindat.org link": "https://www.mindat.org/min-419.html"
+      },
+      {
         "Name": "azurite",
         "Label": "Azurite",
-        "Abbreviation": "aug",
+        "Abbreviation": "az",
         "Formula": "Cu3(CO3)2(OH)",
         "Crystal System": "Monoclinic",
         "Hardness": "3.5-4",
@@ -156,7 +168,7 @@
       {
         "Name": "brucite",
         "Label": "Brucite",
-        "Abbreviation": "",
+        "Abbreviation": "brc",
         "Formula": "Mg(OH)2",
         "Crystal System": "Hexagonal",
         "Hardness": "2.5",
@@ -192,7 +204,7 @@
       {
         "Name": "chert",
         "Label": "Chert",
-        "Abbreviation": "",
+        "Abbreviation": "ch",
         "Formula": "SiO2",
         "Crystal System": "Hexagonal",
         "Hardness": "6.5-7",
@@ -241,12 +253,12 @@
         "Name": "chrysotile",
         "Label": "Chrysotile",
         "Abbreviation": "ctl",
-        "Formula": "",
-        "Crystal System": "",
-        "Hardness": "",
-        "Distinguishing Features": "",
-        "Occurrence": "",
-        "Associated Minerals": "",
+        "Formula": "Mg3(Si2O5)(OH)4",
+        "Crystal System": "Monoclinic",
+        "Hardness": "2.5",
+        "Distinguishing Features": "hardness, silky luster, fibrous",
+        "Occurrence": "hydrothermal alteration of mafic and ultramafic rocks",
+        "Associated Minerals": "other serpentine minerals, lizardite, corundum",
         "mindat.org link": ""
       },
       {
@@ -263,20 +275,20 @@
       },
       {
         "Name": "clinopyroxene",
-        "Label": "Clinopyroxene Augite",
+        "Label": "Clinopyroxene",
         "Abbreviation": "cpx",
-        "Formula": "Ca(Fe,Mg)Si2O6",
+        "Formula": "XY(Si,Al)2O6",
         "Crystal System": "Monoclinic",
-        "Hardness": "5-6",
-        "Distinguishing Features": "Dark green to greenish-black color, hardness, and two planes of cleavage. Often forms slender crystals.",
-        "Occurrence": "Forms predominately in intrusive mafic rocks (gabbro, pyroxenite, anorthosite, norite, peridotite). Also found in basalt and andesite, amphibolite, hornblende gneiss, skarns, marble, granulite. ",
-        "Associated Minerals": "Orthopyroxene, olivine, plagioclase feldspar, amphiboles. In limestone: amphibole, scapolite, vesuvianite, garnet, spinel, rutile, phlogopite, tourmaline",
-        "mindat.org link": "https://www.mindat.org/min-419.html"
+        "Hardness": "Various",
+        "Distinguishing Features": "A subgroup name for monoclinic Pyroxene Group minerals. The most widespread members include aegirine, augite, hedenbergite and diopside. ",
+        "Occurrence": "Many igneous and metamorphic rocks",
+        "Associated Minerals": "Orthopyroxene, olivine, plagioclase feldspar, amphiboles.",
+        "mindat.org link": "https://www.mindat.org/min-7630.html"
       },
       {
         "Name": "clinozoisite",
         "Label": "Clinozoisite",
-        "Abbreviation": "",
+        "Abbreviation": "czo",
         "Formula": "Ca2Al3OOH(Si2O7)(SiO4)",
         "Crystal System": "Monoclinic",
         "Hardness": "6-7",
@@ -340,7 +352,7 @@
         "Formula": "CaMgSi2O6",
         "Crystal System": "Monoclinic",
         "Hardness": "5.5-6",
-        "Distinguishing Features": "Euhedral, stubby, tabular crystals. Vitreous luster. Conchoidal fracture. Light green in color. Cleavage at 87o and 93o.",
+        "Distinguishing Features": "Euhedral, stubby, tabular crystals. Vitreous luster. Conchoidal fracture. Light green in color. Cleavage at 87° and 93°.",
         "Occurrence": "Contact and regionally metamorphosed dolomitic limestones. Cr-rich diopside found in ultramafic rocks (e.g. kimberlite). Also skarns, marble, carbonates, and crystalline schists.",
         "Associated Minerals": "Tremolite-actinolite, grossular garnet, epidote, wollastonite, forsterite, calcite, dolomite. Alters to antigorite and sometimes hornblende.",
         "mindat.org link": "https://www.mindat.org/min-1294.html"
@@ -370,9 +382,21 @@
         "mindat.org link": "https://www.mindat.org/min-1389.html"
       },
       {
+        "Name": "fe_oxide",
+        "Label": "Fe oxide",
+        "Abbreviation": "feo",
+        "Formula": "various",
+        "Crystal System": "",
+        "Hardness": "",
+        "Distinguishing Features": "In petrological terms, \"Iron oxides\" refers usually to the two main iron oxide minerals hematite and magnetite and, to a lesser extent, the rarer oxide mineral maghemite.",
+        "Occurrence": "",
+        "Associated Minerals": "",
+        "mindat.org link": ""
+      },
+      {
         "Name": "fluorite",
         "Label": "Fluorite",
-        "Abbreviation": "feo",
+        "Abbreviation": "fl",
         "Formula": "CaF2",
         "Crystal System": "Isometric",
         "Hardness": "4",
@@ -408,11 +432,11 @@
       {
         "Name": "glaucophane",
         "Label": "Glaucophane",
-        "Abbreviation": "",
+        "Abbreviation": "gln",
         "Formula": "Na2Mg3Al2Si8O22(OH)2",
         "Crystal System": "Monoclinic",
         "Hardness": "6-6.5",
-        "Distinguishing Features": "Distinguished as an amphibole based on cleavage (56o and 124o). Prismatic, bladed crystal habit. Main diagnostic trait is blue color.",
+        "Distinguishing Features": "Distinguished as an amphibole based on cleavage (56° and 124°). Prismatic, bladed crystal habit. Main diagnostic trait is blue color.",
         "Occurrence": "High pressure, low temperature regional metamorphic rocks (e.g. blueschist)",
         "Associated Minerals": "Lawsonite, pumpellyite, chlorite, albite, quartz, jadeite, epidote",
         "mindat.org link": "https://www.mindat.org/min-1704.html"
@@ -442,21 +466,21 @@
         "mindat.org link": "https://www.mindat.org/min-1740.html"
       },
       {
-        "Name": "grossular garnet ",
+        "Name": "grossular_garnet ",
         "Label": "Grossular Garnet ",
         "Abbreviation": "grs",
-        "Formula": "",
-        "Crystal System": "",
-        "Hardness": "",
-        "Distinguishing Features": "",
-        "Occurrence": "",
-        "Associated Minerals": "",
-        "mindat.org link": ""
+        "Formula": "Ca3Al2(SiO4)3",
+        "Crystal System": "Isometric",
+        "Hardness": "6.5-7",
+        "Distinguishing Features": "dodecahedral porphyroblasts, Hardness, color (green, pink, brown)",
+        "Occurrence": "In contact and regionally metamorphosed calcareous rocks, or rocks which have undergone calcium metasomatism; in some schists and serpentinites.",
+        "Associated Minerals": "Calcite, dolomite, epidote, wollastonite, diopside, tremolite.",
+        "mindat.org link": "https://www.mindat.org/min-1755.html"
       },
       {
         "Name": "gypsum",
         "Label": "Gypsum",
-        "Abbreviation": "",
+        "Abbreviation": "gp",
         "Formula": "CaSO4*2H2O",
         "Crystal System": "Monoclinic",
         "Hardness": "2",
@@ -468,7 +492,7 @@
       {
         "Name": "halite",
         "Label": "Halite",
-        "Abbreviation": "",
+        "Abbreviation": "hl",
         "Formula": "NaCl",
         "Crystal System": "Isometric",
         "Hardness": "2.5",
@@ -480,7 +504,7 @@
       {
         "Name": "hematite",
         "Label": "Hematite",
-        "Abbreviation": "",
+        "Abbreviation": "hem, hm",
         "Formula": "Fe2O3",
         "Crystal System": "Hexagonal",
         "Hardness": "5-6",
@@ -496,7 +520,7 @@
         "Formula": "(Na,K)Ca2(Mg,Fe,Al)5(Si,Al)8O22(OH)2",
         "Crystal System": "Monoclinic",
         "Hardness": "5-6",
-        "Distinguishing Features": "Cleavage (56o and 124o), elongate to bladed (often parallel) crystals, dark green-black in color. Vitreous luster.",
+        "Distinguishing Features": "Cleavage (56° and 124°), elongate to bladed (often parallel) crystals, dark green-black in color. Vitreous luster.",
         "Occurrence": "Most common in compositionally intermediate igneous rocks (especially diorite), but somewhat common in mafic and felsic rocks. Medium- to high-grade metamorphic mafic rocks (e.g. amphibolite, hornblende schist)",
         "Associated Minerals": "Quartz, biotite, plagioclase, orthoclase, pyroxenes. Alters to chlorite, epidote, calcite, siderite, quartz",
         "mindat.org link": "https://www.mindat.org/min-1930.html"
@@ -505,25 +529,13 @@
         "Name": "hypersthene",
         "Label": "Hypersthene",
         "Abbreviation": "hyp",
-        "Formula": "",
-        "Crystal System": "",
-        "Hardness": "",
-        "Distinguishing Features": "",
-        "Occurrence": "",
-        "Associated Minerals": "",
-        "mindat.org link": ""
-      },
-      {
-        "Name": "jadeite",
-        "Label": "Jadeite",
-        "Abbreviation": "",
-        "Formula": "NaAlSi2O6",
-        "Crystal System": "Monoclinic",
-        "Hardness": "1-6",
-        "Distinguishing Features": "Green color; vitreous luster; stubby or elongate prisms but typically anhedral granules or acicular/fibrous grain aggregates.",
-        "Occurrence": "High-P, moderate-T metamorphic rocks; tyipcally in glaucophane schist, metagraywake",
-        "Associated Minerals": "Albite, glaucophane, lawsonite, quartz, chlorite, garnet, zoisite, tremolite, calcite, aragonite, micas",
-        "mindat.org link": "https://www.mindat.org/min-2062.html"
+        "Formula": "(Mg,Fe)SiO3",
+        "Crystal System": "Orthorhombic",
+        "Hardness": "5.5-6",
+        "Distinguishing Features": " usually found as foliated masses; gray, brown or green; On certain surfaces it displays a brilliant copper-red metallic sheen",
+        "Occurrence": "Minerals of basic igneous rocks and meteorites. Intermediate in composition between enstatite and ferrosilite",
+        "Associated Minerals": "Olivine, phlogopite, clinopyroxene, diopside, spinel, pyrope, Magnetite, hematite, quartz, almandine",
+        "mindat.org link": "https://www.mindat.org/min-1995.html"
       },
       {
         "Name": "ilmenite",
@@ -538,13 +550,25 @@
         "mindat.org link": "https://www.mindat.org/min-2013.html"
       },
       {
+        "Name": "jadeite",
+        "Label": "Jadeite",
+        "Abbreviation": "jd",
+        "Formula": "NaAlSi2O6",
+        "Crystal System": "Monoclinic",
+        "Hardness": "1-6",
+        "Distinguishing Features": "Green color; vitreous luster; stubby or elongate prisms but typically anhedral granules or acicular/fibrous grain aggregates.",
+        "Occurrence": "High-P, moderate-T metamorphic rocks; tyipcally in glaucophane schist, metagraywake",
+        "Associated Minerals": "Albite, glaucophane, lawsonite, quartz, chlorite, garnet, zoisite, tremolite, calcite, aragonite, micas",
+        "mindat.org link": "https://www.mindat.org/min-2062.html"
+      },
+      {
         "Name": "kaersutite",
         "Label": "Kaersutite",
         "Abbreviation": "krs",
         "Formula": "NaCa2(Mg,Fe)4TiSi6Al2O22(OH)2",
         "Crystal System": "Monoclinic",
         "Hardness": "5-6",
-        "Distinguishing Features": "Brown or black color. Amphibole cleavage (56o and 124o). Elongate, columnar, fibrous crystal habit.",
+        "Distinguishing Features": "Brown or black color. Amphibole cleavage (56° and 124°). Elongate, columnar, fibrous crystal habit.",
         "Occurrence": "Alkalic volcanic rocks (trachybasalt, trachyandesite), syenite",
         "Associated Minerals": "Alkali feldspar, anorthite, olivine, clinopyroxene, leucite, analcime",
         "mindat.org link": "https://www.mindat.org/min-2129.html"
@@ -553,13 +577,13 @@
         "Name": "k-feldspar",
         "Label": "K-feldspar",
         "Abbreviation": "kfs, kspar, kfsp",
-        "Formula": "",
-        "Crystal System": "",
-        "Hardness": "",
-        "Distinguishing Features": "",
-        "Occurrence": "",
-        "Associated Minerals": "",
-        "mindat.org link": ""
+        "Formula": "Variable",
+        "Crystal System": "Variable",
+        "Hardness": "6-6.5",
+        "Distinguishing Features": "Potassium-dominant feldspars with unknown crystal symmetry and Al-Si ordering state. Includes microcline, orthoclase and sanidine.",
+        "Occurrence": "Common in plutonic felsic rocks, in metamorphic rocks of various grades, and as a result of potassic hydrothermal alteration. A detrital component in sedimentary rocks and as authigenic overgrowths.",
+        "Associated Minerals": "Muscovite, biotite, hornblende, quartz, sodic plagioclase",
+        "mindat.org link": "https://www.mindat.org/min-9581.html"
       },
       {
         "Name": "kyanite",
@@ -576,7 +600,7 @@
       {
         "Name": "lawsonite",
         "Label": "Lawsonite",
-        "Abbreviation": "",
+        "Abbreviation": "lws",
         "Formula": "CaAl2(Si2O7)(OH)2*2H2O",
         "Crystal System": "Orthorhombic",
         "Hardness": "6",
@@ -625,24 +649,24 @@
         "Name": "lizardite",
         "Label": "Lizardite",
         "Abbreviation": "lz",
-        "Formula": "",
-        "Crystal System": "",
-        "Hardness": "",
-        "Distinguishing Features": "",
-        "Occurrence": "",
-        "Associated Minerals": "",
-        "mindat.org link": ""
+        "Formula": "Mg3(Si2O5)(OH)4",
+        "Crystal System": "Hexagonal",
+        "Hardness": "2.5",
+        "Distinguishing Features": "crystals commonly as fine-grained scales and massive aggregates, green color, ",
+        "Occurrence": "Typically a product of retrograde metamorphism, replacing olivine, orthopyroxene, or other minerals in ultrama¯c igneous rocks",
+        "Associated Minerals": "Chrysotile, brucite, magnetite",
+        "mindat.org link": "https://www.mindat.org/min-2425.html"
       },
       {
         "Name": "magnesio-hornblende",
         "Label": "Magnesio-Hornblende",
         "Abbreviation": "mhb, mghbl",
-        "Formula": "",
-        "Crystal System": "",
-        "Hardness": "",
-        "Distinguishing Features": "",
-        "Occurrence": "",
-        "Associated Minerals": "",
+        "Formula": "Ca2[(Mg, Fe 2+)4Al](Si7Al)O22(OH)2",
+        "Crystal System": "Monoclinic",
+        "Hardness": "5-6",
+        "Distinguishing Features": "prismatic crystals, perfect cleavage (56° and 124°), color is green, brown",
+        "Occurrence": "Common in amphibolites, schists, and pegmatitic alkalic gabbro. Also from welded tu®s, granodiorites, granites, and tonalites.",
+        "Associated Minerals": "Quartz, orthoclase, plagioclase, biotite, magnetite, apatite",
         "mindat.org link": ""
       },
       {
@@ -660,7 +684,7 @@
       {
         "Name": "malachite",
         "Label": "Malachite",
-        "Abbreviation": "",
+        "Abbreviation": "mlc, mal",
         "Formula": "Cu2CO3(OH)2",
         "Crystal System": "Monoclinic",
         "Hardness": "3.5-4",
@@ -672,7 +696,7 @@
       {
         "Name": "marcasite",
         "Label": "Marcasite",
-        "Abbreviation": "",
+        "Abbreviation": "mrc, mr",
         "Formula": "FeS2",
         "Crystal System": "Orthorhombic",
         "Hardness": "6-6.5",
@@ -688,10 +712,10 @@
         "Formula": "(Ca,Na)2(Mg,Al)(Si,Al)2O7",
         "Crystal System": "Tetragonal",
         "Hardness": "5-6",
-        "Distinguishing Features": "Tabular crystals; square, rectangle, octagon cross-sections; anhedral grains; elongate inclusions parallel to c",
-        "Occurrence": "Tetragonal",
-        "Associated Minerals": "",
-        "mindat.org link": ""
+        "Distinguishing Features": "Tabular crystals; square, rectangle, octagon cross-sections; anhedral grains; elongate inclusions parallel to c axis",
+        "Occurrence": "silica deficient calcium-rich mafic volcanic rocks, metamorphosed carbonate rocks",
+        "Associated Minerals": "Dolomite, calcite, augite, diopside, garnet, olivine, nepheline, leucite, calcic plagioclase",
+        "mindat.org link": "https://www.mindat.org/min-29310.html"
       },
       {
         "Name": "microcline",
@@ -700,7 +724,7 @@
         "Formula": "(K,Na)AlSi3O8",
         "Crystal System": "Triclinic",
         "Hardness": "6-6.5",
-        "Distinguishing Features": "Visible exsolution lamellae, good cleavage (near 90o), pink color (occasionally blue, green, white, or pale yellow). Commonly alters to sericite and clays.",
+        "Distinguishing Features": "Visible exsolution lamellae, good cleavage (near 90°), pink color (occasionally blue, green, white, or pale yellow). Commonly alters to sericite and clays.",
         "Occurrence": "Similar to orthoclase occurrence, but especially common in pegmatites and shear zones. Granite, granodiorite, syenite, granitic pegmatite, high-grade pelitic metamorphic rocks. Low temperature, not often found in volcanic rocks. ",
         "Associated Minerals": "Quartz, muscovite, biotite",
         "mindat.org link": "https://www.mindat.org/min-2704.html"
@@ -708,7 +732,7 @@
       {
         "Name": "molybdenite",
         "Label": "Molybdenite",
-        "Abbreviation": "",
+        "Abbreviation": "mol, mo",
         "Formula": "MoS2",
         "Crystal System": "Hexagonal",
         "Hardness": "1-1.5",
@@ -748,7 +772,7 @@
         "Formula": "NaFeSi2O6",
         "Crystal System": "Monoclinic",
         "Hardness": "6",
-        "Distinguishing Features": "Blocky prismatic crystal habit, without pointed terminations. Distinguished as a pyroxene by color (dark green, greenish black, or reddish brown), cleavage (approximately 90o) and hardness. Differentiation from other pyroxenes is difficult in hand sample.",
+        "Distinguishing Features": "Blocky prismatic crystal habit, without pointed terminations. Distinguished as a pyroxene by color (dark green, greenish black, or reddish brown), cleavage (approximately 90°) and hardness. Differentiation from other pyroxenes is difficult in hand sample.",
         "Occurrence": "Alkali-rich magmas (alkali granite, syenite, nepheline syenite, phonolite), low silica rocks (carbonatites), blueschists in alpine metamorphic belts",
         "Associated Minerals": "K-feldspar, Na-amphiboles (e.g. riebeckite), feldspathoids, quartz",
         "mindat.org link": "https://www.mindat.org/min-48005.html"
@@ -780,7 +804,7 @@
       {
         "Name": "omphacite",
         "Label": "Omphacite",
-        "Abbreviation": "",
+        "Abbreviation": "omp",
         "Formula": "(Ca, Na)(Al,Fe,Mg)Si2O6",
         "Crystal System": "Monoclinic",
         "Hardness": "5-6",
@@ -792,7 +816,7 @@
       {
         "Name": "opaques",
         "Label": "Opaques",
-        "Abbreviation": "",
+        "Abbreviation": "op",
         "Formula": "Dominantly metal oxides and sulfides",
         "Crystal System": "Variable",
         "Hardness": "Variable",
@@ -808,7 +832,7 @@
         "Formula": "(Mg,Fe)2(Mg,Fe)5Si8O22(OH)2",
         "Crystal System": "Orthorhombic",
         "Hardness": "5.5-6",
-        "Distinguishing Features": "Usually brown; perfect {210} cleavage (56�/124�); {100} and {010} cleavages distinguish it from clinoamphibole; elastic fibers; brittle",
+        "Distinguishing Features": "Usually brown; perfect {210} cleavage (56°/124°); {100} and {010} cleavages distinguish it from clinoamphibole; elastic fibers; brittle",
         "Occurrence": "Medium-high grade metamorphosed mafic rocks;",
         "Associated Minerals": "Cordierite, garnet, alumino-silicates, plagioclase, staurolite",
         "mindat.org link": "https://www.mindat.org/min-254.html"
@@ -820,7 +844,7 @@
         "Formula": "(Mg,Fe)2(Mg,Fe)3Al2Al2Si6O22(OH)2",
         "Crystal System": "Orthorhombic",
         "Hardness": "5.5-6",
-        "Distinguishing Features": "Usually brown; perfect {210} cleavage (56�/124�); {100} and {010} cleavages distinguish it from clinoamphibole; elastic fibers; brittle",
+        "Distinguishing Features": "Usually brown; perfect {210} cleavage (56°/124°); {100} and {010} cleavages distinguish it from clinoamphibole; elastic fibers; brittle",
         "Occurrence": "Medium-high grade metamorphosed mafic rocks;",
         "Associated Minerals": "Cordierite, garnet, alumino-silicates, plagioclase, staurolite",
         "mindat.org link": "https://www.mindat.org/min-1665.html"
@@ -832,7 +856,7 @@
         "Formula": "(K, Na)AlSi3O8",
         "Crystal System": "Monoclinic",
         "Hardness": "6-6.5",
-        "Distinguishing Features": "Good cleavage (90o), Carlsbad twinning, often occurs as phenocrysts, commonly alters to sericite and clay. Often clear and glassy in comparison with microcline and sanidine. Colored, but often less strongly than microcline.",
+        "Distinguishing Features": "Good cleavage (90°), Carlsbad twinning, often occurs as phenocrysts, commonly alters to sericite and clay. Often clear and glassy in comparison with microcline and sanidine. Colored, but often less strongly than microcline.",
         "Occurrence": "Igneous rocks, contact zones and other metamorphic rocks",
         "Associated Minerals": "Quartz, muscovite, biotite",
         "mindat.org link": "https://www.mindat.org/min-3026.html"
@@ -864,7 +888,7 @@
       {
         "Name": "piemontite",
         "Label": "Piemontite",
-        "Abbreviation": "",
+        "Abbreviation": "pmt",
         "Formula": "Ca2(Al,Mn3+,Fe3+)3O(OH)Si2O7SiO4",
         "Crystal System": "Monoclinic",
         "Hardness": "6-6.5",
@@ -880,7 +904,7 @@
         "Formula": "NaAlSi3O8 - CaAl2Si2O8",
         "Crystal System": "Triclinic",
         "Hardness": "6-6.5",
-        "Distinguishing Features": "Good cleavage (nearly 90o), parallel striations, most commonly a grey-white color",
+        "Distinguishing Features": "Good cleavage (nearly 90°), parallel striations, most commonly a grey-white color",
         "Occurrence": "Abundant in igneous rocks. Detrital mineral in sedimentary rocks, but susceptible to weathering. Often occurs in metamorphic rocks as albite. Anorthite found in metamorphosed carbonates, amphibolites. ",
         "Associated Minerals": "Clinopyroxene, orthopyroxene, olivine, quartz, muscovite, biotite",
         "mindat.org link": "https://www.mindat.org/min-3231.html"
@@ -888,7 +912,7 @@
       {
         "Name": "pumpellyite",
         "Label": "Pumpellyite",
-        "Abbreviation": "",
+        "Abbreviation": "pmp",
         "Formula": "Ca2MgAl2[SiO4][Si2O7](OH)2·H2O",
         "Crystal System": "Monoclinic",
         "Hardness": "5-6",
@@ -912,7 +936,7 @@
       {
         "Name": "pyrophyllite",
         "Label": "Pyrophyllite",
-        "Abbreviation": "",
+        "Abbreviation": "prl",
         "Formula": "Al2Si4O10(OH)2",
         "Crystal System": "Monoclinic",
         "Hardness": "1-2",
@@ -964,7 +988,7 @@
         "Formula": "(K, Na)AlSi3O8",
         "Crystal System": "Monoclinic",
         "Hardness": "6-6.5",
-        "Distinguishing Features": "Good cleavage (90o), common as phenocrysts. Colorless to white, vitreous luster, carlsbad twinning. Alters to sericite and clay.",
+        "Distinguishing Features": "Good cleavage (90°), common as phenocrysts. Colorless to white, vitreous luster, carlsbad twinning. Alters to sericite and clay.",
         "Occurrence": "Silicic volcanic rocks (e.g. rhyolite, trachyte). High temperature.",
         "Associated Minerals": "Quartz, muscovite, biotite",
         "mindat.org link": "https://www.mindat.org/min-3521.html"
@@ -972,7 +996,7 @@
       {
         "Name": "sapphirine",
         "Label": "Sapphirine",
-        "Abbreviation": "",
+        "Abbreviation": "spr",
         "Formula": "Mg4(Mg3Al9)O4(Si3Al9O36)",
         "Crystal System": "Monoclinic",
         "Hardness": "7.5",
@@ -1036,7 +1060,7 @@
         "Formula": "LiAlSi2O6",
         "Crystal System": "Monoclinic",
         "Hardness": "6.5-7",
-        "Distinguishing Features": "Prismatic, octagonal, often vertically striated crystals (also acicular and cleavable masses). Perfect pyroxene (~90o) cleavage. Vitreous luster. Color is white, greyish-white, pale shades of blue, green, or yellow. Exhibits splintery fracture.",
+        "Distinguishing Features": "Prismatic, octagonal, often vertically striated crystals (also acicular and cleavable masses). Perfect pyroxene (~90°) cleavage. Vitreous luster. Color is white, greyish-white, pale shades of blue, green, or yellow. Exhibits splintery fracture.",
         "Occurrence": "Li-bearing pegmatites.",
         "Associated Minerals": "Quartz, K-feldspar, plagioclase, tourmaline, beryl, lepidolite, spessartine, aquamarine. May alter to albite and eucryptite.",
         "mindat.org link": "https://www.mindat.org/min-3733.html"
@@ -1176,7 +1200,7 @@
       {
         "Name": "zoisite",
         "Label": "Zoisite",
-        "Abbreviation": "",
+        "Abbreviation": "zo",
         "Formula": "Ca2Al3OOH(Si2O7)(SiO4)",
         "Crystal System": "Orthorhombic",
         "Hardness": "6-7",
@@ -1184,7 +1208,8 @@
         "Occurrence": "Medium-grade metapelites rich in Ca (calcareous shale, sandstone, or limestone). Less commonly occurs in blueschists, eclogite, quartz veins, pegmatites, ore deposits. Often embedded in quartz or sulfides.",
         "Associated Minerals": "Quartz, amphiboles (actinolite, glaucophane), plagioclase, chlorite, corundum",
         "mindat.org link": "https://www.mindat.org/min-4430.html"
-      }];
+      }
+    ];
 
     activate();
 
