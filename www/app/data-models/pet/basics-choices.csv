@@ -40,13 +40,18 @@ ug9ia66,megacrystic,megacrystic,6
 ug9ia66,aplitic,aplitic,7
 ug9ia66,miarolitic,miarolitic,8
 ug9ia66,diabasic,diabasic,9
-ug9ia66,other,other,
-pt2tr54,altered,altered,
-pt2tr54,metamorphic_ov,metamorphic overprint,
-pt2tr54,shattered,shattered,
-pt2tr54,veined,veined,
-pt2tr54,faulted,faulted,
-pt2tr54,grus,grus,
+ug9ia66,seriate,seriate,10
+ug9ia66,other,other,11
+pt2tr54,altered,altered,0
+pt2tr54,metamorphic_ov,metamorphic overprint,1
+pt2tr54,shattered,shattered,2
+pt2tr54,veined,veined,3
+pt2tr54,faulted,faulted,4
+pt2tr54,grus,grus,5
+pt2tr54,jointed,jointed,6
+pt2tr54,jointed_1,jointed,6
+pt2tr54,hydrothermal_v,hydrothermal veins,7
+pt2tr54,other,other,8
 hr56r07,basalt,basalt,0
 hr56r07,rhyolite,rhyolite,1
 hr56r07,basaltic_andes,basaltic-andesite,2

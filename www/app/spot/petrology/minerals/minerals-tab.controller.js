@@ -17,7 +17,7 @@
 
     var ternaryMinerals = {
       q: ['quartz'],                                                                              // Quartz
-      a: ['k-feldspar', 'k_feldspar', 'k_feldspar__or', 'microcline', 'orthoclase', 'sanidine'],  // Alkali feldspar, include albite?
+      a: ['k-feldspar', 'k_feldspar', 'microcline', 'orthoclase', 'sanidine'],       // Alkali feldspar, include albite?
       p: ['plagioclase'],                                                                         // Plagioclase
       f: ['leucite', 'nepheline'],                                                                // Feldspathoids
       ol: ['olivine'],                                                                            // Olivine

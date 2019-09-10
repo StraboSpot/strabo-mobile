@@ -1,13 +1,13 @@
 type,name,label,hint,required,relevant,appearance,constraint,calculation
 start,start,,,,,,,
 end,end,,,,,,,
-text,full_mineral_name,Full mineral name,Enter full mineral name,false,,,,
 text,mineral_abbrev,Mineral name abbreviation,Enter mineral name abbreviation,false,,,,
+text,full_mineral_name,Full mineral name,Enter full mineral name,false,,,,
 select_multiple ui7ey60,rock_class,Rock Class,Choose the class of rocks for the mineral,false,${full_mineral_name} = '' and ${mineral_abbrev} = '',,,
 select_one xw9ln13,volcanic_mineral,Volcanic Mineral,,false,"selected(${rock_class}, 'volcanic')",,,
 select_one rn6qh22,metamorphic_mineral,Metamorphic Mineral,,false,"selected(${rock_class}, 'metamorphic')",,,
 select_one ed0jl59,plutonic_mineral,Plutonic Mineral,,false,"selected(${rock_class}, 'plutonic')",,,
-select_one oc3sm82,alteration_ore_mineral,"Alteration, Ore Mineral",,false,"selected(${rock_class}, 'alteration__or')",horizontal-compact,,
+select_one oc3sm82,alteration_ore_mineral,"Alteration, Ore Mineral",,false,"selected(${rock_class}, 'alteration_ore')",horizontal-compact,,
 select_one zb4mp25,mineral,Mineral,,false,"selected(${rock_class}, 'complete_miner')",,,
 select_one tg2fy55,habit,Habit,,false,,,,
 text,other_habit,Other,,false,${habit} = 'other',,,
@@ -21,4 +21,4 @@ decimal,maximum_grain_size_mm,Maximum Grain Size (mm),,false,,,,
 decimal,modal,Modal %,,false,,,. <= 100 and . > 0,
 text,mineral_notes,Mineral Notes,,false,,multiline,,
 calculate,_version,,,false,,,,'vz3ZQiUYMWhSKqG937DgJQ'
-calculate,__version__,,,,,,,'vU7ohJoVbkL2yp34Y6veXp'
+calculate,__version__,,,,,,,'vxmMug5M3JDCzznfX9PzfM'
