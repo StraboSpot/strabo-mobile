@@ -39,8 +39,7 @@
       {'value': 'experimental', 'label': 'Experimental', 'path': 'experimental'},
       {'value': 'experimental_set_up', 'label': 'Experimental Set Up', 'path': 'experimental-set-up'},
       {'value': 'experimental_results', 'label': 'Experimental Results', 'path': 'experimental-results'},
-      {'value': 'pet_basics', 'label': 'Pet Basics', 'path': 'pet-basics'},
-      {'value': 'pet_minerals', 'label': 'Pet Minerals', 'path': 'pet-minerals'}
+      {'value': 'petrology', 'label': 'Ig/Met', 'path': 'petrology'}
     ];
 
     return {
@@ -67,7 +66,7 @@
       'getSpotById': getSpotById,
       'getSpotWithImageId': getSpotWithImageId,
       'getSpots': getSpots,
-      'getSpotsWithPetBasics': getSpotsWithPetBasics,
+      'getSpotsWithPetrology': getSpotsWithPetrology,
       'getTabs': getTabs,
       'goToSpot': goToSpot,
       'isSafeDelete': isSafeDelete,
@@ -494,10 +493,10 @@
       return spots;
     }
 
-    // Get all active Spots that have petrology basics data
-    function getSpotsWithPetBasics() {
+    // Get all active Spots that have petrology data
+    function getSpotsWithPetrology() {
       return _.filter(activeSpots, function (spot) {
-        return _.has(spot.properties, 'pet') && _.has(spot.properties.pet, 'basics');
+        return _.has(spot.properties, 'pet');
       });
     }
 

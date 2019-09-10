@@ -1,16 +1,32 @@
 <div>
   <div class='button-bar'>
-    <button class='button' ng-class="{'button-positive': vmChild.attributeType === 'mineralogy'}"
-            ng-click='vmChild.switchMineralsSubtab("mineralogy")'>Mineralogy
+    <button class='button' ng-class="{'button-positive': vmChild.attributeType === 'rock'}"
+            ng-click='vmChild.switchPetrologySubtab("rock")'>Rock
+    </button>
+    <button class='button' ng-class="{'button-positive': vmChild.attributeType === 'minerals'}"
+            ng-click='vmChild.switchPetrologySubtab("minerals")'>Minerals
     </button>
     <button class='button' ng-class="{'button-positive': vmChild.attributeType === 'reactions'}"
-            ng-click='vmChild.switchMineralsSubtab("reactions")'>Reactions
+            ng-click='vmChild.switchPetrologySubtab("reactions")'>Reactions
     </button>
     <button class='button' ng-class="{'button-positive': vmChild.attributeType === 'ternary'}"
-            ng-click='vmChild.switchMineralsSubtab("ternary")' ng-show="vmChild.shouldShowTernary()">Ternary
+            ng-click='vmChild.switchPetrologySubtab("ternary")' ng-show="vmChild.shouldShowTernary()">Ternary
     </button>
   </div>
-  <div ng-show='vmChild.attributeType === "mineralogy"'>
+  <div ng-show='vmChild.attributeType === "rock"'>
+    <ion-input class='item item-input item-select item-stacked-label item-text-wrap no-errors'>
+      <ion-label>Copy Petrology Ig/Met Data:</ion-label>
+      <select ng-model='vmChild.spotWithPetToCopy'
+              ng-options='spot as spot.properties.name for spot in vmChild.spotsWithPet track by spot.properties.id'
+              ng-change='vmChild.copyPetData()'>
+        <option value=''>-- None --</option>
+      </select>
+    </ion-input>
+    <form name='straboForm' novalidate=''>
+      <auto-fields/>
+    </form>
+  </div>
+  <div ng-show='vmChild.attributeType === "minerals"'>
     <div class="row" style="padding:0">
       <div class="col" style="padding:0">
         <button ng-click='vmChild.addAttribute();' class='button button-clear button-positive'>
@@ -27,12 +43,12 @@
         </div>
       </div>
     </div>
-    <div class="padding" ng-show="!vm.spot.properties.pet.minerals.mineralogy">
+    <div class="padding" ng-show="!vm.spot.properties.pet.minerals">
       There are no minerals at this Spot.
     </div>
     <ion-list>
       <ion-item class='item-text-wrap item-button-right'
-                ng-repeat='mineral in vm.spot.properties.pet.minerals.mineralogy track by mineral.id'>
+                ng-repeat='mineral in vm.spot.properties.pet.minerals track by mineral.id'>
         <div ng-click='vmChild.editAttribute(mineral)'>
           <b>{{ vmChild.getMineralName(mineral) }}</b>
           <div class='padding-left' ng-repeat='(key, value) in mineral track by $index' ng-hide='key === "id"'>
@@ -52,12 +68,12 @@
       <i class='icon ion-plus-circled'></i>
       <span class='button-text-big'>Add a Reaction</span>
     </button>
-    <div class="padding" ng-show="!vm.spot.properties.pet.minerals.reactions">
+    <div class="padding" ng-show="!vm.spot.properties.pet.reactions">
       There are no reactions at this Spot.
     </div>
     <ion-list>
       <ion-item class='item-text-wrap item-button-right'
-                ng-repeat='reaction in vm.spot.properties.pet.minerals.reactions track by reaction.id'>
+                ng-repeat='reaction in vm.spot.properties.pet.reactions track by reaction.id'>
         <div ng-click='vmChild.editAttribute(reaction)'>
           <b>{{ reaction.reactions || 'Unknown'}}</b>
           <div class='padding-left' ng-repeat='(key, value) in reaction
@@ -79,7 +95,8 @@
       || (vmChild.ternary.ol > 0 && vmChild.ternary.opx > 0 && vmChild.ternary.cpx > 0)
       || (vmChild.ternary.ol > 0 && vmChild.ternary.cpx > 0 && vmChild.ternary.p > 0)
       || (vmChild.ternary.ol > 0 && vmChild.ternary.pyx > 0 && vmChild.ternary.hbl > 0)'>
-      No calculations to display. Add relevant minerals with modal percents to the Mineralogy.
+      No calculations to display. Add relevant minerals with modal percents to the Minerals list to calculate QAP, APF,
+      Ultramafics (Ol, Opx, Cpx), Ultramafics (Ol, Cpx, Plag) and Ultramafics (Ol, Pyx, Hbl).
     </div>
     <div ng-show='vmChild.ternary.q > 0 && vmChild.ternary.a > 0 && vmChild.ternary.p > 0'>
       <div class='item item-divider'>

@@ -6,9 +6,9 @@
     .controller('FormController', FormController);
 
   FormController.$inject = ['$document', '$ionicModal', '$ionicPopup', '$log', '$scope', 'FormFactory',
-    'MineralFactory', 'ProjectFactory'];
+    'PetrologyFactory', 'ProjectFactory'];
 
-  function FormController($document, $ionicModal, $ionicPopup, $log, $scope, FormFactory, MineralFactory,
+  function FormController($document, $ionicModal, $ionicPopup, $log, $scope, FormFactory, PetrologyFactory,
                           ProjectFactory) {
     var vm = this;
 
@@ -107,8 +107,7 @@
           field.name === 'group_other_modes' || field.name === 'strat_mode' ||
           field.name === 'group_experimental_tab_control' || field.name === 'experimental' ||
           field.name === 'experimental_results' || field.name === 'experimental_set_up' ||
-          field.name === 'data' || field.name === 'group_pet_tab_control' || field.name === 'pet_basics' ||
-          field.name === 'pet_minerals') {
+          field.name === 'data' || field.name === 'petrology') {
           show = false;
         }
       }
@@ -119,7 +118,7 @@
       vm.field = field;
       vm.additionalFieldInfo = undefined;
       if (vm.field.name === 'mineral_abbrev') {
-        vm.additionalFieldInfo = MineralFactory.getMineralAbbreviations().join('<br>');
+        vm.additionalFieldInfo = PetrologyFactory.getMineralAbbreviations().join('<br>');
       }
       vm.fieldInfoModal.show();
     }

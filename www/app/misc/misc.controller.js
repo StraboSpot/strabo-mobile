@@ -213,8 +213,7 @@
         preferences.experimental_results = false;
         preferences.experimental_set_up = false;
         preferences.data = false;
-        preferences.pet_basics = false;
-        preferences.pet_minerals = false;
+        preferences.petrology = false;
         ProjectFactory.saveProjectItem('preferences', preferences);
       }
     }

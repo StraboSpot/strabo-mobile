@@ -146,17 +146,17 @@
         }
       },
       'pet': {
-        'basics': {
+        'rock': {
           'survey': {},
-          'survey_file': 'app/data-models/pet/basics-survey.csv',
+          'survey_file': 'app/data-models/pet/rock-survey.csv',
           'choices': {},
-          'choices_file': 'app/data-models/pet/basics-choices.csv'
+          'choices_file': 'app/data-models/pet/rock-choices.csv'
         },
-        'mineralogy': {
+        'minerals': {
           'survey': {},
-          'survey_file': 'app/data-models/pet/mineralogy-survey.csv',
+          'survey_file': 'app/data-models/pet/minerals-survey.csv',
           'choices': {},
-          'choices_file': 'app/data-models/pet/mineralogy-choices.csv'
+          'choices_file': 'app/data-models/pet/minerals-choices.csv'
         },
         'reactions': {
           'survey': {},
@@ -446,7 +446,7 @@
           'name': 'Type: text; Label: Spot Name; REQUIRED',
           'notes': 'Type: text; Label: Notes',
           'orientation_data': [],
-          'pet': {'basics': {}, 'minerals': {}},
+          'pet': {'minerals': [], 'reactions': []},
           'samples': [],
           'sed': {'lithologies': {}, 'structures': {}, 'interpretations': {}},
           'time': 'datetime',
@@ -477,8 +477,8 @@
         'sed_surfaces': dataModels.sed.surfaces,
         'sed_architecture': dataModels.sed.architecture,
         'trace': dataModels.trace,
-        'pet_basics': dataModels.pet.basics,
-        'pet_mineralogy': dataModels.pet.mineralogy,
+        'pet_rock': dataModels.pet.rock,
+        'pet_minerals': dataModels.pet.minerals,
         'pet_reactions': dataModels.pet.reactions};
       _.each(models, function (model, key) {
         var description = {};
@@ -532,9 +532,9 @@
           description = sortby(description);
           spotDataModel.properties.images.push(description);
         }
-        else if (key === 'pet_basics') _.extend(spotDataModel.properties.pet.basics, description);
-        else if (key === 'pet_mineralogy') spotDataModel.properties.pet.minerals.mineralogy = [description];
-        else if (key === 'pet_reactions') spotDataModel.properties.pet.minerals.reactions = [description];
+        else if (key === 'pet_rock') _.extend(spotDataModel.properties.pet, description);
+        else if (key === 'pet_minerals') spotDataModel.properties.pet.minerals = [description];
+        else if (key === 'pet_reactions') spotDataModel.properties.pet.reactions = [description];
         else spotDataModel.properties[key].push(description);
       });
     }

@@ -3,9 +3,9 @@
 
   angular
     .module('app')
-    .factory('MineralFactory', MineralFactory);
+    .factory('PetrologyFactory', PetrologyFactory);
 
-  function MineralFactory() {
+  function PetrologyFactory() {
     var abbreviationsWithLabels = {};
     var labelsWithAbberviations = {};
     var mineralGlossaryInfo = [
