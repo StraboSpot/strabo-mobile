@@ -863,7 +863,7 @@
       },
       {
         "Name": "orthopyroxene",
-        "Label": "Orthopyroxene (Hypersthene)",
+        "Label": "Orthopyroxene",
         "Abbreviation": "opx",
         "Formula": "(Mg,Fe)2Si2O6",
         "Crystal System": "Orthorhombic",
