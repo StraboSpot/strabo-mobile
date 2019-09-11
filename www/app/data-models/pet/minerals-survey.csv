@@ -21,4 +21,4 @@ decimal,maximum_grain_size_mm,Maximum Grain Size (mm),,false,,,,
 decimal,modal,Modal %,,false,,,. <= 100 and . > 0,
 text,mineral_notes,Mineral Notes,,false,,multiline,,
 calculate,_version,,,false,,,,'vz3ZQiUYMWhSKqG937DgJQ'
-calculate,__version__,,,,,,,'vxmMug5M3JDCzznfX9PzfM'
+calculate,__version__,,,,,,,'vwJqJjKwCS4wyjzDSKx3Y2'
