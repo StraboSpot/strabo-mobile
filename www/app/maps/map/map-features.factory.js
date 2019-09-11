@@ -92,16 +92,16 @@
 
     // Get emogeo icons to display on an interval
     function getEmogeos(mappedFeatures, mapName) {
-      function emogeosStyleFunction(feature) {
+      function emogeosStyleFunction(feature, resolution) {
         return new ol.style.Style({
           'image': new ol.style.Icon({
-            'anchor': [0, 0],
-            'anchorOrigin': 'top-left',
+            'anchor': [.15, .15],
+            'anchorOrigin': 'bottom-left',
             'anchorXUnits': 'fraction',
             'anchorYUnits': 'fraction',
             'opacity': 0.75,
             'src': MapEmogeosFactory.getEmogeoImageSrc(feature.getProperties()),
-            'scale': 1
+            'scale': 0.8728 * Math.pow(resolution, -0.5)
           })
         });
       }
@@ -115,7 +115,7 @@
           var geom = f.getGeometry();
           var geometries = geom.getType() === 'GeometryCollection' ? geom.getGeometries() : [geom];
           geometries.forEach(function (g) {
-            var topLeft = ol.extent.getTopLeft(g.getExtent());
+            var topLeft = ol.extent.getBottomLeft(g.getExtent());
             var emogeo = new ol.Feature();
             emogeo.setProperties(f.getProperties());
             emogeo.setGeometry(new ol.geom.Point(topLeft));
