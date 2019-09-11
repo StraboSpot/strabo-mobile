@@ -1,8 +1,8 @@
 type,name,label,hint,required,relevant,appearance,constraint,calculation
 start,start,,,,,,,
 end,end,,,,,,,
-text,mineral_abbrev,Mineral name abbreviation,Enter mineral name abbreviation,false,,,,
-text,full_mineral_name,Full mineral name,Enter full mineral name,false,,,,
+text,mineral_abbrev,Mineral Name Abbreviation,Enter mineral name abbreviation,false,,,,
+text,full_mineral_name,Full Mineral Name,Enter full mineral name,false,,,,
 select_multiple ui7ey60,rock_class,Rock Class,Choose the class of rocks for the mineral,false,${full_mineral_name} = '' and ${mineral_abbrev} = '',,,
 select_one xw9ln13,volcanic_mineral,Volcanic Mineral,,false,"selected(${rock_class}, 'volcanic')",,,
 select_one rn6qh22,metamorphic_mineral,Metamorphic Mineral,,false,"selected(${rock_class}, 'metamorphic')",,,

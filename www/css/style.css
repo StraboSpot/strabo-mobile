@@ -495,7 +495,7 @@ Form Fields Style
   max-width: 100% !important;
   width: 100% !important;
   font-weight: bold;
-  text-transform: capitalize;
+  text-transform: none;
   font-size: small;
   line-height: 20px;
   height: 20px;
