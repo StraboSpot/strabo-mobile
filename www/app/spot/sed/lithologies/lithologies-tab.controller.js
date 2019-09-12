@@ -52,7 +52,37 @@
           vmParent.data = vmParent.spot.properties.sed.lithologies;
         }
         else vmParent.data = {};
+
+        createWatches();
       }
+    }
+
+    function createWatches() {
+      // Watch for principal siliciclastic type changes
+      $scope.$watch('vm.data.principal_siliciclastic_type', function (newValue, oldValue) {
+        if (newValue && newValue !== oldValue) {
+          if (vmParent.data.principal_siliciclastic_type === 'claystone'
+            || vmParent.data.principal_siliciclastic_type === 'mudstone') {
+            vmParent.data.mud_silt_principal_grain_size = 'clay';
+          }
+          else if (vmParent.data.principal_siliciclastic_type === 'siltstone') {
+            vmParent.data.mud_silt_principal_grain_size = 'silt';
+          }
+        }
+      });
+
+      // Watch for interbed siliciclastic type changes
+      $scope.$watch('vm.data.interbed_siliciclastic_type', function (newValue, oldValue) {
+        if (newValue && newValue !== oldValue) {
+          if (vmParent.data.interbed_siliciclastic_type === 'claystone'
+            || vmParent.data.interbed_siliciclastic_type === 'mudstone') {
+            vmParent.data.mud_silt_interbed_grain_size = 'clay';
+          }
+          else if (vmParent.data.interbed_siliciclastic_type === 'siltstone') {
+            vmParent.data.mud_silt_interbed_grain_size = 'silt';
+          }
+        }
+      });
     }
 
     /**

@@ -84,6 +84,7 @@
       createModals();
       createPopover();
       createMap();
+      createWatches();
     }
 
     // Copy and save a Sed Interval
@@ -396,6 +397,26 @@
             switcher.renderPanel();
           }
         });
+      });
+    }
+
+    function createWatches() {
+      // Watch for principal siliciclastic type changes
+      $scope.$watch('vm.data.principal_siliciclastic_type', function (newValue, oldValue) {
+        if (newValue && newValue !== oldValue) {
+          if (vm.data.principal_siliciclastic_type === 'claystone'
+            || vm.data.principal_siliciclastic_type === 'mudstone') vm.data.mud_silt_principal_grain_size = 'clay';
+          else if (vm.data.principal_siliciclastic_type === 'siltstone') vm.data.mud_silt_principal_grain_size = 'silt';
+        }
+      });
+
+      // Watch for interbed siliciclastic type changes
+      $scope.$watch('vm.data.interbed_siliciclastic_type', function (newValue, oldValue) {
+        if (newValue && newValue !== oldValue) {
+          if (vm.data.interbed_siliciclastic_type === 'claystone'
+            || vm.data.interbed_siliciclastic_type === 'mudstone') vm.data.mud_silt_interbed_grain_size = 'clay';
+          else if (vm.data.interbed_siliciclastic_type === 'siltstone') vm.data.mud_silt_interbed_grain_size = 'silt';
+        }
       });
     }
 
