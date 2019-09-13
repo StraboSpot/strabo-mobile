@@ -19,4 +19,4 @@ select_one jf3we63,interbed_thickness,Interbed Thickness,,false,,
 select_one ss8kj53,interbed_proportion_change,Interbed Proportion Change (Up Section),,false,,
 select_one fz4sh15,interbed_thickness_change,Interbed Thickness Change (Up Section),,false,,
 text,Notes,Notes,false,false,,
-calculate,__version__,,,,,'v5tiqNwHPNNYVsPBwxTftQ'
+calculate,__version__,,,,,'vaUWtzPE9YeiQ75FW6ugNn'

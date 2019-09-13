@@ -49,9 +49,16 @@ uf03r86,bindstone,bindstone,8
 uf03r86,bafflestone,bafflestone,9
 uf03r86,cementstone,cementstone,10
 uf03r86,recrystallized,recrystallized,11
-jf3we63,thin_10_cm,thin (<10 cm),
-jf3we63,med_10_30_cm,medium (10-30 cm),
-jf3we63,thick_30_cm,thick (>30 cm),
+kq12j14,_2_cm,~2 cm,
+kq12j14,2_5_cm,2-5 cm,
+kq12j14,5_10_cm,5-10 cm,
+kq12j14,10_30_cm,10-30 cm,
+kq12j14,_30_cm,>30 cm,
+jf3we63,_2_cm,~2 cm,0
+jf3we63,2_5_cm,2-5 cm,1
+jf3we63,5_10_cm,5-10 cm,2
+jf3we63,10_30_cm,10-30 cm,3
+jf3we63,_30_cm,>30 cm,4
 ss8kj53,increase,increase,0
 ss8kj53,decrease,decrease,1
 ss8kj53,no_change,no change,2

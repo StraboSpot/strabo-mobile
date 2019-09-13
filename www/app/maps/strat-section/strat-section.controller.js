@@ -500,7 +500,7 @@
       // Set default interval name if prefix or Spot number set
       var prefix = ProjectFactory.getSpotPrefix() ? ProjectFactory.getSpotPrefix() : '';
       var number = ProjectFactory.getSpotNumber() ? ProjectFactory.getSpotNumber() : '';
-      vm.intervalName = prefix + number;
+      vm.data.intervalName = prefix + number;
 
       openIntervalModal();
     }

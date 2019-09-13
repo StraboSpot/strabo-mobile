@@ -55,13 +55,24 @@
       }
       // If interbedded need to create a geometry collection with polygons for each bed
       else {
-        var y = 2;
-        if (lithology.interbed_thickness === 'med_10_30_cm') y = y + 5;
-        else if (lithology.interbed_thickness === 'thick_30_cm') y = y + 10;
+        var y1 = .2;
+        if (lithology.primary_lithology_thickness === '2_5_cm') y1 = .6;
+        else if (lithology.primary_lithology_thickness === '5_10_cm') y1 = 1.5;
+        else if (lithology.primary_lithology_thickness === '10_30_cm') y1 = 4;
+        else if (lithology.primary_lithology_thickness === '_30_cm') y1 = 8;
 
-        var numInterbeds = Math.ceil(intervalHeight / y);
-        var numInterbeds2 = Math.ceil(numInterbeds * (lithology.interbed_proportion / 100)) || 2;
-        var numInterbeds1 = numInterbeds - numInterbeds2;
+        var y2 = .2;
+        if (lithology.interbed_thickness === '2_5_cm') y2 = .6;
+        else if (lithology.interbed_thickness === '5_10_cm') y2 = 1.5;
+        else if (lithology.interbed_thickness === '10_30_cm') y2 = 4;
+        else if (lithology.interbed_thickness === '_30_cm') y2 = 8;
+
+        var interbedHeight2 = Math.ceil(intervalHeight * (lithology.interbed_proportion / 100 || .5));  // secondary interbed
+        var interbedHeight1 = intervalHeight - interbedHeight2;                                           // primary interbed
+
+        var numInterbeds1 = Math.ceil(interbedHeight1 / y1);
+        var numInterbeds2 = Math.ceil(interbedHeight2 / y2);
+        var numInterbeds = numInterbeds1 + numInterbeds2;
 
         // Determine sequencing, always starting with lithology 1 (primary lithology)
         var seq = [], d;
@@ -74,34 +85,42 @@
           });
         }
         else {
-          d = Math.ceil(numInterbeds2 / numInterbeds1) + 1;
+          d = Math.ceil(numInterbeds2 / numInterbeds1);
           _.times(numInterbeds, function (i) {
             if (i === 0) seq.push('a');
-            else if (i % d === 0) seq.push('a');
+            else if (i % d === 0 && _.countBy(seq)['a'] < numInterbeds1) seq.push('a');
             else seq.push('b');
           });
         }
-        console.log('Interbed Sequence:', seq);
+        $log.log('Interbed Sequence:', seq, 'numInterbeds1:', numInterbeds1, '?=', _.countBy(seq)['a'],
+          'numInterbeds2:', numInterbeds2, '?=', _.countBy(seq)['b']);
 
         var interbedIntervalWidth = getIntervalWidth(lithology, stratSectionId, true);
         var geometries = [];
         var polyCoords = [];
-        maxY = minY + y;
+        var minYBed = angular.copy(minY);
+        var maxYBed = angular.copy(minY) + y1;
         _.times(numInterbeds, function (i) {
           maxX = seq[i] === 'a' ? minX + intervalWidth : minX + interbedIntervalWidth;
 
           // Merge current bed with previous if they're the same type
           var prevInterbedMaxX = _.max(_.unzip(_.last(polyCoords))[0]);
           if (i !== 0 && maxX === prevInterbedMaxX) {
-            minY = _.min(_.unzip(_.last(polyCoords))[1]);
+            minYBed = _.min(_.unzip(_.last(polyCoords))[1]);
             polyCoords.pop();
           }
 
-          var coords = [[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY], [minX, minY]];
+          var coords = [[minX, minYBed], [minX, maxYBed], [maxX, maxYBed], [maxX, minYBed], [minX, minYBed]];
           polyCoords.push(coords);
 
-          minY = maxY;
-          maxY = minY + y;
+          // Get maxY for next bed
+          if (i < seq.length) {
+            minYBed = maxYBed;
+            var y = seq[i + 1] === 'a' ? y1 : y2;
+            //$log.log('i', i, 'maxYBed', maxYBed, 'height for next bed', y);
+            maxYBed = HelpersFactory.roundToDecimalPlaces(minYBed + y, 2);
+          }
+          if (maxYBed > maxY) maxYBed = maxY;
         });
 
         _.each(polyCoords, function (polyCoord) {
@@ -392,7 +411,8 @@
       var stratSectionIntervals = getStratSectionIntervals(stratSectionId);
       _.each(stratSectionIntervals, function (stratSectionInterval) {
         var extent = new ol.format.GeoJSON().readFeature(stratSectionInterval).getGeometry().getExtent();
-        stratSectionInterval.geometry = calculateIntervalGeometry(stratSectionId, stratSectionInterval.properties.sed.lithologies, extent[1]);
+        stratSectionInterval.geometry = calculateIntervalGeometry(stratSectionId,
+          stratSectionInterval.properties.sed.lithologies, extent[1]);
         SpotFactory.save(stratSectionInterval);
         $log.log('Recalculated Spot geometry');
       });
@@ -441,6 +461,7 @@
           if (lithologies.interval_thickness !== lithologiesSaved.interval_thickness ||
             lithologies.relative_resistance_weathering !== lithologiesSaved.relative_resistance_weathering ||
             lithologies.interbed_proportion !== lithologiesSaved.interbed_proportion ||
+            lithologies.primary_lithology_thickness !== lithologiesSaved.primary_lithology_thickness ||
             lithologies.interbed_thickness !== lithologiesSaved.interbed_thickness ||
             ((lithologies.is_this_a_bed_or_package === 'bed' || lithologies.is_this_a_bed_or_package === 'package_succe') &&
               !(lithologiesSaved.is_this_a_bed_or_package === 'bed' || lithologiesSaved.is_this_a_bed_or_package === 'package_succe')) ||
