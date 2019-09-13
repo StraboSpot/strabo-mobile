@@ -38,6 +38,9 @@
             <strabo-spot-tab-directive></strabo-spot-tab-directive>
           </form>
         </div>
+        <div ng-show='sidePanel.isActiveTab("notes")' ng-controller='NotesTabController as vmChild'>
+          <strabo-notes-tab-directive></strabo-notes-tab-directive>
+        </div>
         <div ng-show='sidePanel.isActiveTab("orientations")' ng-controller='OrientationsTabController as vmChild'>
           <strabo-orientations-tab-directive></strabo-orientations-tab-directive>
         </div>
