@@ -540,7 +540,12 @@
         return "Remove the link to this Spot from the Samples page in Spot " + spotWithManualNest.properties.name +
           " before deleting.";
       }
-      if (!_.isEmpty(getChildrenGenerationsSpots(spotToDelete, 1)[0])) {
+      var childrenSpots = getChildrenGenerationsSpots(spotToDelete, 1)[0];
+      // Get only children that are mapped on an image basemap or strat section
+      var altMappedChildrenSpots = _.filter(childrenSpots, function (spot) {
+        return spot.properties.image_basemap || spot.properties.strat_section_id;
+      });
+      if (!_.isEmpty(altMappedChildrenSpots)) {
         return "Delete the nested Spots for this Spot before deleting.";
       }
       if (spotToDelete.properties && spotToDelete.properties.sed && spotToDelete.properties.sed.strat_section) {
