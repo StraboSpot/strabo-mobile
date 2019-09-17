@@ -11,6 +11,7 @@
     var emogeosControlElement = {};
     var emogeoControls = {};
     var emogeos = {};
+    var emogeoSources = [];
     var emogeosThisMap = {};
     var mapType = undefined;
     var spot = {};
@@ -35,41 +36,25 @@
      */
 
     function activate() {
+      emogeoSources = {
+        'horizontal': "img/emogeos/sed/Horizontal.png",
+        'hummocky': "img/emogeos/sed/HCS.png",
+        'low_angle': "img/emogeos/sed/LowAngle.png",
+        'massive_struct': "img/emogeos/sed/Massive.png",
+        'mud_drape': "img/emogeos/sed/MudDrape2.png",
+        'planar_tabular': "img/emogeos/sed/PlanarTabular.png",
+        'ripple_laminat': "img/emogeos/sed/RippleLamination.png",
+        'trough': "img/emogeos/sed/TCS.png"
+      };
+
       emogeos = {
         'sed': {
           'lithologies': {
-            'mud_silt_prin_struct': [
-              {'value': 'massive_struct', 'icon': 'url("img/emogeos/sed/Massive.png")'},
-              {'value': 'horizontal', 'icon': 'url("img/emogeos/sed/Horizontal.png")'},
-              {'value': 'ripple_laminat', 'icon': 'url("img/emogeos/sed/RippleLamination.png")'},
-              {'value': 'mud_drape', 'icon': 'url("img/emogeos/sed/MudDrape2.png")'}
-            ],
-            'sandstone_prin_struct': [
-              {'value': 'trough', 'icon': 'url("img/emogeos/sed/TCS.png")'},
-              {'value': 'hummocky', 'icon': 'url("img/emogeos/sed/HCS.png")'},
-              {'value': 'planar_tabular', 'icon': 'url("img/emogeos/sed/PlanarTabular.png")'},
-              {'value': 'low_angle', 'icon': 'url("img/emogeos/sed/LowAngle.png")'},
-              {'value': 'massive_struct', 'icon': 'url("img/emogeos/sed/Massive.png")'},
-              {'value': 'horizontal', 'icon': 'url("img/emogeos/sed/Horizontal.png")'}
-            ],
-            'conglomerate_prin_struct': [
-              {'value': 'trough', 'icon': 'url("img/emogeos/sed/TCS.png")'},
-              {'value': 'planar_tabular', 'icon': 'url("img/emogeos/sed/PlanarTabular.png")'},
-              {'value': 'massive_struct', 'icon': 'url("img/emogeos/sed/Massive.png")'},
-              {'value': 'horizontal', 'icon': 'url("img/emogeos/sed/Horizontal.png")'}
-            ],
-            'breccia_prin_struct': [
-              {'value': 'trough', 'icon': 'url("img/emogeos/sed/TCS.png")'},
-              {'value': 'planar_tabular', 'icon': 'url("img/emogeos/sed/PlanarTabular.png")'},
-              {'value': 'massive_struct', 'icon': 'url("img/emogeos/sed/Massive.png")'},
-              {'value': 'horizontal', 'icon': 'url("img/emogeos/sed/Horizontal.png")'}
-            ],
-            'limestone_dolomite_prin_struct': [
-              {'value': 'trough', 'icon': 'url("img/emogeos/sed/TCS.png")'},
-              {'value': 'hummocky', 'icon': 'url("img/emogeos/sed/HCS.png")'},
-              {'value': 'massive_struct', 'icon': 'url("img/emogeos/sed/Massive.png")'},
-              {'value': 'horizontal', 'icon': 'url("img/emogeos/sed/Horizontal.png")'}
-            ]
+            'mud_silt_prin_struct': ['massive_struct', 'horizontal', 'ripple_laminat', 'mud_drape'],
+            'sandstone_prin_struct': ['trough', 'hummocky', 'planar_tabular', 'low_angle', 'massive_struct', 'horizontal'],
+            'conglomerate_prin_struct': ['trough', 'planar_tabular', 'massive_struct', 'horizontal'],
+            'breccia_prin_struct': ['trough', 'planar_tabular', 'massive_struct', 'horizontal'],
+            'limestone_dolomite_prin_struct': ['trough', 'hummocky', 'massive_struct', 'horizontal']
           }
         }
       };
@@ -100,14 +85,14 @@
     }
 
     // Create an emogeo button
-    function createEmogeoButton(emogeosControlElement, value, key) {
+    function createEmogeoButton(emogeosControlElement, key, value) {
       //var key = group ? group : value.value;
       emogeoControls[key] = $document[0].createElement('a');
       emogeoControls[key].id = key + 'Control';
-      emogeoControls[key].name = value.value;
+      emogeoControls[key].name = value;
       emogeoControls[key].className = 'emogeo-icon';
       emogeoControls[key].style.backgroundColor = 'transparent';
-      emogeoControls[key].style.backgroundImage = value.icon;
+      emogeoControls[key].style.backgroundImage = "url('" + emogeoSources[value] + "')";
       emogeoControls[key].style.backgroundSize = '26px 26px';
       if (IS_WEB) emogeoControls[key].addEventListener('click', handleEmogeoClick);
       if (IS_WEB) emogeoControls[key].addEventListener('dblclick', handleEmogeoDoubleClick);
@@ -140,22 +125,16 @@
             // Handle longpress/double click by switch to the next emogeo in a group
             if (longpress) {
               // Get next emogeo button
-              var i = _.findIndex(selectedEmogeo, function (emogeo) {
-                return emogeo.value === target.name;
-              });
+              var i = selectedEmogeo.indexOf(target.name);
               var nextI = i + 1 >= selectedEmogeo.length ? 0 : i + 1;
-              switchEmogeoButton(selectedEmogeo[nextI].value, selectedEmogeoKey);
+              switchEmogeoButton(selectedEmogeo[nextI], selectedEmogeoKey);
               if (emogeoControls[selectedEmogeoKey].style.backgroundColor !== 'transparent') {
-                setDeepValue(spot, selectedEmogeo[nextI].value, path.join('.'));
+                setDeepValue(spot, selectedEmogeo[nextI], path.join('.'));
                 saveSpot();
               }
             }
             // Handle touch or click by setting or resetting emogeo
-            else {
-              var emogeo = selectedEmogeo;
-              if (_.isArray(emogeo)) emogeo = _.findWhere(selectedEmogeo, {'value': target.name});
-              toggleEmogeo(emogeo, selectedEmogeoKey, path);
-            }
+            else toggleEmogeo(target.name, selectedEmogeoKey, path);
           }
         }
         else {
@@ -210,7 +189,7 @@
           $rootScope.$broadcast('updated-spot', {'spotId': spot.properties.id});
           $rootScope.$broadcast('clicked-mapped-spot', {'spotId': spot.properties.id});
         }
-       $rootScope.$broadcast('updateStratSectionFeatureLayer');
+        $rootScope.$broadcast('updateStratSectionFeatureLayer');
       });
     }
 
@@ -223,27 +202,14 @@
         if (eval(path.join('.'))) {
           _.each(emogeosThisMap, function (section, sectionKey) {
             path.push(sectionKey);
-            _.each(section, function (field, key) {
+            _.each(section, function (values, key) {
               path.push(key);
-              if (_.isArray(field)) {
-                var choices = _.pluck(field, 'value');
-                var fieldValue = eval(path.join('.'));
-                if (_.contains(choices, fieldValue)) {
-                  switchEmogeoButton(fieldValue, key);
-                  setSelectedEmogeoButton(key);
-                }
-                else resetSelectedEmogeoButton(key);
+              var fieldValue = eval(path.join('.'));
+              if (_.contains(values, fieldValue)) {
+                switchEmogeoButton(fieldValue, key);
+                setSelectedEmogeoButton(key);
               }
-              else {
-                if (field.value) {
-                  if (eval(path.join('.')) === field.value) setSelectedEmogeoButton(key);
-                  else resetSelectedEmogeoButton(key);
-                }
-                else {
-                  if (eval(path.join('.'))) setSelectedEmogeoButton(key);
-                  else resetSelectedEmogeoButton(key);
-                }
-              }
+              else resetSelectedEmogeoButton(key);
               path.pop();
             });
             path.pop();
@@ -298,19 +264,14 @@
 
     // Switch an emogeo button to another emogeo button in a group
     function switchEmogeoButton(value, key) {
-      var selectedEmogeo = {};
-      _.each(emogeosThisMap, function (emogeosThisSection) {
-        var found = _.findWhere(emogeosThisSection[key], {value: value});
-        if (found) selectedEmogeo = found;
-      });
-      emogeoControls[key].name = selectedEmogeo.value;
-      emogeoControls[key].style.backgroundImage = selectedEmogeo.icon;
+      emogeoControls[key].name = value;
+      emogeoControls[key].style.backgroundImage = "url('" + emogeoSources[value] + "')";
     }
 
     // Set the value of a field associated with an emogeo then toggle an emogeo as selected or unselected and save Spot
     function toggleEmogeo(emogeo, controlName, path) {
       var setValue = eval('spot.' + path.join('.'));
-      var defaultValue = emogeo.value ? emogeo.value : undefined;
+      var defaultValue = emogeo ? emogeo : undefined;
       if (setValue === defaultValue) {
         deleteDeepValue(spot, path.join('.'));
         resetSelectedEmogeoButton(controlName);
@@ -337,11 +298,9 @@
       emogeosControlElement = $document[0].createElement('div');
       emogeosControlElement.className = 'emogeo-controls ol-unselectable';
       if (mapType === 'strat-section') emogeosThisMap = emogeos['sed'];
-      _.each(emogeosThisMap, function (section) {
-        _.each(section, function (field, key) {
-          if (_.isArray(field)) createEmogeoButton(emogeosControlElement, field[0], key);
-          else createEmogeoButton(emogeosControlElement, field, key);
-
+      _.each(emogeosThisMap, function (fields) {
+        _.each(fields, function (choices, field) {
+          createEmogeoButton(emogeosControlElement, field, choices[0]);
         });
       });
 
@@ -364,13 +323,10 @@
               _.each(field2, function (field3, key3) {
                 path.push(key3);
                 if (eval(path.join('.'))) {
-                  var found = _.find(emogeos[key][key2][key3], function (obj) {
-                    return obj.value === eval(path.join('.'));
+                  var found = _.find(emogeos[key][key2][key3], function (value) {
+                    return value === eval(path.join('.'));
                   });
-                  if (found) {
-                    found = found.icon.split("url(\"");
-                    icon = found[1].split("\")")[0];
-                  }
+                  if (found) icon = emogeoSources[found];
                 }
                 else path.pop();
               });
