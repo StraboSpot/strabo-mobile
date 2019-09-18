@@ -95,13 +95,13 @@
       function emogeosStyleFunction(feature, resolution) {
         return new ol.style.Style({
           'image': new ol.style.Icon({
-            'anchor': [.15, .15],
+            'anchor': [-feature.get('num'), .10],
             'anchorOrigin': 'bottom-left',
             'anchorXUnits': 'fraction',
             'anchorYUnits': 'fraction',
             'opacity': 0.75,
             'src': MapEmogeosFactory.getEmogeoImageSrc(feature.getProperties()),
-            'scale': 0.8728 * Math.pow(resolution, -0.5)
+            'scale': 0.18728 * Math.pow(resolution, -0.5)
           })
         });
       }
