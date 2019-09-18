@@ -100,7 +100,7 @@
             'anchorXUnits': 'fraction',
             'anchorYUnits': 'fraction',
             'opacity': 0.75,
-            'src': MapEmogeosFactory.getEmogeoImageSrc(feature.getProperties()),
+            'src': MapEmogeosFactory.getEmogeoImageSrc(feature.getProperties())[feature.get('num')],
             'scale': 0.18728 * Math.pow(resolution, -0.5)
           })
         });
@@ -111,17 +111,19 @@
       var emogeoFeatures = (new ol.format.GeoJSON()).readFeatures(
         {'type': 'FeatureCollection', 'features': mappedFeatures});
       emogeoFeatures.forEach(function (f) {
-        if (MapEmogeosFactory.getEmogeoImageSrc(f.getProperties())) {
+        var icons = MapEmogeosFactory.getEmogeoImageSrc(f.getProperties());
+        _.each(icons, function (icon, i) {
           var geom = f.getGeometry();
           var geometries = geom.getType() === 'GeometryCollection' ? geom.getGeometries() : [geom];
           geometries.forEach(function (g) {
             var topLeft = ol.extent.getBottomLeft(g.getExtent());
             var emogeo = new ol.Feature();
             emogeo.setProperties(f.getProperties());
+            emogeo.set('num', i);
             emogeo.setGeometry(new ol.geom.Point(topLeft));
             emogeos.push(emogeo);
           });
-        }
+        });
       });
 
       emogeoLayer.setSource(
