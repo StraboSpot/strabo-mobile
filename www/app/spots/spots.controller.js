@@ -7,11 +7,11 @@
 
   Spots.$inject = ['$cordovaDevice', '$cordovaFile', '$document', '$ionicHistory', '$ionicLoading', '$ionicModal',
     '$ionicPopover', '$ionicPopup', '$location', '$log', '$scope', '$state', '$window', 'HelpersFactory',
-    'ProjectFactory', 'SpotFactory', 'SpotsFactory', 'UserFactory', 'IS_WEB'];
+    'ProjectFactory', 'SpotFactory', 'SpotsFactory', 'StratSectionFactory', 'UserFactory', 'IS_WEB'];
 
   function Spots($cordovaDevice, $cordovaFile, $document, $ionicHistory, $ionicLoading, $ionicModal, $ionicPopover,
                  $ionicPopup, $location, $log, $scope, $state, $window, HelpersFactory, ProjectFactory, SpotFactory,
-                 SpotsFactory, UserFactory, IS_WEB) {
+                 SpotsFactory, StratSectionFactory, UserFactory, IS_WEB) {
     var vm = this;
 
     vm.activeDatasets = [];
@@ -201,13 +201,24 @@
         });
         confirmPopup.then(function (res) {
           if (res) {
-            SpotFactory.destroy(spot.properties.id).then(function () {
-              setDisplayedSpots();
-              if (IS_WEB) {
-                vm.spotIdSelected = undefined;
-                $location.path('app/spotTab');
-              }
-            });
+            if (StratSectionFactory.isInterval(spot)) {
+              StratSectionFactory.deleteInterval(spot).then(function () {
+                setDisplayedSpots();
+                if (IS_WEB) {
+                  vm.spotIdSelected = undefined;
+                  $location.path('app/spotTab');
+                }
+              });
+            }
+            else {
+              SpotFactory.destroy(spot.properties.id).then(function () {
+                setDisplayedSpots();
+                if (IS_WEB) {
+                  vm.spotIdSelected = undefined;
+                  $location.path('app/spotTab');
+                }
+              });
+            }
           }
         });
       }

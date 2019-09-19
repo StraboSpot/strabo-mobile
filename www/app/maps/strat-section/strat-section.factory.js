@@ -21,6 +21,7 @@
       'changedColumnProfile': changedColumnProfile,
       'checkForIntervalUpdates': checkForIntervalUpdates,
       'createInterval': createInterval,
+      'deleteInterval': deleteInterval,
       'drawAxes': drawAxes,
       'gatherSpotsWithStratSections': gatherSpotsWithStratSections,
       'gatherStratSectionSpots': gatherStratSectionSpots,
@@ -648,6 +649,16 @@
       return stratSectionSpotsPartitioned[0];
     }
 
+    function getStratSectionNonIntervals(stratSectionId) {
+      gatherStratSectionSpots(stratSectionId);
+      // Separate the Strat Section Spots into the Interval Spots and other Spots
+      var stratSectionSpotsPartitioned = _.partition(stratSectionSpots, function (spot) {
+        return spot.properties.surface_feature &&
+          spot.properties.surface_feature.surface_feature_type === 'strat_interval';
+      });
+      return stratSectionSpotsPartitioned[1];
+    }
+
     function getStratSectionSettings(stratSectionId) {
       var spot = getSpotWithThisStratSection(stratSectionId);
       return spot && spot.properties && spot.properties.sed && spot.properties.sed.strat_section ? spot.properties.sed.strat_section : undefined;
@@ -665,6 +676,86 @@
       return _.has(spot, 'properties') && _.has(spot.properties, 'strat_section_id') &&
         _.has(spot.properties, 'surface_feature') && _.has(spot.properties.surface_feature, 'surface_feature_type') &&
         spot.properties.surface_feature.surface_feature_type === 'strat_interval';
+    }
+
+    // Move intervals and Spots in column down to close gap after an interval deleted
+    function deleteInterval(deletedInterval) {
+      var extent = new ol.format.GeoJSON().readFeature(deletedInterval).getGeometry().getExtent();
+      var deletedIntervalHeight = extent[3] - extent[1];
+      var intervals = getStratSectionIntervals(deletedInterval.properties.strat_section_id);
+      var otherSpots = getStratSectionNonIntervals(deletedInterval.properties.strat_section_id);
+      intervals = orderStratSectionIntervals(intervals).reverse();
+      var alreadyDeleted = false;
+      var promises = [];
+
+      // Move down interval Spots that were above the interval Spot deleted
+      _.each(intervals, function (interval, h) {
+        if (alreadyDeleted) {
+          // Non-interbedded geometries
+          if (interval.geometry.type !== 'GeometryCollection') {
+            _.each(interval.geometry.coordinates, function (coordsSet, i) {
+              _.each(coordsSet, function (coords, j) {
+                intervals[h].geometry.coordinates[i][j][1] = coords[1] - deletedIntervalHeight;
+              });
+            });
+          }
+          // Interbedded (Geometry Collections)
+          else {
+            _.each(interval.geometry.geometries, function (geometry, g) {
+              _.each(geometry.coordinates, function (coordsSet, i) {
+                _.each(coordsSet, function (coords, j) {
+                  intervals[h].geometry.geometries[g].coordinates[i][j][1] = coords[1] - deletedIntervalHeight;
+                });
+              });
+            });
+          }
+          promises.push(SpotFactory.save(intervals[h]));
+        }
+        else if (interval.properties.id === deletedInterval.properties.id) alreadyDeleted = true;
+      });
+
+      // Move down other Spots if they were above the interval Spot deleted
+      _.each(otherSpots, function (spot, h) {
+        var thisSpotExtent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
+        if (thisSpotExtent[1] >= extent[3]) {
+          if (spot.geometry.type === 'Point') otherSpots[h].geometry.coordinates[1] = spot.geometry.coordinates[1] - deletedIntervalHeight;
+          else if (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiPoint') {
+            _.each(spot.geometry.coordinates, function (coords, j) {
+              otherSpots[h].geometry.coordinates[j][1] = coords[1] - deletedIntervalHeight;
+            });
+          }
+          else if (spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiLineString') {
+            _.each(spot.geometry.coordinates, function (coordsSet, i) {
+              _.each(coordsSet, function (coords, j) {
+                otherSpots[h].geometry.coordinates[i][j][1] = coords[1] - deletedIntervalHeight;
+              });
+            });
+          }
+          else if (spot.geometry.type === 'MultiPolygon') {
+            _.each(spot.geometry.coordinates, function (polygonCoords, g) {
+              _.each(polygonCoords, function (coordsSet, i) {
+                _.each(coordsSet, function (coords, j) {
+                  otherSpots[h].geometry.coordinates[g][i][j][1] = coords[1] - deletedIntervalHeight;
+                });
+              });
+            });
+          }
+          // Interbedded (Geometry Collections)
+          else if (spot.geometry.type === 'GeometryCollection') {
+            _.each(spot.geometry.geometries, function (geometry, g) {
+              _.each(geometry.coordinates, function (coordsSet, i) {
+                _.each(coordsSet, function (coords, j) {
+                  otherSpots[h].geometry.geometries[g].coordinates[i][j][1] = coords[1] - deletedIntervalHeight;
+                });
+              });
+            });
+          }
+          promises.push(SpotFactory.save(otherSpots[h]));
+        }
+
+      });
+      promises.push(SpotFactory.destroy(deletedInterval.properties.id));
+      return $q.all(promises);
     }
 
     // Move an interval to after given interval

@@ -597,13 +597,24 @@
         });
         confirmPopup.then(function (res) {
           if (res) {
-            SpotFactory.destroy(spot.properties.id).then(function () {
-              updateFeatureLayer();
-              if (IS_WEB) {
-                vm.clickedFeatureId = undefined;
-                MapFeaturesFactory.removeSelectedSymbol(map);
-              }
-            });
+            if (StratSectionFactory.isInterval(spot)) {
+              StratSectionFactory.deleteInterval(spot).then(function () {
+                updateFeatureLayer();
+                if (IS_WEB) {
+                  vm.clickedFeatureId = undefined;
+                  MapFeaturesFactory.removeSelectedSymbol(map);
+                }
+              });
+            }
+            else {
+              SpotFactory.destroy(spot.properties.id).then(function () {
+                updateFeatureLayer();
+                if (IS_WEB) {
+                  vm.clickedFeatureId = undefined;
+                  MapFeaturesFactory.removeSelectedSymbol(map);
+                }
+              });
+            }
           }
         });
       }

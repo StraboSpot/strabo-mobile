@@ -308,19 +308,36 @@
           });
           confirmPopup.then(function (res) {
             if (res) {
-              SpotFactory.destroy(vm.spot.properties.id).then(function () {
-                vm.spot = undefined;
-                vm.initializing = true;
-                if (!IS_WEB) goBack();
-                else {
-                  if ($state.current.name.split('.')[1] === 'spotTab') {   // Update Spots list
-                    updateSpotsList();
-                    vmParent.spotIdSelected = undefined;
-                    $location.path('app/spotTab');
+              if (StratSectionFactory.isInterval(vm.spot)) {
+                StratSectionFactory.deleteInterval(vm.spot).then(function () {
+                  vm.spot = undefined;
+                  vm.initializing = true;
+                  if (!IS_WEB) goBack();
+                  else {
+                    if ($state.current.name.split('.')[1] === 'spotTab') {   // Update Spots list
+                      updateSpotsList();
+                      vmParent.spotIdSelected = undefined;
+                      $location.path('app/spotTab');
+                    }
+                    else $rootScope.$broadcast('deletedSpot');  // Clear Spot from map side panel
                   }
-                  else $rootScope.$broadcast('deletedSpot');  // Clear Spot from map side panel
-                }
-              });
+                });
+              }
+              else {
+                SpotFactory.destroy(vm.spot.properties.id).then(function () {
+                  vm.spot = undefined;
+                  vm.initializing = true;
+                  if (!IS_WEB) goBack();
+                  else {
+                    if ($state.current.name.split('.')[1] === 'spotTab') {   // Update Spots list
+                      updateSpotsList();
+                      vmParent.spotIdSelected = undefined;
+                      $location.path('app/spotTab');
+                    }
+                    else $rootScope.$broadcast('deletedSpot');  // Clear Spot from map side panel
+                  }
+                });
+              }
             }
           });
         }
