@@ -10,6 +10,13 @@
   </ion-header-bar>
   <ion-content class='has-header strabo-form'>
     <ion-input class='item item-input item-select item-stacked-label item-text-wrap no-errors'>
+      <ion-label>Insert After:</ion-label>
+      <select ng-model='vm.intervalToInsertAfter'
+              ng-options='interval as interval.properties.name for interval in vm.intervalsForInsert track by interval.properties.id'>
+        <option value=''>-- Top --</option>
+      </select>
+    </ion-input>
+    <ion-input class='item item-input item-select item-stacked-label item-text-wrap no-errors'>
       <ion-label>Copy Interval Data:</ion-label>
       <select ng-model='vm.intervalToCopy'
               ng-options='interval as interval.properties.name for interval in vm.stratSectionIntervals track by interval.properties.id'

@@ -621,7 +621,7 @@
           $rootScope.$broadcast('update-spot-geometry', {'movedSpotGeometry': editedSpot.geometry});
         }
       });
-      $q.all(promises).then(function () {
+      return $q.all(promises).then(function () {
         featuresOrig = [];
         spotsEdited = [];
         cancelEdits(mapName);

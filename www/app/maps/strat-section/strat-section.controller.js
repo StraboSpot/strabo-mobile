@@ -29,7 +29,9 @@
     vm.clickedFeatureId = undefined;
     vm.data = {};
     vm.grainSizeOptions = {};
+    vm.intervalsForInsert = [];
     vm.intervalToCopy = {};
+    vm.intervalToInsertAfter = {};
     vm.isNesting = SpotFactory.getActiveNesting();
     vm.newNestModal = {};
     vm.newNestProperties = {};
@@ -141,8 +143,16 @@
             newInterval = copyRestOfInterval(newInterval);
           }
           SpotFactory.setNewSpot(newInterval).then(function () {
-            updateFeatureLayer();
-            MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
+            if (!_.isEmpty(vm.intervalToInsertAfter)) {
+              StratSectionFactory.moveIntervalToAfter(newInterval, vm.intervalToInsertAfter).then(function () {
+                updateFeatureLayer();
+                MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
+              });
+            }
+            else {
+              updateFeatureLayer();
+              MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
+            }
           });
         }
       });
@@ -438,6 +448,7 @@
         });
         vm.stratSectionIntervals = stratSectionSpotsPartitioned[0];
         vm.stratSectionIntervals = StratSectionFactory.orderStratSectionIntervals(vm.stratSectionIntervals);
+        vm.intervalsForInsert = _.union(vm.stratSectionIntervals, [{'properties': {'name': '-- Bottom --', 'id': 0}}]);
         vm.stratSectionOtherSpots = stratSectionSpotsPartitioned[1];
         $log.log('stratSectionIntervals', vm.stratSectionIntervals);
       }
@@ -501,6 +512,7 @@
       var prefix = ProjectFactory.getSpotPrefix() ? ProjectFactory.getSpotPrefix() : '';
       var number = ProjectFactory.getSpotNumber() ? ProjectFactory.getSpotNumber() : '';
       vm.intervalName = prefix + number;
+      vm.intervalToInsertAfter = {};
 
       openIntervalModal();
     }
@@ -523,7 +535,14 @@
           newInterval = copyRestOfInterval(newInterval);
         }
         SpotFactory.setNewSpot(newInterval).then(function (id) {
-          goToSpot(newInterval.properties.id, 'sed-lithologies');
+          if (!_.isEmpty(vm.intervalToInsertAfter)) {
+            StratSectionFactory.moveIntervalToAfter(newInterval, vm.intervalToInsertAfter).then(function () {
+              goToSpot(newInterval.properties.id, 'sed-lithologies');
+            });
+          }
+          else {
+            goToSpot(newInterval.properties.id, 'sed-lithologies');
+          }
         });
       }
     }
@@ -578,13 +597,24 @@
         });
         confirmPopup.then(function (res) {
           if (res) {
-            SpotFactory.destroy(spot.properties.id).then(function () {
-              updateFeatureLayer();
-              if (IS_WEB) {
-                vm.clickedFeatureId = undefined;
-                MapFeaturesFactory.removeSelectedSymbol(map);
-              }
-            });
+            if (StratSectionFactory.isInterval(spot)) {
+              StratSectionFactory.deleteInterval(spot).then(function () {
+                updateFeatureLayer();
+                if (IS_WEB) {
+                  vm.clickedFeatureId = undefined;
+                  MapFeaturesFactory.removeSelectedSymbol(map);
+                }
+              });
+            }
+            else {
+              SpotFactory.destroy(spot.properties.id).then(function () {
+                updateFeatureLayer();
+                if (IS_WEB) {
+                  vm.clickedFeatureId = undefined;
+                  MapFeaturesFactory.removeSelectedSymbol(map);
+                }
+              });
+            }
           }
         });
       }
@@ -640,7 +670,10 @@
 
     function saveEdits() {
       vm.saveEditsText = 'Saved Edits';
-      MapDrawFactory.saveEdits(vm.clickedFeatureId);
+      MapDrawFactory.saveEdits(vm.clickedFeatureId).then(function () {
+        updateFeatureLayer();
+        MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
+      });
     }
 
     function saveInterval() {
@@ -661,8 +694,16 @@
           newInterval = copyRestOfInterval(newInterval);
         }
         SpotFactory.setNewSpot(newInterval).then(function (id) {
-          updateFeatureLayer();
-          MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
+          if (!_.isEmpty(vm.intervalToInsertAfter)) {
+            StratSectionFactory.moveIntervalToAfter(newInterval, vm.intervalToInsertAfter).then(function () {
+              updateFeatureLayer();
+              MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
+            });
+          }
+          else {
+            updateFeatureLayer();
+            MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
+          }
         });
       }
     }

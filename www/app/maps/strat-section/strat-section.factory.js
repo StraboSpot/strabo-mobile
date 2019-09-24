@@ -21,6 +21,7 @@
       'changedColumnProfile': changedColumnProfile,
       'checkForIntervalUpdates': checkForIntervalUpdates,
       'createInterval': createInterval,
+      'deleteInterval': deleteInterval,
       'drawAxes': drawAxes,
       'gatherSpotsWithStratSections': gatherSpotsWithStratSections,
       'gatherStratSectionSpots': gatherStratSectionSpots,
@@ -30,6 +31,7 @@
       'getStratSectionSettings': getStratSectionSettings,
       'getStratSectionSpots': getStratSectionSpots,
       'isInterval': isInterval,
+      'moveIntervalToAfter': moveIntervalToAfter,
       'orderStratSectionIntervals': orderStratSectionIntervals,
       'validateNewInterval': validateNewInterval
     };
@@ -55,13 +57,24 @@
       }
       // If interbedded need to create a geometry collection with polygons for each bed
       else {
-        var y = 2;
-        if (lithology.interbed_thickness === 'med_10_30_cm') y = y + 5;
-        else if (lithology.interbed_thickness === 'thick_30_cm') y = y + 10;
+        var y1 = .2;
+        if (lithology.primary_lithology_thickness === '2_5_cm') y1 = .6;
+        else if (lithology.primary_lithology_thickness === '5_10_cm') y1 = 1.5;
+        else if (lithology.primary_lithology_thickness === '10_30_cm') y1 = 4;
+        else if (lithology.primary_lithology_thickness === '_30_cm') y1 = 8;
 
-        var numInterbeds = Math.ceil(intervalHeight / y);
-        var numInterbeds2 = Math.ceil(numInterbeds * (lithology.interbed_proportion / 100)) || 2;
-        var numInterbeds1 = numInterbeds - numInterbeds2;
+        var y2 = .2;
+        if (lithology.interbed_thickness === '2_5_cm') y2 = .6;
+        else if (lithology.interbed_thickness === '5_10_cm') y2 = 1.5;
+        else if (lithology.interbed_thickness === '10_30_cm') y2 = 4;
+        else if (lithology.interbed_thickness === '_30_cm') y2 = 8;
+
+        var interbedHeight2 = Math.ceil(intervalHeight * (lithology.interbed_proportion / 100 || .5));  // secondary interbed
+        var interbedHeight1 = intervalHeight - interbedHeight2;                                           // primary interbed
+
+        var numInterbeds1 = Math.ceil(interbedHeight1 / y1);
+        var numInterbeds2 = Math.ceil(interbedHeight2 / y2);
+        var numInterbeds = numInterbeds1 + numInterbeds2;
 
         // Determine sequencing, always starting with lithology 1 (primary lithology)
         var seq = [], d;
@@ -74,34 +87,42 @@
           });
         }
         else {
-          d = Math.ceil(numInterbeds2 / numInterbeds1) + 1;
+          d = Math.ceil(numInterbeds2 / numInterbeds1);
           _.times(numInterbeds, function (i) {
             if (i === 0) seq.push('a');
-            else if (i % d === 0) seq.push('a');
+            else if (i % d === 0 && _.countBy(seq)['a'] < numInterbeds1) seq.push('a');
             else seq.push('b');
           });
         }
-        console.log('Interbed Sequence:', seq);
+        $log.log('Interbed Sequence:', seq, 'numInterbeds1:', numInterbeds1, '?=', _.countBy(seq)['a'],
+          'numInterbeds2:', numInterbeds2, '?=', _.countBy(seq)['b']);
 
         var interbedIntervalWidth = getIntervalWidth(lithology, stratSectionId, true);
         var geometries = [];
         var polyCoords = [];
-        maxY = minY + y;
+        var minYBed = angular.copy(minY);
+        var maxYBed = angular.copy(minY) + y1;
         _.times(numInterbeds, function (i) {
           maxX = seq[i] === 'a' ? minX + intervalWidth : minX + interbedIntervalWidth;
 
           // Merge current bed with previous if they're the same type
           var prevInterbedMaxX = _.max(_.unzip(_.last(polyCoords))[0]);
           if (i !== 0 && maxX === prevInterbedMaxX) {
-            minY = _.min(_.unzip(_.last(polyCoords))[1]);
+            minYBed = _.min(_.unzip(_.last(polyCoords))[1]);
             polyCoords.pop();
           }
 
-          var coords = [[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY], [minX, minY]];
+          var coords = [[minX, minYBed], [minX, maxYBed], [maxX, maxYBed], [maxX, minYBed], [minX, minYBed]];
           polyCoords.push(coords);
 
-          minY = maxY;
-          maxY = minY + y;
+          // Get maxY for next bed
+          if (i < seq.length) {
+            minYBed = maxYBed;
+            var y = seq[i + 1] === 'a' ? y1 : y2;
+            //$log.log('i', i, 'maxYBed', maxYBed, 'height for next bed', y);
+            maxYBed = HelpersFactory.roundToDecimalPlaces(minYBed + y, 2);
+          }
+          if (maxYBed > maxY) maxYBed = maxY;
         });
 
         _.each(polyCoords, function (polyCoord) {
@@ -374,6 +395,43 @@
       }
     }
 
+    // Move Spot up or down by a given number of pixels (a positive number for pixels to move up or negative for down)
+    function moveSpotByPixels(spot, pixels) {
+      if (spot.geometry.type === 'Point') spot.geometry.coordinates[1] = spot.geometry.coordinates[1] + pixels;
+      else if (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiPoint') {
+        _.each(spot.geometry.coordinates, function (pointCoords, i) {
+          spot.geometry.coordinates[i][1] = pointCoords[1] + pixels;
+        });
+      }
+      else if (spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiLineString') {
+        _.each(spot.geometry.coordinates, function (lineCoords, l) {
+          _.each(lineCoords, function (pointCoords, i) {
+            spot.geometry.coordinates[l][i][1] = pointCoords[1] + pixels;
+          });
+        });
+      }
+      else if (spot.geometry.type === 'MultiPolygon') {
+        _.each(spot.geometry.coordinates, function (polygonCoords, p) {
+          _.each(polygonCoords, function (lineCoords, l) {
+            _.each(lineCoords, function (pointCoords, i) {
+              spot.geometry.coordinates[p][l][i][1] = pointCoords[1] + pixels;
+            });
+          });
+        });
+      }
+      // Interbedded (Geometry Collections)
+      else if (spot.geometry.type === 'GeometryCollection') {
+        _.each(spot.geometry.geometries, function (geometry, g) {
+          _.each(geometry.coordinates, function (lineCoords, l) {
+            _.each(lineCoords, function (pointCoords, i) {
+              spot.geometry.geometries[g].coordinates[l][i][1] = pointCoords[1] + pixels;
+            });
+          });
+        });
+      }
+      return spot;
+    }
+
     // Recalculate the geometry of an interval using spot properties
     function recalculateIntervalGeometry(spot) {
       var extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
@@ -392,7 +450,8 @@
       var stratSectionIntervals = getStratSectionIntervals(stratSectionId);
       _.each(stratSectionIntervals, function (stratSectionInterval) {
         var extent = new ol.format.GeoJSON().readFeature(stratSectionInterval).getGeometry().getExtent();
-        stratSectionInterval.geometry = calculateIntervalGeometry(stratSectionId, stratSectionInterval.properties.sed.lithologies, extent[1]);
+        stratSectionInterval.geometry = calculateIntervalGeometry(stratSectionId,
+          stratSectionInterval.properties.sed.lithologies, extent[1]);
         SpotFactory.save(stratSectionInterval);
         $log.log('Recalculated Spot geometry');
       });
@@ -441,6 +500,7 @@
           if (lithologies.interval_thickness !== lithologiesSaved.interval_thickness ||
             lithologies.relative_resistance_weathering !== lithologiesSaved.relative_resistance_weathering ||
             lithologies.interbed_proportion !== lithologiesSaved.interbed_proportion ||
+            lithologies.primary_lithology_thickness !== lithologiesSaved.primary_lithology_thickness ||
             lithologies.interbed_thickness !== lithologiesSaved.interbed_thickness ||
             ((lithologies.is_this_a_bed_or_package === 'bed' || lithologies.is_this_a_bed_or_package === 'package_succe') &&
               !(lithologiesSaved.is_this_a_bed_or_package === 'bed' || lithologiesSaved.is_this_a_bed_or_package === 'package_succe')) ||
@@ -477,6 +537,25 @@
         'sed': {'lithologies': data}
       };
       return geojsonObj;
+    }
+
+    // Move intervals and Spots in column down to close gap after target interval deleted
+    function deleteInterval(targetInterval) {
+      var promises = [];
+      var targetIntervalExtent = new ol.format.GeoJSON().readFeature(targetInterval).getGeometry().getExtent();
+      var targetIntervalHeight = targetIntervalExtent[3] - targetIntervalExtent[1];
+      var intervals = getStratSectionIntervals(targetInterval.properties.strat_section_id);
+      var otherSpots = getStratSectionNonIntervals(targetInterval.properties.strat_section_id);
+      var spots = _.union(intervals, otherSpots);
+      _.each(spots, function (spot, h) {
+        var extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
+        if (extent[1] >= targetIntervalExtent[3]) {
+          spots[h] = moveSpotByPixels(spot, -targetIntervalHeight);
+          promises.push(SpotFactory.save(spots[h]));
+        }
+      });
+      promises.push(SpotFactory.destroy(targetInterval.properties.id));
+      return $q.all(promises);
     }
 
     function drawAxes(ctx, pixelRatio, stratSection) {
@@ -626,6 +705,16 @@
       return stratSectionSpotsPartitioned[0];
     }
 
+    function getStratSectionNonIntervals(stratSectionId) {
+      gatherStratSectionSpots(stratSectionId);
+      // Separate the Strat Section Spots into the Interval Spots and other Spots
+      var stratSectionSpotsPartitioned = _.partition(stratSectionSpots, function (spot) {
+        return spot.properties.surface_feature &&
+          spot.properties.surface_feature.surface_feature_type === 'strat_interval';
+      });
+      return stratSectionSpotsPartitioned[1];
+    }
+
     function getStratSectionSettings(stratSectionId) {
       var spot = getSpotWithThisStratSection(stratSectionId);
       return spot && spot.properties && spot.properties.sed && spot.properties.sed.strat_section ? spot.properties.sed.strat_section : undefined;
@@ -643,6 +732,62 @@
       return _.has(spot, 'properties') && _.has(spot.properties, 'strat_section_id') &&
         _.has(spot.properties, 'surface_feature') && _.has(spot.properties.surface_feature, 'surface_feature_type') &&
         spot.properties.surface_feature.surface_feature_type === 'strat_interval';
+    }
+
+    // Move target interval to after given interval (the preceding interval)
+    function moveIntervalToAfter(targetInterval, precedingInterval) {
+      var promises = [];
+      var targetIntervalExtent = new ol.format.GeoJSON().readFeature(targetInterval).getGeometry().getExtent();
+      var targetIntervalHeight = targetIntervalExtent[3] - targetIntervalExtent[1];
+      $log.log('interval to move:', targetInterval, 'height:', targetIntervalHeight);
+
+      // Move new interval (to bottom if id of precedingInterval is 0)
+      var minY = 0;
+      if (precedingInterval.properties.id !== 0) {
+        var precedingIntervalExtent = new ol.format.GeoJSON().readFeature(precedingInterval).getGeometry().getExtent();
+        minY = precedingIntervalExtent[3];
+      }
+      var maxY = minY + targetIntervalHeight;
+      // Regular interval (polygon geometry)
+      if (targetInterval.geometry.type !== 'GeometryCollection') {
+        var targetIntervalCoords = targetInterval.geometry.coordinates;
+        targetIntervalCoords[0][0][1] = targetIntervalCoords[0][3][1] = targetIntervalCoords[0][4][1] = minY;
+        targetIntervalCoords[0][1][1] = targetIntervalCoords[0][2][1] = maxY;
+      }
+      // Interbedded interval (geometry collection)
+      else {
+        _.each(targetInterval.geometry.geometries, function (geometry, g) {
+          var interbedExtent = new ol.format.GeoJSON().readFeature(targetInterval.geometry.geometries[g]).getGeometry().getExtent();
+          var newInterbedHeight = interbedExtent[3] - interbedExtent[1];
+          maxY = minY + newInterbedHeight;
+          targetInterval.geometry.geometries[g].coordinates[0][0][1] = minY;
+          targetInterval.geometry.geometries[g].coordinates[0][1][1] = maxY;
+          targetInterval.geometry.geometries[g].coordinates[0][2][1] = maxY;
+          targetInterval.geometry.geometries[g].coordinates[0][3][1] = minY;
+          targetInterval.geometry.geometries[g].coordinates[0][4][1] = minY;
+          minY = maxY;
+        });
+      }
+      $log.log('interval w new geom:', targetInterval);
+      targetIntervalExtent = new ol.format.GeoJSON().readFeature(targetInterval).getGeometry().getExtent();
+      promises.push(SpotFactory.save(targetInterval));
+
+      // Move intervals and Spots in column up after target interval moved below
+      var intervals = getStratSectionIntervals(targetInterval.properties.strat_section_id);
+      intervals = _.reject(intervals, function (interval) {
+        return interval.properties.id === targetInterval.properties.id;
+      });
+      var otherSpots = getStratSectionNonIntervals(targetInterval.properties.strat_section_id);
+      var spots = _.union(intervals, otherSpots);
+      _.each(spots, function (spot, h) {
+        $log.log(spot.properties.name);
+        var extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
+        if (extent[1] >= targetIntervalExtent[1]) {
+          spots[h] = moveSpotByPixels(spot, targetIntervalHeight);
+          promises.push(SpotFactory.save(spots[h]));
+        }
+      });
+      return $q.all(promises);
     }
 
     function orderStratSectionIntervals(intervals) {
