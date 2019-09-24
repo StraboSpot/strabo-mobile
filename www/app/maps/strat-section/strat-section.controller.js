@@ -144,7 +144,7 @@
           }
           SpotFactory.setNewSpot(newInterval).then(function () {
             if (!_.isEmpty(vm.intervalToInsertAfter)) {
-              StratSectionFactory.moveLastIntervalToAfter(newInterval, vm.intervalToInsertAfter).then(function () {
+              StratSectionFactory.moveIntervalToAfter(newInterval, vm.intervalToInsertAfter).then(function () {
                 updateFeatureLayer();
                 MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
               });
@@ -536,7 +536,7 @@
         }
         SpotFactory.setNewSpot(newInterval).then(function (id) {
           if (!_.isEmpty(vm.intervalToInsertAfter)) {
-            StratSectionFactory.moveLastIntervalToAfter(newInterval, vm.intervalToInsertAfter).then(function () {
+            StratSectionFactory.moveIntervalToAfter(newInterval, vm.intervalToInsertAfter).then(function () {
               goToSpot(newInterval.properties.id, 'sed-lithologies');
             });
           }
@@ -695,7 +695,7 @@
         }
         SpotFactory.setNewSpot(newInterval).then(function (id) {
           if (!_.isEmpty(vm.intervalToInsertAfter)) {
-            StratSectionFactory.moveLastIntervalToAfter(newInterval, vm.intervalToInsertAfter).then(function () {
+            StratSectionFactory.moveIntervalToAfter(newInterval, vm.intervalToInsertAfter).then(function () {
               updateFeatureLayer();
               MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
             });

@@ -31,7 +31,7 @@
       'getStratSectionSettings': getStratSectionSettings,
       'getStratSectionSpots': getStratSectionSpots,
       'isInterval': isInterval,
-      'moveLastIntervalToAfter': moveLastIntervalToAfter,
+      'moveIntervalToAfter': moveIntervalToAfter,
       'orderStratSectionIntervals': orderStratSectionIntervals,
       'validateNewInterval': validateNewInterval
     };
@@ -395,6 +395,43 @@
       }
     }
 
+    // Move Spot up or down by a given number of pixels (a positive number for pixels to move up or negative for down)
+    function moveSpotByPixels(spot, pixels) {
+      if (spot.geometry.type === 'Point') spot.geometry.coordinates[1] = spot.geometry.coordinates[1] + pixels;
+      else if (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiPoint') {
+        _.each(spot.geometry.coordinates, function (pointCoords, i) {
+          spot.geometry.coordinates[i][1] = pointCoords[1] + pixels;
+        });
+      }
+      else if (spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiLineString') {
+        _.each(spot.geometry.coordinates, function (lineCoords, l) {
+          _.each(lineCoords, function (pointCoords, i) {
+            spot.geometry.coordinates[l][i][1] = pointCoords[1] + pixels;
+          });
+        });
+      }
+      else if (spot.geometry.type === 'MultiPolygon') {
+        _.each(spot.geometry.coordinates, function (polygonCoords, p) {
+          _.each(polygonCoords, function (lineCoords, l) {
+            _.each(lineCoords, function (pointCoords, i) {
+              spot.geometry.coordinates[p][l][i][1] = pointCoords[1] + pixels;
+            });
+          });
+        });
+      }
+      // Interbedded (Geometry Collections)
+      else if (spot.geometry.type === 'GeometryCollection') {
+        _.each(spot.geometry.geometries, function (geometry, g) {
+          _.each(geometry.coordinates, function (lineCoords, l) {
+            _.each(lineCoords, function (pointCoords, i) {
+              spot.geometry.geometries[g].coordinates[l][i][1] = pointCoords[1] + pixels;
+            });
+          });
+        });
+      }
+      return spot;
+    }
+
     // Recalculate the geometry of an interval using spot properties
     function recalculateIntervalGeometry(spot) {
       var extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
@@ -500,6 +537,25 @@
         'sed': {'lithologies': data}
       };
       return geojsonObj;
+    }
+
+    // Move intervals and Spots in column down to close gap after target interval deleted
+    function deleteInterval(targetInterval) {
+      var promises = [];
+      var targetIntervalExtent = new ol.format.GeoJSON().readFeature(targetInterval).getGeometry().getExtent();
+      var targetIntervalHeight = targetIntervalExtent[3] - targetIntervalExtent[1];
+      var intervals = getStratSectionIntervals(targetInterval.properties.strat_section_id);
+      var otherSpots = getStratSectionNonIntervals(targetInterval.properties.strat_section_id);
+      var spots = _.union(intervals, otherSpots);
+      _.each(spots, function (spot, h) {
+        var extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
+        if (extent[1] >= targetIntervalExtent[3]) {
+          spots[h] = moveSpotByPixels(spot, -targetIntervalHeight);
+          promises.push(SpotFactory.save(spots[h]));
+        }
+      });
+      promises.push(SpotFactory.destroy(targetInterval.properties.id));
+      return $q.all(promises);
     }
 
     function drawAxes(ctx, pixelRatio, stratSection) {
@@ -678,223 +734,57 @@
         spot.properties.surface_feature.surface_feature_type === 'strat_interval';
     }
 
-    // Move intervals and Spots in column down to close gap after an interval deleted
-    function deleteInterval(deletedInterval) {
-      var extent = new ol.format.GeoJSON().readFeature(deletedInterval).getGeometry().getExtent();
-      var deletedIntervalHeight = extent[3] - extent[1];
+    // Move target interval to after given interval (the preceding interval)
+    function moveIntervalToAfter(targetInterval, precedingInterval) {
       var promises = [];
+      var targetIntervalExtent = new ol.format.GeoJSON().readFeature(targetInterval).getGeometry().getExtent();
+      var targetIntervalHeight = targetIntervalExtent[3] - targetIntervalExtent[1];
+      $log.log('interval to move:', targetInterval, 'height:', targetIntervalHeight);
 
-      // Move down interval Spots that were above the interval Spot deleted
-      var intervals = getStratSectionIntervals(deletedInterval.properties.strat_section_id);
-      intervals = orderStratSectionIntervals(intervals).reverse();
-      var alreadyDeleted = false;
-      _.each(intervals, function (interval, h) {
-        if (alreadyDeleted) {
-          // Non-interbedded geometries
-          if (interval.geometry.type !== 'GeometryCollection') {
-            _.each(interval.geometry.coordinates, function (coordsSet, i) {
-              _.each(coordsSet, function (coords, j) {
-                intervals[h].geometry.coordinates[i][j][1] = coords[1] - deletedIntervalHeight;
-              });
-            });
-          }
-          // Interbedded (Geometry Collections)
-          else {
-            _.each(interval.geometry.geometries, function (geometry, g) {
-              _.each(geometry.coordinates, function (coordsSet, i) {
-                _.each(coordsSet, function (coords, j) {
-                  intervals[h].geometry.geometries[g].coordinates[i][j][1] = coords[1] - deletedIntervalHeight;
-                });
-              });
-            });
-          }
-          promises.push(SpotFactory.save(intervals[h]));
-        }
-        else if (interval.properties.id === deletedInterval.properties.id) alreadyDeleted = true;
-      });
-
-      // Move down other Spots if they were above the interval Spot deleted
-      var otherSpots = getStratSectionNonIntervals(deletedInterval.properties.strat_section_id);
-      _.each(otherSpots, function (spot, h) {
-        var thisSpotExtent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
-        if (thisSpotExtent[1] >= extent[3]) {
-          if (spot.geometry.type === 'Point') otherSpots[h].geometry.coordinates[1] = spot.geometry.coordinates[1] - deletedIntervalHeight;
-          else if (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiPoint') {
-            _.each(spot.geometry.coordinates, function (coords, j) {
-              otherSpots[h].geometry.coordinates[j][1] = coords[1] - deletedIntervalHeight;
-            });
-          }
-          else if (spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiLineString') {
-            _.each(spot.geometry.coordinates, function (coordsSet, i) {
-              _.each(coordsSet, function (coords, j) {
-                otherSpots[h].geometry.coordinates[i][j][1] = coords[1] - deletedIntervalHeight;
-              });
-            });
-          }
-          else if (spot.geometry.type === 'MultiPolygon') {
-            _.each(spot.geometry.coordinates, function (polygonCoords, g) {
-              _.each(polygonCoords, function (coordsSet, i) {
-                _.each(coordsSet, function (coords, j) {
-                  otherSpots[h].geometry.coordinates[g][i][j][1] = coords[1] - deletedIntervalHeight;
-                });
-              });
-            });
-          }
-          // Interbedded (Geometry Collections)
-          else if (spot.geometry.type === 'GeometryCollection') {
-            _.each(spot.geometry.geometries, function (geometry, g) {
-              _.each(geometry.coordinates, function (coordsSet, i) {
-                _.each(coordsSet, function (coords, j) {
-                  otherSpots[h].geometry.geometries[g].coordinates[i][j][1] = coords[1] - deletedIntervalHeight;
-                });
-              });
-            });
-          }
-          promises.push(SpotFactory.save(otherSpots[h]));
-        }
-
-      });
-      promises.push(SpotFactory.destroy(deletedInterval.properties.id));
-      return $q.all(promises);
-    }
-
-    // Move an interval to after given interval
-    function moveLastIntervalToAfter(newInterval, intervalToInsertAfter) {
-      $log.log('newInterval', newInterval, 'stratSectionSpots', stratSectionSpots);
-      var extent = new ol.format.GeoJSON().readFeature(newInterval).getGeometry().getExtent();
-      var newIntervalHeight = extent[3] - extent[1];
-      var newIntervalCoords = newInterval.geometry.coordinates;
-      $log.log('new interval height:', newIntervalHeight);
-      var minY, maxY, minX, maxX;
-      var alreadyInserted = false;
-      var promises = [];
-
-      // If moving interval to the bottom of the column
-      if (intervalToInsertAfter.properties.id === 0) {
-        minY = 0;
-        maxY = minY + newIntervalHeight;
-        // Non-interbedded geometries
-        if (newInterval.geometry.type !== 'GeometryCollection') {
-          newIntervalCoords[0][0][1] = newIntervalCoords[0][3][1] = newIntervalCoords[0][4][1] = minY;
-          newIntervalCoords[0][1][1] = newIntervalCoords[0][2][1] = maxY;
-        }
-        // Interbedded (Geometry Collections)
-        else {
-          _.each(newInterval.geometry.geometries, function (geometry, g) {
-            var extentInterbed = new ol.format.GeoJSON().readFeature(
-              newInterval.geometry.geometries[g]).getGeometry().getExtent();
-            var newInterbedHeight = extentInterbed[3] - extentInterbed[1];
-            maxY = minY + newInterbedHeight;
-            newInterval.geometry.geometries[g].coordinates[0][0][1] = minY;
-            newInterval.geometry.geometries[g].coordinates[0][1][1] = maxY;
-            newInterval.geometry.geometries[g].coordinates[0][2][1] = maxY;
-            newInterval.geometry.geometries[g].coordinates[0][3][1] = minY;
-            newInterval.geometry.geometries[g].coordinates[0][4][1] = minY;
-            minY = maxY;
-          });
-        }
-        $log.log('newInterval w new geom', newInterval);
-        promises.push(SpotFactory.save(newInterval));
-        alreadyInserted = true;
+      // Move new interval (to bottom if id of precedingInterval is 0)
+      var minY = 0;
+      if (precedingInterval.properties.id !== 0) {
+        var precedingIntervalExtent = new ol.format.GeoJSON().readFeature(precedingInterval).getGeometry().getExtent();
+        minY = precedingIntervalExtent[3];
       }
+      var maxY = minY + targetIntervalHeight;
+      // Regular interval (polygon geometry)
+      if (targetInterval.geometry.type !== 'GeometryCollection') {
+        var targetIntervalCoords = targetInterval.geometry.coordinates;
+        targetIntervalCoords[0][0][1] = targetIntervalCoords[0][3][1] = targetIntervalCoords[0][4][1] = minY;
+        targetIntervalCoords[0][1][1] = targetIntervalCoords[0][2][1] = maxY;
+      }
+      // Interbedded interval (geometry collection)
+      else {
+        _.each(targetInterval.geometry.geometries, function (geometry, g) {
+          var interbedExtent = new ol.format.GeoJSON().readFeature(targetInterval.geometry.geometries[g]).getGeometry().getExtent();
+          var newInterbedHeight = interbedExtent[3] - interbedExtent[1];
+          maxY = minY + newInterbedHeight;
+          targetInterval.geometry.geometries[g].coordinates[0][0][1] = minY;
+          targetInterval.geometry.geometries[g].coordinates[0][1][1] = maxY;
+          targetInterval.geometry.geometries[g].coordinates[0][2][1] = maxY;
+          targetInterval.geometry.geometries[g].coordinates[0][3][1] = minY;
+          targetInterval.geometry.geometries[g].coordinates[0][4][1] = minY;
+          minY = maxY;
+        });
+      }
+      $log.log('interval w new geom:', targetInterval);
+      targetIntervalExtent = new ol.format.GeoJSON().readFeature(targetInterval).getGeometry().getExtent();
+      promises.push(SpotFactory.save(targetInterval));
 
-      var intervals = getStratSectionIntervals(newInterval.properties.strat_section_id);
+      // Move intervals and Spots in column up after target interval moved below
+      var intervals = getStratSectionIntervals(targetInterval.properties.strat_section_id);
       intervals = _.reject(intervals, function (interval) {
-        return interval.properties.id === newInterval.properties.id;
+        return interval.properties.id === targetInterval.properties.id;
       });
-      intervals = orderStratSectionIntervals(intervals).reverse();
-      _.each(intervals, function (interval, h) {
-        $log.log(interval.properties.name);
-        if (alreadyInserted) {
-          // Non-interbedded geometries
-          if (interval.geometry.type !== 'GeometryCollection') {
-            _.each(interval.geometry.coordinates, function (coordsSet, i) {
-              _.each(coordsSet, function (coords, j) {
-                intervals[h].geometry.coordinates[i][j][1] = coords[1] + newIntervalHeight;
-              });
-            });
-          }
-          // Interbedded (Geometry Collections)
-          else {
-            _.each(interval.geometry.geometries, function (geometry, g) {
-              _.each(geometry.coordinates, function (coordsSet, i) {
-                _.each(coordsSet, function (coords, j) {
-                  intervals[h].geometry.geometries[g].coordinates[i][j][1] = coords[1] + newIntervalHeight;
-                });
-              });
-            });
-          }
-          promises.push(SpotFactory.save(intervals[h]));
-        }
-        if (interval.properties.id === intervalToInsertAfter.properties.id) {
-          var extent = new ol.format.GeoJSON().readFeature(interval).getGeometry().getExtent();
-          minY = extent[3];
-          // Non-interbedded geometries
-          if (newInterval.geometry.type !== 'GeometryCollection') {
-            maxY = minY + newIntervalHeight;
-            newIntervalCoords[0][0][1] = newIntervalCoords[0][3][1] = newIntervalCoords[0][4][1] = minY;
-            newIntervalCoords[0][1][1] = newIntervalCoords[0][2][1] = maxY;
-          }
-          // Interbedded (Geometry Collections)
-          else {
-            _.each(newInterval.geometry.geometries, function (geometry, g) {
-              var extentInterbed = new ol.format.GeoJSON().readFeature(
-                newInterval.geometry.geometries[g]).getGeometry().getExtent();
-              var newInterbedHeight = extentInterbed[3] - extentInterbed[1];
-              maxY = minY + newInterbedHeight;
-              newInterval.geometry.geometries[g].coordinates[0][0][1] = minY;
-              newInterval.geometry.geometries[g].coordinates[0][1][1] = maxY;
-              newInterval.geometry.geometries[g].coordinates[0][2][1] = maxY;
-              newInterval.geometry.geometries[g].coordinates[0][3][1] = minY;
-              newInterval.geometry.geometries[g].coordinates[0][4][1] = minY;
-              minY = maxY;
-            });
-          }
-          $log.log('newInterval w new geom', newInterval);
-          promises.push(SpotFactory.save(newInterval));
-          alreadyInserted = true;
-        }
-      });
-
-      // Move up other Spots if they were above the interval Spot inserted
-      var otherSpots = getStratSectionNonIntervals(newInterval.properties.strat_section_id);
-      _.each(otherSpots, function (spot, h) {
-        var thisSpotExtent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
-        var newIntervalExtent = new ol.format.GeoJSON().readFeature(newInterval).getGeometry().getExtent();
-        if (thisSpotExtent[1] >= newIntervalExtent[1]) {
-          if (spot.geometry.type === 'Point') otherSpots[h].geometry.coordinates[1] = spot.geometry.coordinates[1] + newIntervalHeight;
-          else if (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiPoint') {
-            _.each(spot.geometry.coordinates, function (coords, j) {
-              otherSpots[h].geometry.coordinates[j][1] = coords[1] + newIntervalHeight;
-            });
-          }
-          else if (spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiLineString') {
-            _.each(spot.geometry.coordinates, function (coordsSet, i) {
-              _.each(coordsSet, function (coords, j) {
-                otherSpots[h].geometry.coordinates[i][j][1] = coords[1] + newIntervalHeight;
-              });
-            });
-          }
-          else if (spot.geometry.type === 'MultiPolygon') {
-            _.each(spot.geometry.coordinates, function (polygonCoords, g) {
-              _.each(polygonCoords, function (coordsSet, i) {
-                _.each(coordsSet, function (coords, j) {
-                  otherSpots[h].geometry.coordinates[g][i][j][1] = coords[1] + newIntervalHeight;
-                });
-              });
-            });
-          }
-          // Interbedded (Geometry Collections)
-          else if (spot.geometry.type === 'GeometryCollection') {
-            _.each(spot.geometry.geometries, function (geometry, g) {
-              _.each(geometry.coordinates, function (coordsSet, i) {
-                _.each(coordsSet, function (coords, j) {
-                  otherSpots[h].geometry.geometries[g].coordinates[i][j][1] = coords[1] + newIntervalHeight;
-                });
-              });
-            });
-          }
-          promises.push(SpotFactory.save(otherSpots[h]));
+      var otherSpots = getStratSectionNonIntervals(targetInterval.properties.strat_section_id);
+      var spots = _.union(intervals, otherSpots);
+      _.each(spots, function (spot, h) {
+        $log.log(spot.properties.name);
+        var extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
+        if (extent[1] >= targetIntervalExtent[1]) {
+          spots[h] = moveSpotByPixels(spot, targetIntervalHeight);
+          promises.push(SpotFactory.save(spots[h]));
         }
       });
       return $q.all(promises);
