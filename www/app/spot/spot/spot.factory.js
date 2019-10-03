@@ -376,13 +376,14 @@
       selectedSpots = {};
     }
 
-    // delete the spot
+    // Destroy the Spot
     function destroy(key) {
       var deferred = $q.defer(); // init promise
       ProjectFactory.removeSpotFromTags(key).then(function () {
         ProjectFactory.removeSpotFromDataset(key).then(function () {
           delete spots[key];
           LocalStorageFactory.getDb().spotsDb.removeItem(key.toString()).then(function () {
+            $log.log('Destroyed Spot', key.toString());
             deferred.resolve();
           });
         });
@@ -562,18 +563,17 @@
         return "Remove the link to this Spot from the Samples page in Spot " + spotWithManualNest.properties.name +
           " before deleting.";
       }
-      var childrenSpots = getChildrenGenerationsSpots(spotToDelete, 1)[0];
-      // Get only children that are mapped on an image basemap or strat section
-      var altMappedChildrenSpots = _.filter(childrenSpots, function (spot) {
-        return spot.properties.image_basemap || spot.properties.strat_section_id;
-      });
-      if (!_.isEmpty(altMappedChildrenSpots)) {
-        return "Delete the nested Spots for this Spot before deleting.";
-      }
       if (spotToDelete.properties && spotToDelete.properties.sed && spotToDelete.properties.sed.strat_section) {
         return "Remove the strat section from this Spot before deleting.";
       }
       if (!_.isEmpty(spotToDelete.properties.images)) return "Remove all images from this Spot before deleting.";
+      var childrenSpots = getChildrenGenerationsSpots(spotToDelete, 1)[0];
+      // Get only children that are mapped on an image basemap or strat section which is
+      // different from the image basemap or strat section of the Spot being deleted
+      var altMappedChildrenSpots = _.filter(childrenSpots, function (spot) {
+        return spotToDelete.properties.imageBasemap !== spot.properties.image_basemap || spotToDelete.properties.strat_section_id !== spot.properties.strat_section_id;
+      });
+      if (!_.isEmpty(altMappedChildrenSpots)) return "Delete the nested Spots for this Spot before deleting.";
       return null;
     }
 
