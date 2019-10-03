@@ -86,20 +86,6 @@
      * Private Functions
      */
 
-    // Merge a geometry collection into a single polygon
-    function dissolveCollection(spot) {
-      var polys = [];
-      _.each(spot.geometry.geometries, function (geometry) {
-        polys.push(turf.feature(geometry));
-      });
-      var featureCollection = turf.featureCollection(polys);
-      // Not all polys dissolving together the first time so repeat dissolve a bunch of times (ToDo: Why not working first time?)
-      _.times(10, function (i) {
-        if (featureCollection.features.length > 1) featureCollection = turf.dissolve(featureCollection);
-      });
-      return featureCollection.features[0];
-    }
-
     // Get the children of an array of Spots
     function getChildrenOfSpots(spots) {
       var allChildrenSpots = [];
@@ -233,10 +219,46 @@
     }
 
     // Is spot 1 completely within spot 2?
+    // Boolean-within returns true if the first geometry is completely within the second geometry.
     function isWithin(spot1, spot2) {
-      if (spot1.geometry.type === 'GeometryCollection') spot1 = dissolveCollection(spot1);
-      if (spot2.geometry.type === 'GeometryCollection') spot2 = dissolveCollection(spot2);
-      return turf.booleanWithin(spot1, spot2);
+      var boolWithin = false;
+      var validTypesForBooleanWithin = {
+        'Point': ['MultiPoint', 'LineString', 'Polygon'],
+        'MultiPoint': ['MultiPoint', 'LineString', 'Polygon', 'MultiPolygon'],
+        'LineString': ['LineString', 'Polygon', 'MultiPolygon'],
+        'Polygon': ['Polygon', 'MultiPolygon']
+      };
+      // Make sure we're using booleanWithin with valid types
+      if (_.contains(_.keys(validTypesForBooleanWithin), spot1.geometry.type)
+        && _.contains(validTypesForBooleanWithin[spot1.geometry.type], spot2.geometry.type)) {
+        boolWithin = turf.booleanWithin(spot1, spot2);
+      }
+      // Handle Geometry Collections
+      else if (spot1.geometry.type === 'GeometryCollection') {
+        _.each(spot1.geometry.geometries, function (geometry1) {
+          if (!boolWithin && _.contains(_.keys(validTypesForBooleanWithin), geometry1.type)
+            && _.contains(validTypesForBooleanWithin[geometry1], spot2.geometry.type)) {
+            boolWithin = turf.booleanWithin(geometry1, spot2.geometry.type);
+          }
+          else if (!boolWithin && spot2.geometry.type === 'GeometryCollection') {
+            _.each(spot2.geometry.geometries, function (geometry2) {
+              if (!boolWithin && _.contains(_.keys(validTypesForBooleanWithin), geometry1.type)
+                && _.contains(validTypesForBooleanWithin[geometry1], geometry2)) {
+                boolWithin = turf.booleanWithin(geometry1, geometry2);
+              }
+            });
+          }
+        });
+      }
+      else if (spot2.geometry.type === 'GeometryCollection') {
+        _.each(spot2.geometry.geometries, function (geometry2) {
+          if (!boolWithin && _.contains(_.keys(validTypesForBooleanWithin), spot1.geometry.type)
+            && _.contains(validTypesForBooleanWithin[spot1.geometry.type], geometry2.type)) {
+            boolWithin = turf.booleanWithin(spot1.geometry, geometry2);
+          }
+        });
+      }
+      return boolWithin;
     }
 
     /**
