@@ -432,6 +432,27 @@
       return spot;
     }
 
+    // Move all Spots (except excluded Spot, if given) in a specified Strat Section
+    // up after cutoff (if pixels is positive) or down after cutoff (if pixels is negative)
+    function moveSpotsUpOrDownByPixels(stratSectionId, cutoff, pixels, excludedSpotId) {
+      var promises = [];
+      var intervals = getStratSectionIntervals(stratSectionId);
+      var otherSpots = getStratSectionNonIntervals(stratSectionId);
+      var spots = _.union(intervals, otherSpots);
+      spots = _.reject(spots, function (spot) {
+        return excludedSpotId && spot.properties.id === excludedSpotId;
+      });
+      _.each(spots, function (spot, h) {
+        var extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
+        if (extent[1] >= cutoff) {
+          spots[h] = moveSpotByPixels(spot, pixels);
+          promises.push(SpotFactory.save(spots[h]));
+        }
+      });
+      return $q.all(promises);
+    }
+
+
     // Recalculate the geometry of an interval using spot properties
     function recalculateIntervalGeometry(spot) {
       var extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
@@ -541,21 +562,12 @@
 
     // Move intervals and Spots in column down to close gap after target interval deleted
     function deleteInterval(targetInterval) {
-      var promises = [];
       var targetIntervalExtent = new ol.format.GeoJSON().readFeature(targetInterval).getGeometry().getExtent();
       var targetIntervalHeight = targetIntervalExtent[3] - targetIntervalExtent[1];
-      var intervals = getStratSectionIntervals(targetInterval.properties.strat_section_id);
-      var otherSpots = getStratSectionNonIntervals(targetInterval.properties.strat_section_id);
-      var spots = _.union(intervals, otherSpots);
-      _.each(spots, function (spot, h) {
-        var extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
-        if (extent[1] >= targetIntervalExtent[3]) {
-          spots[h] = moveSpotByPixels(spot, -targetIntervalHeight);
-          promises.push(SpotFactory.save(spots[h]));
-        }
+      return moveSpotsUpOrDownByPixels(targetInterval.properties.strat_section_id, targetIntervalExtent[3],
+        -targetIntervalHeight).then(function () {
+        return SpotFactory.destroy(targetInterval.properties.id);
       });
-      promises.push(SpotFactory.destroy(targetInterval.properties.id));
-      return $q.all(promises);
     }
 
     function drawAxes(ctx, pixelRatio, stratSection) {
@@ -736,7 +748,6 @@
 
     // Move target interval to after given interval (the preceding interval)
     function moveIntervalToAfter(targetInterval, precedingInterval) {
-      var promises = [];
       var targetIntervalExtent = new ol.format.GeoJSON().readFeature(targetInterval).getGeometry().getExtent();
       var targetIntervalHeight = targetIntervalExtent[3] - targetIntervalExtent[1];
       $log.log('interval to move:', targetInterval, 'height:', targetIntervalHeight);
@@ -757,7 +768,8 @@
       // Interbedded interval (geometry collection)
       else {
         _.each(targetInterval.geometry.geometries, function (geometry, g) {
-          var interbedExtent = new ol.format.GeoJSON().readFeature(targetInterval.geometry.geometries[g]).getGeometry().getExtent();
+          var interbedExtent = new ol.format.GeoJSON().readFeature(
+            targetInterval.geometry.geometries[g]).getGeometry().getExtent();
           var newInterbedHeight = interbedExtent[3] - interbedExtent[1];
           maxY = minY + newInterbedHeight;
           targetInterval.geometry.geometries[g].coordinates[0][0][1] = minY;
@@ -770,24 +782,10 @@
       }
       $log.log('interval w new geom:', targetInterval);
       targetIntervalExtent = new ol.format.GeoJSON().readFeature(targetInterval).getGeometry().getExtent();
-      promises.push(SpotFactory.save(targetInterval));
-
-      // Move intervals and Spots in column up after target interval moved below
-      var intervals = getStratSectionIntervals(targetInterval.properties.strat_section_id);
-      intervals = _.reject(intervals, function (interval) {
-        return interval.properties.id === targetInterval.properties.id;
+      return SpotFactory.save(targetInterval).then(function () {
+        return moveSpotsUpOrDownByPixels(targetInterval.properties.strat_section_id, targetIntervalExtent[1],
+          targetIntervalHeight, targetInterval.properties.id);
       });
-      var otherSpots = getStratSectionNonIntervals(targetInterval.properties.strat_section_id);
-      var spots = _.union(intervals, otherSpots);
-      _.each(spots, function (spot, h) {
-        $log.log(spot.properties.name);
-        var extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
-        if (extent[1] >= targetIntervalExtent[1]) {
-          spots[h] = moveSpotByPixels(spot, targetIntervalHeight);
-          promises.push(SpotFactory.save(spots[h]));
-        }
-      });
-      return $q.all(promises);
     }
 
     function orderStratSectionIntervals(intervals) {
