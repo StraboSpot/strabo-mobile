@@ -482,34 +482,40 @@
         // - bed, interbedded or package to unexposed or vice versa
         // - bed, package or unexposed to interbedded or vice versa
         // - principal or interbedded lithology (siliciclastic type, grain size or dunham classification)
+        // Fields where any changes can affect the geometry
+        var fields = ['interval_thickness', 'thickness_units', 'is_this_a_bed_or_package', 'primary_lithology',
+          'principal_siliciclastic_type', 'mud_silt_principal_grain_size', 'sand_principal_grain_size',
+          'congl_principal_grain_size', 'breccia_principal_grain_size', 'principal_dunham_class', 'interbed_lithology',
+          'interbed_siliciclastic_type', 'mud_silt_interbed_grain_size', 'sand_interbed_grain_size',
+          'congl_interbed_grain_size', 'breccia_interbed_grain_size', 'interbed_dunham_class', 'interbed_proportion',
+          'primary_lithology_thickness', 'interbed_thickness', 'relative_resistance_weathering'];
         if (spot.geometry && spot.properties.sed && spot.properties.sed.lithologies &&
           savedSpot.properties.sed && savedSpot.properties.sed.lithologies) {
           var lithologies = spot.properties.sed.lithologies;
           var lithologiesSaved = savedSpot.properties.sed.lithologies;
-          if (lithologies.interval_thickness !== lithologiesSaved.interval_thickness ||
-            lithologies.relative_resistance_weathering !== lithologiesSaved.relative_resistance_weathering ||
-            lithologies.interbed_proportion !== lithologiesSaved.interbed_proportion ||
-            lithologies.primary_lithology_thickness !== lithologiesSaved.primary_lithology_thickness ||
-            lithologies.interbed_thickness !== lithologiesSaved.interbed_thickness ||
-            ((lithologies.is_this_a_bed_or_package === 'bed' || lithologies.is_this_a_bed_or_package === 'package_succe') &&
-              !(lithologiesSaved.is_this_a_bed_or_package === 'bed' || lithologiesSaved.is_this_a_bed_or_package === 'package_succe')) ||
-            (lithologies.is_this_a_bed_or_package === 'unexposed_cove' && lithologiesSaved.is_this_a_bed_or_package !== 'unexposed_cove') ||
-            (lithologies.is_this_a_bed_or_package === 'interbedded' && lithologiesSaved.is_this_a_bed_or_package !== 'interbedded') ||
-            lithologies.primary_lithology !== lithologiesSaved.primary_lithology ||
-            lithologies.interbed_lithology !== lithologiesSaved.interbed_lithology ||
-            lithologies.principal_siliciclastic_type !== lithologiesSaved.principal_siliciclastic_type ||
-            lithologies.principal_dunham_class !== lithologiesSaved.principal_dunham_class ||
-            lithologies.interbed_siliciclastic_type !== lithologiesSaved.interbed_siliciclastic_type ||
-            lithologies.interbed_dunham_class !== lithologiesSaved.interbed_dunham_class ||
-            lithologies.mud_silt_principal_grain_size !== lithologiesSaved.mud_silt_principal_grain_size ||
-            lithologies.sand_principal_grain_size !== lithologiesSaved.sand_principal_grain_size ||
-            lithologies.congl_principal_grain_size !== lithologiesSaved.congl_principal_grain_size ||
-            lithologies.breccia_principal_grain_size !== lithologiesSaved.breccia_principal_grain_size ||
-            lithologies.mud_silt_interbed_grain_size !== lithologiesSaved.mud_silt_interbed_grain_size ||
-            lithologies.sand_interbed_grain_size !== lithologiesSaved.sand_interbed_grain_size ||
-            lithologies.congl_interbed_grain_size !== lithologiesSaved.congl_interbed_grain_size ||
-            lithologies.breccia_interbed_grain_size !== lithologiesSaved.breccia_interbed_grain_size) {
+          var needToRecalculate = _.find(fields, function (field) {
+            if (field === 'is_this_a_bed_or_package') {
+              return ((lithologies[field] === 'bed' || lithologies[field] === 'package_succe') &&
+                !(lithologiesSaved[field] === 'bed' || lithologiesSaved[field] === 'package_succe')) ||
+                (lithologies[field] === 'unexposed_cove' && lithologiesSaved[field] !== 'unexposed_cove') ||
+                (lithologies[field] === 'interbedded' && lithologiesSaved[field] !== 'interbedded');
+            }
+            return lithologies[field] !== lithologiesSaved[field];
+          });
+          if (needToRecalculate) {
             spot = recalculateIntervalGeometry(spot);
+            var targetIntervalExtent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
+            var savedSpotIntervalExtent = new ol.format.GeoJSON().readFeature(savedSpot).getGeometry().getExtent();
+            var diff = targetIntervalExtent[3] - savedSpotIntervalExtent[3];
+            // Move above intervals up or down if interval thickness changed
+            if (lithologies.interval_thickness > lithologiesSaved.interval_thickness) {
+              // Move above spots up
+              moveSpotsUpOrDownByPixels(spot.properties.strat_section_id, savedSpotIntervalExtent[3], diff, spot.properties.id);
+            }
+            else if (lithologies.interval_thickness < lithologiesSaved.interval_thickness) {
+              // Move above spots down
+              moveSpotsUpOrDownByPixels(spot.properties.strat_section_id, targetIntervalExtent[3], diff, spot.properties.id);
+            }
           }
         }
       }
