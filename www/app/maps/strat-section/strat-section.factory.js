@@ -57,11 +57,13 @@
       }
       // If interbedded need to create a geometry collection with polygons for each bed
       else {
+        /* Per Casey: Don't use the data from primary lithology thickness for plotting since it, along with
+        // interval thickness, proportion and interbed thickness are too many data numbers to plot all faithfully
         var y1 = .2;
         if (lithology.primary_lithology_thickness === '2_5_cm') y1 = .6;
         else if (lithology.primary_lithology_thickness === '5_10_cm') y1 = 1.5;
         else if (lithology.primary_lithology_thickness === '10_30_cm') y1 = 4;
-        else if (lithology.primary_lithology_thickness === '_30_cm') y1 = 8;
+        else if (lithology.primary_lithology_thickness === '_30_cm') y1 = 8;*/
 
         var y2 = .2;
         if (lithology.interbed_thickness === '2_5_cm') y2 = .6;
@@ -69,62 +71,28 @@
         else if (lithology.interbed_thickness === '10_30_cm') y2 = 4;
         else if (lithology.interbed_thickness === '_30_cm') y2 = 8;
 
-        var interbedHeight2 = Math.ceil(intervalHeight * (lithology.interbed_proportion / 100 || .5));  // secondary interbed
-        var interbedHeight1 = intervalHeight - interbedHeight2;                                           // primary interbed
+        var interbedHeight2 = intervalHeight * (lithology.interbed_proportion / 100 || .5);  // secondary interbed
+        var interbedHeight1 = intervalHeight - interbedHeight2;                              // primary interbed
 
-        var numInterbeds1 = Math.ceil(interbedHeight1 / y1);
-        var numInterbeds2 = Math.ceil(interbedHeight2 / y2);
-        var numInterbeds = numInterbeds1 + numInterbeds2;
-
-        // Determine sequencing, always starting with lithology 1 (primary lithology)
-        var seq = [], d;
-        if (numInterbeds1 > numInterbeds2) {
-          d = Math.ceil(numInterbeds1 / numInterbeds2);
-          _.times(numInterbeds, function (i) {
-            if (i === 0) seq.push('a');
-            else if (i % d === 0) seq.push('b');
-            else seq.push('a');
-          });
-        }
-        else {
-          d = Math.ceil(numInterbeds2 / numInterbeds1);
-          _.times(numInterbeds, function (i) {
-            if (i === 0) seq.push('a');
-            else if (i % d === 0 && _.countBy(seq)['a'] < numInterbeds1) seq.push('a');
-            else seq.push('b');
-          });
-        }
-        $log.log('Interbed Sequence:', seq, 'numInterbeds1:', numInterbeds1, '?=', _.countBy(seq)['a'],
-          'numInterbeds2:', numInterbeds2, '?=', _.countBy(seq)['b']);
+        var numInterbeds2 = interbedHeight2 / y2;
+        var y1 = interbedHeight1 / numInterbeds2;
 
         var interbedIntervalWidth = getIntervalWidth(lithology, stratSectionId, true);
-        var geometries = [];
-        var polyCoords = [];
+        var maxXBed = intervalWidth;
         var minYBed = angular.copy(minY);
-        var maxYBed = angular.copy(minY) + y1;
-        _.times(numInterbeds, function (i) {
-          maxX = seq[i] === 'a' ? minX + intervalWidth : minX + interbedIntervalWidth;
-
-          // Merge current bed with previous if they're the same type
-          var prevInterbedMaxX = _.max(_.unzip(_.last(polyCoords))[0]);
-          if (i !== 0 && maxX === prevInterbedMaxX) {
-            minYBed = _.min(_.unzip(_.last(polyCoords))[1]);
-            polyCoords.pop();
-          }
-
+        var maxYBed = angular.copy(minY);
+        var currentBedHeight = y1;
+        var polyCoords = [];
+        while (maxYBed < minY + intervalHeight) {
+          maxYBed = minYBed + currentBedHeight <= minY + intervalHeight ? minYBed + currentBedHeight : minY + intervalHeight;
           var coords = [[minX, minYBed], [minX, maxYBed], [maxX, maxYBed], [maxX, minYBed], [minX, minYBed]];
           polyCoords.push(coords);
+          currentBedHeight = currentBedHeight === y1 ? y2 : y1;
+          maxXBed = maxXBed === intervalWidth ?  interbedIntervalWidth : intervalWidth;
+          minYBed = angular.copy(maxYBed);
+        }
 
-          // Get maxY for next bed
-          if (i < seq.length) {
-            minYBed = maxYBed;
-            var y = seq[i + 1] === 'a' ? y1 : y2;
-            //$log.log('i', i, 'maxYBed', maxYBed, 'height for next bed', y);
-            maxYBed = HelpersFactory.roundToDecimalPlaces(minYBed + y, 2);
-          }
-          if (maxYBed > maxY) maxYBed = maxY;
-        });
-
+        var geometries = [];
         _.each(polyCoords, function (polyCoord) {
           geometries.push({
             'type': 'Polygon',
