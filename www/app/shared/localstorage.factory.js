@@ -319,11 +319,11 @@
       $cordovaFile.writeFile(fullPath, fileName, data, true).then(
         function (success) {
           $log.log('File successfully written!', success);
-          deferred.resolve(fullPath + fileName);
+          deferred.resolve(fullPath + '/' + fileName);
         },
         function (writeError) {
           $log.error('Error writing file!');
-          deferred.reject(fullPath + fileName)
+          deferred.reject(fullPath + '/' + fileName)
         }
       );
       return deferred.promise;

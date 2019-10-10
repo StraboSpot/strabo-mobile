@@ -13,8 +13,8 @@
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
   function SpotController($document, $ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup, $location,
                           $log, $q, $rootScope, $scope, $state, $timeout, DataModelsFactory, FormFactory,
-                          HelpersFactory, ImageFactory, MapEmogeosFactory, MapViewFactory, ProjectFactory, SpotFactory,
-                          StratSectionFactory, TagFactory, IS_WEB) {
+                          HelpersFactory, ImageFactory, MapEmogeosFactory, MapViewFactory, ProjectFactory,
+                          SpotFactory, StratSectionFactory, TagFactory, IS_WEB) {
     var vmParent = $scope.vm;
     var vm = this;
 
@@ -56,6 +56,7 @@
     vm.showGeologicUnit = true;
     vm.showSurfaceFeature = false;
     vm.showTrace = false;
+    vm.sketchModal = {};
     vm.spot = {};
     vm.spotChanged = false;
     vm.stateName = $state.current.name;
@@ -65,6 +66,7 @@
     vm.closeModal = closeModal;
     vm.copyThisSpot = copyThisSpot;
     vm.deleteSpot = deleteSpot;
+    vm.drawSketch = drawSketch;
     vm.fieldChanged = fieldChanged;
     vm.getLabel = getLabel;
     vm.goBack = goBack;
@@ -73,6 +75,7 @@
     vm.goToTag = goToTag;
     vm.isState = isState;
     vm.loadTab = loadTab;
+    vm.saveSketch = saveSketch;
     vm.saveSpot = saveSpot;
     vm.showTab = showTab;
     vm.submit = submit;
@@ -97,6 +100,10 @@
         'backdropClickToClose': false
       }).then(function (modal) {
         vm.addTagModal = modal;
+      });
+
+      ImageFactory.getSketchModal($scope).then(function (sketchModal) {
+        vm.sketchModal = sketchModal;
       });
 
       // Cleanup the modal when we're done with it!
@@ -350,6 +357,11 @@
       });
     }
 
+    function drawSketch() {
+      vm.sketchModal.show();
+      ImageFactory.initializeSketch(vm.spot);
+    }
+
     // Handle changes to specific fields in form
     function fieldChanged(fieldName, newValue, oldValue) {
       $log.log(fieldName, 'changed in form', FormFactory.getFormName());
@@ -480,6 +492,12 @@
         return tag.features && tag.features[vm.spot.properties.id];
       });
       filterTagType();
+    }
+
+    function saveSketch() {
+      ImageFactory.saveSketch().finally(function () {
+        vm.sketchModal.hide();
+      });
     }
 
     function saveSpot() {

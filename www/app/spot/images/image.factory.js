@@ -5,17 +5,21 @@
     .module('app')
     .factory('ImageFactory', ImageFactory);
 
-  ImageFactory.$inject = ['$cordovaCamera', '$cordovaDevice', '$ionicLoading', '$ionicPopup', '$log', '$rootScope',
-    '$state', '$window', 'HelpersFactory', 'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'SpotFactory',
-    'IS_WEB'];
+  ImageFactory.$inject = ['$cordovaCamera', '$cordovaDevice', '$ionicLoading', '$ionicModal', '$ionicPopup', '$log',
+    '$rootScope', '$state', '$window', 'HelpersFactory', 'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory',
+    'SpotFactory', 'IS_WEB'];
 
-  function ImageFactory($cordovaCamera, $cordovaDevice, $ionicLoading, $ionicPopup, $log, $rootScope, $state, $window,
-                        HelpersFactory, LiveDBFactory, LocalStorageFactory, ProjectFactory, SpotFactory, IS_WEB) {
+  function ImageFactory($cordovaCamera, $cordovaDevice, $ionicLoading, $ionicModal, $ionicPopup, $log, $rootScope,
+                        $state, $window, HelpersFactory, LiveDBFactory, LocalStorageFactory, ProjectFactory,
+                        SpotFactory, IS_WEB) {
+    var canvas = undefined;
     var currentImageData = {};
     var currentSpot = {};
     var images = [];
     var imageSources = {};
     var isReattachImage = false;
+    var lastX = undefined;
+    var lastY = undefined;
     var takeMorePictures = false;
 
     return {
@@ -27,8 +31,10 @@
       'getImageFileURIById': getImageFileURIById,
       'getImageFromGallery': getImageFromGallery,
       'getImageSource': getImageSource,
+      'getSketchModal': getSketchModal,
       'addImageWeb': addImageWeb,
-      'saveImageBlobToDevice': saveImageBlobToDevice,
+      'initializeSketch': initializeSketch,
+      'saveSketch': saveSketch,
       'setCurrentImage': setCurrentImage,
       'setCurrentSpot': setCurrentSpot,
       'setIsReattachImage': setIsReattachImage,
@@ -140,6 +146,42 @@
       return Promise.resolve(imageURI);
     }
 
+    function handleEnd(ev) {
+      $log.log('end sketch', ev);
+    }
+
+    function handleMove(ev) {
+      var currentX = ev.touches[0].pageX;
+      var currentY = ev.touches[0].pageY;
+
+      var ctx = canvas.getContext("2d");
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(currentX, currentY);
+      ctx.closePath();
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = 5;
+      ctx.stroke();
+
+      lastX = currentX;
+      lastY = currentY;
+    }
+
+    function handleStart(ev) {
+      $log.log('start sketch', ev);
+      lastX = ev.touches[0].pageX;
+      lastY = ev.touches[0].pageY;
+    }
+
+    // Move an image from temporary directory to permanent device storage in StraboSpot/Images
+    function saveImageBlobToDevice(imageBlob, imageId) {
+      if ($window.cordova) return LocalStorageFactory.saveImageToFileSystem(imageBlob, imageId.toString() + '.jpg');
+      else {
+        $log.warn('No Cordova so cannot save image to device. In development mode?');
+        return Promise.reject('Error saving image to device');
+      }
+    }
+
     // Copy an image from temporary directory to permanent device storage in StraboSpot/Images
     function saveImageToDevice(imageURI) {
       if (angular.isUndefined(currentImageData.id)) currentImageData.id = HelpersFactory.getNewId();
@@ -165,10 +207,12 @@
     }
 
     // Set the image properties to the current Spot
-    function setImageProperties(newImage) {
+    function setImageProperties(imageSource) {
       if (!isReattachImage) {
-        $log.log('Setting image properties ...', newImage);
+        $log.log('Setting image properties ...');
         return new Promise(function (resolve, reject) {
+          $log.log('Loading image ...');
+          var newImage = new Image();
           newImage.onload = function () {
             $log.log('Loaded image');
             currentImageData.height = newImage.height;
@@ -185,6 +229,7 @@
             $log.error('failed image');
             reject('Failed to load image.');
           };
+          newImage.src = imageSource;
         });
       }
       else return Promise.resolve();
@@ -192,19 +237,16 @@
 
     // Set image source on a device
     function setImageSourceDevice(imageURI) {
-      $log.log('Setting source for image on device ...');
-      var newImage = new Image();
-      newImage.src = "";         // Reset source before loading in case source was previously loaded when checking size
-      newImage.src = $window.Ionic.WebView.convertFileSrc(imageURI);
-      return Promise.resolve(newImage);
+      var imageSource = $window.Ionic.WebView.convertFileSrc(imageURI);
+      $log.log('Set source for image on device to', imageSource);
+      return Promise.resolve(imageSource);
     }
 
     // Set image source for the web
     function setImageSourceWeb(imageBlob) {
-      $log.log('Setting source for image on web ...');
-      var newImage = new Image();
-      newImage.src = URL.createObjectURL(imageBlob);
-      return Promise.resolve(newImage);
+      var imageSource = URL.createObjectURL(imageBlob);
+      $log.log('Set source for image on device to', imageSource);
+      return Promise.resolve(imageSource);
     }
 
     // Upload an image blob to the remote database
@@ -295,14 +337,56 @@
       return imageSources[imageId] || 'img/loading-image.png';
     }
 
-    // Move an image from temporary directory to permanent device storage in StraboSpot/Images
-    function saveImageBlobToDevice(imageBlob, imageId) {
+    function getSketchModal(scope) {
+      return $ionicModal.fromTemplateUrl('app/spot/images/sketch-modal.html', {
+        'scope': scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false,
+        'hardwareBackButtonClose': false
+      });
+    }
+
+    function initializeSketch(spot) {
+      currentSpot = spot;
+      images = currentSpot.properties.images || [];
+      currentImageData = {
+        'id': HelpersFactory.getNewId(),
+        'image_type': 'sketch'
+      };
+      isReattachImage = false;
+
+      var canvasContentArea = document.getElementById("canvasContent");
+      canvas = document.getElementById("myCanvas");
+      canvas.width = canvasContentArea.clientWidth;
+      canvas.height = canvasContentArea.clientHeight;
+      canvas.addEventListener('touchstart', handleStart, false);
+      canvas.addEventListener('touchmove', handleMove, false);
+      canvas.addEventListener('touchend', handleEnd, false);
+    }
+
+    function saveSketch() {
+      $log.log('Saving Sketch');
+      $ionicLoading.show({
+        'template': '<ion-spinner></ion-spinner><br>Saving Sketch...'
+      });
+
       if (angular.isUndefined(currentImageData.id)) currentImageData.id = HelpersFactory.getNewId();
-      if ($window.cordova) return LocalStorageFactory.saveImageToFileSystem(imageBlob, imageId.toString() + '.jpg');
-      else {
-        $log.warn('No Cordova so cannot save image to device. In development mode?');
-        return Promise.reject('Error saving image to device');
-      }
+      currentImageData.image_type = 'sketch';
+
+      return new Promise(function (resolve, reject) {
+        canvas.toBlob(function (blob) {
+          saveImageBlobToDevice(blob, currentImageData.id)
+            .then(setImageSourceDevice)
+            .then(setImageProperties)
+            .then(saveSpot)
+            .then(checkForMoreImages)
+            .catch(errorAlert)
+            .finally(function () {
+              $ionicLoading.hide();
+              resolve();
+            });
+        });
+      });
     }
 
     function setCurrentImage(inImageData) {
