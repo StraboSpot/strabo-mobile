@@ -45,21 +45,6 @@
      * Private Functions
      */
 
-    // Add an image from file on Web
-    function addImageWeb(imageBlob) {
-      $ionicLoading.show({
-        'template': '<ion-spinner></ion-spinner><br>Adding Image...'
-      });
-      uploadImageBlob(imageBlob)
-        .then(setImageSourceWeb)
-        .then(setImageProperties)
-        .then(saveSpot)
-        .catch(errorAlert)
-        .finally(function () {
-          $ionicLoading.hide();
-        });
-    }
-
     function checkForMoreImages() {
       if (!isReattachImage && takeMorePictures) {
         setCurrentImage({'image_type': 'photo'});
@@ -174,8 +159,9 @@
     }
 
     // Move an image from temporary directory to permanent device storage in StraboSpot/Images
-    function saveImageBlobToDevice(imageBlob, imageId) {
-      if ($window.cordova) return LocalStorageFactory.saveImageToFileSystem(imageBlob, imageId.toString() + '.jpg');
+    function saveImageBlobToDevice(imageBlob) {
+      if (angular.isUndefined(currentImageData.id)) currentImageData.id = HelpersFactory.getNewId();
+      if ($window.cordova) return LocalStorageFactory.saveImageToFileSystem(imageBlob, currentImageData.id.toString() + '.jpg');
       else {
         $log.warn('No Cordova so cannot save image to device. In development mode?');
         return Promise.reject('Error saving image to device');
@@ -186,7 +172,7 @@
     function saveImageToDevice(imageURI) {
       if (angular.isUndefined(currentImageData.id)) currentImageData.id = HelpersFactory.getNewId();
       var imagePathTemp = imageURI.split('?')[0];
-      if ($window.cordova) return LocalStorageFactory.copyImage(imagePathTemp, currentImageData.id + '.jpg');
+      if ($window.cordova) return LocalStorageFactory.copyImage(imagePathTemp, currentImageData.id.toString() + '.jpg');
       else {
         $log.warn('No Cordova so cannot save image to device. In development mode?');
         return Promise.reject('Error saving image to device');
@@ -270,6 +256,21 @@
     /**
      * Public Functions
      */
+
+    // Add an image from file on Web
+    function addImageWeb(imageBlob) {
+      $ionicLoading.show({
+        'template': '<ion-spinner></ion-spinner><br>Adding Image...'
+      });
+      uploadImageBlob(imageBlob)
+        .then(setImageSourceWeb)
+        .then(setImageProperties)
+        .then(saveSpot)
+        .catch(errorAlert)
+        .finally(function () {
+          $ionicLoading.hide();
+        });
+    }
 
     // Make sure each image in Spot images array is not an empty object, has an id and has an image type
     function cleanImagesInSpot(spot) {
@@ -381,20 +382,38 @@
       if (angular.isUndefined(currentImageData.id)) currentImageData.id = HelpersFactory.getNewId();
       currentImageData.image_type = 'sketch';
 
-      return new Promise(function (resolve, reject) {
-        canvas.toBlob(function (blob) {
-          saveImageBlobToDevice(blob, currentImageData.id)
-            .then(setImageSourceDevice)
-            .then(setImageProperties)
-            .then(saveSpot)
-            .then(checkForMoreImages)
-            .catch(errorAlert)
-            .finally(function () {
-              $ionicLoading.hide();
-              resolve();
-            });
+      if (IS_WEB) {
+        return new Promise(function (resolve, reject) {
+          canvas.toBlob(function (imageBlob) {
+            uploadImageBlob(imageBlob)
+              .then(setImageSourceWeb)
+              .then(setImageProperties)
+              .then(saveSpot)
+              .then(checkForMoreImages)
+              .catch(errorAlert)
+              .finally(function () {
+                $ionicLoading.hide();
+                resolve();
+              });
+          });
         });
-      });
+      }
+      else {
+        return new Promise(function (resolve, reject) {
+          canvas.toBlob(function (blob) {
+            saveImageBlobToDevice(blob)
+              .then(setImageSourceDevice)
+              .then(setImageProperties)
+              .then(saveSpot)
+              .then(checkForMoreImages)
+              .catch(errorAlert)
+              .finally(function () {
+                $ionicLoading.hide();
+                resolve();
+              });
+          });
+        });
+      }
     }
 
     function setCurrentImage(inImageData) {

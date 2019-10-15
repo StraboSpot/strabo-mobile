@@ -54,6 +54,11 @@
             <span class='button-text-big'>Add Image From File</span>
           </button>
           <input type='file' id='imageFile' style='display: none;'>
+          <button ng-click='vm.drawSketch()'
+                  class='button button-clear button-positive'>
+            <i class='icon ion-edit'></i>
+            <span class='button-text-big'>Sketch</span>
+          </button>
           <strabo-images-tab-directive></strabo-images-tab-directive>
         </div>
         <div ng-show='sidePanel.isActiveTab("nesting")' ng-controller='NestingTabController as vmChild'>
