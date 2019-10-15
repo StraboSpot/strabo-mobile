@@ -328,7 +328,8 @@
           }
         }
 
-        if (_.find(_.flatten(geojsonObj.geometry.coordinates),
+        // Commented this out to allow for drawing off of an image
+        /*if (_.find(_.flatten(geojsonObj.geometry.coordinates),
           function (num) {
             return num < 0;
           }
@@ -338,7 +339,7 @@
             'template': 'Spot coordinate is off the image. Try again.'
           });
           return;
-        }
+        }*/
       }
       else {
         // Drawing on regular map
