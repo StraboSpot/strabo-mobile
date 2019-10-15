@@ -359,6 +359,14 @@
       canvas = document.getElementById("myCanvas");
       canvas.width = canvasContentArea.clientWidth;
       canvas.height = canvasContentArea.clientHeight;
+
+      // Make a white background the size of the canvas
+      var ctx = canvas.getContext("2d");
+      ctx.beginPath();
+      ctx.rect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "white";
+      ctx.fill();
+
       canvas.addEventListener('touchstart', handleStart, false);
       canvas.addEventListener('touchmove', handleMove, false);
       canvas.addEventListener('touchend', handleEnd, false);
