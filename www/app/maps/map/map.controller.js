@@ -34,6 +34,7 @@
     vm.popover = {};
     vm.saveEditsText = 'Save Edits';
     vm.showSaveEditsBtn = false;
+    vm.sketchModal = {};
 
     vm.cacheOfflineTiles = cacheOfflineTiles;
     vm.closeModal = closeModal;
@@ -44,6 +45,7 @@
     vm.isiOS = isiOS;
     vm.isOnline = isOnline;
     vm.saveEdits = saveEdits;
+    vm.saveSketch = saveSketch;
     vm.stereonetSpots = stereonetSpots;
     vm.toggleNesting = toggleNesting;
     vm.toggleTagChecked = toggleTagChecked;
@@ -162,6 +164,11 @@
             ImageFactory.setCurrentImage({'image_type': 'photo'});
             ImageFactory.takePicture();
           }
+          else if (action === 'drawSketch') {
+            popup.hide();
+            vm.sketchModal.show();
+            ImageFactory.initializeSketch(SpotFactory.getSpotById(vm.clickedFeatureId));
+          }
           else if (action === 'more') {
             popup.hide();
             $location.path('/app/spotTab/' + vm.clickedFeatureId + '/spot');
@@ -188,6 +195,10 @@
         'hardwareBackButtonClose': false
       }).then(function (modal) {
         vm.newNestModal = modal;
+      });
+
+      ImageFactory.getSketchModal($scope).then(function (sketchModal) {
+        vm.sketchModal = sketchModal;
       });
     }
 
@@ -254,6 +265,11 @@
             HelpersFactory.getStereonet(stereonetSpots);
             MapDrawFactory.setLassoMode("");
           }
+        });
+
+        // Cleanup the modal when we're done with it!
+        $scope.$on('$destroy', function () {
+          if (vm.sketchModal) vm.sketchModal.remove();
         });
       });
 
@@ -403,6 +419,13 @@
     function saveEdits() {
       vm.saveEditsText = 'Saved Edits';
       MapDrawFactory.saveEdits(vm.clickedFeatureId);
+    }
+
+    function saveSketch() {
+      ImageFactory.saveSketch().finally(function () {
+        vm.sketchModal.hide();
+        updateFeatureLayer();
+      });
     }
 
     function stereonetSpots() {
