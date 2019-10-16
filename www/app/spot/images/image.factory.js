@@ -39,6 +39,7 @@
       'cleanImagesInSpot': cleanImagesInSpot,
       //'deleteAllImages': deleteAllImages,
       'deleteImage': deleteImage,
+      'editImage': editImage,
       'eraseSketch': eraseSketch,
       'gatherImageSources': gatherImageSources,
       'getImageById': getImageById,
@@ -151,7 +152,7 @@
 
     function handleMove(ev) {
       var currentX = ev.touches[0].pageX;
-      var currentY = ev.touches[0].pageY-headerHeight;
+      var currentY = ev.touches[0].pageY - headerHeight;
 
       var ctx = canvas.getContext("2d");
       ctx.beginPath();
@@ -169,7 +170,7 @@
     function handleStart(ev) {
       $log.log('start sketch', ev);
       lastX = ev.touches[0].pageX;
-      lastY = ev.touches[0].pageY-headerHeight;
+      lastY = ev.touches[0].pageY - headerHeight;
     }
 
     // Move an image from temporary directory to permanent device storage in StraboSpot/Images
@@ -254,7 +255,7 @@
     function uploadImageBlob(imageBlob) {
       return new Promise(function (resolve, reject) {
         if (IS_WEB) {
-          currentImageData.id = HelpersFactory.getNewId();
+          if (angular.isUndefined(currentImageData.id)) currentImageData.id = HelpersFactory.getNewId();
           LiveDBFactory.saveImageFile(currentImageData.id, imageBlob)
             .then(function () {
               $log.log('Finished uploading image.');
@@ -311,11 +312,24 @@
       return LocalStorageFactory.deleteImageFromFileSystem(imageId);
     }
 
+    function editImage(spot, imageData) {
+      initializeSketch(spot, imageData);
+      isReattachImage = true;
+
+      var ctx = canvas.getContext("2d");
+      var img = new Image;
+      img.onload = function () {
+        $log.log('loaded', img);
+        ctx.drawImage(img, 0, 0);
+      };
+      img.crossOrigin = 'anonymous';
+      img.src = getImageSource(imageData.id);
+    }
+
     function eraseSketch() {
       sketchStyle = _.isEqual(sketchStyle, SketchStyles.DRAW) ? SketchStyles.ERASE : SketchStyles.DRAW;
       var eraserElement = document.getElementById("eraserIcon");
       eraserElement.style.backgroundColor = eraserElement.style.backgroundColor === 'lightgray' ? 'white' : 'lightgray';
-
     }
 
     // Create an object with the image ids and sources
@@ -366,29 +380,29 @@
         'animation': 'slide-in-up',
         'backdropClickToClose': false,
         'hardwareBackButtonClose': false
+      }).then(function (modal) {
+        modal.el.style.zIndex = 11; // Make sure this modal is in front of other modals (modals have default z index of 10)
+        return Promise.resolve(modal);
       });
     }
 
-    function initializeSketch(spot) {
-      currentSpot = spot;
-      images = currentSpot.properties.images || [];
-      currentImageData = {
-        'id': HelpersFactory.getNewId(),
-        'image_type': 'sketch'
-      };
-      isReattachImage = false;
-
+    function initializeSketch(spot, imageData) {
       var canvasContentArea = document.getElementById("canvasContent");
       canvas = document.getElementById("myCanvas");
       canvas.width = canvasContentArea.clientWidth;
       canvas.height = canvasContentArea.clientHeight;
 
-      // Make a white background the size of the canvas
-      var ctx = canvas.getContext("2d");
-      ctx.beginPath();
-      ctx.rect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = canvasColor;
-      ctx.fill();
+      $log.log('image data:', imageData);
+      $log.log('canvas height:', canvas.height, 'canvas width:', canvas.width);
+
+      // If a new sketch make a white background the size of the canvas
+      if (!imageData) {
+        var ctx = canvas.getContext("2d");
+        ctx.beginPath();
+        ctx.rect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = canvasColor;
+        ctx.fill();
+      }
 
       // Get header height
       var headerElements = document.getElementsByTagName("ion-header-bar");
@@ -403,6 +417,11 @@
       canvas.addEventListener('touchstart', handleStart, false);
       canvas.addEventListener('touchmove', handleMove, false);
       canvas.addEventListener('touchend', handleEnd, false);
+
+      currentSpot = spot;
+      images = currentSpot.properties.images || [];
+      currentImageData = imageData ? imageData : {'id': HelpersFactory.getNewId(), 'image_type': 'sketch'};
+      isReattachImage = false;
     }
 
     function saveSketch() {
@@ -412,7 +431,7 @@
       });
 
       if (angular.isUndefined(currentImageData.id)) currentImageData.id = HelpersFactory.getNewId();
-      currentImageData.image_type = 'sketch';
+      if (angular.isUndefined(currentImageData.image_type)) currentImageData.image_type = 'sketch';
 
       if (IS_WEB) {
         return new Promise(function (resolve, reject) {

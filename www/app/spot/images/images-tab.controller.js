@@ -31,6 +31,7 @@
     vm.addImage = addImage;
     vm.closeModal = closeModal;
     vm.deleteImage = deleteImage;
+    vm.editImage = editImage;
     vm.getImageSrc = getImageSrc;
     vm.goToImageBasemap = goToImageBasemap;
     vm.isWeb = isWeb;
@@ -254,6 +255,13 @@
       if (modal === 'imagePropertiesModal' && FormFactory.validate(vmParent.data)) vm[modal].hide();
       else vm[modal].hide();
       vmParent.data = {};
+    }
+
+    function editImage() {
+      vm.imagePropertiesModal.hide().then(function() {
+        vmParent.sketchModal.show();
+        ImageFactory.editImage(vmParent.spot, vmParent.data);
+      });
     }
 
     function deleteImage() {
