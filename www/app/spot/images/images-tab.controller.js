@@ -277,9 +277,8 @@
               return vmParent.data.id === image.id;
             });
             ProjectFactory.destroyImage(vmParent.data.id);              // Delete from project (eg linked images)
-            ImageFactory.deleteImage(vmParent.data.id);                 // Delete from local storage
-            $log.log('delete remote image: ' + vmParent.data.id);
-            LiveDBFactory.deleteImageFile(vmParent.data.id);            // Delete from server
+            if (IS_WEB) LiveDBFactory.deleteImageFile(vmParent.data.id);            // Delete from server
+            else ImageFactory.deleteImage(vmParent.data.id);                 // Delete from local storage
             delete imageSources[vmParent.data.id];                      // Delete from global images object
             vmParent.data = {};
             vm.imagePropertiesModal.hide();
