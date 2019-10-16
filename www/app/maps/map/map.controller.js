@@ -39,6 +39,7 @@
     vm.cacheOfflineTiles = cacheOfflineTiles;
     vm.closeModal = closeModal;
     vm.createTag = createTag;
+    vm.eraseSketch = eraseSketch;
     vm.goBack = goBack;
     vm.groupSpots = groupSpots;
     vm.hasSpotBackView = hasSpotBackView;
@@ -391,6 +392,10 @@
       vm.addTagModal.hide();
       var id = HelpersFactory.getNewId();
       $location.path('/app/tags/' + id);
+    }
+
+    function eraseSketch() {
+      ImageFactory.eraseSketch();
     }
 
     function goBack() {

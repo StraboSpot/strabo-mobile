@@ -43,6 +43,7 @@
 
     vm.closeModal = closeModal;
     vm.createTag = createTag;
+    vm.eraseSketch = eraseSketch;
     vm.getImages = getImages;
     vm.getImageSrc = getImageSrc;
     vm.goBack = goBack;
@@ -585,6 +586,10 @@
       vm.addTagModal.hide();
       var id = HelpersFactory.getNewId();
       $location.path('/app/tags/' + id);
+    }
+
+    function eraseSketch() {
+      ImageFactory.eraseSketch();
     }
 
     function getImages(spot) {

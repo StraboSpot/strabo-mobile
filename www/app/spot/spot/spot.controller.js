@@ -67,6 +67,7 @@
     vm.copyThisSpot = copyThisSpot;
     vm.deleteSpot = deleteSpot;
     vm.drawSketch = drawSketch;
+    vm.eraseSketch = eraseSketch;
     vm.fieldChanged = fieldChanged;
     vm.getLabel = getLabel;
     vm.goBack = goBack;
@@ -361,6 +362,10 @@
     function drawSketch() {
       vm.sketchModal.show();
       ImageFactory.initializeSketch(vm.spot);
+    }
+
+    function eraseSketch() {
+      ImageFactory.eraseSketch();
     }
 
     // Handle changes to specific fields in form

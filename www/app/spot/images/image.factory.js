@@ -22,11 +22,24 @@
     var lastX = undefined;
     var lastY = undefined;
     var takeMorePictures = false;
+    var canvasColor = 'white';
+    var SketchStyles = {
+      'DRAW': {
+        'COLOR': 'black',
+        'LINEWIDTH': 5
+      },
+      'ERASE': {
+        'COLOR': canvasColor,
+        'LINEWIDTH': 25
+      }
+    };
+    var sketchStyle = SketchStyles.DRAW;
 
     return {
       'cleanImagesInSpot': cleanImagesInSpot,
       //'deleteAllImages': deleteAllImages,
       'deleteImage': deleteImage,
+      'eraseSketch': eraseSketch,
       'gatherImageSources': gatherImageSources,
       'getImageById': getImageById,
       'getImageFileURIById': getImageFileURIById,
@@ -145,8 +158,8 @@
       ctx.moveTo(lastX, lastY);
       ctx.lineTo(currentX, currentY);
       ctx.closePath();
-      ctx.strokeStyle = '#000';
-      ctx.lineWidth = 5;
+      ctx.strokeStyle = sketchStyle.COLOR;
+      ctx.lineWidth = sketchStyle.LINEWIDTH;
       ctx.stroke();
 
       lastX = currentX;
@@ -162,7 +175,8 @@
     // Move an image from temporary directory to permanent device storage in StraboSpot/Images
     function saveImageBlobToDevice(imageBlob) {
       if (angular.isUndefined(currentImageData.id)) currentImageData.id = HelpersFactory.getNewId();
-      if ($window.cordova) return LocalStorageFactory.saveImageToFileSystem(imageBlob, currentImageData.id.toString() + '.jpg');
+      if ($window.cordova) return LocalStorageFactory.saveImageToFileSystem(imageBlob,
+        currentImageData.id.toString() + '.jpg');
       else {
         $log.warn('No Cordova so cannot save image to device. In development mode?');
         return Promise.reject('Error saving image to device');
@@ -297,6 +311,13 @@
       return LocalStorageFactory.deleteImageFromFileSystem(imageId);
     }
 
+    function eraseSketch() {
+      sketchStyle = _.isEqual(sketchStyle, SketchStyles.DRAW) ? SketchStyles.ERASE : SketchStyles.DRAW;
+      var eraserElement = document.getElementById("eraserIcon");
+      eraserElement.style.backgroundColor = eraserElement.style.backgroundColor === 'lightgray' ? 'white' : 'lightgray';
+
+    }
+
     // Create an object with the image ids and sources
     function gatherImageSources(spot) {
       var promises = [];
@@ -366,7 +387,7 @@
       var ctx = canvas.getContext("2d");
       ctx.beginPath();
       ctx.rect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "white";
+      ctx.fillStyle = canvasColor;
       ctx.fill();
 
       // Get header height
@@ -374,6 +395,10 @@
       _.each(headerElements, function (ele) {
         headerHeight = ele.clientHeight > headerHeight ? ele.clientHeight : headerHeight;
       });
+
+      sketchStyle = SketchStyles.DRAW;
+      var eraserElement = document.getElementById("eraserIcon");
+      eraserElement.style.backgroundColor = 'white';
 
       canvas.addEventListener('touchstart', handleStart, false);
       canvas.addEventListener('touchmove', handleMove, false);

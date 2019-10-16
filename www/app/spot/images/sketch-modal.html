@@ -11,6 +11,7 @@
     </div>
   </ion-header-bar>
   <ion-content class='has-header' id='canvasContent' scroll='false'>
-    <canvas id='myCanvas'></canvas>
+    <canvas style="z-index:1" id='myCanvas'></canvas>
+    <div id='eraserIcon' class="eraser-icon" ng-click='vm.eraseSketch()'></div>
   </ion-content>
 </ion-modal-view>

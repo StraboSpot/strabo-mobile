@@ -50,6 +50,7 @@
     vm.copyIntervalLithology = copyIntervalLithology;
     vm.createTag = createTag;
     vm.deleteSpot = deleteSpot;
+    vm.eraseSketch = eraseSketch;
     vm.getTagNames = getTagNames;
     vm.goBack = goBack;
     vm.goToSpot = goToSpot;
@@ -636,6 +637,10 @@
           'template': deleteMsg
         });
       }
+    }
+
+    function eraseSketch() {
+      ImageFactory.eraseSketch();
     }
 
     function getTagNames(spotId) {
