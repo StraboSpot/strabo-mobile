@@ -1,6 +1,7 @@
 .map {
   height: 100%;
 }
+
 .glyph-active {
   border: 1 solid #000;
 }
@@ -12,8 +13,8 @@ Basic Style
   text-transform: capitalize;
 }
 
-.warning-popup .popup-head{
-  background: red  !important;
+.warning-popup .popup-head {
+  background: red !important;
 }
 
 .strabo-icon {
@@ -71,7 +72,8 @@ Map Controls Style
 .ol-control {
   background: none !important;
 }
-.ol-control button{
+
+.ol-control button {
   height: 30px;
   width: 30px;
   background: white;
@@ -79,17 +81,21 @@ Map Controls Style
   border-radius: 8px;
   border: 1px solid lightgray;
 }
+
 .ol-control button:focus, .ol-control button:hover {
   background-color: lightgray !important;
 }
+
 .ol-zoom-in {
   border-radius: 8px 8px 0 0 !important;
 }
+
 .ol-zoom-out {
   border-radius: 0 0 8px 8px !important;
   border-top: none !important;
   margin-top: -1px !important;
 }
+
 .draw-controls {
   position: absolute;
   margin-top: 4em;
@@ -99,48 +105,57 @@ Map Controls Style
   border-radius: 8px;
   border: 1px solid lightgray;
 }
+
 .ol-touch .draw-controls {
   top: 85px;
 }
+
 .draw-controls a {
   display: block;
   font-size: 20px;
   height: 30px;
   width: 30px;
 }
+
 .draw-controls a:hover {
   background-color: lightgray;
 }
+
 .draw-controls .Point {
   background-image: url('../img/point.png');
   background-position: center;
   background-repeat: no-repeat;
   border-bottom: 1px solid lightgray;
 }
+
 .draw-controls .LineString {
   background-image: url('../img/line.png');
   background-position: center;
   background-repeat: no-repeat;
   border-bottom: 1px solid lightgray;
 }
+
 .draw-controls .LineStringFreehand {
   background-image: url('../img/lineFreehand.png');
   background-position: center;
   background-repeat: no-repeat;
   border-bottom: 1px solid lightgray;
 }
+
 .draw-controls .Polygon {
   background-image: url('../img/polygon.png');
   background-position: center;
   background-repeat: no-repeat;
   border-bottom: 1px solid lightgray;
 }
+
 .draw-controls .PolygonFreehand {
   background-image: url('../img/polygonFreehand.png');
   background-position: center;
   background-repeat: no-repeat;
   border-bottom: 1px solid lightgray;
 }
+
 .draw-controls .Edit {
   background-image: url('../img/edit.png');
   background-position: center;
@@ -155,18 +170,22 @@ Map Controls Style
   border-radius: 8px;
   border: 1px solid lightgray;
 }
+
 .ol-touch .emogeo-controls {
   top: 65px;
 }
+
 .emogeo-controls a {
   display: block;
   font-size: 20px;
   height: 30px;
   width: 30px;
 }
+
 .emogeo-controls a:hover {
   background-color: lightgray;
 }
+
 .emogeo-controls .emogeo-icon {
   background-position: center;
   background-repeat: no-repeat;
@@ -201,11 +220,13 @@ Map Controls Style
   top: 60px;
   left: .5em
 }
+
 .ol-rotate {
   top: 4em;
   right: .5em;
   transition: opacity .25s
 }
+
 #zoomInfo {
   position: absolute;
   font-size: 0.7em;
@@ -217,16 +238,19 @@ Map Controls Style
   border: 1px solid lightgray;
   opacity: 0.75;
 }
-.ol-scale-line{
+
+.ol-scale-line {
   background: white;
   opacity: 0.75;
 }
+
 .ol-scale-line-inner {
   color: black;
   border-left: 1px solid black;
   border-right: 1px solid black;
   border-bottom: 1px solid black;
 }
+
 #image-basemap-zoom-info {
   position: absolute;
   font-size: 0.7em;
@@ -258,13 +282,16 @@ Map Layer Switcher Style
   left: .45em;
   right: auto;
 }
+
 .layer-switcher .panel {
   background: white;
   border-radius: 8px;
 }
+
 .layer-switcher.shown .panel {
   padding-left: 15px;
 }
+
 .layer-switcher button {
   float: left;
   padding: 16px;
@@ -272,10 +299,12 @@ Map Layer Switcher Style
   background-repeat: no-repeat;
   background-position: center;
 }
-.ol-touch .layer-switcher button{
+
+.ol-touch .layer-switcher button {
   padding: 15px;
 }
-#toggleButton{
+
+#toggleButton {
   font-size: 18px;
 }
 
@@ -345,7 +374,7 @@ Buttons
 }
 
 .crossed {
-  background-image: linear-gradient(to bottom right,  transparent calc(50% - 1px), lightgray, transparent calc(50% + 1px));
+  background-image: linear-gradient(to bottom right, transparent calc(50% - 1px), lightgray, transparent calc(50% + 1px));
 }
 
 .calc-trend-plunge-text {
@@ -383,13 +412,13 @@ Orientation Tab Style
   font-size: x-small;
 }
 
-.clipboard-modal-text{
+.clipboard-modal-text {
   text-align: center;
   font-size: small;
   margin: auto;
 }
 
-.clipboard-data-modal{
+.clipboard-data-modal {
   display: block;
   width: 80%;
   height: 80%;
@@ -402,21 +431,22 @@ Orientation Tab Style
   overflow: auto;
   font-size: 14px;
 }
+
 /*--------------------
 Online & Offline Notification Circles
 --------------------*/
-.online{
-  width:15px;
-  height:15px;
-  border-radius:7.5px;
-  background:linear-gradient(to bottom, #33FF00, #006600)
+.online {
+  width: 15px;
+  height: 15px;
+  border-radius: 7.5px;
+  background: linear-gradient(to bottom, #33FF00, #006600)
 }
 
-.offline{
-  width:15px;
-  height:15px;
-  border-radius:7.5px;
-  background:linear-gradient(to bottom, #FF3333, #990000)
+.offline {
+  width: 15px;
+  height: 15px;
+  border-radius: 7.5px;
+  background: linear-gradient(to bottom, #FF3333, #990000)
 }
 
 /*--------------------
@@ -426,9 +456,11 @@ Tabs Style
   height: 29px;
   line-height: 29px;
 }
+
 .has-tabs-top {
   top: 73px;
 }
+
 .active-tags {
   background-color: lightgray;
 }
@@ -466,7 +498,7 @@ Image Modal Style: used for image active-slider when choosing spot images
 
 .image-modal-textarea {
   width: 80%;
-  height:10%;
+  height: 10%;
   bottom: 30px;
   left: 0;
   margin: auto;
@@ -491,7 +523,7 @@ Form Fields Style
   padding-bottom: 1px;
 }
 
-.strabo-form .input-label{
+.strabo-form .input-label {
   max-width: 100% !important;
   width: 100% !important;
   font-weight: bold;
@@ -502,7 +534,7 @@ Form Fields Style
   padding: 0px;
 }
 
-.strabo-form input{
+.strabo-form input {
   font-size: large;
   line-height: 25px;
   height: 25px;
@@ -587,12 +619,12 @@ textarea {
 .strabo-field-info-button {
   min-height: 20px;
   line-height: 20px;
-  top: -3px;                  /* Overwritten in web css */
+  top: -3px; /* Overwritten in web css */
   color: #387ef5;
 }
 
 .range input {
-  height: 43px;               /* Set back to original for range */
+  height: 43px; /* Set back to original for range */
 }
 
 .only-bottom-border {
@@ -620,41 +652,49 @@ Form Select Multiple Choices Fields Style
   display: -webkit-flex;
   display: flex;
 }
+
 .strabo-choices-flex-item {
   flex: 1 0 200px;
   margin-bottom: 1px;
   display: table;
 }
+
 @media (min-width: 410px) {
   .strabo-flex-container .strabo-choices-flex-item {
     max-width: calc(50% - 10px);
   }
 }
+
 @media (min-width: 620px) {
   .strabo-flex-container .strabo-choices-flex-item {
     max-width: calc(33.33333% - 10px);
   }
 }
+
 @media (min-width: 830px) {
   .strabo-flex-container .strabo-choices-flex-item {
     max-width: calc(25% - 10px);
   }
 }
+
 @media (min-width: 1040px) {
   .strabo-flex-container .strabo-choices-flex-item {
     max-width: calc(20% - 10px);
   }
 }
+
 @media (min-width: 1250px) {
   .strabo-flex-container .strabo-choices-flex-item {
     max-width: calc(16.66667% - 10px);
   }
 }
+
 @media (min-width: 1460px) {
   .strabo-flex-container .strabo-choices-flex-item {
     max-width: calc(14.28571% - 10px);
   }
 }
+
 @media (min-width: 1670px) {
   .strabo-flex-container .strabo-choices-flex-item {
     min-width: calc(12.5% - 10px);
@@ -726,7 +766,7 @@ Login Page
   font-size: 45px;
 }
 
-.login-title-line-2{
+.login-title-line-2 {
   position: absolute;
   top: 90%;
   right: 0;
@@ -748,7 +788,7 @@ Login Page
     font-size: 80px;
   }
 
-  .login-title-line-2{
+  .login-title-line-2 {
     top: 100%;
     font-size: 60px;
   }
@@ -760,7 +800,7 @@ button.skip {
   right: 10px;
 }
 
-.create-account-text{
+.create-account-text {
   font-weight: bold;
   color: white;
   font-size: 120%;
@@ -823,14 +863,14 @@ Images on Images Tab
   border: none;
 }
 
-.strabo-image .image-title{
+.strabo-image .image-title {
   font-size: small;
   font-weight: bold;
   text-decoration: underline;
   height: 20px;
 }
 
-.strabo-image .image-description{
+.strabo-image .image-description {
   font-size: small;
   height: 20px;
   border: none;
@@ -869,12 +909,29 @@ Images on Images Tab
 Json Data Model
 ---------------------*/
 
-pre {  font-size: x-small; }
-.type { color: green; }
-.required { color: darkorange; }
-.label { color: blue; }
-.hint { color: magenta; }
-.key { color: red; }
+pre {
+  font-size: x-small;
+}
+
+.type {
+  color: green;
+}
+
+.required {
+  color: darkorange;
+}
+
+.label {
+  color: blue;
+}
+
+.hint {
+  color: magenta;
+}
+
+.key {
+  color: red;
+}
 
 
 /*--------------------
@@ -924,84 +981,101 @@ Spots Page
 .filter-on {
   background-color: lightgray;
 }
+
 .geometry-icon {
   height: 20px;
   width: 20px;
   vertical-align: bottom;
 }
-.spot-tabs-on{
+
+.spot-tabs-on {
   font-size: 10px;
   border-radius: 5px;
   padding-left: 4px;
   padding-right: 4px;
 }
-.orientation-on{
+
+.orientation-on {
   background-color: #8dd3c7;
 }
-._3d-structures-on{
+
+._3d-structures-on {
   background-color: #ffffb3;
 }
-.images-on{
+
+.images-on {
   background-color: #bebada;
 }
-.tags-on{
+
+.tags-on {
   background-color: #fb8072;
 }
-.samples-on{
+
+.samples-on {
   background-color: #80b1d3;
 }
-.other-features-on{
+
+.other-features-on {
   background-color: #fdb462;
 }
-.minerals-on{
+
+.minerals-on {
   background-color: #0af36b;
 }
-.relationships-on{
+
+.relationships-on {
   background-color: #fccde5;
 }
-.strat-section-on{
+
+.strat-section-on {
   background-color: #9bfdea;
 }
-.sed-interpretations-on{
+
+.sed-interpretations-on {
   background-color: #fcbf90;
 }
-.lithologies-on{
+
+.lithologies-on {
   background-color: #f2a9fc;
 }
-.sed-structures-on{
+
+.sed-structures-on {
   background-color: #6bcffc;
 }
-.list-sub{
+
+.list-sub {
   font-size: small;
   padding-left: 24px;
   font-style: oblique;
 }
 
-.mineral-list{
+.mineral-list {
   -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
   font-size: large;
   margin-bottom: 10px;
 }
+
 .web-icon {
   font-size: 1.4rem;
   margin-left: 10px;
 
 }
+
 /*--------------------
 Filters Modal
 ---------------------*/
 
-.date-filter-right{
+.date-filter-right {
   float: right;
   display: initial;
 }
 
-.date-filter-left{
+.date-filter-left {
   float: left;
 }
 
-.date-filter-label{
+.date-filter-label {
   display: initial;
   font-size: small;
 }
@@ -1013,21 +1087,22 @@ Minerals Page
 .minerals-checkbox {
   left: 25px;
 }
-.minerals-item{
+
+.minerals-item {
   margin-bottom: 1px;
   margin-left: 80px;
 }
 
-.mineral-checkbox{
+.mineral-checkbox {
   margin-left: -15;
   position: relative;
 }
 
-.mineral-item{
+.mineral-item {
   display: flex;
 }
 
-#minerals-info-button-modal{
+#minerals-info-button-modal {
   float: left;
   align-items: center;
   position: relative;
@@ -1041,7 +1116,7 @@ Minerals Page
   font-size: 12px;
 }
 
-#minerals-info-button-main{
+#minerals-info-button-main {
   float: left;
   align-items: center;
   position: relative;
@@ -1058,26 +1133,27 @@ Minerals Page
 .minerals-field-info-button {
   min-height: 20px;
   line-height: 20px;
-  top: -3px;                  /* Overwritten in web css */
+  top: -3px; /* Overwritten in web css */
   color: #387ef5;
   position: absolute;
   margin-left: 0px;
 }
 
-.mineral-info-display > .row{
+.mineral-info-display > .row {
   margin: 0px 0px 10px 0px;
 }
 
-#mineral-link{
+#mineral-link {
   text-decoration: none;
   /* margin-left: 10%; */
 }
 
-.mineral-title{
+.mineral-title {
   margin-right: 15px;
   font-weight: bold;
 }
-.minerals-form{
+
+.minerals-form {
   font-size: small;
   line-height: 20px;
   padding: 0px !important;
@@ -1087,7 +1163,7 @@ Minerals Page
 Relationships Page
 ---------------------*/
 
-.relationship-types{
+.relationship-types {
   font-size: medium;
   font-weight: bold;
   text-align: center;
@@ -1114,13 +1190,13 @@ Samples and Images Pages
   display: flex;
 }
 
-.strabo-wrap    {
+.strabo-wrap {
   -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
 }
 
 .strabo-flex-item {
-  background:  #F6F6F6;
+  background: #F6F6F6;
   padding: 5px;
   width: 200px;
   height: 260px;
@@ -1136,7 +1212,7 @@ Samples and Images Pages
   overflow: hidden;
 }
 
-.sample-box-header-text{
+.sample-box-header-text {
   font-weight: bold;
   text-decoration: underline;
 }
@@ -1145,7 +1221,7 @@ Samples and Images Pages
 Misc
 ---------------------*/
 
-.circle {                         /* Used for opacity range slider */
+.circle { /* Used for opacity range slider */
   width: 26px;
   height: 26px;
   -moz-border-radius: 13px;
@@ -1207,7 +1283,7 @@ Thin Section
 Nesting
 ---------------------*/
 
-.nest-block{
+.nest-block {
   border: solid;
   border-width: 1px;
   padding: 4px;
@@ -1217,12 +1293,12 @@ Nesting
 Data-Page
 ---------------------*/
 
-.csv-view-modal{
-  top: 0 ;
-  bottom: 0 ;
-  left: 0 ;
-  right: 0 ;
-  width: 100% ;
+.csv-view-modal {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
 }
 
 .data-table {
@@ -1246,16 +1322,16 @@ Offline Maps Page
 .map-name {
   text-transform: uppercase;
   text-align: center;
-  font-weight:bold;
-  font-size:1.3em;
+  font-weight: bold;
+  font-size: 1.3em;
   padding-bottom: 5px;
 }
 
 .zoom-levels {
   text-transform: uppercase;
   text-align: center;
-  font-weight:bold;
-  font-size:1.2em;
+  font-weight: bold;
+  font-size: 1.2em;
   margin-bottom: 10px;
 }
 
@@ -1266,7 +1342,7 @@ Offline Maps Page
 /*--------------------
 Spot Notes Page
 ---------------------*/
-.spot-notes  {
+.spot-notes {
   border: 2px solid #c3c3c3;
   font-size: x-large;
   line-height: 30px;
