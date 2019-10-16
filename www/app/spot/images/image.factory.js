@@ -15,6 +15,7 @@
     var canvas = undefined;
     var currentImageData = {};
     var currentSpot = {};
+    var headerHeight = 0;
     var images = [];
     var imageSources = {};
     var isReattachImage = false;
@@ -137,7 +138,7 @@
 
     function handleMove(ev) {
       var currentX = ev.touches[0].pageX;
-      var currentY = ev.touches[0].pageY;
+      var currentY = ev.touches[0].pageY-headerHeight;
 
       var ctx = canvas.getContext("2d");
       ctx.beginPath();
@@ -155,7 +156,7 @@
     function handleStart(ev) {
       $log.log('start sketch', ev);
       lastX = ev.touches[0].pageX;
-      lastY = ev.touches[0].pageY;
+      lastY = ev.touches[0].pageY-headerHeight;
     }
 
     // Move an image from temporary directory to permanent device storage in StraboSpot/Images
@@ -367,6 +368,12 @@
       ctx.rect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = "white";
       ctx.fill();
+
+      // Get header height
+      var headerElements = document.getElementsByTagName("ion-header-bar");
+      _.each(headerElements, function (ele) {
+        headerHeight = ele.clientHeight > headerHeight ? ele.clientHeight : headerHeight;
+      });
 
       canvas.addEventListener('touchstart', handleStart, false);
       canvas.addEventListener('touchmove', handleMove, false);
