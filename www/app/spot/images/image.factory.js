@@ -389,6 +389,13 @@
     function initializeSketch(spot, imageData) {
       var canvasContentArea = document.getElementById("canvasContent");
       canvas = document.getElementById("myCanvas");
+      if (imageData && imageData.width && imageData.height
+        && (imageData.width > canvasContentArea.clientWidth || imageData.height > canvasContentArea.clientHeight)) {
+        $ionicPopup.alert({
+          'title': 'Large Canvas!',
+          'template': 'Canvas is larger than screen area. Image needs to be resized to see entire image for editing.'
+        });
+      }
       canvas.width = canvasContentArea.clientWidth;
       canvas.height = canvasContentArea.clientHeight;
 
