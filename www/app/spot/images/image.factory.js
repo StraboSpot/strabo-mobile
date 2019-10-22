@@ -151,8 +151,13 @@
     }
 
     function handleMove(ev) {
-      var currentX = ev.touches[0].pageX;
-      var currentY = ev.touches[0].pageY - headerHeight;
+      // If on a scrollable sketch get scroll positions
+      var canvasContentArea = document.getElementById("canvasParent");
+      var scrollLeft = canvasContentArea.scrollLeft || 0;
+      var scrollTop = canvasContentArea.scrollTop || 0;
+
+      var currentX = ev.touches[0].pageX + scrollLeft;
+      var currentY = ev.touches[0].pageY - headerHeight + scrollTop;
 
       var ctx = canvas.getContext("2d");
       ctx.beginPath();
@@ -168,9 +173,14 @@
     }
 
     function handleStart(ev) {
+      // If on a scrollable sketch get scroll positions
+      var canvasContentArea = document.getElementById("canvasParent");
+      var scrollLeft = canvasContentArea.scrollLeft || 0;
+      var scrollTop = canvasContentArea.scrollTop || 0;
+
       $log.log('start sketch', ev);
-      lastX = ev.touches[0].pageX;
-      lastY = ev.touches[0].pageY - headerHeight;
+      lastX = ev.touches[0].pageX + scrollLeft;
+      lastY = ev.touches[0].pageY - headerHeight + scrollTop;
     }
 
     // Move an image from temporary directory to permanent device storage in StraboSpot/Images
@@ -387,17 +397,30 @@
     }
 
     function initializeSketch(spot, imageData) {
-      var canvasContentArea = document.getElementById("canvasContent");
+      // Set height and width of canvas
+      var ionContentArea = document.getElementById("canvasContent");
       canvas = document.getElementById("myCanvas");
-      if (imageData && imageData.width && imageData.height
-        && (imageData.width > canvasContentArea.clientWidth || imageData.height > canvasContentArea.clientHeight)) {
-        $ionicPopup.alert({
-          'title': 'Large Canvas!',
-          'template': 'Canvas is larger than screen area. Image needs to be resized to see entire image for editing.'
-        });
+      if (imageData && imageData.width && imageData.height) {
+        canvas.width = imageData.width;
+        canvas.height = imageData.height;
       }
-      canvas.width = canvasContentArea.clientWidth;
-      canvas.height = canvasContentArea.clientHeight;
+      else {
+        canvas.width = ionContentArea.clientWidth;
+        canvas.height = ionContentArea.clientHeight;
+      }
+
+      // Set height, width and overflow for canvas parent container
+      var canvasContentArea = document.getElementById("canvasParent");
+      if (canvas.width > ionContentArea.clientWidth || canvas.height > ionContentArea.clientHeight) {
+        canvasContentArea.style.width = ionContentArea.clientWidth + 'px';
+        canvasContentArea.style.height = ionContentArea.clientHeight + 'px';
+        canvasContentArea.style.overflow = 'scroll';
+      }
+      else {
+        canvasContentArea.style.width = ionContentArea.clientWidth + 'px';
+        canvasContentArea.style.height = ionContentArea.clientHeight + 'px';
+        canvasContentArea.style.overflow = 'hidden';
+      }
 
       $log.log('image data:', imageData);
       $log.log('canvas height:', canvas.height, 'canvas width:', canvas.width);

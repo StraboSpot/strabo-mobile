@@ -513,7 +513,7 @@ Image Modal Style: used for image active-slider when choosing spot images
   height: 100%;
 }
 
-.images-modal-back-button{
+.images-modal-back-button {
   z-index: 11;
 }
 
@@ -1360,7 +1360,7 @@ Spot Notes Page
 Sketch
 ---------------------*/
 
-.eraser-icon{
+.eraser-icon {
   background-image: url('../img/eraser.png');
   background-position: center;
   background-repeat: no-repeat;
@@ -1371,5 +1371,36 @@ Sketch
   top: 30px;
   width: 50px;
   height: 50px;
+  border-radius: 8px;
+}
+
+.scrollableSketch {
+  -webkit-overflow-scrolling: touch;
+}
+
+.scrollableSketch * {
+  -webkit-transform: translate3d(0, 0, 0);
+}
+
+.scrollableSketch::-webkit-scrollbar {
+  -webkit-appearance: none;
+}
+
+.scrollableSketch::-webkit-scrollbar:vertical {
+  width: 30px;
+}
+
+.scrollableSketch::-webkit-scrollbar:horizontal {
+  height: 30px;
+}
+
+.scrollableSketch::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  border: 2px solid white;
+  background-color: rgba(0, 0, 0, .5);
+}
+
+.scrollableSketch::-webkit-scrollbar-track {
+  background-color: #fff;
   border-radius: 8px;
 }
