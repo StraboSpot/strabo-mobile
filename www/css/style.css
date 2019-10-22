@@ -513,6 +513,10 @@ Image Modal Style: used for image active-slider when choosing spot images
   height: 100%;
 }
 
+.images-modal-back-button{
+  z-index: 11;
+}
+
 /*--------------------
 Form Fields Style
 --------------------*/
