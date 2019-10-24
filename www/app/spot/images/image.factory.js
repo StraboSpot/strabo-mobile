@@ -95,6 +95,50 @@
       else return Promise.resolve(imageURI);
     }
 
+    function continueSaveSketch() {
+      $log.log('Saving Sketch');
+      $ionicLoading.show({
+        'template': '<ion-spinner></ion-spinner><br>Saving Sketch...'
+      });
+
+      if (angular.isUndefined(currentImageData.id)) currentImageData.id = HelpersFactory.getNewId();
+      if (angular.isUndefined(currentImageData.image_type)) currentImageData.image_type = 'sketch';
+      currentImageData.modified_timestamp = Date.now();
+
+      if (IS_WEB) {
+        return new Promise(function (resolve, reject) {
+          canvas.toBlob(function (imageBlob) {
+            uploadImageBlob(imageBlob)
+              .then(setImageSourceWeb)
+              .then(setImageProperties)
+              .then(saveSpot)
+              .then(checkForMoreImages)
+              .catch(errorAlert)
+              .finally(function () {
+                $ionicLoading.hide();
+                resolve();
+              });
+          });
+        });
+      }
+      else {
+        return new Promise(function (resolve, reject) {
+          canvas.toBlob(function (blob) {
+            saveImageBlobToDevice(blob)
+              .then(setImageSourceDevice)
+              .then(setImageProperties)
+              .then(saveSpot)
+              .then(checkForMoreImages)
+              .catch(errorAlert)
+              .finally(function () {
+                $ionicLoading.hide();
+                resolve();
+              });
+          });
+        });
+      }
+    }
+
     function errorAlert(errorMsg) {
       $log.error(errorMsg);
       if (errorMsg === 20) errorMsg = 'StraboSpot Mobile needs file access to use the camera.';
@@ -463,47 +507,37 @@
     }
 
     function saveSketch() {
-      $log.log('Saving Sketch');
-      $ionicLoading.show({
-        'template': '<ion-spinner></ion-spinner><br>Saving Sketch...'
-      });
-
-      if (angular.isUndefined(currentImageData.id)) currentImageData.id = HelpersFactory.getNewId();
-      if (angular.isUndefined(currentImageData.image_type)) currentImageData.image_type = 'sketch';
-      currentImageData.modified_timestamp = Date.now();
-
-      if (IS_WEB) {
-        return new Promise(function (resolve, reject) {
-          canvas.toBlob(function (imageBlob) {
-            uploadImageBlob(imageBlob)
-              .then(setImageSourceWeb)
-              .then(setImageProperties)
-              .then(saveSpot)
-              .then(checkForMoreImages)
-              .catch(errorAlert)
-              .finally(function () {
-                $ionicLoading.hide();
-                resolve();
-              });
-          });
+      if (isReattachImage) {
+        var confirmPopup = $ionicPopup.show({
+          'title': 'Editing Existing Image',
+          'template': 'Overwrite the current image or save as a new image?',
+          'buttons': [
+            {'text': 'Cancel'},
+            {
+              'text': 'Overwrite',
+              'type': 'button-positive',
+              'onTap': function () {
+                return 'overwrite';
+              }
+            },
+            {
+              'text': 'Save as New',
+              'onTap': function () {
+                return 'new';
+              }
+            }
+          ]
+        });
+        return confirmPopup.then(function (res) {
+          if (res && res === 'overwrite') return continueSaveSketch();
+          else if (res && res === 'new') {
+            currentImageData.id = HelpersFactory.getNewId();
+            return continueSaveSketch();
+          }
+          else return Promise.reject();
         });
       }
-      else {
-        return new Promise(function (resolve, reject) {
-          canvas.toBlob(function (blob) {
-            saveImageBlobToDevice(blob)
-              .then(setImageSourceDevice)
-              .then(setImageProperties)
-              .then(saveSpot)
-              .then(checkForMoreImages)
-              .catch(errorAlert)
-              .finally(function () {
-                $ionicLoading.hide();
-                resolve();
-              });
-          });
-        });
-      }
+      else return continueSaveSketch();
     }
 
     function setCurrentImage(inImageData) {
