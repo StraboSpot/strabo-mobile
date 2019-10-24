@@ -79,10 +79,10 @@
     }
 
     // Save image to remote DB
-    function saveImageFile(imageId, imageBlob) {
+    function saveImageFile(imageProps, imageBlob) {
       if (IS_WEB && UserFactory.getUser()) { //are we on the desktop?
-        $log.log('Uploading image', imageId, 'to remote DB ...');
-        return RemoteServerFactory.uploadImage(imageId, imageBlob, UserFactory.getUser().encoded_login);
+        $log.log('Uploading image', imageProps.id, 'to remote DB ...');
+        return RemoteServerFactory.uploadImage(imageProps, imageBlob, UserFactory.getUser().encoded_login);
       }
       else Promise.reject('You must be logged in to send image to remote DB.');
     }

@@ -147,7 +147,7 @@
     }
 
     function handleEnd(ev) {
-      $log.log('end sketch', ev);
+      //$log.log('end sketch', ev);
     }
 
     function handleMove(ev) {
@@ -178,7 +178,7 @@
       var scrollLeft = canvasContentArea.scrollLeft || 0;
       var scrollTop = canvasContentArea.scrollTop || 0;
 
-      $log.log('start sketch', ev);
+      //$log.log('start sketch', ev);
       lastX = ev.touches[0].pageX + scrollLeft;
       lastY = ev.touches[0].pageY - headerHeight + scrollTop;
     }
@@ -244,7 +244,15 @@
           newImage.src = imageSource;
         });
       }
-      else return Promise.resolve();
+      else {
+        if (currentImageData.modified_timestamp) {
+          currentSpot.properties.images = _.reject(currentSpot.properties.images, function (image) {
+            return image.id === currentImageData.id;
+          });
+          currentSpot.properties.images.push(currentImageData);
+        }
+        return Promise.resolve();
+      }
     }
 
     // Set image source on a device
@@ -266,7 +274,7 @@
       return new Promise(function (resolve, reject) {
         if (IS_WEB) {
           if (angular.isUndefined(currentImageData.id)) currentImageData.id = HelpersFactory.getNewId();
-          LiveDBFactory.saveImageFile(currentImageData.id, imageBlob)
+          LiveDBFactory.saveImageFile(currentImageData, imageBlob)
             .then(function () {
               $log.log('Finished uploading image.');
               resolve(imageBlob);
@@ -462,6 +470,7 @@
 
       if (angular.isUndefined(currentImageData.id)) currentImageData.id = HelpersFactory.getNewId();
       if (angular.isUndefined(currentImageData.image_type)) currentImageData.image_type = 'sketch';
+      currentImageData.modified_timestamp = Date.now();
 
       if (IS_WEB) {
         return new Promise(function (resolve, reject) {
