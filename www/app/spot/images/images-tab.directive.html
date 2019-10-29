@@ -1,42 +1,61 @@
-<div class='strabo-image'>
-  <div class='row' ng-repeat='image in vm.spot.properties.images track by image.id'>
-    <div class='col image-col'>
-      <img class="strabo-small-thumbnail" ng-src='{{ vmChild.getImageSrc(image.id) }}'
-           ng-click='vmChild.showImages($index)'/>
-    </div>
-    <div class='col'>
-      <ion-input class='item item-input'>
-        <input class='image-title' type='text' ng-model='image.title' placeholder='Image Name'>
-      </ion-input>
-      <ion-input class='item item-input'>
-        <input class='image-description' placeholder='Image description ...' ng-model='image.caption'>
-      </ion-input>
-      <ion-toggle class='toggle-small'
-                  toggle-class='toggle-positive'
-                  ng-model='image.annotated'
-                  ng-click='vmChild.toggleImageBasemap(image)'>
+<div>
+  <div ng-hide='!vm.spot.properties.images || vm.spot.properties.images.length === 0'>
+    <ion-input class="item item-input item-select">
+      <ion-label>
+        <button class='button-icon ion-levels rotate-90'></button>
+        Filter by Type
+      </ion-label>
+      <select ng-model='vmChild.filterSelectedType' ng-change='vmChild.filterImagesType()'
+              ng-options="choice.name as choice.label for choice in vmChild.imageTypeChoices">
+        <option value=''>all</option>
+      </select>
+    </ion-input>
+  </div>
+  <div class='padding' ng-show='vm.spot.properties.images.length !== 0 && vmChild.filteredImages.length === 0'>
+    No images of this type yet.
+  </div>
+  <div class='strabo-image'>
+    <div class='row'
+         ng-repeat='image in vm.spot.properties.images | filter: (!!vmChild.filterSelectedType || undefined) && {image_type: vmChild.filterSelectedType} track by image.id'>
+      <div class='col image-col'>
+        <img class="strabo-small-thumbnail" ng-src='{{ vmChild.getImageSrc(image.id) }}'
+             ng-click='vmChild.showImages($index)'/>
+      </div>
+
+      <div class='col'>
+        <ion-input class='item item-input'>
+          <input class='image-title' type='text' ng-model='image.title' placeholder='Image Name'>
+        </ion-input>
+        <ion-input class='item item-input'>
+          <input class='image-description' placeholder='Image description ...' ng-model='image.caption'>
+        </ion-input>
+        <ion-toggle class='toggle-small'
+                    toggle-class='toggle-positive'
+                    ng-model='image.annotated'
+                    ng-click='vmChild.toggleImageBasemap(image)'>
           <span class='toggle-left-image-label'>Image as basemap?
           </span>
-      </ion-toggle>
+        </ion-toggle>
 
-      <button ng-click='vmChild.moreDetail(image)'
-              class='button button-clear button-small button-positive'>
-        <i class='icon ion-information-circled'></i>
-        <span class='button-text-small'>More</span>
-      </button>
-      <button ng-click='vmChild.goToImageBasemap(image)'
-              class='button button-small button-clear button-positive'
-              ng-show='image.annotated'>
-        <i class='icon ion-map'></i>
-        <span class='button-text-small'>Map</span>
-      </button>
+        <button ng-click='vmChild.moreDetail(image)'
+                class='button button-clear button-small button-positive'>
+          <i class='icon ion-information-circled'></i>
+          <span class='button-text-small'>More</span>
+        </button>
+        <button ng-click='vmChild.goToImageBasemap(image)'
+                class='button button-small button-clear button-positive'
+                ng-show='image.annotated'>
+          <i class='icon ion-map'></i>
+          <span class='button-text-small'>Map</span>
+        </button>
+      </div>
     </div>
-  </div>
-  <div class='item item-divider'>
-    Notes
-  </div>
-  <ion-input class='item item-input'>
+    <div class='item item-divider'>
+      Notes
+    </div>
+    <ion-input class='item item-input'>
       <textarea class='padding-left' placeholder='Notes about all images above ...' rows='12'
                 ng-model='vm.spot.properties.images_notes'></textarea>
-  </ion-input>
+    </ion-input>
+  </div>
 </div>

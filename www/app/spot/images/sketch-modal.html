@@ -1,0 +1,19 @@
+<ion-modal-view class='image-modal'>
+  <ion-header-bar class='bar-stable nav-title-slide-ios7' align-title='center'>
+    <button class='button button-positive'
+            ng-click='vm.saveSketch()'>Save
+    </button>
+    <h1 class='title'>Sketch Pad</h1>
+    <div class='buttons'>
+      <button class='icon ion-close-round close-modal-button'
+              ng-click='vm.sketchModal.hide()'>
+      </button>
+    </div>
+  </ion-header-bar>
+  <ion-content class='has-header' id='canvasContent' scroll="false">
+    <div direction="xy" class="scrollableSketch" id="canvasParent">
+      <canvas style="z-index:1;" id='myCanvas'></canvas>
+      <div id='eraserIcon' class="eraser-icon" ng-click='vm.eraseSketch()'></div>
+    </div>
+  </ion-content>
+</ion-modal-view>

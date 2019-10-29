@@ -7,7 +7,7 @@
                   on-scroll="vmChild.updateSlideStatus(vmChild.activeSlide)"
                   on-release="vmChild.updateSlideStatus(vmChild.activeSlide)">
         <button ng-click='vmChild.closeModal("imageModal")'
-                class='button button-icon icon ion-arrow-left-c'></button>
+                class='button button-icon icon ion-arrow-left-c images-modal-back-button'></button>
         <img class='fullscreen-image' ng-src='{{ vmChild.getImageSrc(image.id) }}'></img>
         <textarea rows='3' class='image-modal-textarea' ng-model='image.caption'
                   placeholder='Image description ...'></textarea>

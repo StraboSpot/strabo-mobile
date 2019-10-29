@@ -40,6 +40,7 @@
     vm.popover = {};
     vm.saveEditsText = 'Save Edits';
     vm.showSaveEditsBtn = false;
+    vm.sketchModal = {};
     vm.stratSectionIntervals = [];
     vm.thisSpotWithStratSection = {};
 
@@ -49,6 +50,7 @@
     vm.copyIntervalLithology = copyIntervalLithology;
     vm.createTag = createTag;
     vm.deleteSpot = deleteSpot;
+    vm.eraseSketch = eraseSketch;
     vm.getTagNames = getTagNames;
     vm.goBack = goBack;
     vm.goToSpot = goToSpot;
@@ -58,6 +60,7 @@
     vm.isiOS = isiOS;
     vm.saveEdits = saveEdits;
     vm.saveInterval = saveInterval;
+    vm.saveSketch = saveSketch;
     vm.stereonetSpots = stereonetSpots;
     vm.switchView = switchView;
     vm.toggleNesting = toggleNesting;
@@ -274,6 +277,11 @@
             ImageFactory.setCurrentImage({'image_type': 'photo'});
             ImageFactory.takePicture();
           }
+          else if (action === 'drawSketch') {
+            popup.hide();
+            vm.sketchModal.show();
+            ImageFactory.initializeSketch(SpotFactory.getSpotById(vm.clickedFeatureId));
+          }
           else if (action === 'copyInterval') {
             popup.hide();
             copyInterval();
@@ -311,6 +319,10 @@
       }).then(function (modal) {
         vm.newNestModal = modal;
       });
+
+      ImageFactory.getSketchModal($scope).then(function (sketchModal) {
+        vm.sketchModal = sketchModal;
+      });
     }
 
     function createPageEvents() {
@@ -332,6 +344,7 @@
         MapDrawFactory.cancelEdits();    // Cancel any edits
         vm.popover.remove();            // Remove the popover
         vm.addTagModal.remove();
+        if (vm.sketchModal) vm.sketchModal.remove();
       });
 
       $scope.$on('enableSaveEdits', function (e, data) {
@@ -626,6 +639,10 @@
       }
     }
 
+    function eraseSketch() {
+      ImageFactory.eraseSketch();
+    }
+
     function getTagNames(spotId) {
       var tags = ProjectFactory.getTagsBySpotId(spotId);
       return _.pluck(tags, 'name').join(', ');
@@ -706,6 +723,13 @@
           }
         });
       }
+    }
+
+    function saveSketch() {
+      ImageFactory.saveSketch().finally(function () {
+        vm.sketchModal.hide();
+        updateFeatureLayer();
+      });
     }
 
     function stereonetSpots() {

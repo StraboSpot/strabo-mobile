@@ -49,8 +49,7 @@
               <ion-input class='item item-input item-stacked-label item-text-wrap only-bottom-border '
                          ng-class='{ "has-errors": straboForm["x"].$invalid, "no-errors": straboForm["y"].$valid }'>
                 <ion-label>X Pixels</ion-label>
-                <input type='number' name='x' ng-model='vmChild.x' ng-change='vmChild.updateX(vmChild.x)'
-                       required min='0'>
+                <input type='number' name='x' ng-model='vmChild.x' ng-change='vmChild.updateX(vmChild.x)' required>
               </ion-input>
               <div ng-if='straboForm["x"].$touched'>
                 <div ng-messages='straboForm["x"].$error'>
@@ -62,8 +61,7 @@
               <ion-input class='item item-input item-stacked-label item-text-wrap only-bottom-border '
                          ng-class='{ "has-errors": straboForm["y"].$invalid, "no-errors": straboForm["y"].$valid }'>
                 <ion-label>Y Pixels</ion-label>
-                <input type='number' name='y' ng-model='vmChild.y' ng-change='vmChild.updateY(vmChild.y)'
-                       required min='0'>
+                <input type='number' name='y' ng-model='vmChild.y' ng-change='vmChild.updateY(vmChild.y)' required>
               </ion-input>
               <div ng-if='straboForm["y"].$touched'>
                 <div ng-messages='straboForm["y"].$error'>

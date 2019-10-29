@@ -34,14 +34,17 @@
     vm.popover = {};
     vm.saveEditsText = 'Save Edits';
     vm.showSaveEditsBtn = false;
+    vm.sketchModal = {};
 
     vm.closeModal = closeModal;
     vm.createTag = createTag;
+    vm.eraseSketch = eraseSketch;
     vm.goBack = goBack;
     vm.groupSpots = groupSpots;
     vm.hasLinkedImages = hasLinkedImages;
     vm.isiOS = isiOS;
     vm.saveEdits = saveEdits;
+    vm.saveSketch = saveSketch;
     vm.startCalculateImageWidth = startCalculateImageWidth;
     vm.stereonetSpots = stereonetSpots;
     vm.toggleNesting = toggleNesting;
@@ -160,6 +163,11 @@
             ImageFactory.setCurrentImage({'image_type': 'photo'});
             ImageFactory.takePicture();
           }
+          else if (action === 'drawSketch') {
+            popup.hide();
+            vm.sketchModal.show();
+            ImageFactory.initializeSketch(SpotFactory.getSpotById(vm.clickedFeatureId));
+          }
           else if (action === 'more') {
             popup.hide();
             $location.path('/app/spotTab/' + vm.clickedFeatureId + '/spot');
@@ -187,6 +195,10 @@
       }).then(function (modal) {
         vm.newNestModal = modal;
       });
+
+      ImageFactory.getSketchModal($scope).then(function (sketchModal) {
+        vm.sketchModal = sketchModal;
+      });
     }
 
     function createPageEvents() {
@@ -205,6 +217,7 @@
         MapDrawFactory.cancelEdits();    // Cancel any edits
         vm.popover.remove();            // Remove the popover
         vm.addTagModal.remove();
+        if (vm.sketchModal) vm.sketchModal.remove();
       });
 
       $scope.$on('enableSaveEdits', function (e, data) {
@@ -397,6 +410,10 @@
       $location.path('/app/tags/' + id);
     }
 
+    function eraseSketch() {
+      ImageFactory.eraseSketch();
+    }
+
     function goBack() {
       if ($ionicHistory.backView()) $ionicHistory.goBack();
       else $location.path('/app/image-basemaps');
@@ -421,6 +438,13 @@
     function saveEdits() {
       vm.saveEditsText = 'Saved Edits';
       MapDrawFactory.saveEdits(vm.clickedFeatureId);
+    }
+
+    function saveSketch() {
+      ImageFactory.saveSketch().finally(function () {
+        vm.sketchModal.hide();
+        updateFeatureLayer();
+      });
     }
 
     function startCalculateImageWidth() {

@@ -38,10 +38,12 @@
     vm.popover = {};
     vm.saveEditsText = 'Save Edits';
     vm.showSaveEditsBtns = {};
+    vm.sketchModal = {};
     vm.thisSpotWithThinSection = {};
 
     vm.closeModal = closeModal;
     vm.createTag = createTag;
+    vm.eraseSketch = eraseSketch;
     vm.getImages = getImages;
     vm.getImageSrc = getImageSrc;
     vm.goBack = goBack;
@@ -50,6 +52,7 @@
     vm.hasRelationships = hasRelationships;
     vm.isiOS = isiOS;
     vm.saveEdits = saveEdits;
+    vm.saveSketch = saveSketch;
     vm.stereonetSpots = stereonetSpots;
     vm.toggleImageSelected = toggleImageSelected;
     vm.toggleNesting = toggleNesting;
@@ -194,6 +197,11 @@
             ImageFactory.setCurrentImage({'image_type': 'photo'});
             ImageFactory.takePicture();
           }
+          else if (action === 'drawSketch') {
+            popup.hide();
+            vm.sketchModal.show();
+            ImageFactory.initializeSketch(SpotFactory.getSpotById(vm.clickedFeatureId));
+          }
           else if (action === 'more') {
             popup.hide();
             var spot = SpotFactory.getSpotById(vm.clickedFeatureId);
@@ -300,6 +308,10 @@
       }).then(function (modal) {
         vm.newNestModal = modal;
       });
+
+      ImageFactory.getSketchModal($scope).then(function (sketchModal) {
+        vm.sketchModal = sketchModal;
+      });
     }
 
     function createPageEvents() {
@@ -325,6 +337,7 @@
 
         vm.popover.remove();                       // Remove the popover
         vm.addTagModal.remove();
+        if (vm.sketchModal) vm.sketchModal.remove();
       });
 
       $scope.$on('enableSaveEdits', function (e, data, mapName) {
@@ -575,6 +588,10 @@
       $location.path('/app/tags/' + id);
     }
 
+    function eraseSketch() {
+      ImageFactory.eraseSketch();
+    }
+
     function getImages(spot) {
       if (!_.isEmpty(spot.properties.images)) return spot.properties.images;
       return [];
@@ -612,6 +629,13 @@
     function saveEdits(mapName) {
       vm.saveEditsText = 'Saved Edits';
       MapDrawFactory.saveEdits(vm.clickedFeatureId, mapName);
+    }
+
+    function saveSketch() {
+      ImageFactory.saveSketch().finally(function () {
+        vm.sketchModal.hide();
+        updateFeatureLayer();
+      });
     }
 
     function stereonetSpots() {

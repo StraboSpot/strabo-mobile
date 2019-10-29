@@ -446,10 +446,11 @@
     }
 
     // Upload load an image blob
-    function uploadImage(imageId, blob, encodedLogin) {
+    function uploadImage(imageProps, blob, encodedLogin) {
       var formdata = new FormData();
       formdata.append('image_file', blob, 'image.jpeg');
-      formdata.append('id', imageId);
+      formdata.append('id', imageProps.id);
+      if (imageProps.modified_timestamp) formdata.append('modified_timestamp', imageProps.modified_timestamp);
 
       var request = $http({
         'method': 'post',

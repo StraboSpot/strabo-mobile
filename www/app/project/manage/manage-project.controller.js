@@ -214,7 +214,7 @@
 
       var serverURL = RemoteServerFactory.getDbUrl();
       var lastOccur = serverURL.lastIndexOf("/");
-      var url = serverURL.substr(0,lastOccur)+'/pi/' + imageId;
+      var url = serverURL.substr(0, lastOccur) + '/pi/' + imageId;
 
       //var url = 'https://strabospot.org/pi/' + imageId; //change this to look at db location
       var devicePath = LocalStorageFactory.getDevicePath();
@@ -447,11 +447,10 @@
           LocalStorageFactory.exportProjectForAVO(vm.exportForAVOFileName).then(function (filePath) {
 
             var templateText = "";
-            if(LocalStorageFactory.getDeviceName() == "iOS"){
+            if (LocalStorageFactory.getDeviceName() == "iOS") {
               templateText = 'AVO data has been written to /StraboCSV/' + filePath + '.csv and data has been copied to clipboard.';
-            }else{
-              templateText = 'AVO data has been written to /StraboCSV/' + filePath + '.csv';
             }
+            else templateText = 'AVO data has been written to /StraboCSV/' + filePath + '.csv';
 
             $ionicPopup.alert({
               'title': 'Success!',
@@ -552,7 +551,7 @@
       LocalStorageFactory.gatherLocalDistributionFiles().then(function (entries) {
         $log.log("Distributed Files: ", entries);
         _.each(_.pluck(entries, 'name'), function (file) {
-          if(file.charAt(0)!='.'){
+          if (file.charAt(0) != '.') {
             vm.fileForDistributionNames.push(file);
           }
         });
@@ -831,8 +830,8 @@
           }
         }
 
-        function makeNextImageRequest(image) {
-          return shouldUploadImage(image.id)
+        function makeNextImageRequest(imageProps) {
+          return shouldUploadImage(imageProps)
             .then(getImageFile)
             .then(convertImageFile)
             .then(uploadImage)
@@ -849,60 +848,71 @@
             })
         }
 
-        function shouldUploadImage(imageId) {
-          return RemoteServerFactory.verifyImageExistance(imageId, UserFactory.getUser().encoded_login)
+        function shouldUploadImage(imageProps) {
+          return RemoteServerFactory.verifyImageExistance(imageProps.id, UserFactory.getUser().encoded_login)
             .then(function (response) {
-              $log.log('No need to upload image:', imageId, 'Server response:', response);
-              return Promise.reject('already exists');
+              if (response.data
+                && ((response.data.modified_timestamp && imageProps.modified_timestamp
+                  && imageProps.modified_timestamp > response.data.modified_timestamp)
+                || (!response.data.modified_timestamp && imageProps.modified_timestamp))) {
+                $log.log('Need to upload image:', imageProps.id);
+                imagesToUploadCount++;
+                notifyMessages.pop();
+                return Promise.resolve(imageProps);
+              }
+              else {
+                $log.log('No need to upload image:', imageProps.id, 'Server response:', response);
+                return Promise.reject('already exists');
+              }
             }, function () {
-              $log.log('Need to upload image:', imageId);
+              $log.log('Need to upload image:', imageProps.id);
               imagesToUploadCount++;
               notifyMessages.pop();
-              return Promise.resolve(imageId);
+              return Promise.resolve(imageProps);
             });
         }
 
-        function getImageFile(imageId) {
+        function getImageFile(imageProps) {
           outputMessage('Processing image...');
           $log.log('Getting file URI ...');
-          return ImageFactory.getImageFileURIById(imageId).then(function (src) {
+          return ImageFactory.getImageFileURIById(imageProps.id).then(function (src) {
             if (src !== 'img/image-not-found.png') {
-              $log.log('Got file URI for image', imageId, src);
-              return Promise.resolve([imageId, src]);
+              $log.log('Got file URI for image', imageProps.id, src);
+              return Promise.resolve([imageProps, src]);
             }
-            else return Promise.reject('Local file not found for image', imageId);
+            else return Promise.reject('Local file not found for image', imageProps.id);
           }, function () {
-            return Promise.reject('Local file not found for image', imageId);
+            return Promise.reject('Local file not found for image', imageProps.id);
           });
         }
 
         function convertImageFile(data) {
-          var imageId = data[0];
+          var imageProps = data[0];
           var src = data[1];
           $log.log('Converting file URI to Blob...');
           return HelpersFactory.fileURItoBlob(src).then(function (blob) {
-            $log.log('Finished converting file URI to blob for image', imageId);
-            return Promise.resolve([imageId, blob]);
+            $log.log('Finished converting file URI to blob for image', imageProps.id);
+            return Promise.resolve([imageProps, blob]);
           }, function () {
-            return Promise.reject('Error converting file URI to blob for image', imageId);
+            return Promise.reject('Error converting file URI to blob for image', imageProps.id);
           });
         }
 
         function uploadImage(data) {
-          var imageId = data[0];
+          var imageProps = data[0];
           var blob = data[1];
           notifyMessages.pop();
           var count = imagesUploadedCount + 1;
           outputMessage('Uploading image ' + count + '...');
-          $log.log('Uploading image', imageId, 'to server...');
-          return RemoteServerFactory.uploadImage(imageId, blob, UserFactory.getUser().encoded_login).then(function () {
+          $log.log('Uploading image', imageProps.id, 'to server...');
+          return RemoteServerFactory.uploadImage(imageProps, blob, UserFactory.getUser().encoded_login).then(function () {
             imagesUploadedCount++;
             notifyMessages.pop();
             outputMessage('Images Uploaded: ' + imagesUploadedCount);
-            $log.log('Finished uploading image', imageId, 'to the server');
+            $log.log('Finished uploading image', imageProps.id, 'to the server');
             return Promise.resolve();
           }, function () {
-            return Promise.reject('Error uploading image', imageId);
+            return Promise.reject('Error uploading image', imageProps.id);
           });
         }
 

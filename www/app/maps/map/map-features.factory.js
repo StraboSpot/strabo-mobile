@@ -49,6 +49,7 @@
       // Camera and Tags Icons
       var iconsHTML = '<div class="padding-top">';
       iconsHTML += typeof Camera !== 'undefined' ? '<a href="#" data-action="takePicture" class="button-icon icon button-small button-text-small ion-camera"></a>' : '';
+      iconsHTML += '<a href="#" data-action="drawSketch" class="button-icon icon button-small button-text-small ion-edit"></a>';
       iconsHTML += '</div>';
 
       // popup main content
