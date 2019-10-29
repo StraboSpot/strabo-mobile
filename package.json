@@ -36,7 +36,7 @@
     "angular-mocks": "^1.7.5",
     "bower": "^1.8.8",
     "cordova-sqlite-evcore-extbuild-free": "^0.9.10",
-    "eslint": "^1.10.3",
+    "eslint": "^4.18.2",
     "eslint-config-angular": "^0.4.0",
     "eslint-plugin-angular": "^0.12.0",
     "gulp": "^3.9.1",
