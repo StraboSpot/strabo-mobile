@@ -97,7 +97,7 @@ Generate Resources (icons and splash screens):
 
     Ionic:
     
-       Ionic CLI         : 5.2.3
+       Ionic CLI         : 5.4.4
        Ionic Framework   : ionic1 1.3.3
        @ionic/v1-toolkit : 1.0.15
     
