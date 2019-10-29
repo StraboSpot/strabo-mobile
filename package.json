@@ -42,6 +42,7 @@
     "gulp": "^3.9.1",
     "gulp-sass": "^4.0.2",
     "gulp-util": "^2.2.14",
+    "handlebars": ">=4.0.14",
     "jasmine-core": "^2.3.4",
     "karma": "^0.13.10",
     "karma-chrome-launcher": "^0.2.1",
