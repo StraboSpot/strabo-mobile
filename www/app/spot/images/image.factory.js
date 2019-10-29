@@ -19,6 +19,7 @@
     var images = [];
     var imageSources = {};
     var isReattachImage = false;
+    var isSketching = false;
     var lastX = undefined;
     var lastY = undefined;
     var takeMorePictures = false;
@@ -191,29 +192,32 @@
     }
 
     function handleEnd(ev) {
+      isSketching = false;
       //$log.log('end sketch', ev);
     }
 
     function handleMove(ev) {
-      // If on a scrollable sketch get scroll positions
-      var canvasContentArea = document.getElementById("canvasParent");
-      var scrollLeft = canvasContentArea.scrollLeft || 0;
-      var scrollTop = canvasContentArea.scrollTop || 0;
+      if (isSketching) {
+        // If on a scrollable sketch get scroll positions
+        var canvasContentArea = document.getElementById("canvasParent");
+        var scrollLeft = canvasContentArea.scrollLeft || 0;
+        var scrollTop = canvasContentArea.scrollTop || 0;
 
-      var currentX = ev.touches[0].pageX + scrollLeft;
-      var currentY = ev.touches[0].pageY - headerHeight + scrollTop;
+        var currentX = ev.pageX + scrollLeft || ev.touches[0].pageX + scrollLeft;
+        var currentY = ev.pageY - headerHeight + scrollTop || ev.touches[0].pageY - headerHeight + scrollTop;
 
-      var ctx = canvas.getContext("2d");
-      ctx.beginPath();
-      ctx.moveTo(lastX, lastY);
-      ctx.lineTo(currentX, currentY);
-      ctx.closePath();
-      ctx.strokeStyle = sketchStyle.COLOR;
-      ctx.lineWidth = sketchStyle.LINEWIDTH;
-      ctx.stroke();
+        var ctx = canvas.getContext("2d");
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(currentX, currentY);
+        ctx.closePath();
+        ctx.strokeStyle = sketchStyle.COLOR;
+        ctx.lineWidth = sketchStyle.LINEWIDTH;
+        ctx.stroke();
 
-      lastX = currentX;
-      lastY = currentY;
+        lastX = currentX;
+        lastY = currentY;
+      }
     }
 
     function handleStart(ev) {
@@ -223,8 +227,10 @@
       var scrollTop = canvasContentArea.scrollTop || 0;
 
       //$log.log('start sketch', ev);
-      lastX = ev.touches[0].pageX + scrollLeft;
-      lastY = ev.touches[0].pageY - headerHeight + scrollTop;
+      lastX = ev.pageX + scrollLeft || ev.touches[0].pageX + scrollLeft;
+      lastY = ev.pageY - headerHeight + scrollTop || ev.touches[0].pageY - headerHeight + scrollTop;
+
+      isSketching = true;
     }
 
     // Move an image from temporary directory to permanent device storage in StraboSpot/Images
@@ -499,6 +505,9 @@
       canvas.addEventListener('touchstart', handleStart, false);
       canvas.addEventListener('touchmove', handleMove, false);
       canvas.addEventListener('touchend', handleEnd, false);
+      canvas.addEventListener('mousedown', handleStart, false);
+      canvas.addEventListener('mousemove', handleMove, false);
+      canvas.addEventListener('mouseup', handleEnd, false);
 
       currentSpot = spot;
       images = currentSpot.properties.images || [];
