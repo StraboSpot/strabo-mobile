@@ -17,6 +17,7 @@
     var vm = this;
 
     var downloadErrors = false;
+    var neededEditedImagesIds = [];
     var notifyMessages = [];
     var uploadErrors = false;
     var user = UserFactory.getUser();
@@ -249,8 +250,8 @@
                 savedImagesCount++;
                 notifyMessages.pop();
                 outputMessage(
-                  'NEW Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
-                  '<br>NEW Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
+                  'NEW/MODIFIED Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImagesIds.length +
+                  '<br>NEW/MODIFIED Images Saved: ' + savedImagesCount + ' of ' + neededImagesIds.length);
               }, function (err) {
                 imagesFailedCount++;
                 $log.error('Error downloading Image', neededImageId, 'Error:', err);
@@ -502,7 +503,9 @@
         });
         return Promise.all(promises).then(function () {
           notifyMessages.pop();
-          outputMessage('NEW images to download: ' + neededImagesIds.length);
+          outputMessage('NEW images to download: ' + neededImagesIds.length +
+            '<br> MODIFIED images to download: ' + neededEditedImagesIds.length);
+          neededImagesIds = _.union(neededImagesIds, neededEditedImagesIds);
           return Promise.resolve(neededImagesIds);
         });
       }
@@ -682,9 +685,22 @@
       $ionicLoading.show({'template': notifyMessages.join('<br>')});
       _.each(spots, function (spot) {
         // Only need to save Spot if downloaded Spot differs from local Spot
-        if (!_.isEqual(spot, SpotFactory.getSpotById(spot.properties.id))) {
-          //$log.log('New/Modified Spot:', spot);
+        var savedSpot = SpotFactory.getSpotById(spot.properties.id);
+        if (!_.isEqual(spot, savedSpot)) {
+          $log.log('New/Modified Spot:', spot);
           spotsNeededCount++;
+
+          // Check for edited Images that need to be downloaded
+          if (spot.properties.images && savedSpot.properties.images) {
+            _.each(spot.properties.images, function (image) {
+              var editedImageProps = _.find(savedSpot.properties.images, function (savedImage) {
+                return savedImage.id && image.id && savedImage.id === image.id && image.modified_timestamp
+                  && savedImage.modified_timestamp && image.modified_timestamp > savedImage.modified_timestamp;
+              });
+              if (editedImageProps) neededEditedImagesIds.push(editedImageProps.id);
+            });
+          }
+
           var promise = saveSpot(spot, datasetId)
             .then(function () {
               spotsSavedCount++;
