@@ -6,10 +6,10 @@
     .controller('ImagesController', ImagesController);
 
   ImagesController.$inject = ['$ionicHistory', '$ionicPopover', '$ionicPopup', '$location', '$log', '$q', '$scope',
-    'DataModelsFactory', 'ImageFactory', 'HelpersFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
+    'DataModelsFactory', 'FormFactory', 'ImageFactory', 'HelpersFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
 
   function ImagesController($ionicHistory, $ionicPopover, $ionicPopup, $location, $log, $q, $scope, DataModelsFactory,
-                            ImageFactory, HelpersFactory, ProjectFactory, SpotFactory, IS_WEB) {
+                            FormFactory, ImageFactory, HelpersFactory, ProjectFactory, SpotFactory, IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -19,11 +19,12 @@
     vm.imageIdSelected = undefined;
     vm.images = [];
     vm.imagesToDisplay = [];
+    vm.imageTypeChoices = {};
     vm.isSelecting = false;
     vm.linkedImagesSets = [];
     vm.popover = {};
     vm.selectedImages = [];
-    vm.selectedType = 'all';
+    vm.selectedType = undefined;
     vm.showLinkedImagesSets = false;
 
     vm.deselectImages = deselectImages;
@@ -48,6 +49,7 @@
 
     function activate() {
       gatherImages();
+      setImageTypeChoices();
       createPopover();
       createPageEvents();
     }
@@ -107,6 +109,14 @@
       }
     }
 
+    function setImageTypeChoices() {
+      FormFactory.setForm('image');
+      var imageTypeField = _.findWhere(FormFactory.getForm().survey, {'name': 'image_type'});
+      vm.imageTypeChoices = _.filter(FormFactory.getForm().choices, function (choice) {
+        return choice['list_name'] === imageTypeField.type.split(" ")[1]
+      });
+    }
+
     function setSelectedStyle(image) {
       var imageElement = document.getElementById(image.id);
       imageElement.style.height = '150px';
@@ -140,7 +150,7 @@
     }
 
     function filterImagesType() {
-      if (vm.selectedType === 'all') vm.filteredImages = vm.images;
+      if (!vm.selectedType) vm.filteredImages = vm.images;
       else {
         vm.filteredImages = _.filter(vm.images, function (image) {
           return image.image_type === vm.selectedType;

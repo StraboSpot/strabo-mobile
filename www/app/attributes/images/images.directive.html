@@ -6,15 +6,9 @@
           <button class='button-icon ion-levels rotate-90'></button>
           Filter by Type
         </ion-label>
-        <select ng-model='vm.selectedType' ng-change='vm.filterImagesType()'>
-          <option value='all'>All</option>
-          <option value='photo'>Photo</option>
-          <option value='sketch'>Sketch</option>
-          <option value='thin_section'>Thin Section</option>
-          <option value='geological_cs'>Geological Cross Section</option>
-          <option value='geophysical_cs'>Geophysical Cross Section</option>
-          <option value='strat_section'>Stratigraphic Section</option>
-          <option value='other_image_ty'>Other</option>
+        <select ng-model='vm.selectedType' ng-change='vm.filterImagesType()'
+                ng-options="choice.name as choice.label for choice in vm.imageTypeChoices">
+          <option value=''>all</option>
         </select>
       </ion-input>
     </div>
@@ -22,7 +16,7 @@
       No Images found in any of the active Spots. Add a new Image from the Images Page within a Spot.
     </div>
     <div class='padding' ng-show='vm.images.length !== 0 && vm.filteredImages.length === 0'>
-      No images with the this type yet.
+      No images of this type yet.
     </div>
     <ul class='strabo-flex-container strabo-wrap' ng-show='vm.imagesToDisplay.length > 0'>
       <li class="strabo-images-flex-item" ng-repeat='image in vm.imagesToDisplay | orderBy:"name" track by image.id'
