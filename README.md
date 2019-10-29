@@ -79,7 +79,7 @@ Generate Resources (icons and splash screens):
     cordova-plugin-statusbar 2.4.2 "StatusBar"
     cordova-plugin-whitelist 1.3.3 "Whitelist"
     cordova-plugin-zip 3.1.0 "cordova-plugin-zip"
-    cordova-sqlite-storage 2.6.0 "Cordova sqlite storage plugin"
+    cordova-sqlite-storage 3.4.0 "Cordova sqlite storage plugin - cordova-sqlite-storage plugin version"
     io.phasr.cordova.plugin.itunesfilesharing 0.0.1 "cordova-plugin-itunesfilesharing"
     org.strabospot.clipboard 0.1.0 "Clipboard"
 
@@ -103,14 +103,14 @@ Generate Resources (icons and splash screens):
     
     Cordova:
     
-       Cordova CLI       : 8.1.2 (cordova-lib@8.1.1)
-       Cordova Platforms : android 7.0.0, browser 5.0.4
+       Cordova CLI       : 9.0.0 (cordova-lib@9.0.1)
+       Cordova Platforms : android 8.1.0, iOS 5.0.1, browser 5.0.4
        Cordova Plugins   : cordova-plugin-ionic-keyboard 2.1.3, cordova-plugin-ionic-webview 2.3.2, (and 16 other plugins)
     
     Utility:
     
        cordova-res : not installed
-       native-run  : not installed
+       native-run  : 0.2.9
     
     System:
     
@@ -201,7 +201,7 @@ To Deploy Updates:
 
 - `config.xml` must be within the `www` folder
 - `config.xml` must include plugins
-- `config.xml` must include `<preference name="phonegap-version" value="cli-5.2.0"/>`
+- `config.xml` must include `<preference name="phonegap-version" value="cli-9.0.0"/>`
 
 See [PhoneGap Build](https://build.phonegap.com).
 
