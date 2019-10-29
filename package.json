@@ -39,6 +39,7 @@
     "eslint": ">=4.18.2",
     "eslint-config-angular": "^0.4.0",
     "eslint-plugin-angular": "^0.12.0",
+    "fstream": ">=1.0.12",
     "gulp": "^3.9.1",
     "gulp-sass": "^4.0.2",
     "gulp-util": "^2.2.14",
