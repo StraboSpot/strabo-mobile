@@ -26,12 +26,15 @@
     vm.imageType = undefined;
     vm.imageTypeChoices = {};
     vm.otherImageType = undefined;
+    vm.filteredImages = [];
+    vm.filterSelectedType = undefined;
     vm.zoomMin = 1;
 
     vm.addImage = addImage;
     vm.closeModal = closeModal;
     vm.deleteImage = deleteImage;
     vm.editImage = editImage;
+    vm.filterImagesType = filterImagesType;
     vm.getImageSrc = getImageSrc;
     vm.goToImageBasemap = goToImageBasemap;
     vm.isWeb = isWeb;
@@ -80,7 +83,9 @@
           .then(function () {
             $ionicLoading.hide();
           });
+        setImageTypeChoices();
         checkImageType();     // Set default image type to 'photo' if no image type has been set
+        if (!_.isEmpty(vmParent.spot.properties.images)) vm.filteredImages = vmParent.spot.properties.images;
         if (IS_WEB) ionic.on('change', getFile, $document[0].getElementById('imageFile'));
       }
     }
@@ -116,10 +121,6 @@
     function getImageType() {
       var deferred = $q.defer(); // init promise
       vm.imageType = undefined;
-      var imageTypeField = _.findWhere(FormFactory.getForm().survey, {'name': 'image_type'});
-      vm.imageTypeChoices = _.filter(FormFactory.getForm().choices, function (choice) {
-        return choice['list_name'] === imageTypeField.type.split(" ")[1]
-      });
       var template = '<ion-radio ng-repeat="choice in vmChild.imageTypeChoices" ng-value="choice.name" ng-model="vmChild.imageType">{{ choice.label }}</ion-radio> ' +
         '<div ng-show="vmChild.imageType === \'other_image_ty\'">' +
         '<ion-input class="item item-input"> ' +
@@ -222,6 +223,13 @@
       return false;
     }
 
+    function setImageTypeChoices() {
+      var imageTypeField = _.findWhere(FormFactory.getForm().survey, {'name': 'image_type'});
+      vm.imageTypeChoices = _.filter(FormFactory.getForm().choices, function (choice) {
+        return choice['list_name'] === imageTypeField.type.split(" ")[1]
+      });
+    }
+
     /**
      * Public Functions
      */
@@ -257,13 +265,6 @@
       vmParent.data = {};
     }
 
-    function editImage() {
-      vm.imagePropertiesModal.hide().then(function() {
-        vmParent.sketchModal.show();
-        ImageFactory.editImage(vmParent.spot, vmParent.data);
-      });
-    }
-
     function deleteImage() {
       // ToDo: Do a check here if image is being used as a Strat Section overlay
       if (!isImageUsed(vmParent.data)) {
@@ -283,6 +284,22 @@
             vmParent.data = {};
             vm.imagePropertiesModal.hide();
           }
+        });
+      }
+    }
+
+    function editImage() {
+      vm.imagePropertiesModal.hide().then(function() {
+        vmParent.sketchModal.show();
+        ImageFactory.editImage(vmParent.spot, vmParent.data);
+      });
+    }
+
+    function filterImagesType() {
+      if (!vm.filterSelectedType) vm.filteredImages = vmParent.spot.properties.images;
+      else {
+        vm.filteredImages = _.filter(vmParent.spot.properties.images, function (image) {
+          return image.image_type === vm.filterSelectedType;
         });
       }
     }
