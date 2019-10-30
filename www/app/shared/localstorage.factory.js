@@ -322,8 +322,8 @@
           deferred.resolve(fullPath + '/' + fileName);
         },
         function (writeError) {
-          $log.error('Error writing file!');
-          deferred.reject(fullPath + '/' + fileName)
+          $log.error('Error writing file!', writeError);
+          deferred.reject(fullPath + '/' + fileName);
         }
       );
       return deferred.promise;
@@ -1433,7 +1433,9 @@
     function saveImageToFileSystem(data, fileName) {
       var devicePath = getDevicePath();
       var imagesPath = devicePath + imagesDirectory;
-      return exportDataWithoutCheck(imagesPath, data, fileName);
+      return checkImagesDir().then(function () {
+        return exportDataWithoutCheck(imagesPath, data, fileName);
+      });
     }
 
     function saveZip(data, fileName) {
