@@ -691,7 +691,7 @@
           spotsNeededCount++;
 
           // Check for edited Images that need to be downloaded
-          if (spot.properties.images && savedSpot.properties.images) {
+          if (savedSpot && spot.properties.images && savedSpot.properties.images) {
             _.each(spot.properties.images, function (image) {
               var editedImageProps = _.find(savedSpot.properties.images, function (savedImage) {
                 return savedImage.id && image.id && savedImage.id === image.id && image.modified_timestamp
