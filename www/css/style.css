@@ -1039,7 +1039,11 @@ Spots Page
   background-color: #fcbf90;
 }
 
-.lithologies-on {
+.sed-interval-on {
+  background-color: #eee0fc;
+}
+
+.sed-lithologies-on {
   background-color: #f2a9fc;
 }
 
