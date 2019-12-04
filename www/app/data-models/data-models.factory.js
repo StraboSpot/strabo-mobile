@@ -216,6 +216,12 @@
           'choices': {},
           'choices_file': 'app/data-models/sed/interpretations-surfaces-choices.csv'
         },
+        'interval': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/interval-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/interval-choices.csv'
+        },
         'lithologies_basics': {
           'survey': {},
           'survey_file': 'app/data-models/sed/lithologies-basics-survey.csv',
@@ -227,6 +233,12 @@
           'survey_file': 'app/data-models/sed/lithologies-composition-survey.csv',
           'choices': {},
           'choices_file': 'app/data-models/sed/lithologies-composition-choices.csv'
+        },
+        'lithologies_lithology': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/lithologies-lithology-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/lithologies-lithology-choices.csv'
         },
         'lithologies_stratification': {
           'survey': {},
@@ -448,7 +460,7 @@
           'orientation_data': [],
           'pet': {'minerals': [], 'reactions': []},
           'samples': [],
-          'sed': {'lithologies': {}, 'structures': {}, 'interpretations': {}},
+          'sed': {'interval': {}, 'lithologies': {}, 'structures': {}, 'interpretations': {}},
           'time': 'datetime',
           'trace': {}
         }
@@ -468,6 +480,7 @@
         'sed_interpretations_environment': dataModels.sed.interpretations_environment,
         'sed_interpretations_facies_and_process': dataModels.sed.interpretations_facies_and_process,
         'sed_interpretations_surfaces': dataModels.sed.interpretations_surfaces,
+        'sed_interval': dataModels.sed.interval,
         'sed_lithologies_composition': dataModels.sed.lithologies_composition,
         'sed_lithologies_basics': dataModels.sed.lithologies_basics,
         'sed_lithologies_stratification': dataModels.sed.lithologies_stratification,
@@ -512,6 +525,9 @@
           description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number ' +
             'appended (= 14 digit id); REQUIRED';
           spotDataModel.properties[key].push(description);
+        }
+        else if (key === 'sed_interval') {
+          _.extend(spotDataModel.properties.sed.interval, description);
         }
         else if (key === 'sed_lithologies_composition' || key === 'sed_lithologies_basics'
           || key === 'sed_lithologies_stratification' || key === 'sed_lithologies_texture') {

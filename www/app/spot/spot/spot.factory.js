@@ -33,6 +33,7 @@
       {'value': 'tags', 'label': 'Tags', 'path': 'tags'},
       {'value': 'data', 'label': 'Data', 'path': 'data'},
       {'value': 'strat_section', 'label': 'Strat Section', 'path': 'strat-section'},
+      {'value': 'sed_interval', 'label': 'Sed Interval', 'path': 'sed-interval'},
       {'value': 'sed_lithologies', 'label': 'Sed Lithologies', 'path': 'sed-lithologies'},
       {'value': 'sed_structures', 'label': 'Sed Structures', 'path': 'sed-structures'},
       {'value': 'sed_interpretations', 'label': 'Sed Interpretations', 'path': 'sed-interpretations'},

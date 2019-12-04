@@ -1,0 +1,7 @@
+type,name,label,required,calculation
+start,start,,,
+end,end,,,
+decimal,interval_thickness,Interval Thickness,false,
+select_one ch4zy56,thickness_units,Thickness Units,false,
+select_one du1tq15,interval_type,Type of Interval,false,
+calculate,__version__,,,'v4m2ot7DEUH8upxgTmtnKe'

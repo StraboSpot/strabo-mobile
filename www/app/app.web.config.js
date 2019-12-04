@@ -99,6 +99,7 @@
       {'state': 'samples', 'template': 'samples/samples-tab', 'controller': 'Samples'},
       {'state': 'spot', 'template': 'spot-tab/spot-tab', 'controller': 'Spot'},
       {'state': 'sed-interpretations', 'template': 'sed/interpretations/interpretations-tab', 'controller': 'SedInterpretations'},
+      {'state': 'sed-interval', 'template': 'sed/interval/interval-tab', 'controller': 'SedInterval'},
       {'state': 'sed-lithologies', 'template': 'sed/lithologies/lithologies-tab', 'controller': 'SedLithologies'},
       {'state': 'sed-structures', 'template': 'sed/structures/structures-tab', 'controller': 'SedStructures'},
       {'state': 'strat-section', 'template': 'sed/strat-section/strat-section-tab', 'controller': 'StratSection'},
