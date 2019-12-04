@@ -192,65 +192,53 @@
           'choices': {},
           'choices_file': 'app/data-models/sed/add-interval-choices.csv'
         },
-        'architecture': {
+        'interpretations_architecture': {
           'survey': {},
           'survey_file': 'app/data-models/sed/interpretations-architecture-survey.csv',
           'choices': {},
           'choices_file': 'app/data-models/sed/interpretations-architecture-choices.csv'
         },
-        'biogenic_structures': {
-          'survey': {},
-          'survey_file': 'app/data-models/sed/biogenic-structures-survey.csv',
-          'choices': {},
-          'choices_file': 'app/data-models/sed/biogenic-structures-choices.csv'
-        },
-        'chemogenic_structures': {
-          'survey': {},
-          'survey_file': 'app/data-models/sed/chemogenic-structures-survey.csv',
-          'choices': {},
-          'choices_file': 'app/data-models/sed/chemogenic-structures-choices.csv'
-        },
-        'composition': {
-          'survey': {},
-          'survey_file': 'app/data-models/sed/composition-survey.csv',
-          'choices': {},
-          'choices_file': 'app/data-models/sed/composition-choices.csv'
-        },
-        'environment': {
+        'interpretations_environment': {
           'survey': {},
           'survey_file': 'app/data-models/sed/interpretations-environment-survey.csv',
           'choices': {},
           'choices_file': 'app/data-models/sed/interpretations-environment-choices.csv'
         },
-        'facies_and_process': {
+        'interpretations_facies_and_process': {
           'survey': {},
           'survey_file': 'app/data-models/sed/interpretations-facies-and-process-survey.csv',
           'choices': {},
           'choices_file': 'app/data-models/sed/interpretations-facies-and-process-choices.csv'
         },
-        'interval_basics': {
+        'interpretations_surfaces': {
           'survey': {},
-          'survey_file': 'app/data-models/sed/interval-basics-survey.csv',
+          'survey_file': 'app/data-models/sed/interpretations-surfaces-survey.csv',
           'choices': {},
-          'choices_file': 'app/data-models/sed/interval-basics-choices.csv'
+          'choices_file': 'app/data-models/sed/interpretations-surfaces-choices.csv'
         },
-        'stratification': {
+        'lithologies_basics': {
           'survey': {},
-          'survey_file': 'app/data-models/sed/stratification-survey.csv',
+          'survey_file': 'app/data-models/sed/lithologies-basics-survey.csv',
           'choices': {},
-          'choices_file': 'app/data-models/sed/stratification-choices.csv'
+          'choices_file': 'app/data-models/sed/lithologies-basics-choices.csv'
         },
-        'pedogenic_structures': {
+        'lithologies_composition': {
           'survey': {},
-          'survey_file': 'app/data-models/sed/pedogenic-structures-survey.csv',
+          'survey_file': 'app/data-models/sed/lithologies-composition-survey.csv',
           'choices': {},
-          'choices_file': 'app/data-models/sed/pedogenic-structures-choices.csv'
+          'choices_file': 'app/data-models/sed/lithologies-composition-choices.csv'
         },
-        'physical_structures': {
+        'lithologies_stratification': {
           'survey': {},
-          'survey_file': 'app/data-models/sed/physical-structures-survey.csv',
+          'survey_file': 'app/data-models/sed/lithologies-stratification-survey.csv',
           'choices': {},
-          'choices_file': 'app/data-models/sed/physical-structures-choices.csv'
+          'choices_file': 'app/data-models/sed/lithologies-stratification-choices.csv'
+        },
+        'lithologies_texture': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/lithologies-texture-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/lithologies-texture-choices.csv'
         },
         'strat_section': {
           'survey': {},
@@ -258,17 +246,29 @@
           'choices': {},
           'choices_file': 'app/data-models/sed/strat-section-choices.csv'
         },
-        'surfaces': {
+        'structures_biogenic': {
           'survey': {},
-          'survey_file': 'app/data-models/sed/interpretations-surfaces-survey.csv',
+          'survey_file': 'app/data-models/sed/structures-biogenic-survey.csv',
           'choices': {},
-          'choices_file': 'app/data-models/sed/interpretations-surfaces-choices.csv'
+          'choices_file': 'app/data-models/sed/structures-biogenic-choices.csv'
         },
-        'texture': {
+        'structures_chemogenic': {
           'survey': {},
-          'survey_file': 'app/data-models/sed/texture-survey.csv',
+          'survey_file': 'app/data-models/sed/structures-chemogenic-survey.csv',
           'choices': {},
-          'choices_file': 'app/data-models/sed/texture-choices.csv'
+          'choices_file': 'app/data-models/sed/structures-chemogenic-choices.csv'
+        },
+        'structures_pedogenic': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/structures-pedogenic-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/structures-pedogenic-choices.csv'
+        },
+        'structures_physical': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/structures-physical-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/structures-physical-choices.csv'
         }
       },
       'surface_feature': {
@@ -464,22 +464,23 @@
         'planar_orientation': dataModels.orientation_data.planar_orientation,
         'tabular_orientation': dataModels.orientation_data.tabular_orientation,
         'samples': dataModels.sample,
-        'sed_composition': dataModels.sed.composition,
-        'sed_interval_basics': dataModels.sed.interval_basics,
-        'sed_stratification': dataModels.sed.stratification,
-        'sed_texture': dataModels.sed.texture,
-        'sed_biogenic_structures': dataModels.sed.biogenic_structures,
-        'sed_chemogenic_structures': dataModels.sed.chemogenic_structures,
-        'sed_pedogenic_structures': dataModels.sed.pedogenic_structures,
-        'sed_physical_structures': dataModels.sed.physical_structures,
-        'sed_facies_and_process': dataModels.sed.facies_and_process,
-        'sed_environment': dataModels.sed.environment,
-        'sed_surfaces': dataModels.sed.surfaces,
-        'sed_architecture': dataModels.sed.architecture,
+        'sed_interpretations_architecture': dataModels.sed.interpretations_architecture,
+        'sed_interpretations_environment': dataModels.sed.interpretations_environment,
+        'sed_interpretations_facies_and_process': dataModels.sed.interpretations_facies_and_process,
+        'sed_interpretations_surfaces': dataModels.sed.interpretations_surfaces,
+        'sed_lithologies_composition': dataModels.sed.lithologies_composition,
+        'sed_lithologies_basics': dataModels.sed.lithologies_basics,
+        'sed_lithologies_stratification': dataModels.sed.lithologies_stratification,
+        'sed_lithologies_texture': dataModels.sed.lithologies_texture,
+        'sed_structures_biogenic': dataModels.sed.structures_biogenic,
+        'sed_structures_chemogenic': dataModels.sed.structures_chemogenic,
+        'sed_structures_pedogenic': dataModels.sed.structures_pedogenic,
+        'sed_structures_physical': dataModels.sed.structures_physical,
         'trace': dataModels.trace,
         'pet_rock': dataModels.pet.rock,
         'pet_minerals': dataModels.pet.minerals,
-        'pet_reactions': dataModels.pet.reactions};
+        'pet_reactions': dataModels.pet.reactions
+      };
       _.each(models, function (model, key) {
         var description = {};
         _.each(model.survey, function (field) {
@@ -512,16 +513,16 @@
             'appended (= 14 digit id); REQUIRED';
           spotDataModel.properties[key].push(description);
         }
-        else if (key === 'sed_composition' || key === 'sed_interval_basics' || key === 'sed_stratification' ||
-          key === 'sed_texture') {
+        else if (key === 'sed_lithologies_composition' || key === 'sed_lithologies_basics'
+          || key === 'sed_lithologies_stratification' || key === 'sed_lithologies_texture') {
           _.extend(spotDataModel.properties.sed.lithologies, description);
         }
-        else if (key === 'sed_biogenic_structures' || key === 'sed_chemogenic_structures' ||
-          key === 'sed_pedogenic_structures' || key === 'sed_physical_structures') {
+        else if (key === 'sed_structures_biogenic' || key === 'sed_structures_chemogenic' ||
+          key === 'sed_structures_pedogenic' || key === 'sed_structures_physical') {
           _.extend(spotDataModel.properties.sed.structures, description);
         }
-        else if (key === 'sed_facies_and_process' || key === 'sed_environment' || key === 'sed_surfaces' ||
-          key === 'sed_architecture') {
+        else if (key === 'sed_interpretations_facies_and_process' || key === 'sed_interpretations_environment'
+          || key === 'sed_interpretations_surfaces' || key === 'sed_interpretations_architecture') {
           _.extend(spotDataModel.properties.sed.interpretations, description);
         }
         else if (key === 'trace') _.extend(spotDataModel.properties[key], description);

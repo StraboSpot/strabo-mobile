@@ -13,7 +13,7 @@
 
     var thisTabName = 'sed-lithologies';
 
-    vm.lithologyForm = 'interval_basics';
+    vm.lithologyForm = 'lithologies_basics';
     vm.showStratInterval = false;
 
     vm.switchLithologyForm = switchLithologyForm;
@@ -46,7 +46,7 @@
     function loadTab(state) {
       vmParent.loadTab(state);     // Need to load current state into parent
       if (vmParent.spot && !_.isEmpty(vmParent.spot)) {
-        FormFactory.setForm('sed', 'interval_basics');
+        FormFactory.setForm('sed', 'lithologies_basics');
         if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.lithologies) {
           $log.log('Sed Lithologies:', vmParent.spot.properties.sed.lithologies);
           vmParent.data = vmParent.spot.properties.sed.lithologies;

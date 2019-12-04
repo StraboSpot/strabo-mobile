@@ -13,7 +13,7 @@
 
     var thisTabName = 'sed-structures';
 
-    vm.structuresForm = 'physical_structures';
+    vm.structuresForm = 'structures_physical';
 
     vm.switchForm = switchForm;
 
@@ -75,7 +75,7 @@
     function loadTab(state) {
       vmParent.loadTab(state);     // Need to load current state into parent
       if (vmParent.spot && !_.isEmpty(vmParent.spot)) {
-        FormFactory.setForm('sed', 'physical_structures');
+        FormFactory.setForm('sed', 'structures_physical');
         getStructuresFromLithologies();
         if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.structures) {
           $log.log('Sed Structures:', vmParent.spot.properties.sed.structures);

@@ -1,13 +1,13 @@
 <div>
   <div class='button-bar'>
-    <button class='button' ng-class="{'button-positive': vmChild.interpretationsForm === 'facies_and_process'}"
-            ng-click='vmChild.switchForm("facies_and_process")'>Facies & Process</button>
-    <button class='button' ng-class="{'button-positive': vmChild.interpretationsForm === 'environment'}"
-            ng-click='vmChild.switchForm("environment")'>Environment</button>
-    <button class='button' ng-class="{'button-positive': vmChild.interpretationsForm === 'surfaces'}"
-            ng-click='vmChild.switchForm("surfaces")'>Surfaces</button>
-    <button class='button' ng-class="{'button-positive': vmChild.interpretationsForm === 'architecture'}"
-            ng-click='vmChild.switchForm("architecture")'>Architecture</button>
+    <button class='button' ng-class="{'button-positive': vmChild.interpretationsForm === 'interpretations_facies_and_process'}"
+            ng-click='vmChild.switchForm("interpretations_facies_and_process")'>Facies & Process</button>
+    <button class='button' ng-class="{'button-positive': vmChild.interpretationsForm === 'interpretations_environment'}"
+            ng-click='vmChild.switchForm("interpretations_environment")'>Environment</button>
+    <button class='button' ng-class="{'button-positive': vmChild.interpretationsForm === 'interpretations_surfaces'}"
+            ng-click='vmChild.switchForm("interpretations_surfaces")'>Surfaces</button>
+    <button class='button' ng-class="{'button-positive': vmChild.interpretationsForm === 'interpretations_architecture'}"
+            ng-click='vmChild.switchForm("interpretations_architecture")'>Architecture</button>
   </div>
   <form name='straboForm' novalidate=''>
     <auto-fields/>
