@@ -101,10 +101,6 @@
       _.each(vmParent.data.minerals, function (mineral, i) {
         if (mineral.modal) delete vmParent.data.minerals[i].modal;
       });
-      vmParent.saveSpot().then(function () {
-        vmParent.spotChanged = false;
-        gatherTernaryValues();
-      });
     }
 
     function createModal() {
