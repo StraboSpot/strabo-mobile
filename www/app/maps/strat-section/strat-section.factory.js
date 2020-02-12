@@ -60,10 +60,10 @@
       };
 
       // If interbedded need to create a geometry collection with polygons for each bed
-      if ((character === 'interbedded' || character === 'bed_mixed_lit') && bedding && bedding.beds && bedding.beds[1] && (bedding.beds[1].avg_thickness && bedding.beds[1].avg_thickness > 0 ||
-        (bedding.beds[1].max_thickness && bedding.beds[1].max_thickness > 0
-          && bedding.beds[1].min_thickness && bedding.beds[1].min_thickness > 0)) &&
-        bedding.interbed_proportion > 0) {
+      if ((character === 'interbedded' || character === 'bed_mixed_lit') && bedding && bedding.beds &&
+        bedding.beds[1] && (bedding.beds[1].avg_thickness && bedding.beds[1].avg_thickness > 0 ||
+          (bedding.beds[1].max_thickness && bedding.beds[1].max_thickness > 0 && bedding.beds[1].min_thickness &&
+            bedding.beds[1].min_thickness > 0)) && bedding.interbed_proportion > 0) {
         /* Per Casey: Don't use the data from primary lithology thickness for plotting since it, along with
         // interval thickness, proportion and interbed thickness are too many data numbers to plot all faithfully
         var y1 = .2;
@@ -241,8 +241,8 @@
       var i, intervalWidth = defaultWidth;
       // Unexposed/Covered
       if (character === 'unexposed_cove' || character === 'not_measured') intervalWidth = (0 + 1) * xInterval; // Same as clay
-      else if (character === 'bed' || character === 'bed_mixed_lit' || character === 'interbedded' ||
-        character === 'package_succe') {
+      else if (lithologies[n] && (character === 'bed' || character === 'bed_mixed_lit' || character === 'interbedded' ||
+        character === 'package_succe')) {
         var stratSectionSettings = getStratSectionSettings(stratSectionId);
         // Weathering Column
         if (stratSectionSettings.column_profile === 'weathering_pro') {
