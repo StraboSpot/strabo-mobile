@@ -559,40 +559,54 @@
             }
           }
           else if (vm.stateName.split('-')[0] === 'app.spotTab.sed') {
-            if (vm.stateName === 'app.spotTab.sed-bedding' && !_.isEmpty(vm.data)) {
-              if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
-              if (!vm.spot.properties.sed.bedding) vm.spot.properties.sed.bedding = {};
-              _.extend(vm.spot.properties.sed.bedding, vm.dataOutsideForm);
-              if (!_.isEmpty(vm.data)) {
-                if (!vm.spot.properties.sed.bedding.beds) vm.spot.properties.sed.bedding.beds = [];
-                vm.spot.properties.sed.bedding.beds[vm.lithologyNum] = vm.data;
+            var sed = vm.spot.properties.sed ? vm.spot.properties.sed : {};
+            if (vm.stateName === 'app.spotTab.sed-bedding') {
+              if (_.isEmpty(vm.data)) {
+                if (sed.bedding && sed.bedding.beds && sed.bedding.beds[vm.lithologyNum]) {
+                  if (vm.lithologyNum === 0) sed.bedding.beds[0] = {};
+                  else sed.bedding.beds.pop();
+                  if (sed.bedding.beds.length === 1 && _.isEmpty(sed.bedding.beds[0])) {
+                    delete sed.bedding.beds;
+                    if (_.isEmpty(vm.dataOutsideForm)) delete sed.bedding;
+                  }
+                }
+              }
+              else {
+                if (!sed.bedding) sed.bedding = {};
+                _.extend(sed.bedding, vm.dataOutsideForm);
+                if (!sed.bedding.beds) sed.bedding.beds = [];
+                if (vm.lithologyNum === 1 && !sed.bedding.beds[0]) sed.bedding.beds[0] = {};
+                sed.bedding.beds[vm.lithologyNum] = vm.data;
               }
             }
             else if (vm.stateName === 'app.spotTab.sed-interval' && !_.isEmpty(vm.data)) {
               if (vm.data.interval_type) {
-                vm.spot.properties.sed.character = vm.data.interval_type;
+                sed.character = vm.data.interval_type;
                 delete vm.data.interval_type;
               }
               if (!_.isEmpty(vm.data)) {
                 if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
-                if (!vm.spot.properties.sed.interval) vm.spot.properties.sed.interval = {};
-                vm.spot.properties.sed.interval = vm.data;
+                if (!sed.interval) sed.interval = {};
+                sed.interval = vm.data;
               }
             }
             else if (vm.stateName === 'app.spotTab.sed-lithologies' && !_.isEmpty(vm.data)) {
               if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
-              if (!vm.spot.properties.sed.lithologies) vm.spot.properties.sed.lithologies = [];
-              vm.spot.properties.sed.lithologies[vm.lithologyNum] = vm.data;
+              if (!sed.lithologies) sed.lithologies = [];
+              if (vm.lithologyNum === 1 && !sed.lithologies[0]) sed.lithologies[0] = {};
+              sed.lithologies[vm.lithologyNum] = vm.data;
             }
             else if (vm.stateName === 'app.spotTab.sed-structures' && !_.isEmpty(vm.data)) {
               if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
-              if (!vm.spot.properties.sed.structures) vm.spot.properties.sed.structures = [];
-              vm.spot.properties.sed.structures[vm.lithologyNum] = vm.data;
+              if (!sed.structures) sed.structures = [];
+              if (vm.lithologyNum === 1 && !sed.structures[0]) sed.structures[0] = {};
+              sed.structures[vm.lithologyNum] = vm.data;
             }
             else if (vm.stateName === 'app.spotTab.sed-interpretations' && !_.isEmpty(vm.data)) {
               if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
-              if (!vm.spot.properties.sed.interpretations) vm.spot.properties.sed.interpretations = [];
-              vm.spot.properties.sed.interpretations[vm.lithologyNum] = vm.data;
+              if (!sed.interpretations) sed.interpretations = [];
+              if (vm.lithologyNum === 1 && !sed.interpretations[0]) sed.interpretations[0] = {};
+              sed.interpretations[vm.lithologyNum] = vm.data;
             }
             if (vm.spot.properties.sed && !FormFactory.validateSedData(vm.spot)) return $q.reject(null);
           }
