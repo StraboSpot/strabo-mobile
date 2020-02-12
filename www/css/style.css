@@ -392,6 +392,11 @@ Buttons
   border: none;
 }
 
+.button-disabled {
+  background-color: #fcfcfc;
+  color: lightgray;
+}
+
 /*--------------------
 Orientation Tab Style
 --------------------*/
@@ -1033,6 +1038,10 @@ Spots Page
 
 .strat-section-on {
   background-color: #9bfdea;
+}
+
+.sed-bedding-on {
+  background-color: #fc423d;
 }
 
 .sed-interpretations-on {

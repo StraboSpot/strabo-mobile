@@ -1,0 +1,48 @@
+list_name,name,label
+lp9ir83,high_energy,high energy
+lp9ir83,low_energy,low energy
+lp9ir83,variable_energ,variable energy
+lp9ir83,other,Other
+nr37l64,waves,waves
+nr37l64,current,current
+nr37l64,combined_flow,combined flow
+nr37l64,bed_load,bed load
+nr37l64,suspended_load,suspended load
+nr37l64,turbidity_curr,turbidity current
+nr37l64,debris_flow,debris flow
+nr37l64,density_flow,density flow
+nr37l64,mud_slurry,mud slurry
+nr37l64,hypopycnal_flo,hypopycnal flow
+nr37l64,hyperpycnal_fl,hyperpycnal flow
+nr37l64,mass_transport,mass transport
+nr37l64,tides,tides
+nr37l64,tidal_rhythmit,tidal rhythmite
+nr37l64,tidal_bundle,tidal bundle
+nr37l64,wind,wind
+nr37l64,ice,ice
+nr37l64,pyroclastic_fl,pyroclastic flow
+nr37l64,ground_surge,ground surge
+nr37l64,base_surge,base surge
+nr37l64,other,other
+fe1pj82,liquefaction,liquefaction
+fe1pj82,granular,granular
+fe1pj82,mass_flow,mass flow
+fe1pj82,other,other
+kk8ql20,ice_rafting,ice rafting
+kk8ql20,till,till
+kk8ql20,moraine,moraine
+kk8ql20,storm,storm
+kk8ql20,hemipelagic,hemipelagic
+kk8ql20,desiccation,desiccation
+kk8ql20,river,river
+kk8ql20,earthquake,earthquake
+kk8ql20,flood,flood
+kk8ql20,impact,impact
+kk8ql20,evaporation,evaporation
+kk8ql20,bio_precipitat,bio-precipitation
+kk8ql20,oxidation_redu,oxidation/reduction
+kk8ql20,pedogenic,pedogenic
+kk8ql20,biomediated,biomediated
+kk8ql20,microbial,microbial
+kk8ql20,bedform_migrat,bedform migration
+kk8ql20,other,other

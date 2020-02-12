@@ -1,217 +1,4 @@
 list_name,name,label,order
-th1pp14,bed,bed,
-th1pp14,interbedded,interbedded,
-th1pp14,package_succe,package (succession of beds),
-th1pp14,unexposed_cove,unexposed/covered,
-eb2oc45,siliciclastic,siliciclastic,
-eb2oc45,limestone,limestone,1
-eb2oc45,dolomite,dolomite,2
-eb2oc45,organic_coal,organic/coal,3
-eb2oc45,evaporite,evaporite,4
-eb2oc45,chert,chert,5
-eb2oc45,ironstone,ironstone,6
-eb2oc45,phosphatic,phosphatic,7
-eb2oc45,volcaniclastic,volcaniclastic,8
-qf3ff03,mudstone,mudstone,
-qf3ff03,wackestone,wackestone,
-qf3ff03,packstone,packstone,
-qf3ff03,grainstone,grainstone,
-qf3ff03,boundstone,boundstone,
-qf3ff03,cementstone,cementstone,
-qf3ff03,recrystallized,recrystallized,
-qf3ff03,floatstone,floatstone,
-qf3ff03,rudstone,rudstone,
-qf3ff03,framestone,framestone,
-qf3ff03,bafflestone,bafflestone,
-qf3ff03,bindstone,bindstone,
-uf03r86,mudstone,mudstone,
-uf03r86,wackestone,wackestone,1
-uf03r86,packstone,packstone,2
-uf03r86,grainstone,grainstone,3
-uf03r86,floatstone,floatstone,4
-uf03r86,rudstone,rudstone,5
-uf03r86,boundstone,boundstone,6
-uf03r86,framestone,framestone,7
-uf03r86,bindstone,bindstone,8
-uf03r86,bafflestone,bafflestone,9
-uf03r86,cementstone,cementstone,10
-uf03r86,recrystallized,recrystallized,11
-js5zp52,siliciclastic,siliciclastic,
-js5zp52,limestone,limestone,1
-js5zp52,dolomite,dolomite,2
-js5zp52,organic_coal,organic/coal,3
-js5zp52,evaporite,evaporite,4
-js5zp52,chert,chert,5
-js5zp52,ironstone,ironstone,6
-js5zp52,phosphatic,phosphatic,7
-js5zp52,volcaniclastic,volcaniclastic,8
-js5zp52,other,other,9
-cv5pj14,mudstone,mudstone,
-cv5pj14,wackestone,wackestone,
-cv5pj14,packstone,packstone,
-cv5pj14,grainstone,grainstone,
-cv5pj14,boundstone,boundstone,
-cv5pj14,cementstone,cementstone,
-cv5pj14,recrystallized,recrystallized,
-cv5pj14,floatstone,floatstone,
-cv5pj14,rudstone,rudstone,
-cv5pj14,framestone,framestone,
-cv5pj14,bafflestone,bafflestone,
-cv5pj14,bindstone,bindstone,
-mj2lc26,skeletal,skeletal,
-mj2lc26,mud,mud,
-mj2lc26,cement,cement,
-mj2lc26,intraclast,intraclast,
-mj2lc26,ooid,ooid,
-mj2lc26,peloid,peloid,
-mj2lc26,pellet,pellet,
-mj2lc26,oncoid,oncoid,
-mj2lc26,pisoid,pisoid,
-mj2lc26,coated_grain,coated grain,
-mj2lc26,grapestone,grapestone,
-mj2lc26,stromatolite,stromatolite,
-mj2lc26,thrombolite,thrombolite,
-mj2lc26,dendrolite,dendrolite,
-mj2lc26,leiolite,leiolite,
-mj2lc26,giant_ooid,giant ooid,
-mj2lc26,seafloor_precipitate,seafloor precipitate,
-mj2lc26,molar_tooth,molar tooth,
-mj2lc26,other,other,
-zo49i95,sandstone,sandstone,
-zo49i95,siltstone,siltstone,1
-zo49i95,shale,shale,2
-zo49i95,mudstone,mudstone,3
-zo49i95,claystone,claystone,4
-zo49i95,conglomerate,conglomerate,5
-zo49i95,breccia,breccia,6
-yv8kw79,dott,dott,
-yv8kw79,folk_mcbride,folk/mcbride,
-uh8oy57,quartz_arenite,quartz arenite,
-uh8oy57,arkosic_arenit,feldspathic arenite,
-uh8oy57,subarkose_aren,subarkose arenite,
-uh8oy57,lithic_arenite,lithic arenite,
-uh8oy57,sublitharenite,sublitharenite,
-uh8oy57,quartz_wacke,quartz wacke,
-uh8oy57,lithic_wacke,lithic wacke,
-uh8oy57,feldspathic_wa,feldspathic wacke,
-vw5id84,quartzarenite,quartzarenite,
-vw5id84,subarkose,subarkose,
-vw5id84,sublitharenite,sublitharenite,
-vw5id84,arkose,arkose,
-vw5id84,lithic_arkose,lithic arkose,
-vw5id84,arkosic_lithar,arkosic litharenite,
-vw5id84,litharenite,litharenite,
-cv9qv11,rip_up_clasts,rip-up clasts,
-cv9qv11,wood,wood,
-cv9qv11,fossils,fossils,
-cv9qv11,other,other,
-kg6zo76,siliceous_muds,siliceous mudstone,0
-kg6zo76,siliceous_calc,siliceous calcareous mudstone,1
-kg6zo76,siliceous_volc,siliceous volcaniclastic mudstone,2
-kg6zo76,calcareous_mud,calcareous mudstone,3
-kg6zo76,black_shale,black shale,4
-kg6zo76,red_clay,red clay,5
-kg6zo76,red_mudstone,red mudstone,6
-kg6zo76,green_mudstone,green mudstone,7
-kg6zo76,variegated_mud,variegated mudstone,8
-kg6zo76,marl,marl,9
-kg6zo76,sarl,sarl,10
-kg6zo76,argillaceous_m,argillaceous mudstone,11
-kg6zo76,other,other,
-ih44p58,intraformation,intraformational,
-ih44p58,extraformation,extraformational,
-ih44p58,monomictic,monomictic,
-ih44p58,oligomictic,oligomictic,
-ih44p58,polymictic,polymictic,
-uz9ix58,intrusive_igneous,intrusive igneous,
-uz9ix58,extrusive_igneous,extrusive igneous,1
-uz9ix58,metamorphic,metamorphic,2
-uz9ix58,mudstone,mudstone,3
-uz9ix58,siltstone,siltstone,4
-uz9ix58,sandstone,sandstone,5
-uz9ix58,conglomerate,conglomerate,6
-uz9ix58,limestone,limestone,7
-uz9ix58,dolomite,dolomite,8
-uz9ix58,skeletal,skeletal,9
-uz9ix58,wackestone,wackestone,10
-uz9ix58,packstone,packstone,11
-uz9ix58,grainstone,grainstone,12
-uz9ix58,boundstone,boundstone,13
-uz9ix58,intraformational,intraformational,14
-uz9ix58,extraformational,extraformational,15
-uz9ix58,mono_oligomictic,mono/oligomictic,16
-uz9ix58,polymictic,polymictic,17
-uz9ix58,other,other,18
-co1jf03,intrusive_igneous,intrusive igneous,0
-co1jf03,extrusive_igneous,extrusive igneous,1
-co1jf03,metamorphic,metamorphic,2
-co1jf03,mudstone,mudstone,3
-co1jf03,siltstone,siltstone,4
-co1jf03,sandstone,sandstone,5
-co1jf03,conglomerate,conglomerate,6
-co1jf03,carbonate,carbonate,7
-co1jf03,other,other,8
-ng3et79,limestone,limestone,
-ng3et79,dolomite,dolomite,
-ng3et79,skeletal,skeletal,
-ng3et79,wackestone,wackestone,
-ng3et79,packstone,packstone,
-ng3et79,grainstone,grainstone,
-ng3et79,boundstone,boundstone,
-ng3et79,other,other,
-so29n97,glass,glass,
-so29n97,crystals,crystals,
-so29n97,lithic_fragments,lithic fragments,
-so29n97,volcanic_mudstone,volcanic mudstone,
-so29n97,volcanic_sandstone,volcanic sandstone,
-so29n97,lapillistone,lapillistone,
-so29n97,agglomerate,agglomerate,
-so29n97,volcanic_breccia,volcanic breccia,
-so29n97,bentonite,bentonite,
-so29n97,tuff,tuff,
-so29n97,welded_tuff,welded tuff,
-so29n97,ignimbrite,ignimbrite,
-so29n97,other,other,
-gg6bk97,gyp_anhyd_prim,gypsum - anhydrite primary,
-gg6bk97,gyp_anhyd_dia,gypsum - anhydrite diagenetic,
-gg6bk97,halite_primary,halite - primary,
-gg6bk97,halite_diagene,halite - diagenetic,
-el5ss78,bedded,bedded,
-el5ss78,laminated,laminated,
-el5ss78,bottom_growth,bottom growth (point up crystals),
-el5ss78,cumulates_rand,cumulates (random),
-el5ss78,ropy,ropy,
-el5ss78,molds,molds,
-el5ss78,macroscopic_cr,macroscopic crystals,
-el5ss78,microcrystalli,microcrystalline,
-el5ss78,fibrous,fibrous,
-el5ss78,pseudomorph_st,pseudomorph structures,
-el5ss78,imprints_on_be,imprints on bedding planes,
-wy2is73,nodular_to_chi,nodular to chicken wire,
-wy2is73,displacive,displacive (random crystals),
-wy2is73,veins_or_yug_f,"veins or yug fills (fibrous, lath, amorphous textures)",
-wy2is73,nodules,nodules,
-wy2is73,cement,cement,
-wy2is73,pseudomorphs,pseudomorphs,
-wy2is73,deformation_st,deformation structures,
-la9sa83,cubic_crystals,cubic crystals,
-la9sa83,hopper_crystal,hopper crystals,
-la9sa83,chevrons__bott,chevrons (bottom growth vertical orientation),
-la9sa83,random_cumulat,random cumulates,
-dv3xg82,cements,cements,
-dv3xg82,displacive_cry,displacive crystals,
-dv3xg82,recrystallized,recrystallized,
-dv3xg82,deformation_st,deformation structure,
-mo7ce83,nodular,nodular,
-mo7ce83,bedded,bedded,
-mo7ce83,massive,massive,
-om8xr30,amber,amber,
-om8xr30,peat,peat,
-om8xr30,lignite,lignite,
-om8xr30,subbituminous,subbituminous,
-om8xr30,bituminous,bituminous,
-om8xr30,coal_ball,coal ball,
-om8xr30,tar,tar,
 yf18f03,quartz,quartz,
 yf18f03,mica,mica,
 yf18f03,glauconite,glauconite,
@@ -243,3 +30,159 @@ yf18f03,smectite,smectite,
 yf18f03,chlorite,chlorite,
 yf18f03,kaolinite,kaolinite,
 yf18f03,other,other,
+uh8oy57,quartz_arenite,quartz arenite,
+uh8oy57,arkosic_arenit,feldspathic arenite,
+uh8oy57,subarkose_aren,subarkose arenite,
+uh8oy57,lithic_arenite,lithic arenite,
+uh8oy57,sublitharenite,sublitharenite,
+uh8oy57,quartz_wacke,quartz wacke,
+uh8oy57,lithic_wacke,lithic wacke,
+uh8oy57,feldspathic_wa,feldspathic wacke,
+vw5id84,quartzarenite,quartzarenite,
+vw5id84,subarkose,subarkose,
+vw5id84,sublitharenite,sublitharenite,
+vw5id84,arkose,arkose,
+vw5id84,lithic_arkose,lithic arkose,
+vw5id84,arkosic_lithar,arkosic litharenite,
+vw5id84,litharenite,litharenite,
+cv9qv11,rip_up_clasts,rip-up clasts,
+cv9qv11,wood,wood,
+cv9qv11,fossils,fossils,
+cv9qv11,other,other,
+hw9cd71,skeletal_gener,skeletal (general),
+hw9cd71,mollusc,mollusc,
+hw9cd71,brachiopod,brachiopod,
+hw9cd71,coral,coral,
+hw9cd71,echinoderm,echinoderm,
+hw9cd71,bryozoan,bryozoan,
+hw9cd71,calcareous_alg,calcareous algae,
+hw9cd71,foraminifera,foraminifera,
+hw9cd71,stromatolite,stromatolite,
+hw9cd71,thrombolite,thrombolite,
+hw9cd71,dendrolite,dendrolite,
+hw9cd71,leiolite,leiolite,
+hw9cd71,other,other,
+gi8hz21,mud,mud,
+gi8hz21,cement,cement,
+gi8hz21,intraclast,intraclast,
+gi8hz21,peloid,peloid,
+gi8hz21,ooid,ooid,
+gi8hz21,oncoid,oncoid,
+gi8hz21,pisoid,pisoid,
+gi8hz21,coated_grain,coated grain,
+gi8hz21,grapestone,grapestone,
+gi8hz21,giant_ooid,giant ooid,
+gi8hz21,seafloor_preci,seafloor precipitate,
+gi8hz21,molar_tooth,molar tooth,
+gi8hz21,other,other,
+kg6zo76,siliceous_muds,siliceous mudstone,
+kg6zo76,siliceous_calc,siliceous calcareous mudstone,1
+kg6zo76,siliceous_volc,siliceous volcaniclastic mudstone,2
+kg6zo76,calcareous_mud,calcareous mudstone,3
+kg6zo76,black_shale,black shale,4
+kg6zo76,red_clay,red clay,5
+kg6zo76,red_mudstone,red mudstone,6
+kg6zo76,green_mudstone,green mudstone,7
+kg6zo76,variegated_mud,variegated mudstone,8
+kg6zo76,marl,marl,9
+kg6zo76,sarl,sarl,10
+kg6zo76,argillaceous_m,argillaceous mudstone,11
+kg6zo76,other,other,
+ih44p58,intraformation,intraformational,
+ih44p58,extraformation,extraformational,
+ih44p58,monomictic,monomictic,
+ih44p58,oligomictic,oligomictic,
+ih44p58,polymictic,polymictic,
+uz9ix58,sed_clast,sedimentary (general),
+uz9ix58,igneous_clast,igneous (general),1
+uz9ix58,met_clast,metamorphic (general),2
+uz9ix58,mudstone,mudstone,3
+uz9ix58,siltstone,siltstone,4
+uz9ix58,sandstone,sandstone,5
+uz9ix58,conglomerate,conglomerate,6
+uz9ix58,chert_clast,chert,7
+uz9ix58,extrusive_igne,volcanic,8
+uz9ix58,intrusive_igne,intrusive igneous,9
+uz9ix58,evap_clast,evaporite,10
+uz9ix58,schist,schist,11
+uz9ix58,phyllite_clast,phyllite,12
+uz9ix58,quartzite_clas,quartzite,13
+uz9ix58,limestone,limestone,14
+uz9ix58,dolomite,dolomite,15
+uz9ix58,wackestone,wackestone,16
+uz9ix58,packstone,packstone,17
+uz9ix58,grainstone,grainstone,18
+uz9ix58,boundstone,boundstone,19
+uz9ix58,organic_clast,organic/coal,20
+uz9ix58,ironstone_clas,ironstone,21
+uz9ix58,other,other,22
+co1jf03,intrusive_igneous,intrusive igneous,
+co1jf03,extrusive_igneous,volcanic,1
+co1jf03,metamorphic,metamorphic,2
+co1jf03,mudstone,mudstone,3
+co1jf03,siltstone,siltstone,4
+co1jf03,sandstone,sandstone,5
+co1jf03,conglomerate,conglomerate,6
+co1jf03,carbonate,carbonate,7
+co1jf03,other,other,8
+ng3et79,limestone,limestone,
+ng3et79,dolomite,dolomite,
+ng3et79,skeletal,skeletal,
+ng3et79,wackestone,wackestone,
+ng3et79,packstone,packstone,
+ng3et79,grainstone,grainstone,
+ng3et79,boundstone,boundstone,
+ng3et79,other,other,
+so29n97,glass,glass,
+so29n97,crystals,crystals,
+so29n97,lithic_fragmen,lithic fragments,
+so29n97,volcanic_mudst,volcanic mudstone,
+so29n97,volcanic_sands,volcanic sandstone,
+so29n97,lapillistone,lapillistone,
+so29n97,agglomerate,agglomerate,
+so29n97,volcanic_brecc,volcanic breccia,
+so29n97,bentonite,bentonite,
+so29n97,tuff,tuff,
+so29n97,welded_tuff,welded tuff,
+so29n97,ignimbrite,ignimbrite,
+so29n97,other,other,
+gg6bk97,gyp_anhyd_prim,gypsum - anhydrite primary,
+gg6bk97,gyp_anhyd_dia,gypsum - anhydrite diagenetic,
+gg6bk97,halite_primary,halite - primary,
+gg6bk97,halite_diagene,halite - diagenetic,
+el5ss78,bedded,bedded,
+el5ss78,laminated,laminated,
+el5ss78,bottom_growth,bottom growth (point up crystals),
+el5ss78,cumulates_rand,cumulates (random),
+el5ss78,ropy,ropy,
+el5ss78,molds,molds,
+el5ss78,macroscopic_cr,macroscopic crystals,
+el5ss78,microcrystalli,microcrystalline,
+el5ss78,fibrous,fibrous,
+el5ss78,pseudomorph_st,pseudomorph structures,
+el5ss78,imprints_on_be,imprints on bedding planes,
+wy2is73,nodular_to_chi,nodular to chicken wire,
+wy2is73,displacive,displacive (random crystals),
+wy2is73,veins_or_yug_f,"veins or yug fills (fibrous, lath, amorphous textures)",
+wy2is73,nodules,nodules,
+wy2is73,cement,cement,
+wy2is73,pseudomorphs,pseudomorphs,
+wy2is73,deformation_st,deformation structures,
+la9sa83,cubic_crystals,cubic crystals,
+la9sa83,hopper_crystal,hopper crystals,
+la9sa83,chevrons_bott,chevrons (bottom growth vertical orientation),
+la9sa83,random_cumulat,random cumulates,
+dv3xg82,cements,cements,
+dv3xg82,displacive_cry,displacive crystals,
+dv3xg82,recrystallized,recrystallized,
+dv3xg82,deformation_st,deformation structure,
+mo7ce83,nodular,nodular,
+mo7ce83,bedded,bedded,
+mo7ce83,massive,massive,
+om8xr30,amber,amber,
+om8xr30,peat,peat,
+om8xr30,lignite,lignite,
+om8xr30,subbituminous,subbituminous,
+om8xr30,bituminous,bituminous,
+om8xr30,coal_ball,coal ball,
+om8xr30,tar,tar,

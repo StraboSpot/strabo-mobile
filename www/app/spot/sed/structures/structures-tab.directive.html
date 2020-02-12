@@ -9,6 +9,8 @@
     <button class='button' ng-class="{'button-positive': vmChild.structuresForm === 'structures_pedogenic'}"
             ng-click='vmChild.switchForm("structures_pedogenic")'>Pedogenic</button>
   </div>
+  <strabo-sed-characteristics-field-directive></strabo-sed-characteristics-field-directive>
+  <strabo-sed-lithology-buttons-directive/>
   <form name='straboForm' novalidate=''>
     <auto-fields/>
   </form>

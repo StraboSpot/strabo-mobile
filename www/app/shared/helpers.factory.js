@@ -20,6 +20,7 @@
       'copyToClipboard': copyToClipboard,
       'csvToArray': csvToArray,
       'deepFindById': deepFindById,
+      'deepObjectExtend': deepObjectExtend,
       'fileURItoBlob': fileURItoBlob,
       'getStereonet': getStereonet,
       'getNewId': getNewId,
@@ -186,6 +187,21 @@
         }
       }
       return result;
+    }
+
+    // Deep extend an object
+    function deepObjectExtend (target, source) {
+      for (var prop in source) {
+        if (source.hasOwnProperty(prop)) {
+          if (target[prop] && typeof source[prop] === 'object') {
+            deepObjectExtend(target[prop], source[prop]);
+          }
+          else {
+            target[prop] = source[prop];
+          }
+        }
+      }
+      return target;
     }
 
     // Convert a File URI to an image Blob that is resized to a max height and width of 2000 pixels

@@ -1,0 +1,21 @@
+<div class='strabo-form'>
+  <div ng-show='vm.shouldShowSedCharacteristicsField()'>
+    <ion-item class="item item-input item-select item-stacked-label item-text-wrap">
+      <ion-label>Spot Sedimentary Characteristics</ion-label>
+      <select ng-model='vm.sedCharacter' ng-change='vm.sedCharacterSelected()'>
+        <option value='bed'>bed</option>
+        <option value='bed_mixed_lit'>bed, mixed lithologies</option>
+        <option value='interbedded'>interbedded</option>
+        <option value='package_succe'>package (succession of beds)</option>
+        <option value='other'>other</option>
+        <option value=''>-- Select Spot Sedimentary Characteristics --</option>
+      </select>
+    </ion-item>
+    <div ng-show="vm.sedCharacter === 'other'">
+      <ion-input class='item item-input item-stacked-label item-text-wrap'>
+        <ion-label>Other Spot Sedimentary Characteristics</ion-label>
+        <input type='text' ng-model='vm.sedCharacterOther' ng-change='vm.sedCharacterOtherSelected()'>
+      </ion-input>
+    </div>
+  </div>
+</div>

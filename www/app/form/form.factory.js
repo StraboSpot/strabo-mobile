@@ -5,9 +5,10 @@
     .module('app')
     .factory('FormFactory', FormFactory);
 
-  FormFactory.$inject = ['$document', '$ionicPopup', '$log', '$rootScope', 'DataModelsFactory', 'StratSectionFactory'];
+  FormFactory.$inject = ['$document', '$ionicPopup', '$log', '$rootScope', 'DataModelsFactory', 'SpotFactory',
+    'StratSectionFactory'];
 
-  function FormFactory($document, $ionicPopup, $log, $rootScope, DataModelsFactory, StratSectionFactory) {
+  function FormFactory($document, $ionicPopup, $log, $rootScope, DataModelsFactory, SpotFactory, StratSectionFactory) {
 
     var form = {};   // form = {'choices': {}, 'survey': {}};
     var formName = [];
@@ -19,50 +20,18 @@
       'getFormName': getFormName,
       'getMax': getMax,
       'getMin': getMin,
+      'handleTraceFeatureToggled': handleTraceFeatureToggled,
       'isRelevant': isRelevant,
       'setForm': setForm,
-      'toggleAcknowledgeChecked': toggleAcknowledgeChecked,
+      'handleStratModeToggled': handleStratModeToggled,
       'validate': validate,
-      'validateForm': validateForm
+      'validateForm': validateForm,
+      'validateSedData': validateSedData
     };
 
     /**
      * Private Functions
      */
-
-    function validateSedData(spot, errorMessages) {
-      var lithologies = spot.properties.sed.lithologies;
-      if (StratSectionFactory.isInterval(spot)) {
-        var spotWithThisStratSection = StratSectionFactory.getSpotWithThisStratSection(
-          spot.properties.strat_section_id);
-        if (spotWithThisStratSection && spotWithThisStratSection.properties &&
-          spotWithThisStratSection.properties.sed && spotWithThisStratSection.properties.sed.strat_section) {
-          var units = spotWithThisStratSection.properties.sed.strat_section.column_y_axis_units;
-          if (units !== lithologies.thickness_units) {
-            errorMessages.push('- The <b>Thickness Units</b> must be <b>' + units + '</b> since <b>' + units +
-              '</b> have been assigned for the properties of this strat section.')
-          }
-        }
-      }
-      if (lithologies.is_this_a_bed_or_package === 'bed' || lithologies.is_this_a_bed_or_package === 'interbedded' ||
-        lithologies.is_this_a_bed_or_package === 'package_succe') {
-        if (!lithologies.primary_lithology) {
-          errorMessages.push('- The <b>Primary Lithology</b> must be specified if the there is any type of bedding.');
-        }
-        else if (lithologies.primary_lithology === 'siliciclastic' && (!lithologies.mud_silt_principal_grain_size &&
-            !lithologies.sand_principal_grain_size && !lithologies.congl_principal_grain_size &&
-          !lithologies.breccia_principal_grain_size)) {
-          errorMessages.push('- The <b>Principal Grain Size</b> must be specified if the Primary Lithology is ' +
-            'siliciclastic.');
-        }
-        else if ((lithologies.primary_lithology === 'limestone' || lithologies.primary_lithology === 'dolomite') &&
-          !lithologies.principal_dunham_class) {
-          errorMessages.push('- The <b>Principal Dunham Classification</b> must be specified if the Primary Lithology' +
-            ' is limestone or dolomite.');
-        }
-      }
-      return errorMessages;
-    }
 
     /**
      * Public Functions
@@ -104,8 +73,7 @@
         var regexMax = /<=?\s(-?\d*)/i;
         // Return just the number
         return regexMax.exec(constraint)[1];
-      }
-      catch (e) {
+      } catch (e) {
         return undefined;
       }
     }
@@ -117,10 +85,52 @@
         var regexMin = />=?\s(-?\d*)/i;
         // Return just the number
         return regexMin.exec(constraint)[1];
-      }
-      catch (e) {
+      } catch (e) {
         return undefined;
       }
+    }
+
+    // Handle Trace Feature being toggled on off on the Spot Home page
+    function handleTraceFeatureToggled(field, data) {
+      if (data) {
+        var confirmPopup = $ionicPopup.confirm({
+          'title': 'Close Group?',
+          'template': 'By closing this group you will be clearing all Trace Feature data for this Spot. Continue?'
+        });
+        confirmPopup.then(function (res) {
+          if (res) delete data[field];
+          else data[field] = true;
+        });
+      }
+    }
+
+    // Handle Strat Mode being toggled on or off on the Project Preferences page
+    function handleStratModeToggled(field, data) {
+      if (data[field] && !_.isEmpty(SpotFactory.getSpotsWithOtherSedCharacter())) {
+        $log.log('strat mode toggled on');
+        var confirmPopup1 = $ionicPopup.confirm({
+          'title': 'Entering Strat Mode Warning!',
+          'template': 'Are you sure you want to enter Strat Mode? Sed Characteristics of "other" in ALL Spots will be deleted.'
+        });
+        confirmPopup1.then(function (res) {
+          if (res) SpotFactory.deleteOtherSedCharacteristicsForAllSpots();
+          else delete data[field];
+        });
+      }
+      else if (!data[field] && (!_.isEmpty(SpotFactory.getSpotsWithIntervalData()) ||
+        !_.isEmpty(SpotFactory.getSpotsWithUnmeasuredSedCharacter()))) {
+        $log.log('strat mode toggled off');
+        var confirmPopup2 = $ionicPopup.confirm({
+          'title': 'Leaving Strat Mode Warning!',
+          'template': 'Are you sure you want to leave Strat Mode? Data for Interval Thicknesses and ' +
+            'Interval Types of "unexposed/covered" or "not measured" in ALL Spots will be deleted.'
+        });
+        confirmPopup2.then(function (res) {
+          if (res) SpotFactory.deleteIntervalDataForAllSpots();
+          else data[field] = true;
+        });
+      }
+      else if (!data[field]) SpotFactory.deleteIntervalDataForAllSpots();
     }
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair
@@ -139,8 +149,7 @@
 
       try {
         return eval(relevant);
-      }
-      catch (e) {
+      } catch (e) {
         return false;
       }
     }
@@ -157,22 +166,11 @@
           form.survey = DataModelsFactory.getDataModel(inFormName).survey;
           form.choices = DataModelsFactory.getDataModel(inFormName).choices;
         }
-      }
-      catch (e) {
+      } catch (e) {
         form.survey = {};
         form.choices = {};
       }
       $rootScope.$broadcast('formUpdated', form);
-    }
-
-    function toggleAcknowledgeChecked(data, field) {
-      if (data[field]) {
-        delete data[field];
-      }
-      else {
-        data[field] = true;
-      }
-      return data;
     }
 
     function validate(data) {
@@ -192,7 +190,10 @@
               errorMessages.push('<b>' + field.label + '</b>: ' + constraint);
             }
           }
-          else if (getComputedStyle(ele).display === 'none') delete data[field.name];
+          else if (getComputedStyle(ele).display === 'none' && !_.isEmpty(data[field.name])) {
+            $log.warn('Deleting form data:', field.name, ':', data[field.name]);
+            delete data[field.name];
+          }
         }
       });
 
@@ -213,7 +214,7 @@
         if (stateName === 'app.spotTab.spot') {
           if (!spot.properties.name) errorMessages.push('<b>Spot Name</b> is required.');
           if (spot.geometry && spot.geometry.type === 'Point' && (!spot.geometry.coordinates[0] ||
-              !spot.geometry.coordinates[1])) {
+            !spot.geometry.coordinates[1])) {
             errorMessages.push('Both <b>Latitude</b> and <b>longitude</b> are required.');
           }
         }
@@ -222,16 +223,62 @@
         if (stateName === 'app.spotTab.spot') {
           if (!spot.properties.name) errorMessages.push('<b>Spot Name</b> is required.');
           if (spot.geometry && spot.geometry.type === 'Point' && (!spot.geometry.coordinates[0] ||
-              !spot.geometry.coordinates[1])) {
+            !spot.geometry.coordinates[1])) {
             errorMessages.push('Both <b>Latitude</b> and <b>longitude</b> are required.');
           }
         }
-        else if (stateName === 'app.spotTab.sed-lithologies' && spot.properties.sed &&
-          spot.properties.sed.lithologies) {
-          errorMessages = validateSedData(spot, errorMessages);
-        }
       }
       else return false;
+      if (_.isEmpty(errorMessages)) return true;
+      else {
+        $ionicPopup.alert({
+          'title': 'Data Validation Error',
+          'template': errorMessages.join('<br>')
+        });
+        return false;
+      }
+    }
+
+    // Check special conditions for sed data
+    function validateSedData(spot) {
+      var errorMessages = [];
+      var sed = spot.properties.sed;
+      if (StratSectionFactory.isInterval(spot) && sed.interval) {
+        var spotWithThisStratSection = StratSectionFactory.getSpotWithThisStratSection(
+          spot.properties.strat_section_id);
+        if (spotWithThisStratSection && spotWithThisStratSection.properties &&
+          spotWithThisStratSection.properties.sed && spotWithThisStratSection.properties.sed.strat_section) {
+          var units = spotWithThisStratSection.properties.sed.strat_section.column_y_axis_units;
+          if (units !== sed.interval.thickness_units) {
+            errorMessages.push('- The <b>Thickness Units</b> must be <b>' + units + '</b> since <b>' + units +
+              '</b> have been assigned for the properties of this strat section.')
+          }
+        }
+      }
+      _.times(2, function (n) {
+        if (sed.interval && sed.lithologies && (sed.character === 'bed' || sed.character === 'bed_mixed_lit' ||
+          sed.character === 'interbedded' || sed.character === 'package_succe')) {
+          if (sed.lithologies[n]) {
+            if (!sed.lithologies[n].primary_lithology) {
+              errorMessages.push('- The <b>Primary Lithology</b> must be specified if the there is any type of ' +
+                'bedding.');
+            }
+            if (sed.lithologies[n].primary_lithology === 'siliciclastic'
+              && (!sed.lithologies[n].mud_silt_grain_size && !sed.lithologies[n].sand_grain_size
+                && !sed.lithologies[n].congl_grain_size && !sed.lithologies[n].breccia_grain_size)) {
+              errorMessages.push('- The <b>Grain Size</b> must be specified if the Primary Lithology is ' +
+                'siliciclastic.');
+            }
+            if ((sed.lithologies[n].primary_lithology === 'limestone'
+              || sed.lithologies[n].primary_lithology === 'dolostone') && !sed.lithologies[n].dunham_classification) {
+              errorMessages.push(
+                '- The <b>Dunham Classification</b> must be specified if the Primary Lithology is limestone or ' +
+                'dolostone.');
+            }
+          }
+        }
+      });
+
       if (_.isEmpty(errorMessages)) return true;
       else {
         $ionicPopup.alert({

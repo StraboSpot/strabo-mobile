@@ -35,6 +35,7 @@
       {'value': 'strat_section', 'label': 'Strat Section', 'path': 'strat-section'},
       {'value': 'sed_interval', 'label': 'Sed Interval', 'path': 'sed-interval'},
       {'value': 'sed_lithologies', 'label': 'Sed Lithologies', 'path': 'sed-lithologies'},
+      {'value': 'sed_bedding', 'label': 'Sed Bedding', 'path': 'sed-bedding'},
       {'value': 'sed_structures', 'label': 'Sed Structures', 'path': 'sed-structures'},
       {'value': 'sed_interpretations', 'label': 'Sed Interpretations', 'path': 'sed-interpretations'},
       {'value': 'experimental', 'label': 'Experimental', 'path': 'experimental'},
@@ -50,6 +51,8 @@
       'clearAllSpots': clearAllSpots,
       'clearCurrentSpot': clearCurrentSpot,
       'clearSelectedSpots': clearSelectedSpots,
+      'deleteIntervalDataForAllSpots': deleteIntervalDataForAllSpots,
+      'deleteOtherSedCharacteristicsForAllSpots': deleteOtherSedCharacteristicsForAllSpots,
       'destroy': destroy,
       'getActiveSpots': getActiveSpots,
       'getActiveNest': getActiveNest,
@@ -68,6 +71,9 @@
       'getSpotWithImageId': getSpotWithImageId,
       'getSpots': getSpots,
       'getSpotsWithPetrology': getSpotsWithPetrology,
+      'getSpotsWithIntervalData': getSpotsWithIntervalData,
+      'getSpotsWithUnmeasuredSedCharacter': getSpotsWithUnmeasuredSedCharacter,
+      'getSpotsWithOtherSedCharacter': getSpotsWithOtherSedCharacter,
       'getTabs': getTabs,
       'goToSpot': goToSpot,
       'isSafeDelete': isSafeDelete,
@@ -377,6 +383,32 @@
       selectedSpots = {};
     }
 
+    function deleteIntervalDataForAllSpots() {
+      var promises = [];
+      _.each(spots, function (spot) {
+        if (spot.properties.sed && (spot.properties.sed.interval || (spot.properties.sed.character &&
+          (spot.properties.sed.character === 'unexposed_cove' || spot.properties.sed.character === 'not_measured')))) {
+          if (spot.properties.sed.interval) delete spot.properties.sed.interval;
+          if (spot.properties.sed.character && (spot.properties.sed.character === 'unexposed_cove'
+            || spot.properties.sed.character === 'not_measured')) delete spot.properties.sed.character;
+          promises.push(save(spot));
+        }
+      });
+      return Promise.all(promises);
+    }
+
+    function deleteOtherSedCharacteristicsForAllSpots() {
+      var promises = [];
+      _.each(spots, function (spot) {
+        if (spot.properties.sed && (spot.properties.sed.character === 'other' || spot.properties.sed.other_character)) {
+          if (spot.properties.sed.character === 'other') delete spot.properties.sed.character;
+          if (spot.properties.sed.other_character) delete spot.properties.sed.other_character;
+          promises.push(save(spot));
+        }
+      });
+      return Promise.all(promises);
+    }
+
     // Destroy the Spot
     function destroy(key) {
       var deferred = $q.defer(); // init promise
@@ -522,6 +554,28 @@
       return _.filter(activeSpots, function (spot) {
         return _.has(spot.properties, 'pet');
       });
+    }
+
+    // Get all Spots that have interval data (thickness or thickness units)
+    function getSpotsWithIntervalData() {
+      return _.filter(spots, function (spot) {
+        return spot.properties.sed && spot.properties.sed.interval;
+      });
+    }
+
+    // Get all Spots that have a Sed Character of unexposed/covered or not measured
+    function getSpotsWithUnmeasuredSedCharacter() {
+      return _.filter(spots, function (spot) {
+        return spot.properties.sed && (spot.properties.sed.character === 'unexposed_cove' ||
+          spot.properties.sed.character === 'not_measured');
+      })
+    }
+
+    // Get all Spots that have a Sed Character of Other
+    function getSpotsWithOtherSedCharacter() {
+      return _.filter(spots, function (spot) {
+        return spot.properties.sed && (spot.properties.sed.character === 'other' || spot.properties.sed.other_character);
+      })
     }
 
     function getSpotsByDatasetId(datasetId) {

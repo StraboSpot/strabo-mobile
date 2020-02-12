@@ -161,14 +161,9 @@
       });
     }
 
-    // Copy Sed Structures & Interpretations (Lithologies were copied when copy interval selected)
+    // Copy the Rest of the Sed Data
     function copyRestOfInterval(interval) {
-      if (vm.intervalToCopy.properties.sed.structures) {
-        interval.properties.sed.structures = angular.copy(vm.intervalToCopy.properties.sed.structures);
-      }
-      if (vm.intervalToCopy.properties.sed.interpretations) {
-        interval.properties.sed.interpretations = angular.copy(vm.intervalToCopy.properties.sed.interpretations);
-      }
+     interval.properties.sed = HelpersFactory.deepObjectExtend(vm.intervalToCopy.properties.sed, interval.properties.sed);
       vm.intervalToCopy = {};
       return interval;
     }
@@ -425,11 +420,11 @@
 
     function createWatches() {
       // Watch for principal siliciclastic type changes
-      $scope.$watch('vm.data.principal_siliciclastic_type', function (newValue, oldValue) {
+      $scope.$watch('vm.data.siliciclastic_type', function (newValue, oldValue) {
         if (newValue && newValue !== oldValue) {
-          if (vm.data.principal_siliciclastic_type === 'claystone'
-            || vm.data.principal_siliciclastic_type === 'mudstone') vm.data.mud_silt_principal_grain_size = 'clay';
-          else if (vm.data.principal_siliciclastic_type === 'siltstone') vm.data.mud_silt_principal_grain_size = 'silt';
+          if (vm.data.siliciclastic_type === 'claystone'
+            || vm.data.siliciclastic_type === 'mudstone') vm.data.mud_silt_grain_size = 'clay';
+          else if (vm.data.siliciclastic_type === 'siltstone') vm.data.mud_silt_grain_size = 'silt';
         }
       });
 
@@ -507,17 +502,17 @@
       FormFactory.setForm('sed', 'add_interval');
       vm.data = {};
       if (stratSection.column_profile && stratSection.column_profile === 'clastic') {
-        vm.data.is_this_a_bed_or_package = 'bed';
+        vm.data.interval_type = 'bed';
         vm.data.primary_lithology = 'siliciclastic';
       }
       else if (stratSection.column_profile && stratSection.column_profile === 'carbonate') {
-        vm.data.is_this_a_bed_or_package = 'bed';
+        vm.data.interval_type = 'bed';
       }
       else if (stratSection.column_profile && stratSection.column_profile === 'mixed_clastic') {
-        vm.data.is_this_a_bed_or_package = 'bed';
+        vm.data.interval_type = 'bed';
       }
       else if (stratSection.column_profile && stratSection.column_profile === 'basic_lithologies') {
-        vm.data.is_this_a_bed_or_package = 'bed';
+        vm.data.interval_type = 'bed';
       }
       if (stratSection.column_y_axis_units) vm.data.thickness_units = stratSection.column_y_axis_units;
 
@@ -526,6 +521,19 @@
       var number = ProjectFactory.getSpotNumber() ? ProjectFactory.getSpotNumber() : '';
       vm.intervalName = prefix + number;
       vm.intervalToInsertAfter = {};
+
+      // Testing Data
+/*      vm.intervalName = 'Interval Inserting';
+      vm.data.interval_thickness = 2;
+      // vm.data.character = 'bed';
+      vm.data.primary_lithology = 'volcaniclastic';
+      vm.data.interval_type = 'interbedded';
+   //   vm.data.siliciclastic_type = 'claystone';
+      vm.data.primary_lithology_1 = 'chert';
+      vm.data.interbed_proportion = 30;
+      vm.data.interbed_proportion_change = 'no_change';
+     vm.data.avg_thickness = 5;
+     vm.data.avg_thickness_1 = 8;*/
 
       openIntervalModal();
     }
@@ -587,12 +595,12 @@
     // Copy Sed Interval Lithology
     function copyIntervalLithology() {
       $log.log('interval', vm.intervalToCopy);
-      if (vm.intervalToCopy && vm.intervalToCopy.properties && vm.intervalToCopy.properties.sed &&
-        vm.intervalToCopy.properties.sed.lithologies) {
-        vm.data = angular.copy(vm.intervalToCopy.properties.sed.lithologies);
+      if (vm.intervalToCopy && vm.intervalToCopy.properties && vm.intervalToCopy.properties.sed) {
+        var sedData = angular.copy(vm.intervalToCopy.properties.sed);
+        vm.data = StratSectionFactory.extractAddIntervalData(sedData);
+        delete vm.data.interval_thickness;
       }
       else vm.data = {};
-      delete vm.data.interval_thickness;
     }
 
     function createTag() {
@@ -612,6 +620,7 @@
           if (res) {
             if (StratSectionFactory.isInterval(spot)) {
               StratSectionFactory.deleteInterval(spot).then(function () {
+                $log.log('intervaldeleted');
                 updateFeatureLayer();
                 if (IS_WEB) {
                   vm.clickedFeatureId = undefined;

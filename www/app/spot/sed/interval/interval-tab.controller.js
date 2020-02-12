@@ -47,6 +47,9 @@
           vmParent.data = vmParent.spot.properties.sed.interval;
         }
         else vmParent.data = {};
+        if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.character) {
+          vmParent.data.interval_type = vmParent.spot.properties.sed.character;
+        }
       }
     }
 

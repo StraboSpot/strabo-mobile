@@ -1,11 +1,5 @@
 type,name,label,required,relevant,calculation,$given_name
-begin_group,group_nm5aj57,Sedimentary Facies,,,,
-select_multiple qp1no08,modifier,Modifier,false,,,
-text,other_modifier,Other Modifier,false,"selected(${modifier}, 'other')",,
-select_multiple cf7sc66,lithology,Lithology,false,,,
-text,other_lithology,Other Lithology,false,"selected(${lithology}, 'other')",,
-end_group,,,,,,
-begin_group,group_ei1uf86,Process Interpretation,,,,
+begin_group,group_ei1uf86,Process Interpretation,false,,,
 select_one lp9ir83,energy,Energy,false,,,
 text,other_energy,Other Energy,false,${energy} = 'other',,
 select_multiple nr37l64,sediment_transport,Sediment Transport,false,,,
@@ -13,9 +7,9 @@ text,other_sediment_transport,Other Sediment Transport,false,"selected(${sedimen
 select_one fe1pj82,fluidization,Fluidization,false,,,
 text,other_fluidization,Other Fluidization,false,${fluidization} = 'other',,
 select_multiple kk8ql20,miscellaneous,Miscellaneous,false,,,
-text,other_miscellaneous,Other Miscellaneous,false,"selected(${miscellaneous}, 'other')",,
+text,other_miscellaneous,Other Misc. Process,false,"selected(${miscellaneous}, 'other')",,
 text,notes,Notes,false,,,
 end_group,,,,,,
 calculate,__version__,,false,,'v3efDpNuEsJwE9rfyRJUwq',
-calculate,_version_,,,,'vSDNywBR9vKgBhd6QsPBTb',__version__
-calculate,_version__001,,,,'vXVVjEkfky8PcWX2upk6zT',__version__
+calculate,_version_,,false,,'vSDNywBR9vKgBhd6QsPBTb',__version__
+calculate,_version__001,,,,'v5mKHRj3G5rHrqH9pqTgPr',__version__

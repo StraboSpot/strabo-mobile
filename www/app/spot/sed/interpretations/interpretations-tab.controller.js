@@ -13,7 +13,7 @@
 
     var thisTabName = 'sed-interpretations';
 
-    vm.interpretationsForm = 'interpretations_facies_and_process';
+    vm.interpretationsForm = 'interpretations_process';
 
     vm.switchForm = switchForm;
 
@@ -45,12 +45,13 @@
     function loadTab(state) {
       vmParent.loadTab(state);     // Need to load current state into parent
       if (vmParent.spot && !_.isEmpty(vmParent.spot)) {
-        FormFactory.setForm('sed', 'interpretations_facies_and_process');
-        if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.interpretations) {
-          $log.log('Sed Interpretations:', vmParent.spot.properties.sed.interpretations);
-          vmParent.data = vmParent.spot.properties.sed.interpretations;
+        FormFactory.setForm('sed', 'interpretations_process');
+        if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.interpretations &&
+          vmParent.spot.properties.sed.interpretations[vmParent.lithologyNum]) {
+          vmParent.data = vmParent.spot.properties.sed.interpretations[vmParent.lithologyNum];
         }
         else vmParent.data = {};
+        $log.log('Sed Interpretations ' + (vmParent.lithologyNum + 1) + ':', vmParent.data);
       }
     }
 

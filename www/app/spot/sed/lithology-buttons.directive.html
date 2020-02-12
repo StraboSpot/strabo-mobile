@@ -1,0 +1,12 @@
+<div class='strabo-form'>
+  <div class='button-bar'>
+    <button class='button' ng-class="{'button-positive': vm.lithologyNum === 0}"
+            ng-click='vm.setLithologyNum(0)'>Lithology 1
+    </button>
+    <button class='button'
+            ng-class="{'button-positive': vm.lithologyNum === 1,
+            'button-disabled': vm.isSecondLithologyDisabled()}"
+            ng-click='vm.setLithologyNum(1)'>Lithology 2
+    </button>
+  </div>
+</div>

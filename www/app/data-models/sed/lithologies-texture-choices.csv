@@ -1,122 +1,61 @@
-list_name,name,label,,order
-th1pp14,bed,bed,,
-th1pp14,interbedded,interbedded,,
-th1pp14,package_succe,package (succession of beds),,
-th1pp14,unexposed_cove,unexposed/covered,,
-we36h70,siliciclastic,siliciclastic,13,
-we36h70,limestone,limestone,9,1
-we36h70,dolomite,dolomite,8,2
-we36h70,organic_coal,organic/coal,12,3
-we36h70,evaporite,evaporite,9,4
-we36h70,chert,chert,5,5
-we36h70,ironstone,ironstone,9,6
-we36h70,phosphatic,phosphatic,10,7
-we36h70,volcaniclastic,volcaniclastic,14,8
-nq1zz74,claystone,claystone,,
-nq1zz74,mudstone,mudstone,,
-nq1zz74,shale,shale,,
-nq1zz74,siltstone,siltstone,,
-nq1zz74,sandstone,sandstone,,
-nq1zz74,conglomerate,conglomerate,,
-nq1zz74,breccia,breccia,,
-br57a34,clay,clay,,
-br57a34,silt,silt,,
-yt6dh35,sand_very_fin,sand- very fine,,
-yt6dh35,sand_fine_low,sand- fine lower,,
-yt6dh35,sand_fine_upp,sand- fine upper,,
-yt6dh35,sand_medium_l,sand- medium lower,,
-yt6dh35,sand_medium_u,sand- medium upper,,
-yt6dh35,sand_coarse_l,sand- coarse lower,,
-yt6dh35,sand_coarse_u,sand- coarse upper,,
-yt6dh35,sand_very_coa,sand- very coarse,,
-hx7uv11,granule,granule,,
-hx7uv11,pebble,pebble,,
-hx7uv11,cobble,cobble,,
-hx7uv11,boulder,boulder,,
-eb2oc45,siliciclastic,siliciclastic,,
-eb2oc45,limestone,limestone,,1
-eb2oc45,dolomite,dolomite,,2
-eb2oc45,organic_coal,organic/coal,,3
-eb2oc45,evaporite,evaporite,,4
-eb2oc45,chert,chert,,5
-eb2oc45,ironstone,ironstone,,6
-eb2oc45,phosphatic,phosphatic,,7
-eb2oc45,volcaniclastic,volcaniclastic,,8
-md69g21,claystone,claystone,,
-md69g21,mudstone,mudstone,,
-md69g21,shale,shale,,
-md69g21,siltstone,siltstone,,
-md69g21,sandstone,sandstone,,
-md69g21,conglomerate,conglomerate,,
-md69g21,breccia,breccia,,
-en2os90,clay,clay,,
-en2os90,silt,silt,,
-he4ke66,sand_very_fin,sand- very fine,,
-he4ke66,sand_fine_low,sand- fine lower,,
-he4ke66,sand_fine_upp,sand- fine upper,,
-he4ke66,sand_medium_l,sand- medium lower,,
-he4ke66,sand_medium_u,sand- medium upper,,
-he4ke66,sand_coarse_l,sand- coarse lower,,
-he4ke66,sand_coarse_u,sand- coarse upper,,
-he4ke66,sand_very_coa,sand- very coarse,,
-te32l95,granule,granule,,
-te32l95,pebble,pebble,,
-te32l95,cobble,cobble,,
-te32l95,boulder,boulder,,
-ww4nv53,clay,clay,,
-ww4nv53,silt,silt,,
-ww4nv53,sand_very_fin,sand- very fine,,
-ww4nv53,sand_fine_low,sand- fine lower,,
-ww4nv53,sand_fine_upp,sand- fine upper,,
-ww4nv53,sand_medium_l,sand- medium lower,,
-ww4nv53,sand_medium_u,sand- medium upper,,
-ww4nv53,sand_coarse_l,sand- coarse lower,,
-ww4nv53,sand_coarse_u,sand- coarse upper,,
-ww4nv53,sand_very_coa,sand- very coarse,,
-ww4nv53,granule,granule,,
-ww4nv53,pebble,pebble,,
-ww4nv53,cobble,cobble,,
-ww4nv53,boulder,boulder,,
-fz52a24,clay,clay,,
-fz52a24,silt,silt,,
-fz52a24,sand,sand,,
-fz52a24,granule,granule,,
-fz52a24,pebble,pebble,,
-fz52a24,cement,cement,,
-fz52a24,none,none,,
-en1dw51,grain-supporte,grain-supported,,
-en1dw51,matrix-support,matrix-supported,,
-en1dw51,imbrication,imbrication,,
-en1dw51,granule,alignment,,
-dx3pb08,normal,normal,,
-dx3pb08,normal_base_only,normal base only,,
-dx3pb08,normal_top_only,normal top only,,
-dx3pb08,reverse,reverse,,
-dx3pb08,reverse_base_only,reverse base only,,
-dx3pb08,reverse_top_only,reverse top only,,
-dx3pb08,composite,composite,,
-dx3pb08,foreset_normal,foreset normal,,
-dx3pb08,foreset_reverse,foreset reverse,,
-ib39f35,coarsening_upwards,coarsening upwards,,
-ib39f35,fining_upwards,fining upwards,,
-ib39f35,uniform_no_tre,uniform (no trend),,
-dq8tl80,v_well_sorted,very well sorted,,
-dq8tl80,well_sorted,well sorted,,
-dq8tl80,mod_sorted,moderately sorted,,
-dq8tl80,poorly_sorted,poorly sorted,,
-dq8tl80,v_poorly_sorte,very poorly sorted,,
-tz12z20,spherical,spherical,,
-tz12z20,equant,equant,,
-tz12z20,tabular,tabular,,
-tz12z20,disk_chip_like,disk/chip-like,,
-tz12z20,prolate,prolate,,
-tz12z20,bladed,bladed,,
-tz12z20,rod_like,rod-like,,
-tz12z20,skeletal,skeletal,,
-tz12z20,non_skeletal,non-skeletal,,
-hs69g66,well_rounded,well-rounded,,
-hs69g66,rounded,rounded,,
-hs69g66,subrounded,subrounded,,
-hs69g66,subangular,subangular,,
-hs69g66,angular,angular,,
-hs69g66,very_angular,very angular,,
+list_name,name,label
+br57a34,clay,clay
+br57a34,silt,silt
+yt6dh35,sand_very_fin,sand- very fine
+yt6dh35,sand_fine_low,sand- fine lower
+yt6dh35,sand_fine_upp,sand- fine upper
+yt6dh35,sand_medium_l,sand- medium lower
+yt6dh35,sand_medium_u,sand- medium upper
+yt6dh35,sand_coarse_l,sand- coarse lower
+yt6dh35,sand_coarse_u,sand- coarse upper
+yt6dh35,sand_very_coa,sand- very coarse
+hx7uv11,granule,granule
+hx7uv11,pebble,pebble
+hx7uv11,cobble,cobble
+hx7uv11,boulder,boulder
+ww4nv53,clay,clay
+ww4nv53,silt,silt
+ww4nv53,sand_very_fin,sand- very fine
+ww4nv53,sand_fine_low,sand- fine lower
+ww4nv53,sand_fine_upp,sand- fine upper
+ww4nv53,sand_medium_l,sand- medium lower
+ww4nv53,sand_medium_u,sand- medium upper
+ww4nv53,sand_coarse_l,sand- coarse lower
+ww4nv53,sand_coarse_u,sand- coarse upper
+ww4nv53,sand_very_coa,sand- very coarse
+ww4nv53,granule,granule
+ww4nv53,pebble,pebble
+ww4nv53,cobble,cobble
+ww4nv53,boulder,boulder
+fz52a24,clay,clay
+fz52a24,silt,silt
+fz52a24,sand,sand
+fz52a24,granule,granule
+fz52a24,pebble,pebble
+fz52a24,cement,cement
+fz52a24,none,none
+en1dw51,grain-supporte,grain-supported
+en1dw51,matrix-support,matrix-supported
+en1dw51,imbrication,imbrication
+en1dw51,granule,alignment
+dq8tl80,v_well_sorted,very well sorted
+dq8tl80,well_sorted,well sorted
+dq8tl80,mod_sorted,moderately sorted
+dq8tl80,poorly_sorted,poorly sorted
+dq8tl80,v_poorly_sorte,very poorly sorted
+hs69g66,well_rounded,well-rounded
+hs69g66,rounded,rounded
+hs69g66,subrounded,subrounded
+hs69g66,subangular,subangular
+hs69g66,angular,angular
+hs69g66,very_angular,very angular
+tz12z20,spherical,spherical
+tz12z20,equant,equant
+tz12z20,tabular,tabular
+tz12z20,disk_chip_like,disk/chip-like
+tz12z20,prolate,prolate
+tz12z20,bladed,bladed
+tz12z20,rod_like,rod-like
+tz12z20,skeletal,skeletal
+tz12z20,non_skeletal,non-skeletal
+tz12z20,other,other

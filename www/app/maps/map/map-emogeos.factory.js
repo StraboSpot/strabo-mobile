@@ -252,25 +252,26 @@
       hideEmogeoButton('limestone_dolomite_prin_struct');
 
       // Then determine which emogeo buttons with conditions should be shown
-      if (spot.properties.sed && spot.properties.sed.lithologies) {
-        if (spot.properties.sed.lithologies.principal_siliciclastic_type) {
-          if (spot.properties.sed.lithologies.principal_siliciclastic_type === 'claystone' ||
-            spot.properties.sed.lithologies.principal_siliciclastic_type === 'mudstone' ||
-            spot.properties.sed.lithologies.principal_siliciclastic_type === 'shale' ||
-            spot.properties.sed.lithologies.principal_siliciclastic_type === 'siltstone') {
+      var n = 0;
+      if (spot.properties.sed && spot.properties.sed.lithologies && spot.properties.sed.lithologies[n]) {
+        if (spot.properties.sed.lithologies[n].siliciclastic_type) {
+          if (spot.properties.sed.lithologies[n].siliciclastic_type === 'claystone' ||
+            spot.properties.sed.lithologies[n].siliciclastic_type === 'mudstone' ||
+            spot.properties.sed.lithologies[n].siliciclastic_type === 'shale' ||
+            spot.properties.sed.lithologies[n].siliciclastic_type === 'siltstone') {
             showEmogeoButton('mud_silt_prin_struct');
           }
-          if (spot.properties.sed.lithologies.principal_siliciclastic_type === 'sandstone') {
+          if (spot.properties.sed.lithologies[n].siliciclastic_type === 'sandstone') {
             showEmogeoButton('sandstone_prin_struct');
           }
-          if (spot.properties.sed.lithologies.principal_siliciclastic_type === 'conglomerate') {
+          if (spot.properties.sed.lithologies[n].siliciclastic_type === 'conglomerate') {
             showEmogeoButton('conglomerate_prin_struct');
           }
-          if (spot.properties.sed.lithologies.principal_siliciclastic_type === 'breccia') {
+          if (spot.properties.sed.lithologies[n].siliciclastic_type === 'breccia') {
             showEmogeoButton('breccia_prin_struct');
           }
         }
-        if (spot.properties.sed.lithologies.principal_dunham_class) {
+        if (spot.properties.sed.lithologies[n].dunham_classification) {
           showEmogeoButton('limestone_dolomite_prin_struct');
         }
       }

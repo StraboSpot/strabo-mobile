@@ -1,0 +1,28 @@
+list_name,name,label,order
+wj4dz28,discontinuous,discontinuous,
+wj4dz28,tabular_parall,tabular/parallel,1
+wj4dz28,lenticular,lenticular,2
+wj4dz28,wedge,wedge,3
+wj4dz28,channel_like,channel-like,4
+nt45h93,flat,flat,
+nt45h93,undulatory,undulatory,
+nt45h93,curved,curved,
+nt45h93,concave_up,concave up,
+nt45h93,concave_down,concave down,
+nt45h93,irregular,irregular,
+nt45h93,covered,covered,
+bq6ko94,flat,sharp,
+bq6ko94,undulatory,gradational,1
+bq6ko94,curved,well-defined,2
+bq6ko94,covered,poorly-defined,7
+fo9ve04,flat,flat,
+fo9ve04,undulatory,undulatory,
+fo9ve04,curved,curved,
+fo9ve04,concave_up,concave up,
+fo9ve04,concave_down,concave down,
+fo9ve04,irregular,irregular,
+fo9ve04,covered,covered,
+rx9bj85,sharp,sharp,
+rx9bj85,gradational,gradational,1
+rx9bj85,well_defined,well-defined,2
+rx9bj85,poorly_defined,poorly-defined,8

@@ -1,0 +1,32 @@
+list_name,name,label,order
+cs0rc13,bedforms,bedforms,
+cs0rc13,sole_marks,sole marks,
+cs0rc13,flute_cast,flute cast,
+cs0rc13,groove_cast,groove cast,
+cs0rc13,tool_marks,tool marks,
+cs0rc13,gutter_cast,gutter cast,
+cs0rc13,load_cast,load cast,
+cs0rc13,parting_lineat,parting lineation,
+cs0rc13,mudcracks,mudcracks,
+cs0rc13,syneresis_crac,syneresis cracks,
+cs0rc13,evaporite_mold,evaporite molds,
+cs0rc13,raindrop_impre,raindrop impressions,
+cs0rc13,glacial_striat,glacial striations,
+cs0rc13,hardground_fir,hardground/firmground,
+cs0rc13,other,other,
+bd2tc58,wave_ripples,wave ripples,
+bd2tc58,current_ripple,current ripples,1
+bd2tc58,dunes,dunes,2
+bd2tc58,antidunes,antidunes,3
+bd2tc58,2d_crests,2D crests,4
+bd2tc58,3d_crests,3D crests,5
+bd2tc58,lunate,lunate,6
+bd2tc58,cuspate,cuspate,7
+bd2tc58,linguoid,linguoid,8
+bd2tc58,bifurcations,bifurcations,9
+bd2tc58,ladderback,ladderback,10
+bd2tc58,interference_r,interference ripples,11
+bd2tc58,adhesion_struc,adhesion structures,12
+bd2tc58,swales,swales,13
+bd2tc58,hummock_swale,hummocks and swales,14
+bd2tc58,other,other,

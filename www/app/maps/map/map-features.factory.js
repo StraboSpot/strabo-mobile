@@ -137,16 +137,16 @@
 
     // Get text for displaying a field and its value
     function getFieldText(value, key) {
-      var label = DataModelsFactory.getLabelFromNewDictionary(key, key) || key;
-      var data = DataModelsFactory.getLabelFromNewDictionary(key, value) || value;
+      var label = DataModelsFactory.getLabelFromNewDictionary(key, key) || key.charAt(0).toUpperCase() + key.slice(1);
       if (_.isArray(value)) {
         var valueLabels = [];
         _.each(value, function (val) {
           valueLabels.push(DataModelsFactory.getLabelFromNewDictionary(key, val) || val);
         });
-        data = valueLabels.join(', ');
+        value = valueLabels.join(', ');
       }
-      return '<b>' + label + '<\/b>: ' + data;
+      else value = DataModelsFactory.getLabelFromNewDictionary(key, value) || value;
+      return '<b>' + label + '<\/b>: ' + value;
     }
 
     // Get the first image in a Spot for display in the popup
@@ -187,51 +187,42 @@
       // Sed Strat Interval Detail
       if (props.surface_feature && props.surface_feature.surface_feature_type &&
         props.surface_feature.surface_feature_type === 'strat_interval' && props.sed) {
-        var pages = ['lithologies', 'structures', 'interpretations'];
+        var pages = ['interval', 'lithologies', 'bedding', 'structures', 'interpretations'];
         _.each(pages, function (page) {
           if (props.sed[page]) {
-            _.each(props.sed[page], function (value, key) {
-              text.push(getFieldText(value, key));
-            });
+            text.push('<u><b>' + page.toUpperCase() + '</b></u>');
+            if (page === 'bedding') {
+              // Output shared bedding fields
+              _.each(props.sed[page], function (value, key) {
+                if (key !== 'beds') text.push(getFieldText(value, key));
+              });
+              // Output bedding fields for each lithology
+              _.each(props.sed[page], function (value, key) {
+                if (key === 'beds') {
+                  _.each(props.sed[page].beds, function (bed, i) {
+                    text.push('<b>Lithology ' + (i + 1) + '</b>');
+                    _.each(bed, function (value, key) {
+                      text.push('&nbsp;' + getFieldText(value, key));
+                    });
+                  });
+                }
+              });
+            }
+            else if (_.isArray(props.sed[page])) {
+              _.each(props.sed[page], function (lithology, i) {
+                text.push('<b>Lithology ' + (i + 1) + '</b>');
+                _.each(lithology, function (value, key) {
+                  text.push('&nbsp;' + getFieldText(value, key));
+                });
+              });
+            }
+            else {
+              _.each(props.sed[page], function (value, key) {
+                text.push(getFieldText(value, key));
+              });
+            }
           }
         });
-
-        /*if (props.sed && props.sed.lithologies) {
-          if (props.sed.lithologies.interval_thickness) text.push('Thickness: ' +
-            props.sed.lithologies.interval_thickness + ' ' + props.sed.lithologies.thickness_units);
-          if (props.sed.lithologies.primary_lithology) {
-            text.push('Primary Lithology: ' + DataModelsFactory.getSedLabel(props.sed.lithologies.primary_lithology));
-          }
-          if (props.sed.lithologies.mud_silt_principal_grain_size || props.sed.lithologies.sand_principal_grain_size ||
-            props.sed.lithologies.congl_principal_grain_size || props.sed.lithologies.breccia_principal_grain_size) {
-            var grainSize = props.sed.lithologies.mud_silt_principal_grain_size ||
-              props.sed.lithologies.sand_principal_grain_size || props.sed.lithologies.congl_principal_grain_size ||
-              props.sed.lithologies.breccia_principal_grain_size;
-            text.push('Principal Grain Size: ' + DataModelsFactory.getSedLabel(grainSize));
-          }
-          if (props.sed.lithologies.principal_dunham_class) {
-            text.push('Principal Dunham Classification: ' +
-              DataModelsFactory.getSedLabel(props.sed.lithologies.principal_dunham_class));
-          }
-          // Text if Interbedded
-          if (props.sed.lithologies.is_this_a_bed_or_package === 'interbedded') {
-            if (props.sed.lithologies.interbed_lithology) {
-              text.push(
-                'Interbed Lithology: ' + DataModelsFactory.getSedLabel(props.sed.lithologies.interbed_lithology));
-            }
-            if (props.sed.lithologies.mud_silt_interbed_grain_size || props.sed.lithologies.sand_interbed_grain_size ||
-              props.sed.lithologies.congl_interbed_grain_size || props.sed.lithologies.breccia_interbed_grain_size) {
-              var interbedGrainSize = props.sed.lithologies.mud_silt_interbed_grain_size ||
-                props.sed.lithologies.sand_interbed_grain_size || props.sed.lithologies.congl_interbed_grain_size ||
-                props.sed.lithologies.breccia_interbed_grain_size;
-              text.push('Interbed Grain Size: ' + DataModelsFactory.getSedLabel(interbedGrainSize));
-            }
-            if (props.sed.lithologies.interbed_dunham_class) {
-              text.push('Interbed Dunham Classification: ' +
-                DataModelsFactory.getSedLabel(props.sed.lithologies.interbed_dunham_class));
-            }
-          }
-        }*/
       }
       return text;
     }

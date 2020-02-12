@@ -1,0 +1,7 @@
+type,name,label,required,calculation,$given_name
+select_one ny3eb23,bioturbation_index,Bioturbation Index,false,,
+text,notes,Notes,false,,
+calculate,__version__,,false,'v3aztknQxg4sDfKs2JM2kF',
+calculate,_version_,,false,'vc4CusmkPTkFp2A3rCAZhE',__version__
+calculate,_version__001,,false,'vFbWv3X6bRMxEoeN8s7ADo',__version__
+calculate,_version__002,,,'vVbVW7CM9LMfLidnaTT84W',__version__

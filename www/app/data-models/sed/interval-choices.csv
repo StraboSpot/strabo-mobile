@@ -1,10 +1,11 @@
-list_name,name,label
-ch4zy56,cm,cm
-ch4zy56,m,m
-ch4zy56,in,in
-ch4zy56,ft,ft
-du1tq15,bed,bed
-du1tq15,interbedded,interbedded
-du1tq15,package_succe,package (succession of beds)
-du1tq15,unexposed_cove,unexposed/covered
-du1tq15,not_measured,not measured
+list_name,name,label,order
+ch4zy56,cm,cm,
+ch4zy56,m,m,
+ch4zy56,in,in,
+ch4zy56,ft,ft,
+du1tq15,bed,bed,
+du1tq15,bed_mixed_lit,"bed, mixed lithologies",1
+du1tq15,interbedded,interbedded,2
+du1tq15,package_succe,package (succession of beds),3
+du1tq15,unexposed_cove,unexposed/covered,4
+du1tq15,not_measured,not measured,5

@@ -600,8 +600,8 @@
           var thickness = (extent[3] - extent[1]) / 20; // 20 is yMultiplier - see StratSectionFactory
           thickness = HelpersFactory.roundToDecimalPlaces(thickness, 2);
           if (!editedSpot.properties.sed) editedSpot.properties.sed = {};
-          if (!editedSpot.properties.sed.lithologies) editedSpot.properties.sed.lithologies = {};
-          editedSpot.properties.sed.lithologies.interval_thickness = thickness;
+          if (!editedSpot.properties.sed.interval) editedSpot.properties.sed.interval = {};
+          editedSpot.properties.sed.interval.interval_thickness = thickness;
           // Update Map Feature
           map.getLayers().forEach(function (layerGroup) {
             if (layerGroup.get('name') === 'featureLayer') {

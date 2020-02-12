@@ -1,0 +1,12 @@
+type,name,label,required,relevant,calculation,$given_name
+select_multiple cs0rc13,bedding_plane_features,Bedding plane features,false,,,
+text,other_bedding_plane_feature,Other Bedding Plane Feature,false,"selected(${bedding_plane_features}, 'other')",,
+text,bedding_plane_features_scale,Bedding Plane Features Scale,false,,,
+text,bedding_plane_features_orientation,Bedding Plane Features Orientation,false,,,
+select_multiple bd2tc58,bedform_type,Bedform Type,false,"selected(${bedding_plane_features}, 'bedforms')",,
+text,other_bedform_type,Other Bedform Type,false,"selected(${bedform_type}, 'other')",,
+text,bedform_scale,Bedform Scale,false,"selected(${bedding_plane_features}, 'bedforms')",,
+text,crest_orientation_azimuth_0_360,"Crest Orientation (Azimuth, 0-360)",false,"selected(${bedding_plane_features}, 'bedforms')",,
+text,notes,Notes,false,,,
+calculate,__version__,,false,,'vYDde4CEYDYojkqNX2ot2w',
+calculate,_version_,,,,'vH7pu28EJEWp6YG7d2m5ic',__version__

@@ -1,7 +1,7 @@
 <div>
   <div class='button-bar'>
-    <button class='button' ng-class="{'button-positive': vmChild.interpretationsForm === 'interpretations_facies_and_process'}"
-            ng-click='vmChild.switchForm("interpretations_facies_and_process")'>Facies & Process</button>
+    <button class='button' ng-class="{'button-positive': vmChild.interpretationsForm === 'interpretations_process'}"
+            ng-click='vmChild.switchForm("interpretations_process")'>Process</button>
     <button class='button' ng-class="{'button-positive': vmChild.interpretationsForm === 'interpretations_environment'}"
             ng-click='vmChild.switchForm("interpretations_environment")'>Environment</button>
     <button class='button' ng-class="{'button-positive': vmChild.interpretationsForm === 'interpretations_surfaces'}"
@@ -9,6 +9,8 @@
     <button class='button' ng-class="{'button-positive': vmChild.interpretationsForm === 'interpretations_architecture'}"
             ng-click='vmChild.switchForm("interpretations_architecture")'>Architecture</button>
   </div>
+  <strabo-sed-characteristics-field-directive></strabo-sed-characteristics-field-directive>
+  <strabo-sed-lithology-buttons-directive/>
   <form name='straboForm' novalidate=''>
     <auto-fields/>
   </form>

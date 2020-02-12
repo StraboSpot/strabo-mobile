@@ -3,7 +3,6 @@ ee59y88,continental,Continental,
 ee59y88,transitional,Transitional,
 ee59y88,shallow_marine,Shallow marine,
 ee59y88,deep_marine,Deep marine,
-ee59y88,other,Other,
 ml38g37,alluvial_fan,Alluvial fan,
 ml38g37,glacial_and_pr,Glacial and proglacial,1
 ml38g37,fluvial,Fluvial,2
@@ -125,7 +124,10 @@ pv3ex57,shoal,Shoal,11
 pv3ex57,shelf,Shelf,12
 pv3ex57,slope,Slope,13
 pv3ex57,basin,Basin,14
-pv3ex57,other,Other,
+pv3ex57,shallow,shallow,
+pv3ex57,deep,deep,
+pv3ex57,shoreline,shoreline,
+pv3ex57,other_env,other,
 em9bi13,evaporitic,Evaporitic,
 em9bi13,brackish,Brackish,
 em9bi13,fresh,Fresh,

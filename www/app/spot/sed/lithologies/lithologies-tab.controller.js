@@ -13,8 +13,7 @@
 
     var thisTabName = 'sed-lithologies';
 
-    vm.lithologyForm = 'lithologies_basics';
-    vm.showStratInterval = false;
+    vm.lithologyForm = 'lithologies_lithology';
 
     vm.switchLithologyForm = switchLithologyForm;
 
@@ -46,12 +45,13 @@
     function loadTab(state) {
       vmParent.loadTab(state);     // Need to load current state into parent
       if (vmParent.spot && !_.isEmpty(vmParent.spot)) {
-        FormFactory.setForm('sed', 'lithologies_basics');
-        if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.lithologies) {
-          $log.log('Sed Lithologies:', vmParent.spot.properties.sed.lithologies);
-          vmParent.data = vmParent.spot.properties.sed.lithologies;
+        FormFactory.setForm('sed', 'lithologies_lithology');
+        if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.lithologies
+          && vmParent.spot.properties.sed.lithologies[vmParent.lithologyNum]) {
+          vmParent.data = vmParent.spot.properties.sed.lithologies[vmParent.lithologyNum];
         }
         else vmParent.data = {};
+        $log.log('Sed Lithology ' + (vmParent.lithologyNum + 1) + ':', vmParent.data);
 
         createWatches();
       }
@@ -59,27 +59,14 @@
 
     function createWatches() {
       // Watch for principal siliciclastic type changes
-      $scope.$watch('vm.data.principal_siliciclastic_type', function (newValue, oldValue) {
+      $scope.$watch('vm.data.siliciclastic_type', function (newValue, oldValue) {
         if (newValue && newValue !== oldValue) {
-          if (vmParent.data.principal_siliciclastic_type === 'claystone'
-            || vmParent.data.principal_siliciclastic_type === 'mudstone') {
-            vmParent.data.mud_silt_principal_grain_size = 'clay';
+          if (vmParent.data.siliciclastic_type === 'claystone'
+            || vmParent.data.siliciclastic_type === 'mudstone') {
+            vmParent.data.mud_silt_grain_size = 'clay';
           }
-          else if (vmParent.data.principal_siliciclastic_type === 'siltstone') {
-            vmParent.data.mud_silt_principal_grain_size = 'silt';
-          }
-        }
-      });
-
-      // Watch for interbed siliciclastic type changes
-      $scope.$watch('vm.data.interbed_siliciclastic_type', function (newValue, oldValue) {
-        if (newValue && newValue !== oldValue) {
-          if (vmParent.data.interbed_siliciclastic_type === 'claystone'
-            || vmParent.data.interbed_siliciclastic_type === 'mudstone') {
-            vmParent.data.mud_silt_interbed_grain_size = 'clay';
-          }
-          else if (vmParent.data.interbed_siliciclastic_type === 'siltstone') {
-            vmParent.data.mud_silt_interbed_grain_size = 'silt';
+          else if (vmParent.data.siliciclastic_type === 'siltstone') {
+            vmParent.data.mud_silt_grain_size = 'silt';
           }
         }
       });

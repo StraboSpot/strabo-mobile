@@ -18,6 +18,9 @@
     var vmParent = $scope.vm;
     var vm = this;
 
+    var preferences = ProjectFactory.getPreferences();
+    var typesWithTwoLithologies = ['bed_mixed_lit', 'interbedded'];
+
     // Tags Variables
     vm.addGeologicUnitTagModal = {};
     vm.addTagModal = {};
@@ -47,11 +50,15 @@
     // Other Variables
     vm.backHistoriesPopover = {};
     vm.data = {};
+    vm.dataOutsideForm = {};
     vm.date = undefined;
     vm.initializing = true;
+    vm.lithologyNum = 0;
     vm.newNestModal = {};
     vm.newNestProperties = {};
     vm.popover = {};
+    vm.sedCharacter = '';
+    vm.sedCharacterOther = undefined;
     vm.showRadius = true;
     vm.showGeologicUnit = true;
     vm.showSurfaceFeature = false;
@@ -74,10 +81,15 @@
     vm.goToBackHistoryUrl = goToBackHistoryUrl;
     vm.goToSpot = goToSpot;
     vm.goToTag = goToTag;
+    vm.isSecondLithologyDisabled = isSecondLithologyDisabled;
     vm.isState = isState;
     vm.loadTab = loadTab;
     vm.saveSketch = saveSketch;
     vm.saveSpot = saveSpot;
+    vm.sedCharacterSelected = sedCharacterSelected;
+    vm.sedCharacterOtherSelected = sedCharacterOtherSelected;
+    vm.setLithologyNum = setLithologyNum;
+    vm.shouldShowSedCharacteristicsField = shouldShowSedCharacteristicsField;
     vm.showTab = showTab;
     vm.submit = submit;
     vm.takePicture = takePicture;
@@ -94,6 +106,9 @@
       $log.log('In SpotController');
       createPopover();
       vm.tabs = SpotFactory.getTabs();
+
+      //  SpotFactory.destroy(15688513211836);
+
 
       $ionicModal.fromTemplateUrl('app/spot/tags/add-tag-modal.html', {
         'scope': $scope,
@@ -373,16 +388,12 @@
       $log.log(fieldName, 'changed in form', FormFactory.getFormName());
       switch (fieldName) {
         // Sed grain size
-        case 'mud_silt_principal_grain_size':
-        case 'sand_principal_grain_size':
-        case 'congl_principal_grain_size':
-        case 'breccia_principal_grain_size':
-        case 'mud_silt_interbed_grain_size':
-        case 'sand_interbed_grain_size':
-        case 'congl_interbed_grain_size':
-        case 'breccia_interbed_grain_size':
-          if (!vm.data.grain_size) vm.data.grain_size = [];
-          vm.data.grain_size.push(newValue);
+        case 'mud_silt_grain_size':
+        case 'sand_grain_size':
+        case 'congl_grain_size':
+        case 'breccia_grain_size':
+          if (!vm.data.grain_size_range) vm.data.grain_size_range = [];
+          vm.data.grain_size_range.push(newValue);
           break;
         // Strat Section y axis units
         case 'column_y_axis_units':
@@ -391,6 +402,9 @@
         // Strat Section column profile
         case 'column_profile':
           vm.child.changeColumnProfile(newValue, oldValue);
+          break;
+        case 'interval_type':
+          switchNumLithologies(newValue, oldValue);
           break;
       }
     }
@@ -458,6 +472,10 @@
       submit('/app/tags/' + id);
     }
 
+    function isSecondLithologyDisabled() {
+      return !_.contains(typesWithTwoLithologies, vm.sedCharacter)
+    }
+
     function isState(stateName) {
       return stateName === $state.current.name;
     }
@@ -484,6 +502,10 @@
       vm.stateName = state.current.name;
       setSpot(state.params.spotId);
       if (vm.spot) loadTags();
+      if (vm.spot && vm.spot.properties && vm.spot.properties.sed) {
+        if (vm.spot.properties.sed.character) vm.sedCharacter = vm.spot.properties.sed.character;
+        if (vm.spot.properties.sed.other_character) vm.sedCharacterOther = vm.spot.properties.sed.other_character;
+      }
     }
 
     function loadTags() {
@@ -506,6 +528,20 @@
       });
     }
 
+    function sedCharacterSelected() {
+      $log.log(vm.sedCharacter);
+      if (vm.spot.properties.sed && vm.spot.properties.sed.character) {
+        switchNumLithologies(vm.sedCharacter, vm.spot.properties.sed.character);
+      }
+      else switchNumLithologiesContinued(vm.sedCharacter);
+    }
+
+    function sedCharacterOtherSelected() {
+      $log.log(vm.sedCharacterOther);
+      if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
+      vm.spot.properties.sed.other_character = vm.sedCharacterOther;
+    }
+
     function saveSpot() {
       if (vm.spot && vm.spot.properties) {
         vm.spot = HelpersFactory.cleanObj(vm.spot);
@@ -522,20 +558,43 @@
               vm.spot.properties.surface_feature = vm.data;
             }
           }
-          else if (vm.stateName === 'app.spotTab.sed-lithologies' && !_.isEmpty(vm.data)) {
-            if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
-            if (!vm.spot.properties.sed.lithologies) vm.spot.properties.sed.lithologies = {};
-            vm.spot.properties.sed.lithologies = vm.data;
-          }
-          else if (vm.stateName === 'app.spotTab.sed-structures' && !_.isEmpty(vm.data)) {
-            if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
-            if (!vm.spot.properties.sed.structures) vm.spot.properties.sed.structures = {};
-            vm.spot.properties.sed.structures = vm.data;
-          }
-          else if (vm.stateName === 'app.spotTab.sed-interpretations' && !_.isEmpty(vm.data)) {
-            if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
-            if (!vm.spot.properties.sed.interpretations) vm.spot.properties.sed.interpretations = {};
-            vm.spot.properties.sed.interpretations = vm.data;
+          else if (vm.stateName.split('-')[0] === 'app.spotTab.sed') {
+            if (vm.stateName === 'app.spotTab.sed-bedding' && !_.isEmpty(vm.data)) {
+              if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
+              if (!vm.spot.properties.sed.bedding) vm.spot.properties.sed.bedding = {};
+              _.extend(vm.spot.properties.sed.bedding, vm.dataOutsideForm);
+              if (!_.isEmpty(vm.data)) {
+                if (!vm.spot.properties.sed.bedding.beds) vm.spot.properties.sed.bedding.beds = [];
+                vm.spot.properties.sed.bedding.beds[vm.lithologyNum] = vm.data;
+              }
+            }
+            else if (vm.stateName === 'app.spotTab.sed-interval' && !_.isEmpty(vm.data)) {
+              if (vm.data.interval_type) {
+                vm.spot.properties.sed.character = vm.data.interval_type;
+                delete vm.data.interval_type;
+              }
+              if (!_.isEmpty(vm.data)) {
+                if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
+                if (!vm.spot.properties.sed.interval) vm.spot.properties.sed.interval = {};
+                vm.spot.properties.sed.interval = vm.data;
+              }
+            }
+            else if (vm.stateName === 'app.spotTab.sed-lithologies' && !_.isEmpty(vm.data)) {
+              if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
+              if (!vm.spot.properties.sed.lithologies) vm.spot.properties.sed.lithologies = [];
+              vm.spot.properties.sed.lithologies[vm.lithologyNum] = vm.data;
+            }
+            else if (vm.stateName === 'app.spotTab.sed-structures' && !_.isEmpty(vm.data)) {
+              if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
+              if (!vm.spot.properties.sed.structures) vm.spot.properties.sed.structures = [];
+              vm.spot.properties.sed.structures[vm.lithologyNum] = vm.data;
+            }
+            else if (vm.stateName === 'app.spotTab.sed-interpretations' && !_.isEmpty(vm.data)) {
+              if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
+              if (!vm.spot.properties.sed.interpretations) vm.spot.properties.sed.interpretations = [];
+              vm.spot.properties.sed.interpretations[vm.lithologyNum] = vm.data;
+            }
+            if (vm.spot.properties.sed && !FormFactory.validateSedData(vm.spot)) return $q.reject(null);
           }
           else if (vm.stateName === 'app.spotTab.experimental' && !_.isEmpty(vm.data)) {
             if (!vm.spot.properties.micro) vm.spot.properties.micro = {};
@@ -579,11 +638,51 @@
       return $q.reject(null);
     }
 
+    // Set the data for the active lithology
+    function setLithologyData() {
+      if (vm.spot.properties.sed && vm.spot.properties.sed.lithologies &&
+        vm.stateName === 'app.spotTab.sed-lithologies') vm.data = vm.spot.properties.sed.lithologies[vm.lithologyNum] || {};
+      else if (vm.spot.properties.sed && vm.spot.properties.sed.structures &&
+        vm.stateName === 'app.spotTab.sed-structures') vm.data = vm.spot.properties.sed.structures[vm.lithologyNum] || {};
+      else if (vm.spot.properties.sed && vm.spot.properties.sed.interpretations &&
+        vm.stateName === 'app.spotTab.sed-interpretations') vm.data = vm.spot.properties.sed.interpretations[vm.lithologyNum] || {};
+      else if (vm.spot.properties.sed && vm.spot.properties.sed.bedding && vm.spot.properties.sed.bedding.beds &&
+        vm.stateName === 'app.spotTab.sed-bedding') vm.data = vm.spot.properties.sed.bedding.beds[vm.lithologyNum] || {};
+      else vm.data = {};
+      $log.log('Lithology ' + (vm.lithologyNum + 1) + ' data:', vm.data);
+    }
+
+    // Set the number of the lithology that's active
+    function setLithologyNum(num) {
+      $log.log('Setting lithology num:', num);
+      if (num === 1 && !_.contains(typesWithTwoLithologies, vm.sedCharacter)) {
+        $ionicPopup.alert({
+          'title': 'Lithology 2 Not Applicable',
+          'template': 'Lithology 2 is applicable only to "bed, mixed lithologies" or "interbedded" Spots in ' +
+            (preferences['strat_mode'] ? '"Type of Interval".' : '"Spot Sedimentary Characteristics".')
+        });
+      }
+      else {
+        saveSpot().then(function (spots) {
+          vm.spotChanged = false;
+          vm.lithologyNum = num;
+          setLithologyData(num);
+        });
+      }
+    }
+
+    function shouldShowSedCharacteristicsField() {
+      return !preferences['strat_mode'];
+    }
+
     function showTab(tab) {
-      var preferences = ProjectFactory.getPreferences();
       if (tab === 'spot') return true;
       else if (tab === 'strat_section') {
         return preferences['strat_mode'] && vm.spot && vm.spot.properties && !vm.spot.properties.strat_section_id;
+      }
+      else if (tab === 'sed_interval') {
+        return preferences['strat_mode'] && vm.spot && vm.spot.properties && vm.spot.properties.surface_feature &&
+          vm.spot.properties.surface_feature.surface_feature_type === 'strat_interval';
       }
       else return preferences[tab];
     }
@@ -601,6 +700,70 @@
         $ionicHistory.backView();
         $location.path(toPath);
       });
+    }
+
+    // Handle switching from one possible lithology to two possible lithologies and vice versa.
+    // When switching from 2 to 1:
+    //  - if actually data in Lithology 2 ask for user confirmation since the data in Lithology 2 will be deleted
+    //  - set lithologyNum to 0
+    // If not in Strat Mode update the current page data (vm.data)
+    function switchNumLithologies(newType, oldType) {
+      var beddingSharedSurvey = DataModelsFactory.getDataModel('sed')['bedding_shared'].survey;
+      var beddingSharedFieldNames = _.pluck(beddingSharedSurvey, 'name');
+      // data in the second lithology, give a warning message that the data in Lithology 2 will be deleted
+      if (vm.spot.properties.sed && vm.spot.properties.sed.character &&
+        _.contains(typesWithTwoLithologies, oldType) && !_.contains(typesWithTwoLithologies, newType) &&
+        ((vm.spot.properties.sed.lithologies && vm.spot.properties.sed.lithologies[1]) ||
+          (vm.spot.properties.sed.structures && vm.spot.properties.sed.structures[1]) ||
+          (vm.spot.properties.sed.interpretations && vm.spot.properties.sed.interpretations[1]) ||
+          (vm.spot.properties.sed.bedding && vm.spot.properties.sed.bedding.beds &&
+            vm.spot.properties.sed.bedding.beds[1]))) {
+        var confirmPopup = $ionicPopup.confirm({
+          'title': 'Switch ' + (preferences['strat_mode'] ? 'Interval Type' : 'Sed Characteristics') + ' Warning',
+          'template': 'Are you sure you want to switch from ' +
+            (preferences['strat_mode'] ? 'an interval type' : 'a characteristic') + ' with two possible lithologies ' +
+            'to only one lithology? This will delete any data in Lithology 2 and any shared bedding data.'
+        });
+        confirmPopup.then(function (res) {
+          if (res) {
+            if (vm.spot.properties.sed.lithologies && vm.spot.properties.sed.lithologies[1]) {
+              vm.spot.properties.sed.lithologies.pop();
+            }
+            if (vm.spot.properties.sed.structures && vm.spot.properties.sed.structures[1]) {
+              vm.spot.properties.sed.structures.pop();
+            }
+            if (vm.spot.properties.sed.interpretations && vm.spot.properties.sed.interpretations[1]) {
+              vm.spot.properties.sed.interpretations.pop();
+            }
+            if (vm.spot.properties.sed.bedding) {
+              _.each(vm.spot.properties.sed.bedding, function (value, key) {
+                if (_.contains(beddingSharedFieldNames, key)) delete vm.spot.properties.sed.bedding[key];
+              });
+              if (vm.spot.properties.sed.bedding.beds && vm.spot.properties.sed.bedding.beds[1]) {
+                vm.spot.properties.sed.bedding.beds.pop();
+              }
+            }
+            switchNumLithologiesContinued(newType);
+          }
+          else vm.data.interval_type = oldType;
+        });
+      }
+      else switchNumLithologiesContinued(newType);
+    }
+
+    function switchNumLithologiesContinued(newType) {
+      if (!preferences['strat_mode']) {
+        if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
+        vm.spot.properties.sed.character = newType;
+        SpotFactory.save(vm.spot).then(function () {
+          vm.spotChanged = false;
+          if (!_.contains(typesWithTwoLithologies, newType) && vm.lithologyNum !== 0) {
+            vm.lithologyNum = 0;
+            setLithologyData();
+          }
+        });
+      }
+      else if (!_.contains(typesWithTwoLithologies, newType)) vm.lithologyNum = 0;
     }
 
     function takePicture() {

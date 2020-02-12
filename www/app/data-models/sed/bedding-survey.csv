@@ -1,0 +1,18 @@
+type,name,label,read_only,required,constraint,appearance,calculation,$given_name
+select_multiple wj4dz28,package_geometry,Bed Geometry,false,false,,,,
+begin_group,group_wx8ze11,Lower Contact,,false,,,,
+select_multiple nt45h93,shape_of_lower_contacts,"Shape of lower contact (if variable, select more than one)",false,false,,,,
+select_multiple bq6ko94,character_of_lower_contacts,"Character of lower contact(s) (if variable, select more than one)",false,false,,,,
+text,lower_contact_relief,Lower contact relief,false,false,,,,
+end_group,,,,,,,,
+begin_group,group_cl93o58,Upper Contact,,false,,,,
+select_multiple fo9ve04,shape_of_upper_contacts,"Shape of upper contact (if variable, select more than one)",false,false,,,,
+select_multiple rx9bj85,character_of_upper_contacts,"Character of upper contact (if variable, select more than one)",false,false,,,,
+text,upper_contact_relief,Upper Contact Relief,false,false,,,,
+end_group,,,,,,,,
+decimal,avg_thickness,Average Thickness (cm),,false,. > 0,,,
+decimal,max_thickness,Maximum Thickness (cm),,false,. > 0,,,
+decimal,min_thickness,Minimum Thickness (cm),,false,. > 0,,,
+text,notes,Notes,false,false,,multiline,,
+calculate,__version__,,,false,,,'vJzGRtoY7niyfJi4odJRgA',
+calculate,_version_,,,,,,'voEy7BAn9uxDiqik6r8trD',__version__
