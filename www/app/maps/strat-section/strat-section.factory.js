@@ -31,6 +31,7 @@
       'getStratSectionIntervals': getStratSectionIntervals,
       'getStratSectionSettings': getStratSectionSettings,
       'getStratSectionSpots': getStratSectionSpots,
+      'isMappedInterval': isMappedInterval,
       'isInterval': isInterval,
       'moveIntervalToAfter': moveIntervalToAfter,
       'orderStratSectionIntervals': orderStratSectionIntervals,
@@ -837,6 +838,12 @@
     }
 
     function isInterval(spot) {
+      return _.has(spot, 'properties') && _.has(spot.properties, 'surface_feature') &&
+        _.has(spot.properties.surface_feature, 'surface_feature_type') &&
+        spot.properties.surface_feature.surface_feature_type === 'strat_interval';
+    }
+
+    function isMappedInterval(spot) {
       return _.has(spot, 'properties') && _.has(spot.properties, 'strat_section_id') &&
         _.has(spot.properties, 'surface_feature') && _.has(spot.properties.surface_feature, 'surface_feature_type') &&
         spot.properties.surface_feature.surface_feature_type === 'strat_interval';

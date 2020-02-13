@@ -382,7 +382,7 @@
           });
           confirmPopup.then(function (res) {
             if (res) {
-              if (StratSectionFactory.isInterval(vm.spot)) {
+              if (StratSectionFactory.isMappedInterval(vm.spot)) {
                 StratSectionFactory.deleteInterval(vm.spot).then(function () {
                   vm.spot = undefined;
                   vm.initializing = true;
@@ -642,7 +642,7 @@
             $log.log('Spot Changed! Existing Spot:', savedSpot, 'Spot to Save:', vm.spot);
             if (vm.spot.properties.inferences) delete vm.spot.properties.inferences;  // Remove leftover inferences
             // If Spot is an interval check if we need to do any updates to the interval
-            if (StratSectionFactory.isInterval(vm.spot)) {
+            if (StratSectionFactory.isMappedInterval(vm.spot)) {
               vm.spot = StratSectionFactory.checkForIntervalUpdates(vm.stateName, vm.spot, savedSpot);
             }
             return SpotFactory.save(vm.spot).then(function () {
@@ -680,7 +680,7 @@
         $ionicPopup.alert({
           'title': 'Lithology 2 Not Applicable',
           'template': 'Lithology 2 is applicable only to "bed, mixed lithologies" or "interbedded" Spots in ' +
-            (preferences['strat_mode'] ? '"Type of Interval".' : '"Spot Sedimentary Characteristics".')
+            (StratSectionFactory.isInterval(vm.spot) ? '"Type of Interval".' : '"Spot Sedimentary Characteristics".')
         });
       }
       else {
@@ -693,7 +693,7 @@
     }
 
     function shouldShowSedCharacteristicsField() {
-      return !preferences['strat_mode'];
+      return !StratSectionFactory.isInterval(vm.spot);
     }
 
     function showTab(tab) {
@@ -701,10 +701,7 @@
       else if (tab === 'strat_section') {
         return preferences['strat_mode'] && vm.spot && vm.spot.properties && !vm.spot.properties.strat_section_id;
       }
-      else if (tab === 'sed_interval') {
-        return preferences['strat_mode'] && vm.spot && vm.spot.properties && vm.spot.properties.surface_feature &&
-          vm.spot.properties.surface_feature.surface_feature_type === 'strat_interval';
-      }
+      else if (tab === 'sed_interval') return StratSectionFactory.isInterval(vm.spot);
       else return preferences[tab];
     }
 
@@ -740,10 +737,12 @@
           (vm.spot.properties.sed.bedding && vm.spot.properties.sed.bedding.beds &&
             vm.spot.properties.sed.bedding.beds[1]))) {
         var confirmPopup = $ionicPopup.confirm({
-          'title': 'Switch ' + (preferences['strat_mode'] ? 'Interval Type' : 'Sed Characteristics') + ' Warning',
+          'title': 'Switch ' + (StratSectionFactory.isInterval(vm.spot) ? 'Interval Type' : 'Sed Characteristics') +
+            ' Warning',
           'template': 'Are you sure you want to switch from ' +
-            (preferences['strat_mode'] ? 'an interval type' : 'a characteristic') + ' with two possible lithologies ' +
-            'to only one lithology? This will delete any data in Lithology 2 and any shared bedding data.'
+            (StratSectionFactory.isInterval(vm.spot) ? 'an interval type' : 'a characteristic') + ' with two' +
+            ' possible lithologies to only one lithology? This will delete any data in Lithology 2 and any' +
+            ' shared bedding data.'
         });
         confirmPopup.then(function (res) {
           if (res) {
@@ -773,7 +772,7 @@
     }
 
     function switchNumLithologiesContinued(newType) {
-      if (!preferences['strat_mode']) {
+      if (!StratSectionFactory.isInterval(vm.spot)) {
         if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
         vm.spot.properties.sed.character = newType;
         SpotFactory.save(vm.spot).then(function () {

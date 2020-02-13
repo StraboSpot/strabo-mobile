@@ -126,7 +126,7 @@
     // Handle a toggle (called being turned on or off
     function toggleAcknowledgeChecked(field, data) {
       if (field === 'trace_feature') FormFactory.handleTraceFeatureToggled(field, data);
-      else if (field === 'strat_mode') FormFactory.handleStratModeToggled(field, data);
+      //else if (field === 'strat_mode') FormFactory.handleStratModeToggled(field, data);
     }
 
     function toggleChecked(field, choice, data) {

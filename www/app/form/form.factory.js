@@ -23,7 +23,7 @@
       'handleTraceFeatureToggled': handleTraceFeatureToggled,
       'isRelevant': isRelevant,
       'setForm': setForm,
-      'handleStratModeToggled': handleStratModeToggled,
+      //'handleStratModeToggled': handleStratModeToggled,
       'validate': validate,
       'validateForm': validateForm,
       'validateSedData': validateSedData
@@ -105,7 +105,7 @@
     }
 
     // Handle Strat Mode being toggled on or off on the Project Preferences page
-    function handleStratModeToggled(field, data) {
+/*    function handleStratModeToggled(field, data) {
       if (data[field] && !_.isEmpty(SpotFactory.getSpotsWithOtherSedCharacter())) {
         $log.log('strat mode toggled on');
         var confirmPopup1 = $ionicPopup.confirm({
@@ -131,7 +131,7 @@
         });
       }
       else if (!data[field]) SpotFactory.deleteIntervalDataForAllSpots();
-    }
+    }*/
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair
     // The 2nd param, properties, is used in the eval method
