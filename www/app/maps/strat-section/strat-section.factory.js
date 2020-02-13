@@ -410,9 +410,14 @@
 
     // Recalculate the geometry of an interval using spot properties
     function recalculateIntervalGeometry(spot) {
-      var extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
-      spot.geometry = calculateIntervalGeometry(spot.properties.strat_section_id, spot.properties.sed, extent[1]);
-      $log.log('Recalculated Spot geometry');
+      try {
+        var extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
+        spot.geometry = calculateIntervalGeometry(spot.properties.strat_section_id, spot.properties.sed, extent[1]);
+        $log.log('Recalculated Spot geometry');
+      }
+      catch(e) {
+        $log.log('Error reading Spot geometry', spot, e);
+      }
       return spot;
     }
 

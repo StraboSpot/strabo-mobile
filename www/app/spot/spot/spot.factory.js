@@ -235,35 +235,39 @@
         'LineString': ['LineString', 'Polygon', 'MultiPolygon'],
         'Polygon': ['Polygon', 'MultiPolygon']
       };
-      // Make sure we're using booleanWithin with valid types
-      if (_.contains(_.keys(validTypesForBooleanWithin), spot1.geometry.type)
-        && _.contains(validTypesForBooleanWithin[spot1.geometry.type], spot2.geometry.type)) {
-        boolWithin = turf.booleanWithin(spot1, spot2);
-      }
-      // Handle Geometry Collections
-      else if (spot1.geometry.type === 'GeometryCollection') {
-        _.each(spot1.geometry.geometries, function (geometry1) {
-          if (!boolWithin && _.contains(_.keys(validTypesForBooleanWithin), geometry1.type)
-            && _.contains(validTypesForBooleanWithin[geometry1], spot2.geometry.type)) {
-            boolWithin = turf.booleanWithin(geometry1, spot2.geometry.type);
-          }
-          else if (!boolWithin && spot2.geometry.type === 'GeometryCollection') {
-            _.each(spot2.geometry.geometries, function (geometry2) {
-              if (!boolWithin && _.contains(_.keys(validTypesForBooleanWithin), geometry1.type)
-                && _.contains(validTypesForBooleanWithin[geometry1], geometry2)) {
-                boolWithin = turf.booleanWithin(geometry1, geometry2);
-              }
-            });
-          }
-        });
-      }
-      else if (spot2.geometry.type === 'GeometryCollection') {
-        _.each(spot2.geometry.geometries, function (geometry2) {
-          if (!boolWithin && _.contains(_.keys(validTypesForBooleanWithin), spot1.geometry.type)
-            && _.contains(validTypesForBooleanWithin[spot1.geometry.type], geometry2.type)) {
-            boolWithin = turf.booleanWithin(spot1.geometry, geometry2);
-          }
-        });
+      try {
+        // Make sure we're using booleanWithin with valid types
+        if (_.contains(_.keys(validTypesForBooleanWithin), spot1.geometry.type)
+          && _.contains(validTypesForBooleanWithin[spot1.geometry.type], spot2.geometry.type)) {
+          boolWithin = turf.booleanWithin(spot1, spot2);
+        }
+        // Handle Geometry Collections
+        else if (spot1.geometry.type === 'GeometryCollection') {
+          _.each(spot1.geometry.geometries, function (geometry1) {
+            if (!boolWithin && _.contains(_.keys(validTypesForBooleanWithin), geometry1.type)
+              && _.contains(validTypesForBooleanWithin[geometry1], spot2.geometry.type)) {
+              boolWithin = turf.booleanWithin(geometry1, spot2.geometry.type);
+            }
+            else if (!boolWithin && spot2.geometry.type === 'GeometryCollection') {
+              _.each(spot2.geometry.geometries, function (geometry2) {
+                if (!boolWithin && _.contains(_.keys(validTypesForBooleanWithin), geometry1.type)
+                  && _.contains(validTypesForBooleanWithin[geometry1], geometry2)) {
+                  boolWithin = turf.booleanWithin(geometry1, geometry2);
+                }
+              });
+            }
+          });
+        }
+        else if (spot2.geometry.type === 'GeometryCollection') {
+          _.each(spot2.geometry.geometries, function (geometry2) {
+            if (!boolWithin && _.contains(_.keys(validTypesForBooleanWithin), spot1.geometry.type)
+              && _.contains(validTypesForBooleanWithin[spot1.geometry.type], geometry2.type)) {
+              boolWithin = turf.booleanWithin(spot1.geometry, geometry2);
+            }
+          });
+        }
+      } catch (e) {
+        $log.error('Error with Spot geometry! Spot 1:', spot1, 'Spot 2:', spot2, 'Error:', e);
       }
       return boolWithin;
     }
