@@ -392,8 +392,10 @@
         case 'sand_grain_size':
         case 'congl_grain_size':
         case 'breccia_grain_size':
-          if (!vm.data.grain_size_range) vm.data.grain_size_range = [];
-          vm.data.grain_size_range.push(newValue);
+          if (newValue) {
+            if (!vm.data.grain_size_range) vm.data.grain_size_range = [];
+            vm.data.grain_size_range.push(newValue);
+          }
           break;
         // Strat Section y axis units
         case 'column_y_axis_units':
