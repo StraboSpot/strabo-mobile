@@ -77,12 +77,17 @@
       var avgThicknessEl = document.getElementById('avg_thickness');
       var minThicknessEl = document.getElementById('min_thickness');
       var maxThicknessEl = document.getElementById('max_thickness');
+      var thicknessUnitsEl = document.getElementById('interbed_thickness_units');
+      var interbedGroupEl = document.getElementById('group_hh2iq16');
       if (avgThicknessEl) {
         if (vmParent.dataOutsideForm.interbed_proportion_change === 'increase'
           || vmParent.dataOutsideForm.interbed_proportion_change === 'decrease') {
           avgThicknessEl.style.display = 'none';
           minThicknessEl.style.display = '';
           maxThicknessEl.style.display = '';
+          thicknessUnitsEl.style.display = '';
+          interbedGroupEl.style.display = '';
+
           // Delete avg thickness fields
           if (vmParent.data.avg_thickness) delete vmParent.data.avg_thickness;
           if (vmParent.spot.properties && vmParent.spot.properties.sed) {
@@ -98,6 +103,9 @@
           avgThicknessEl.style.display = '';
           minThicknessEl.style.display = 'none';
           maxThicknessEl.style.display = 'none';
+          thicknessUnitsEl.style.display = '';
+          interbedGroupEl.style.display = '';
+
           // Delete any min & max thickness fields
           if (vmParent.data.max_thickness) delete vmParent.data.max_thickness;
           if (vmParent.data.min_thickness) delete vmParent.data.min_thickness;
@@ -110,6 +118,13 @@
               }
             });
           }
+        }
+        else {
+          avgThicknessEl.style.display = 'none';
+          minThicknessEl.style.display = 'none';
+          maxThicknessEl.style.display = 'none';
+          thicknessUnitsEl.style.display = 'none';
+          interbedGroupEl.style.display = 'none';
         }
       }
     }
