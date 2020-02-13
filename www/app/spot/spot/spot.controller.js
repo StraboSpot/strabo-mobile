@@ -219,6 +219,60 @@
       else $location.path('/app/spots');      // default backView if no backView set
     }
 
+    // Construct the data object for the Sed page
+    function handleSaveSedData() {
+      var sedKey = vm.stateName.split('-')[1];
+      var sed = vm.spot.properties.sed ? vm.spot.properties.sed : {};
+
+      // Interval
+      if (vm.stateName === 'app.spotTab.sed-interval' && !_.isEmpty(vm.data)) {
+        if (vm.data.interval_type) {
+          sed.character = vm.data.interval_type;
+          delete vm.data.interval_type;
+        }
+        if (!_.isEmpty(vm.data)) {
+          if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
+          if (!sed.interval) sed.interval = {};
+          sed.interval = vm.data;
+        }
+      }
+      // Bedding (shared fields and 2 lithologies)
+      else if (vm.stateName === 'app.spotTab.sed-bedding') {
+        if (_.isEmpty(vm.data)) {
+          if (sed.bedding && sed.bedding.beds && sed.bedding.beds[vm.lithologyNum]) {
+            if (vm.lithologyNum === 0) sed.bedding.beds[0] = {};
+            else sed.bedding.beds.pop();
+            if (sed.bedding.beds.length === 1 && _.isEmpty(sed.bedding.beds[0])) delete sed.bedding.beds;
+          }
+          if (_.isEmpty(vm.dataOutsideForm) && _.isEmpty(sed.bedding)) delete sed.bedding;
+        }
+        else {
+          if (!sed.bedding) sed.bedding = {};
+          _.extend(sed.bedding, vm.dataOutsideForm);
+          if (!sed.bedding.beds) sed.bedding.beds = [];
+          if (vm.lithologyNum === 1 && !sed.bedding.beds[0]) sed.bedding.beds[0] = {};
+          sed.bedding.beds[vm.lithologyNum] = vm.data;
+        }
+      }
+      // Other Sed pages that have 2 lithologies
+      else {
+        if (_.isEmpty(vm.data)) {
+          if (sed[sedKey] && sed[sedKey][vm.lithologyNum]) {
+            if (vm.lithologyNum === 0) sed[sedKey][0] = {};
+            else sed[sedKey].pop();
+            if (sed[sedKey].length === 1 && _.isEmpty(sed[sedKey][0])) delete sed[sedKey];
+          }
+        }
+        else {
+          if (!sed[sedKey]) sed[sedKey] = [];
+          if (vm.lithologyNum === 1 && !sed[sedKey][0]) sed[sedKey][0] = {};
+          sed[sedKey][vm.lithologyNum] = vm.data;
+        }
+      }
+      if (vm.spot.properties.sed && !FormFactory.validateSedData(vm.spot)) return $q.reject(null);
+      if (_.isEmpty(sed)) delete vm.spot.properties.sed;
+    }
+
     // If the backView is within the same Spot keep getting backViews until
     // we get a backView out of the Spot or there are no more backViews
     function removeSameSpotBackViews() {
@@ -547,7 +601,7 @@
     function saveSpot() {
       if (vm.spot && vm.spot.properties) {
         vm.spot = HelpersFactory.cleanObj(vm.spot);
-        var savedSpot = SpotFactory.getSpotById(vm.spot.properties.id);
+        var savedSpot = angular.copy(SpotFactory.getSpotById(vm.spot.properties.id));
         vm.data = HelpersFactory.cleanObj(vm.data);
         if (FormFactory.validateForm(vm.stateName, vm.spot, vm.data)) {
           if (vm.stateName === 'app.spotTab.spot' && !_.isEmpty(vm.data)) {
@@ -560,58 +614,7 @@
               vm.spot.properties.surface_feature = vm.data;
             }
           }
-          else if (vm.stateName.split('-')[0] === 'app.spotTab.sed') {
-            var sed = vm.spot.properties.sed ? vm.spot.properties.sed : {};
-            if (vm.stateName === 'app.spotTab.sed-bedding') {
-              if (_.isEmpty(vm.data)) {
-                if (sed.bedding && sed.bedding.beds && sed.bedding.beds[vm.lithologyNum]) {
-                  if (vm.lithologyNum === 0) sed.bedding.beds[0] = {};
-                  else sed.bedding.beds.pop();
-                  if (sed.bedding.beds.length === 1 && _.isEmpty(sed.bedding.beds[0])) {
-                    delete sed.bedding.beds;
-                    if (_.isEmpty(vm.dataOutsideForm)) delete sed.bedding;
-                  }
-                }
-              }
-              else {
-                if (!sed.bedding) sed.bedding = {};
-                _.extend(sed.bedding, vm.dataOutsideForm);
-                if (!sed.bedding.beds) sed.bedding.beds = [];
-                if (vm.lithologyNum === 1 && !sed.bedding.beds[0]) sed.bedding.beds[0] = {};
-                sed.bedding.beds[vm.lithologyNum] = vm.data;
-              }
-            }
-            else if (vm.stateName === 'app.spotTab.sed-interval' && !_.isEmpty(vm.data)) {
-              if (vm.data.interval_type) {
-                sed.character = vm.data.interval_type;
-                delete vm.data.interval_type;
-              }
-              if (!_.isEmpty(vm.data)) {
-                if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
-                if (!sed.interval) sed.interval = {};
-                sed.interval = vm.data;
-              }
-            }
-            else if (vm.stateName === 'app.spotTab.sed-lithologies' && !_.isEmpty(vm.data)) {
-              if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
-              if (!sed.lithologies) sed.lithologies = [];
-              if (vm.lithologyNum === 1 && !sed.lithologies[0]) sed.lithologies[0] = {};
-              sed.lithologies[vm.lithologyNum] = vm.data;
-            }
-            else if (vm.stateName === 'app.spotTab.sed-structures' && !_.isEmpty(vm.data)) {
-              if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
-              if (!sed.structures) sed.structures = [];
-              if (vm.lithologyNum === 1 && !sed.structures[0]) sed.structures[0] = {};
-              sed.structures[vm.lithologyNum] = vm.data;
-            }
-            else if (vm.stateName === 'app.spotTab.sed-interpretations' && !_.isEmpty(vm.data)) {
-              if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
-              if (!sed.interpretations) sed.interpretations = [];
-              if (vm.lithologyNum === 1 && !sed.interpretations[0]) sed.interpretations[0] = {};
-              sed.interpretations[vm.lithologyNum] = vm.data;
-            }
-            if (vm.spot.properties.sed && !FormFactory.validateSedData(vm.spot)) return $q.reject(null);
-          }
+          else if (vm.stateName.split('-')[0] === 'app.spotTab.sed') handleSaveSedData();
           else if (vm.stateName === 'app.spotTab.experimental' && !_.isEmpty(vm.data)) {
             if (!vm.spot.properties.micro) vm.spot.properties.micro = {};
             if (!vm.spot.properties.micro.experimental) vm.spot.properties.micro.experimental = {};

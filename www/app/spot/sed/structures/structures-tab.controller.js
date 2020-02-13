@@ -48,7 +48,7 @@
         FormFactory.setForm('sed', 'structures_physical');
         if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.structures &&
           vmParent.spot.properties.sed.structures[vmParent.lithologyNum]) {
-          vmParent.data = vmParent.spot.properties.sed.structures[vmParent.lithologyNum];
+          vmParent.data = angular.copy(vmParent.spot.properties.sed.structures[vmParent.lithologyNum]);
         }
         else vmParent.data = {};
         $log.log('Sed Structures ' + (vmParent.lithologyNum + 1) + ':', vmParent.data);

@@ -48,7 +48,7 @@
         FormFactory.setForm('sed', 'lithologies_lithology');
         if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.lithologies
           && vmParent.spot.properties.sed.lithologies[vmParent.lithologyNum]) {
-          vmParent.data = vmParent.spot.properties.sed.lithologies[vmParent.lithologyNum];
+          vmParent.data = angular.copy(vmParent.spot.properties.sed.lithologies[vmParent.lithologyNum]);
         }
         else vmParent.data = {};
         $log.log('Sed Lithology ' + (vmParent.lithologyNum + 1) + ':', vmParent.data);

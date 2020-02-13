@@ -44,11 +44,11 @@
         FormFactory.setForm('sed', 'interval');
         if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.interval) {
           $log.log('Sed Interval:', vmParent.spot.properties.sed.interval);
-          vmParent.data = vmParent.spot.properties.sed.interval;
+          vmParent.data = angular.copy(vmParent.spot.properties.sed.interval);
         }
         else vmParent.data = {};
         if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.character) {
-          vmParent.data.interval_type = vmParent.spot.properties.sed.character;
+          vmParent.data.interval_type = angular.copy(vmParent.spot.properties.sed.character);
         }
       }
     }
