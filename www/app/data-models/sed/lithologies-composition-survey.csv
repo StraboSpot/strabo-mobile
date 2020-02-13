@@ -36,7 +36,7 @@ decimal,giant_ooid_percent,Giant Ooid percent,false,,"selected(${non_skeletal_ca
 decimal,seafloor_precipitate_percent,Seafloor Precipitate percent,false,,"selected(${non_skeletal_carbonate_compone}, 'seafloor_preci')",,,
 decimal,molar_tooth_percent,Molar Tooth percent,false,,"selected(${non_skeletal_carbonate_compone}, 'molar_tooth')",,,
 decimal,other_non_skeletal_component_percent,Other Non-Skeletal Component percent,false,,"selected(${non_skeletal_carbonate_compone}, 'other')",,,
-select_multiple kg6zo76,clay_or_mudstone_type,Clay or Mudstone Type,false,false,,,,
+select_multiple kg6zo76,clay_or_mudstone_type,Claystone or Mudstone Type,false,false,,,,
 text,other_claystone_mudstone,Other Claystone/Mudstone,false,false,"selected(${clay_or_mudstone_type}, 'other')",,,
 decimal,siliceous_mudstone_percent,Siliceous mudstone percent,false,false,"selected(${clay_or_mudstone_type}, 'siliceous_muds')",,,
 decimal,siliceous_calcareous_mudstone_percent,Siliceous calcareous mudstone percent,false,false,"selected(${clay_or_mudstone_type}, 'siliceous_calc')",,,
@@ -61,7 +61,7 @@ decimal,siltstone_clast_percent,Siltstone clast percent,false,false,"selected(${
 decimal,sandstone_clast_percent,Sandstone clast percent,false,false,"selected(${clast_composition}, 'sandstone')",,,
 decimal,conglomerate_clast_percent,Conglomerate clast percent,false,false,"selected(${clast_composition}, 'conglomerate')",,,
 decimal,limestone_clast_percent,Limestone clast percent,false,false,"selected(${clast_composition}, 'limestone')",,,
-decimal,dolomite_clast_percent,Dolomite clast percent,false,false,"selected(${clast_composition}, 'dolomite')",,,
+decimal,dolostone_clast_percent,Dolostone clast percent,false,false,"selected(${clast_composition}, 'dolostone')",,,
 decimal,wackestone_clast_percent,Wackestone clast percent,false,false,"selected(${clast_composition}, 'wackestone')",,,
 decimal,packstone_clast_percent,Packstone clast percent,false,false,"selected(${clast_composition}, 'packstone')",,,
 decimal,grainstone_clast_percent,Grainstone clast percent,false,false,"selected(${clast_composition}, 'grainstone')",,,
@@ -78,7 +78,7 @@ decimal,sandstone_matrix_percent,Sandstone matrix percent,false,false,"selected(
 decimal,conglomerate_matrix_percent,Conglomerate matrix percent,false,false,"selected(${matrix_composition}, 'conglomerate')",,,
 select_multiple ng3et79,carbonate_matrix_type,Carbonate Matrix Type,false,false,"selected(${matrix_composition}, 'carbonate')",,,
 decimal,limestone_matrix_percent,Limestone matrix percent,false,false,"selected(${carbonate_matrix_type}, 'limestone')",,,
-decimal,dolomite_matrix_percent,Dolomite matrix percent,false,false,"selected(${carbonate_matrix_type}, 'dolomite')",,,
+decimal,dolostone_matrix_percent,Dolostone matrix percent,false,false,"selected(${carbonate_matrix_type}, 'dolostone')",,,
 decimal,skeletal_matrix_percent,Skeletal matrix percent,false,false,"selected(${carbonate_matrix_type}, 'skeletal')",,,
 decimal,wackestone_matrix_percent,Wackestone matrix percent,false,false,"selected(${carbonate_matrix_type}, 'wackestone')",,,
 decimal,packstone_matrix_percent,Packstone matrix percent,false,false,"selected(${carbonate_matrix_type}, 'packstone')",,,
@@ -122,4 +122,4 @@ decimal,tar_percent,Tar percent,false,false,"selected(${organic_coal_lithologies
 text,notes,Notes,false,false,,multiline,,
 end_group,,,,,,,,
 calculate,__version__,,false,,,,'vtuzrkPfhvY5znAdhzG8Kn',
-calculate,_version_,,,,,,'vxJsyK6ZcFsyz8NiCMHRfq',__version__
+calculate,_version_,,,,,,'vaBuWGfmCXccAhFWWqD5NJ',__version__
