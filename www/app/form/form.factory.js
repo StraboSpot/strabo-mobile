@@ -239,45 +239,97 @@
       }
     }
 
-    // Check special conditions for sed data
-    function validateSedData(spot) {
+    // Check special conditions for sed data where n is the number of the current lithology
+    function validateSedData(spot, n, stateName) {
       var errorMessages = [];
+      var isMappedInterval = StratSectionFactory.isMappedInterval(spot);
       var sed = spot.properties.sed;
-      if (StratSectionFactory.isInterval(spot) && sed.interval) {
-        var spotWithThisStratSection = StratSectionFactory.getSpotWithThisStratSection(
-          spot.properties.strat_section_id);
-        if (spotWithThisStratSection && spotWithThisStratSection.properties &&
-          spotWithThisStratSection.properties.sed && spotWithThisStratSection.properties.sed.strat_section) {
-          var units = spotWithThisStratSection.properties.sed.strat_section.column_y_axis_units;
-          if (units !== sed.interval.thickness_units) {
-            errorMessages.push('- The <b>Thickness Units</b> must be <b>' + units + '</b> since <b>' + units +
-              '</b> have been assigned for the properties of this strat section.')
+
+      // Validation checks for Interval page
+      if (stateName === 'app.spotTab.sed-interval' && isMappedInterval) {
+        if (sed.interval) {
+          var spotWithThisStratSection = StratSectionFactory.getSpotWithThisStratSection(
+            spot.properties.strat_section_id);
+          if (spotWithThisStratSection && spotWithThisStratSection.properties &&
+            spotWithThisStratSection.properties.sed && spotWithThisStratSection.properties.sed.strat_section) {
+            var units = spotWithThisStratSection.properties.sed.strat_section.column_y_axis_units;
+            if (units !== sed.interval.thickness_units) {
+              errorMessages.push('- <b>Thickness Units</b> must be <b>' + units + '</b> since <b>' + units +
+                '</b> have been assigned for the properties of this strat section.')
+            }
           }
+        }
+        else {
+          errorMessages.push('- <b>Interval</b> data must be specified for a/an ' +
+            DataModelsFactory.getLabelFromNewDictionary(sed.character, sed.character) + ' interval.');
         }
       }
-      _.times(2, function (n) {
-        if (sed.interval && sed.lithologies && (sed.character === 'bed' || sed.character === 'bed_mixed_lit' ||
-          sed.character === 'interbedded' || sed.character === 'package_succe')) {
-          if (sed.lithologies[n]) {
-            if (!sed.lithologies[n].primary_lithology) {
-              errorMessages.push('- The <b>Primary Lithology</b> must be specified if the there is any type of ' +
-                'bedding.');
+
+      // Validation checks for Lithologies page
+      if (stateName === 'app.spotTab.sed-lithologies' && isMappedInterval && (sed.character === 'bed' ||
+        sed.character === 'bed_mixed_lit' || sed.character === 'interbedded' || sed.character === 'package_succe')) {
+        if (sed.lithologies && sed.lithologies[n]) {
+          if (!sed.lithologies[n].primary_lithology) {
+            errorMessages.push('- <b>Primary Lithology</b> must be specified for Lithology ' + (n + 1) + ' if there ' +
+              'is any type of bedding.');
+          }
+          if (sed.lithologies[n].primary_lithology === 'siliciclastic'
+            && (!sed.lithologies[n].mud_silt_grain_size && !sed.lithologies[n].sand_grain_size
+              && !sed.lithologies[n].congl_grain_size && !sed.lithologies[n].breccia_grain_size)) {
+            errorMessages.push(
+              '- <b>Grain Size</b> must be specified for Lithology ' + (n + 1) + ' if the Primary Lithology is ' +
+              'siliciclastic.');
+          }
+          if ((sed.lithologies[n].primary_lithology === 'limestone'
+            || sed.lithologies[n].primary_lithology === 'dolostone') && !sed.lithologies[n].dunham_classification) {
+            errorMessages.push(
+              '- <b>Dunham Classification</b> must be specified for Lithology ' + (n + 1) + ' if the Primary ' +
+              'Lithology is limestone or dolostone.');
+          }
+        }
+        else {
+          errorMessages.push('- <b>Lithologies</b> must be specified for a/an ' +
+            DataModelsFactory.getLabelFromNewDictionary(sed.character, sed.character) + ' interval.');
+        }
+      }
+
+      // Validation checks for Bedding page
+      if (stateName === 'app.spotTab.sed-bedding' && isMappedInterval &&
+        (sed.character === 'interbedded' || sed.character === 'bed_mixed_lit')) {
+        if (sed.bedding && sed.bedding.beds) {
+          if (!sed.bedding.interbed_proportion) {
+            errorMessages.push('- <b>' +
+              DataModelsFactory.getLabelFromNewDictionary('interbed_proportion', 'interbed_proportion') +
+              '</b> must be specified.');
+          }
+          if (!sed.bedding.interbed_proportion_change) {
+            errorMessages.push('- <b>' +
+              DataModelsFactory.getLabelFromNewDictionary('interbed_proportion_change', 'interbed_proportion_change') +
+              '</b> must be specified.');
+          }
+          else {
+            if ((sed.bedding.interbed_proportion_change === 'increase' ||
+              sed.bedding.interbed_proportion_change === 'decrease') && (!sed.bedding.beds[n] ||
+              (sed.bedding.beds[n] && !(sed.bedding.beds[n].max_thickness && sed.bedding.beds[n].min_thickness)))) {
+              errorMessages.push('- Both <b>' +
+                DataModelsFactory.getLabelFromNewDictionary('max_thickness', 'max_thickness') +
+                '</b> and <b>' +
+                DataModelsFactory.getLabelFromNewDictionary('min_thickness', 'min_thickness') +
+                '</b> must be specified for Lithology ' + (n + 1) + '.');
             }
-            if (sed.lithologies[n].primary_lithology === 'siliciclastic'
-              && (!sed.lithologies[n].mud_silt_grain_size && !sed.lithologies[n].sand_grain_size
-                && !sed.lithologies[n].congl_grain_size && !sed.lithologies[n].breccia_grain_size)) {
-              errorMessages.push('- The <b>Grain Size</b> must be specified if the Primary Lithology is ' +
-                'siliciclastic.');
-            }
-            if ((sed.lithologies[n].primary_lithology === 'limestone'
-              || sed.lithologies[n].primary_lithology === 'dolostone') && !sed.lithologies[n].dunham_classification) {
+            else if (sed.bedding.interbed_proportion_change === 'no_change' && (!sed.bedding.beds[n] ||
+              (sed.bedding.beds[n] && !sed.bedding.beds[n].avg_thickness))) {
               errorMessages.push(
-                '- The <b>Dunham Classification</b> must be specified if the Primary Lithology is limestone or ' +
-                'dolostone.');
+                '- <b>' + DataModelsFactory.getLabelFromNewDictionary('avg_thickness', 'avg_thickness') +
+                '</b> must be specified for Lithology ' + (n + 1) + '.');
             }
           }
         }
-      });
+        else {
+          errorMessages.push('- <b>Bedding</b> measurements must be specified for a/an' +
+            DataModelsFactory.getLabelFromNewDictionary(sed.character, sed.character) + '  interval.');
+        }
+      }
 
       if (_.isEmpty(errorMessages)) return true;
       else {

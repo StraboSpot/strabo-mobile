@@ -230,11 +230,9 @@
           sed.character = vm.data.interval_type;
           delete vm.data.interval_type;
         }
-        if (!_.isEmpty(vm.data)) {
-          if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
-          if (!sed.interval) sed.interval = {};
-          sed.interval = vm.data;
-        }
+        if (!vm.spot.properties.sed) vm.spot.properties.sed = {};
+        if (!sed.interval) sed.interval = {};
+        sed.interval = vm.data;
       }
       // Bedding (shared fields and 2 lithologies)
       else if (vm.stateName === 'app.spotTab.sed-bedding') {
@@ -269,8 +267,6 @@
           sed[sedKey][vm.lithologyNum] = vm.data;
         }
       }
-      if (vm.spot.properties.sed && !FormFactory.validateSedData(vm.spot)) return $q.reject(null);
-      if (_.isEmpty(sed)) delete vm.spot.properties.sed;
     }
 
     // If the backView is within the same Spot keep getting backViews until
@@ -614,7 +610,13 @@
               vm.spot.properties.surface_feature = vm.data;
             }
           }
-          else if (vm.stateName.split('-')[0] === 'app.spotTab.sed') handleSaveSedData();
+          else if (vm.stateName.split('-')[0] === 'app.spotTab.sed') {
+            handleSaveSedData();
+            if (vm.spot.properties.sed && !FormFactory.validateSedData(vm.spot, vm.lithologyNum, vm.stateName)) {
+              return $q.reject(null);
+            }
+            if (_.isEmpty(vm.spot.properties.sed)) delete vm.spot.properties.sed;
+          }
           else if (vm.stateName === 'app.spotTab.experimental' && !_.isEmpty(vm.data)) {
             if (!vm.spot.properties.micro) vm.spot.properties.micro = {};
             if (!vm.spot.properties.micro.experimental) vm.spot.properties.micro.experimental = {};
