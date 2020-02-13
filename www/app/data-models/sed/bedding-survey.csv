@@ -10,9 +10,12 @@ select_multiple fo9ve04,shape_of_upper_contacts,"Shape of upper contact (if vari
 select_multiple rx9bj85,character_of_upper_contacts,"Character of upper contact (if variable, select more than one)",false,false,,,,
 text,upper_contact_relief,Upper Contact Relief,false,false,,,,
 end_group,,,,,,,,
-decimal,avg_thickness,Average Thickness (cm),,false,. > 0,,,
-decimal,max_thickness,Maximum Thickness (cm),,false,. > 0,,,
-decimal,min_thickness,Minimum Thickness (cm),,false,. > 0,,,
+begin_group,group_hh2iq16,Interbed Thickness,,false,,,,
+decimal,avg_thickness,Average Thickness,,false,. > 0,,,
+decimal,max_thickness,Maximum Thickness,,false,. > 0,,,
+decimal,min_thickness,Minimum Thickness,,false,. > 0,,,
+select_one zc89y27,interbed_thickness_units,Interbed Thickness Units,,true,,,,
+end_group,,,,,,,,
 text,notes,Notes,false,false,,multiline,,
 calculate,__version__,,,false,,,'vJzGRtoY7niyfJi4odJRgA',
-calculate,_version_,,,,,,'voEy7BAn9uxDiqik6r8trD',__version__
+calculate,_version_,,,,,,'vRygsPMkudpHFGigRe2Wka',__version__
