@@ -69,9 +69,7 @@
     // Remove nulls, undefined, empty strings and empty objects
     function cleanObj(obj) {
       _.each(obj, function (ele, i) {
-        if (_.isArray(obj) && obj.length - 1 === i && _.isEmpty(ele)) obj.pop();
-        else if (_.isArray(obj) && _.isEmpty(ele)) obj[i] = {};
-        else if (_.isObject(ele) && _.isEmpty(ele) && !_.isDate(ele)) delete obj[i];
+        if (_.isObject(ele) && _.isEmpty(ele) && !_.isDate(ele) && !_.isArray(obj)) delete obj[i];
         else if (_.isObject(ele) && !_.isEmpty(ele)) obj[i] = cleanObj(ele);
         else if (_.isString(ele) && ele.trim() === '') delete obj[i];
         else if (_.isUndefined(ele)) delete obj[i];
