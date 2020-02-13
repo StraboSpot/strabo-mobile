@@ -163,7 +163,8 @@
 
     // Copy the Rest of the Sed Data
     function copyRestOfInterval(interval) {
-     interval.properties.sed = HelpersFactory.deepObjectExtend(vm.intervalToCopy.properties.sed, interval.properties.sed);
+      interval.properties.sed = HelpersFactory.deepObjectExtend(vm.intervalToCopy.properties.sed,
+        interval.properties.sed);
       vm.intervalToCopy = {};
       return interval;
     }
@@ -436,6 +437,25 @@
           else if (vm.data.interbed_siliciclastic_type === 'siltstone') vm.data.mud_silt_interbed_grain_size = 'silt';
         }
       });
+
+      // Watch for interval type changes
+      $scope.$watch('vm.data.interval_type', function (newValue, oldValue) {
+        if (newValue && newValue !== oldValue) {
+          if (vm.data.interval_type === 'package_succe') vm.data.package_thickness_units = vm.data.thickness_units;
+          else delete vm.data.package_thickness_units
+        }
+      });
+
+      // Watch for interbed proportion change field changes
+      $scope.$watch('vm.data.interbed_proportion_change', function (newValue, oldValue) {
+        if (newValue && newValue !== oldValue) {
+          if (vm.data.interbed_proportion_change === 'increase' || vm.data.interbed_proportion_change === 'decrease' ||
+            vm.data.interbed_proportion_change === 'no_change') {
+            vm.data.interbed_thickness_units = vm.data.thickness_units;
+          }
+          else delete vm.data.interbed_thickness_units;
+        }
+      });
     }
 
     function gatherSpots() {
@@ -514,7 +534,11 @@
       else if (stratSection.column_profile && stratSection.column_profile === 'basic_lithologies') {
         vm.data.interval_type = 'bed';
       }
-      if (stratSection.column_y_axis_units) vm.data.thickness_units = stratSection.column_y_axis_units;
+      if (stratSection.column_y_axis_units) {
+        vm.data.thickness_units = stratSection.column_y_axis_units;
+        vm.data.package_thickness_units = stratSection.column_y_axis_units;
+        vm.data.interbed_thickness_units = stratSection.column_y_axis_units;
+      }
 
       // Set default interval name if prefix or Spot number set
       var prefix = ProjectFactory.getSpotPrefix() ? ProjectFactory.getSpotPrefix() : '';
