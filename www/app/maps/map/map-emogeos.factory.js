@@ -54,7 +54,7 @@
             'sandstone_prin_struct': ['trough', 'hummocky', 'planar_tabular', 'low_angle', 'massive_struct', 'horizontal'],
             'conglomerate_prin_struct': ['trough', 'planar_tabular', 'massive_struct', 'horizontal'],
             'breccia_prin_struct': ['trough', 'planar_tabular', 'massive_struct', 'horizontal'],
-            'limestone_dolomite_prin_struct': ['trough', 'hummocky', 'massive_struct', 'horizontal']
+            'limestone_dolostone_prin_struct': ['trough', 'hummocky', 'massive_struct', 'horizontal']
           },
           // Displayed on an interval but does not have it's own emogeo button on the side
           'structures': {
@@ -249,7 +249,7 @@
       hideEmogeoButton('sandstone_prin_struct');
       hideEmogeoButton('conglomerate_prin_struct');
       hideEmogeoButton('breccia_prin_struct');
-      hideEmogeoButton('limestone_dolomite_prin_struct');
+      hideEmogeoButton('limestone_dolostone_prin_struct');
 
       // Then determine which emogeo buttons with conditions should be shown
       var n = 0;
@@ -272,7 +272,7 @@
           }
         }
         if (spot.properties.sed.lithologies[n].dunham_classification) {
-          showEmogeoButton('limestone_dolomite_prin_struct');
+          showEmogeoButton('limestone_dolostone_prin_struct');
         }
       }
     }
