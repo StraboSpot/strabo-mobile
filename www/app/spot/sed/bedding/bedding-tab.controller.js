@@ -5,9 +5,10 @@
     .module('app')
     .controller('SedBeddingTabController', SedBeddingTabController);
 
-  SedBeddingTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'FormFactory'];
+  SedBeddingTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', '$timeout',
+    'FormFactory'];
 
-  function SedBeddingTabController($ionicModal, $ionicPopup, $log, $scope, $state, FormFactory) {
+  function SedBeddingTabController($ionicModal, $ionicPopup, $log, $scope, $state, $timeout, FormFactory) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -39,6 +40,9 @@
           });
         }
       });
+
+      // Apply manual skip logic to bedding fields
+      $timeout(checkInterbedProportionChangeField, 1000);
     }
 
     function loadTab(state) {
@@ -49,6 +53,7 @@
         vmParent.data = {};
         if (vmParent.spot.properties.sed && vmParent.spot.properties.sed.bedding) {
           vmParent.dataOutsideForm = angular.copy(vmParent.spot.properties.sed.bedding);
+          if (vmParent.dataOutsideForm.beds) delete vmParent.dataOutsideForm.beds;
           if (vmParent.spot.properties.sed.bedding.beds && vmParent.spot.properties.sed.bedding.beds[vmParent.lithologyNum]) {
             vmParent.data = angular.copy(vmParent.spot.properties.sed.bedding.beds[vmParent.lithologyNum]);
           }
@@ -60,12 +65,14 @@
     }
 
     function createWatches() {
-      // Watch for interbed_proportion_change changes
+      // Watch for interbed_proportion_change changes and apply manual skip logic
       $scope.$watch('vm.dataOutsideForm.interbed_proportion_change', function (newValue, oldValue) {
         if (newValue && newValue !== oldValue) checkInterbedProportionChangeField();
       });
     }
 
+    // The fields avg_thickness, min_thickness and max_thickness need to have skip logic tied to
+    // interbed_proportion_change but since these fields aren't in the same form apply the logic manually
     function checkInterbedProportionChangeField() {
       var avgThicknessEl = document.getElementById('avg_thickness');
       var minThicknessEl = document.getElementById('min_thickness');
