@@ -52,44 +52,46 @@
       var fill;
       var color;
       var n = isInterbed ? 1 : 0;
-      if (featureProperties.sed && featureProperties.sed.lithologies && featureProperties.sed.lithologies[n]) {
-        //$log.log(props.sed.lithologies);
-        var lithologies = featureProperties.sed.lithologies;
-        var lithologyField = lithologies[n].primary_lithology;
-        var grainSize = getGrainSize(lithologies[n]);
-        var stratSectionSettings = StratSectionFactory.getStratSectionSettings(featureProperties.strat_section_id);
-        if (stratSectionSettings.display_lithology_patterns) {
-          if (stratSectionSettings.column_profile === 'basic_lithologies') {
-            // Limestone / Dolostone / Misc. Lithologies
-            if (lithologyField === 'limestone') fill = patterns['limestone'];
-            else if (lithologyField === 'dolostone') fill = patterns['dolostone'];
-            //else if (lithologyField === 'organic_coal') patterns[grainSize] = loadPattern('misc/SiltBasic');
-            else if (lithologyField === 'evaporite') fill = patterns['evaporite'];
-            else if (lithologyField === 'chert') fill = patterns['chert'];
-            //else if (lithologyField === 'ironstone') patterns[grainSize] = loadPattern('misc/SiltBasic');
-            else if (lithologyField === 'phosphatic') fill = patterns['phosphatic'];
-            else if (lithologyField === 'volcaniclastic') fill = patterns['volcaniclastic'];
+      if (featureProperties.sed && featureProperties.sed.character) {
+        if (featureProperties.sed.lithologies && featureProperties.sed.lithologies[n]) {
+          //$log.log(props.sed.lithologies);
+          var lithologies = featureProperties.sed.lithologies;
+          var lithologyField = lithologies[n].primary_lithology;
+          var grainSize = getGrainSize(lithologies[n]);
+          var stratSectionSettings = StratSectionFactory.getStratSectionSettings(featureProperties.strat_section_id);
+          if (stratSectionSettings.display_lithology_patterns) {
+            if (stratSectionSettings.column_profile === 'basic_lithologies') {
+              // Limestone / Dolostone / Misc. Lithologies
+              if (lithologyField === 'limestone') fill = patterns['limestone'];
+              else if (lithologyField === 'dolostone') fill = patterns['dolostone'];
+              //else if (lithologyField === 'organic_coal') patterns[grainSize] = loadPattern('misc/SiltBasic');
+              else if (lithologyField === 'evaporite') fill = patterns['evaporite'];
+              else if (lithologyField === 'chert') fill = patterns['chert'];
+              //else if (lithologyField === 'ironstone') patterns[grainSize] = loadPattern('misc/SiltBasic');
+              else if (lithologyField === 'phosphatic') fill = patterns['phosphatic'];
+              else if (lithologyField === 'volcaniclastic') fill = patterns['volcaniclastic'];
 
-            // Siliciclastic (Mudstone/Shale, Sandstone, Conglomerate, Breccia)
-            else if (lithologies[n].mud_silt_grain_size) fill = patterns['mud_silt'];
-            else if (lithologies[n].sand_grain_size) fill = patterns['sandstone'];
-            else if (lithologies[n].congl_grain_size) fill = patterns['conglomerate'];
-            else if (lithologies[n].breccia_grain_size) fill = patterns['breccia'];
-          }
-          else {
-            if (lithologyField === 'limestone') fill = patterns['li_' + grainSize];
-            else if (lithologyField === 'dolostone') fill = patterns['do_' + grainSize];
-            else if (lithologyField === 'siliciclastic' && lithologies[n].siliciclastic_type === 'conglomerate') {
-              fill = patterns['congl_' + grainSize];
+              // Siliciclastic (Mudstone/Shale, Sandstone, Conglomerate, Breccia)
+              else if (lithologies[n].mud_silt_grain_size) fill = patterns['mud_silt'];
+              else if (lithologies[n].sand_grain_size) fill = patterns['sandstone'];
+              else if (lithologies[n].congl_grain_size) fill = patterns['conglomerate'];
+              else if (lithologies[n].breccia_grain_size) fill = patterns['breccia'];
             }
-            else if ( lithologyField === 'siliciclastic' && lithologies[n].siliciclastic_type === 'breccia') {
-              fill = patterns['brec_' + grainSize];
+            else {
+              if (lithologyField === 'limestone') fill = patterns['li_' + grainSize];
+              else if (lithologyField === 'dolostone') fill = patterns['do_' + grainSize];
+              else if (lithologyField === 'siliciclastic' && lithologies[n].siliciclastic_type === 'conglomerate') {
+                fill = patterns['congl_' + grainSize];
+              }
+              else if (lithologyField === 'siliciclastic' && lithologies[n].siliciclastic_type === 'breccia') {
+                fill = patterns['brec_' + grainSize];
+              }
+              else fill = patterns[grainSize];
             }
-            else fill = patterns[grainSize];
           }
         }
         if (!fill) {
-          if (featureProperties.sed.character === 'unexposed_cove') {
+          if (featureProperties.sed.character === 'unexposed_cove' || featureProperties.sed.character === 'not_measured') {
             var canvas = document.createElement('canvas');
             var ctx = canvas.getContext('2d');
 
