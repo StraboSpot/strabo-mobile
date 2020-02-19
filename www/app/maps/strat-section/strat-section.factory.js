@@ -65,19 +65,15 @@
         bedding.beds[1] && (bedding.beds[1].avg_thickness && bedding.beds[1].avg_thickness > 0 ||
           (bedding.beds[1].max_thickness && bedding.beds[1].max_thickness > 0 && bedding.beds[1].min_thickness &&
             bedding.beds[1].min_thickness > 0)) && bedding.interbed_proportion > 0) {
-        /* Per Casey: Don't use the data from primary lithology thickness for plotting since it, along with
-        // interval thickness, proportion and interbed thickness are too many data numbers to plot all faithfully
-        var y1 = .2;
-        if (lithology.primary_lithology_thickness === '2_5_cm') y1 = .6;
-        else if (lithology.primary_lithology_thickness === '5_10_cm') y1 = 1.5;
-        else if (lithology.primary_lithology_thickness === '10_30_cm') y1 = 4;
-        else if (lithology.primary_lithology_thickness === '_30_cm') y1 = 8;*/
-
         var thickness = bedding.beds[1].avg_thickness ? bedding.beds[1].avg_thickness : (bedding.beds[1].max_thickness + bedding.beds[1].min_thickness) / 2;
 
-        var y2 = 0.0066 * thickness * thickness + 0.0637 * thickness + 0.1385;
+        // Per Casey: Don't use the data from Lithology 1 interbed thickness for plotting since it, along with interval
+        // thickness, proportion and Lithology 2 interbed thickness are too many data numbers to plot all faithfully
+        //var y2 = 0.0066 * thickness * thickness + 0.0637 * thickness + 0.1385;
+        var y2 = thickness * yMultiplier < intervalHeight ? thickness * yMultiplier : intervalHeight;
         var interbedHeight2 = intervalHeight * (bedding.interbed_proportion / 100 || .5);  // secondary interbed
-        var interbedHeight1 = intervalHeight - interbedHeight2;                              // primary interbed
+        interbedHeight2 = interbedHeight2 > y2 ? interbedHeight2 : y2;
+        var interbedHeight1 = intervalHeight - interbedHeight2;                             // primary interbed
 
         var numInterbeds2 = interbedHeight2 / y2;
         var y1 = interbedHeight1 / numInterbeds2;
