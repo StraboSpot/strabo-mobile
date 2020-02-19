@@ -473,7 +473,8 @@
         else if (state === 'app.spotTab.sed-interval') {
           var intervalFields = ['character', 'interval_thickness', 'thickness_units'];
           needToRecalculateIntervalGeometry = _.find(intervalFields, function (field) {
-            if (field === 'character' && sedData[field] && sedDataSaved[field]) {
+            if (field === 'character') {
+              if ((sedData[field] && !sedDataSaved[field]) || (!sedData[field] && !sedDataSaved[field])) return true;
               return ((sedData[field] === 'bed' || sedData[field] === 'package_succe') &&
                 !(sedDataSaved[field] === 'bed' || sedDataSaved[field] === 'package_succe')) ||
                 ((sedData[field] === 'unexposed_cove' || sedData[field] === 'not_measured') &&
@@ -481,8 +482,9 @@
                 ((sedData[field] === 'interbedded' || sedData[field] === 'bed_mixed_lit') &&
                   !(sedDataSaved[field] === 'interbedded' || sedDataSaved[field] === 'bed_mixed_lit'));
             }
-            else return sedData.interval[field] && sedDataSaved.interval[field] &&
-              sedData.interval[field] !== sedDataSaved.interval[field];
+            if ((sedData.interval[field] && !sedDataSaved.interval[field]) ||
+              (!sedData.interval[field] && sedDataSaved.interval[field])) return true;
+            return sedData.interval[field] !== sedDataSaved.interval[field];
           });
         }
         // If current state is sed-lithologies tab
@@ -490,14 +492,14 @@
           var lithologiesFields = ['primary_lithology', 'siliciclastic_type', 'mud_silt_grain_size', 'sand_grain_size',
             'congl_grain_size', 'breccia_grain_size', 'dunham_classification', 'relative_resistance_weather'];
           needToRecalculateIntervalGeometry = _.find(lithologiesFields, function (field) {
-            var isEqualLithologyField = sedData.lithologies && sedDataSaved.lithologies &&
-              (sedData.lithologies[0] && sedData.lithologies[0][field] && sedDataSaved.lithologies[0] &&
-                sedDataSaved.lithologies[0][field] &&
-                sedData.lithologies[0][field] === sedDataSaved.lithologies[0][field]) &&
-              (sedData.lithologies[1] && sedData.lithologies[1][field] && sedDataSaved.lithologies[1] &&
-                sedDataSaved.lithologies[1][field] &&
-                sedData.lithologies[1][field] === sedDataSaved.lithologies[0][field]);
-            return !(_.isUndefined(isEqualLithologyField) || isEqualLithologyField);
+            if ((sedData.lithologies && !sedDataSaved.lithologies) ||
+              (!sedData.lithologies && sedDataSaved.lithologies)) return true;
+            if ((sedData.lithologies[0] && !sedDataSaved.lithologies[0]) ||
+              (!sedData.lithologies[0] && sedDataSaved.lithologies[0])) return true;
+            if (sedData.lithologies[0][field] !== sedDataSaved.lithologies[0][field]) return true;
+            if ((sedData.lithologies[1] && !sedDataSaved.lithologies[1]) ||
+              (!sedData.lithologies[1] && sedDataSaved.lithologies[1])) return true;
+            return sedData.lithologies[1][field] !== sedDataSaved.lithologies[1][field];
           });
         }
         // If current state is sed-bedding tab
@@ -506,22 +508,20 @@
             'lithology_at_top_contact', 'thickness_of_individual_beds', 'avg_thickness', 'max_thickness',
             'min_thickness'];
           needToRecalculateIntervalGeometry = _.find(beddingFields, function (field) {
-            var isEqualBeddingField;
+            if ((sedData.bedding && !sedDataSaved.bedding) || (!sedData.bedding && sedDataSaved.bedding)) return true;
+            if ((sedData.bedding[field] && !sedDataSaved.bedding[field]) ||
+              (!sedData.bedding[field] && sedDataSaved.bedding[field])) return true;
             if (field !== 'avg_thickness' && field !== 'max_thickness' && field !== 'min_thickness') {
-              isEqualBeddingField = sedData.bedding && sedData.bedding[field] && sedDataSaved.bedding &&
-                sedDataSaved.bedding[field] && sedData.bedding[field] === sedDataSaved.bedding[field];
+              return sedData.bedding[field] !== sedDataSaved.bedding[field];
             }
-            else {
-              isEqualBeddingField = sedData.bedding && sedDataSaved.bedding && sedData.bedding.beds &&
-                sedDataSaved.bedding.beds &&
-                ((sedData.bedding.beds[0] && sedData.bedding.beds[0][field] && sedDataSaved.bedding.beds[0] &&
-                  sedDataSaved.bedding.beds[0][field] &&
-                  sedData.bedding.beds[0][field] === sedDataSaved.bedding.beds[0][field]) &&
-                  (sedData.bedding.beds[1] && sedData.bedding.beds[1][field] && sedDataSaved.bedding.beds[1] &&
-                    sedDataSaved.bedding.beds[1][field] &&
-                    sedData.bedding.beds[1][field] === sedDataSaved.bedding.beds[1][field]))
-            }
-            return !(_.isUndefined(isEqualBeddingField) || isEqualBeddingField);
+            if ((sedData.bedding.beds && !sedDataSaved.bedding.beds) ||
+              (!sedData.bedding.beds && sedDataSaved.bedding.beds)) return true;
+            if ((sedData.bedding.beds[0] && !sedDataSaved.bedding.beds[0]) ||
+              (!sedData.bedding.beds[0] && sedDataSaved.bedding.beds[0])) return true;
+            if (sedData.bedding.beds[0][field] !== sedDataSaved.bedding.beds[0][field]) return true;
+            if ((sedData.bedding.beds[1] && !sedDataSaved.bedding.beds[1]) ||
+              (!sedData.bedding.beds[1] && sedDataSaved.bedding.beds[1])) return true;
+            return sedData.bedding.beds[1][field] !== sedDataSaved.bedding.beds[1][field];
           });
         }
         if (needToRecalculateIntervalGeometry) {
