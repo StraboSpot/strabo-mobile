@@ -248,15 +248,10 @@
       // Validation checks for Interval page
       if (stateName === 'app.spotTab.sed-interval' && isMappedInterval) {
         if (sed.interval) {
-          var spotWithThisStratSection = StratSectionFactory.getSpotWithThisStratSection(
-            spot.properties.strat_section_id);
-          if (spotWithThisStratSection && spotWithThisStratSection.properties &&
-            spotWithThisStratSection.properties.sed && spotWithThisStratSection.properties.sed.strat_section) {
-            var units = spotWithThisStratSection.properties.sed.strat_section.column_y_axis_units;
-            if (units !== sed.interval.thickness_units) {
-              errorMessages.push('- <b>Thickness Units</b> must be <b>' + units + '</b> since <b>' + units +
-                '</b> have been assigned for the properties of this strat section.')
-            }
+          var units = StratSectionFactory.getDefaultUnits(spot);
+          if (units !== sed.interval.thickness_units) {
+            errorMessages.push('- <b>Thickness Units</b> must be <b>' + units + '</b> since <b>' + units +
+              '</b> have been assigned for the properties of this strat section.')
           }
         }
         else {
@@ -294,40 +289,49 @@
       }
 
       // Validation checks for Bedding page
-      if (stateName === 'app.spotTab.sed-bedding' && isMappedInterval &&
-        (sed.character === 'interbedded' || sed.character === 'bed_mixed_lit')) {
-        if (sed.bedding && sed.bedding.beds) {
-          if (!sed.bedding.interbed_proportion) {
-            errorMessages.push('- <b>' +
-              DataModelsFactory.getLabelFromNewDictionary('interbed_proportion', 'interbed_proportion') +
-              '</b> must be specified.');
-          }
-          if (!sed.bedding.interbed_proportion_change) {
-            errorMessages.push('- <b>' +
-              DataModelsFactory.getLabelFromNewDictionary('interbed_proportion_change', 'interbed_proportion_change') +
-              '</b> must be specified.');
+      if (stateName === 'app.spotTab.sed-bedding') {
+        var units = StratSectionFactory.getDefaultUnits(spot);
+        if (sed.bedding && ((sed.bedding.package_thickness_units && units !== sed.bedding.package_thickness_units) ||
+          (sed.bedding.beds && sed.bedding.beds[n] && sed.bedding.beds[n].interbed_thickness_units &&
+          units !== sed.bedding.beds[n].interbed_thickness_units))) {
+          errorMessages.push('- <b>Thickness Units</b> must be <b>' + units + '</b> since <b>' + units +
+            '</b> have been assigned for the properties of this strat section.')
+        }
+        if (isMappedInterval && (sed.character === 'interbedded' || sed.character === 'bed_mixed_lit')) {
+          if (sed.bedding && sed.bedding.beds) {
+            if (!sed.bedding.interbed_proportion) {
+              errorMessages.push('- <b>' +
+                DataModelsFactory.getLabelFromNewDictionary('interbed_proportion', 'interbed_proportion') +
+                '</b> must be specified.');
+            }
+            if (!sed.bedding.interbed_proportion_change) {
+              errorMessages.push('- <b>' +
+                DataModelsFactory.getLabelFromNewDictionary('interbed_proportion_change',
+                  'interbed_proportion_change') +
+                '</b> must be specified.');
+            }
+            else {
+              if ((sed.bedding.interbed_proportion_change === 'increase' ||
+                sed.bedding.interbed_proportion_change === 'decrease') && (!sed.bedding.beds[n] ||
+                (sed.bedding.beds[n] && !(sed.bedding.beds[n].max_thickness && sed.bedding.beds[n].min_thickness)))) {
+                errorMessages.push('- Both <b>' +
+                  DataModelsFactory.getLabelFromNewDictionary('max_thickness', 'max_thickness') +
+                  '</b> and <b>' +
+                  DataModelsFactory.getLabelFromNewDictionary('min_thickness', 'min_thickness') +
+                  '</b> must be specified for Lithology ' + (n + 1) + '.');
+              }
+              else if (sed.bedding.interbed_proportion_change === 'no_change' && (!sed.bedding.beds[n] ||
+                (sed.bedding.beds[n] && !sed.bedding.beds[n].avg_thickness))) {
+                errorMessages.push(
+                  '- <b>' + DataModelsFactory.getLabelFromNewDictionary('avg_thickness', 'avg_thickness') +
+                  '</b> must be specified for Lithology ' + (n + 1) + '.');
+              }
+            }
           }
           else {
-            if ((sed.bedding.interbed_proportion_change === 'increase' ||
-              sed.bedding.interbed_proportion_change === 'decrease') && (!sed.bedding.beds[n] ||
-              (sed.bedding.beds[n] && !(sed.bedding.beds[n].max_thickness && sed.bedding.beds[n].min_thickness)))) {
-              errorMessages.push('- Both <b>' +
-                DataModelsFactory.getLabelFromNewDictionary('max_thickness', 'max_thickness') +
-                '</b> and <b>' +
-                DataModelsFactory.getLabelFromNewDictionary('min_thickness', 'min_thickness') +
-                '</b> must be specified for Lithology ' + (n + 1) + '.');
-            }
-            else if (sed.bedding.interbed_proportion_change === 'no_change' && (!sed.bedding.beds[n] ||
-              (sed.bedding.beds[n] && !sed.bedding.beds[n].avg_thickness))) {
-              errorMessages.push(
-                '- <b>' + DataModelsFactory.getLabelFromNewDictionary('avg_thickness', 'avg_thickness') +
-                '</b> must be specified for Lithology ' + (n + 1) + '.');
-            }
+            errorMessages.push('- <b>Bedding</b> measurements must be specified for a/an ' +
+              DataModelsFactory.getLabelFromNewDictionary(sed.character, sed.character) + '  interval.');
           }
-        }
-        else {
-          errorMessages.push('- <b>Bedding</b> measurements must be specified for a/an' +
-            DataModelsFactory.getLabelFromNewDictionary(sed.character, sed.character) + '  interval.');
         }
       }
 

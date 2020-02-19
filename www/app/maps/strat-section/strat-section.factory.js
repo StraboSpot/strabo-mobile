@@ -22,6 +22,7 @@
       'checkForIntervalUpdates': checkForIntervalUpdates,
       'createInterval': createInterval,
       'deleteInterval': deleteInterval,
+      'doUnitsFieldsMatch': doUnitsFieldsMatch,
       'drawAxes': drawAxes,
       'extractAddIntervalData': extractAddIntervalData,
       'gatherSpotsWithStratSections': gatherSpotsWithStratSections,
@@ -35,6 +36,7 @@
       'isInterval': isInterval,
       'moveIntervalToAfter': moveIntervalToAfter,
       'orderStratSectionIntervals': orderStratSectionIntervals,
+      'getDefaultUnits': getDefaultUnits,
       'validateNewInterval': validateNewInterval
     };
 
@@ -411,8 +413,7 @@
         var extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
         spot.geometry = calculateIntervalGeometry(spot.properties.strat_section_id, spot.properties.sed, extent[1]);
         $log.log('Recalculated Spot geometry');
-      }
-      catch(e) {
+      } catch (e) {
         $log.log('Error reading Spot geometry', spot, e);
       }
       return spot;
@@ -583,7 +584,10 @@
       var beddingSharedSurvey = DataModelsFactory.getDataModel('sed')['bedding_shared'].survey;
       var beddingSharedFieldNames = _.pluck(beddingSharedSurvey, 'name');
       var beddingSharedFields = _.pick(data, beddingSharedFieldNames);
-      if (!_.isEmpty(beddingSharedFields)) _.extend(geojsonObj.properties.sed.bedding, beddingSharedFields);
+      if (!_.isEmpty(beddingSharedFields)) {
+        if (!geojsonObj.properties.sed.bedding) geojsonObj.properties.sed.bedding = {};
+        _.extend(geojsonObj.properties.sed.bedding, beddingSharedFields);
+      }
 
       // Lithologies fields in Add Interval (only fields from Lithology & Texture needed)
       var lithologiesLithologySurvey = DataModelsFactory.getDataModel('sed')['lithologies_lithology'].survey;
@@ -622,6 +626,29 @@
         // Unable to move other interval up or down to close gap
         return SpotFactory.destroy(targetInterval.properties.id);
       }
+    }
+
+    // Check if the units fields for the interval match the units designated for the section
+    function doUnitsFieldsMatch(stratSection, data) {
+      if (stratSection.column_y_axis_units) {
+        var unitsFields = ['thickness_units', 'interbed_thickness_units', 'package_thickness_units'];
+        var mismatchUnitsField = _.find(unitsFields, function (unitsField) {
+          return data[unitsField] && stratSection.column_y_axis_units !== data[unitsField];
+        });
+        if (mismatchUnitsField) {
+          $ionicPopup.alert({
+            'title': 'Units Mismatch',
+            'template': 'The units for the Y Axis are <b>' + stratSection.column_y_axis_units + '</b> but <b>' +
+              data[mismatchUnitsField] + '</b> have been designated for <b>' +
+              DataModelsFactory.getLabelFromNewDictionary(mismatchUnitsField, mismatchUnitsField) + '</b>. Please ' +
+              'fix the units for <b>' +
+              DataModelsFactory.getLabelFromNewDictionary(mismatchUnitsField, mismatchUnitsField) + '</b>. Unit ' +
+              'conversions may be added to a future version of the app.'
+          });
+          return false;
+        }
+      }
+      return true;
     }
 
     function drawAxes(ctx, pixelRatio, stratSection) {
@@ -788,6 +815,18 @@
       spotsWithStratSections = _.filter(activeSpots, function (spot) {
         return _.has(spot.properties, 'sed') && _.has(spot.properties.sed, 'strat_section');
       });
+    }
+
+    // Get the default units which is the same as the units for the section that this Spot is in
+    function getDefaultUnits(spot) {
+      if (spot.properties && spot.properties.strat_section_id) {
+        var spotWithThisStratSection = getSpotWithThisStratSection(spot.properties.strat_section_id);
+        if (spotWithThisStratSection && spotWithThisStratSection.properties &&
+          spotWithThisStratSection.properties.sed && spotWithThisStratSection.properties.sed.strat_section.column_y_axis_units) {
+          return spotWithThisStratSection.properties.sed.strat_section.column_y_axis_units;
+        }
+      }
+      return undefined;
     }
 
     // Get the Spot that Contains a Specific Strat Section Given the Id of the Strat Section

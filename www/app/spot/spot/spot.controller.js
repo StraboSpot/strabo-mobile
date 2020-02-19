@@ -242,6 +242,7 @@
             else sed.bedding.beds.pop();
             if (sed.bedding.beds.length === 1 && _.isEmpty(sed.bedding.beds[0])) delete sed.bedding.beds;
           }
+          _.extend(sed.bedding, vm.dataOutsideForm);
           if (_.isEmpty(vm.dataOutsideForm) && _.isEmpty(sed.bedding)) delete sed.bedding;
         }
         else {
@@ -668,7 +669,17 @@
       else if (vm.spot.properties.sed && vm.spot.properties.sed.interpretations &&
         vm.stateName === 'app.spotTab.sed-interpretations') vm.data = vm.spot.properties.sed.interpretations[vm.lithologyNum] || {};
       else if (vm.spot.properties.sed && vm.spot.properties.sed.bedding && vm.spot.properties.sed.bedding.beds &&
-        vm.stateName === 'app.spotTab.sed-bedding') vm.data = vm.spot.properties.sed.bedding.beds[vm.lithologyNum] || {};
+        vm.stateName === 'app.spotTab.sed-bedding') {
+        vm.data = vm.spot.properties.sed.bedding.beds[vm.lithologyNum] || {};
+        // Set the units to match that of the section
+        if (!vm.data.interbed_thickness_units || !vm.dataOutsideForm.package_thickness_units) {
+          var units = StratSectionFactory.getDefaultUnits(vm.spot);
+          if (units) {
+            if (!vm.data.interbed_thickness_units) vm.data.interbed_thickness_units = units;
+            if (!vm.dataOutsideForm.package_thickness_units) vm.dataOutsideForm.package_thickness_units = units;
+          }
+        }
+      }
       else vm.data = {};
       $log.log('Lithology ' + (vm.lithologyNum + 1) + ' data:', vm.data);
     }

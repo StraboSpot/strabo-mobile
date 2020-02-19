@@ -183,7 +183,7 @@
         if (props.orientation.trend && props.orientation.plunge) {
           text.push(props.orientation.trend + '&deg; trend / ' + props.orientation.plunge + '&deg; plunge');
         }
-        if (props.orientation.feature_type) text.push(props.orientation.feature_type);
+        if (props.orientation.feature_type) text.push(DataModelsFactory.getFeatureTypeLabel(props.orientation.feature_type));
       }
 
       // Sed Strat Interval Detail

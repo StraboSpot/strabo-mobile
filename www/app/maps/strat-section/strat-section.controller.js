@@ -6,15 +6,16 @@
     .controller('StratSectionController', StratSectionController);
 
   StratSectionController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup',
-    '$ionicSideMenuDelegate', '$location', '$log', '$rootScope', '$scope', '$state', '$timeout', 'FormFactory',
-    'HelpersFactory', 'ImageFactory', 'MapDrawFactory', 'MapEmogeosFactory', 'MapFeaturesFactory', 'MapLayerFactory',
-    'MapSetupFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'StratSectionFactory', 'IS_WEB'];
+    '$ionicSideMenuDelegate', '$location', '$log', '$rootScope', '$scope', '$state', '$timeout', 'DataModelsFactory',
+    'FormFactory', 'HelpersFactory', 'ImageFactory', 'MapDrawFactory', 'MapEmogeosFactory', 'MapFeaturesFactory',
+    'MapLayerFactory', 'MapSetupFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'StratSectionFactory',
+    'IS_WEB'];
 
   function StratSectionController($ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup,
                                   $ionicSideMenuDelegate, $location, $log, $rootScope, $scope, $state, $timeout,
-                                  FormFactory, HelpersFactory, ImageFactory, MapDrawFactory, MapEmogeosFactory,
-                                  MapFeaturesFactory, MapLayerFactory, MapSetupFactory, MapViewFactory, ProjectFactory,
-                                  SpotFactory, StratSectionFactory, IS_WEB) {
+                                  DataModelsFactory, FormFactory, HelpersFactory, ImageFactory, MapDrawFactory,
+                                  MapEmogeosFactory, MapFeaturesFactory, MapLayerFactory, MapSetupFactory,
+                                  MapViewFactory, ProjectFactory, SpotFactory, StratSectionFactory, IS_WEB) {
     var vm = this;
 
     var currentSpot = {};
@@ -285,7 +286,7 @@
           else if (action === 'more') {
             popup.hide();
             var spot = SpotFactory.getSpotById(vm.clickedFeatureId);
-            if (spot.properties.surface_feature &&
+            if (spot && spot.properties && spot.properties.surface_feature &&
               spot.properties.surface_feature.surface_feature_type === 'strat_interval') {
               goToSpot(vm.clickedFeatureId, 'sed-lithologies');
             }
@@ -562,33 +563,26 @@
       openIntervalModal();
     }
 
+    // Go to the main Spot pages where the user can add more detail
     function addMoreDetail() {
       $log.log(vm.data);
-      if (stratSection.column_y_axis_units && vm.data.thickness_units !== stratSection.column_y_axis_units) {
-        $ionicPopup.alert({
-          'title': 'Units Mismatch',
-          'template': 'The units for the Y Axis are <b>' + stratSection.column_y_axis_units + '</b> but <b>' +
-            vm.data.thickness_units + '</b> have been designated for this interval. Please fix the units ' +
-            'for this interval.'
-        });
-      }
-      else if (StratSectionFactory.validateNewInterval(vm.data, FormFactory.getForm())) {
-        vm.addIntervalModal.remove();
-        var newInterval = StratSectionFactory.createInterval(stratSection.strat_section_id, vm.data);
-        if (vm.intervalName) newInterval.properties.name = vm.intervalName;
-        if (vm.intervalToCopy && vm.intervalToCopy.properties && vm.intervalToCopy.properties.sed) {
-          newInterval = copyRestOfInterval(newInterval);
+      if (StratSectionFactory.doUnitsFieldsMatch(stratSection, vm.data)) {
+        if (StratSectionFactory.validateNewInterval(vm.data, FormFactory.getForm())) {
+          vm.addIntervalModal.remove();
+          var newInterval = StratSectionFactory.createInterval(stratSection.strat_section_id, vm.data);
+          if (vm.intervalName) newInterval.properties.name = vm.intervalName;
+          if (vm.intervalToCopy && vm.intervalToCopy.properties && vm.intervalToCopy.properties.sed) {
+            newInterval = copyRestOfInterval(newInterval);
+          }
+          SpotFactory.setNewSpot(newInterval).then(function (id) {
+            if (!_.isEmpty(vm.intervalToInsertAfter)) {
+              StratSectionFactory.moveIntervalToAfter(newInterval, vm.intervalToInsertAfter).then(function () {
+                goToSpot(newInterval.properties.id, 'sed-lithologies');
+              });
+            }
+            else goToSpot(newInterval.properties.id, 'sed-lithologies');
+          });
         }
-        SpotFactory.setNewSpot(newInterval).then(function (id) {
-          if (!_.isEmpty(vm.intervalToInsertAfter)) {
-            StratSectionFactory.moveIntervalToAfter(newInterval, vm.intervalToInsertAfter).then(function () {
-              goToSpot(newInterval.properties.id, 'sed-lithologies');
-            });
-          }
-          else {
-            goToSpot(newInterval.properties.id, 'sed-lithologies');
-          }
-        });
       }
     }
 
@@ -727,34 +721,27 @@
     }
 
     function saveInterval() {
-      $log.log(vm.data);
-      if (stratSection.column_y_axis_units && vm.data.thickness_units !== stratSection.column_y_axis_units) {
-        $ionicPopup.alert({
-          'title': 'Units Mismatch',
-          'template': 'The units for the Y Axis are <b>' + stratSection.column_y_axis_units + '</b> but <b>' +
-            vm.data.thickness_units + '</b> have been designated for this interval. Please fix the units ' +
-            'for this interval.'
-        });
-      }
-      else if (StratSectionFactory.validateNewInterval(vm.data, FormFactory.getForm())) {
-        vm.addIntervalModal.remove();
-        var newInterval = StratSectionFactory.createInterval(stratSection.strat_section_id, vm.data);
-        if (vm.intervalName) newInterval.properties.name = vm.intervalName;
-        if (vm.intervalToCopy && vm.intervalToCopy.properties && vm.intervalToCopy.properties.sed) {
-          newInterval = copyRestOfInterval(newInterval);
-        }
-        SpotFactory.setNewSpot(newInterval).then(function (id) {
-          if (!_.isEmpty(vm.intervalToInsertAfter)) {
-            StratSectionFactory.moveIntervalToAfter(newInterval, vm.intervalToInsertAfter).then(function () {
+      if (StratSectionFactory.doUnitsFieldsMatch(stratSection, vm.data)) {
+        if (StratSectionFactory.validateNewInterval(vm.data, FormFactory.getForm())) {
+          vm.addIntervalModal.remove();
+          var newInterval = StratSectionFactory.createInterval(stratSection.strat_section_id, vm.data);
+          if (vm.intervalName) newInterval.properties.name = vm.intervalName;
+          if (vm.intervalToCopy && vm.intervalToCopy.properties && vm.intervalToCopy.properties.sed) {
+            newInterval = copyRestOfInterval(newInterval);
+          }
+          SpotFactory.setNewSpot(newInterval).then(function (id) {
+            if (!_.isEmpty(vm.intervalToInsertAfter)) {
+              StratSectionFactory.moveIntervalToAfter(newInterval, vm.intervalToInsertAfter).then(function () {
+                updateFeatureLayer();
+                MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
+              });
+            }
+            else {
               updateFeatureLayer();
               MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
-            });
-          }
-          else {
-            updateFeatureLayer();
-            MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
-          }
-        });
+            }
+          });
+        }
       }
     }
 

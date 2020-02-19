@@ -6,9 +6,10 @@
     .controller('SedBeddingTabController', SedBeddingTabController);
 
   SedBeddingTabController.$inject = ['$ionicModal', '$ionicPopup', '$log', '$scope', '$state', '$timeout',
-    'FormFactory'];
+    'FormFactory', 'StratSectionFactory'];
 
-  function SedBeddingTabController($ionicModal, $ionicPopup, $log, $scope, $state, $timeout, FormFactory) {
+  function SedBeddingTabController($ionicModal, $ionicPopup, $log, $scope, $state, $timeout, FormFactory,
+                                   StratSectionFactory) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -58,6 +59,8 @@
             vmParent.data = angular.copy(vmParent.spot.properties.sed.bedding.beds[vmParent.lithologyNum]);
           }
         }
+        setDefaultUnits();
+
         $log.log('Sed Bedding Shared :', vmParent.dataOutsideForm);
         $log.log('Sed Bedding Lithology ' + (vmParent.lithologyNum + 1) + ':', vmParent.data);
       }
@@ -98,6 +101,7 @@
               }
             });
           }
+          setDefaultUnits();
         }
         else if (vmParent.dataOutsideForm.interbed_proportion_change === 'no_change') {
           avgThicknessEl.style.display = '';
@@ -118,6 +122,7 @@
               }
             });
           }
+          setDefaultUnits();
         }
         else {
           avgThicknessEl.style.display = 'none';
@@ -132,6 +137,17 @@
     /**
      * Public Functions
      */
+
+    // Set the units to match that of the section
+    function setDefaultUnits() {
+      if (!vmParent.data.interbed_thickness_units || !vmParent.dataOutsideForm.package_thickness_units) {
+        var units = StratSectionFactory.getDefaultUnits(vmParent.spot);
+        if (units) {
+          if (!vmParent.data.interbed_thickness_units) vmParent.data.interbed_thickness_units = units;
+          if (!vmParent.dataOutsideForm.package_thickness_units) vmParent.dataOutsideForm.package_thickness_units = units;
+        }
+      }
+    }
 
     function shouldShowInterbedBeddingFields() {
       return vmParent.spot && vmParent.spot.properties && vmParent.spot.properties.sed && vmParent.spot.properties.sed.character &&
