@@ -46,6 +46,20 @@
       title.innerHTML = feature.get('name') + '<hr>';
       el.appendChild(title);
 
+      // popup copy interval button
+      if ($state.current.name === 'app.strat-section' && feature.getProperties().surface_feature &&
+        feature.getProperties().surface_feature.surface_feature_type === 'strat_interval') {
+        var copyIntervalButton = document.createElement('div');
+        copyIntervalButton.innerHTML = '<a href="#" data-action="copyInterval" class="popup-copy-button">Copy Interval</a>';
+        el.appendChild(copyIntervalButton);
+      }
+      // popup more detail button
+      var moreButton = document.createElement('div');
+      moreButton.innerHTML = '<a href="#" data-action="more" class="popup-more-button">See More</a>';
+      el.appendChild(moreButton);
+
+      el.appendChild(document.createElement('br'));
+
       // Camera and Tags Icons
       var iconsHTML = '<div class="padding-top">';
       iconsHTML += typeof Camera !== 'undefined' ? '<a href="#" data-action="takePicture" class="button-icon icon button-small button-text-small ion-camera"></a>' : '';
@@ -66,18 +80,6 @@
       }
       else content.innerHTML = detailHTML;
       el.appendChild(content);
-
-      // popup copy interval button
-      if ($state.current.name === 'app.strat-section' && feature.getProperties().surface_feature &&
-        feature.getProperties().surface_feature.surface_feature_type === 'strat_interval') {
-        var copyIntervalButton = document.createElement('div');
-        copyIntervalButton.innerHTML = '<a href="#" data-action="copyInterval" class="popup-copy-button">Copy Interval</a>';
-        el.appendChild(copyIntervalButton);
-      }
-      // popup more detail button
-      var moreButton = document.createElement('div');
-      moreButton.innerHTML = '<a href="#" data-action="more" class="popup-more-button">See More</a>';
-      el.appendChild(moreButton);
 
       // setup the popup position
       popup.show(evt.coordinate, el);
