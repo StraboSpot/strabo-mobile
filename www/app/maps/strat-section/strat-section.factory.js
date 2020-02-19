@@ -112,7 +112,11 @@
         $log.log('Not enough data to properly draw interval', sedData);
         $ionicPopup.alert({
           'title': 'Data Error!',
-          'template': 'Not enough data to properly draw this interval.'
+          'template': 'This interval is <b>interbedded</b> or <b>mixed</b> but there is not enough data to properly ' +
+            'draw this interval. Check that you have entered all of the necessary bedding data for two lithologies. ' +
+            'This includes the <b>Lithology 1: Interbed Relative Proportion (%)</b> and either the <b>Average ' +
+            'Thickness</b> or both the <b>Maximum Thickness</b> and <b>Minimum Thickness</b> of the interbeds for ' +
+            'both lithologies found on the <b>Bedding</b> page. '
         });
       }
       return geometry;
