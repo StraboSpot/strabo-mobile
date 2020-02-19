@@ -34,9 +34,19 @@
   </div>
   <div ng-show='vmChild.shouldShowPackageBeddingFields()'>
     <ion-input class='item item-input item-stacked-label item-text-wrap'>
-      <ion-label>Thickness of Individual Beds (cm)</ion-label>
+      <ion-label>Thickness of Individual Beds</ion-label>
       <input type='number' ng-model='vm.dataOutsideForm.thickness_of_individual_beds' min=0>
     </ion-input>
+    <ion-item class="item item-input item-select item-stacked-label item-text-wrap">
+      <ion-label>Package Beds Thickness Units</ion-label>
+      <select ng-model='vm.dataOutsideForm.package_thickness_units'>
+        <option value='cm'>cm</option>
+        <option value='m'>m</option>
+        <option value='in'>in</option>
+        <option value='ft'>ft</option>
+        <option value=''>-- Select Package Beds Thickness Units --</option>
+      </select>
+    </ion-item>
     <ion-item class="item item-input item-select item-stacked-label item-text-wrap">
       <ion-label>Package Bedding Trends</ion-label>
       <select ng-model='vm.dataOutsideForm.package_bedding_trends'>
