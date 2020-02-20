@@ -1,0 +1,178 @@
+list_name,name,label,order
+zy1yp78,porifera_spong,porifera/sponge,
+zy1yp78,mollusca,mollusc,
+zy1yp78,brachiopoda,brachiopod,
+zy1yp78,arthropoda,arthropod,
+zy1yp78,echinodermata,echinoderm,
+zy1yp78,cnidaria,cnidarian,
+zy1yp78,chordata,chordate,
+zy1yp78,bryozoa,bryozoan,
+zy1yp78,protista,protist,
+zy1yp78,calcimicrobe,calcimicrobe,
+zy1yp78,other,other,
+xg73d31,gastropod,gastropod,
+xg73d31,cephalopod,cephalopod,
+xg73d31,scaphopod,scaphopod,
+xg73d31,bivalve,bivalve,
+xg73d31,ammonite,ammonite,
+xg73d31,nautiloid,nautiloid,
+xg73d31,belemnite,belemnite,
+xg73d31,rudist,rudist,
+xg73d31,other,other,
+ez9qn01,trilobite,trilobite,
+ez9qn01,eurypterid,eurypterid,
+ez9qn01,ostracod,ostracod,
+ez9qn01,crustacean,crustacean,
+ez9qn01,barnacle,barnacle,
+ez9qn01,crab,crab,
+ez9qn01,shrimp,shrimp,
+ez9qn01,lobster,lobster,
+ez9qn01,other,other,
+wr57l51,echinoidea,echinoidea,
+wr57l51,blastazoa,blastazoa,
+wr57l51,crinoidea,crinoidea,
+wr57l51,asteroidea,asteroidea,
+wr57l51,ophiuroidea,ophiuroidea,
+wr57l51,holothuroidea,holothuroidea,
+wr57l51,other,other,
+mx9kl50,solitary_rugos,solitary rugose,
+mx9kl50,fasciculate_ru,fasciculate rugose,
+mx9kl50,massive_rugose,massive rugose,
+mx9kl50,tabulate,tabulate,
+mx9kl50,scleractinian,scleractinian,
+mx9kl50,other,other,
+jc5qz43,tunicate,tunicate,
+jc5qz43,other,other,
+yg3rh07,foraminifera,foraminifera,
+yg3rh07,coccolith,coccolith,
+yg3rh07,radiolarian,radiolarian,
+yg3rh07,diatom,diatom,
+yg3rh07,fusulinid,fusulinid,
+yg3rh07,other,other,
+oh1xa40,giryanella,giryanella,
+oh1xa40,epiphyton,epiphyton,
+oh1xa40,hedstroemia,hedstroemia,
+oh1xa40,renalcis,renalcis,
+oh1xa40,garwoodia,garwoodia,
+oh1xa40,rothpletzella,rothpletzella,
+oh1xa40,other,other,
+yp6he07,green,green algae,
+yp6he07,red_algae,red algae,1
+yp6he07,cyanobacteria,cyanobacteria,2
+yp6he07,coralline,coralline,3
+yp6he07,udoteaceans,udoteaceans,4
+yp6he07,dasyclads,dasyclads,5
+yp6he07,phylloid,phylloid,6
+yp6he07,charophytes,charophytes,7
+yp6he07,bryophyta,bryophyta,8
+yp6he07,pteridophytae,pteridophytae,9
+yp6he07,angiosperm,angiosperm,10
+yp6he07,gymnosperm,gymnosperm,11
+yp6he07,other,other,12
+jr4ma98,halimeda,halimeda,
+jr4ma98,penicillus,penicillus,
+jr4ma98,udotea,udotea,
+jr4ma98,other,other,
+fk5kl89,actinopterygii,actinopterygii,
+fk5kl89,chondrichthyes,chondrichthyes,1
+fk5kl89,aves,aves,2
+fk5kl89,amphibia,amphibia,3
+fk5kl89,reptilia,reptilia,4
+fk5kl89,mammalia,mammalia,5
+fk5kl89,dinosauria,dinosauria,6
+fk5kl89,other,other,7
+rs3py25,heterozoan,heterozoan,
+rs3py25,photozoan,photozoan,
+rs3py25,other,other,
+bp1qw24,low,low,
+bp1qw24,medium,medium,
+bp1qw24,high,high,
+yp1hr80,track,track,
+yp1hr80,trail,trail,1
+yp1hr80,footprint,footprint,2
+yp1hr80,underprint,underprint,3
+yp1hr80,horizontal,horizontal,4
+yp1hr80,sub_vertical,sub-vertical,5
+yp1hr80,vertical,vertical,6
+yp1hr80,oblique,oblique,7
+yp1hr80,branching,branching,8
+yp1hr80,u_shaped,u-shaped,9
+yp1hr80,y_shaped,y-shaped,10
+yp1hr80,lined,lined,11
+yp1hr80,unlined,unlined,12
+yp1hr80,other,other,13
+yb2wj13,passive,passive,
+yb2wj13,active,active,1
+yb2wj13,siliciclastic,siliciclastic sand,2
+yb2wj13,silicic_silt,siliciclastic silt,3
+yb2wj13,silicic_mud,siliciclastic mud,4
+yb2wj13,carbonate_grai,carbonate grains,6
+yb2wj13,mudstone,mudstone,7
+yb2wj13,wackestone,wackestone,8
+yb2wj13,packstone,packstone,9
+yb2wj13,grainstone,grainstone,10
+yb2wj13,cementstone,cementstone,11
+yb2wj13,other,other,
+fu9zy74,resting,resting,
+fu9zy74,locomotion,locomotion,
+fu9zy74,grazing,grazing,
+fu9zy74,feeding,feeding,
+fu9zy74,dwelling_struc,dwelling structure,
+fu9zy74,escape,escape,
+fu9zy74,farming,farming,
+fu9zy74,predation,predation,
+fu9zy74,brooding,brooding,
+fu9zy74,multipurpose,multipurpose,
+fu9zy74,equilibrium,equilibrium,
+fu9zy74,other,other,
+xn91l41,psilonichnus,psilonichnus,
+xn91l41,skolithos,skolithos,
+xn91l41,cruziana,cruziana,
+xn91l41,zoophycos,zoophycos,
+xn91l41,nereites,nereites,
+xn91l41,trypanites,trypanites,
+xn91l41,glossifungites,glossifungites,
+xn91l41,teredolites,teredolites,
+xn91l41,other,other,
+cj5tu73,skeletal_reef,skeletal reef,
+cj5tu73,skeletal_micro,skeletal-microbial reef,
+cj5tu73,microbial_reef,microbial reef,
+cj5tu73,mud_mound,mud mound,
+cj5tu73,other,other,
+vl19n89,micro_laminate,microbial laminate,
+vl19n89,dome_structure,domal structure,
+vl19n89,columnar_strom,columnar stromatolite,
+vl19n89,bran_col_strom,branching columnar stromatolite,
+vl19n89,conical_strom,conical stromatolite,
+vl19n89,tufa,tufa,
+vl19n89,gt_strom_mnd,giant stromatolite mound,
+vl19n89,cusp_micro,cuspate microbialite,
+vl19n89,thrombolite,thrombolite,
+vl19n89,oncoid,oncoid,
+vl19n89,turbin_strom,turbinate stromatolite,
+vl19n89,den_bran_strom,dendritic branching stromatolite,
+vl19n89,cd_bran_strom,coalesced branching stromatolite,
+vl19n89,ana_bran_strom,anastomosed branching stromatolite,
+vl19n89,lat_bran_strom,lateral branching stromatolite,
+vl19n89,lat_lin_strom,laterally-linked stromatolite,
+vl19n89,elongate,elongate,
+vl19n89,other,other,
+vb0ao86,clotted,clotted,
+vb0ao86,peloidal,peloidal,
+vb0ao86,laminated,laminated,
+vb0ao86,stromatactis,stromatactis cavities,
+vb0ao86,cement,cement,
+vb0ao86,other,other,
+oh76z01,bioherm_lens,bioherm (lens-shaped),
+oh76z01,biostrom_tabu,biostrom (tabular),
+oh76z01,dome,dome,
+oh76z01,mound,mound,
+uc1je36,fringing,fringing,
+uc1je36,patch_reef,patch reef,
+uc1je36,atoll,atoll,
+uc1je36,other,other,
+ex7vg93,fenestrae,fenestrae,
+ex7vg93,geopetal,geopetal,
+ex7vg93,framework_cavi,framework cavities,
+ex7vg93,cement_fill,cement-fill,
+ex7vg93,other,other,

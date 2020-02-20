@@ -37,6 +37,8 @@
       {'value': 'sed_lithologies', 'label': 'Sed Lithologies', 'path': 'sed-lithologies'},
       {'value': 'sed_bedding', 'label': 'Sed Bedding', 'path': 'sed-bedding'},
       {'value': 'sed_structures', 'label': 'Sed Structures', 'path': 'sed-structures'},
+      {'value': 'sed_diagenesis', 'label': 'Sed Diagenesis', 'path': 'sed-diagenesis'},
+      {'value': 'sed_fossils', 'label': 'Sed Fossils', 'path': 'sed-fossils'},
       {'value': 'sed_interpretations', 'label': 'Sed Interpretations', 'path': 'sed-interpretations'},
       {'value': 'experimental', 'label': 'Experimental', 'path': 'experimental'},
       {'value': 'experimental_set_up', 'label': 'Experimental Set Up', 'path': 'experimental-set-up'},

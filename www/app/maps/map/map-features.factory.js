@@ -189,7 +189,7 @@
       // Sed Strat Interval Detail
       if (props.surface_feature && props.surface_feature.surface_feature_type &&
         props.surface_feature.surface_feature_type === 'strat_interval' && props.sed) {
-        var pages = ['interval', 'lithologies', 'bedding', 'structures', 'interpretations'];
+        var pages = ['interval', 'lithologies', 'bedding', 'structures', 'diagenesis', 'fossils', 'interpretations'];
         _.each(pages, function (page) {
           if (props.sed[page]) {
             text.push('<u><b>' + page.toUpperCase() + '</b></u>');

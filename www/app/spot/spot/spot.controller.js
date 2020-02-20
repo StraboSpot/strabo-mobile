@@ -664,6 +664,10 @@
     function setLithologyData() {
       if (vm.spot.properties.sed && vm.spot.properties.sed.lithologies &&
         vm.stateName === 'app.spotTab.sed-lithologies') vm.data = vm.spot.properties.sed.lithologies[vm.lithologyNum] || {};
+      if (vm.spot.properties.diagenesis && vm.spot.properties.sed.diagenesis &&
+        vm.stateName === 'app.spotTab.sed-diagenesis') vm.data = vm.spot.properties.sed.diagenesis[vm.lithologyNum] || {};
+      if (vm.spot.properties.sed && vm.spot.properties.sed.fossils &&
+        vm.stateName === 'app.spotTab.sed-fossils') vm.data = vm.spot.properties.sed.fossils[vm.lithologyNum] || {};
       else if (vm.spot.properties.sed && vm.spot.properties.sed.structures &&
         vm.stateName === 'app.spotTab.sed-structures') vm.data = vm.spot.properties.sed.structures[vm.lithologyNum] || {};
       else if (vm.spot.properties.sed && vm.spot.properties.sed.interpretations &&
@@ -744,6 +748,8 @@
         _.contains(typesWithTwoLithologies, oldType) && !_.contains(typesWithTwoLithologies, newType) &&
         ((vm.spot.properties.sed.lithologies && vm.spot.properties.sed.lithologies[1]) ||
           (vm.spot.properties.sed.structures && vm.spot.properties.sed.structures[1]) ||
+          (vm.spot.properties.sed.diagenesis && vm.spot.properties.sed.diagenesis[1]) ||
+          (vm.spot.properties.sed.fossils && vm.spot.properties.sed.fossils[1]) ||
           (vm.spot.properties.sed.interpretations && vm.spot.properties.sed.interpretations[1]) ||
           (vm.spot.properties.sed.bedding && vm.spot.properties.sed.bedding.beds &&
             vm.spot.properties.sed.bedding.beds[1]))) {
@@ -759,6 +765,12 @@
           if (res) {
             if (vm.spot.properties.sed.lithologies && vm.spot.properties.sed.lithologies[1]) {
               vm.spot.properties.sed.lithologies.pop();
+            }
+            if (vm.spot.properties.sed.diagenesis && vm.spot.properties.sed.diagenesis[1]) {
+              vm.spot.properties.sed.diagenesis.pop();
+            }
+            if (vm.spot.properties.sed.fossils && vm.spot.properties.sed.fossils[1]) {
+              vm.spot.properties.sed.fossils.pop();
             }
             if (vm.spot.properties.sed.structures && vm.spot.properties.sed.structures[1]) {
               vm.spot.properties.sed.structures.pop();

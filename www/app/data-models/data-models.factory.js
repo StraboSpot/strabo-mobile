@@ -222,6 +222,18 @@
           'choices': {},
           'choices_file': 'app/data-models/sed/bedding-shared-choices.csv'
         },
+        'diagenesis': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/diagenesis-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/diagenesis-choices.csv'
+        },
+        'fossils': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/fossils-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/fossils-choices.csv'
+        },
         'interpretations_surfaces': {
           'survey': {},
           'survey_file': 'app/data-models/sed/interpretations-surfaces-survey.csv',
@@ -463,7 +475,8 @@
           'sed': {
             'bedding': {'beds': []},
             'character': 'one of [bed, bed_mixed_lit, interbedded, not_measured, other, package_succe, unexposed_cove]',
-            'interpretations': [{}], 'interval': {}, 'lithologies': [{}], 'other_character': 'text', 'structures': [{}]
+            'diagenesis': [{}], 'fossils': [{}], 'interpretations': [{}], 'interval': {}, 'lithologies': [{}],
+            'other_character': 'text', 'structures': [{}]
           },
           'time': 'datetime',
           'trace': {}
@@ -482,6 +495,8 @@
         'samples': dataModels.sample,
         'sed_bedding': dataModels.sed.bedding,
         'sed_bedding_shared': dataModels.sed.bedding_shared,
+        'sed_diagenesis': dataModels.sed.diagenesis,
+        'sed_fossils': dataModels.sed.fossils,
         'sed_interpretations_architecture': dataModels.sed.interpretations_architecture,
         'sed_interpretations_environment': dataModels.sed.interpretations_environment,
         'sed_interpretations_process': dataModels.sed.interpretations_process,
@@ -533,6 +548,8 @@
         }
         else if (key === 'sed_bedding') spotDataModel.properties.sed.bedding.beds = [description];
         else if (key === 'sed_bedding_shared') _.extend(spotDataModel.properties.sed.bedding, description);
+        else if (key === 'sed_diagenesis') _.extend(spotDataModel.properties.sed.diagenesis[0], description);
+        else if (key === 'sed_fossils') _.extend(spotDataModel.properties.sed.fossils[0], description);
         else if (key === 'sed_interval') _.extend(spotDataModel.properties.sed.interval, description);
         else if (key === 'sed_lithologies_composition' || key === 'sed_lithologies_lithology' ||
           key === 'sed_lithologies_texture') {

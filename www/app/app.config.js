@@ -98,6 +98,8 @@
       {'state': 'samples', 'template': 'samples/samples-tab', 'controller': 'Samples'},
       {'state': 'spot', 'template': 'spot-tab/spot-tab', 'controller': 'Spot'},
       {'state': 'sed-bedding', 'template': 'sed/bedding/bedding-tab', 'controller': 'SedBedding'},
+      {'state': 'sed-diagenesis', 'template': 'sed/diagenesis/diagenesis-tab', 'controller': 'SedDiagenesis'},
+      {'state': 'sed-fossils', 'template': 'sed/fossils/fossils-tab', 'controller': 'SedFossils'},
       {'state': 'sed-interpretations', 'template': 'sed/interpretations/interpretations-tab', 'controller': 'SedInterpretations'},
       {'state': 'sed-interval', 'template': 'sed/interval/interval-tab', 'controller': 'SedInterval'},
       {'state': 'sed-lithologies', 'template': 'sed/lithologies/lithologies-tab', 'controller': 'SedLithologies'},
