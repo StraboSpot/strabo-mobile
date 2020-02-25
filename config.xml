@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="gov.az.azgs.strabomobile" version="1.13.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget id="gov.az.azgs.strabomobile" version="1.13.1" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>Strabo Mobile</name>
     <description>
     Strabo Mobile is a cross-platform app for geologic field data acquisition.
