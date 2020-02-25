@@ -1,12 +1,11 @@
-type,name,label,required,relevant,constraint,appearance,calculation
-start,start,,,,,,
-end,end,,,,,,
-begin_group,group_cr8sh11,Reactions,false,,,,
-text,reactions,Reactions,false,,,,
-select_multiple ph6ma31,based_on,Based on,false,,,,
-text,other_based_on,Other,false,"selected(${based_on}, 'other')",. = '',,
-select_one eq7hj86,ranking,Ranking,false,,,,
-text,notes,Notes,false,,,multiline,
-end_group,,,,,,,
-calculate,_version,,false,,,,'vz3ZQiUYMWhSKqG937DgJQ'
-calculate,__version__,,,,,,'vyeeEEqTsaaL954Xf9mBie'
+type,name,label,hint,required,relevant,constraint,appearance,calculation
+start,start,,,,,,,
+end,end,,,,,,,
+begin_group,group_cr8sh11,Reactions,,false,,,,
+text,reactions,Reactions,"use mineral abbreviations, no spaces (e.g. Ab=Jd+Qz)",false,,,,
+select_multiple ph6ma31,based_on,Based on,,false,,,,
+text,other_based_on,Other,,false,"selected(${based_on}, 'other')",. != '',,
+text,notes,Notes,,false,,,multiline,
+end_group,,,,,,,,
+calculate,_version,,,false,,,,'vz3ZQiUYMWhSKqG937DgJQ'
+calculate,__version__,,,,,,,'v6MD2qv5Jy6GkinAyvya5q'
