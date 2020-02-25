@@ -552,6 +552,11 @@
           );
         }
         else if (geomType === 'GeometryCollection') {
+          var sed = feature.get('sed');
+          function getIsInterbed(i) {
+           return sed.bedding && sed.bedding.lithology_at_bottom_contact === 'lithology_2' ? i % 2 === 0 : i % 2 !== 0;
+          }
+
           var geometries = feature.getGeometry().getGeometries();
           _.each(geometries, function (geometry, i) {
             styles.push(
@@ -561,7 +566,7 @@
                   'color': '#000000',
                   'width': 0.5
                 }),
-                'fill': SymbologyFactory.getPolyFill(feature, resolution, i % 2 !== 0),
+                'fill': SymbologyFactory.getPolyFill(feature, resolution, getIsInterbed(i)),
                 'text': textStyle(feature.get('name'))
               })
             );
