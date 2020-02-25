@@ -372,7 +372,7 @@
     // Set the selected Spot and then any emogeos that should be set for this Spot
     function setSelectedSpot(inSpot) {
       spot = inSpot;
-      setInitialSelectedEmogeos();
+      //setInitialSelectedEmogeos();
     }
   }
 }());

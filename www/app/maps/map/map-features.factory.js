@@ -398,7 +398,7 @@
         }
       }
 
-      getEmogeos(mappedFeatures, mapName);
+      // getEmogeos(mappedFeatures, mapName);
     }
 
     // We want to load all the geojson markers from the persistence storage onto the map
