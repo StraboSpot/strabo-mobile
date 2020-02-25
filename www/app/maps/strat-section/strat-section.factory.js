@@ -808,8 +808,8 @@
       if (sedData.bedding && sedData.bedding.beds && sedData.bedding.beds[0]) {
         _.extend(data, _.pick(sedData.bedding.beds[0], addIntervalFieldNames));
       }
-      if (sedData.bedding && sedData.bedding.beds && sedData.bedding.beds[0]) {
-        var tempBed2 = _.pick(sedData.bedding.beds[0], addIntervalFieldNames);
+      if (sedData.bedding && sedData.bedding.beds && sedData.bedding.beds[1]) {
+        var tempBed2 = _.pick(sedData.bedding.beds[1], addIntervalFieldNames);
         var tempBed2Renamed = {};
         _.each(tempBed2, function (value, key) {
           tempBed2Renamed[key + '_1'] = value;
