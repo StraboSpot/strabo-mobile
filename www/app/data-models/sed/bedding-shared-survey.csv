@@ -1,0 +1,11 @@
+type,name,label,required,constraint,relevant,read_only,calculation,$given_name
+select_one ss8kj53,interbed_proportion_change,Interbed Proportion Change (Up Section),false,,,,,
+decimal,interbed_proportion,Lithology 1: Interbed Relative Proportion (%),false,. > 0 and . <= 50,,,,
+select_one gv7rs89,lithology_at_bottom_contact,Which Lithology is at Bottom Contact?,false,,${interbed_proportion_change} = 'increase' or ${interbed_proportion_change} = 'decrease' or ${interbed_proportion_change} = 'no_change',,,
+select_one du76k53,lithology_at_top_contact,Which Lithology is at Top Contact?,false,,${interbed_proportion_change} = 'increase' or ${interbed_proportion_change} = 'decrease' or ${interbed_proportion_change} = 'no_change',,,
+decimal,thickness_of_individual_beds,Thickness of Individual Beds,false,. > 0,,,,
+select_one zc89y27,package_thickness_units,Package Beds Thickness Units,true,,${thickness_of_individual_beds} != '',,,
+select_one mf0hv76,package_bedding_trends,Package Bedding Trends,false,,,false,,
+text,other_bedding_trend,Other Package Bedding Trend,false,,${package_bedding_trends} = 'other',false,,
+calculate,__version__,,false,,,,'vJzGRtoY7niyfJi4odJRgA',
+calculate,_version_,,,,,,'vhHdU2Tm577qS7E46AFGgQ',__version__

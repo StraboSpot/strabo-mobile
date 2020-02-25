@@ -201,7 +201,7 @@
         });
         confirmPopup.then(function (res) {
           if (res) {
-            if (StratSectionFactory.isInterval(spot)) {
+            if (StratSectionFactory.isMappedInterval(spot)) {
               StratSectionFactory.deleteInterval(spot).then(function () {
                 setDisplayedSpots();
                 if (IS_WEB) {

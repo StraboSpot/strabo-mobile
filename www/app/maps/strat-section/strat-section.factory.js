@@ -10,7 +10,7 @@
 
   function StratSectionFactory($ionicPopup, $log, $q, DataModelsFactory, HelpersFactory, MapLayerFactory,
                                MapSetupFactory, SpotFactory) {
-    var basicLitholigiesLabels = ['other', 'coal', 'mudstone', 'sandstone', 'conglomerate/breccia', 'limestone/dolomite'];
+    var basicLitholigiesLabels = ['other', 'coal', 'mudstone', 'sandstone', 'conglomerate/breccia', 'limestone/dolostone'];
     var grainSizeOptions = DataModelsFactory.getSedLabelsDictionary();
     var spotsWithStratSections = {};
     var stratSectionSpots = {};
@@ -22,7 +22,9 @@
       'checkForIntervalUpdates': checkForIntervalUpdates,
       'createInterval': createInterval,
       'deleteInterval': deleteInterval,
+      'doUnitsFieldsMatch': doUnitsFieldsMatch,
       'drawAxes': drawAxes,
+      'extractAddIntervalData': extractAddIntervalData,
       'gatherSpotsWithStratSections': gatherSpotsWithStratSections,
       'gatherStratSectionSpots': gatherStratSectionSpots,
       'getSpotWithThisStratSection': getSpotWithThisStratSection,
@@ -30,9 +32,11 @@
       'getStratSectionIntervals': getStratSectionIntervals,
       'getStratSectionSettings': getStratSectionSettings,
       'getStratSectionSpots': getStratSectionSpots,
+      'isMappedInterval': isMappedInterval,
       'isInterval': isInterval,
       'moveIntervalToAfter': moveIntervalToAfter,
       'orderStratSectionIntervals': orderStratSectionIntervals,
+      'getDefaultUnits': getDefaultUnits,
       'validateNewInterval': validateNewInterval
     };
 
@@ -41,54 +45,53 @@
      */
 
     // Calculate the geometry for an interval (single bed or interbedded)
-    function calculateIntervalGeometry(stratSectionId, lithology, minY) {
-      var intervalHeight = lithology.interval_thickness * yMultiplier;
-      var intervalWidth = getIntervalWidth(lithology, stratSectionId);
+    function calculateIntervalGeometry(stratSectionId, sedData, minY) {
+      var character = sedData.character;
+      var interval = sedData.interval;
+      var bedding = sedData.bedding;
+
+      var intervalHeight = interval.interval_thickness * yMultiplier;
+      var intervalWidth = getIntervalWidth(sedData, stratSectionId);
       var minX = 0;
       var maxX = minX + intervalWidth;
       var maxY = minY + intervalHeight;
 
       var geometry = {};
-      if (lithology.is_this_a_bed_or_package !== 'interbedded') {
-        geometry = {
-          'type': 'Polygon',
-          'coordinates': [[[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY], [minX, minY]]]
-        };
-      }
+      geometry = {
+        'type': 'Polygon',
+        'coordinates': [[[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY], [minX, minY]]]
+      };
+
       // If interbedded need to create a geometry collection with polygons for each bed
-      else {
-        /* Per Casey: Don't use the data from primary lithology thickness for plotting since it, along with
-        // interval thickness, proportion and interbed thickness are too many data numbers to plot all faithfully
-        var y1 = .2;
-        if (lithology.primary_lithology_thickness === '2_5_cm') y1 = .6;
-        else if (lithology.primary_lithology_thickness === '5_10_cm') y1 = 1.5;
-        else if (lithology.primary_lithology_thickness === '10_30_cm') y1 = 4;
-        else if (lithology.primary_lithology_thickness === '_30_cm') y1 = 8;*/
+      if ((character === 'interbedded' || character === 'bed_mixed_lit') && bedding && bedding.beds &&
+        bedding.beds[1] && (bedding.beds[1].avg_thickness && bedding.beds[1].avg_thickness > 0 ||
+          (bedding.beds[1].max_thickness && bedding.beds[1].max_thickness > 0 && bedding.beds[1].min_thickness &&
+            bedding.beds[1].min_thickness > 0)) && bedding.interbed_proportion > 0) {
+        //var thickness1 = bedding.beds[0].avg_thickness ? bedding.beds[0].avg_thickness : (bedding.beds[0].max_thickness + bedding.beds[0].min_thickness) / 2;
+        var thickness2 = bedding.beds[1].avg_thickness ? bedding.beds[1].avg_thickness : (bedding.beds[1].max_thickness + bedding.beds[1].min_thickness) / 2;
 
-        var y2 = .2;
-        if (lithology.interbed_thickness === '2_5_cm') y2 = .6;
-        else if (lithology.interbed_thickness === '5_10_cm') y2 = 1.5;
-        else if (lithology.interbed_thickness === '10_30_cm') y2 = 4;
-        else if (lithology.interbed_thickness === '_30_cm') y2 = 8;
-
-        var interbedHeight2 = intervalHeight * (lithology.interbed_proportion / 100 || .5);  // secondary interbed
-        var interbedHeight1 = intervalHeight - interbedHeight2;                              // primary interbed
+        // Per Casey: Don't use the data from Lithology 1 interbed thickness for plotting since it, along with interval
+        // thickness, proportion and Lithology 2 interbed thickness are too many data numbers to plot all faithfully
+        var y2 = thickness2 * yMultiplier < intervalHeight ? thickness2 * yMultiplier : intervalHeight;
+        var interbedHeight2 = intervalHeight * (bedding.interbed_proportion / 100 || .5);  // secondary interbed
+        interbedHeight2 = interbedHeight2 > y2 ? interbedHeight2 : y2;
+        var interbedHeight1 = intervalHeight - interbedHeight2;                             // primary interbed
 
         var numInterbeds2 = interbedHeight2 / y2;
-        var y1 = interbedHeight1 / numInterbeds2;
+        var y1 = interbedHeight1 / numInterbeds2; // assume an equal number of beds for both lithologies so beds alternate
 
-        var interbedIntervalWidth = getIntervalWidth(lithology, stratSectionId, true);
-        var maxXBed = intervalWidth;
+        var interbedIntervalWidth = getIntervalWidth(sedData, stratSectionId, true);
+        var maxXBed = bedding.lithology_at_bottom_contact === 'lithology_2' ? interbedIntervalWidth : intervalWidth;
         var minYBed = angular.copy(minY);
         var maxYBed = angular.copy(minY);
-        var currentBedHeight = y1;
+        var currentBedHeight = bedding.lithology_at_bottom_contact === 'lithology_2' ? y2 : y1;
         var polyCoords = [];
         while (maxYBed < minY + intervalHeight) {
           maxYBed = minYBed + currentBedHeight <= minY + intervalHeight ? minYBed + currentBedHeight : minY + intervalHeight;
-          var coords = [[minX, minYBed], [minX, maxYBed], [maxX, maxYBed], [maxX, minYBed], [minX, minYBed]];
+          var coords = [[minX, minYBed], [minX, maxYBed], [maxXBed, maxYBed], [maxXBed, minYBed], [minX, minYBed]];
           polyCoords.push(coords);
           currentBedHeight = currentBedHeight === y1 ? y2 : y1;
-          maxXBed = maxXBed === intervalWidth ?  interbedIntervalWidth : intervalWidth;
+          maxXBed = maxXBed === intervalWidth ? interbedIntervalWidth : intervalWidth;
           minYBed = angular.copy(maxYBed);
         }
 
@@ -104,6 +107,17 @@
           'type': 'GeometryCollection',
           'geometries': geometries
         };
+      }
+      else if (character === 'interbedded' || character === 'bed_mixed_lit') {
+        $log.log('Not enough data to properly draw interval', sedData);
+        $ionicPopup.alert({
+          'title': 'Data Error!',
+          'template': 'This interval is <b>interbedded</b> or <b>mixed</b> but there is not enough data to properly ' +
+            'draw this interval. Check that you have entered all of the necessary bedding data for two lithologies. ' +
+            'This includes the <b>Lithology 1: Interbed Relative Proportion (%)</b> and either the <b>Average ' +
+            'Thickness</b> or both the <b>Maximum Thickness</b> and <b>Minimum Thickness</b> of the interbeds for ' +
+            'both lithologies found on the <b>Bedding</b> page. '
+        });
       }
       return geometry;
     }
@@ -220,89 +234,65 @@
       });
     }
 
-    function getIntervalWidth(lithology, stratSectionId, interbed) {
+    function getIntervalWidth(sedData, stratSectionId, interbed) {
+      var character = sedData.character;
+      var interval = sedData.interval;
+      var lithologies = sedData.lithologies;
+      var n = interbed ? 1 : 0;
+
       var defaultWidth = xInterval / 4;
       var i, intervalWidth = defaultWidth;
       // Unexposed/Covered
-      if (lithology.is_this_a_bed_or_package === 'unexposed_cove') intervalWidth = (0 + 1) * xInterval; // Same as clay
-      else if (lithology.is_this_a_bed_or_package === 'bed' || lithology.is_this_a_bed_or_package === 'interbedded' ||
-        lithology.is_this_a_bed_or_package === 'package_succe') {
-        // Weathering Column
+      if (character === 'unexposed_cove' || character === 'not_measured') intervalWidth = (0 + 1) * xInterval; // Same as clay
+      else if (lithologies[n] && (character === 'bed' || character === 'bed_mixed_lit' || character === 'interbedded' ||
+        character === 'package_succe')) {
         var stratSectionSettings = getStratSectionSettings(stratSectionId);
+        // Weathering Column
         if (stratSectionSettings.column_profile === 'weathering_pro') {
           i = _.findIndex(grainSizeOptions.weathering, function (weatheringOption) {
-            return weatheringOption.value === lithology.relative_resistance_weathering;
+            return weatheringOption.value === lithologies[n].relative_resistance_weather;
           });
           intervalWidth = i === -1 ? defaultWidth : (i + 1) * xInterval;
         }
         // Basic Lithologies Column Profile
         else if (stratSectionSettings.column_profile === 'basic_lithologies') {
-          if (!interbed && lithology.primary_lithology === 'organic_coal') i = 1;
-          else if (!interbed && lithology.mud_silt_principal_grain_size) i = 2;
-          else if (!interbed && lithology.sand_principal_grain_size) i = 3;
-          else if (!interbed && lithology.congl_principal_grain_size || lithology.breccia_principal_grain_size) i = 4;
-          else if (!interbed && lithology.principal_dunham_class) i = 5;
-          else if (interbed && lithology.interbed_lithology === 'organic_coal') i = 1;
-          else if (interbed && lithology.mud_silt_interbed_grain_size) i = 2;
-          else if (interbed && lithology.sand_interbed_grain_size) i = 3;
-          else if (interbed && lithology.congl_interbed_grain_size || lithology.breccia_interbed_grain_size) i = 4;
-          else if (interbed && lithology.interbed_dunham_class) i = 5;
+          if (lithologies[n].primary_lithology === 'organic_coal') i = 1;
+          else if (lithologies[n].mud_silt_grain_size) i = 2;
+          else if (lithologies[n].sand_grain_size) i = 3;
+          else if (lithologies[n].congl_grain_size || lithologies[n].breccia_grain_size) i = 4;
+          else if (lithologies[n].dunham_classification) i = 5;
           else i = 0;
           intervalWidth = i === -1 ? defaultWidth : (i + 2) * xInterval;
         }
         // Primary Lithology = siliciclastic
-        else if (!interbed && (lithology.mud_silt_principal_grain_size || lithology.sand_principal_grain_size ||
-          lithology.congl_principal_grain_size || lithology.breccia_principal_grain_size)) {
+        else if (lithologies[n].primary_lithology === 'siliciclastic' && (lithologies[n].mud_silt_grain_size ||
+          lithologies[n].sand_grain_size || lithologies[n].congl_grain_size || lithologies[n].breccia_grain_size)) {
           i = _.findIndex(grainSizeOptions.clastic, function (grainSizeOption) {
-            return grainSizeOption.value === lithology.mud_silt_principal_grain_size ||
-              grainSizeOption.value === lithology.sand_principal_grain_size ||
-              grainSizeOption.value === lithology.congl_principal_grain_size ||
-              grainSizeOption.value === lithology.breccia_principal_grain_size;
+            return grainSizeOption.value === lithologies[n].mud_silt_grain_size ||
+              grainSizeOption.value === lithologies[n].sand_grain_size ||
+              grainSizeOption.value === lithologies[n].congl_grain_size ||
+              grainSizeOption.value === lithologies[n].breccia_grain_size;
           });
           intervalWidth = i === -1 ? defaultWidth : (i + 1) * xInterval;
         }
-        // Interbed Lithology = siliciclastic
-        else if (interbed && (lithology.mud_silt_interbed_grain_size || lithology.sand_interbed_grain_size ||
-          lithology.congl_interbed_grain_size || lithology.breccia_interbed_grain_size)) {
-          i = _.findIndex(grainSizeOptions.clastic, function (grainSizeOption) {
-            return grainSizeOption.value === lithology.mud_silt_interbed_grain_size ||
-              grainSizeOption.value === lithology.sand_interbed_grain_size ||
-              grainSizeOption.value === lithology.congl_interbed_grain_size ||
-              grainSizeOption.value === lithology.breccia_interbed_grain_size;
-          });
-          intervalWidth = i === -1 ? defaultWidth : (i + 1) * xInterval;
-        }
-        // Primary Lithology = limestone or dolomite
-        else if (!interbed && lithology.principal_dunham_class) {
+        // Primary Lithology = limestone or dolostone
+        else if ((lithologies[n].primary_lithology === 'limestone' || lithologies[n].primary_lithology === 'dolostone')
+          && lithologies[n].dunham_classification) {
           i = _.findIndex(grainSizeOptions.carbonate, function (grainSizeOption) {
-            return grainSizeOption.value === lithology.principal_dunham_class;
-          });
-          intervalWidth = i === -1 ? defaultWidth : (i + 2.33) * xInterval;
-        }
-        // Interbed Lithology = limestone or dolomite
-        else if (interbed && lithology.interbed_dunham_class) {
-          i = _.findIndex(grainSizeOptions.carbonate, function (grainSizeOption) {
-            return grainSizeOption.value === lithology.interbed_dunham_class;
+            return grainSizeOption.value === lithologies[n].dunham_classification;
           });
           intervalWidth = i === -1 ? defaultWidth : (i + 2.33) * xInterval;
         }
         // Other Lithologies
-        else if (!interbed) {
-          i = _.findIndex(grainSizeOptions.lithologies, function (grainSizeOption) {
-            return grainSizeOption.value === lithology.primary_lithology;
-          });
-          i = i - 3; // First 3 indexes are siliciclastic, limestone & dolomite which are handled above
-          intervalWidth = i === -1 ? defaultWidth : (i + 2.66) * xInterval;
-        }
         else {
           i = _.findIndex(grainSizeOptions.lithologies, function (grainSizeOption) {
-            return grainSizeOption.value === lithology.interbed_lithology;
+            return grainSizeOption.value === lithologies[n].primary_lithology;
           });
-          i = i - 3; // First 3 indexes are siliciclastic, limestone & dolomite which are handled above
+          i = i - 3; // First 3 indexes are siliciclastic, limestone & dolostone which are handled above
           intervalWidth = i === -1 ? defaultWidth : (i + 2.66) * xInterval;
         }
       }
-      else $log.error('Sed data error:', lithology);
+      else $log.error('Sed data error:', lithologies[n]);
       return intervalWidth;
     }
 
@@ -423,10 +413,13 @@
 
     // Recalculate the geometry of an interval using spot properties
     function recalculateIntervalGeometry(spot) {
-      var extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
-      spot.geometry = calculateIntervalGeometry(spot.properties.strat_section_id, spot.properties.sed.lithologies,
-        extent[1]);
-      $log.log('Recalculated Spot geometry');
+      try {
+        var extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
+        spot.geometry = calculateIntervalGeometry(spot.properties.strat_section_id, spot.properties.sed, extent[1]);
+        $log.log('Recalculated Spot geometry');
+      } catch (e) {
+        $log.log('Error reading Spot geometry', spot, e);
+      }
       return spot;
     }
 
@@ -439,8 +432,8 @@
       var stratSectionIntervals = getStratSectionIntervals(stratSectionId);
       _.each(stratSectionIntervals, function (stratSectionInterval) {
         var extent = new ol.format.GeoJSON().readFeature(stratSectionInterval).getGeometry().getExtent();
-        stratSectionInterval.geometry = calculateIntervalGeometry(stratSectionId,
-          stratSectionInterval.properties.sed.lithologies, extent[1]);
+        stratSectionInterval.geometry = calculateIntervalGeometry(stratSectionId, stratSectionInterval.properties.sed,
+          extent[1]);
         SpotFactory.save(stratSectionInterval);
         $log.log('Recalculated Spot geometry');
       });
@@ -450,71 +443,130 @@
     // has fields that are changed
     function checkForIntervalUpdates(state, spot, savedSpot) {
       var i, extent;
-      // Current state is spot tab
-      if (state === 'app.spotTab.spot') {
-        // Calculate interval thickness if Spot has geometry and the surface feature type changed to strat interval
-        if (!savedSpot.properties.surface_feature || !savedSpot.properties.surface_feature.surface_feature_type ||
-          !savedSpot.properties.surface_feature.surface_feature_type !== 'strat_interval') {
-          if (spot.geometry) {
-            if (!spot.properties.sed) spot.properties.sed = {};
-            if (!spot.properties.sed.lithologies) spot.properties.sed.lithologies = {};
-            $log.log('Updating interval thickness ...');
-            extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
-            var thickness = (extent[3] - extent[1]) / yMultiplier; // 20 is yMultiplier
-            thickness = HelpersFactory.roundToDecimalPlaces(thickness, 2);
-            spot.properties.sed.lithologies.interval_thickness = thickness;
-            var spotWithThisStratSection = getSpotWithThisStratSection(spot.properties.strat_section_id);
-            if (spotWithThisStratSection.properties && spotWithThisStratSection.properties.sed &&
-              spotWithThisStratSection.properties.sed.strat_section) {
-              spot.properties.sed.lithologies.thickness_units =
-                spotWithThisStratSection.properties.sed.strat_section.column_y_axis_units;
-            }
-            if (!spot.properties.sed.lithologies.is_this_a_bed_or_package) {
-              spot.properties.sed.lithologies.is_this_a_bed_or_package = 'unexposed_cove';
+      var needToRecalculateIntervalGeometry = false;      // Do we need to recalculate the geometry for the interval?
+      if (spot.geometry && spot.properties.sed && savedSpot.properties.sed) {
+        var sedData = spot.properties.sed;
+        var sedDataSaved = savedSpot.properties.sed;
+
+        // Current state is spot tab
+        if (state === 'app.spotTab.spot') {
+          // Calculate interval thickness if Spot has geometry and the surface feature type changed to strat interval
+          if (!savedSpot.properties.surface_feature || !savedSpot.properties.surface_feature.surface_feature_type ||
+            savedSpot.properties.surface_feature.surface_feature_type !== 'strat_interval') {
+            if (spot.geometry) {
+              if (!spot.properties.sed) spot.properties.sed = {};
+              if (!spot.properties.sed.interval) spot.properties.sed.interval = {};
+              $log.log('Updating interval thickness ...');
+              extent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
+              var thickness = (extent[3] - extent[1]) / yMultiplier; // 20 is yMultiplier
+              thickness = HelpersFactory.roundToDecimalPlaces(thickness, 2);
+              spot.properties.sed.interval.interval_thickness = thickness;
+              var spotWithThisStratSection = getSpotWithThisStratSection(spot.properties.strat_section_id);
+              if (spotWithThisStratSection.properties && spotWithThisStratSection.properties.sed &&
+                spotWithThisStratSection.properties.sed.strat_section) {
+                spot.properties.sed.interval.thickness_units =
+                  spotWithThisStratSection.properties.sed.strat_section.column_y_axis_units;
+              }
+              if (!spot.properties.sed.character) spot.properties.sed.character = 'unexposed_cove';
             }
           }
         }
-      }
-      // Current state is sed-lithologies tab
-      else if (state === 'app.spotTab.sed-lithologies') {
-        // Recalculate interval geometry from thickness and width, if the following has changed:
-        // - interval thickness or relative resistance weathering
-        // - bed, interbedded or package to unexposed or vice versa
-        // - bed, package or unexposed to interbedded or vice versa
-        // - principal or interbedded lithology (siliciclastic type, grain size or dunham classification)
-        // Fields where any changes can affect the geometry
-        var fields = ['interval_thickness', 'thickness_units', 'is_this_a_bed_or_package', 'primary_lithology',
-          'principal_siliciclastic_type', 'mud_silt_principal_grain_size', 'sand_principal_grain_size',
-          'congl_principal_grain_size', 'breccia_principal_grain_size', 'principal_dunham_class', 'interbed_lithology',
-          'interbed_siliciclastic_type', 'mud_silt_interbed_grain_size', 'sand_interbed_grain_size',
-          'congl_interbed_grain_size', 'breccia_interbed_grain_size', 'interbed_dunham_class', 'interbed_proportion',
-          'primary_lithology_thickness', 'interbed_thickness', 'relative_resistance_weathering'];
-        if (spot.geometry && spot.properties.sed && spot.properties.sed.lithologies &&
-          savedSpot.properties.sed && savedSpot.properties.sed.lithologies) {
-          var lithologies = spot.properties.sed.lithologies;
-          var lithologiesSaved = savedSpot.properties.sed.lithologies;
-          var needToRecalculate = _.find(fields, function (field) {
-            if (field === 'is_this_a_bed_or_package') {
-              return ((lithologies[field] === 'bed' || lithologies[field] === 'package_succe') &&
-                !(lithologiesSaved[field] === 'bed' || lithologiesSaved[field] === 'package_succe')) ||
-                (lithologies[field] === 'unexposed_cove' && lithologiesSaved[field] !== 'unexposed_cove') ||
-                (lithologies[field] === 'interbedded' && lithologiesSaved[field] !== 'interbedded');
+
+          // Check for changes to certain fields which would require recalculation of the interval geometry
+        // If current state is sed-interval tab
+        else if (state === 'app.spotTab.sed-interval') {
+          var intervalFields = ['character', 'interval_thickness', 'thickness_units'];
+          needToRecalculateIntervalGeometry = _.find(intervalFields, function (field) {
+            if (field === 'character') {
+              if ((sedData[field] && !sedDataSaved[field]) || (!sedData[field] && !sedDataSaved[field])) return true;
+              return ((sedData[field] === 'bed' || sedData[field] === 'package_succe') &&
+                !(sedDataSaved[field] === 'bed' || sedDataSaved[field] === 'package_succe')) ||
+                ((sedData[field] === 'unexposed_cove' || sedData[field] === 'not_measured') &&
+                  !(sedDataSaved[field] === 'unexposed_cove' || sedDataSaved[field] === 'not_measured')) ||
+                ((sedData[field] === 'interbedded' || sedData[field] === 'bed_mixed_lit') &&
+                  !(sedDataSaved[field] === 'interbedded' || sedDataSaved[field] === 'bed_mixed_lit'));
             }
-            return lithologies[field] !== lithologiesSaved[field];
+            if (sedData.interval && sedDataSaved.interval &&
+              ((sedData.interval[field] && !sedDataSaved.interval[field]) ||
+                (!sedData.interval[field] && sedDataSaved.interval[field]))) return true;
+            return sedData.interval && sedDataSaved.interval &&
+              sedData.interval[field] && sedDataSaved.interval[field] &&
+              sedData.interval[field] !== sedDataSaved.interval[field];
           });
-          if (needToRecalculate) {
-            spot = recalculateIntervalGeometry(spot);
+        }
+        // If current state is sed-lithologies tab
+        else if (state === 'app.spotTab.sed-lithologies') {
+          var lithologiesFields = ['primary_lithology', 'siliciclastic_type', 'mud_silt_grain_size', 'sand_grain_size',
+            'congl_grain_size', 'breccia_grain_size', 'dunham_classification', 'relative_resistance_weather'];
+          needToRecalculateIntervalGeometry = _.find(lithologiesFields, function (field) {
+            if ((sedData.lithologies && !sedDataSaved.lithologies) ||
+              (!sedData.lithologies && sedDataSaved.lithologies)) return true;
+            if (sedData.lithologies && sedDataSaved.lithologies &&
+              ((sedData.lithologies[0] && !sedDataSaved.lithologies[0]) ||
+                (!sedData.lithologies[0] && sedDataSaved.lithologies[0]))) return true;
+            if (sedData.lithologies && sedDataSaved.lithologies &&
+              sedData.lithologies[0] && sedDataSaved.lithologies[0] &&
+              sedData.lithologies[0][field] && sedDataSaved.lithologies[0][field] &&
+              sedData.lithologies[0][field] !== sedDataSaved.lithologies[0][field]) return true;
+            if (sedData.lithologies && sedDataSaved.lithologies &&
+              ((sedData.lithologies[1] && !sedDataSaved.lithologies[1]) ||
+                (!sedData.lithologies[1] && sedDataSaved.lithologies[1]))) return true;
+            return sedData.lithologies && sedDataSaved.lithologies &&
+              sedData.lithologies[1] && sedDataSaved.lithologies[1] &&
+              sedData.lithologies[1][field] && sedDataSaved.lithologies[1][field] &&
+              sedData.lithologies[1][field] !== sedDataSaved.lithologies[1][field];
+          });
+        }
+        // If current state is sed-bedding tab
+        else if (state === 'app.spotTab.sed-bedding') {
+          var beddingFields = ['interbed_proportion_change', 'interbed_proportion', 'lithology_at_bottom_contact',
+            'lithology_at_top_contact', 'thickness_of_individual_beds', 'avg_thickness', 'max_thickness',
+            'min_thickness'];
+          needToRecalculateIntervalGeometry = _.find(beddingFields, function (field) {
+            if ((sedData.bedding && !sedDataSaved.bedding) || (!sedData.bedding && sedDataSaved.bedding)) return true;
+            if (sedData.bedding && sedDataSaved.bedding &&
+              ((sedData.bedding[field] && !sedDataSaved.bedding[field]) ||
+                (!sedData.bedding[field] && sedDataSaved.bedding[field]))) return true;
+            if (field !== 'avg_thickness' && field !== 'max_thickness' && field !== 'min_thickness') {
+              return sedData.bedding && sedDataSaved.bedding &&
+                sedData.bedding[field] && sedDataSaved.bedding[field] &&
+                sedData.bedding[field] !== sedDataSaved.bedding[field];
+            }
+            if ((sedData.bedding.beds && !sedDataSaved.bedding.beds) ||
+              (!sedData.bedding.beds && sedDataSaved.bedding.beds)) return true;
+            if (sedData.bedding.beds && sedDataSaved.bedding.beds &&
+              ((sedData.bedding.beds[0] && !sedDataSaved.bedding.beds[0]) ||
+                (!sedData.bedding.beds[0] && sedDataSaved.bedding.beds[0]))) return true;
+            if (sedData.bedding.beds && sedDataSaved.bedding.beds &&
+              sedData.bedding.beds[0] && sedDataSaved.bedding.beds[0] &&
+              sedData.bedding.beds[0][field] && sedDataSaved.bedding.beds[0][field] &&
+              sedData.bedding.beds[0][field] !== sedDataSaved.bedding.beds[0][field]) return true;
+            if (sedData.bedding.beds && sedDataSaved.bedding.beds &&
+              ((sedData.bedding.beds[1] && !sedDataSaved.bedding.beds[1]) ||
+                (!sedData.bedding.beds[1] && sedDataSaved.bedding.beds[1]))) return true;
+            return sedData.bedding.beds && sedDataSaved.bedding.beds &&
+              sedData.bedding.beds[1] && sedDataSaved.bedding.beds[1] &&
+              sedData.bedding.beds[1][field] && sedDataSaved.bedding.beds[1][field] &&
+              sedData.bedding.beds[1][field] !== sedDataSaved.bedding.beds[1][field];
+          });
+        }
+        if (needToRecalculateIntervalGeometry) {
+          spot = recalculateIntervalGeometry(spot);
+          // Move above intervals up or down if interval thickness changed
+          if (sedData.interval && sedData.interval.interval_thickness && sedDataSaved.interval &&
+            sedDataSaved.interval.interval_thickness) {
             var targetIntervalExtent = new ol.format.GeoJSON().readFeature(spot).getGeometry().getExtent();
             var savedSpotIntervalExtent = new ol.format.GeoJSON().readFeature(savedSpot).getGeometry().getExtent();
             var diff = targetIntervalExtent[3] - savedSpotIntervalExtent[3];
-            // Move above intervals up or down if interval thickness changed
-            if (lithologies.interval_thickness > lithologiesSaved.interval_thickness) {
+            if (sedData.interval.interval_thickness > sedDataSaved.interval.interval_thickness) {
               // Move above spots up
-              moveSpotsUpOrDownByPixels(spot.properties.strat_section_id, savedSpotIntervalExtent[3], diff, spot.properties.id);
+              moveSpotsUpOrDownByPixels(spot.properties.strat_section_id, savedSpotIntervalExtent[3], diff,
+                spot.properties.id);
             }
-            else if (lithologies.interval_thickness < lithologiesSaved.interval_thickness) {
+            else if (sedData.interval.interval_thickness < sedDataSaved.interval.interval_thickness) {
               // Move above spots down
-              moveSpotsUpOrDownByPixels(spot.properties.strat_section_id, targetIntervalExtent[3], diff, spot.properties.id);
+              moveSpotsUpOrDownByPixels(spot.properties.strat_section_id, targetIntervalExtent[3], diff,
+                spot.properties.id);
             }
           }
         }
@@ -522,26 +574,107 @@
       return spot;
     }
 
-    // Create a new strat section interval
+    // Create a new strat section interval, separating the fields to their respective objects
     function createInterval(stratSectionId, data) {
       var geojsonObj = {};
-      geojsonObj.geometry = calculateIntervalGeometry(stratSectionId, data, getSectionHeight());
       geojsonObj.properties = {
         'strat_section_id': stratSectionId,
         'surface_feature': {'surface_feature_type': 'strat_interval'},
-        'sed': {'lithologies': data}
+        'sed': {}
       };
+      if (data.interval_type) geojsonObj.properties.sed.character = data.interval_type;
+
+      // Interval fields in Add Interval
+      var intervalSurvey = DataModelsFactory.getDataModel('sed')['interval'].survey;
+      var intervalFieldNames = _.pluck(intervalSurvey, 'name');
+      var intervalFields = _.pick(data, _.without(intervalFieldNames, 'interval_type'));
+      if (!_.isEmpty(intervalFields)) geojsonObj.properties.sed.interval = intervalFields;
+
+      // Bedding fields in Add Interval
+      var beddingSurvey = DataModelsFactory.getDataModel('sed')['bedding'].survey;
+      var beddingFieldNames = _.pluck(beddingSurvey, 'name');
+      var beddingFields = [];
+      _.map(data, function (value, key) {
+        if (key.slice(-2) !== '_1' && _.contains(beddingFieldNames, key)) {
+          if (!beddingFields[0]) beddingFields.push({});
+          beddingFields[0][key] = value;
+        }
+        else if (key.slice(-2) === '_1' && _.contains(beddingFieldNames, key.slice(0, -2))) {
+          if (!beddingFields[0]) beddingFields.push({});
+          if (!beddingFields[1]) beddingFields.push({});
+          beddingFields[1][key.slice(0, -2)] = value;
+        }
+      });
+      if (!_.isEmpty(beddingFields)) geojsonObj.properties.sed.bedding = {'beds': beddingFields};
+
+      var beddingSharedSurvey = DataModelsFactory.getDataModel('sed')['bedding_shared'].survey;
+      var beddingSharedFieldNames = _.pluck(beddingSharedSurvey, 'name');
+      var beddingSharedFields = _.pick(data, beddingSharedFieldNames);
+      if (!_.isEmpty(beddingSharedFields)) {
+        if (!geojsonObj.properties.sed.bedding) geojsonObj.properties.sed.bedding = {};
+        _.extend(geojsonObj.properties.sed.bedding, beddingSharedFields);
+      }
+
+      // Lithologies fields in Add Interval (only fields from Lithology & Texture needed)
+      var lithologiesLithologySurvey = DataModelsFactory.getDataModel('sed')['lithologies_lithology'].survey;
+      var lithologiesTextureSurvey = DataModelsFactory.getDataModel('sed')['lithologies_texture'].survey;
+      var lithologiesLithologyFieldNames = _.pluck(lithologiesLithologySurvey, 'name');
+      var lithologiesTextureFieldNames = _.pluck(lithologiesTextureSurvey, 'name');
+      var lithologiesFieldNames = _.union(lithologiesLithologyFieldNames, lithologiesTextureFieldNames);
+      var lithologiesFields = [];
+      _.map(data, function (value, key) {
+        if (key.slice(-2) !== '_1' && _.contains(lithologiesFieldNames, key)) {
+          if (!lithologiesFields[0]) lithologiesFields.push({});
+          lithologiesFields[0][key] = value;
+        }
+        else if (key.slice(-2) === '_1' && _.contains(lithologiesFieldNames, key.slice(0, -2))) {
+          if (!lithologiesFields[0]) lithologiesFields.push({});
+          if (!lithologiesFields[1]) lithologiesFields.push({});
+          lithologiesFields[1][key.slice(0, -2)] = value;
+        }
+      });
+      if (!_.isEmpty(lithologiesFields)) geojsonObj.properties.sed.lithologies = lithologiesFields;
+
+      geojsonObj.geometry = calculateIntervalGeometry(stratSectionId, geojsonObj.properties.sed, getSectionHeight());
       return geojsonObj;
     }
 
     // Move intervals and Spots in column down to close gap after target interval deleted
     function deleteInterval(targetInterval) {
-      var targetIntervalExtent = new ol.format.GeoJSON().readFeature(targetInterval).getGeometry().getExtent();
-      var targetIntervalHeight = targetIntervalExtent[3] - targetIntervalExtent[1];
-      return moveSpotsUpOrDownByPixels(targetInterval.properties.strat_section_id, targetIntervalExtent[3],
-        -targetIntervalHeight).then(function () {
+      try {
+        var targetIntervalExtent = new ol.format.GeoJSON().readFeature(targetInterval).getGeometry().getExtent();
+        var targetIntervalHeight = targetIntervalExtent[3] - targetIntervalExtent[1];
+        return moveSpotsUpOrDownByPixels(targetInterval.properties.strat_section_id, targetIntervalExtent[3],
+          -targetIntervalHeight).then(function () {
+          return SpotFactory.destroy(targetInterval.properties.id);
+        });
+      } catch (e) {
+        // Unable to move other interval up or down to close gap
         return SpotFactory.destroy(targetInterval.properties.id);
-      });
+      }
+    }
+
+    // Check if the units fields for the interval match the units designated for the section
+    function doUnitsFieldsMatch(stratSection, data) {
+      if (stratSection.column_y_axis_units) {
+        var unitsFields = ['thickness_units', 'interbed_thickness_units', 'package_thickness_units'];
+        var mismatchUnitsField = _.find(unitsFields, function (unitsField) {
+          return data[unitsField] && stratSection.column_y_axis_units !== data[unitsField];
+        });
+        if (mismatchUnitsField) {
+          $ionicPopup.alert({
+            'title': 'Units Mismatch',
+            'template': 'The units for the Y Axis are <b>' + stratSection.column_y_axis_units + '</b> but <b>' +
+              data[mismatchUnitsField] + '</b> have been designated for <b>' +
+              DataModelsFactory.getLabelFromNewDictionary(mismatchUnitsField, mismatchUnitsField) + '</b>. Please ' +
+              'fix the units for <b>' +
+              DataModelsFactory.getLabelFromNewDictionary(mismatchUnitsField, mismatchUnitsField) + '</b>. Unit ' +
+              'conversions may be added to a future version of the app.'
+          });
+          return false;
+        }
+      }
+      return true;
     }
 
     function drawAxes(ctx, pixelRatio, stratSection) {
@@ -650,6 +783,45 @@
       }
     }
 
+    // Extract the data from the Spot object in the format needed for the Add Interval modal
+    function extractAddIntervalData(sedData) {
+      var addIntervalSurvey = DataModelsFactory.getDataModel('sed')['add_interval'].survey;
+      var addIntervalFieldNames = _.pluck(addIntervalSurvey, 'name');
+
+      // Interval
+      var data = _.pick(sedData.interval, addIntervalFieldNames);
+
+      // Lithologies
+      if (sedData.lithologies && sedData.lithologies[0]) _.extend(data,
+        _.pick(sedData.lithologies[0], addIntervalFieldNames));
+      if (sedData.lithologies && sedData.lithologies[1]) {
+        var tempLith2 = _.pick(sedData.lithologies[1], addIntervalFieldNames);
+        var tempLith2Renamed = {};
+        _.each(tempLith2, function (value, key) {
+          tempLith2Renamed[key + '_1'] = value;
+        });
+        if (!_.isEmpty(tempLith2Renamed)) _.extend(data, tempLith2Renamed);
+      }
+
+      // Bedding
+      if (sedData.bedding) _.extend(data, _.pick(sedData.bedding, addIntervalFieldNames));
+      if (sedData.bedding && sedData.bedding.beds && sedData.bedding.beds[0]) {
+        _.extend(data, _.pick(sedData.bedding.beds[0], addIntervalFieldNames));
+      }
+      if (sedData.bedding && sedData.bedding.beds && sedData.bedding.beds[1]) {
+        var tempBed2 = _.pick(sedData.bedding.beds[1], addIntervalFieldNames);
+        var tempBed2Renamed = {};
+        _.each(tempBed2, function (value, key) {
+          tempBed2Renamed[key + '_1'] = value;
+        });
+        if (!_.isEmpty(tempBed2Renamed)) _.extend(data, tempBed2Renamed);
+      }
+
+      // Character
+      if (sedData.character) data['interval_type'] = sedData.character;
+      return data;
+    }
+
     // Gather all Spots Mapped on this Strat Section
     function gatherStratSectionSpots(stratSectionId) {
       var activeSpots = SpotFactory.getActiveSpots();
@@ -669,6 +841,18 @@
       spotsWithStratSections = _.filter(activeSpots, function (spot) {
         return _.has(spot.properties, 'sed') && _.has(spot.properties.sed, 'strat_section');
       });
+    }
+
+    // Get the default units which is the same as the units for the section that this Spot is in
+    function getDefaultUnits(spot) {
+      if (spot.properties && spot.properties.strat_section_id) {
+        var spotWithThisStratSection = getSpotWithThisStratSection(spot.properties.strat_section_id);
+        if (spotWithThisStratSection && spotWithThisStratSection.properties &&
+          spotWithThisStratSection.properties.sed && spotWithThisStratSection.properties.sed.strat_section.column_y_axis_units) {
+          return spotWithThisStratSection.properties.sed.strat_section.column_y_axis_units;
+        }
+      }
+      return undefined;
     }
 
     // Get the Spot that Contains a Specific Strat Section Given the Id of the Strat Section
@@ -715,6 +899,12 @@
     }
 
     function isInterval(spot) {
+      return _.has(spot, 'properties') && _.has(spot.properties, 'surface_feature') &&
+        _.has(spot.properties.surface_feature, 'surface_feature_type') &&
+        spot.properties.surface_feature.surface_feature_type === 'strat_interval';
+    }
+
+    function isMappedInterval(spot) {
       return _.has(spot, 'properties') && _.has(spot.properties, 'strat_section_id') &&
         _.has(spot.properties, 'surface_feature') && _.has(spot.properties.surface_feature, 'surface_feature_type') &&
         spot.properties.surface_feature.surface_feature_type === 'strat_interval';

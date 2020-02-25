@@ -1,33 +1,35 @@
 list_name,name,label
-pu79d34,fining_upward,Fining upward
-pu79d34,coarsening_upw,Coarsening upward
-pu79d34,cyclic,Cyclic
-pu79d34,random,Random
-pu79d34,stacked,Stacked
-pu79d34,isolated,Isolated
-di5fn81,progradational,Progradational
-di5fn81,aggradational,Aggradational
-di5fn81,retrogradation,Retrogradational
-di5fn81,degradational,Degradational
-di5fn81,transgres_hem,Transgressive Hemicycle
-di5fn81,regressive_hem,Regressive Hemicycle
+mx6hb20,fining_upward,fining upward
+mx6hb20,coarsening_upw,coarsening upward
+mx6hb20,cyclic,cyclic
+mx6hb20,random,random
+mx6hb20,stacked,stacked
+mx6hb20,isolated,isolated
+di5fn81,progradational,progradational
+di5fn81,aggradational,aggradational
+di5fn81,retrogradation,retrogradational
+di5fn81,degradational,degradational
+di5fn81,transgres_hem,transgressive hemicycle
+di5fn81,regressive_hem,regressive hemicycle
 di5fn81,highstand_syst,Highstand Systems Tract
 di5fn81,lowstand_syste,Lowstand Systems Tract
 di5fn81,transgres_sys,Transgressive Systems Tract
 di5fn81,falling_stage,Falling Stage Systems Tract
-di5fn81,incised_valley,Incised valley fill
-nk4ga99,channel_ch,Channel (CH)
-nk4ga99,gravelly_bar_o,Gravelly bar or bedform (GB)
-nk4ga99,sandy_bedform,Sandy bedform (SB)
-nk4ga99,foreset_macrof,Foreset macroforms (FM)
-nk4ga99,lateral_accret,Lateral accretion macroform (LA)
-nk4ga99,sediment_gravi,Sediment gravity flow (SG)
-nk4ga99,laminated_sand,Laminated sand sheet (LS)
-nk4ga99,overbank_fines,Overbank fines (OF)
-nk4ga99,other,Other
+di5fn81,incised_valley,incised valley fill
+di5fn81,other,other
+nk4ga99,channel_ch,channel (CH)
+nk4ga99,gravelly_bar_o,gravelly bar or bedform (GB)
+nk4ga99,sandy_bedform,sandy bedform (SB)
+nk4ga99,foreset_macrof,foreset macroforms (FM)
+nk4ga99,lateral_accret,lateral accretion macroform (LA)
+nk4ga99,sediment_gravi,sediment gravity flow (SG)
+nk4ga99,laminated_sand,laminated sand sheet (LS)
+nk4ga99,overbank_fines,overbank fines (OF)
+nk4ga99,other,other
 oa3pi37,underfilled,Underfilled
 oa3pi37,overfilled,Overfilled
 oa3pi37,balanced,Balanced
+oa3pi37,other,other
 dh0ic29,rimmed_platfor,Rimmed Platform
 dh0ic29,ramp,Ramp
 dh0ic29,attached,Attached
@@ -36,6 +38,9 @@ dh0ic29,homocline_ramp,Homocline Ramp
 dh0ic29,distally_steep,Distally Steepened Ramp
 dh0ic29,unrimmed_platf,Unrimmed Platform
 dh0ic29,other,Other
-rm7cl73,escarpment_mar,Escarpment margin
-rm7cl73,accretionary_m,Accretionary margin
-rm7cl73,other,Other
+nd4uk01,option_1,Option 1
+nd4uk01,option_2,Option 2
+nd4uk01,other,other
+od5ow19,escarpment_mar,escarpment margin
+od5ow19,accretionary_m,accretionary margin
+od5ow19,other,other

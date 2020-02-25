@@ -1,7 +1,6 @@
 type,name,label,required,relevant,calculation,$given_name
-begin_group,group_qo3sq24,Environment Interpretation,,,,
+begin_group,group_qo3sq24,Environment Interpretation,false,,,
 select_multiple ee59y88,general,General,false,,,
-text,other_general,Other General,false,"selected(${general}, 'other')",,
 select_multiple ml38g37,clastic,Clastic,false,,,
 select_multiple xt0tt07,alluvial_fan_environments,Alluvial fan environments,false,"selected(${clastic}, 'alluvial_fan')",,
 text,other_alluvial_fan,Other Alluvial Fan,false,"selected(${alluvial_fan_environments}, 'other')",,
@@ -21,7 +20,7 @@ text,other_clastic,Other Clastic,false,"selected(${clastic}, 'other')",,
 select_multiple yi3tp14,carbonates,Carbonates,false,,,
 select_multiple ow54y55,factory,Factory,false,"selected(${carbonates}, 'factory')",,
 select_multiple pv3ex57,carbonate,Environment,false,"selected(${carbonates}, 'environment')",,
-text,other_carbonate_environment,Other Carbonate Environment,false,"selected(${carbonate}, 'other')",,
+text,other_carbonate_environment,Other Carbonate Environment,false,"selected(${carbonate}, 'shallow')",,
 select_multiple em9bi13,lake_subenvironments,Lake Subenvironments,false,"selected(${carbonate}, 'lake')",,
 text,other_carbonate_lake_subenvironment,Other Carbonate Lake Subenvironment,false,"selected(${lake_subenvironments}, 'other')",,
 select_multiple kx3or79,tidal_flat_subenvironments,Tidal Flat Subenvironments,false,"selected(${carbonate}, 'tidal_flat')",,
@@ -34,4 +33,4 @@ text,other_tectonic_setting,Other Tectonic Setting,false,"selected(${tectonic_se
 text,notes,Notes,false,,,
 end_group,,,,,,
 calculate,__version__,,false,,'vJTSGLr3iUX4Epntceu998',
-calculate,_version_,,,,'vrz6herYbsks7xvw9Cfdjm',__version__
+calculate,_version_,,,,'vufUV8e5QGFko9CtfdLfuG',__version__

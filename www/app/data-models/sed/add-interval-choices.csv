@@ -4,12 +4,14 @@ hq17k89,m,m,
 hq17k89,in,in,
 hq17k89,ft,ft,
 th1pp14,bed,bed,
-th1pp14,interbedded,interbedded,
-th1pp14,package_succe,package (succession of beds),
-th1pp14,unexposed_cove,unexposed/covered,
+th1pp14,bed_mixed_lit,"bed, mixed lithologies",1
+th1pp14,interbedded,interbedded,2
+th1pp14,package_succe,package (succession of beds),3
+th1pp14,unexposed_cove,unexposed/covered,4
+th1pp14,not_measured,not measured,5
 eb2oc45,siliciclastic,siliciclastic,
 eb2oc45,limestone,limestone,1
-eb2oc45,dolomite,dolomite,2
+eb2oc45,dolostone,dolostone,2
 eb2oc45,organic_coal,organic/coal,3
 eb2oc45,evaporite,evaporite,4
 eb2oc45,chert,chert,5
@@ -37,6 +39,9 @@ te32l95,granule,granule,
 te32l95,pebble,pebble,
 te32l95,cobble,cobble,
 te32l95,boulder,boulder,
+xc2bv28,oolitic,oolitic,
+xc2bv28,non_skeletal,non-skeletal,
+xc2bv28,skeletal,skeletal,
 uf03r86,mudstone,mudstone,
 uf03r86,wackestone,wackestone,1
 uf03r86,packstone,packstone,2
@@ -49,24 +54,44 @@ uf03r86,bindstone,bindstone,8
 uf03r86,bafflestone,bafflestone,9
 uf03r86,cementstone,cementstone,10
 uf03r86,recrystallized,recrystallized,11
-kq12j14,_2_cm,~2 cm,
-kq12j14,2_5_cm,2-5 cm,
-kq12j14,5_10_cm,5-10 cm,
-kq12j14,10_30_cm,10-30 cm,
-kq12j14,_30_cm,>30 cm,
-jf3we63,_2_cm,~2 cm,0
-jf3we63,2_5_cm,2-5 cm,1
-jf3we63,5_10_cm,5-10 cm,2
-jf3we63,10_30_cm,10-30 cm,3
-jf3we63,_30_cm,>30 cm,4
-ss8kj53,increase,increase,0
-ss8kj53,decrease,decrease,1
-ss8kj53,no_change,no change,2
-fz4sh15,increase,increase,0
-fz4sh15,decrease,decrease,1
-fz4sh15,no_change,no change,2
+sk35h56,lithified,lithified,
+sk35h56,poorly_lithifi,poorly lithified,
+sk35h56,unlithified_un,unlithified/unconsolidated,
+sk35h56,metamorphosed,metamorphosed,
 dt0dc27,1,1 - least resistant,
 dt0dc27,2,2,
 dt0dc27,3,3 - moderately resistant,
 dt0dc27,4,4,
 dt0dc27,5,5 - most resistant,
+li1ty81,massive,massive,
+li1ty81,cross_bedded,cross-bedded,
+li1ty81,hummocky_cross,hummocky cross-bedded,
+li1ty81,ripple_laminat,ripple laminated,
+li1ty81,laminated,laminated,
+li1ty81,bioturbated,bioturbated,
+hl23w64,oolitic,oolitic,
+hl23w64,non_skeletal,non-skeletal,
+hl23w64,skelatal,skelatal,
+wo2ym83,lithified,lithified,
+wo2ym83,poorly_lithifi,poorly lithified,
+wo2ym83,unlithified_un,unlithified/unconsolidated,
+wo2ym83,metamorphosed,metamorphosed,
+gt2mz25,massive,massive,
+gt2mz25,cross_bedded,cross-bedded,
+gt2mz25,hummocky_cross,hummocky cross-bedded,
+gt2mz25,ripple_laminat,ripple laminated,
+gt2mz25,laminated,laminated,
+gt2mz25,bioturbated,bioturbated,
+ss8kj53,increase,increase,
+ss8kj53,decrease,decrease,1
+ss8kj53,no_change,no change,2
+zc89y27,cm,cm,
+zc89y27,m,m,
+zc89y27,in,in,
+zc89y27,ft,ft,
+gv7rs89,lithology_1,lithology 1,
+gv7rs89,lithology_2,lithology 2,
+gv7rs89,not_specified,not specified,
+du76k53,lithology_1,lithology 1,
+du76k53,lithology_2,lithology 2,
+du76k53,not_specified,not specified,

@@ -1,191 +1,53 @@
 list_name,name,label,order
-iu3km02,massive_struct,massive/structureless,
-iu3km02,horizontal,horizontal,
-iu3km02,ripple_laminat,ripple lamination,
-iu3km02,symmetric,symmetric,
-iu3km02,asymmetric,asymmetric,
-iu3km02,climbing,climbing,
-iu3km02,interference,interference,
-iu3km02,flaser,flaser,
-iu3km02,wavy,wavy,
-iu3km02,lenticular,lenticular,
-iu3km02,rhythmic,rhythmic,
-iu3km02,mud_drape,mud drape,
-op9jw07,massive_struct,massive/structureless,
-op9jw07,horizontal,horizontal,
-op9jw07,ripple_laminat,ripple lamination,
-op9jw07,symmetric,symmetric,
-op9jw07,asymmetric,asymmetric,
-op9jw07,climbing,climbing,
-op9jw07,interference,interference,
-op9jw07,flaser,flaser,
-op9jw07,wavy,wavy,
-op9jw07,lenticular,lenticular,
-op9jw07,rhythmic,rhythmic,
-op9jw07,mud_drape,mud drape,
-op9jw07,other,other,
-ga9oo42,trough,trough,
-ga9oo42,hummocky,hummocky,1
-ga9oo42,planar_tabular,planar tabular,2
-ga9oo42,festoon,festoon,3
-ga9oo42,wedge,wedge,4
-ga9oo42,low_angle,low angle,5
-ga9oo42,symmetric,symmetric,6
-ga9oo42,asymmetric,asymmetric,7
-ga9oo42,climbing,climbing,
-ga9oo42,interference,interference,
-ga9oo42,translatent,translatent,
-ga9oo42,flaser,flaser,
-ga9oo42,wavy,wavy,
-ga9oo42,lenticular,lenticular,
-ga9oo42,starved_ripple,starved ripples,
-ga9oo42,adhesion,adhesion,
-ga9oo42,herringbone,herringbone,
-ga9oo42,sigmoidal,sigmoidal,
-ga9oo42,tidal_bundle,tidal bundle,
-ga9oo42,rhythmic,rhythmic,
-ga9oo42,bi_directional,bi-directional asymmetric,
-ga9oo42,pinstripe,pinstripe,
-ga9oo42,massive_struct,massive/structureless,
-ga9oo42,horizontal,horizontal,
-ga9oo42,ripple_laminat,ripple lamination,
-qk48i88,trough,trough,
-qk48i88,hummocky,hummocky,
-qk48i88,planar_tabular,planar tabular,
-qk48i88,festoon,festoon,
-qk48i88,wedge,wedge,
-qk48i88,low_angle,low angle,
-qk48i88,symmetric,symmetric,
-qk48i88,asymmetric,asymmetric,
-qk48i88,climbing,climbing,
-qk48i88,interference,interference,
-qk48i88,translatent,translatent,
-qk48i88,flaser,flaser,
-qk48i88,wavy,wavy,
-qk48i88,lenticular,lenticular,
-qk48i88,starved_ripple,starved ripples,
-qk48i88,adhesion,adhesion,
-qk48i88,herringbone,herringbone,
-qk48i88,sigmoidal,sigmoidal,
-qk48i88,tidal_bundle,tidal bundle,
-qk48i88,rhythmic,rhythmic,
-qk48i88,bi_directional,bi-directional asymmetric,
-qk48i88,pinstripe,pinstripe,
-qk48i88,massive_struct,massive/structureless,
-qk48i88,horizontal,horizontal,
-qk48i88,ripple_laminat,ripple lamination,
-qk48i88,other,other,
-oi98y12,trough,trough,
-oi98y12,planar_tabular,planar tabular,1
-oi98y12,festoon,festoon,2
-oi98y12,wedge,wedge,3
-oi98y12,low_angle,low angle,4
-oi98y12,massive_struct,massive/structureless,5
-oi98y12,horizontal,horizontal,6
-oi98y12,ripple_laminat,ripple lamination,7
-mb8mv59,trough,trough,
-mb8mv59,planar_tabular,planar tabular,
-mb8mv59,festoon,festoon,
-mb8mv59,wedge,wedge,
-mb8mv59,low_angle,low angle,
-mb8mv59,massive_struct,massive/structureless,
-mb8mv59,horizontal,horizontal,
-mb8mv59,ripple_laminat,ripple lamination,
-mb8mv59,other,other,
-og95s36,trough,trough,
-og95s36,hummocky,hummocky,
-og95s36,swaley,swaley,
-og95s36,planar_tabular,planar tabular,
-og95s36,festoon,festoon,
-og95s36,symmetric,symmetric,
-og95s36,asymmetric,asymmetric,
-og95s36,wavy,wavy,
-og95s36,massive_struct,massive/structureless,
-og95s36,horizontal,horizontal,
-og95s36,ripple_laminat,ripple lamination,
-oh95f02,trough,trough,
-oh95f02,hummocky,hummocky,
-oh95f02,swaley,swaley,
-oh95f02,planar_tabular,planar tabular,
-oh95f02,festoon,festoon,
-oh95f02,symmetric,symmetric,
-oh95f02,asymmetric,asymmetric,
-oh95f02,wavy,wavy,
-oh95f02,massive_struct,massive/structureless,
-oh95f02,horizontal,horizontal,
-oh95f02,ripple_laminat,ripple lamination,
-oh95f02,other,other,
-yy7ga03,no_bedding_lam,no bedding or laminae,
-yy7ga03,planar_stratif,planar stratified,1
-yy7ga03,cross_stratifi,cross stratified,2
-yy7ga03,cant_be_determ,can't be determined,3
-yy7ga03,n_a,n/a,4
-re0hj03,trough,trough,
-re0hj03,hummocky,hummocky,1
-re0hj03,swaley,swaley,2
-re0hj03,planar_tabular,planar tabular,3
-re0hj03,festoon,festoon,4
-re0hj03,wedge,wedge,5
-re0hj03,low_angle,low angle,6
-re0hj03,symmetric,symmetric,7
-re0hj03,asymmetric,asymmetric,8
-re0hj03,climbing,climbing,9
-re0hj03,interference,interference,10
-re0hj03,translatent,translatent,11
-re0hj03,flaser,flaser,12
-re0hj03,wavy,wavy,13
-re0hj03,lenticular,lenticular,14
-re0hj03,starved_ripple,starved ripples,15
-re0hj03,adhesion,adhesion,16
-re0hj03,herringbone,herringbone,17
-re0hj03,sigmoidal,sigmoidal,18
-re0hj03,tidal_bundle,tidal bundle,19
-re0hj03,rhythmic,rhythmic,20
-re0hj03,bi_directional,bi-directional asymmetric,21
-re0hj03,pinstripe,pinstripe,22
-re0hj03,mud_drape,mud drape,23
-re0hj03,massive_struct,massive/structureless,24
-re0hj03,horizontal,horizontal,25
-re0hj03,ripple_lam,ripple lamination,26
-re0hj03,other,other,27
-jc3as89,trough_axis,trough axis (plunge & trend),
-jc3as89,cross_bed,cross bed (dip & dip direction),
-oj08o54,festoon_trough,festoon trough axis (plunge & trend),
-oj08o54,festoon_cross,festoon cross bedding (dip & dip direction),
-hp2ng68,subcritical,subcritical,
-hp2ng68,critical,critical,
-hp2ng68,supercritical,supercritical,
-cs0rc13,bedforms,bedforms,
-cs0rc13,sole_marks,sole marks,
-cs0rc13,flute_cast,flute cast,
-cs0rc13,groove_cast,groove cast,
-cs0rc13,tool_marks,tool marks,
-cs0rc13,gutter_cast,gutter cast,
-cs0rc13,load_cast,load cast,
-cs0rc13,parting_lineat,parting lineation,
-cs0rc13,mudcracks,mudcracks,
-cs0rc13,syneresis_crac,syneresis cracks,
-cs0rc13,evaporite_mold,evaporite molds,
-cs0rc13,raindrop_impre,raindrop impressions,
-cs0rc13,glacial_striat,glacial striations,
-cs0rc13,hardground_fir,hardground/firmground,
-cs0rc13,other,other,
-bd2tc58,wave_ripples,wave ripples,
-bd2tc58,current_ripple,current ripples,1
-bd2tc58,dunes,dunes,2
-bd2tc58,antidunes,antidunes,3
-bd2tc58,2d_crests,2D crests,4
-bd2tc58,3d_crests,3D crests,5
-bd2tc58,lunate,lunate,6
-bd2tc58,cuspate,cuspate,7
-bd2tc58,linguoid,linguoid,8
-bd2tc58,bifurcations,bifurcations,9
-bd2tc58,ladderback,ladderback,10
-bd2tc58,interference_r,interference ripples,11
-bd2tc58,adhesion_struc,adhesion structures,12
-bd2tc58,swales,swales,13
-bd2tc58,hummocks_and_s,hummocks and swales,14
-bd2tc58,other,other,
+ld5to24,yes,yes,
+ld5to24,no,no,
+re0hj03,cross_bedding,cross bedding (general),
+re0hj03,trough,trough,1
+re0hj03,hummocky,hummocky-swaley,2
+re0hj03,swaley,swaley,3
+re0hj03,planar_tabular,planar tabular,4
+re0hj03,festoon,festoon,5
+re0hj03,wedge,wedge,6
+re0hj03,low_angle,low angle,7
+re0hj03,high_angle,high angle,8
+re0hj03,symmetric,symmetric,9
+re0hj03,asymmetric,asymmetric,10
+re0hj03,herringbone,herringbone,11
+re0hj03,bi_directional,bi-directional,12
+re0hj03,sigmoidal,sigmoidal,13
+re0hj03,pinstripe,pinstripe,14
+re0hj03,avalanche_tong,avalanche tongues,15
+re0hj03,large_scale,large scale,16
+re0hj03,carb_drapes,carbonaceous drapes,17
+re0hj03,mud_drape,mud drape,18
+re0hj03,other,other,19
+jz8he61,cross_lamin,cross lamination (general),
+jz8he61,trough,trough,
+jz8he61,climbing,climbing,
+jz8he61,flaser,flaser,
+jz8he61,wavy,wavy,
+jz8he61,lenticular,lenticular,
+jz8he61,translatent,translatent,
+jz8he61,starved,starved,
+jz8he61,herringbone,herringbone,
+jz8he61,bi_directional,bi-directional,
+jz8he61,pinstripe,pinstripe,
+jz8he61,wind,wind,
+jz8he61,interference,interference,
+jz8he61,carb_drape,carbonaceous drape,
+jz8he61,mud_drape,mud drape,
+jz8he61,other,other,
+sm1jb70,horizontal,horizontal,
+sm1jb70,planar,planar,
+sm1jb70,rhythmic,rhythmic,
+sm1jb70,wavy,wavy,
+sm1jb70,lenticular,lenticular,
+sm1jb70,carbo_drape,carbonaceous drape,
+sm1jb70,mud_drape,mud drape,
+sm1jb70,sandy_stringer,sandy stringers,
+sm1jb70,other,other,
+ra89g56,normally_grade,normally graded,
+ra89g56,inverse_graded,inverse graded,
 aj0xd06,contorted_bedd,contorted bedding,
 aj0xd06,convolute_bedd,convolute bedding,1
 aj0xd06,rip_up_clasts,rip-up clasts,2
@@ -199,9 +61,20 @@ aj0xd06,sand_mud_volca,sand/mud volcanoes,9
 aj0xd06,load_structure,load structures,10
 aj0xd06,ball_and_pillo,ball and pillow,11
 aj0xd06,boudinage,boudinage,12
-aj0xd06,intrastratal_c,intrastratal cracks,13
-aj0xd06,liquefaction_f,liquefaction features,14
+aj0xd06,intrastrat_crk,intrastratal cracks,13
+aj0xd06,liquefaction,liquefaction features,14
 aj0xd06,syn_sedimentar,syn-sedimentary faults,15
 aj0xd06,neptunian_dike,Neptunian dikes,16
-aj0xd06,post_lithifica,post-lithification deformational structures,
-aj0xd06,other,other,
+aj0xd06,post_lithifica,post-lithification deformational structures,17
+aj0xd06,other,other,19
+sp5hn71,lag_deposit,lag deposit,
+sp5hn71,rip_up_clasts,rip-up clasts,
+sp5hn71,intraclasts,intraclasts,
+sp5hn71,other,other,
+hi3ol65,bouma_sequence,Bouma Sequence,
+hi3ol65,tidal_bundles,Tidal Bundles,
+nw3sv70,a,a,
+nw3sv70,b,b,
+nw3sv70,c,c,
+nw3sv70,d,d,
+nw3sv70,e,e,

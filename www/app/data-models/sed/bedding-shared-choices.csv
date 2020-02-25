@@ -1,0 +1,19 @@
+list_name,name,label,order
+ss8kj53,increase,increase,
+ss8kj53,decrease,decrease,1
+ss8kj53,no_change,no change,2
+gv7rs89,lithology_1,lithology 1,
+gv7rs89,lithology_2,lithology 2,
+gv7rs89,not_specified,not specified,
+du76k53,lithology_1,lithology 1,
+du76k53,lithology_2,lithology 2,
+du76k53,not_specified,not specified,
+zc89y27,cm,cm,
+zc89y27,m,m,
+zc89y27,in,in,
+zc89y27,ft,ft,
+mf0hv76,upward_thin,upward thinning,
+mf0hv76,upward_thicken,upward thickening,1
+mf0hv76,uniform,uniform (no trend),2
+mf0hv76,can_t_be_deter,can't be determined,3
+mf0hv76,other,other,4

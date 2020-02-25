@@ -1,0 +1,101 @@
+list_name,name,label,order
+yh9fg32,calcite,calcite,
+yh9fg32,dolomite,dolomite,1
+yh9fg32,silica,silica,2
+yh9fg32,iron_oxides,iron oxides,3
+yh9fg32,evaporite_min,evaporite minerals,4
+yh9fg32,clay,clay,5
+yh9fg32,other,other,6
+gc5or38,parallel,parallel,
+gc5or38,oblique,oblique,
+gc5or38,perpendicular,perpendicular,
+gc5or38,en_echelon,en echelon,
+au3vr50,calcite,calcite,
+au3vr50,quartz,quartz,
+au3vr50,iron_oxides,iron oxides,
+au3vr50,evaporite_min,evaporite minerals,
+au3vr50,other,other,
+ly8ju48,parallel,parallel,
+ly8ju48,oblique,oblique,
+ly8ju48,perpendicular,perpendicular,
+ly8ju48,en_echelon,en echelon,
+nn7vg12,calcite,calcite,
+nn7vg12,quartz,quartz,
+nn7vg12,iron_oxides,iron oxides,
+nn7vg12,evaporite_min,evaporite minerals,
+nn7vg12,other,other,
+fr9ga56,mm,mm,
+fr9ga56,cm,cm,
+fr9ga56,dm,dm,
+fr9ga56,m,m,
+zb73n93,spherical,spherical,
+zb73n93,pods,pod,1
+zb73n93,elongate,elongate,2
+zb73n93,other,masses,3
+zb73n93,pipes,pipes,4
+zb73n93,irregular,irregular,6
+zb73n93,other,other,7
+gx9jq81,septarian,septarian,
+gx9jq81,solid,solid,
+gx9jq81,rinded,rinded,
+gx9jq81,layered,layered,
+gx9jq81,other,other,
+hl0ww19,calcite,calcite,
+hl0ww19,dolomite,dolomite,1
+hl0ww19,pyrite,pyrite,2
+hl0ww19,iron_oxide,iron oxide,3
+hl0ww19,silica,silica,4
+hl0ww19,gypsum_anhydri,gypsum/anhydrite,5
+hl0ww19,apatite,apatite,6
+hl0ww19,siderite,siderite,7
+hl0ww19,kaolinite,kaolinite,8
+hl0ww19,cu_carbonate,copper carbonate,9
+hl0ww19,other,other,11
+pa4pi89,fossil_selecti,fossil selective,
+pa4pi89,local,local,
+pa4pi89,extensive,extensive,
+pa4pi89,petrified_wood,petrified wood,
+pa4pi89,other,other,
+vo7bl50,selective,selective,
+vo7bl50,local,local,
+vo7bl50,extensive,extensive,
+vo7bl50,recrystallized,"recrystallized ""foam""",
+vo7bl50,other,other,
+wy5gx26,stylolites,stylolites,
+wy5gx26,liesegang_band,liesegang banding/chemical reaction front,
+wy5gx26,dendrites,dendrites,
+wy5gx26,intergranular,intergranular,
+wy5gx26,weathering_hor,weathering horizon,
+wy5gx26,hardground,hardground,
+wy5gx26,oil_staining,oil staining,
+wy5gx26,random_cumulat,random cumulates,
+wy5gx26,bttm_grth_tex,bottom growth textures,
+wy5gx26,other,other,
+lo0dl30,interparticle,interparticle,
+lo0dl30,intraparticle,intraparticle,
+lo0dl30,intercrystal,intercrystal,
+lo0dl30,moldic,moldic,
+lo0dl30,fenestral,fenestral,
+lo0dl30,shelter,shelter,
+lo0dl30,growth_framewo,growth-framework,
+lo0dl30,boring,boring,
+lo0dl30,burrow,burrow,
+lo0dl30,shrinkage,shrinkage,
+lo0dl30,breccia,breccia,
+lo0dl30,other,other,
+ts4kt62,fracture,fracture,
+ts4kt62,channel,channel,
+ts4kt62,vug,vug,
+ts4kt62,cavern,cavern/cavities,
+ts4kt62,other,other,
+st8ub31,karst_pipes,karst,
+st8ub31,grykes,grykes,1
+st8ub31,fissures,fissures,2
+st8ub31,pavement,pavement,3
+st8ub31,caliche,caliche,4
+st8ub31,geopetal,geopetal,5
+st8ub31,sheet_cracks,sheet cracks,6
+st8ub31,collapse_struc,collapse structures,7
+st8ub31,caves,caves,8
+st8ub31,stylolites,stylolites,9
+st8ub31,other,other,10

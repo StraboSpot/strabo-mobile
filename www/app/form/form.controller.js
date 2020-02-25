@@ -102,9 +102,9 @@
       }
       var project = ProjectFactory.getCurrentProject();
       if (!project.is_testing_mode) {
-        if (field.name === 'group_sed_tab_control' || field.name === 'sed_lithologies' ||
-          field.name === 'sed_structures' || field.name === 'sed_interpretations' ||
-          field.name === 'group_other_modes' || field.name === 'strat_mode' ||
+        if (field.name === 'group_sed_tab_control' || field.name === 'sed_bedding' || field.name === 'sed_diagenesis' ||
+          field.name === 'sed_fossils' || field.name === 'sed_lithologies' || field.name === 'sed_structures' ||
+          field.name === 'sed_interpretations' || field.name === 'group_other_modes' || field.name === 'strat_mode' ||
           field.name === 'group_experimental_tab_control' || field.name === 'experimental' ||
           field.name === 'experimental_results' || field.name === 'experimental_set_up' ||
           field.name === 'data' || field.name === 'petrology') {
@@ -123,18 +123,10 @@
       vm.fieldInfoModal.show();
     }
 
+    // Handle a toggle (called being turned on or off
     function toggleAcknowledgeChecked(field, data) {
-      if (data.trace_feature) {
-        var confirmPopup = $ionicPopup.confirm({
-          'title': 'Close Group?',
-          'template': 'By closing this group you will be clearing any data in this group. Continue?'
-        });
-        confirmPopup.then(function (res) {
-          if (res) data = FormFactory.toggleAcknowledgeChecked(data, field);
-          else $document[0].getElementById(field + 'Toggle').checked = true;
-        });
-      }
-      else data = FormFactory.toggleAcknowledgeChecked(data, field);
+      if (field === 'trace_feature') FormFactory.handleTraceFeatureToggled(field, data);
+      //else if (field === 'strat_mode') FormFactory.handleStratModeToggled(field, data);
     }
 
     function toggleChecked(field, choice, data) {

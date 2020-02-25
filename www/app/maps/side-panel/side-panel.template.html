@@ -82,11 +82,23 @@
         <div ng-show='sidePanel.isActiveTab("strat-section")' ng-controller='StratSectionTabController as vmChild'>
           <strabo-strat-section-tab-directive></strabo-strat-section-tab-directive>
         </div>
+        <div ng-show='sidePanel.isActiveTab("sed-interval")' ng-controller='SedIntervalTabController as vmChild'>
+          <strabo-sed-interval-tab-directive></strabo-sed-interval-tab-directive>
+        </div>
         <div ng-show='sidePanel.isActiveTab("sed-lithologies")' ng-controller='SedLithologiesTabController as vmChild'>
           <strabo-sed-lithologies-tab-directive></strabo-sed-lithologies-tab-directive>
         </div>
+        <div ng-show='sidePanel.isActiveTab("sed-bedding")' ng-controller='SedBeddingTabController as vmChild'>
+          <strabo-sed-bedding-tab-directive></strabo-sed-bedding-tab-directive>
+        </div>
         <div ng-show='sidePanel.isActiveTab("sed-structures")' ng-controller='SedStructuresTabController as vmChild'>
           <strabo-sed-structures-tab-directive></strabo-sed-structures-tab-directive>
+        </div>
+        <div ng-show='sidePanel.isActiveTab("sed-diagenesis")' ng-controller='SedDiagenesisTabController as vmChild'>
+          <strabo-sed-diagenesis-tab-directive></strabo-sed-diagenesis-tab-directive>
+        </div>
+        <div ng-show='sidePanel.isActiveTab("sed-fossils")' ng-controller='SedFossilsTabController as vmChild'>
+          <strabo-sed-fossils-tab-directive></strabo-sed-fossils-tab-directive>
         </div>
         <div ng-show='sidePanel.isActiveTab("sed-interpretations")' ng-controller='SedInterpretationsTabController as vmChild'>
           <strabo-sed-interpretations-tab-directive></strabo-sed-interpretations-tab-directive>

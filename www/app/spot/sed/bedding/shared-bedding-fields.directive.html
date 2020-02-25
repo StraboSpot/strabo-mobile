@@ -1,0 +1,68 @@
+<div class='strabo-form'>
+  <div ng-show='vmChild.shouldShowInterbedBeddingFields()'>
+    <ion-item class="item item-input item-select item-stacked-label item-text-wrap">
+      <ion-label>Interbed Proportion Change (Up Section)</ion-label>
+      <select ng-model='vm.dataOutsideForm.interbed_proportion_change'>
+        <option value='increase'>increase</option>
+        <option value='decrease'>decrease</option>
+        <option value='no_change'>no change</option>
+        <option value=''>-- Select Interbed Proportion Change (Up Section) --</option>
+      </select>
+    </ion-item>
+    <ion-input class='item item-input item-stacked-label item-text-wrap'>
+      <ion-label>Lithology 2: Interbed Relative Proportion (%)</ion-label>
+      <input type='number' ng-model='vm.dataOutsideForm.interbed_proportion' min=0 max=50>
+    </ion-input>
+    <ion-item class="item item-input item-select item-stacked-label item-text-wrap">
+      <ion-label>Which Lithology is at Bottom Contact?</ion-label>
+      <select ng-model='vm.dataOutsideForm.lithology_at_bottom_contact'>
+        <option value='lithology_1'>lithology 1</option>
+        <option value='lithology_2'>lithology 2</option>
+        <option value='not_specified'>not specified</option>
+        <option value=''>-- Select Lithology at Bottom Contact --</option>
+      </select>
+    </ion-item>
+    <ion-item class="item item-input item-select item-stacked-label item-text-wrap">
+      <ion-label>Which Lithology is at Top Contact?</ion-label>
+      <select ng-model='vm.dataOutsideForm.lithology_at_top_contact'>
+        <option value='lithology_1'>lithology 1</option>
+        <option value='lithology_2'>lithology 2</option>
+        <option value='not_specified'>not specified</option>
+        <option value=''>-- Select Lithology at Top Contact --</option>
+      </select>
+    </ion-item>
+  </div>
+  <div ng-show='vmChild.shouldShowPackageBeddingFields()'>
+    <ion-input class='item item-input item-stacked-label item-text-wrap'>
+      <ion-label>Thickness of Individual Beds</ion-label>
+      <input type='number' ng-model='vm.dataOutsideForm.thickness_of_individual_beds' min=0>
+    </ion-input>
+    <ion-item class="item item-input item-select item-stacked-label item-text-wrap">
+      <ion-label>Package Beds Thickness Units</ion-label>
+      <select ng-model='vm.dataOutsideForm.package_thickness_units'>
+        <option value='cm'>cm</option>
+        <option value='m'>m</option>
+        <option value='in'>in</option>
+        <option value='ft'>ft</option>
+        <option value=''>-- Select Package Beds Thickness Units --</option>
+      </select>
+    </ion-item>
+    <ion-item class="item item-input item-select item-stacked-label item-text-wrap">
+      <ion-label>Package Bedding Trends</ion-label>
+      <select ng-model='vm.dataOutsideForm.package_bedding_trends'>
+        <option value='upward_thin'>upward thinning</option>
+        <option value='upward_thicken'>upward thickening</option>
+        <option value='uniform'>uniform (no trend)</option>
+        <option value='can_t_be_deter'>can't be determined</option>
+        <option value='other'>other</option>
+        <option value=''>-- Select Package Bedding Trends --</option>
+      </select>
+    </ion-item>
+    <div ng-show="vm.dataOutsideForm.package_bedding_trends === 'other'">
+      <ion-input class='item item-input item-stacked-label item-text-wrap'>
+        <ion-label>Other Package Bedding Trend</ion-label>
+        <input type='text' ng-model='vm.dataOutsideForm.other_bedding_trend'>
+      </ion-input>
+    </div>
+  </div>
+</div>

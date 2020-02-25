@@ -204,11 +204,35 @@
           'choices': {},
           'choices_file': 'app/data-models/sed/interpretations-environment-choices.csv'
         },
-        'interpretations_facies_and_process': {
+        'interpretations_process': {
           'survey': {},
-          'survey_file': 'app/data-models/sed/interpretations-facies-and-process-survey.csv',
+          'survey_file': 'app/data-models/sed/interpretations-process-survey.csv',
           'choices': {},
-          'choices_file': 'app/data-models/sed/interpretations-facies-and-process-choices.csv'
+          'choices_file': 'app/data-models/sed/interpretations-process-choices.csv'
+        },
+        'bedding': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/bedding-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/bedding-choices.csv'
+        },
+        'bedding_shared': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/bedding-shared-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/bedding-shared-choices.csv'
+        },
+        'diagenesis': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/diagenesis-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/diagenesis-choices.csv'
+        },
+        'fossils': {
+          'survey': {},
+          'survey_file': 'app/data-models/sed/fossils-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/sed/fossils-choices.csv'
         },
         'interpretations_surfaces': {
           'survey': {},
@@ -216,11 +240,11 @@
           'choices': {},
           'choices_file': 'app/data-models/sed/interpretations-surfaces-choices.csv'
         },
-        'lithologies_basics': {
+        'interval': {
           'survey': {},
-          'survey_file': 'app/data-models/sed/lithologies-basics-survey.csv',
+          'survey_file': 'app/data-models/sed/interval-survey.csv',
           'choices': {},
-          'choices_file': 'app/data-models/sed/lithologies-basics-choices.csv'
+          'choices_file': 'app/data-models/sed/interval-choices.csv'
         },
         'lithologies_composition': {
           'survey': {},
@@ -228,11 +252,11 @@
           'choices': {},
           'choices_file': 'app/data-models/sed/lithologies-composition-choices.csv'
         },
-        'lithologies_stratification': {
+        'lithologies_lithology': {
           'survey': {},
-          'survey_file': 'app/data-models/sed/lithologies-stratification-survey.csv',
+          'survey_file': 'app/data-models/sed/lithologies-lithology-survey.csv',
           'choices': {},
-          'choices_file': 'app/data-models/sed/lithologies-stratification-choices.csv'
+          'choices_file': 'app/data-models/sed/lithologies-lithology-choices.csv'
         },
         'lithologies_texture': {
           'survey': {},
@@ -246,17 +270,17 @@
           'choices': {},
           'choices_file': 'app/data-models/sed/strat-section-choices.csv'
         },
-        'structures_biogenic': {
+        'structures_bioturbation': {
           'survey': {},
-          'survey_file': 'app/data-models/sed/structures-biogenic-survey.csv',
+          'survey_file': 'app/data-models/sed/structures-bioturbation-survey.csv',
           'choices': {},
-          'choices_file': 'app/data-models/sed/structures-biogenic-choices.csv'
+          'choices_file': 'app/data-models/sed/structures-bioturbation-choices.csv'
         },
-        'structures_chemogenic': {
+        'structures_bedding_plane': {
           'survey': {},
-          'survey_file': 'app/data-models/sed/structures-chemogenic-survey.csv',
+          'survey_file': 'app/data-models/sed/structures-bedding-plane-survey.csv',
           'choices': {},
-          'choices_file': 'app/data-models/sed/structures-chemogenic-choices.csv'
+          'choices_file': 'app/data-models/sed/structures-bedding-plane-choices.csv'
         },
         'structures_pedogenic': {
           'survey': {},
@@ -382,17 +406,17 @@
       sedLabelsDictionary = {'clastic': [], 'carbonate': [], 'lithologies': [], 'weathering': []};
       var survey = dataModels.sed.add_interval.survey;
       var clastic = _.filter(survey, function (field) {
-        return field.name === 'mud_silt_principal_grain_size' || field.name === 'sand_principal_grain_size' ||
-          field.name === 'congl_principal_grain_size' || field.name === 'breccia_principal_grain_size';
+        return field.name === 'mud_silt_grain_size' || field.name === 'sand_grain_size' ||
+          field.name === 'congl_grain_size' || field.name === 'breccia_grain_size';
       });
       var carbonate = _.find(survey, function (field) {
-        return field.name === 'principal_dunham_class';
+        return field.name === 'dunham_classification';
       });
       var lithologies = _.find(survey, function (field) {
         return field.name === 'primary_lithology';
       });
       var weathering = _.find(survey, function (field) {
-        return field.name === 'relative_resistance_weathering';
+        return field.name === 'relative_resistance_weather';
       });
       var clasticChoices = [];
       _.each(clastic, function (c) {
@@ -448,7 +472,12 @@
           'orientation_data': [],
           'pet': {'minerals': [], 'reactions': []},
           'samples': [],
-          'sed': {'lithologies': {}, 'structures': {}, 'interpretations': {}},
+          'sed': {
+            'bedding': {'beds': []},
+            'character': 'one of [bed, bed_mixed_lit, interbedded, not_measured, other, package_succe, unexposed_cove]',
+            'diagenesis': [{}], 'fossils': [{}], 'interpretations': [{}], 'interval': {}, 'lithologies': [{}],
+            'other_character': 'text', 'structures': [{}]
+          },
           'time': 'datetime',
           'trace': {}
         }
@@ -464,16 +493,20 @@
         'planar_orientation': dataModels.orientation_data.planar_orientation,
         'tabular_orientation': dataModels.orientation_data.tabular_orientation,
         'samples': dataModels.sample,
+        'sed_bedding': dataModels.sed.bedding,
+        'sed_bedding_shared': dataModels.sed.bedding_shared,
+        'sed_diagenesis': dataModels.sed.diagenesis,
+        'sed_fossils': dataModels.sed.fossils,
         'sed_interpretations_architecture': dataModels.sed.interpretations_architecture,
         'sed_interpretations_environment': dataModels.sed.interpretations_environment,
-        'sed_interpretations_facies_and_process': dataModels.sed.interpretations_facies_and_process,
+        'sed_interpretations_process': dataModels.sed.interpretations_process,
         'sed_interpretations_surfaces': dataModels.sed.interpretations_surfaces,
+        'sed_interval': dataModels.sed.interval,
         'sed_lithologies_composition': dataModels.sed.lithologies_composition,
-        'sed_lithologies_basics': dataModels.sed.lithologies_basics,
-        'sed_lithologies_stratification': dataModels.sed.lithologies_stratification,
+        'sed_lithologies_lithology': dataModels.sed.lithologies_lithology,
         'sed_lithologies_texture': dataModels.sed.lithologies_texture,
-        'sed_structures_biogenic': dataModels.sed.structures_biogenic,
-        'sed_structures_chemogenic': dataModels.sed.structures_chemogenic,
+        'sed_structures_bioturbation': dataModels.sed.structures_bioturbation,
+        'sed_structures_bedding_plane': dataModels.sed.structures_bedding_plane,
         'sed_structures_pedogenic': dataModels.sed.structures_pedogenic,
         'sed_structures_physical': dataModels.sed.structures_physical,
         'trace': dataModels.trace,
@@ -484,8 +517,8 @@
       _.each(models, function (model, key) {
         var description = {};
         _.each(model.survey, function (field) {
-          if (field.type.split('_')[0] !== 'end' && field.type.split(
-            '_')[0] !== 'begin' && field.type !== 'calculate') {
+          if (field.type.split('_')[0] !== 'end' && field.type.split('_')[0] !== 'begin' && field.type !== 'calculate'
+            && field.name !== 'interval_type') {
             var type = getType(field.type, model);
             var hint = field.hint ? '; Hint: ' + field.hint : '';
             var required = field.required === 'true' ? '; REQUIRED' : '';
@@ -513,17 +546,22 @@
             'appended (= 14 digit id); REQUIRED';
           spotDataModel.properties[key].push(description);
         }
-        else if (key === 'sed_lithologies_composition' || key === 'sed_lithologies_basics'
-          || key === 'sed_lithologies_stratification' || key === 'sed_lithologies_texture') {
-          _.extend(spotDataModel.properties.sed.lithologies, description);
+        else if (key === 'sed_bedding') spotDataModel.properties.sed.bedding.beds = [description];
+        else if (key === 'sed_bedding_shared') _.extend(spotDataModel.properties.sed.bedding, description);
+        else if (key === 'sed_diagenesis') _.extend(spotDataModel.properties.sed.diagenesis[0], description);
+        else if (key === 'sed_fossils') _.extend(spotDataModel.properties.sed.fossils[0], description);
+        else if (key === 'sed_interval') _.extend(spotDataModel.properties.sed.interval, description);
+        else if (key === 'sed_lithologies_composition' || key === 'sed_lithologies_lithology' ||
+          key === 'sed_lithologies_texture') {
+          _.extend(spotDataModel.properties.sed.lithologies[0], description);
         }
-        else if (key === 'sed_structures_biogenic' || key === 'sed_structures_chemogenic' ||
+        else if (key === 'sed_structures_bioturbation' || key === 'sed_structures_bedding_plane' ||
           key === 'sed_structures_pedogenic' || key === 'sed_structures_physical') {
-          _.extend(spotDataModel.properties.sed.structures, description);
+          _.extend(spotDataModel.properties.sed.structures[0], description);
         }
-        else if (key === 'sed_interpretations_facies_and_process' || key === 'sed_interpretations_environment'
+        else if (key === 'sed_interpretations_process' || key === 'sed_interpretations_environment'
           || key === 'sed_interpretations_surfaces' || key === 'sed_interpretations_architecture') {
-          _.extend(spotDataModel.properties.sed.interpretations, description);
+          _.extend(spotDataModel.properties.sed.interpretations[0], description);
         }
         else if (key === 'trace') _.extend(spotDataModel.properties[key], description);
         else if (key === 'images') {

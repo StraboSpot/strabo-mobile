@@ -33,8 +33,12 @@
       {'value': 'tags', 'label': 'Tags', 'path': 'tags'},
       {'value': 'data', 'label': 'Data', 'path': 'data'},
       {'value': 'strat_section', 'label': 'Strat Section', 'path': 'strat-section'},
+      {'value': 'sed_interval', 'label': 'Sed Interval', 'path': 'sed-interval'},
       {'value': 'sed_lithologies', 'label': 'Sed Lithologies', 'path': 'sed-lithologies'},
+      {'value': 'sed_bedding', 'label': 'Sed Bedding', 'path': 'sed-bedding'},
       {'value': 'sed_structures', 'label': 'Sed Structures', 'path': 'sed-structures'},
+      {'value': 'sed_diagenesis', 'label': 'Sed Diagenesis', 'path': 'sed-diagenesis'},
+      {'value': 'sed_fossils', 'label': 'Sed Fossils', 'path': 'sed-fossils'},
       {'value': 'sed_interpretations', 'label': 'Sed Interpretations', 'path': 'sed-interpretations'},
       {'value': 'experimental', 'label': 'Experimental', 'path': 'experimental'},
       {'value': 'experimental_set_up', 'label': 'Experimental Set Up', 'path': 'experimental-set-up'},
@@ -49,6 +53,8 @@
       'clearAllSpots': clearAllSpots,
       'clearCurrentSpot': clearCurrentSpot,
       'clearSelectedSpots': clearSelectedSpots,
+      'deleteIntervalDataForAllSpots': deleteIntervalDataForAllSpots,
+      'deleteOtherSedCharacteristicsForAllSpots': deleteOtherSedCharacteristicsForAllSpots,
       'destroy': destroy,
       'getActiveSpots': getActiveSpots,
       'getActiveNest': getActiveNest,
@@ -67,6 +73,9 @@
       'getSpotWithImageId': getSpotWithImageId,
       'getSpots': getSpots,
       'getSpotsWithPetrology': getSpotsWithPetrology,
+      'getSpotsWithIntervalData': getSpotsWithIntervalData,
+      'getSpotsWithUnmeasuredSedCharacter': getSpotsWithUnmeasuredSedCharacter,
+      'getSpotsWithOtherSedCharacter': getSpotsWithOtherSedCharacter,
       'getTabs': getTabs,
       'goToSpot': goToSpot,
       'isSafeDelete': isSafeDelete,
@@ -228,35 +237,39 @@
         'LineString': ['LineString', 'Polygon', 'MultiPolygon'],
         'Polygon': ['Polygon', 'MultiPolygon']
       };
-      // Make sure we're using booleanWithin with valid types
-      if (_.contains(_.keys(validTypesForBooleanWithin), spot1.geometry.type)
-        && _.contains(validTypesForBooleanWithin[spot1.geometry.type], spot2.geometry.type)) {
-        boolWithin = turf.booleanWithin(spot1, spot2);
-      }
-      // Handle Geometry Collections
-      else if (spot1.geometry.type === 'GeometryCollection') {
-        _.each(spot1.geometry.geometries, function (geometry1) {
-          if (!boolWithin && _.contains(_.keys(validTypesForBooleanWithin), geometry1.type)
-            && _.contains(validTypesForBooleanWithin[geometry1], spot2.geometry.type)) {
-            boolWithin = turf.booleanWithin(geometry1, spot2.geometry.type);
-          }
-          else if (!boolWithin && spot2.geometry.type === 'GeometryCollection') {
-            _.each(spot2.geometry.geometries, function (geometry2) {
-              if (!boolWithin && _.contains(_.keys(validTypesForBooleanWithin), geometry1.type)
-                && _.contains(validTypesForBooleanWithin[geometry1], geometry2)) {
-                boolWithin = turf.booleanWithin(geometry1, geometry2);
-              }
-            });
-          }
-        });
-      }
-      else if (spot2.geometry.type === 'GeometryCollection') {
-        _.each(spot2.geometry.geometries, function (geometry2) {
-          if (!boolWithin && _.contains(_.keys(validTypesForBooleanWithin), spot1.geometry.type)
-            && _.contains(validTypesForBooleanWithin[spot1.geometry.type], geometry2.type)) {
-            boolWithin = turf.booleanWithin(spot1.geometry, geometry2);
-          }
-        });
+      try {
+        // Make sure we're using booleanWithin with valid types
+        if (_.contains(_.keys(validTypesForBooleanWithin), spot1.geometry.type)
+          && _.contains(validTypesForBooleanWithin[spot1.geometry.type], spot2.geometry.type)) {
+          boolWithin = turf.booleanWithin(spot1, spot2);
+        }
+        // Handle Geometry Collections
+        else if (spot1.geometry.type === 'GeometryCollection') {
+          _.each(spot1.geometry.geometries, function (geometry1) {
+            if (!boolWithin && _.contains(_.keys(validTypesForBooleanWithin), geometry1.type)
+              && _.contains(validTypesForBooleanWithin[geometry1], spot2.geometry.type)) {
+              boolWithin = turf.booleanWithin(geometry1, spot2.geometry.type);
+            }
+            else if (!boolWithin && spot2.geometry.type === 'GeometryCollection') {
+              _.each(spot2.geometry.geometries, function (geometry2) {
+                if (!boolWithin && _.contains(_.keys(validTypesForBooleanWithin), geometry1.type)
+                  && _.contains(validTypesForBooleanWithin[geometry1], geometry2)) {
+                  boolWithin = turf.booleanWithin(geometry1, geometry2);
+                }
+              });
+            }
+          });
+        }
+        else if (spot2.geometry.type === 'GeometryCollection') {
+          _.each(spot2.geometry.geometries, function (geometry2) {
+            if (!boolWithin && _.contains(_.keys(validTypesForBooleanWithin), spot1.geometry.type)
+              && _.contains(validTypesForBooleanWithin[spot1.geometry.type], geometry2.type)) {
+              boolWithin = turf.booleanWithin(spot1.geometry, geometry2);
+            }
+          });
+        }
+      } catch (e) {
+        $log.error('Error with Spot geometry! Spot 1:', spot1, 'Spot 2:', spot2, 'Error:', e);
       }
       return boolWithin;
     }
@@ -374,6 +387,32 @@
 
     function clearSelectedSpots() {
       selectedSpots = {};
+    }
+
+    function deleteIntervalDataForAllSpots() {
+      var promises = [];
+      _.each(spots, function (spot) {
+        if (spot.properties.sed && (spot.properties.sed.interval || (spot.properties.sed.character &&
+          (spot.properties.sed.character === 'unexposed_cove' || spot.properties.sed.character === 'not_measured')))) {
+          if (spot.properties.sed.interval) delete spot.properties.sed.interval;
+          if (spot.properties.sed.character && (spot.properties.sed.character === 'unexposed_cove'
+            || spot.properties.sed.character === 'not_measured')) delete spot.properties.sed.character;
+          promises.push(save(spot));
+        }
+      });
+      return Promise.all(promises);
+    }
+
+    function deleteOtherSedCharacteristicsForAllSpots() {
+      var promises = [];
+      _.each(spots, function (spot) {
+        if (spot.properties.sed && (spot.properties.sed.character === 'other' || spot.properties.sed.other_character)) {
+          if (spot.properties.sed.character === 'other') delete spot.properties.sed.character;
+          if (spot.properties.sed.other_character) delete spot.properties.sed.other_character;
+          promises.push(save(spot));
+        }
+      });
+      return Promise.all(promises);
     }
 
     // Destroy the Spot
@@ -521,6 +560,28 @@
       return _.filter(activeSpots, function (spot) {
         return _.has(spot.properties, 'pet');
       });
+    }
+
+    // Get all Spots that have interval data (thickness or thickness units)
+    function getSpotsWithIntervalData() {
+      return _.filter(spots, function (spot) {
+        return spot.properties.sed && spot.properties.sed.interval;
+      });
+    }
+
+    // Get all Spots that have a Sed Character of unexposed/covered or not measured
+    function getSpotsWithUnmeasuredSedCharacter() {
+      return _.filter(spots, function (spot) {
+        return spot.properties.sed && (spot.properties.sed.character === 'unexposed_cove' ||
+          spot.properties.sed.character === 'not_measured');
+      })
+    }
+
+    // Get all Spots that have a Sed Character of Other
+    function getSpotsWithOtherSedCharacter() {
+      return _.filter(spots, function (spot) {
+        return spot.properties.sed && (spot.properties.sed.character === 'other' || spot.properties.sed.other_character);
+      })
     }
 
     function getSpotsByDatasetId(datasetId) {

@@ -6,15 +6,16 @@
     .controller('StratSectionController', StratSectionController);
 
   StratSectionController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup',
-    '$ionicSideMenuDelegate', '$location', '$log', '$rootScope', '$scope', '$state', '$timeout', 'FormFactory',
-    'HelpersFactory', 'ImageFactory', 'MapDrawFactory', 'MapEmogeosFactory', 'MapFeaturesFactory', 'MapLayerFactory',
-    'MapSetupFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'StratSectionFactory', 'IS_WEB'];
+    '$ionicSideMenuDelegate', '$location', '$log', '$rootScope', '$scope', '$state', '$timeout', 'DataModelsFactory',
+    'FormFactory', 'HelpersFactory', 'ImageFactory', 'MapDrawFactory', 'MapEmogeosFactory', 'MapFeaturesFactory',
+    'MapLayerFactory', 'MapSetupFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory', 'StratSectionFactory',
+    'IS_WEB'];
 
   function StratSectionController($ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup,
                                   $ionicSideMenuDelegate, $location, $log, $rootScope, $scope, $state, $timeout,
-                                  FormFactory, HelpersFactory, ImageFactory, MapDrawFactory, MapEmogeosFactory,
-                                  MapFeaturesFactory, MapLayerFactory, MapSetupFactory, MapViewFactory, ProjectFactory,
-                                  SpotFactory, StratSectionFactory, IS_WEB) {
+                                  DataModelsFactory, FormFactory, HelpersFactory, ImageFactory, MapDrawFactory,
+                                  MapEmogeosFactory, MapFeaturesFactory, MapLayerFactory, MapSetupFactory,
+                                  MapViewFactory, ProjectFactory, SpotFactory, StratSectionFactory, IS_WEB) {
     var vm = this;
 
     var currentSpot = {};
@@ -161,14 +162,10 @@
       });
     }
 
-    // Copy Sed Structures & Interpretations (Lithologies were copied when copy interval selected)
+    // Copy the Rest of the Sed Data
     function copyRestOfInterval(interval) {
-      if (vm.intervalToCopy.properties.sed.structures) {
-        interval.properties.sed.structures = angular.copy(vm.intervalToCopy.properties.sed.structures);
-      }
-      if (vm.intervalToCopy.properties.sed.interpretations) {
-        interval.properties.sed.interpretations = angular.copy(vm.intervalToCopy.properties.sed.interpretations);
-      }
+      interval.properties.sed = HelpersFactory.deepObjectExtend(vm.intervalToCopy.properties.sed,
+        interval.properties.sed);
       vm.intervalToCopy = {};
       return interval;
     }
@@ -289,7 +286,7 @@
           else if (action === 'more') {
             popup.hide();
             var spot = SpotFactory.getSpotById(vm.clickedFeatureId);
-            if (spot.properties.surface_feature &&
+            if (spot && spot.properties && spot.properties.surface_feature &&
               spot.properties.surface_feature.surface_feature_type === 'strat_interval') {
               goToSpot(vm.clickedFeatureId, 'sed-lithologies');
             }
@@ -425,11 +422,11 @@
 
     function createWatches() {
       // Watch for principal siliciclastic type changes
-      $scope.$watch('vm.data.principal_siliciclastic_type', function (newValue, oldValue) {
+      $scope.$watch('vm.data.siliciclastic_type', function (newValue, oldValue) {
         if (newValue && newValue !== oldValue) {
-          if (vm.data.principal_siliciclastic_type === 'claystone'
-            || vm.data.principal_siliciclastic_type === 'mudstone') vm.data.mud_silt_principal_grain_size = 'clay';
-          else if (vm.data.principal_siliciclastic_type === 'siltstone') vm.data.mud_silt_principal_grain_size = 'silt';
+          if (vm.data.siliciclastic_type === 'claystone'
+            || vm.data.siliciclastic_type === 'mudstone') vm.data.mud_silt_grain_size = 'clay';
+          else if (vm.data.siliciclastic_type === 'siltstone') vm.data.mud_silt_grain_size = 'silt';
         }
       });
 
@@ -439,6 +436,25 @@
           if (vm.data.interbed_siliciclastic_type === 'claystone'
             || vm.data.interbed_siliciclastic_type === 'mudstone') vm.data.mud_silt_interbed_grain_size = 'clay';
           else if (vm.data.interbed_siliciclastic_type === 'siltstone') vm.data.mud_silt_interbed_grain_size = 'silt';
+        }
+      });
+
+      // Watch for interval type changes
+      $scope.$watch('vm.data.interval_type', function (newValue, oldValue) {
+        if (newValue && newValue !== oldValue) {
+          if (vm.data.interval_type === 'package_succe') vm.data.package_thickness_units = vm.data.thickness_units;
+          else delete vm.data.package_thickness_units
+        }
+      });
+
+      // Watch for interbed proportion change field changes
+      $scope.$watch('vm.data.interbed_proportion_change', function (newValue, oldValue) {
+        if (newValue && newValue !== oldValue) {
+          if (vm.data.interbed_proportion_change === 'increase' || vm.data.interbed_proportion_change === 'decrease' ||
+            vm.data.interbed_proportion_change === 'no_change') {
+            vm.data.interbed_thickness_units = vm.data.thickness_units;
+          }
+          else delete vm.data.interbed_thickness_units;
         }
       });
     }
@@ -507,19 +523,23 @@
       FormFactory.setForm('sed', 'add_interval');
       vm.data = {};
       if (stratSection.column_profile && stratSection.column_profile === 'clastic') {
-        vm.data.is_this_a_bed_or_package = 'bed';
+        vm.data.interval_type = 'bed';
         vm.data.primary_lithology = 'siliciclastic';
       }
       else if (stratSection.column_profile && stratSection.column_profile === 'carbonate') {
-        vm.data.is_this_a_bed_or_package = 'bed';
+        vm.data.interval_type = 'bed';
       }
       else if (stratSection.column_profile && stratSection.column_profile === 'mixed_clastic') {
-        vm.data.is_this_a_bed_or_package = 'bed';
+        vm.data.interval_type = 'bed';
       }
       else if (stratSection.column_profile && stratSection.column_profile === 'basic_lithologies') {
-        vm.data.is_this_a_bed_or_package = 'bed';
+        vm.data.interval_type = 'bed';
       }
-      if (stratSection.column_y_axis_units) vm.data.thickness_units = stratSection.column_y_axis_units;
+      if (stratSection.column_y_axis_units) {
+        vm.data.thickness_units = stratSection.column_y_axis_units;
+        vm.data.package_thickness_units = stratSection.column_y_axis_units;
+        vm.data.interbed_thickness_units = stratSection.column_y_axis_units;
+      }
 
       // Set default interval name if prefix or Spot number set
       var prefix = ProjectFactory.getSpotPrefix() ? ProjectFactory.getSpotPrefix() : '';
@@ -527,36 +547,42 @@
       vm.intervalName = prefix + number;
       vm.intervalToInsertAfter = {};
 
+      // Testing Data
+/*      vm.intervalName = 'Interval Inserting';
+      vm.data.interval_thickness = 2;
+      // vm.data.character = 'bed';
+      vm.data.primary_lithology = 'volcaniclastic';
+      vm.data.interval_type = 'interbedded';
+   //   vm.data.siliciclastic_type = 'claystone';
+      vm.data.primary_lithology_1 = 'chert';
+      vm.data.interbed_proportion = 30;
+      vm.data.interbed_proportion_change = 'no_change';
+     vm.data.avg_thickness = 5;
+     vm.data.avg_thickness_1 = 8;*/
+
       openIntervalModal();
     }
 
+    // Go to the main Spot pages where the user can add more detail
     function addMoreDetail() {
       $log.log(vm.data);
-      if (stratSection.column_y_axis_units && vm.data.thickness_units !== stratSection.column_y_axis_units) {
-        $ionicPopup.alert({
-          'title': 'Units Mismatch',
-          'template': 'The units for the Y Axis are <b>' + stratSection.column_y_axis_units + '</b> but <b>' +
-            vm.data.thickness_units + '</b> have been designated for this interval. Please fix the units ' +
-            'for this interval.'
-        });
-      }
-      else if (StratSectionFactory.validateNewInterval(vm.data, FormFactory.getForm())) {
-        vm.addIntervalModal.remove();
-        var newInterval = StratSectionFactory.createInterval(stratSection.strat_section_id, vm.data);
-        if (vm.intervalName) newInterval.properties.name = vm.intervalName;
-        if (vm.intervalToCopy && vm.intervalToCopy.properties && vm.intervalToCopy.properties.sed) {
-          newInterval = copyRestOfInterval(newInterval);
+      if (StratSectionFactory.doUnitsFieldsMatch(stratSection, vm.data)) {
+        if (StratSectionFactory.validateNewInterval(vm.data, FormFactory.getForm())) {
+          vm.addIntervalModal.remove();
+          var newInterval = StratSectionFactory.createInterval(stratSection.strat_section_id, vm.data);
+          if (vm.intervalName) newInterval.properties.name = vm.intervalName;
+          if (vm.intervalToCopy && vm.intervalToCopy.properties && vm.intervalToCopy.properties.sed) {
+            newInterval = copyRestOfInterval(newInterval);
+          }
+          SpotFactory.setNewSpot(newInterval).then(function (id) {
+            if (!_.isEmpty(vm.intervalToInsertAfter)) {
+              StratSectionFactory.moveIntervalToAfter(newInterval, vm.intervalToInsertAfter).then(function () {
+                goToSpot(newInterval.properties.id, 'sed-lithologies');
+              });
+            }
+            else goToSpot(newInterval.properties.id, 'sed-lithologies');
+          });
         }
-        SpotFactory.setNewSpot(newInterval).then(function (id) {
-          if (!_.isEmpty(vm.intervalToInsertAfter)) {
-            StratSectionFactory.moveIntervalToAfter(newInterval, vm.intervalToInsertAfter).then(function () {
-              goToSpot(newInterval.properties.id, 'sed-lithologies');
-            });
-          }
-          else {
-            goToSpot(newInterval.properties.id, 'sed-lithologies');
-          }
-        });
       }
     }
 
@@ -587,12 +613,12 @@
     // Copy Sed Interval Lithology
     function copyIntervalLithology() {
       $log.log('interval', vm.intervalToCopy);
-      if (vm.intervalToCopy && vm.intervalToCopy.properties && vm.intervalToCopy.properties.sed &&
-        vm.intervalToCopy.properties.sed.lithologies) {
-        vm.data = angular.copy(vm.intervalToCopy.properties.sed.lithologies);
+      if (vm.intervalToCopy && vm.intervalToCopy.properties && vm.intervalToCopy.properties.sed) {
+        var sedData = angular.copy(vm.intervalToCopy.properties.sed);
+        vm.data = StratSectionFactory.extractAddIntervalData(sedData);
+        delete vm.data.interval_thickness;
       }
       else vm.data = {};
-      delete vm.data.interval_thickness;
     }
 
     function createTag() {
@@ -610,8 +636,9 @@
         });
         confirmPopup.then(function (res) {
           if (res) {
-            if (StratSectionFactory.isInterval(spot)) {
+            if (StratSectionFactory.isMappedInterval(spot)) {
               StratSectionFactory.deleteInterval(spot).then(function () {
+                $log.log('intervaldeleted');
                 updateFeatureLayer();
                 if (IS_WEB) {
                   vm.clickedFeatureId = undefined;
@@ -694,34 +721,27 @@
     }
 
     function saveInterval() {
-      $log.log(vm.data);
-      if (stratSection.column_y_axis_units && vm.data.thickness_units !== stratSection.column_y_axis_units) {
-        $ionicPopup.alert({
-          'title': 'Units Mismatch',
-          'template': 'The units for the Y Axis are <b>' + stratSection.column_y_axis_units + '</b> but <b>' +
-            vm.data.thickness_units + '</b> have been designated for this interval. Please fix the units ' +
-            'for this interval.'
-        });
-      }
-      else if (StratSectionFactory.validateNewInterval(vm.data, FormFactory.getForm())) {
-        vm.addIntervalModal.remove();
-        var newInterval = StratSectionFactory.createInterval(stratSection.strat_section_id, vm.data);
-        if (vm.intervalName) newInterval.properties.name = vm.intervalName;
-        if (vm.intervalToCopy && vm.intervalToCopy.properties && vm.intervalToCopy.properties.sed) {
-          newInterval = copyRestOfInterval(newInterval);
-        }
-        SpotFactory.setNewSpot(newInterval).then(function (id) {
-          if (!_.isEmpty(vm.intervalToInsertAfter)) {
-            StratSectionFactory.moveIntervalToAfter(newInterval, vm.intervalToInsertAfter).then(function () {
+      if (StratSectionFactory.doUnitsFieldsMatch(stratSection, vm.data)) {
+        if (StratSectionFactory.validateNewInterval(vm.data, FormFactory.getForm())) {
+          vm.addIntervalModal.remove();
+          var newInterval = StratSectionFactory.createInterval(stratSection.strat_section_id, vm.data);
+          if (vm.intervalName) newInterval.properties.name = vm.intervalName;
+          if (vm.intervalToCopy && vm.intervalToCopy.properties && vm.intervalToCopy.properties.sed) {
+            newInterval = copyRestOfInterval(newInterval);
+          }
+          SpotFactory.setNewSpot(newInterval).then(function (id) {
+            if (!_.isEmpty(vm.intervalToInsertAfter)) {
+              StratSectionFactory.moveIntervalToAfter(newInterval, vm.intervalToInsertAfter).then(function () {
+                updateFeatureLayer();
+                MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
+              });
+            }
+            else {
               updateFeatureLayer();
               MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
-            });
-          }
-          else {
-            updateFeatureLayer();
-            MapViewFactory.zoomToSpotsExtent(map, spotsThisMap);
-          }
-        });
+            }
+          });
+        }
       }
     }
 

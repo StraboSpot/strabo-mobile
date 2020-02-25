@@ -98,7 +98,11 @@
       {'state': 'relationships', 'template': 'relationships/relationships-tab', 'controller': 'Relationships'},
       {'state': 'samples', 'template': 'samples/samples-tab', 'controller': 'Samples'},
       {'state': 'spot', 'template': 'spot-tab/spot-tab', 'controller': 'Spot'},
+      {'state': 'sed-bedding', 'template': 'sed/bedding/bedding-tab', 'controller': 'SedBedding'},
+      {'state': 'sed-diagenesis', 'template': 'sed/diagenesis/diagenesis-tab', 'controller': 'SedDiagenesis'},
+      {'state': 'sed-fossils', 'template': 'sed/fossils/fossils-tab', 'controller': 'SedFossils'},
       {'state': 'sed-interpretations', 'template': 'sed/interpretations/interpretations-tab', 'controller': 'SedInterpretations'},
+      {'state': 'sed-interval', 'template': 'sed/interval/interval-tab', 'controller': 'SedInterval'},
       {'state': 'sed-lithologies', 'template': 'sed/lithologies/lithologies-tab', 'controller': 'SedLithologies'},
       {'state': 'sed-structures', 'template': 'sed/structures/structures-tab', 'controller': 'SedStructures'},
       {'state': 'strat-section', 'template': 'sed/strat-section/strat-section-tab', 'controller': 'StratSection'},
@@ -129,7 +133,7 @@
       $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loading Database...'});
       return LocalStorageFactory.setupLocalforage().then(function () {
         $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loaded Database<br>Loading User...'});
-        return AutoLoginFactory.autoLogin().then(function () {
+        //return AutoLoginFactory.autoLogin().then(function () {
           $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Loaded Data Models<br>Loaded Database<br>Loaded User<br>Loading Project...'});
           return UserFactory.loadUser().then(function () {
             $ionicLoading.show({'template': '<ion-spinner></ion-spinner><br>Automatically logged in...'});
@@ -143,7 +147,7 @@
               });
             });
           });
-        });
+        //});
       });
     });
   }

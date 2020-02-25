@@ -1,0 +1,7 @@
+list_name,name,label
+ny3eb23,1_sparse,"1 (sparse bioturbation, bedding distinct)"
+ny3eb23,2_uncommon,"2 (uncommon bioturbation, bedding distinct)"
+ny3eb23,3_moderate,"3 (moderate bioturbation, bedding distinct, overlap rare)"
+ny3eb23,4_common,"4 (common bioturbation, bedding indistinct, common overlap)"
+ny3eb23,5_abundant,"5 (abundant bioturbation, bedding completely disturbed (just visible))"
+ny3eb23,6_complete,"6 (complete bioturbation, total homogenization of sediment)"

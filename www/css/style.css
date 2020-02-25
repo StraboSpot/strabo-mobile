@@ -392,6 +392,11 @@ Buttons
   border: none;
 }
 
+.button-disabled {
+  background-color: #fcfcfc;
+  color: lightgray;
+}
+
 /*--------------------
 Orientation Tab Style
 --------------------*/
@@ -1035,11 +1040,27 @@ Spots Page
   background-color: #9bfdea;
 }
 
+.sed-bedding-on {
+  background-color: #fc423d;
+}
+
+.sed-diagenesis-on {
+  background-color: #b3aaac;
+}
+
+.sed-fossils-on {
+  background-color: #855209;
+}
+
 .sed-interpretations-on {
   background-color: #fcbf90;
 }
 
-.lithologies-on {
+.sed-interval-on {
+  background-color: #eee0fc;
+}
+
+.sed-lithologies-on {
   background-color: #f2a9fc;
 }
 

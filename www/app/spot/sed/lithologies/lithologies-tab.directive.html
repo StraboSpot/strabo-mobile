@@ -1,14 +1,17 @@
 <div>
   <div class='button-bar'>
-    <button class='button' ng-class="{'button-positive': vmChild.lithologyForm === 'lithologies_basics'}"
-            ng-click='vmChild.switchLithologyForm("lithologies_basics")'>Basics</button>
+    <button class='button' ng-class="{'button-positive': vmChild.lithologyForm === 'lithologies_lithology'}"
+            ng-click='vmChild.switchLithologyForm("lithologies_lithology")'>Lithology
+    </button>
     <button class='button' ng-class="{'button-positive': vmChild.lithologyForm === 'lithologies_texture'}"
-            ng-click='vmChild.switchLithologyForm("lithologies_texture")'>Texture</button>
+            ng-click='vmChild.switchLithologyForm("lithologies_texture")'>Texture
+    </button>
     <button class='button' ng-class="{'button-positive': vmChild.lithologyForm === 'lithologies_composition'}"
-            ng-click='vmChild.switchLithologyForm("lithologies_composition")'>Composition</button>
-    <button class='button' ng-class="{'button-positive': vmChild.lithologyForm === 'lithologies_stratification'}"
-            ng-click='vmChild.switchLithologyForm("lithologies_stratification")'>Stratification</button>
+            ng-click='vmChild.switchLithologyForm("lithologies_composition")'>Composition
+    </button>
   </div>
+  <strabo-sed-characteristics-field-directive/>
+  <strabo-sed-lithology-buttons-directive/>
   <form name='straboForm' novalidate=''>
     <auto-fields/>
   </form>
