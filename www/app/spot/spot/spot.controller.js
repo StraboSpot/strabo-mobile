@@ -18,7 +18,6 @@
     var vmParent = $scope.vm;
     var vm = this;
 
-    var preferences = ProjectFactory.getPreferences();
     var typesWithTwoLithologies = ['bed_mixed_lit', 'interbedded'];
 
     // Tags Variables
@@ -712,6 +711,7 @@
     }
 
     function showTab(tab) {
+      var preferences = ProjectFactory.getPreferences();
       if (tab === 'spot') return true;
       else if (tab === 'strat_section') {
         return preferences['strat_mode'] && vm.spot && vm.spot.properties && !vm.spot.properties.strat_section_id;
