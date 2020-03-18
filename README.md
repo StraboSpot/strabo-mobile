@@ -14,8 +14,6 @@ StraboSpot is an application for Structural Geology and Tectonics (SG&T) data ac
 - Helpers: [Underscore](http://underscorejs.org/)
 - AngularJS Extensions for Cordova API: [ngCordova](http://ngcordova.com/)
 - Local Storage: [localForage with Cordova SQLite Driver](https://github.com/thgreasi/localForage-cordovaSQLiteDriver)
-- Testing Framework: [Jasmine](http://jasmine.github.io/)
-- Test Runner: [Karma](karma-runner.github.io/)
 - Linting Utility: [ESLint](http://eslint.org/)
 
 **Additional Libraries/Plugins for Web Version:**
@@ -86,18 +84,19 @@ Generate Resources (icons and splash screens):
 *Notes:*
 - When used with PhoneGap Build the plugin `cordova-sqlite-storage` must be substituted for the following:
 
-    `cordova-sqlite-evcore-extbuild-free 0.9.10 "Cordova sqlite storage - free enterprise version with Android performance/memory improvements and extra features for PhoneGap Build`
+    `cordova-sqlite-evcore-extbuild-free 0.12.0 "Cordova sqlite storage - free enterprise version with Android performance/memory improvements and extra features for PhoneGap Build`
 
 - This list can be generated with `ionic cordova plugin list`.
 - `cordova-plugin-filepath`: Added due to Cordova bug with Android and content schema
 - `cordova-sqlite-storage`: Added for the localForage dependencies
-- `cordova-plugin-itunesfilesharing`: Added to `config.ionic.xml` for Ionic build. PhoneGap build uses
+- `cordova-plugin-itunesfilesharing`: Added to `config.ionic.xml` for Ionic build.
+- Run `npm outdated` to see which packages need updating.
 
 ### Tested Environment
 
     Ionic:
     
-       Ionic CLI         : 5.4.4
+       Ionic CLI         : 5.4.16
        Ionic Framework   : ionic1 1.3.3
        @ionic/v1-toolkit : 1.0.15
     
@@ -115,8 +114,8 @@ Generate Resources (icons and splash screens):
     System:
     
        Android SDK Tools : 26.1.1
-       NodeJS            : v11.8.0
-       npm               : 6.9.0
+       NodeJS            : v12.10.0
+       npm               : 6.14.0
 
 *Notes:*
 - This list can be generated with `ionic info`.
@@ -137,24 +136,26 @@ Generate Resources (icons and splash screens):
 ### Tested Environment - Platforms
 
     Installed platforms:
-    android 7.1.2
+      android 8.1.0
+      browser 5.0.4
     Available platforms:
-    browser ~5.0.1
-    ios ~4.5.4
-    osx ~4.0.1
-    windows ~6.0.0
+      electron ^1.0.0
+      ios ^5.0.0
+      osx ^5.0.0
+      windows ^7.0.0
 
 *Notes:*
 - This list can be generated with `ionic cordova platform list`.
 
 ### Versioning
 
-When updates to the app are made, edit the version number of the app in the following 5 files:
+When updates to the app are made, edit the version number of the app in the following 6 files:
 - `www/app/about/about-directive.html`
 - `www/app/login/login.html`
 - `config.xml`
 - `config.ionic.xml`
 - `package.json`
+- `package-lock.json`
 
 ## Running/Testing the Standalone App
 
@@ -233,26 +234,6 @@ For example with [local-web-server](https://www.npmjs.com/package/local-web-serv
 1. Download latest ionic: `npm install -g ionic`
 2. In project root run: `ionic lib update`
 3. Check the version of `angular.js` that is bundled within `www/lib/ionic/js/ionic.bundle.js` and make sure that `www/lib/angular-mocks.js` and `www/lib/angular-messages.js` have the same version number. Download updates from [here](https://code.angularjs.org/) if necessary.
-
-
-## Unit-Testing
-
-Prerequisites:
-
-    npm install karma --save-dev
-    npm install karma-jasmine --save-dev
-    npm install jasmine-core --save-dev
-    npm install -g karma-cli
-
-Add test browsers:
-
-    npm install karma-chrome-launcher --save-dev
-
-To run tests:
-
-    karma start
-
-Note: Make sure the version of `angular.js` that is bundled within `www/lib/ionic/js/ionic.bundle.js` matches the version of `angular-mocks.js`. Updated versions can be found [here](https://code.angularjs.org/).
 
 ## Linting
 
