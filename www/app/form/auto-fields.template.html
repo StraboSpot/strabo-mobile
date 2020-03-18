@@ -62,7 +62,8 @@
                      name='{{ field.name }}'
                      placeholder='{{ field.hint }}'
                      ng-model='vm.data[field.name]'
-                     ng-required='{{ field.required }}'>
+                     ng-required='{{ field.required }}'
+                     ng-pattern='form.getPattern(field.name)'>
             </div>
           </ion-input>
         </div>
@@ -116,7 +117,8 @@
           </ion-input>
         </div>
         <div ng-switch-when='select_multiple'>
-          <ion-input class='item-text-wrap strabo-choices-flex-container strabo-wrap' ng-class='form.setSelMultClass(field, vm.data)'>
+          <ion-input class='item-text-wrap strabo-choices-flex-container strabo-wrap'
+                     ng-class='form.setSelMultClass(field, vm.data)'>
             <ion-label>
               {{ field.label }}
               <button class='button button-small button-icon ion-information-circled strabo-field-info-button'

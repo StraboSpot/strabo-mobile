@@ -21,6 +21,7 @@
     vm.closeModal = closeModal;
     vm.getMax = getMax;
     vm.getMin = getMin;
+    vm.getPattern = getPattern;
     vm.getSurvey = getSurvey;
     vm.isOptionChecked = isOptionChecked;
     vm.setSelMultClass = setSelMultClass;
@@ -63,6 +64,10 @@
 
     function getMin(constraint) {
       return FormFactory.getMin(constraint);
+    }
+
+    function getPattern(fieldName) {
+      return FormFactory.getPattern(fieldName);
     }
 
     function getSurvey() {

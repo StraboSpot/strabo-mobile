@@ -20,6 +20,7 @@
       'getFormName': getFormName,
       'getMax': getMax,
       'getMin': getMin,
+      'getPattern': getPattern,
       'handleTraceFeatureToggled': handleTraceFeatureToggled,
       'isRelevant': isRelevant,
       'setForm': setForm,
@@ -90,6 +91,16 @@
       }
     }
 
+    // Get the pattern to be applied for specific fields
+    function getPattern(fieldName) {
+      switch (fieldName) {
+        case 'eruption_start_datetime_utc':
+        case 'eruption_end_datetime_utc':
+          return "\\d{4}-[0-1]\\d{1}-[0-3]\\d{1}T[0-2]\\d{1}:[0-5]\\d{1}:[0-5]\\d{1}Z"
+      }
+      return undefined;
+    }
+
     // Handle Trace Feature being toggled on off on the Spot Home page
     function handleTraceFeatureToggled(field, data) {
       if (data) {
@@ -105,33 +116,33 @@
     }
 
     // Handle Strat Mode being toggled on or off on the Project Preferences page
-/*    function handleStratModeToggled(field, data) {
-      if (data[field] && !_.isEmpty(SpotFactory.getSpotsWithOtherSedCharacter())) {
-        $log.log('strat mode toggled on');
-        var confirmPopup1 = $ionicPopup.confirm({
-          'title': 'Entering Strat Mode Warning!',
-          'template': 'Are you sure you want to enter Strat Mode? Sed Characteristics of "other" in ALL Spots will be deleted.'
-        });
-        confirmPopup1.then(function (res) {
-          if (res) SpotFactory.deleteOtherSedCharacteristicsForAllSpots();
-          else delete data[field];
-        });
-      }
-      else if (!data[field] && (!_.isEmpty(SpotFactory.getSpotsWithIntervalData()) ||
-        !_.isEmpty(SpotFactory.getSpotsWithUnmeasuredSedCharacter()))) {
-        $log.log('strat mode toggled off');
-        var confirmPopup2 = $ionicPopup.confirm({
-          'title': 'Leaving Strat Mode Warning!',
-          'template': 'Are you sure you want to leave Strat Mode? Data for Interval Thicknesses and ' +
-            'Interval Types of "unexposed/covered" or "not measured" in ALL Spots will be deleted.'
-        });
-        confirmPopup2.then(function (res) {
-          if (res) SpotFactory.deleteIntervalDataForAllSpots();
-          else data[field] = true;
-        });
-      }
-      else if (!data[field]) SpotFactory.deleteIntervalDataForAllSpots();
-    }*/
+    /*    function handleStratModeToggled(field, data) {
+          if (data[field] && !_.isEmpty(SpotFactory.getSpotsWithOtherSedCharacter())) {
+            $log.log('strat mode toggled on');
+            var confirmPopup1 = $ionicPopup.confirm({
+              'title': 'Entering Strat Mode Warning!',
+              'template': 'Are you sure you want to enter Strat Mode? Sed Characteristics of "other" in ALL Spots will be deleted.'
+            });
+            confirmPopup1.then(function (res) {
+              if (res) SpotFactory.deleteOtherSedCharacteristicsForAllSpots();
+              else delete data[field];
+            });
+          }
+          else if (!data[field] && (!_.isEmpty(SpotFactory.getSpotsWithIntervalData()) ||
+            !_.isEmpty(SpotFactory.getSpotsWithUnmeasuredSedCharacter()))) {
+            $log.log('strat mode toggled off');
+            var confirmPopup2 = $ionicPopup.confirm({
+              'title': 'Leaving Strat Mode Warning!',
+              'template': 'Are you sure you want to leave Strat Mode? Data for Interval Thicknesses and ' +
+                'Interval Types of "unexposed/covered" or "not measured" in ALL Spots will be deleted.'
+            });
+            confirmPopup2.then(function (res) {
+              if (res) SpotFactory.deleteIntervalDataForAllSpots();
+              else data[field] = true;
+            });
+          }
+          else if (!data[field]) SpotFactory.deleteIntervalDataForAllSpots();
+        }*/
 
     // Determine if the field should be shown or not by looking at the relevant key-value pair
     // The 2nd param, properties, is used in the eval method
@@ -293,7 +304,7 @@
         var units = StratSectionFactory.getDefaultUnits(spot);
         if (sed.bedding && ((sed.bedding.package_thickness_units && units !== sed.bedding.package_thickness_units) ||
           (sed.bedding.beds && sed.bedding.beds[n] && sed.bedding.beds[n].interbed_thickness_units &&
-          units !== sed.bedding.beds[n].interbed_thickness_units))) {
+            units !== sed.bedding.beds[n].interbed_thickness_units))) {
           errorMessages.push('- <b>Thickness Units</b> must be <b>' + units + '</b> since <b>' + units +
             '</b> have been assigned for the properties of this strat section.')
         }

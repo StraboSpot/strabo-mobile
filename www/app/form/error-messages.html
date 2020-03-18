@@ -1,14 +1,20 @@
 <div class='error' ng-message='required'>
   <i class='ion-information-circled'></i>
-  This field is required!
+  This field is required
 </div>
 <div class='error' ng-message='number'>
   <i class='ion-information-circled'></i>
-  This field must be a number!
+  Value must be a number
 </div>
 <div class='error' ng-message='pattern'>
   <i class='ion-information-circled'></i>
-  This field must be an integer!
+  <span data-ng-switch on='field.type.split(" ")[0]'>
+    <span ng-switch-when='integer'>Value must be an integer</span>
+    <span ng-switch-when='text'>
+      <span ng-if='field.constraint_message'>{{field.constraint_message}}</span>
+      <span ng-if='!field.constraint_message'>Value does not match specified pattern</span>
+    </span>
+  </span>
 </div>
 <div class='error' ng-message='min'><i class='ion-information-circled'></i>
   <span ng-if='field.constraint_message'>{{field.constraint_message}}</span>
