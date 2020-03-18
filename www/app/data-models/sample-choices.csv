@@ -1,14 +1,24 @@
-list_name,name,label,order
-to0mv13,fabric___micro,fabric / microstructure,0
+﻿list_name,name,label,order
+to0mv13,fabric___micro,fabric / microstructure,
 to0mv13,petrology,petrology,1
 to0mv13,geochronology,geochronology,2
 to0mv13,geochemistry,geochemistry,3
-to0mv13,other,other,4
-jq8qd30,intact_rock,intact rock,0
+to0mv13,active_eruptio,active eruption,4
+to0mv13,other,other,5
+nn0jd25,measured_area,measured-area (MPUA),
+nn0jd25,bulk,bulk,
+nn0jd25,time_increment,time-incremental,
+ue6mw51,mm,mm,
+ue6mw51,cm,cm,
+ue6mw51,m,m,
+ue6mw51,in,in,
+ue6mw51,ft,ft,
+jq8qd30,intact_rock,intact rock,
 jq8qd30,fragmented_roc,fragmented rock,1
 jq8qd30,sediment,sediment,2
 jq8qd30,tephra,tephra,3
-jq8qd30,other,other,4
+jq8qd30,carbon_or_animal,carbon or animal,4
+jq8qd30,other,other,5
 fc6dz57,5___definitely,5 - definitely in place,
 fc6dz57,4,4,
 fc6dz57,3,3,
