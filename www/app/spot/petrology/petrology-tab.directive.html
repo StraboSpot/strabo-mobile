@@ -9,6 +9,9 @@
     <button class='button' ng-class="{'button-positive': vmChild.attributeType === 'reactions'}"
             ng-click='vmChild.switchPetrologySubtab("reactions")'>Reactions
     </button>
+    <button class='button' ng-class="{'button-positive': vmChild.attributeType === 'fabrics'}"
+            ng-click='vmChild.switchPetrologySubtab("fabrics")'>Fabrics
+    </button>
     <button class='button' ng-class="{'button-positive': vmChild.attributeType === 'ternary'}"
             ng-click='vmChild.switchPetrologySubtab("ternary")' ng-show="vmChild.shouldShowTernary()">Ternary
     </button>
@@ -22,6 +25,11 @@
         <option value=''>-- None --</option>
       </select>
     </ion-input>
+    <form name='straboForm' novalidate=''>
+      <auto-fields/>
+    </form>
+  </div>
+  <div ng-show='vmChild.attributeType === "fabrics"'>
     <form name='straboForm' novalidate=''>
       <auto-fields/>
     </form>

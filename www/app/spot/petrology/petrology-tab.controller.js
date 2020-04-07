@@ -354,7 +354,9 @@
         if (vmParent.spot.properties.pet) vmParent.data = vmParent.spot.properties.pet;
         gatherTernaryValues();
         vm.attributeType = form;
-        if (vm.attributeType === 'rock') FormFactory.setForm('pet', vm.attributeType);
+        if (vm.attributeType === 'rock' || vm.attributeType === 'fabrics') {
+          FormFactory.setForm('pet', vm.attributeType);
+        }
         else FormFactory.clearForm();
       });
     }

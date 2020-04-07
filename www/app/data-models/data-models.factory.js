@@ -146,6 +146,12 @@
         }
       },
       'pet': {
+        'fabrics': {
+          'survey': {},
+          'survey_file': 'app/data-models/pet/fabrics-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/pet/fabrics-choices.csv'
+        },
         'rock': {
           'survey': {},
           'survey_file': 'app/data-models/pet/rock-survey.csv',
@@ -510,6 +516,7 @@
         'sed_structures_pedogenic': dataModels.sed.structures_pedogenic,
         'sed_structures_physical': dataModels.sed.structures_physical,
         'trace': dataModels.trace,
+        'pet_fabrics': dataModels.pet.fabrics,
         'pet_rock': dataModels.pet.rock,
         'pet_minerals': dataModels.pet.minerals,
         'pet_reactions': dataModels.pet.reactions
@@ -571,7 +578,7 @@
           description = sortby(description);
           spotDataModel.properties.images.push(description);
         }
-        else if (key === 'pet_rock') _.extend(spotDataModel.properties.pet, description);
+        else if (key === 'pet_rock' || key === 'pet_fabrics') _.extend(spotDataModel.properties.pet, description);
         else if (key === 'pet_minerals') spotDataModel.properties.pet.minerals = [description];
         else if (key === 'pet_reactions') spotDataModel.properties.pet.reactions = [description];
         else spotDataModel.properties[key].push(description);
