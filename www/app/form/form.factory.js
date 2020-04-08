@@ -103,7 +103,7 @@
 
     // Handle Trace Feature being toggled on off on the Spot Home page
     function handleTraceFeatureToggled(field, data) {
-      if (data) {
+      if (data && !data.trace_feature) {
         var confirmPopup = $ionicPopup.confirm({
           'title': 'Close Group?',
           'template': 'By closing this group you will be clearing all Trace Feature data for this Spot. Continue?'
