@@ -205,18 +205,10 @@
       ProjectFactory.saveProjectItem('is_testing_mode', vm.isTestingMode);
       if (!vm.isTestingMode) {
         var preferences = ProjectFactory.getPreferences();
-        preferences.sed_bedding = false;
-        preferences.sed_diagenesis = false;
-        preferences.sed_fossils = false;
-        preferences.sed_lithologies = false;
-        preferences.sed_structures = false;
-        preferences.sed_interpretations = false;
-        preferences.strat_mode = false;
         preferences.experimental = false;
         preferences.experimental_results = false;
         preferences.experimental_set_up = false;
         preferences.data = false;
-        preferences.petrology = false;
         ProjectFactory.saveProjectItem('preferences', preferences);
       }
     }
