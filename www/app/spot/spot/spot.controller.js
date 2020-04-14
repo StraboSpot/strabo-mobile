@@ -730,6 +730,7 @@
         else if (IS_WEB && $state.current.name === 'app.image-basemaps.image-basemap') {
           $rootScope.$broadcast('updateImageBasemapFeatureLayer');
         }
+        if (IS_WEB && toPath === '/app/preferences') SpotFactory.setKeepSpotSelected(true);
         $ionicHistory.backView();
         $location.path(toPath);
       });
