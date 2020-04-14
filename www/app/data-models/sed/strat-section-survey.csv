@@ -8,6 +8,9 @@ acknowledge,display_lithology_patterns,Display Lithology Patterns,false,,,,
 select_one zc89y27,column_y_axis_units,Column Y-Axis Units,false,,,,
 select_one pu1qb77,section_type,Section Type,false,,,,
 text,what_core_repository,What Core Repository?,false,${section_type} = 'core',,,
+text,type_of_corer,Type of corer,false,${section_type} = 'core',,,
+text,depth_from_surface_to_start_of,Depth from surface to start of core,false,${section_type} = 'core',,,
+text,total_core_length,Total core length,false,${section_type} = 'core',,,
 text,location_locality,Location/Locality,false,,,,
 text,basin,Basin,false,,,,
 text,age,Age,false,,,,
@@ -21,4 +24,4 @@ select_one gy5ky31,obs_interval_bed_obs_scale,Observation Interval (average bed/
 select_one ao6ek37,how_is_section_georeferenced,How is the Section Georeferenced?,false,,,,
 text,strat_section_notes,Notes,false,,multiline,,
 calculate,__version__,,false,,,'vABoyibvTTxS8wqHZcbXuC',
-calculate,_version_,,,,,'vRzhPoKhuaUcjdPrEoH2ue',__version__
+calculate,_version_,,,,,'vz2UUddY9Aevi5TxvE3MNX',__version__

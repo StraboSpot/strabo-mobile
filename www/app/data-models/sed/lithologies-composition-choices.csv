@@ -134,18 +134,21 @@ ng3et79,grainstone,grainstone,
 ng3et79,boundstone,boundstone,
 ng3et79,other,other,
 so29n97,glass,glass,
-so29n97,crystals,crystals,
-so29n97,lithic_fragmen,lithic fragments,
-so29n97,volcanic_mudst,volcanic mudstone,
-so29n97,volcanic_sands,volcanic sandstone,
-so29n97,lapillistone,lapillistone,
-so29n97,agglomerate,agglomerate,
-so29n97,volcanic_brecc,volcanic breccia,
-so29n97,bentonite,bentonite,
-so29n97,tuff,tuff,
-so29n97,welded_tuff,welded tuff,
-so29n97,ignimbrite,ignimbrite,
-so29n97,other,other,
+so29n97,crystals,crystals,1
+so29n97,lithic_fragmen,lithic fragments,2
+so29n97,volcanic_mudst,volcanic mudstone,3
+so29n97,volcanic_sands,volcanic sandstone,4
+so29n97,lapillistone,lapillistone,5
+so29n97,agglomerate,agglomerate,6
+so29n97,volcanic_brecc,volcanic breccia,7
+so29n97,bentonite,bentonite,8
+so29n97,tuff,tuff,9
+so29n97,welded_tuff,welded tuff,10
+so29n97,ignimbrite,ignimbrite,11
+so29n97,discrete,discrete,12
+so29n97,disseminated,disseminated,13
+so29n97,cryptotephra,cryptotephra,14
+so29n97,other,other,15
 gg6bk97,gyp_anhyd_prim,gypsum - anhydrite primary,
 gg6bk97,gyp_anhyd_dia,gypsum - anhydrite diagenetic,
 gg6bk97,halite_primary,halite - primary,

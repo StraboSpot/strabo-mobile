@@ -1,4 +1,4 @@
-﻿type,name,label,hint,required,relevant,constraint_message,appearance,calculation,$given_name
+type,name,label,hint,required,relevant,constraint_message,appearance,calculation,$given_name
 start,start,,,,,,,,
 end,end,,,,,,,,
 text,label,Label,If a label is not specified a default label will be given.,false,,,,,
@@ -18,7 +18,11 @@ text,deposit_thickness,Deposit Thickness,,false,,,,,
 select_one ue6mw51,deposit_thickness_units,Deposit Thickness Units,,false,${main_sampling_purpose} = 'active_eruptio',,,,
 text,sample_description,Sample Description,,false,,,,,
 select_one jq8qd30,material_type,Material Type,,false,,,,,
-text,sample_type,Sample Type,,false,${material_type} = 'tephra',,,,
+select_multiple za9kv60,sample_type_1,Sample Type 1,,false,${material_type} = 'tephra',,,,
+text,other_sample_type_1,Other Sample Type 1,,false,"selected(${sample_type_1}, 'other')",,,,
+select_multiple si9ei43,sample_type_2,Sample Type 2,,false,${material_type} = 'tephra',,,,
+text,other_sample_type_2,Other Sample Type 2,,false,"selected(${sample_type_2}, 'other')",,,,
+text,density,Density,,false,${material_type} = 'tephra',,,,
 text,color,Color,,false,${material_type} = 'tephra',,,,
 text,lithology,Lithology,,false,${material_type} = 'tephra',,,,
 text,sample_unit,Sample Unit,,false,${material_type} = 'tephra',,,,
@@ -31,4 +35,4 @@ text,other_sampling_purpose,Other Sampling Purpose,,true,${main_sampling_purpose
 select_one sl0bq45,degree_of_weathering,Degree of Weathering,,false,,,,,
 text,sample_notes,Sample Notes,,false,,,multiline,,
 calculate,__version__,,,false,,,,'va7DMmTtZp3ZiCJQCdxQpL',
-calculate,_version_,,,,,,,'vG5bNrScHfpvLgAnVZEAuK',__version__
+calculate,_version_,,,,,,,'vdyH73jmEcyDv2vB9JVR97',__version__

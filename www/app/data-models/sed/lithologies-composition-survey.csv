@@ -122,4 +122,4 @@ decimal,tar_percent,Tar percent,false,false,"selected(${organic_coal_lithologies
 text,notes,Notes,false,false,,multiline,,
 end_group,,,,,,,,
 calculate,__version__,,false,,,,'vtuzrkPfhvY5znAdhzG8Kn',
-calculate,_version_,,,,,,'vaBuWGfmCXccAhFWWqD5NJ',__version__
+calculate,_version_,,,,,,'votjuabnASCmhdL46mUiSz',__version__

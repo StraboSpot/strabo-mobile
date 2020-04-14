@@ -28,14 +28,22 @@ io1jz71,petrographic,petrographic,
 io1jz71,petrophysical,petrophysical,
 io1jz71,other,other,
 oy67z09,local_section,local section,
-oy67z09,single_outcrop,single outcrop,
-oy67z09,multi_outcrop,multiple outcrop,
-oy67z09,single_core,single core,
-oy67z09,multiple_core,multiple core,
-oy67z09,single_basin,single basin,
-oy67z09,regional_study,regional study,
-oy67z09,multi_basins,multiple basins,
-oy67z09,other,other,
+oy67z09,single_outcrop,single outcrop,1
+oy67z09,multi_outcrop,multiple outcrop,2
+oy67z09,single_core,single core,3
+oy67z09,multiple_core,multiple core,4
+oy67z09,single_basin,single basin,5
+oy67z09,regional_study,regional study,6
+oy67z09,multi_basins,multiple basins,7
+oy67z09,lak,lake,8
+oy67z09,ice,ice,9
+oy67z09,peat,peat,10
+oy67z09,marine,marine,11
+oy67z09,natura,natural,12
+oy67z09,excavated,excavated,13
+oy67z09,surface,surface,14
+oy67z09,archeological,archaeological,15
+oy67z09,other,other,16
 gy5ky31,mm,mm,
 gy5ky31,cm,cm,
 gy5ky31,dm,dm,
