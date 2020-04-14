@@ -1,0 +1,70 @@
+list_name,name,label,order
+xo3br71,no_p_fab,none,
+xo3br71,foliation,foliation,1
+xo3br71,layer,layering,2
+xo3br71,other_p_fab,other,3
+ch0pi55,min_align,mineral alignment,
+ch0pi55,comp_layer,compositional layering,1
+ch0pi55,enclaves,enclaves,2
+ch0pi55,xenoliths,xenoliths,3
+ch0pi55,other,other,4
+ct7fo58,gradational,gradational,
+ct7fo58,sharp,sharp,
+pc7pj90,none,none,
+pc7pj90,lineation,lineation,1
+pc7pj90,other,other,2
+mn6df98,mineral_alignm,mineral alignment,
+mn6df98,enclaves,enclaves,
+mn6df98,xenoliths,xenoliths,
+mn6df98,other,other,
+au6oa62,s,S only,
+au6oa62,s>>l,S >> L,1
+au6oa62,s>l,S > L,2
+au6oa62,ls,S = L,3
+au6oa62,l>s,L > S,4
+au6oa62,l>>s,L >> S,5
+au6oa62,l,L only,6
+au6oa62,other_tec,other,7
+lg33p50,no_add_mag_fab,none,
+lg33p50,commingle,commingling,1
+lg33p50,folding,folding,2
+lg33p50,boudinage,boudinage,3
+lg33p50,mullions,mullions,4
+lg33p50,other,other,5
+jl3uv38,no_mag_str,none,
+jl3uv38,trough,trough,1
+jl3uv38,tube,tube,2
+jl3uv38,plume_str,plume structure,4
+jl3uv38,pipe,pipe,5
+jl3uv38,vein_dike,veins or dikes,7
+jl3uv38,cavity,cavity,8
+jl3uv38,other,other,9
+yl2ro14,no_ss_str,none,
+yl2ro14,ss_fab,solid-state fabric,1
+yl2ro14,sz,shear zone,2
+yl2ro14,anneal_sz,annealed shear zone,3
+yl2ro14,other_ss_str,other,4
+ze21n57,structural,structural,
+ze21n57,vein_vein_arra,veining/vein array,
+ze21n57,alter_zone,alteration zone,
+ze21n57,other,other,
+ao63x29,folding,folding,
+ao63x29,fractures,fractures,
+ao63x29,fault,fault,
+ao63x29,envelop_surf,enveloping surface,
+ao63x29,boudinage,boudinage,
+ao63x29,mullions,mullions,
+ao63x29,other_str_fab,other,
+co05o15,fold_bed,fold or bedding,
+co05o15,clvg_mul,cleavage,
+co05o15,irregular,irregular,
+co05o15,other_mul,other mullion,
+kx6sa18,sb_boud,shear band boudins,
+kx6sa18,drawn_boudin,drawn boudins,
+kx6sa18,torn_boudin,torn boudins,
+kx6sa18,gash_boudin,gash boudins,
+kx6sa18,domino_boudin,domino boudins,
+kx6sa18,other_boudin,other,
+hl6tf09,single_vein,single vein(s),
+hl6tf09,vein_array,vein array,
+hl6tf09,other_vein,other,

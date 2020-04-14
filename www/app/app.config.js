@@ -89,6 +89,7 @@
       {'state': 'experimental', 'template': 'micro/experimental/experimental-tab', 'controller': 'Experimental'},
       {'state': 'experimental-results', 'template': 'micro/experimental-results/experimental-results-tab', 'controller': 'ExperimentalResults'},
       {'state': 'experimental-set-up', 'template': 'micro/experimental-set-up/experimental-set-up-tab', 'controller': 'ExperimentalSetUp'},
+      {'state': 'fabrics', 'template': 'fabrics/fabrics-tab', 'controller': 'Fabrics'},
       {'state': 'images', 'template': 'images/images-tab', 'controller': 'Images'},
       {'state': 'nesting', 'template': 'nesting/nesting-tab', 'controller': 'Nesting'},
       {'state': 'notes', 'template': 'notes/notes-tab', 'controller': 'Notes'},

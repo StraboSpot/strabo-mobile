@@ -43,7 +43,8 @@
       {'value': 'experimental', 'label': 'Experimental', 'path': 'experimental'},
       {'value': 'experimental_set_up', 'label': 'Experimental Set Up', 'path': 'experimental-set-up'},
       {'value': 'experimental_results', 'label': 'Experimental Results', 'path': 'experimental-results'},
-      {'value': 'petrology', 'label': 'Ig/Met', 'path': 'petrology'}
+      {'value': 'petrology', 'label': 'Ig/Met', 'path': 'petrology'},
+      {'value': 'fabrics', 'label': 'Fabrics', 'path': 'fabrics'}
     ];
 
     return {

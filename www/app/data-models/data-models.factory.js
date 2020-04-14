@@ -41,6 +41,26 @@
         'choices': {},
         'choices_file': 'app/data-models/image_properties-choices.csv'
       },
+      'fabrics': {
+        'fault_rock': {
+          'survey': {},
+          'survey_file': 'app/data-models/fabrics/fault-rock-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/fabrics/fault-rock-choices.csv'
+        },
+        'igneous_rock': {
+          'survey': {},
+          'survey_file': 'app/data-models/fabrics/igneous-rock-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/fabrics/igneous-rock-choices.csv'
+        },
+        'metamorphic_rock': {
+          'survey': {},
+          'survey_file': 'app/data-models/fabrics/metamorphic-rock-survey.csv',
+          'choices': {},
+          'choices_file': 'app/data-models/fabrics/metamorphic-rock-choices.csv'
+        }
+      },
       'micro': {
         'experimental_apparatus': {
           'survey': {},
@@ -463,6 +483,7 @@
           '_3d_structures': [],
           'altitude': 'Type: number; Label: Altitude (m); Hint: Height of the position in meters above the ellipsoid of the earth.',
           'date': 'Type: datetime; Label: Date',
+          'fabrics': [],
           'gps_accuracy': 'Type: number; Label: GPS Accuracy (m); Hint: Accuracy level of the latitude and longitude coordinates in meters.',
           'id': 'number; timestamp (in milliseconds) with a random 1 digit number appended (= 14 digit id)',
           'images': [],
@@ -512,7 +533,10 @@
         'trace': dataModels.trace,
         'pet_rock': dataModels.pet.rock,
         'pet_minerals': dataModels.pet.minerals,
-        'pet_reactions': dataModels.pet.reactions
+        'pet_reactions': dataModels.pet.reactions,
+        'fabrics_fault_rock': dataModels.fabrics.fault_rock,
+        'fabrics_igneous_rock': dataModels.fabrics.igneous_rock,
+        'fabrics_metamorphic_rock': dataModels.fabrics.metamorphic_rock
       };
       _.each(models, function (model, key) {
         var description = {};
@@ -574,6 +598,13 @@
         else if (key === 'pet_rock') _.extend(spotDataModel.properties.pet, description);
         else if (key === 'pet_minerals') spotDataModel.properties.pet.minerals = [description];
         else if (key === 'pet_reactions') spotDataModel.properties.pet.reactions = [description];
+        else if (key === 'fabrics_fault_rock' || key === 'fabrics_igneous_rock' || key === 'fabrics_metamorphic_rock') {
+          description.id = 'Type: number; timestamp (in milliseconds) with a random 1 digit number ' +
+            'appended (= 14 digit id); REQUIRED';
+          description.type = key + '; REQUIRED';
+          description = sortby(description);
+          spotDataModel.properties.fabrics.push(description);
+        }
         else spotDataModel.properties[key].push(description);
       });
     }
@@ -710,7 +741,7 @@
       $log.log('Loading data models ...');
       _.each(dataModels, function (dataModel, key) {
         if (key === 'orientation_data' || key === '_3d_structures' || key === 'sed' || key === 'micro'
-          || key === 'pet') {
+          || key === 'pet' || key === 'fabrics') {
           _.each(dataModel, function (childDataModel, childKey) {
             //$log.log('Loading', key, childKey, ' ...');
             promises.push(loadDataModel(childDataModel));

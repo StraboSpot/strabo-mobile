@@ -7,6 +7,7 @@ acknowledge,orientations,Orientations,,false,,,
 acknowledge,_3dstructures,3D Structures,,false,,,
 acknowledge,images,Images,,false,,,
 acknowledge,petrology,Ig/Met,,false,,,
+acknowledge,fabrics,Fabrics,,false,,,
 acknowledge,nesting,Nesting,,false,,,
 acknowledge,samples,Samples,,false,,,
 acknowledge,other_features,Other Features,,false,,,
@@ -39,4 +40,4 @@ end_group,,,,,,,
 begin_group,group_vw6ff56,Privacy Control,,false,,,
 acknowledge,public,Public?,,false,,,
 end_group,,,,,,,
-calculate,__version__,,,,,,'vDkCJ6EA6dHuVHLvEXxmPz'
+calculate,__version__,,,,,,'vvSFVSG4FDpG3CTGAUNrpm'

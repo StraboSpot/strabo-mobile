@@ -1,0 +1,99 @@
+list_name,name,label,order
+bt7xf34,fine,fine,
+bt7xf34,medium,medium,1
+bt7xf34,coarse,coarse,2
+bt7xf34,bimodal,bimodal,3
+bt7xf34,other,other,4
+cs2ki85,gneissic_band,gneissic banding,
+cs2ki85,comp_seg,other compositional segregation,1
+cs2ki85,min_align,mineral alignment,2
+cs2ki85,schistosity,schistosity,3
+cs2ki85,mylonitic_fol,mylonitic foliation,4
+cs2ki85,cleavage,cleavage,5
+cs2ki85,stylolite,stylolite,6
+cs2ki85,scaly_fabric,scaly fabric,7
+cs2ki85,other_planar,other,8
+cs2ki85,no_planar,none,9
+mj2eg99,slaty,slaty,
+mj2eg99,phyllitic,phyllitic,1
+mj2eg99,phacoidal,phacoidal,2
+mj2eg99,pencil,pencil,3
+mj2eg99,crenulation,crenulation,4
+mj2eg99,axial_planar,axial planar,5
+mj2eg99,solution,solution,6
+mj2eg99,other_clvg,other,7
+jw6do33,planar,planar,
+jw6do33,domainal,domainal,1
+jw6do33,spaced,spaced,2
+jw6do33,anastomos,anastomosing,3
+sv9wq27,min_align_lin,mineral alignment,
+sv9wq27,stretching,stretching,
+sv9wq27,rodding,rodding,
+sv9wq27,intersect_lin,intersection,
+sv9wq27,other_lin,other,
+sv9wq27,no_lin,none,
+ps78s13,metasom,metasomatic,
+ps78s13,migmatite,migmatitic,1
+ps78s13,porphyroclast,porphyroclastic,2
+ps78s13,porphyroblast,porphyroblastic,3
+ps78s13,poikiloblast,poikiloblastic,4
+ps78s13,other_met_fab,other,5
+io9by25,structural,structural,
+io9by25,relict_sed,relict sedimentary,1
+io9by25,vein_vein_arra,veining/vein array,3
+io9by25,alter_zone,alteration zone,4
+io9by25,other,other,5
+lg33p50,folding,folding,
+lg33p50,fractures,fractures,1
+lg33p50,fault,fault,2
+lg33p50,envelop_surf,enveloping surface,3
+lg33p50,boudinage,boudinage,4
+lg33p50,mullions,mullions,5
+lg33p50,shear_zone,shear zone,6
+lg33p50,other_str_fab,other,7
+fk2vt22,fold_bed,fold or bedding,
+fk2vt22,clvg_mul,cleavage,
+fk2vt22,irregular,irregular,
+fk2vt22,other_mul,other mullion,
+zb5mg25,sb_boud, shear band boudins,
+zb5mg25,drawn_boudin,drawn boudins,
+zb5mg25,torn_boudin,torn boudins,
+zb5mg25,gash_boudin,gash boudins,
+zb5mg25,domino_boudin,domino boudins,
+zb5mg25,other_boudin,other,
+sh7va84,bed,bedding,
+sh7va84,x_bed,cross bedding,
+sh7va84,graded_bed,graded bedding,
+sh7va84,flow_top_brecc,flow top breccia,
+sh7va84,pillows,pillows,
+sh7va84,flame_str,flame structure,
+sh7va84,other_sed,other,
+jy6bn49,single_vein,single vein(s),
+jy6bn49,vein_array,vein array,
+jy6bn49,other_vein,other,
+ge6og85,kin_yes,Yes,
+ge6og85,kin_no,No,
+lw8uh27,oblique_fabric,oblique grain shape fabric,
+lw8uh27,asymm_fold,asymmetric folds,1
+lw8uh27,asymm_clast,"asymmetric clast (delta, sigma)",2
+lw8uh27,mica_fish,mica fish,3
+lw8uh27,bookshelf_slip,bookshelf slip,4
+lw8uh27,s_c,S-C fabric,5
+lw8uh27,riedel_shear,Riedel fracture/shear,6
+lw8uh27,sigmoidal_gash,sigmoidal tension gash(es),7
+lw8uh27,drag_folds,drag folds (layering curvature),8
+lw8uh27,offset_deflect,offset or deflected marker,9
+lw8uh27,minor_offset,minor offset,10
+lw8uh27,crescent_frac,crescentic fractures,11
+lw8uh27,slickenfiber,slickenfibers,12
+lw8uh27,fiber_growth,fiber growth,13
+lw8uh27,gouge_fill,gouge fill,14
+lw8uh27,other_kin,other,15
+au84l98,s,S only,
+au84l98,s>>l,S >> L,1
+au84l98,s>l,S > L,2
+au84l98,ls,S = L,3
+au84l98,l>s,L > S,4
+au84l98,l>>s,L >> S,5
+au84l98,l,L only,6
+au84l98,other_tec,other,7

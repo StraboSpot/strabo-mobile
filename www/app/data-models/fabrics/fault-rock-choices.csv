@@ -1,0 +1,77 @@
+list_name,name,label,order
+ej9ja31,fault_breccia,fault breccia,
+ej9ja31,fault_gouge,fault gouge,
+ej9ja31,other,other,
+hn4ya89,foliated_gouge,foliated gouge,
+hn4ya89,other_incoh_fo,other,
+dt8ce19,pseudotach,pseudotachylite,
+dt8ce19,crush_breccia,crush breccia,
+dt8ce19,protocata,protocataclasite,
+dt8ce19,cata,cataclasite,
+dt8ce19,ultracata,ultracataclasite,
+dt8ce19,other,other,
+oo1yw77,fol_pseudotach,pseudotachylite,
+oo1yw77,fol_crush_brec,crush breccia,1
+oo1yw77,fol_protocata,protocataclasite,2
+oo1yw77,fol_cata,cataclasite,3
+oo1yw77,fol_ultracata,ultracataclasite,4
+oo1yw77,protomyl,protomylonite,5
+oo1yw77,mylonite,mylonite,6
+oo1yw77,ultramyl,ultramylonite,7
+oo1yw77,blastomyl,blastomylonite,8
+oo1yw77,other,other,9
+au84l98,s,S only,
+au84l98,s>>l,S >> L,1
+au84l98,s>l,S > L,2
+au84l98,sl,S = L,3
+au84l98,l>s,L > S,4
+au84l98,l>>s,L >> S,5
+au84l98,l,L only,6
+au84l98,other,other,7
+lg33p50,folding,folding,
+lg33p50,fractures,fractures,1
+lg33p50,boudinage,boudinage,2
+lg33p50,comp_banding,compositional banding,3
+lg33p50,mineral_alignm,mineral alignment,4
+lg33p50,schistosity,schistosity,5
+lg33p50,cleavage,cleavage,6
+lg33p50,scaly_fabric,scaly fabric,7
+lg33p50,stylolite,stylolite,8
+lg33p50,alter_zone,alteration zone,9
+lg33p50,other,other,10
+zb5mg25,shearband_boud,shearband boudins,
+zb5mg25,drawn_boudins,drawn boudins,
+zb5mg25,torn_boudins,torn boudins,
+zb5mg25,gash_boudins,gash boudins,
+zb5mg25,domino_boudins,domino boudins,
+zb5mg25,other_boudin,other,
+hd2ex57,slaty,slaty,
+hd2ex57,phyllitic,phyllitic,
+hd2ex57,phacoidal,phacoidal,
+hd2ex57,pencil,pencil,
+hd2ex57,crenulation,crenulation,
+hd2ex57,axial_planar,axial planar,
+hd2ex57,solution,solution,
+hd2ex57,other_clvg,other,
+mm2ld90,planar,planar,
+mm2ld90,anastomosing,anastomosing,
+mm2ld90,domainal,domainal,
+mm2ld90,other_sp_confi,other,
+if8go18,yes_kin,Yes,
+if8go18,no_kin,No,
+lw8uh27,oblique_fabric,oblique grain shape fabric,
+lw8uh27,asymm_fold,asymmetric folds,1
+lw8uh27,asymm_clast,"asymmetric clast (delta, sigma)",2
+lw8uh27,mica_fish,mica fish,3
+lw8uh27,bookshelf_slip,bookshelf slip,4
+lw8uh27,s_c,S-C fabric,5
+lw8uh27,riedel_shear,Riedel fracture/shear,6
+lw8uh27,sigmoidal_gash,sigmoidal tension gash(es),7
+lw8uh27,drag_folds,drag folds (layering curvature),8
+lw8uh27,offset_deflect,offset or deflected marker,9
+lw8uh27,minor_offset,minor offset,10
+lw8uh27,crescentic_fra,crescentic fractures,11
+lw8uh27,slickenfibers,slickenfibers,12
+lw8uh27,fiber_growth,fiber growth,13
+lw8uh27,gouge_fill,gouge fill,14
+lw8uh27,other_kin,other,15

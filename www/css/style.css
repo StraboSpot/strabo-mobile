@@ -1068,6 +1068,14 @@ Spots Page
   background-color: #6bcffc;
 }
 
+.petrology-on {
+  background-color: #d8a7fc;
+}
+
+.fabrics-on {
+  background-color: #b0fcd0;
+}
+
 .list-sub {
   font-size: small;
   padding-left: 24px;

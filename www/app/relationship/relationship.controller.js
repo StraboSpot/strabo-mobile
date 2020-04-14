@@ -364,7 +364,7 @@
 
     function setFeatures() {
       vm.features = [];
-      var featureElements = ['orientation_data', 'other_features', 'samples', '_3d_structures'];
+      var featureElements = ['orientation_data', 'other_features', 'samples', '_3d_structures', 'fabrics'];
       _.each(vm.spots, function (spot) {
         _.each(featureElements, function (featureElement) {
           if (spot.properties[featureElement]) {
@@ -411,7 +411,7 @@
     }
 
     function toggleFilter(filter, emptyType) {
-      if (vm.filterConditions[filter]) delete vm.filterConditions[filter]
+      if (vm.filterConditions[filter]) delete vm.filterConditions[filter];
       else vm.filterConditions[filter] = emptyType || undefined;
     }
 

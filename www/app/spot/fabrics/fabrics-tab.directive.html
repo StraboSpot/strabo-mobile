@@ -1,0 +1,36 @@
+<div>
+  <button ng-click='vmChild.addFabric("fault_rock")'
+          class='button button-clear button-positive'>
+    <i class='icon ion-plus-circled'></i>
+    <span class='button-text-big'>Add a Fault Rock Fabric</span>
+  </button>
+  <button ng-click='vmChild.addFabric("igneous_rock")'
+          class='button button-clear button-positive'>
+    <i class='icon ion-plus-circled'></i>
+    <span class='button-text-big'>Add an Igneous Rock Fabric</span>
+  </button>
+  <button ng-click='vmChild.addFabric("metamorphic_rock")'
+          class='button button-clear button-positive'>
+    <i class='icon ion-plus-circled'></i>
+    <span class='button-text-big'>Add a Metamorphic Rock Fabric</span>
+  </button>
+  <ion-list>
+    <ion-item class='item-text-wrap item-button-right'
+              ng-repeat='fabric in vm.spot.properties.fabrics | orderBy: "label" track by fabric.id'>
+      <div ng-click='vmChild.editFabric(fabric)'>
+        <b>{{ fabric.label }}</b>
+        <span ng-show='vm.getTagNames(fabric)' class='list-sub'>
+            <br>Tags: {{ vm.getTagNames(fabric) }}
+          </span>
+      </div>
+      <div class='buttons'>
+        <button class='button button-clear button-dark' ng-click='vm.addTag(fabric)'>
+          <i class='icon ion-pricetag'></i>
+        </button>
+        <button class='button button-clear button-assertive' ng-click='vmChild.deleteFabric(fabric)'>
+          <i class='icon ion-minus-circled'></i>
+        </button>
+      </div>
+    </ion-item>
+  </ion-list>
+</div>
