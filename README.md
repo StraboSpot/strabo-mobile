@@ -108,7 +108,7 @@ Generate Resources (icons and splash screens):
     Utility:
     
        cordova-res : not installed
-       native-run  : 0.2.9
+       native-run  : 0.3.0
     
     System:
     
