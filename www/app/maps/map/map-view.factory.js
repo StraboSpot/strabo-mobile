@@ -256,7 +256,7 @@
         if (navigator.geolocation) {
           const geolocationOptions = {
             'maximumAge': 0,
-            'timeout': 1000,
+            'timeout': 10000,
             'enableHighAccuracy': true
           };
           navigator.geolocation.getCurrentPosition(function (position) {
