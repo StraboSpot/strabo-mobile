@@ -60,24 +60,23 @@ Generate Resources (icons and splash screens):
     ionic cordova resources
 
 ### Tested Environment - Plugins    
-    cordova-plugin-camera 4.0.3 "Camera"
-    cordova-plugin-device 2.0.2 "Device"
+    cordova-plugin-camera 4.1.0 "Camera"
+    cordova-plugin-device 2.0.3 "Device"
     cordova-plugin-device-motion 2.0.1 "Device Motion"
     cordova-plugin-device-orientation 2.0.1 "Device Orientation"
     cordova-plugin-file 6.0.1 "File"
     cordova-plugin-file-transfer 1.7.1 "File Transfer"
-    cordova-plugin-filepath 1.5.1 "cordova-plugin-filepath"
-    cordova-plugin-geolocation 4.0.1 "Geolocation"
-    cordova-plugin-inappbrowser 3.0.0 "InAppBrowser"
-    cordova-plugin-ionic-keyboard 2.1.3 "cordova-plugin-ionic-keyboard"
-    cordova-plugin-ionic-webview 2.3.2 "cordova-plugin-ionic-webview"
+    cordova-plugin-filepath 1.5.8 "cordova-plugin-filepath"
+    cordova-plugin-inappbrowser 3.2.0 "InAppBrowser"
+    cordova-plugin-ionic-keyboard 2.2.0 "cordova-plugin-ionic-keyboard"
+    cordova-plugin-ionic-webview 4.2.0 "cordova-plugin-ionic-webview"
     cordova-plugin-itunesfilesharing 0.0.2 "cordova-plugin-itunesfilesharing"
-    cordova-plugin-network-information 2.0.1 "Network Information"
-    cordova-plugin-splashscreen 5.0.2 "Splashscreen"
-    cordova-plugin-statusbar 2.4.2 "StatusBar"
-    cordova-plugin-whitelist 1.3.3 "Whitelist"
+    cordova-plugin-network-information 2.0.2 "Network Information"
+    cordova-plugin-splashscreen 5.0.3 "Splashscreen"
+    cordova-plugin-statusbar 2.4.3 "StatusBar"
+    cordova-plugin-whitelist 1.3.4 "Whitelist"
     cordova-plugin-zip 3.1.0 "cordova-plugin-zip"
-    cordova-sqlite-storage 3.4.0 "Cordova sqlite storage plugin - cordova-sqlite-storage plugin version"
+    cordova-sqlite-storage 5.0.0 "Cordova sqlite storage plugin - cordova-sqlite-storage plugin version"
     io.phasr.cordova.plugin.itunesfilesharing 0.0.1 "cordova-plugin-itunesfilesharing"
     org.strabospot.clipboard 0.1.0 "Clipboard"
 
@@ -98,13 +97,13 @@ Generate Resources (icons and splash screens):
     
        Ionic CLI         : 5.4.16
        Ionic Framework   : ionic1 1.3.3
-       @ionic/v1-toolkit : 1.0.15
+       @ionic/v1-toolkit : 3.1.2
     
     Cordova:
     
        Cordova CLI       : 9.0.0 (cordova-lib@9.0.1)
        Cordova Platforms : android 8.1.0, iOS 5.0.1, browser 5.0.4
-       Cordova Plugins   : cordova-plugin-ionic-keyboard 2.1.3, cordova-plugin-ionic-webview 2.3.2, (and 16 other plugins)
+       Cordova Plugins   : cordova-plugin-ionic-keyboard 2.2.0, cordova-plugin-ionic-webview 4.2.0, (and 15 other plugins)
     
     Utility:
     
@@ -200,7 +199,6 @@ To Deploy Updates:
 
 ### As a Native App, Built App with PhoneGap Build
 
-- `config.xml` must be within the `www` folder
 - `config.xml` must include plugins
 - `config.xml` must include `<preference name="phonegap-version" value="cli-9.0.0"/>`
 
@@ -210,7 +208,7 @@ See [PhoneGap Build](https://build.phonegap.com).
 
 To test as a native app see the Ionic [guide](http://ionicframework.com/docs/guide/testing.html).
 
-For a USB connected Android device first copy `config.xml` from `strabo-moble/www` into the `strabo-mobile` root. Then:
+For a USB connected Android:
 
     ionic cordova platform add android
     ionic cordova run android
