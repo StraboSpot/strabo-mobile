@@ -5,11 +5,9 @@
     .module('app')
     .factory('MapViewFactory', MapViewFactory);
 
-  MapViewFactory.$inject = ['$cordovaGeolocation', '$ionicLoading', '$ionicPopup', '$log', 'HelpersFactory',
-    'MapLayerFactory', 'SpotFactory'];
+  MapViewFactory.$inject = ['$ionicLoading', '$ionicPopup', '$log', 'HelpersFactory', 'MapLayerFactory', 'SpotFactory'];
 
-  function MapViewFactory($cordovaGeolocation, $ionicLoading, $ionicPopup, $log, HelpersFactory, MapLayerFactory,
-                          SpotFactory) {
+  function MapViewFactory($ionicLoading, $ionicPopup, $log, HelpersFactory, MapLayerFactory, SpotFactory) {
     var mapView;
     var viewExtent;
     var initialMapView;
@@ -31,6 +29,38 @@
     };
 
     /**
+     * Private Functions
+     */
+
+    function gotCurrentPosition(map, position) {
+      var lat = position.coords.latitude;
+      var lng = position.coords.longitude;
+      var altitude = position.coords.altitude;
+      var accuracy = position.coords.accuracy;
+      var heading = position.coords.heading;
+      var speed = position.coords.speed;
+
+      $log.log('Got Location: ', [lat, lng],
+        '(accuracy: ' + accuracy + ') (altitude: ' + altitude + ') (heading: ' + heading + ') (speed: ' + speed + ')');
+
+      var newView = new ol.View({
+        'center': ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
+        'zoom': 18,
+        'minZoom': 4
+      });
+      map.setView(newView);
+      $ionicLoading.hide();
+    }
+
+    function showCurrentPositionError(err) {
+      $ionicPopup.alert({
+        'title': 'Alert!',
+        'template': 'Unable to get your current position: ' + err.message
+      });
+      $ionicLoading.hide();
+    }
+
+    /**
      * Public Functions
      */
 
@@ -42,110 +72,75 @@
       var geolocationWatchId;
       var geolocationLayer = MapLayerFactory.getGeolocationLayer();
 
+      function clearWatch() {
+        if (geolocationWatchId) navigator.geolocation.clearWatch(geolocationWatchId);  // clear geolocation watch
+        geolocationLayer.setSource(new ol.source.Vector({}));   // clear the geolocation marker
+      }
+
       if (locationOn) {
         $log.log('toggleLocation is now true');
         $ionicLoading.show({
           'template': '<ion-spinner></ion-spinner><br>Getting location...'
         });
-        $cordovaGeolocation.getCurrentPosition({
-          'maximumAge': 0,
-          'timeout': 10000,
-          'enableHighAccuracy': true
-        }).then(
-          function (position) {
-            var lat = position.coords.latitude;
-            var lng = position.coords.longitude;
-            var altitude = position.coords.altitude;
-            var accuracy = position.coords.accuracy;
-            var heading = position.coords.heading;
-            var speed = position.coords.speed;
+        if (navigator.geolocation) {
+          const geolocationOptions = {
+            'maximumAge': 0,
+            'timeout': 10000,
+            'enableHighAccuracy': true
+          };
+          navigator.geolocation.getCurrentPosition(function (position) {
+            gotCurrentPosition(map, position);
+            const watchOptions = {
+              'frequency': 1000,
+              'timeout': 10000,
+              'enableHighAccuracy': true // may cause errors if true
+            };
+            geolocationWatchId = navigator.geolocation.watchPosition(function (position) {
+              // Make sure the location toggle hasn't been turned off
+              if (locationOn) {
+                var lat = position.coords.latitude;
+                var lng = position.coords.longitude;
+                var altitude = position.coords.altitude;
+                var accuracy = position.coords.accuracy;
+                var altitudeAccuracy = position.coords.altitudeAccuracy;
+                var heading = position.coords.heading;
+                var speed = position.coords.speed;
 
-            $log.log('getLocation ', [lat, lng],
-              '(accuracy: ' + accuracy + ') (altitude: ' + altitude + ') (heading: ' + heading + ') (speed: ' + speed + ')');
+                /*$log.log('getLocation-watch ', [lat, lng],
+                 '(accuracy: ' + accuracy + ') (altitude: ' + altitude + ') (heading: ' + heading + ') (speed: ' + speed + ')');
+                 */
+                // create a point feature and assign the lat/long to its geometry
+                var iconFeature = new ol.Feature({
+                  'geometry': new ol.geom.Point(ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'))
+                });
 
-            var newView = new ol.View({
-              'center': ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
-              'zoom': 18,
-              'minZoom': 4
-            });
-            map.setView(newView);
-          }, function (err) {
-            $ionicPopup.alert({
-              'title': 'Alert!',
-              'template': 'Unable to get location: ' + err.message
-            }).finally(function () {
-              $ionicLoading.hide();
-            });
-          });
+                // add addition geolocation data to the feature so we can recall it later
+                iconFeature.set('altitude', altitude);
+                iconFeature.set('accuracy', (accuracy === null) ? null : Math.floor(accuracy));
+                iconFeature.set('altitudeAccuracy', altitudeAccuracy);
+                iconFeature.set('heading', heading);
+                iconFeature.set('speed', (speed === null) ? null : Math.floor(speed));
 
-        geolocationWatchId = $cordovaGeolocation.watchPosition({
-          'frequency': 1000,
-          'timeout': 10000,
-          'enableHighAccuracy': true // may cause errors if true
-        });
+                var vectorSource = new ol.source.Vector({
+                  'features': [iconFeature]
+                });
 
-        geolocationWatchId.then(
-          null,
-          function (err) {
-            $ionicLoading.hide();
-            // Too many alerts on iOS
-            /*$ionicPopup.alert({
-             'title': 'Alert!',
-             'template': 'Unable to get location for geolocationWatchId: ' + geolocationWatchId.watchID + ' (' + err.message + ')'
-             });*/
-            // TODO: what do we do here?
-          },
-          function (position) {
-            $ionicLoading.hide();
-            // Make sure the location toggle hasn't been turned off
-            if (locationOn) {
-              var lat = position.coords.latitude;
-              var lng = position.coords.longitude;
-              var altitude = position.coords.altitude;
-              var accuracy = position.coords.accuracy;
-              var altitudeAccuracy = position.coords.altitudeAccuracy;
-              var heading = position.coords.heading;
-              var speed = position.coords.speed;
-
-              /*$log.log('getLocation-watch ', [lat, lng],
-               '(accuracy: ' + accuracy + ') (altitude: ' + altitude + ') (heading: ' + heading + ') (speed: ' + speed + ')');
-               */
-              // create a point feature and assign the lat/long to its geometry
-              var iconFeature = new ol.Feature({
-                'geometry': new ol.geom.Point(ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'))
-              });
-
-              // add addition geolocation data to the feature so we can recall it later
-              iconFeature.set('altitude', altitude);
-              iconFeature.set('accuracy', (accuracy === null) ? null : Math.floor(accuracy));
-              iconFeature.set('altitudeAccuracy', altitudeAccuracy);
-              iconFeature.set('heading', heading);
-              iconFeature.set('speed', (speed === null) ? null : Math.floor(speed));
-
-              var vectorSource = new ol.source.Vector({
-                'features': [iconFeature]
-              });
-
-              $log.log('setting geolocation source');
-              geolocationLayer.setSource(vectorSource);
-            }
-            else {
-              $log.log('toggleLocation is now false');
-              if (geolocationWatchId) geolocationWatchId.clearWatch();
-              // clear the geolocation marker
-              geolocationLayer.setSource(new ol.source.Vector({}));
-            }
-          });
+                $log.log('setting geolocation source');
+                geolocationLayer.setSource(vectorSource);
+              }
+              else {
+                $log.log('toggleLocation is now false');
+                clearWatch();
+              }
+            }, null, watchOptions);
+          }, showCurrentPositionError, geolocationOptions);
+        }
+        else showCurrentPositionError('Geolocation is not supported by this browser.');
       }
       else {
         // locationOn must be false
         $log.log('toggleLocation is now false');
-
-        // clear geolocation watch
-        if (geolocationWatchId) geolocationWatchId.clearWatch();
-
-        // clear the geolocation marker
-        geolocationLayer.setSource(new ol.source.Vector({}));
+        clearWatch();
       }
     }
 
@@ -258,27 +253,17 @@
       }
       else {
         $log.log('No Spots found! Attempting to geolocate ...');
-        $cordovaGeolocation.getCurrentPosition({
-          'maximumAge': 0,
-          'timeout': 10000,
-          'enableHighAccuracy': true
-        }).then(function (position) {
-          var lat = position.coords.latitude;
-          var lng = position.coords.longitude;
-          $log.log('initial getLocation ', [lat, lng]);
-
-          var newView = new ol.View({
-            'center': ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'),
-            'zoom': 17,
-            'minZoom': 4
-          });
-          map.setView(newView);
-        }, function () {
-          $ionicPopup.alert({
-            'title': 'Geolocate Error!',
-            'template': 'Your position could not be geolocated.'
-          });
-        });
+        if (navigator.geolocation) {
+          const geolocationOptions = {
+            'maximumAge': 0,
+            'timeout': 1000,
+            'enableHighAccuracy': true
+          };
+          navigator.geolocation.getCurrentPosition(function (position) {
+            gotCurrentPosition(map, position);
+          }, showCurrentPositionError, geolocationOptions);
+        }
+        else showCurrentPositionError('Geolocation is not supported by this browser.');
       }
     }
   }

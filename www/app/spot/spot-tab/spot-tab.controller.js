@@ -5,11 +5,11 @@
     .module('app')
     .controller('SpotTabController', SpotTabController);
 
-  SpotTabController.$inject = ['$cordovaGeolocation', '$ionicLoading', '$ionicModal', '$ionicPopup', '$log', '$scope',
-    '$state', 'FormFactory', 'HelpersFactory', 'LiveDBFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
+  SpotTabController.$inject = ['$ionicLoading', '$ionicModal', '$ionicPopup', '$log', '$scope', '$state', 'FormFactory',
+    'HelpersFactory', 'LiveDBFactory', 'ProjectFactory', 'SpotFactory', 'IS_WEB'];
 
-  function SpotTabController($cordovaGeolocation, $ionicLoading, $ionicModal, $ionicPopup, $log, $scope, $state,
-                             FormFactory, HelpersFactory, LiveDBFactory, ProjectFactory, SpotFactory, IS_WEB) {
+  function SpotTabController($ionicLoading, $ionicModal, $ionicPopup, $log, $scope, $state, FormFactory,
+                             HelpersFactory, LiveDBFactory, ProjectFactory, SpotFactory, IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -83,38 +83,38 @@
       $ionicLoading.show({
         'template': '<ion-spinner></ion-spinner><br>Getting location...'
       });
-      $cordovaGeolocation.getCurrentPosition({
-        'maximumAge': 0,
-        'timeout': 10000,
-        'enableHighAccuracy': true
-      }).then(function (position) {
-        vm.lat = HelpersFactory.roundToDecimalPlaces(position.coords.latitude, 6);
-        vm.lng = HelpersFactory.roundToDecimalPlaces(position.coords.longitude, 6);
-        if (isPixelMapping()) {
-          vmParent.spot.properties.lng = vm.lng;
-          vmParent.spot.properties.lat = vm.lat;
-        }
-        else {
-          vmParent.spot.geometry = {
-            'type': 'Point',
-            'coordinates': [vm.lng, vm.lat]
-          };
-        }
-        if (position.coords.altitude) {
-          vmParent.spot.properties.altitude = HelpersFactory.roundToDecimalPlaces(position.coords.altitude, 2);
-        }
-        if (position.coords.accuracy) {
-          vmParent.spot.properties.gps_accuracy = HelpersFactory.roundToDecimalPlaces(position.coords.accuracy, 2);
-        }
-      }, function (err) {
-        $ionicPopup.alert({
-          'title': 'Alert!',
-          'template': 'Unable to get location: ' + err.message
-        });
-      })
-        .finally(function () {
-          $ionicLoading.hide();
-        });
+      if (navigator.geolocation) {
+        const geolocationOptions = {
+          'maximumAge': 0,
+          'timeout': 10000,
+          'enableHighAccuracy': true
+        };
+        navigator.geolocation.getCurrentPosition(gotCurrentPosition, showGeolocationError,
+          geolocationOptions);
+      }
+      else showGeolocationError('Geolocation is not supported by this browser.');
+    }
+
+    function gotCurrentPosition(position) {
+      vm.lat = HelpersFactory.roundToDecimalPlaces(position.coords.latitude, 6);
+      vm.lng = HelpersFactory.roundToDecimalPlaces(position.coords.longitude, 6);
+      if (isPixelMapping()) {
+        vmParent.spot.properties.lng = vm.lng;
+        vmParent.spot.properties.lat = vm.lat;
+      }
+      else {
+        vmParent.spot.geometry = {
+          'type': 'Point',
+          'coordinates': [vm.lng, vm.lat]
+        };
+      }
+      if (position.coords.altitude) {
+        vmParent.spot.properties.altitude = HelpersFactory.roundToDecimalPlaces(position.coords.altitude, 2);
+      }
+      if (position.coords.accuracy) {
+        vmParent.spot.properties.gps_accuracy = HelpersFactory.roundToDecimalPlaces(position.coords.accuracy, 2);
+      }
+      $ionicLoading.hide();
     }
 
     function loadTab(state) {
@@ -170,6 +170,14 @@
         vm.lat = vmParent.spot.geometry.coordinates[1];
         vm.lng = vmParent.spot.geometry.coordinates[0];
       }
+    }
+
+    function showGeolocationError(err) {
+      $ionicPopup.alert({
+        'title': 'Alert!',
+        'template': 'Unable to get location: ' + err.message
+      });
+      $ionicLoading.hide();
     }
 
     /**

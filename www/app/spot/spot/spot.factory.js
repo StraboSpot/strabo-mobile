@@ -5,11 +5,11 @@
     .module('app')
     .factory('SpotFactory', SpotFactory);
 
-  SpotFactory.$inject = ['$cordovaGeolocation', '$ionicPopup', '$location', '$log', '$state', '$q', 'HelpersFactory',
-    'LiveDBFactory', 'LocalStorageFactory', 'ProjectFactory', 'IS_WEB'];
+  SpotFactory.$inject = ['$ionicPopup', '$location', '$log', '$state', '$q', 'HelpersFactory', 'LiveDBFactory',
+    'LocalStorageFactory', 'ProjectFactory', 'IS_WEB'];
 
-  function SpotFactory($cordovaGeolocation, $ionicPopup, $location, $log, $state, $q, HelpersFactory, LiveDBFactory,
-                       LocalStorageFactory, ProjectFactory, IS_WEB) {
+  function SpotFactory($ionicPopup, $location, $log, $state, $q, HelpersFactory, LiveDBFactory, LocalStorageFactory,
+                       ProjectFactory, IS_WEB) {
     var activeNest = [];
     var activeSpots;  // Only Spots in the active datasets
     var currentSpotId;
@@ -741,28 +741,31 @@
 
         // Get current location when creating a new Spot that is mapped on a strat section
         if (newSpot.properties.strat_section_id) {
-          $cordovaGeolocation.getCurrentPosition({
-            'maximumAge': 0,
-            'timeout': 10000,
-            'enableHighAccuracy': true
-          }).then(function (position) {
-            newSpot.properties.lat = HelpersFactory.roundToDecimalPlaces(position.coords.latitude, 6);
-            newSpot.properties.lng = HelpersFactory.roundToDecimalPlaces(position.coords.longitude, 6);
-            if (position.coords.altitude) {
-              newSpot.properties.altitude = HelpersFactory.roundToDecimalPlaces(position.coords.altitude, 2);
-            }
-          }, function (err) {
-            $log.log('Unable to get current location: ' + err.message);
-            // ToDo: The following freezes the app in the Chrome dev evnvironment
-            /*$ionicPopup.alert({
-              'title': 'Alert!',
-              'template': 'Unable to get current location: ' + err.message
-            });*/
-          }).finally(function () {
+          function showCurrentPositionError(err) {
+            $log.log('Unable to set current position in Strat Spot: ' + err.message);
             save(newSpot).then(function () {
               deferred.resolve(newSpot.properties.id);
             });
-          });
+          }
+
+          if (navigator.geolocation) {
+            const geolocationOptions = {
+              'maximumAge': 0,
+              'timeout': 10000,
+              'enableHighAccuracy': true
+            };
+            navigator.geolocation.getCurrentPosition(function (position) {
+              newSpot.properties.lat = HelpersFactory.roundToDecimalPlaces(position.coords.latitude, 6);
+              newSpot.properties.lng = HelpersFactory.roundToDecimalPlaces(position.coords.longitude, 6);
+              if (position.coords.altitude) {
+                newSpot.properties.altitude = HelpersFactory.roundToDecimalPlaces(position.coords.altitude, 2);
+              }
+              save(newSpot).then(function () {
+                deferred.resolve(newSpot.properties.id);
+              });
+            }, showCurrentPositionError, geolocationOptions);
+          }
+          else showCurrentPositionError('Geolocation is not supported by this browser.');
         }
         else {
           save(newSpot).then(function () {
