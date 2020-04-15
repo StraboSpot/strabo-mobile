@@ -37,6 +37,7 @@
     vm.filterImagesType = filterImagesType;
     vm.getImageSrc = getImageSrc;
     vm.goToImageBasemap = goToImageBasemap;
+    vm.goToPublicURL = goToPublicURL;
     vm.isWeb = isWeb;
     vm.moreDetail = moreDetail;
     vm.reattachImage = reattachImage;
@@ -289,7 +290,7 @@
     }
 
     function editImage() {
-      vm.imagePropertiesModal.hide().then(function() {
+      vm.imagePropertiesModal.hide().then(function () {
         vmParent.sketchModal.show();
         ImageFactory.editImage(vmParent.spot, vmParent.data);
       });
@@ -329,6 +330,10 @@
         else vmParent.submit('/app/image-basemaps/' + image.id);
       }
       else vmParent.submit('/app/image-basemaps/' + image.id);
+    }
+
+    function goToPublicURL(image) {
+      $window.open('https://strabospot.org/pi/' + image.id);
     }
 
     function isWeb() {
