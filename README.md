@@ -81,6 +81,10 @@ Generate Resources (icons and splash screens):
     org.strabospot.clipboard 0.1.0 "Clipboard"
 
 *Notes:*
+- When used with PhoneGap Build the plugin `cordova-sqlite-storage` must be substituted for the following:
+
+    `cordova-sqlite-evcore-extbuild-free 0.12.0 "Cordova sqlite storage - free enterprise version with Android performance/memory improvements and extra features for PhoneGap Build`
+
 - This list can be generated with `ionic cordova plugin list`.
 - `cordova-plugin-filepath`: Added due to Cordova bug with Android and content schema
 - `cordova-sqlite-storage`: Added for the localForage dependencies
