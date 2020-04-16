@@ -518,7 +518,7 @@
         var orientation = feature.get('orientation');
         if (orientation) {
           rotation = orientation.strike || orientation.trend || rotation;
-          pointText = orientation.dip || orientation.plunge || pointText;
+          if (!IS_WEB) pointText = orientation.dip || orientation.plunge || pointText;
         }
 
         var styles = [];
