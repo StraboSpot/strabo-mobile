@@ -1,19 +1,19 @@
 <ion-modal-view class="csv-view-modal">
-	<ion-header-bar class='bar-stable nav-title-slide-ios7' align-title='center'>
-		<h1 class='title'>{{vmChild.currentFileTitle}}</h1>
-		<button class='button icon ion-close-round button-clear' ng-click='vmChild.dataTableModal.hide()'>
-		</button>
-	</ion-header-bar>
-	<ion-content padding>
-		<ion-scroll zooming="true" direction="xy" style="width: 100%; height: 100%">
-			<thead ng-repeat="row in vmChild.csvArr track by $index">{{row}}</thead>
-			<table class="data-table">
-				<tbody>
-					<tr ng-repeat="row in vmChild.csvArr track by $index">
-						<td class="data-td" text-center ng-repeat="item in row track by $index"><b>{{item}}</b></td>
-					</tr>
-				</tbody>
-			</table>
-		</ion-scroll>
-	</ion-content>
+  <ion-header-bar class='bar-stable nav-title-slide-ios7' align-title='center'>
+    <h1 class='title'>{{vmChild.currentTableTitle}}</h1>
+    <button class='button icon ion-close-round button-clear' ng-click='vmChild.dataTableModal.hide()'>
+    </button>
+  </ion-header-bar>
+  <ion-content padding>
+    <ion-scroll zooming="true" direction="xy" style="width: 100%; height: 100%">
+      <thead ng-repeat="row in vmChild.tableData track by $index">{{row}}</thead>
+      <table class="data-table">
+        <tbody>
+        <tr ng-repeat="row in vmChild.tableData track by $index">
+          <td class="data-td" text-center ng-repeat="item in row track by $index"><b>{{item}}</b></td>
+        </tr>
+        </tbody>
+      </table>
+    </ion-scroll>
+  </ion-content>
 </ion-modal-view>
