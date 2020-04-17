@@ -14,7 +14,7 @@
     "cordova-plugin-filepath": "^1.5.8",
     "cordova-plugin-inappbrowser": "^3.2.0",
     "cordova-plugin-ionic-keyboard": "^2.2.0",
-    "cordova-plugin-ionic-webview": "^4.2.0",
+    "cordova-plugin-ionic-webview": "2.5.3",
     "cordova-plugin-itunesfilesharing": "0.0.2",
     "cordova-plugin-network-information": "^2.0.2",
     "cordova-plugin-splashscreen": "^5.0.3",
@@ -73,9 +73,6 @@
       "cordova-plugin-file-transfer": {},
       "cordova-plugin-inappbrowser": {},
       "cordova-plugin-ionic-keyboard": {},
-      "cordova-plugin-ionic-webview": {
-        "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
-      },
       "cordova-plugin-itunesfilesharing": {},
       "cordova-plugin-network-information": {},
       "cordova-plugin-splashscreen": {},
@@ -83,7 +80,8 @@
       "cordova-plugin-whitelist": {},
       "cordova-plugin-zip": {},
       "cordova-sqlite-storage": {},
-      "org.strabospot.clipboard": {}
+      "org.strabospot.clipboard": {},
+      "cordova-plugin-ionic-webview": {}
     }
   }
 }
