@@ -73,6 +73,7 @@
       "cordova-plugin-file-transfer": {},
       "cordova-plugin-inappbrowser": {},
       "cordova-plugin-ionic-keyboard": {},
+      "cordova-plugin-ionic-webview": {},
       "cordova-plugin-itunesfilesharing": {},
       "cordova-plugin-network-information": {},
       "cordova-plugin-splashscreen": {},
@@ -81,7 +82,6 @@
       "cordova-plugin-zip": {},
       "cordova-sqlite-storage": {},
       "org.strabospot.clipboard": {},
-      "cordova-plugin-ionic-webview": {}
     }
   }
 }

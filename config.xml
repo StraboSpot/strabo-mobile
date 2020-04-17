@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="gov.az.azgs.strabomobile" version="1.16.1" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget id="gov.az.azgs.strabomobile" version="1.17.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>Strabo Mobile</name>
     <description>
     Strabo Mobile is a cross-platform app for geologic field data acquisition.
@@ -99,6 +99,4 @@
         <splash qualifier="hdpi" src="www/res/screens/android/screen-hdpi-portrait.png" />
         <splash qualifier="xhdpi" src="www/res/screens/android/screen-xhdpi-portrait.png" />
     </platform>
-    <plugin name="cordova-plugin-ionic-webview" spec="2.5.3" />
-    <engine name="browser" spec="^6.0.0" />
 </widget>
