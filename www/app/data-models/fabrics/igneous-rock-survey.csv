@@ -1,7 +1,7 @@
 type,name,label,hint,required,appearance,relevant,calculation,$given_name
 start,start,,,,,,,
 end,end,,,,,,,
-text,label,Label,If a label is not specified a default label will be given.,false,,,,,,
+text,label,Label,If a label is not specified a default label will be given.,false,,,,
 select_multiple xo3br71,planar_fab,Planar magmatic fabric(s),,false,horizontal-compact,,,
 select_multiple ch0pi55,def_mag_fol,What defines the magmatic foliation?,,false,horizontal-compact,"selected(${planar_fab}, 'foliation')",,
 select_multiple ch0pi55,def_mag_lay,What defines the magmatic layering?,,false,horizontal-compact,"selected(${planar_fab}, 'layer')",,
@@ -51,6 +51,6 @@ text,alter_zone_char,Describe alteration zone,,false,multiline,"selected(${addit
 text,alter_zone_min,Mineral(s) that define alteration zone,Add minerals in the alteration zone,false,multiline,"selected(${addition_fab}, 'alter_zone')",,
 text,other_fab_char,Other fabric characterization,,false,multiline,"selected(${addition_fab}, 'other')",,
 select_one au6oa62,ss_tectonite,Tectonite (solid-state) classification,,false,horizontal-compact,"not(selected(${solid_state_str}, 'no_ss_str'))",,
-text,mag_interp,Interpretations,,false,multiline,,,
+text,mag_interp_note,Interpretations and notes,,false,multiline,,,
 calculate,__version__,,,false,,,'vWMK6YMJe6VLDvaKGpDKzA',
-calculate,_version_,,,,,,'vYVuNkXT7jUdajrNHLeRvH',__version__
+calculate,_version_,,,,,,'vFmxQRYAKkjoQLChBihh3u',__version__

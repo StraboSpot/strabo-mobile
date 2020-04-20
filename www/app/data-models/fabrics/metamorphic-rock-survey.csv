@@ -1,7 +1,7 @@
 type,name,label,hint,required,appearance,relevant,calculation,$given_name
 start,start,,,,,,,
 end,end,,,,,,,
-text,label,Label,If a label is not specified a default label will be given.,false,,,,,,
+text,label,Label,If a label is not specified a default label will be given.,false,,,,
 select_one bt7xf34,grain_size,Grain size,,false,horizontal-compact,,,
 text,specify,Specify grain size distribution,Describe the grain size distribution,false,multiline,${grain_size} = 'other' or ${grain_size} = 'bimodal',,
 select_multiple cs2ki85,planar_fabric,Planar fabric(s),,false,horizontal-compact,,,
@@ -72,5 +72,6 @@ text,sense_of_shear,Sense of shear?,"e.g. top-NW, dextral, etc.",false,multiline
 select_one au84l98,tectonite_type,Tectonite classification,,false,horizontal-compact,,,
 text,other_char_tec,Other tectonite characterization,Characterize the tectonite:,false,multiline,${tectonite_type} = 'other_tec',,
 text,p_t_d_history,P-T-d history,,false,multiline,,,
+text,interp_note_meta,Interpretations and notes,,false,multiline,,,
 calculate,__version__,,,false,,,'vWMK6YMJe6VLDvaKGpDKzA',
-calculate,_version_,,,,,,'vgQNX4r9WQFFKB22hkEHAn',__version__
+calculate,_version_,,,,,,'vZJAYKJ5wZGHYPxSfdGST6',__version__

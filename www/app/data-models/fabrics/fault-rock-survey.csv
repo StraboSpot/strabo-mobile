@@ -1,7 +1,7 @@
 type,name,label,hint,required,appearance,relevant,calculation,$given_name
 start,start,,,,,,,
 end,end,,,,,,,
-text,label,Label,If a label is not specified a default label will be given.,false,,,,,,
+text,label,Label,If a label is not specified a default label will be given.,false,,,,
 select_one ej9ja31,inco_nofol,"Incohesive, non-foliated fabric",,false,horizontal-compact,,,
 text,inco_nofo_char,Characterize fabric,,false,multiline,${inco_nofol} != '' and ${inco_nofol} != 'other',,
 text,oth_inco_nofol,"Other incohesive, non-foliated fabric characterization",,false,multiline,${inco_nofol} = 'other',,
@@ -32,7 +32,7 @@ text,alter_zone_char,Describe the alteration zone,Spatial variability and extent
 text,alter_zone_min,Mineral(s) that define alteration zone,Add minerals in the alteration zone,false,multiline,"selected(${structural_fabric}, 'alter_zone')",,
 text,other_str_fab,Other characterization,,false,multiline,"selected(${structural_fabric}, 'other')",,
 select_multiple mm2ld90,spatial_config,Spatial configuration,,false,horizontal-compact,,,
-text,desc_spat_char,Describe spatial configuration,,false,multiline,,,
+text,desc_spat_char,Describe spatial configuration,,false,multiline,${spatial_config} != '',,
 select_one if8go18,kin_ind_present,Kinematic indicators present?,,false,horizontal-compact,,,
 select_multiple lw8uh27,kinematic_fab,Kinematic fabrics,,false,horizontal-compact,${kin_ind_present} = 'yes_kin',,
 text,grain_shape_char,Characterize oblique grain shape fabric,E.g. what mineral(s) define the grain shape fabric,false,multiline,"selected(${kinematic_fab}, 'oblique_fabric')",,
@@ -52,6 +52,6 @@ text,fib_grow_char,Characterize fiber growth,"E.g. mineralogy, etc.",false,multi
 text,goug_fill_char,Characterize gouge fill,,false,multiline,"selected(${kinematic_fab}, 'gouge_fill')",,
 text,oth_char_kin,Other characterization,,false,multiline,"selected(${kinematic_fab}, 'other_kin')",,
 text,sense_of_shear,Sense of shear?,"e.g. top-NW, dextral, etc.",false,multiline,${kin_ind_present} = 'yes_kin',,
-text,interp,Interpretations,,false,multiline,,,
+text,interp_note,Interpretations and notes,,false,multiline,,,
 calculate,__version__,,,false,,,'vWMK6YMJe6VLDvaKGpDKzA',
-calculate,_version_,,,,,,'v6v98LJJJvyKdpEWqTtP5J',__version__
+calculate,_version_,,,,,,'v8XFq4UXAaJbonRwMzo5eR',__version__
