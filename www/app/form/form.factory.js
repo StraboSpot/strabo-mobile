@@ -149,6 +149,7 @@
     function isRelevant(relevant, properties) {
       if (!relevant) return true;
 
+      relevant = relevant.replace(/not/g, '!');
       relevant = relevant.replace(/selected\(\$/g, '_.contains(');
       relevant = relevant.replace(/\$/g, '');
       relevant = relevant.replace(/{/g, 'properties.');
