@@ -208,7 +208,6 @@
         preferences.experimental = false;
         preferences.experimental_results = false;
         preferences.experimental_set_up = false;
-        preferences.data = false;
         ProjectFactory.saveProjectItem('preferences', preferences);
       }
     }

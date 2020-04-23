@@ -108,8 +108,7 @@
       var project = ProjectFactory.getCurrentProject();
       if (!project.is_testing_mode) {
         if (field.name === 'group_experimental_tab_control' || field.name === 'experimental' ||
-          field.name === 'experimental_results' || field.name === 'experimental_set_up' ||
-          field.name === 'data') {
+          field.name === 'experimental_results' || field.name === 'experimental_set_up') {
           show = false;
         }
       }
