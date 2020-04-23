@@ -6,7 +6,8 @@
       'ngRaven',
       'ionic',
       'ngCordova',
-      'ngMessages'
+      'ngMessages',
+      'ionic.native'
     ])
     // .run(function () {
     //   Pro.init('c569ad', {

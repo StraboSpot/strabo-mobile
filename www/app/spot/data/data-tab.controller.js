@@ -5,11 +5,11 @@
     .module('app')
     .controller('DataTabController', DataTabController);
 
-  DataTabController.$inject = ['$document', '$ionicLoading', '$ionicModal', '$ionicPopup', '$log', '$scope', '$state',
-  'HelpersFactory', 'IS_WEB'];
+  DataTabController.$inject = ['$document', '$cordovaFileChooser', '$cordovaFileOpener2', '$ionicLoading',
+    '$ionicModal', '$ionicPopup', '$log', '$scope', '$state', '$window', 'HelpersFactory', 'IS_WEB'];
 
-  function DataTabController($document, $ionicLoading, $ionicModal, $ionicPopup, $log, $scope, $state, HelpersFactory,
-    IS_WEB) {
+  function DataTabController($document, $cordovaFileChooser, $cordovaFileOpener2, $ionicLoading, $ionicModal,
+                             $ionicPopup, $log, $scope, $state, $window, HelpersFactory, IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
 
@@ -23,6 +23,8 @@
     vm.editURL = editURL;
     vm.importData = importData;
     vm.isWeb = isWeb;
+    vm.localFileLinkSubmit = localFileLinkSubmit;
+    vm.openLocalLink = openLocalLink;
     vm.urlSubmit = urlSubmit;
     vm.viewTable = viewTable;
 
@@ -199,6 +201,31 @@
 
     function isWeb() {
       return IS_WEB;
+    }
+
+    function localFileLinkSubmit() {
+      if (ionic.Platform.device().platform === "iOS") $log.log('Implement with cordova-plugin-filepicker for iOS.');
+      else {
+        $cordovaFileChooser.open()
+          .then(uri => {
+            console.log(uri);
+            $window.FilePath.resolveNativePath(uri, function (resolvedURI) {
+              if (!vmParent.spot.properties.data) vmParent.spot.properties.data = {};
+              if (!vmParent.spot.properties.data.local_files) vmParent.spot.properties.data.local_files = [];
+              vmParent.spot.properties.data.local_files.push(resolvedURI);
+            }, function () {
+              $log.log('Unable to resolve URI.');
+            });
+          })
+          .catch(e => console.log(e));
+      }
+    }
+
+    function openLocalLink(uri) {
+      $log.log('Opening URI:', uri);
+      $cordovaFileOpener2.open(uri, 'application/pdf')
+        .then(() => console.log('File is opened'))
+        .catch(e => console.log('Error opening file', e));
     }
 
     function urlSubmit() {

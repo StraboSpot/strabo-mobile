@@ -24,6 +24,31 @@
       </div>
     </ion-item>
   </ion-list>
+  <div ng-hide="vmChild.isWeb()">
+    <div class="item item-divider">Links To Local Device Files</div>
+    <button ng-click='vmChild.localFileLinkSubmit()'
+            class='button button-clear button-positive'>
+      <i class='icon ion-link'></i>
+      <span class='button-text-big'>Link to File on Device</span>
+    </button>
+    <div class="padding" ng-hide="vm.spot.properties.data && vm.spot.properties.data.local_files">
+      There are no links to local device files.
+    </div>
+    <ion-list ng-show="vm.spot.properties.data && vm.spot.properties.data.local_files">
+      <ion-item class='item-text-wrap item-button-right'
+                ng-repeat="uri in vm.spot.properties.data.local_files track by $index">
+        <div ng-click='vmChild.openLocalLink(uri)'><a ng-href="{{ uri }}" target="blank">{{ uri }}</a></div>
+        <!--        <div class="buttons">
+                  <button class='button button-clear button-dark' ng-click='vmChild.editLocalLink(url)'>
+                    <i class='icon ion-edit'></i>
+                  </button>
+                  <button class='button button-clear button-assertive' ng-click='vmChild.deleteLocalLink(url)'>
+                    <i class='icon ion-minus-circled'></i>
+                  </button>
+                </div>-->
+      </ion-item>
+    </ion-list>
+  </div>
   <div class="item item-divider">Tables</div>
   <button ng-click='vmChild.importData()'
           class='button button-clear button-positive'>
