@@ -16,10 +16,11 @@ select_one jw6do33,spatial_var,Spatial variability,,false,horizontal-compact,"no
 text,length_scale,Length scale?,What is the length scale of spacing?,false,multiline,${spatial_var} = 'spaced' or ${spatial_var} = 'domainal',,
 select_multiple sv9wq27,linear_fab,Linear fabric(s),,false,horizontal-compact,,,
 text,other_char_lin,Other characterization,Characterize the linear fabric,false,multiline,"selected(${linear_fab}, 'other_lin')",,
-text,lin_fab_min_1,Mineral(s) that define the linear fabric,,false,,"not(selected(${linear_fab}, 'no_lin')) and ${linear_fab} != ''",,
-text,lin_fab_min_2,Mineral(s) that define the linear fabric,,false,,"not(selected(${linear_fab}, 'no_lin')) and ${linear_fab} != ''",,
-text,lin_fab_min_3,Mineral(s) that define the linear fabric,,false,,"not(selected(${linear_fab}, 'no_lin')) and ${linear_fab} != ''",,
-text,lin_fab_min_4,Mineral(s) that define the linear fabric,,false,,"not(selected(${linear_fab}, 'no_lin')) and ${linear_fab} != ''",,
+text,int_lin_char,Intersection lineation characterization,e.g. what intersecting planes define the lineation,false,multiline,"selected(${linear_fab}, 'intersect_lin')",,
+text,lin_fab_min_1,Mineral(s) that define the linear fabric,,false,,"not(selected(${linear_fab}, 'no_lin')) and ${linear_fab} != '' and not(selected(${linear_fab}, 'intersect_lin'))",,
+text,lin_fab_min_2,Mineral(s) that define the linear fabric,,false,,"not(selected(${linear_fab}, 'no_lin')) and ${linear_fab} != '' and not(selected(${linear_fab}, 'intersect_lin'))",,
+text,lin_fab_min_3,Mineral(s) that define the linear fabric,,false,,"not(selected(${linear_fab}, 'no_lin')) and ${linear_fab} != '' and not(selected(${linear_fab}, 'intersect_lin'))",,
+text,lin_fab_min_4,Mineral(s) that define the linear fabric,,false,,"not(selected(${linear_fab}, 'no_lin')) and ${linear_fab} != '' and not(selected(${linear_fab}, 'intersect_lin'))",,
 select_multiple ps78s13,other_met_fab,Other metamorphic fabric(s)?,,false,horizontal-compact,,,
 text,metasomatic,Characterize metasomatic fabric,"E.g. mineralogy, reactions, spatial extent",false,multiline,"selected(${other_met_fab}, 'metasom')",,
 text,migmatitic,Characterize migmatitic fabric,"E.g. mineralogy of leucosome and melanosome, diatexite vs. metatexite, etc.",false,multiline,"selected(${other_met_fab}, 'migmatite')",,
@@ -74,4 +75,4 @@ text,other_char_tec,Other tectonite characterization,Characterize the tectonite:
 text,p_t_d_history,P-T-d history,,false,multiline,,,
 text,interp_note_meta,Interpretations and notes,,false,multiline,,,
 calculate,__version__,,,false,,,'vWMK6YMJe6VLDvaKGpDKzA',
-calculate,_version_,,,,,,'vZJAYKJ5wZGHYPxSfdGST6',__version__
+calculate,_version_,,,,,,'v4FCMfhY9QxWp8tjqhibVY',__version__
