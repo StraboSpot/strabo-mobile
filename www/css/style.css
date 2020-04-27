@@ -337,6 +337,10 @@ Buttons
   font-weight: bold;
 }
 
+.button-text-list {
+  color: black;
+}
+
 .divider-buttons-right .item-divider i {
   position: absolute;
   right: 10px;

@@ -33,11 +33,15 @@
     vm.glossaryModal = {};
     vm.glossaryMineral = {};
     vm.isShowMineralGlossaryIndex = true;
+    vm.mineralsByClassModal = {};
+    vm.mineralsByClass = PetrologyFactory.getMineralsByClass();
     vm.spotWithPetToCopy = {};
     vm.spotsWithPet = [];
     vm.ternary = {};
 
     vm.addAttribute = addAttribute;
+    vm.addMineral = addMineral;
+    vm.addMineralByClass = addMineralByClass;
     vm.addThisMineral = addThisMineral;
     vm.copyPetData = copyPetData;
     vm.deleteAttribute = deleteAttribute;
@@ -122,18 +126,44 @@
         vm.glossaryModal = modal;
       });
 
+      $ionicModal.fromTemplateUrl('app/spot/petrology/minerals-glossary-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'focusFirstInput': true,
+        'backdropClickToClose': false
+      }).then(function (modal) {
+        vm.glossaryModal = modal;
+      });
+
+      $ionicModal.fromTemplateUrl('app/spot/petrology/minerals-by-class-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'focusFirstInput': true,
+        'backdropClickToClose': false
+      }).then(function (modal) {
+        vm.mineralsByClassModal = modal;
+      });
+
       // Cleanup the modal when we're done with it!
       $scope.$on('$destroy', function () {
         vm.basicFormModal.remove();
         vm.glossaryModal.remove();
+        vm.mineralsByClassModal.remove();
       });
     }
 
     function createWatches() {
-      // Watch for mineral abbreviation changes
+      // Watch for mineral abbreviation changes and add full name
       $scope.$watch('vm.data.mineral_abbrev', function (newValue, oldValue) {
         if (newValue && newValue !== oldValue) {
           vmParent.data.full_mineral_name = PetrologyFactory.getFullMineralNameFromAbbrev(newValue);
+        }
+      });
+
+      // Watch for full mineral name changes and add abbreviation
+      $scope.$watch('vm.data.full_mineral_name', function (newValue, oldValue) {
+        if (newValue && newValue !== oldValue) {
+          vmParent.data.mineral_abbrev = PetrologyFactory.getAbbrevFromFullMineralName(newValue);
         }
       });
     }
@@ -218,6 +248,22 @@
       FormFactory.setForm('pet', vm.attributeType);
       vm.modalTitle = vm.attributeType === 'minerals' ? 'Add a Mineral' : 'Add a Reaction';
       vmParent.data.id = HelpersFactory.getNewId();
+      vm.basicFormModal.show();
+    }
+
+    function addMineralByClass() {
+      vm.mineralsByClassModal.show();
+    }
+
+    // Add a mineral from the Minerals by Rock Class modal
+    function addMineral(mineral) {
+      vm.mineralsByClassModal.hide();
+      FormFactory.setForm('pet', 'minerals');
+      vm.modalTitle = 'Add a Mineral';
+      vmParent.data = {};
+      vmParent.data.id = HelpersFactory.getNewId();
+      vmParent.data.full_mineral_name = mineral.Label;
+      vmParent.data.mineral_abbrev = mineral.Abbreviation.split(',')[0];
       vm.basicFormModal.show();
     }
 

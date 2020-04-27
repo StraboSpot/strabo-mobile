@@ -1,0 +1,55 @@
+<ion-modal-view class="minerals-modals">
+  <ion-header-bar class='bar-stable nav-title-slide-ios7' align-title='center'>
+    <button class='button button-icon icon ion-arrow-left-c' ng-click='vmChild.setGlossaryMineral({})'>
+    </button>
+    <h1 class='title'>Add Mineral By Class</h1>
+    <div class='buttons'>
+      <button class='icon ion-close-round close-modal-button' ng-click='vmChild.mineralsByClassModal.hide()'>
+      </button>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+    <div class="padding">
+      <div class="row">
+        <div class="col">
+          <h4><u>Plutonic</u></h4>
+          <div ng-repeat='mineral in vmChild.mineralsByClass["plutonic"] | orderBy:"Name" track by $index'>
+            <button ng-click='vmChild.addMineral(mineral)' class='button button-clear button-positive'>
+              <i class='icon ion-plus-circled'></i>
+              <span class='button-text-list'>{{mineral.Label}}</span>
+            </button>
+          </div>
+        </div>
+        <div class="col">
+          <h4><u>Metamorphic</u></h4>
+          <div ng-repeat='mineral in vmChild.mineralsByClass["metamorphic"] | orderBy:"Name" track by $index'>
+            <button ng-click='vmChild.addMineral(mineral)' class='button button-clear button-positive'>
+              <i class='icon ion-plus-circled'></i>
+              <span class='button-text-list'>{{mineral.Label.substring(0, 20)}}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <h4><u>Volcanic</u></h4>
+          <div ng-repeat='mineral in vmChild.mineralsByClass["volcanic"] | orderBy:"Name" track by $index'>
+            <button ng-click='vmChild.addMineral(mineral)' class='button button-clear button-positive'>
+              <i class='icon ion-plus-circled'></i>
+              <span class='button-text-list'>{{mineral.Label}}</span>
+            </button>
+          </div>
+        </div>
+        <div class="col">
+          <h4><u>Alteration, Ore</u></h4>
+          <div ng-repeat='mineral in vmChild.mineralsByClass["alteration_ore"] | orderBy:"Name" track by $index'>
+            <button ng-click='vmChild.addMineral(mineral)' class='button button-clear button-positive'>
+              <i class='icon ion-plus-circled'></i>
+              <span class='button-text-list'>{{mineral.Label}}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+</ion-modal-view>

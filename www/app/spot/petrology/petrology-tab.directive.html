@@ -27,22 +27,18 @@
     </form>
   </div>
   <div ng-show='vmChild.attributeType === "minerals"'>
-    <div class="row" style="padding:0">
-      <div class="col" style="padding:0">
-        <button ng-click='vmChild.addAttribute();' class='button button-clear button-positive'>
-          <i class='icon ion-plus-circled'></i>
-          <span class='button-text-big'>Add a Mineral</span>
-        </button>
-      </div>
-      <div class="col" style="padding:0">
-        <div style="text-align:right">
-          <button ng-click='vmChild.showMineralGlossary()' class='button button-clear button-positive'>
-            <i class='icon ion-information-circled'></i>
-            <span class='button-text-big'>View Mineral Glossary</span>
-          </button>
-        </div>
-      </div>
-    </div>
+    <button ng-click='vmChild.addAttribute();' class='button button-clear button-positive'>
+      <i class='icon ion-plus-circled'></i>
+      <span class='button-text-big'>Add a Mineral</span>
+    </button>
+    <button ng-click='vmChild.addMineralByClass();' class='button button-clear button-positive'>
+      <i class='icon ion-plus-circled'></i>
+      <span class='button-text-big'>Add a Mineral By Rock Class</span>
+    </button>
+    <button ng-click='vmChild.showMineralGlossary()' class='button button-clear button-positive'>
+      <i class='icon ion-plus-circled'></i>
+      <span class='button-text-big'>Add a Mineral By Glossary</span>
+    </button>
     <div class="padding" ng-show="!vm.spot.properties.pet.minerals">
       There are no minerals at this Spot.
     </div>
@@ -64,6 +60,15 @@
     </ion-list>
   </div>
   <div ng-show='vmChild.attributeType === "reactions"'>
+    <div ng-show="vm.spot.properties.pet && vm.spot.properties.pet.minerals"
+         class="padding">
+      Existing Minerals:<br>
+      <span ng-repeat='mineral in vm.spot.properties.pet.minerals | orderBy:"mineral_abbrev" track by mineral.id'>
+      {{(mineral.mineral_abbrev ? mineral.mineral_abbrev + ' ': '') +
+      (mineral.full_mineral_name ? '(' + mineral.full_mineral_name + ')' : '') +
+      ($index != vm.spot.properties.pet.minerals.length -1 ? ' - ': '')}}
+    </span>
+    </div>
     <button ng-click='vmChild.addAttribute();' class='button button-clear button-positive'>
       <i class='icon ion-plus-circled'></i>
       <span class='button-text-big'>Add a Reaction</span>

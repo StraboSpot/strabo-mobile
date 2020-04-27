@@ -13,21 +13,21 @@
     <div class="padding">
       <div class="row" ng-show='vmChild.isShowMineralGlossaryIndex'>
         <div class="col">
-          <div class='padding-bottom'
+          <div class='padding-bottom positive'
                ng-repeat='mineral in vmChild.glossary | limitTo:31:0 | orderBy:"Name" track by $index'
                ng-click="vmChild.setGlossaryMineral(mineral)">
             {{mineral.Label}}
           </div>
         </div>
         <div class="col">
-          <div class='padding-bottom'
+          <div class='padding-bottom positive'
                ng-repeat='mineral in vmChild.glossary | limitTo:30:31 | orderBy:"Name" track by $index'
                ng-click="vmChild.setGlossaryMineral(mineral)">
             {{mineral.Label}}
           </div>
         </div>
         <div class="col">
-          <div class='padding-bottom'
+          <div class='padding-bottom positive'
                ng-repeat='mineral in vmChild.glossary | limitTo:35:61 | orderBy:"Name" track by $index'
                ng-click="vmChild.setGlossaryMineral(mineral)">
             {{mineral.Label}}
@@ -60,11 +60,11 @@
           {{ vmChild.glossaryMineral['Distinguishing Features'] }}
         </div>
         <div class="row">
-          <span class="mineral-title"> Occurrence:</span>
+          <span class="mineral-title">Occurrence:</span>
           {{ vmChild.glossaryMineral.Occurrence }}
         </div>
         <div class="row">
-          <span class="mineral-title"> Associated Minerals:</span>
+          <span class="mineral-title">Associated Minerals:</span>
           {{ vmChild.glossaryMineral['Associated Minerals'] }}
         </div>
         <div class="row">
