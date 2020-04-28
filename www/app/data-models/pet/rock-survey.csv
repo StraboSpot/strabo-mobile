@@ -35,7 +35,9 @@ text,notes_volcanic,Notes,,false,"selected(${igneous_rock_class}, 'volcanic')",m
 end_group,,,,,,,
 begin_group,group_qo15y35,Metamorphic,,false,"selected(${rock_type}, 'metamorphic')",,
 select_multiple zw3kc97,metamorphic_rock_type,Metamorphic Rock Type,Specific metamorphic rock type,false,"selected(${rock_type}, 'metamorphic')",horizontal-compact,
-text,other_met_rocks,Other,,false,"selected(${metamorphic_rock_type}, 'other')",,
+select_one zb6gu03,more_options,More options,,false,"selected(${metamorphic_rock_type}, 'more_options')",,
+select_one qv6gx56,type,Type,Gneissic protolith,false,"selected(${metamorphic_rock_type}, 'gneiss')",,
+text,other_met_rocks,Other,,false,${more_options} = 'other',,
 select_one zt6bn36,protolith,Protolith,Metamorphic protolith,false,"selected(${rock_type}, 'metamorphic')",horizontal-compact,
 text,other_protolith,Other,,false,${protolith} = 'other',,
 select_multiple kt0dp56,facies,Facies,,false,"selected(${rock_type}, 'metamorphic')",horizontal-compact,
@@ -54,4 +56,4 @@ text,magmatic_fluid_source,Magmatic fluid source,,false,"selected(${rock_type}, 
 text,mineralized_elements,Mineralized Elements,,false,"selected(${rock_type}, 'alteration_or')",,
 text,notes_ore,Notes,,false,"selected(${rock_type}, 'alteration_or')",multiline,
 end_group,,,,,,,
-calculate,__version__,,,,,,'vKprkcEcvzP5uLmPhy7WWx'
+calculate,__version__,,,,,,'vfYAk9WHtKCuYqj8hpa2zL'
