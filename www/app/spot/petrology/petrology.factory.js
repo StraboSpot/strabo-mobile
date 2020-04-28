@@ -64,7 +64,7 @@
       {
         "Name": "amphibole",
         "Label": "Amphibole",
-        "Abbreviation": "am, amph",
+        "Abbreviation": "amp, amph",
         "Rock Class": "plutonic, volcanic",
         "Formula": "AX2Z5Si8O22(OH.F,Cl,O)2",
         "Crystal System": "Monoclinic, orthorhombic",
@@ -473,7 +473,7 @@
       {
         "Name": "goethite",
         "Label": "Goethite",
-        "Abbreviation": "gt, gth",
+        "Abbreviation": "gth",
         "Formula": "FeO(OH)",
         "Crystal System": "Orthorhombic",
         "Hardness": "5-5.5",
@@ -1020,7 +1020,7 @@
       {
         "Name": "quartz",
         "Label": "Quartz",
-        "Abbreviation": "qz",
+        "Abbreviation": "qz, qtz",
         "Rock Class": "plutonic, volcanic, metamorphic",
         "Formula": "SiO2",
         "Crystal System": "Hexagonal",
