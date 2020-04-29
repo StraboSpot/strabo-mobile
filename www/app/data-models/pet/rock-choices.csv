@@ -99,25 +99,27 @@ kc4rs46,other,other,
 zw3kc97,slate,slate,
 zw3kc97,phyllite,phyllite,1
 zw3kc97,schist,schist,2
-zw3kc97,gneiss,gneiss,3
+zw3kc97,paragneiss,paragneiss,3
 zw3kc97,marble,marble,4
 zw3kc97,calc_silicate,calc-silicate,5
 zw3kc97,quartzite,quartzite,6
 zw3kc97,metagreywacke,metagreywacke,7
-zw3kc97,granulite,granulite,8
-zw3kc97,migmatite,migmatite,9
-zw3kc97,metabasite,metabasite,10
-zw3kc97,greenstone,greenstone,11
-zw3kc97,greenschist,greenschist,12
-zw3kc97,amphibolite,amphibolite,13
-zw3kc97,blueschist,blueschist,14
-zw3kc97,eclogite,eclogite,15
-zw3kc97,peridotite,meta-peridotite,16
-zw3kc97,serpentinite,serpentinite,17
-zw3kc97,hornfels,hornfels,18
-zw3kc97,granofels,granofels,19
-zw3kc97,skarn,skarn,20
-zw3kc97,less_common_ty,less common rock types,21
+zw3kc97,orthogneiss,orthogneiss,8
+zw3kc97,granulite,granulite,9
+zw3kc97,migmatite,migmatite,10
+zw3kc97,metabasite,metabasite,11
+zw3kc97,greenstone,greenstone,12
+zw3kc97,greenschist,greenschist,13
+zw3kc97,amphibolite,amphibolite,14
+zw3kc97,blueschist,blueschist,15
+zw3kc97,eclogite,eclogite,16
+zw3kc97,peridotite,meta-peridotite,17
+zw3kc97,serpentinite,serpentinite,18
+zw3kc97,hornfels,hornfels,19
+zw3kc97,granofels,granofels,20
+zw3kc97,skarn,skarn,21
+zw3kc97,gneiss,gneiss (undifferentiated),22
+zw3kc97,less_common_ty,less common rock types,23
 dw4vv19,metaigneous,metaigneous,
 dw4vv19,metagranite,metagranite,1
 dw4vv19,metavolcanic,metavolcanic,2
@@ -138,8 +140,6 @@ dw4vv19,cordierite_ant,cordierite-anthophyllite,16
 dw4vv19,blackwall,blackwall,17
 dw4vv19,meta_iron_form,meta-iron formation,18
 dw4vv19,other,other,19
-qv6gx56,orthogneiss,orthogneiss,
-qv6gx56,paragneiss,paragneiss,
 zt6bn36,pelite,mudrock/pelite,
 zt6bn36,sandstone,sandstone,1
 zt6bn36,greywacke,greywacke/psammite,2
