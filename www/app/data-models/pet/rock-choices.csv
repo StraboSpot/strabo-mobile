@@ -117,12 +117,26 @@ zw3kc97,metabasite,metabasite,27
 zw3kc97,metagreywacke,metagreywacke,30
 zw3kc97,metapelite,metapelite,32
 zw3kc97,peridotite,peridotite,42
-zw3kc97,more_options,more options,44
-zb6gu03,greenstone,greenstone,
-zb6gu03,mylonite,mylonite,1
-zb6gu03,cataclasite,cataclasite,2
-zb6gu03,phyllonite,phyllonite,3
-zb6gu03,other,other,4
+zw3kc97,calc_schist,calc schist,
+zw3kc97,jadeite,jadeite,
+zw3kc97,glaucophanite,glaucophanite,
+zw3kc97,garnetite,garnetite,
+zw3kc97,pyroxenite,pyroxenite,
+zw3kc97,cordierite_ant,cordierite-anthophyllite,
+zw3kc97,cataclasite,cataclasite,
+zw3kc97,mylonite,mylonite,
+zw3kc97,metapelite,metapelite,
+zw3kc97,metaarkose,metaarkose,
+zw3kc97,metacarbonate,metacarbonate,
+zw3kc97,metagranite,metagranite,
+zw3kc97,metaigneous,metaigneous,
+zw3kc97,metavolcanic,metavolcanic,
+zw3kc97,blackwall,blackwall,
+zw3kc97,metasomatite,metasomatite,
+zw3kc97,meta_ultramafi,meta-ultramafic,
+zw3kc97,meta_iron_form,meta-iron formation,
+zw3kc97,greenstone,greenstone,
+zw3kc97,phyllonite,phyllonite,
 qv6gx56,orthogneiss,orthogneiss,
 qv6gx56,paragneiss,paragneiss,
 zt6bn36,pelite,mudrock/pelite,
