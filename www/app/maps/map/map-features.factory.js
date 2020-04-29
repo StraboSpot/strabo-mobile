@@ -493,7 +493,9 @@
         var facing = undefined;
         var orientation_type = 'none';
         var orientation = feature.get('orientation');
-        if (ProjectFactory.getMapPreferences().show_point_symbology && orientation) {
+        var mapPreferences = ProjectFactory.getMapPreferences();
+        if (angular.isUndefined(mapPreferences.show_point_symbology)) mapPreferences.show_point_symbology = true;
+        if (mapPreferences.show_point_symbology && orientation) {
           rotation = orientation.strike || (orientation.dip_direction - 90) % 360 || orientation.trend || rotation;
           symbol_orientation = orientation.dip || orientation.plunge || symbol_orientation;
           feature_type = orientation.feature_type || feature_type;
