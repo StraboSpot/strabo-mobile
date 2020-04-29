@@ -63,7 +63,7 @@
     function getIsMode(mode) {
       var preferences = ProjectFactory.getPreferences();
       var project = ProjectFactory.getCurrentProject();
-      return _.has(preferences, mode) && project.is_testing_mode;
+      return _.has(preferences, mode);
     }
 
     function getProjectName() {
