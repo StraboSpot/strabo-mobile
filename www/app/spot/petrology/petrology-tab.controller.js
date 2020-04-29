@@ -204,6 +204,9 @@
             if (!vmParent.data.volcanic_rock_type) vmParent.data.volcanic_rock_type = [];
             vmParent.data.volcanic_rock_type = _.union(vmParent.data.volcanic_rock_type,
               [geologicUnitTag.volcanic_rock_type]);
+            if (geologicUnitTag.volcanic_rock_type === 'other' && geologicUnitTag.other_volcanic_rock_type) {
+              vmParent.data.other_volcanic_rocks = geologicUnitTag.other_volcanic_rock_type;
+            }
             if (!vmParent.data.igneous_rock_class) vmParent.data.igneous_rock_class = [];
             vmParent.data.igneous_rock_class = _.union(vmParent.data.igneous_rock_class, ['volcanic']);
             if (!vmParent.data.rock_type) vmParent.data.rock_type = [];
@@ -213,15 +216,41 @@
             if (!vmParent.data.plutonic_rock_type) vmParent.data.plutonic_rock_type = [];
             vmParent.data.plutonic_rock_type = _.union(vmParent.data.plutonic_rock_type,
               [geologicUnitTag.plutonic_rock_types]);
+            if (geologicUnitTag.plutonic_rock_types === 'other' && geologicUnitTag.other_plutonic_rock_type) {
+              vmParent.data.other_plutonic = geologicUnitTag.other_plutonic_rock_type;
+            }
             if (!vmParent.data.igneous_rock_class) vmParent.data.igneous_rock_class = [];
             vmParent.data.igneous_rock_class = _.union(vmParent.data.igneous_rock_class, ['plutonic']);
             if (!vmParent.data.rock_type) vmParent.data.rock_type = [];
             vmParent.data.rock_type = _.union(vmParent.data.rock_type, ['igneous']);
           }
           if (geologicUnitTag.metamorphic_rock_types) {
+            // Get choice values for metamorphic_rock_type
+            var form = FormFactory.getForm('pet', 'rock');
+            var metRockTypeField = _.find(form.survey, function (field) {
+              return field.name === 'metamorphic_rock_type';
+            });
+            var metRockTypeFieldChoiceListName = metRockTypeField.type.split(' ')[1];
+            var metRockTypeFieldChoices = _.filter(form.choices, function (choice) {
+              return choice.list_name === metRockTypeFieldChoiceListName;
+            });
+            var metRockTypeChoiceValues = _.pluck(metRockTypeFieldChoices, 'name');
+
+            // Metamorphic types from Geologic Unit needs to be split into a primary and less common list in Rock Type
             if (!vmParent.data.metamorphic_rock_type) vmParent.data.metamorphic_rock_type = [];
-            vmParent.data.metamorphic_rock_type = _.union(vmParent.data.metamorphic_rock_type,
-              [geologicUnitTag.metamorphic_rock_types]);
+            if (_.contains(metRockTypeChoiceValues, geologicUnitTag.metamorphic_rock_types)) {
+              vmParent.data.metamorphic_rock_type = _.union(vmParent.data.metamorphic_rock_type,
+                [geologicUnitTag.metamorphic_rock_types]);
+            }
+            else {
+              if (!vmParent.data.metamorphic_rock_type_less_com) vmParent.data.metamorphic_rock_type_less_com = [];
+              vmParent.data.metamorphic_rock_type_less_com = _.union(vmParent.data.metamorphic_rock_type_less_com,
+                [geologicUnitTag.metamorphic_rock_types]);
+              if (geologicUnitTag.metamorphic_rock_types === 'other' && geologicUnitTag.other_metamorphic_rock_type) {
+                vmParent.data.other_met_rocks = geologicUnitTag.other_metamorphic_rock_type;
+              }
+              vmParent.data.metamorphic_rock_type = _.union(vmParent.data.metamorphic_rock_type, ['less_common_ty']);
+            }
             if (!vmParent.data.rock_type) vmParent.data.rock_type = [];
             vmParent.data.rock_type = _.union(vmParent.data.rock_type, ['metamorphic']);
           }
