@@ -36,6 +36,7 @@
     vm.isNesting = SpotFactory.getActiveNesting();
     vm.newNestModal = {};
     vm.newNestProperties = {};
+    vm.mapPreferences = ProjectFactory.getMapPreferences();
     vm.mapView = true;
     vm.intervalName = '';
     vm.popover = {};
@@ -62,6 +63,7 @@
     vm.saveEdits = saveEdits;
     vm.saveInterval = saveInterval;
     vm.saveSketch = saveSketch;
+    vm.setMapPreferences = setMapPreferences;
     vm.stereonetSpots = stereonetSpots;
     vm.switchView = switchView;
     vm.toggleNesting = toggleNesting;
@@ -86,6 +88,8 @@
       currentSpot = SpotFactory.getCurrentSpot();
       if (currentSpot) vm.clickedFeatureId = currentSpot.properties.id;
       MapEmogeosFactory.clearSelectedSpot();
+
+      if (angular.isUndefined(vm.mapPreferences.show_point_symbology)) vm.mapPreferences.show_point_symbology = true;
 
       createModals();
       createPopover();
@@ -748,6 +752,12 @@
     function saveSketch() {
       ImageFactory.saveSketch().finally(function () {
         vm.sketchModal.hide();
+        updateFeatureLayer();
+      });
+    }
+
+    function setMapPreferences() {
+      ProjectFactory.saveProjectItem('map_preferences', vm.mapPreferences).then(function() {
         updateFeatureLayer();
       });
     }

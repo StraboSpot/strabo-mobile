@@ -29,6 +29,7 @@
     vm.imageBasemap = {};
     vm.imageBasemapScaleLabel = undefined;
     vm.isNesting = SpotFactory.getActiveNesting();
+    vm.mapPreferences = ProjectFactory.getMapPreferences();
     vm.newNestModal = {};
     vm.newNestProperties = {};
     vm.popover = {};
@@ -45,6 +46,7 @@
     vm.isiOS = isiOS;
     vm.saveEdits = saveEdits;
     vm.saveSketch = saveSketch;
+    vm.setMapPreferences = setMapPreferences;
     vm.startCalculateImageWidth = startCalculateImageWidth;
     vm.stereonetSpots = stereonetSpots;
     vm.toggleNesting = toggleNesting;
@@ -69,6 +71,8 @@
 
       currentSpot = SpotFactory.getCurrentSpot();
       if (currentSpot) vm.clickedFeatureId = currentSpot.properties.id;
+
+      if (angular.isUndefined(vm.mapPreferences.show_point_symbology)) vm.mapPreferences.show_point_symbology = true;
 
       createModals();
       createPopover();
@@ -443,6 +447,12 @@
     function saveSketch() {
       ImageFactory.saveSketch().finally(function () {
         vm.sketchModal.hide();
+        updateFeatureLayer();
+      });
+    }
+
+    function setMapPreferences() {
+      ProjectFactory.saveProjectItem('map_preferences', vm.mapPreferences).then(function() {
         updateFeatureLayer();
       });
     }

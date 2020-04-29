@@ -22,6 +22,15 @@
       <ion-item ng-show='vm.hasLinkedImages()' ng-click='vm.unlinkImages()'>
         <i class="icon ion-link"></i> Unlink Images
       </ion-item>
+      <ion-toggle
+        name='showPointSymbology'
+        ng-model='vm.mapPreferences.show_point_symbology'
+        ng-checked='vm.mapPreferences.show_point_symbology'
+        ng-click='vm.setMapPreferences()'
+        id='showPointSymbologyToggle'
+        toggle-class='toggle-positive'>
+        <span class='toggle-left-label'>Show Point Symbology</span>
+      </ion-toggle>
     </ion-list>
   </ion-content>
 </ion-popover-view>

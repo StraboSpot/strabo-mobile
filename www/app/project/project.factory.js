@@ -41,6 +41,7 @@
       'getDefaultRelationshipTypes': getDefaultRelationshipTypes,
       'getLinkedImages': getLinkedImages,
       'getLinkedImagesAll': getLinkedImagesAll,
+      'getMapPreferences': getMapPreferences,
       'getPreferences': getPreferences,
       'getProjectDescription': getProjectDescription,
       'getProjectName': getProjectName,
@@ -343,6 +344,10 @@
       return _.find(currentProject.linked_images, function (linkedImages) {
         return _.contains(linkedImages, imageId);
       });
+    }
+
+    function getMapPreferences() {
+      return currentProject.map_preferences || {};
     }
 
     function getOtherFeatures() {

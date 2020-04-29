@@ -19,6 +19,15 @@
       <ion-item ng-show='!vm.isNesting' ng-click='vm.toggleNesting()'>
         <i class="icon ion-disc"></i> Begin Continuous Nesting
       </ion-item>
+      <ion-toggle
+        name='showPointSymbology'
+        ng-model='vm.mapPreferences.show_point_symbology'
+        ng-checked='vm.mapPreferences.show_point_symbology'
+        ng-click='vm.setMapPreferences()'
+        id='showPointSymbologyToggle'
+        toggle-class='toggle-positive'>
+        <span class='toggle-left-label'>Show Point Symbology</span>
+      </ion-toggle>
     </ion-list>
   </ion-content>
 </ion-popover-view>

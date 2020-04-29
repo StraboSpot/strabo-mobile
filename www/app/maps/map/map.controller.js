@@ -29,6 +29,7 @@
     vm.data = {};
     vm.isNesting = SpotFactory.getActiveNesting();
     vm.isWeb = IS_WEB;
+    vm.mapPreferences = ProjectFactory.getMapPreferences();
     vm.newNestModal = {};
     vm.newNestProperties = {};
     vm.popover = {};
@@ -47,6 +48,7 @@
     vm.isOnline = isOnline;
     vm.saveEdits = saveEdits;
     vm.saveSketch = saveSketch;
+    vm.setMapPreferences = setMapPreferences;
     vm.stereonetSpots = stereonetSpots;
     vm.toggleNesting = toggleNesting;
     vm.toggleTagChecked = toggleTagChecked;
@@ -70,6 +72,8 @@
 
       vm.currentSpot = SpotFactory.getCurrentSpot();
       if (vm.currentSpot) vm.clickedFeatureId = vm.currentSpot.properties.id;
+
+      if (angular.isUndefined(vm.mapPreferences.show_point_symbology)) vm.mapPreferences.show_point_symbology = true;
 
       createModals();
       createPopover();
@@ -429,6 +433,12 @@
     function saveSketch() {
       ImageFactory.saveSketch().finally(function () {
         vm.sketchModal.hide();
+        updateFeatureLayer();
+      });
+    }
+
+    function setMapPreferences() {
+      ProjectFactory.saveProjectItem('map_preferences', vm.mapPreferences).then(function() {
         updateFeatureLayer();
       });
     }
