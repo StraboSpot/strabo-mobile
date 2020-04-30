@@ -55,4 +55,4 @@ text,magmatic_fluid_source,Magmatic fluid source,,false,"selected(${rock_type}, 
 text,mineralized_elements,Mineralized Elements,,false,"selected(${rock_type}, 'alteration_or')",,
 text,notes_ore,Notes,,false,"selected(${rock_type}, 'alteration_or')",multiline,
 end_group,,,,,,,
-calculate,__version__,,,,,,'vh5jmbDTJGryZ75YB7bBrV'
+calculate,__version__,,,,,,'vX9UbA3zEhefAS3M6unM4d'
