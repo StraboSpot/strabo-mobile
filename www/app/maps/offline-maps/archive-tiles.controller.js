@@ -77,7 +77,7 @@
             if(serverURL.substring(0,22)=="https://strabospot.org"){
               //we're online, so use the normal host
               $log.log("*********************  ONLINE  ************************");
-              vm.tilehost = 'http://tiles.strabospot.org';
+              vm.tilehost = 'https://tiles.strabospot.org';
             }else{
               //we're using an offline db, so let's use that for mymaps tiles
               $log.log("*********************  OFFLINE  ************************")
@@ -85,7 +85,7 @@
               vm.tilehost = serverURL.substr(0,lastOccur)+'/strabotiles'
             }
           }else{
-            vm.tilehost = 'http://tiles.strabospot.org';
+            vm.tilehost = 'https://tiles.strabospot.org';
           }
 
           return gotMap.id === mapLayer.get('id');

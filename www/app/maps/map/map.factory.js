@@ -84,7 +84,7 @@
           'imageType': 'png',
           'mime': 'image/png',
           'tilePath': '/{z}/{x}/{y}.png',
-          'url': ['http://tiles.strabospot.org/v5/']
+          'url': ['https://tiles.strabospot.org/v5/']
         },
         'map_warper': {
           'attributions': '© <a href="http://mapwarper.net/home/about">Map Warper</a>',
@@ -98,7 +98,7 @@
           'imageType': 'png',
           'mime': 'image/png',
           'tilePath': '/{z}/{x}/{y}.png',
-          'url': ['http://tiles.strabospot.org/v5/'],
+          'url': ['https://tiles.strabospot.org/v5/'],
           'maxZoom': 19                   // https://www.mapbox.com/help/define-mapbox-satellite/
         },
         'strabospot_mymaps': {
