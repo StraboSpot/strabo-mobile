@@ -267,6 +267,7 @@
           sed[sedKey][vm.lithologyNum] = vm.data;
         }
       }
+      vm.spot.properties.sed = sed;
     }
 
     // If the backView is within the same Spot keep getting backViews until
