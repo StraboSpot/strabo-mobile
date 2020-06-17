@@ -664,9 +664,9 @@
     function setLithologyData() {
       if (vm.spot.properties.sed && vm.spot.properties.sed.lithologies &&
         vm.stateName === 'app.spotTab.sed-lithologies') vm.data = vm.spot.properties.sed.lithologies[vm.lithologyNum] || {};
-      if (vm.spot.properties.diagenesis && vm.spot.properties.sed.diagenesis &&
+      else if (vm.spot.properties.diagenesis && vm.spot.properties.sed.diagenesis &&
         vm.stateName === 'app.spotTab.sed-diagenesis') vm.data = vm.spot.properties.sed.diagenesis[vm.lithologyNum] || {};
-      if (vm.spot.properties.sed && vm.spot.properties.sed.fossils &&
+      else if (vm.spot.properties.sed && vm.spot.properties.sed.fossils &&
         vm.stateName === 'app.spotTab.sed-fossils') vm.data = vm.spot.properties.sed.fossils[vm.lithologyNum] || {};
       else if (vm.spot.properties.sed && vm.spot.properties.sed.structures &&
         vm.stateName === 'app.spotTab.sed-structures') vm.data = vm.spot.properties.sed.structures[vm.lithologyNum] || {};
