@@ -31,8 +31,8 @@ select_multiple yp1hr80,descriptive,Descriptive,false,,,,,,
 text,other_descriptive,Other Descriptive,false,"selected(${descriptive}, 'other')",,,,,
 select_multiple yb2wj13,burrow_fill_type,Burrow Fill Type,false,,,,,,
 text,other_burrow_fill,Other Burrow Fill Type,false,"selected(${burrow_fill_type}, 'other')",,,,,
-select_one fu9zy74,behavioral_grouping,Behavioral grouping,false,,,,,,
-text,other_behavioral_grouping,Other Behavioral Grouping,false,${behavioral_grouping} = 'other',,,,,
+select_multiple ql1gi29,behavioral_grouping,Behavioral Grouping,false,,,,,,
+text,other_behavioral_grouping,Other Behavioral Grouping,false,"selected(${behavioral_grouping}, 'other')",,,,,
 select_one xn91l41,ichnofacies,Ichnofacies,false,,,,,,
 text,other_ichnofacies,Other Ichnofacies,false,${ichnofacies} = 'other',,,,,
 text,list_of_specific_types,List of specific types,false,,,,,,
@@ -59,4 +59,4 @@ text,notes,Notes,false,,,,multiline,,
 calculate,__version__,,false,,,,,'v3aztknQxg4sDfKs2JM2kF',
 calculate,_version_,,false,,,,,'vc4CusmkPTkFp2A3rCAZhE',__version__
 calculate,_version__001,,false,,,,,'vohx2ac7eAZcFgYFNsbDsK',__version__
-calculate,_version__002,,,,,,,'vqxE7TUC7Bae9CbesWYBCg',__version__
+calculate,_version__002,,,,,,,'vZAdKDj5GWPY9FXRE3hUtT',__version__

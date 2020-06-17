@@ -3,7 +3,7 @@ ld5to24,yes,yes,
 ld5to24,no,no,
 re0hj03,cross_bedding,cross bedding (general),
 re0hj03,trough,trough,1
-re0hj03,hummocky,hummocky-swaley,2
+re0hj03,hummocky,hummocky,2
 re0hj03,swaley,swaley,3
 re0hj03,planar_tabular,planar tabular,4
 re0hj03,festoon,festoon,5
@@ -22,21 +22,23 @@ re0hj03,carb_drapes,carbonaceous drapes,17
 re0hj03,mud_drape,mud drape,18
 re0hj03,other,other,19
 jz8he61,cross_lamin,cross lamination (general),
-jz8he61,trough,trough,
-jz8he61,climbing,climbing,
-jz8he61,flaser,flaser,
-jz8he61,wavy,wavy,
-jz8he61,lenticular,lenticular,
-jz8he61,translatent,translatent,
-jz8he61,starved,starved,
-jz8he61,herringbone,herringbone,
-jz8he61,bi_directional,bi-directional,
-jz8he61,pinstripe,pinstripe,
-jz8he61,wind,wind,
-jz8he61,interference,interference,
-jz8he61,carb_drape,carbonaceous drape,
-jz8he61,mud_drape,mud drape,
-jz8he61,other,other,
+jz8he61,trough,trough,1
+jz8he61,climbing,climbing,2
+jz8he61,flaser,flaser,3
+jz8he61,wavy,wavy,4
+jz8he61,lenticular,lenticular,5
+jz8he61,translatent,translatent,6
+jz8he61,starved,starved,7
+jz8he61,herringbone,herringbone,8
+jz8he61,symm_ripple,symmetric,9
+jz8he61,asymm_ripple,asymmetric,10
+jz8he61,bi_directional,bi-directional,11
+jz8he61,pinstripe,pinstripe,12
+jz8he61,wind,wind,13
+jz8he61,interference,interference,14
+jz8he61,carb_drape,carbonaceous drape,15
+jz8he61,mud_drape,mud drape,16
+jz8he61,other,other,17
 sm1jb70,horizontal,horizontal,
 sm1jb70,planar,planar,
 sm1jb70,rhythmic,rhythmic,
