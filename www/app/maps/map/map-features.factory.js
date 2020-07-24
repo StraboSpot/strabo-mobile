@@ -345,11 +345,13 @@
           _.each(spot.properties.orientation_data, function (orientation) {
             var feature = angular.fromJson(angular.toJson(spot));
             delete feature.properties.orientation_data;
-            _.each(orientation.associated_orientation, function (associatedOrientation) {
-              feature.properties.orientation = associatedOrientation;
-              mappedFeatures.push(angular.fromJson(angular.toJson(feature)));
-            });
-            feature.properties.orientation = orientation;
+            if(orientation != null) {
+              _.each(orientation.associated_orientation, function (associatedOrientation) {
+                feature.properties.orientation = associatedOrientation;
+                mappedFeatures.push(angular.fromJson(angular.toJson(feature)));
+              });
+              feature.properties.orientation = orientation;
+            }
             mappedFeatures.push(angular.fromJson(angular.toJson(feature)));
           });
         }
