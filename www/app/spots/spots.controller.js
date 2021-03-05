@@ -38,7 +38,6 @@
     vm.isWeb = isWeb;
     vm.loadMoreSpots = loadMoreSpots;
     vm.moreSpotsCanBeLoaded = moreSpotsCanBeLoaded;
-    vm.newSpot = newSpot;
     vm.resetFilters = resetFilters;
     vm.setListDetail = setListDetail;
     vm.toggleFilter = toggleFilter;
@@ -336,15 +335,6 @@
 
     function moreSpotsCanBeLoaded() {
       return vm.spotsDisplayed.length !== vm.spots.length;
-    }
-
-    // Create a new Spot
-    function newSpot() {
-      SpotFactory.setNewSpot({}).then(function (id) {
-        vm.spotIdSelected = id;
-        if (IS_WEB) setDisplayedSpots(); // needed for WEB to keep Spots list synchronized when new spot created
-        $location.path('/app/spotTab/' + id + '/spot');
-      });
     }
 
     function resetFilters() {
