@@ -97,7 +97,7 @@
     // Determine if the field should be shown or not by looking at the relevant key-value pair
     function showField(field, data) {
       if (typeof data[field.name] !== 'boolean' && typeof data[field.name] !== 'number'
-        && _.isEmpty(data[field.name])) delete data[field.name];
+        && typeof data[field.name] !== 'object' && _.isEmpty(data[field.name])) delete data[field.name];
       var show = FormFactory.isRelevant(field.relevant, data);
       if (show && field.default) {
         if (!data[field.name]) data[field.name] = field.default;
